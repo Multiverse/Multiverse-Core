@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -60,6 +62,12 @@ public class MultiVerseCore extends JavaPlugin {
 	@Override
 	public void onDisable() {
        log.info(logPrefix + "- Disabled");
+	}
+	/**
+	 * onCommand
+	 */
+   public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+        return debug;
 	}
 	/**
 	 * Basic Debug Output function, if we've enabled debugging we'll output more information.
