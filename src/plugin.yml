@@ -1,0 +1,35 @@
+name: MultiVerse-Core
+main: com.onarandombox.MultiVerseCore.MultiVerseCore
+author: Rigby
+version: 0.1
+commands:
+  mvcreate:
+    description: World create command
+    usage: /<command>
+  mvimport:
+    description: World import command
+    usage: /<command>
+  mvremove:
+    description: World delete command
+    usage: /<command>
+  mvmodify:
+    description: Modify the settings of an existing world
+    usage: /<command>
+  mvtp:
+    description: Command to teleport between Worlds
+    usage: /<command>
+  mvtpt:
+    description: Command to teleport a target to a World/Portal
+    usage: /<command>
+  mvlist:
+    description: Print list of loaded Worlds
+    usage: /<command>
+  mvsetspawn:
+    description: Set the spawn area for a particular World
+    usage: /<command>
+  mvspawn:
+    description: Teleport to the spawn area
+    usage: /<command>
+  mvcoord:
+    description: Display World and Coordinates
+    usage: /<command>
