@@ -1,6 +1,7 @@
 package com.onarandombox.MultiVerseCore;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
@@ -19,36 +20,35 @@ import com.nijikokun.bukkit.iConomy.iConomy;
 
 @SuppressWarnings("unused")
 public class MultiVerseCore extends JavaPlugin {
-    /**
-     * Variable for whether we are going to allow Debug Messages or not.
-     */
+    // Variable to state whether we are displaying Debug Messages or not.
     public boolean debug = false;
-    /**
-     * Variable to hold the Server Instance.
-     */
-    public static Server server;
-    /**
-     * Permissions Plugin
-     */
-    public static PermissionHandler Permissions = null;
-    /**
-     * Setup the Logger, also set a public variable which contains the prefix
-     * for all log messages, this allows for easy change.
-     */
+    
+    // Useless stuff to keep us going.
     private final Logger log = Logger.getLogger("Minecraft");
     public final String logPrefix = "[MultiVerse-Core] ";
-    /**
-     * Variable to hold the Plugin instance.
-     */
     public static Plugin instance;
-    /**
-     * Variable to hold the Plugins Description
-     */
+    public static Server server;
     public static PluginDescriptionFile description;
+    
+    // Permissions Handler
+    public static PermissionHandler Permissions = null;
+    
+    // Configurations
+    public static Configuration configMV;
+    public static Configuration configWorlds;
+    
+    // Setup the block/player/entity listener.
+    private MVPlayerListener playerListener;
+    private MVBlockListener blockListener;
+    private MVEntityListener entityListener;
+    private MVPluginListener pluginListener;
+    
+    // HashMap to contain all the Worlds which this Plugin will manage.
+    public HashMap<String,MVWorld> mvWorlds = new HashMap<String,MVWorld>();
+    
 	/**
 	 * What happens when the plugin gets around to be enabled...
 	 */
-	@Override
     public void onEnable() {
         this.getDataFolder().mkdir();
         /**
@@ -59,15 +59,14 @@ public class MultiVerseCore extends JavaPlugin {
 	/**
 	 * What happens when the plugin gets disabled...
 	 */
-	@Override
 	public void onDisable() {
        log.info(logPrefix + "- Disabled");
 	}
 	/**
 	 * onCommand
 	 */
-   public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        return debug;
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+        return false;
 	}
 	/**
 	 * Basic Debug Output function, if we've enabled debugging we'll output more information.
