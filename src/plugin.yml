@@ -18,9 +18,6 @@ commands:
   mvtp:
     description: Command to teleport between Worlds
     usage: /<command>
-  mvtpt:
-    description: Command to teleport a target to a World/Portal
-    usage: /<command>
   mvlist:
     description: Print list of loaded Worlds
     usage: /<command>

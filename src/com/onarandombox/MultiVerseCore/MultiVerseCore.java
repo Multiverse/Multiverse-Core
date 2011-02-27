@@ -2,6 +2,7 @@ package com.onarandombox.MultiVerseCore;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
@@ -19,11 +20,15 @@ import org.bukkit.event.Event.Priority;
 
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.iConomy.iConomy;
+
+import com.onarandombox.MultiVerseCore.commands.*;
 import com.onarandombox.MultiVerseCore.configuration.defaultConfiguration;
 
 @SuppressWarnings("unused")
 public class MultiVerseCore extends JavaPlugin {
+    // Setup our Map for our Commands using the CommandHandler.
+    private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
+    
     // Variable to state whether we are displaying Debug Messages or not.
     public boolean debug = true;
     
@@ -124,6 +129,19 @@ public class MultiVerseCore extends JavaPlugin {
          * Load up the Worlds & their Settings.
          */
         loadWorlds();
+        setupCommands();
+    }
+    
+    private void setupCommands() {
+        commands.put("mvcreate", new MVCreate(this));
+        commands.put("mvimport", new MVImport(this));
+        commands.put("mvremove", new MVRemove(this));
+        commands.put("mvmodify", new MVModify(this));
+        commands.put("mvtp", new MVTP(this));
+        commands.put("mvlist", new MVList(this));
+        commands.put("mvsetspawn", new MVSetSpawn(this));
+        commands.put("mvspawn", new MVSpawn(this));
+        commands.put("mvcoord", new MVCoord(this));
     }
     
     /**
@@ -149,7 +167,14 @@ public class MultiVerseCore extends JavaPlugin {
 	    if(Permissions==null || this.isEnabled()==false){
 	        return false;
 	    }
-        return false;
+	    
+        MVCommandHandler handler = commands.get(command.getName().toLowerCase());
+	        
+        if (handler != null) {
+            return handler.perform(sender, args);
+        } else {
+            return false;
+        }
 	}
 	
 	/**
