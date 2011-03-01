@@ -50,8 +50,8 @@ public class MVWorld {
         this.environment = world.getEnvironment();
         
         // The following should already of been set when the World was created, so we don't wan't to overwrite these values we'll just grab them.
-        this.monsters = ((CraftWorld) world).getHandle().D = monsters; // TODO: Swap to Bukkit Function when implemented.
-        this.animals = ((CraftWorld) world).getHandle().E = animals; // TODO: Swap to Bukkit Function when implemented.
+        this.monsters = ((CraftWorld) world).getHandle().D; // TODO: Swap to Bukkit Function when implemented.
+        this.animals = ((CraftWorld) world).getHandle().E; // TODO: Swap to Bukkit Function when implemented.
         
         // If MultiVerse created/loaded the World then it means we wan't to handle it as well, otherwise 
         // we don't touch any settings unless the user specifically asks us to.
