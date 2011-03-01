@@ -3,8 +3,9 @@ package com.onarandombox.MultiVerseCore;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldEvent;
+import org.bukkit.event.world.WorldListener;
 
-public class MVWorldListener implements Listener {
+public class MVWorldListener extends WorldListener {
 
     MultiVerseCore plugin;
     

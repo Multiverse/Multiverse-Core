@@ -1,9 +1,9 @@
 package com.onarandombox.MultiVerseCore;
 
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityListener;
 
-public class MVEntityListener implements Listener {
+public class MVEntityListener extends EntityListener {
 
     MultiVerseCore plugin;
     
