@@ -237,6 +237,10 @@ public class MultiVerseCore extends JavaPlugin {
             return playerSessions.get(player.getName());
         }
     }
+    
+    public MVTeleport getTeleporter() {
+    	return new MVTeleport(this);
+    }
 	
 	/**
 	 * onCommand
