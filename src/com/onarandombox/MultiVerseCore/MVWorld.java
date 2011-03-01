@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.util.config.Configuration;
 
 import com.onarandombox.utils.stringLocation;
@@ -19,9 +20,7 @@ public class MVWorld {
     
     public World world; // The World Instance.
     public Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
-    public Location spawn; // Location of the Spawn Point.
-    public Double compression; //How stretched/compressed distances are
-    
+
     public String name; // The Worlds Name, EG its folder name.
     public String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
     
@@ -35,41 +34,39 @@ public class MVWorld {
     public List<String> editWhitelist; // Contain a list of Players/Groups which can edit this World. (Place/Destroy Blocks)
     public List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
     public List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
+
+    public Double compression; //How stretched/compressed distances are
     
-    public MVWorld(World world, Configuration config, MultiVerseCore instance){
+    /**
+     * @param handle - If the World was loaded by MultiVerse then this will be true and means we can do 
+     * what we wan't with it else it's only here to be read from.
+     */
+    public MVWorld(World world, Configuration config, MultiVerseCore instance, boolean handle){
         this.config = config;
         this.plugin = instance;
         
         this.world = world;
         this.name = world.getName();
-        
-        this.alias = config.getString("worlds." + this.name + ".alias","");
-        
         this.environment = world.getEnvironment();
         
-        this.spawn = getSpawn(this.config.getString("worlds." + name + ".spawn", "").split(":"));
+        // The following should already of been set when the World was created, so we don't wan't to overwrite these values we'll just grab them.
+        this.monsters = ((CraftWorld) world).getHandle().D = monsters; // TODO: Swap to Bukkit Function when implemented.
+        this.animals = ((CraftWorld) world).getHandle().E = animals; // TODO: Swap to Bukkit Function when implemented.
+        
+        // If MultiVerse created/loaded the World then it means we wan't to handle it as well, otherwise 
+        // we don't touch any settings unless the user specifically asks us to.
+        if(handle==true){
+            this.alias = config.getString("worlds." + this.name + ".alias","");
+            this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
+        }
+        
         this.compression = config.getDouble("worlds." + this.name + ".compression", 1.0);
         
-        this.monsters = config.getBoolean("worlds." + this.name + ".monsters", true);
-        this.animals = config.getBoolean("worlds." + this.name + ".animals", true);
-        this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
-        
-		this.joinWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", new ArrayList<String>());
-		this.joinBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", new ArrayList<String>());
-		this.worldBlacklist = config.getStringList("worlds." + name + ".worldBlacklist", new ArrayList<String>());
-		this.blockBlacklist = config.getStringList("worlds." + name + ".blockBlacklist", new ArrayList<String>());
-		this.editWhitelist = config.getStringList("worlds." + name + ".editWhitelist", new ArrayList<String>());
-		this.editBlacklist = config.getStringList("worlds." + name + ".editBlacklist", new ArrayList<String>());
+        this.joinWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", new ArrayList<String>());
+        this.joinBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", new ArrayList<String>());
+        this.worldBlacklist = config.getStringList("worlds." + name + ".worldBlacklist", new ArrayList<String>());
+        this.blockBlacklist = config.getStringList("worlds." + name + ".blockBlacklist", new ArrayList<String>());
+        this.editWhitelist = config.getStringList("worlds." + name + ".editWhitelist", new ArrayList<String>());
+        this.editBlacklist = config.getStringList("worlds." + name + ".editBlacklist", new ArrayList<String>());
     }
-    
-    private Location getSpawn(String[] spawn){
-        Location l = null;
-        
-        if(spawn.length!=5){
-            return this.world.getSpawnLocation();
-        } else {
-            return new stringLocation().stringToLocation(world, spawn[0], spawn[1], spawn[2], spawn[3], spawn[4]);
-        }
-    }
-    
 }

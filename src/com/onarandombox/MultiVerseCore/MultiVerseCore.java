@@ -159,7 +159,7 @@ public class MultiVerseCore extends JavaPlugin {
 	        for (World world : lworlds){
 	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that wea re loading a world, specify the name and environment type.
                 
-	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
+	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this, false)); // Place the World into the HashMap. 
                 count++; // Increment the World Count.
 	        }
 	    }
