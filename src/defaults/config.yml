@@ -1,0 +1,15 @@
+#True/False - Whether MultiVerse should handle all respawns on every World including the Default.
+#Disable this if you have a form of Respawn Teleportation plugin.
+globalrespawn: false
+
+#True/False - Whether MultiVerse should handle all respawns on the MultiVerse Worlds.
+#If 'globalrespawn:true' then this will have no effect.
+alternaterespawn: true
+
+#How long to leave in between sending a message to the player.
+#In Milliseconds - Default is '5000' which is 5 Seconds.
+messagecooldown: 5000
+
+#Portal Cooldown, only affects MultiVerse portals.
+#In Milliseconds - Default is '5000' which is 5 Seconds.
+portalcooldown: 5000

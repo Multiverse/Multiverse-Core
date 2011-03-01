@@ -2,12 +2,16 @@ package com.onarandombox.MultiVerseCore;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -30,11 +34,11 @@ public class MultiVerseCore extends JavaPlugin {
     private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
     
     // Variable to state whether we are displaying Debug Messages or not.
-    public boolean debug = true;
+    public static boolean debug = true;
     
     // Useless stuff to keep us going.
-    private final Logger log = Logger.getLogger("Minecraft");
-    public final String logPrefix = "[MultiVerse-Core] ";
+    public static final Logger log = Logger.getLogger("Minecraft");
+    public static final String logPrefix = "[MultiVerse-Core] ";
     public static Plugin instance;
     public static Server server;
     public static PluginDescriptionFile description;
@@ -43,19 +47,21 @@ public class MultiVerseCore extends JavaPlugin {
     public static PermissionHandler Permissions = null;
     
     // Configurations
-    public static Configuration configMV;
-    public static Configuration configWorlds;
+    public static Configuration configMV = null;
+    public static Configuration configWorlds = null;
     
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);;
     private MVBlockListener blockListener = new MVBlockListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
+    private MVWorldListener worldListener = new MVWorldListener(this);
     
     // HashMap to contain all the Worlds which this Plugin will manage.
-    public HashMap<String,MVWorld> mvWorlds = new HashMap<String,MVWorld>();
+    public static HashMap<String,MVWorld> worlds = new HashMap<String,MVWorld>();
+    
     // HashMap to contain information relating to the Players.
-    public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
+    public static HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
     
     /**
      * Constructor... Perform the Necessary tasks here.
@@ -68,70 +74,63 @@ public class MultiVerseCore extends JavaPlugin {
 	 * What happens when the plugin gets around to be enabled...
 	 */
     public void onEnable() {
+        // Create the Plugin Data folder.
         this.getDataFolder().mkdir();
-        /**
-         * Output a little snippet to state that the plugin is now enabled.
-         */
+
+        // Output a little snippet to show it's enabled.
         log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled");
-        /**
-         * Quick check for the Permissions Plugin, if we don't find it here
-         * we'll have to check Plugin onEnable Events.
-         */
+
+        // Quick check for the Permissions Plugin, if we don't find it here then we'll check the plugin onEnable event.
         if(getServer().getPluginManager().getPlugin("Permissions")==null){
-            log.info(logPrefix + "Commands have been DISABLED until Permissions has been found.");
+            log.info(logPrefix + "- Commands have been DISABLED until Permissions has been found.");
         } else {
             Permissions = com.nijikokun.bukkit.Permissions.Permissions.Security;
         }
-        /**
-         * If the Configuration Files don't exist then create them.
-         */
-        if(!(new File(this.getDataFolder(), "MultiVerse.yml").exists())){
-            new defaultConfiguration().setupMultiVerseConfig(new File(this.getDataFolder(), "MultiVerse.yml"));
-        }
-        if(!(new File(this.getDataFolder(), "Worlds.yml").exists())){
-            new defaultConfiguration().setupMultiVerseConfig(new File(this.getDataFolder(), "Worlds.yml"));
-        }
-        /**
-         * Grab the Configuration Files & Load them.
-         */
-        configMV = new Configuration(new File(this.getDataFolder(), "MultiVerse.yml"));
-        configMV.load();
-        configWorlds = new Configuration(new File(this.getDataFolder(), "Worlds.yml"));
-        configWorlds.load();
-        /**
-         * Setup all the events which we will be listening.
-         */
-        /*
+
+        // Call the defaultConfiguration class to create the config files if they don't already exist.
+        new defaultConfiguration(this.getDataFolder(), "config.yml");
+        new defaultConfiguration(this.getDataFolder(), "worlds.yml");
+        
+        // Now grab the Configuration Files.
+        configMV = new Configuration(new File(this.getDataFolder(), "config.yml"));
+        configWorlds = new Configuration(new File(this.getDataFolder(), "worlds.yml"));
+        
+        // Now attempt to Load the configurations.
+        try{ configMV.load(); } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml"); }
+        try{ configWorlds.load(); } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load worlds.yml"); }
+        
+        // Setup all the Events the plugin needs to Monitor.
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Low,this); // Low so it acts above any other.
-        pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener,Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener,Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Low, this); // Low so it acts above any other.
+        pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.High, this); // To Add World Prefixing to Chat.
+        pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this); // Respawn Players at the right point.
+
+        pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener,Priority.Normal, this); // To remove Player Sessions
+
+        // These 3 events should only be required in the Portals module.
+        //pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener,Priority.Normal, this); // For Set Coord 1 & Info Wand etc...
+        //pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener,Priority.Normal, this); // For Set Coord 2
+        //pm.registerEvent(Event.Type.BLOCK_FLOW, blockListener, Priority.High,this); // To create Water/Lava Portals
         
-        pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener,Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener,Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_FLOW, blockListener, Priority.High,this);
-        pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.High,this);
+        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this); // To prevent Blocks being destroyed.
+        pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.High, this); // To prevent Blocks being placed.
         
-        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.High,this);
-        */
-        /**
-         * In case of a /reload we need to make sure every player online gets
-         * setup with a player session.
-         */
-        Player[] p = this.getServer().getOnlinePlayers();
-        for (int i = 0; i < p.length; i++) {
-            debugMsg("Player Sessions - Player " + i + " Out of " + p.length + " Name - " + p[i].getName(), null);
-            this.playerSessions.put(p[i].getName(), new MVPlayerSession(p[i],this));
-        }
-        /**
-         * Load up the Worlds & their Settings.
-         */
+        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.High, this); // To Allow/Disallow PVP.
+
+        pm.registerEvent(Event.Type.WORLD_LOADED, worldListener, Priority.Highest, this); // Setup the Worlds config when a World is created.
+        
+        pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Normal, this); // Monitor for Permissions Plugin etc.
+        
+        // Call the Function to load all the Worlds and setup the HashMap
         loadWorlds();
+        
+        // Call the Function to assign all the Commands to their Class.
         setupCommands();
     }
     
+    /**
+     * 
+     */
     private void setupCommands() {
         commands.put("mvcreate", new MVCreate(this));
         commands.put("mvimport", new MVImport(this));
@@ -148,17 +147,90 @@ public class MultiVerseCore extends JavaPlugin {
      * Load the Worlds & Settings from the configuration file.
      */
 	private void loadWorlds() {
-        // TODO Auto-generated method stub
+	    // Basic Counter to count how many Worlds we are loading.
+	    int count = 0; 
         
-    }
+	    // Grab all the Worlds that already exist.
+	    List<World> worlds = getServer().getWorlds();
+	    
+	    // You never know these days... bloody NPE's.
+	    if(worlds != null && worlds.size()>0){
+	        for (World world : worlds){
+	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that wea re loading a world, specify the name and environment type.
+                
+	            MultiVerseCore.worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
+                count++; // Increment the World Count.
+	        }
+	    }
+	    
+	    log.info(logPrefix + count + " - existing World(s) found.");
+	    
+	    List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
+	    count = 0;
+	    if(worldKeys != null){
+	        for (String worldKey : worldKeys){
+	            // If this World already exists within the HashMap then we don't need to process it.
+	            if(MultiVerseCore.worlds.containsKey(worldKey)){
+	                continue;
+	            }
+	            
+	            String wEnvironment = MultiVerseCore.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
+	            
+	            Boolean monsters = MultiVerseCore.configWorlds.getBoolean("worlds." + worldKey + ".monsters", true); // Grab whether we want to spawn Monsters.
+	            Boolean animals = MultiVerseCore.configWorlds.getBoolean("worlds." + worldKey + ".animals", true); // Grab whether we want to spawn Animals.
+	         
+	            Environment env;
+	            if(wEnvironment.equalsIgnoreCase("NETHER")) // Check if the selected Environment is NETHER, otherwise we just default to NORMAL.
+	                env = Environment.NETHER;
+	            else
+	                env = Environment.NORMAL;
+	            
+	            log.info(logPrefix + "Loading World & Settings - '" + worldKey + "' - " + wEnvironment); // Output to the Log that wea re loading a world, specify the name and environment type.
+	            
+	            World world = getServer().createWorld(worldKey, env);
+	            
+                // Beta 1.3 = 
+                // D = Monsters
+                // E = Animals
+                ((CraftWorld) world).getHandle().D = monsters;
+                ((CraftWorld) world).getHandle().E = animals;
 
+                //((CraftWorld) world).getHandle().q.a(i, j, k);
+                //Spawn Crap
+
+                // The following will be used once they accept the pull request.
+	            //world.setMonsterSpawn = monsters;
+	            //world.setAnimalSpawn = animals;
+                
+                //MultiVerseCore.worlds.put(worldKey, new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
+                
+                count++; // Increment the World Count.
+	        }
+	    }
+	    log.info(logPrefix + count + " - World(s) loaded.");
+	    
+    }
+	
     /**
 	 * What happens when the plugin gets disabled...
 	 */
 	public void onDisable() {
-	   
        log.info(logPrefix + "- Disabled");
 	}
+	
+    /**
+     * Grab the players session if one exists, otherwise create a session then return it.
+     * @param player
+     * @return
+     */
+    public MVPlayerSession getPlayerSession(Player player){
+        if(playerSessions.containsKey(player.getName())){
+            return playerSessions.get(player.getName());
+        } else {
+            playerSessions.put(player.getName(), new MVPlayerSession(player, MultiVerseCore.configMV, this));
+            return playerSessions.get(player.getName());
+        }
+    }
 	
 	/**
 	 * onCommand
