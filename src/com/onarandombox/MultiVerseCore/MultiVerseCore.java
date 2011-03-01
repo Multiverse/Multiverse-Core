@@ -157,7 +157,12 @@ public class MultiVerseCore extends JavaPlugin {
 	    // You never know these days... bloody NPE's.
 	    if(lworlds != null && lworlds.size()>0){
 	        for (World world : lworlds){
-	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that wea re loading a world, specify the name and environment type.
+	            // If it's the default world we should probably ignore outputting it as it will just be spam.
+	            if((getServer().getWorlds().get(0).getName().equals(world.getName()))){
+	                continue;
+	            }
+	            
+	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that we are loading a world, specify the name and environment type.
                 
 	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this, false)); // Place the World into the HashMap. 
                 count++; // Increment the World Count.
