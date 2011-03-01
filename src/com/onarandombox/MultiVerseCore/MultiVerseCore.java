@@ -22,8 +22,8 @@ import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 
-import com.nijikokun.bukkit.Permissions.Permissions;
-import com.nijiko.permissions.PermissionHandler;
+//import com.nijikokun.bukkit.Permissions.Permissions;
+//import com.nijiko.permissions.PermissionHandler;
 
 import com.onarandombox.MultiVerseCore.commands.*;
 import com.onarandombox.MultiVerseCore.configuration.defaultConfiguration;
@@ -44,7 +44,7 @@ public class MultiVerseCore extends JavaPlugin {
     public static PluginDescriptionFile description;
     
     // Permissions Handler
-    public static PermissionHandler Permissions = null;
+    // public static PermissionHandler Permissions = null; // Scrapping Permissions till a stable release is out... this will be handled by isOP() for now.
     
     // Configurations
     public static Configuration configMV = null;
@@ -81,11 +81,12 @@ public class MultiVerseCore extends JavaPlugin {
         log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled");
 
         // Quick check for the Permissions Plugin, if we don't find it here then we'll check the plugin onEnable event.
-        if(getServer().getPluginManager().getPlugin("Permissions")==null){
+        // TODO: Sort out Permissions Support...
+        /*if(getServer().getPluginManager().getPlugin("Permissions")==null){
             log.info(logPrefix + "- Commands have been DISABLED until Permissions has been found.");
         } else {
             Permissions = com.nijikokun.bukkit.Permissions.Permissions.Security;
-        }
+        }*/
 
         // Call the defaultConfiguration class to create the config files if they don't already exist.
         new defaultConfiguration(this.getDataFolder(), "config.yml");
@@ -236,8 +237,12 @@ public class MultiVerseCore extends JavaPlugin {
 	 * onCommand
 	 */
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-	    if(Permissions==null || this.isEnabled()==false){
+	    /*if(Permissions==null || this.isEnabled()==false){
 	        return false;
+	    }*/
+	    if(this.isEnabled() == false){
+	        sender.sendMessage("This plugin is Disabled!");
+	        return true;
 	    }
 	    
         MVCommandHandler handler = commands.get(command.getName().toLowerCase());
