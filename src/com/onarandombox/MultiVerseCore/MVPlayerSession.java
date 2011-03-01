@@ -28,14 +28,22 @@ public class MVPlayerSession {
     }
     
     /**
-     * Teleport the Player to the destination as long as enough time has passed since the last teleport.
-     * @param location
+     * Update the Teleport time.
      */
-    public void teleport(Location location){
+    public void teleport(){
+        this.teleportLast = (new Date()).getTime();
+    }
+    
+    /**
+     * Grab whether the cooldown on Portal use has expired or not.
+     * @return
+     */
+    public boolean getTeleportable(){
         Long time = (new Date()).getTime();
-        if ((time - this.teleportLast) > config.getInt("portalcooldown", 5000)){
-            this.player.teleportTo(location);
-            this.teleportLast = time;
+        if ((time - this.teleportLast) > config.getInt("portalcooldown", 5000)) {
+            return true;
+        } else {
+            return false;
         }
     }
     
