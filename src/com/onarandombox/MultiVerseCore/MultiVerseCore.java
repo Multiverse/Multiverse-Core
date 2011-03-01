@@ -58,10 +58,10 @@ public class MultiVerseCore extends JavaPlugin {
     private MVWorldListener worldListener = new MVWorldListener(this);
     
     // HashMap to contain all the Worlds which this Plugin will manage.
-    public static HashMap<String,MVWorld> worlds = new HashMap<String,MVWorld>();
+    public HashMap<String,MVWorld> worlds = new HashMap<String,MVWorld>();
     
     // HashMap to contain information relating to the Players.
-    public static HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
+    public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
     
     /**
      * Constructor... Perform the Necessary tasks here.
@@ -152,14 +152,14 @@ public class MultiVerseCore extends JavaPlugin {
 	    int count = 0; 
         
 	    // Grab all the Worlds that already exist.
-	    List<World> worlds = getServer().getWorlds();
+	    List<World> lworlds = getServer().getWorlds();
 	    
 	    // You never know these days... bloody NPE's.
-	    if(worlds != null && worlds.size()>0){
-	        for (World world : worlds){
+	    if(lworlds != null && lworlds.size()>0){
+	        for (World world : lworlds){
 	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that wea re loading a world, specify the name and environment type.
                 
-	            MultiVerseCore.worlds.put(world.getName(), new MVWorld(world, false)); // Place the World into the HashMap. 
+	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
                 count++; // Increment the World Count.
 	        }
 	    }
@@ -171,7 +171,7 @@ public class MultiVerseCore extends JavaPlugin {
 	    if(worldKeys != null){
 	        for (String worldKey : worldKeys){
 	            // If this World already exists within the HashMap then we don't need to process it.
-	            if(MultiVerseCore.worlds.containsKey(worldKey)){
+	            if(worlds.containsKey(worldKey)){
 	                continue;
 	            }
 	            
@@ -258,7 +258,7 @@ public class MultiVerseCore extends JavaPlugin {
 	 * Basic Debug Output function, if we've enabled debugging we'll output more information.
 	 */
 	public void debugMsg(String msg, Player p){
-	    if(this.debug){
+	    if(debug){
 	        log.info(msg);
 	        if(p!=null){
 	            p.sendMessage(msg);
