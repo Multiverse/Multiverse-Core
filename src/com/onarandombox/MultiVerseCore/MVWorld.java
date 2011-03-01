@@ -38,10 +38,8 @@ public class MVWorld {
     public Double compression; //How stretched/compressed distances are
     
     /**
-     * @param handle - If the World was loaded by MultiVerse then this will be true and means we can do 
-     * what we wan't with it else it's only here to be read from.
      */
-    public MVWorld(World world, Configuration config, MultiVerseCore instance, boolean handle){
+    public MVWorld(World world, Configuration config, MultiVerseCore instance){
         this.config = config;
         this.plugin = instance;
         
@@ -55,10 +53,9 @@ public class MVWorld {
         
         // If MultiVerse created/loaded the World then it means we wan't to handle it as well, otherwise 
         // we don't touch any settings unless the user specifically asks us to.
-        if(handle==true){
-            this.alias = config.getString("worlds." + this.name + ".alias","");
-            this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
-        }
+
+        this.alias = config.getString("worlds." + this.name + ".alias","");
+        this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
         
         this.compression = config.getDouble("worlds." + this.name + ".compression", 1.0);
         

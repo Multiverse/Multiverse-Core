@@ -157,19 +157,15 @@ public class MultiVerseCore extends JavaPlugin {
 	    // You never know these days... bloody NPE's.
 	    if(lworlds != null && lworlds.size()>0){
 	        for (World world : lworlds){
-	            // If it's the default world we should probably ignore outputting it as it will just be spam.
-	            if((getServer().getWorlds().get(0).getName().equals(world.getName()))){
-	                continue;
-	            }
-	            
 	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that we are loading a world, specify the name and environment type.
                 
-	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this, false)); // Place the World into the HashMap. 
+	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap.
+	            
                 count++; // Increment the World Count.
 	        }
 	    }
 	    
-	    log.info(logPrefix + count + " - existing World(s) found.");
+	    log.info(logPrefix + count + " - World(s) found.");
 	    
 	    List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
 	    count = 0;
@@ -208,7 +204,7 @@ public class MultiVerseCore extends JavaPlugin {
 	            //world.setMonsterSpawn = monsters;
 	            //world.setAnimalSpawn = animals;
                 
-                //MultiVerseCore.worlds.put(worldKey, new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
+                worlds.put(worldKey, new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
                 
                 count++; // Increment the World Count.
 	        }
