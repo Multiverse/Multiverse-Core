@@ -43,6 +43,8 @@ public class MultiVerseCore extends JavaPlugin {
     public static Server server;
     public static PluginDescriptionFile description;
     
+    public static final File dataFolder = new File("plugins" + File.separator + "MultiVerse");
+    
     // Permissions Handler
     // public static PermissionHandler Permissions = null; // Scrapping Permissions till a stable release is out... this will be handled by isOP() for now.
     
@@ -75,7 +77,8 @@ public class MultiVerseCore extends JavaPlugin {
 	 */
     public void onEnable() {
         // Create the Plugin Data folder.
-        this.getDataFolder().mkdir();
+        //this.getDataFolder().mkdir();
+        dataFolder.mkdir();
 
         // Output a little snippet to show it's enabled.
         log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled");

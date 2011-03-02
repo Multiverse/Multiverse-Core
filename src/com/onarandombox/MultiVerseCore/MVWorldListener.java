@@ -1,7 +1,6 @@
 package com.onarandombox.MultiVerseCore;
 
 import org.bukkit.World;
-import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldEvent;
 import org.bukkit.event.world.WorldListener;
 
@@ -15,5 +14,6 @@ public class MVWorldListener extends WorldListener {
     
     public void onWorldLoad(WorldEvent event){
         World world = event.getWorld();
+        System.out.print(world.getName());
     }
 }
