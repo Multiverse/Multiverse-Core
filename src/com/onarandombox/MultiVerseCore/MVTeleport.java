@@ -37,10 +37,18 @@ public class MVTeleport {
 	        double trgComp = plugin.worlds.get(world.getName()).compression;
 	        
 	        MultiVerseCore.log.info(player.getWorld().getName() + "(" + srcComp + ") -> " + world.getName() + "(" + trgComp + ")");
-
-	        x = location.getX() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
-	        y = location.getY();
-	        z = location.getZ() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
+	        
+            // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
+            if(trgComp==0.0){
+                x = world.getSpawnLocation().getX();
+                y = world.getSpawnLocation().getY();
+                z = world.getSpawnLocation().getZ();
+            } else {
+                x = location.getX() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
+                y = location.getY();
+                z = location.getZ() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
+            }
+             
 	    } else {
 	        x = location.getX();
 	        y = location.getY();
@@ -214,9 +222,13 @@ public class MVTeleport {
 			if (target != null) {
 				this.target = target;
 				p.teleportTo(target);
-			} else return false;
-			return true;
-		} else return false;
+				return true;
+			} else {
+			    return false;
+			}
+		} else {
+		    return false;
+		}
 	}
 	
 	/**
@@ -225,5 +237,4 @@ public class MVTeleport {
 	public boolean teleport(World w, Player p) {
         return teleport(w, p, null);
     }
-    
 }

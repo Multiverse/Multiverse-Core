@@ -2,13 +2,19 @@ package com.onarandombox.MultiVerseCore;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageByProjectileEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.ExplosionPrimedEvent;
@@ -31,6 +37,37 @@ public class MVEntityListener extends EntityListener {
             MultiVerseCore.log.info("Fireball"); 
             // Fireballs on Explode trigger this, sadly we can't get the blocks it would destroy... thats onEntityExplode
             // However can't figure out a way to check in onEntityExplode if it was a Fireball which caused it...
+        }
+    }
+    
+    public void onEntityDamage(EntityDamageEvent event){
+        if (event.isCancelled()) return;
+        
+        Entity attacker = null;        
+        Entity defender = event.getEntity();
+        World w = defender.getWorld();
+        
+        if(!(MultiVerseCore.configWorlds.getBoolean("worlds." + w.getName() + ".enablehealth", true))){
+            event.setCancelled(true);
+            return;
+        }
+        
+        if(event instanceof EntityDamageByEntityEvent){
+            attacker = ((EntityDamageByEntityEvent) event).getDamager();
+        } else if(event instanceof EntityDamageByProjectileEvent){
+            attacker = ((EntityDamageByProjectileEvent) event).getDamager();
+        }
+        
+        if(attacker==null || defender==null){
+            return;
+        }
+        
+        if (defender instanceof Player){
+            if (!(this.plugin.worlds.get(w.getName()).pvp)) {
+                this.plugin.playerSessions.get(((Player) attacker)).message(ChatColor.RED + "PVP is disabled in this World.");
+                event.setCancelled(true);
+                return;
+            }
         }
     }
     
@@ -72,7 +109,7 @@ public class MVEntityListener extends EntityListener {
         /**
          * Monster Handling
          */
-        if(event.getEntity() instanceof Monster){
+        if(event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof PigZombie){
             // If we have no exceptions for Monsters then we just follow the Spawn setting.
             if(mvworld.monsterList.size()<=0){
                 if(mvworld.monsters){

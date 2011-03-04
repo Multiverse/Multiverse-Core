@@ -266,4 +266,8 @@ public class MultiVerseCore extends JavaPlugin {
 	        }
 	    }
 	}
+	
+	public static void debugMsg(String msg){
+	    debugMsg(msg,null);
+	}
 }
