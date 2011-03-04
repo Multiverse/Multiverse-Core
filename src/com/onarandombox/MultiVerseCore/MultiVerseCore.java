@@ -178,6 +178,7 @@ public class MultiVerseCore extends JavaPlugin {
 	    // Basic Counter to count how many Worlds we are loading.
 	    int count = 0; 
 	    List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
+	    
 	    if(worldKeys != null){
 	        for (String worldKey : worldKeys){
 	            // If this World already exists within the HashMap then we don't need to process it.

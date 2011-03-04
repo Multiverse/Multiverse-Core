@@ -16,6 +16,8 @@ public class MVTeleport {
         this.plugin = plugin;
     }
     
+    public Location target = null;
+    
 	/**
 	 * This function gets a safe place to teleport to.
 	 * 
@@ -25,12 +27,16 @@ public class MVTeleport {
 	 */
 	public Location getDestination(World world, Player player, Location location) {
 		
+		MultiVerseCore.log.info(player.getName() + " wants to go to " + world.getName() + ". He's now at " + player.getLocation().toString());
+		
 	    double x, y, z;
 	    if(location==null){
 	        location = player.getLocation();
 		
 	        double srcComp = plugin.worlds.get(player.getWorld().getName()).compression;
-	        double trgComp = plugin.worlds.get(world.getName()).compression;  
+	        double trgComp = plugin.worlds.get(world.getName()).compression;
+	        
+	        MultiVerseCore.log.info(player.getWorld().getName() + "(" + srcComp + ") -> " + world.getName() + "(" + trgComp + ")");
 
 	        x = location.getX() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
 	        y = location.getY();
@@ -40,22 +46,44 @@ public class MVTeleport {
 	        y = location.getY();
 	        z = location.getZ();
 	    }
-
+	    
 		if (y < 1 && world.getEnvironment() == Environment.NORMAL)
 			y = 1;
 
 		while (this.blockIsAboveAir(world, x, y, z)) {
 			y--;
 		}
-		while (this.blockIsNotSafe(world, x, y, z)) {
-			y++;
-			if (y>=120) { // We don't want them being teleported on top of Bedrock in the Nether.
-				y = 1;
-				x = x + 1;
-				z = z + 1;
+				
+		double i = 0, r = 0, aux = -1;
+
+		for (r = 0; r < 32; r++) {
+			for (i = x - r; i <= x + r; i++) {
+				if ((aux = safeColumn(world, i, y, z - r)) > -1) {z = z - r; break;}
+				if ((aux = safeColumn(world, i, y, z + r)) > -1) {z = z + r; break;}
 			}
+			if (aux > -1) {x = i; break;}
+			for (i = z - r + 1; i <= z + r - 1; i++) {
+				if ((aux = safeColumn(world, x - r, y, i)) > -1) {x = x - r; break;}
+				if ((aux = safeColumn(world, x + r, y, i)) > -1) {x = x + r; break;}
+			}
+			if (aux > -1) {z = i; break;}
 		}
-		return new Location(world, x, y, z, location.getYaw(),location.getPitch());
+		
+		if (aux == -1) return null;
+		
+		MultiVerseCore.log.info("Target location (safe): " + x + ", " + aux + ", " + z);
+		
+		return new Location(world, x, aux, z, location.getYaw(),location.getPitch());
+	}
+	
+	private double safeColumn(World world, double x, double y, double z) {
+		double ny; boolean res = false;
+        for (ny = y; ny < 120 && ny < y + 48; ny++)
+        	if (!this.blockIsNotSafe(world, x, y, z)) {res = true; break;}
+        for (ny = y; ny > 1 && ny > y - 48; ny--)
+        	if (!this.blockIsNotSafe(world, x, y, z)) {res = true; break;}
+        if (res) return y;
+        else return -1;
 	}
 
 	/**
@@ -182,7 +210,11 @@ public class MVTeleport {
 	 */
 	public boolean teleport(World w, Player p, Location location) {
 		if (canTravelToWorld(w, p)) {
-			p.teleportTo(getDestination(w, p, location));
+			Location target = getDestination(w, p, location);
+			if (target != null) {
+				this.target = target;
+				p.teleportTo(target);
+			} else return false;
 			return true;
 		} else return false;
 	}
@@ -191,10 +223,7 @@ public class MVTeleport {
 	 * This is to be used when we wan't Compression to be used.
 	 */
 	public boolean teleport(World w, Player p) {
-        if (canTravelToWorld(w, p)) {
-            p.teleportTo(getDestination(w, p, null));
-            return true;
-        } else return false;
+        return teleport(w, p, null);
     }
     
 }
