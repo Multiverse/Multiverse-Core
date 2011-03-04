@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
@@ -11,7 +12,11 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -57,7 +62,6 @@ public class MultiVerseCore extends JavaPlugin {
     private MVBlockListener blockListener = new MVBlockListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
-    private MVWorldListener worldListener = new MVWorldListener(this);
     
     // HashMap to contain all the Worlds which this Plugin will manage.
     public HashMap<String,MVWorld> worlds = new HashMap<String,MVWorld>();
@@ -73,11 +77,10 @@ public class MultiVerseCore extends JavaPlugin {
     }
     
 	/**
-	 * What happens when the plugin gets around to be enabled...
+	 * What happens when the plugin gets around to being enabled...
 	 */
     public void onEnable() {
         // Create the Plugin Data folder.
-        //this.getDataFolder().mkdir();
         dataFolder.mkdir();
 
         // Output a little snippet to show it's enabled.
@@ -92,12 +95,12 @@ public class MultiVerseCore extends JavaPlugin {
         }*/
 
         // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new defaultConfiguration(this.getDataFolder(), "config.yml");
-        new defaultConfiguration(this.getDataFolder(), "worlds.yml");
+        new defaultConfiguration(dataFolder, "config.yml");
+        new defaultConfiguration(dataFolder, "worlds.yml");
         
         // Now grab the Configuration Files.
-        configMV = new Configuration(new File(this.getDataFolder(), "config.yml"));
-        configWorlds = new Configuration(new File(this.getDataFolder(), "worlds.yml"));
+        configMV = new Configuration(new File(dataFolder, "config.yml"));
+        configWorlds = new Configuration(new File(dataFolder, "worlds.yml"));
         
         // Now attempt to Load the configurations.
         try{ configMV.load(); } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml"); }
@@ -111,29 +114,50 @@ public class MultiVerseCore extends JavaPlugin {
 
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener,Priority.Normal, this); // To remove Player Sessions
 
-        // These 3 events should only be required in the Portals module.
-        //pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener,Priority.Normal, this); // For Set Coord 1 & Info Wand etc...
-        //pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener,Priority.Normal, this); // For Set Coord 2
-        //pm.registerEvent(Event.Type.BLOCK_FLOW, blockListener, Priority.High,this); // To create Water/Lava Portals
-        
         pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this); // To prevent Blocks being destroyed.
-        pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.High, this); // To prevent Blocks being placed.
+        pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this); // To prevent Blocks being placed.
         
-        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.High, this); // To Allow/Disallow PVP.
+        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this); // To Allow/Disallow PVP.
+        
+        pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
 
-        pm.registerEvent(Event.Type.WORLD_LOADED, worldListener, Priority.Highest, this); // Setup the Worlds config when a World is created.
+        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this);
         
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Normal, this); // Monitor for Permissions Plugin etc.
         
         // Call the Function to load all the Worlds and setup the HashMap
         loadWorlds();
-        
+        // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
+        purgeWorlds();
         // Call the Function to assign all the Commands to their Class.
         setupCommands();
     }
     
     /**
-     * 
+     * Purge the Worlds of Entities that are disallowed.
+     */
+    private void purgeWorlds() {
+        if(worlds.size()<=0) return;
+
+        Set<String> worldKeys = worlds.keySet();
+        for (String key : worldKeys){
+            World world = getServer().getWorld(key);
+            if(world==null) continue;
+            
+            List<LivingEntity> entities = world.getLivingEntities();
+            // TODO: Refine this... need to cast to CreatureType or something, we only wan't to remove the creatures they don't want. Not all of them.
+            // TODO: Lack of Internet & JavaDocs ftw...
+            for (Entity entity: entities){
+                if(entity instanceof Monster || entity instanceof Animals){
+                    entity.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * Setup commands to the Command Handler
      */
     private void setupCommands() {
         commands.put("mvcreate", new MVCreate(this));
@@ -153,25 +177,7 @@ public class MultiVerseCore extends JavaPlugin {
 	private void loadWorlds() {
 	    // Basic Counter to count how many Worlds we are loading.
 	    int count = 0; 
-        
-	    // Grab all the Worlds that already exist.
-	    List<World> lworlds = getServer().getWorlds();
-	    
-	    // You never know these days... bloody NPE's.
-	    if(lworlds != null && lworlds.size()>0){
-	        for (World world : lworlds){
-	            log.info(logPrefix + "Loading existing World - '" + world.getName() + "' - " + world.getEnvironment().toString()); // Output to the Log that we are loading a world, specify the name and environment type.
-                
-	            worlds.put(world.getName(), new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap.
-	            
-                count++; // Increment the World Count.
-	        }
-	    }
-	    
-	    log.info(logPrefix + count + " - World(s) found.");
-	    
 	    List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
-	    count = 0;
 	    if(worldKeys != null){
 	        for (String worldKey : worldKeys){
 	            // If this World already exists within the HashMap then we don't need to process it.
@@ -193,19 +199,6 @@ public class MultiVerseCore extends JavaPlugin {
 	            log.info(logPrefix + "Loading World & Settings - '" + worldKey + "' - " + wEnvironment); // Output to the Log that wea re loading a world, specify the name and environment type.
 	            
 	            World world = getServer().createWorld(worldKey, env);
-	            
-                // Beta 1.3 = 
-                // D = Monsters
-                // E = Animals
-                ((CraftWorld) world).getHandle().D = monsters;
-                ((CraftWorld) world).getHandle().E = animals;
-
-                //((CraftWorld) world).getHandle().q.a(i, j, k);
-                //Spawn Crap
-
-                // The following will be used once they accept the pull request.
-	            //world.setMonsterSpawn = monsters;
-	            //world.setAnimalSpawn = animals;
                 
                 worlds.put(worldKey, new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap. 
                 
@@ -213,7 +206,6 @@ public class MultiVerseCore extends JavaPlugin {
 	        }
 	    }
 	    log.info(logPrefix + count + " - World(s) loaded.");
-	    
     }
 	
     /**
@@ -265,7 +257,7 @@ public class MultiVerseCore extends JavaPlugin {
 	/**
 	 * Basic Debug Output function, if we've enabled debugging we'll output more information.
 	 */
-	public void debugMsg(String msg, Player p){
+	public static void debugMsg(String msg, Player p){
 	    if(debug){
 	        log.info(msg);
 	        if(p!=null){

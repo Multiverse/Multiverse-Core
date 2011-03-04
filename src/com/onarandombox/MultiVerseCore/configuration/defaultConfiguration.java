@@ -16,8 +16,7 @@ public class defaultConfiguration {
 
         File actual = new File(folder, name);
         if (!actual.exists()) {
-            
-            InputStream input = this.getClass().getResourceAsStream("/default/" + name);
+            InputStream input = this.getClass().getResourceAsStream("/defaults/" + name);
             if (input != null) {
                 FileOutputStream output = null;
                 
@@ -30,7 +29,7 @@ public class defaultConfiguration {
                         output.write(buf, 0, length);
                     }
                     
-                    System.out.println(MultiVerseCore.logPrefix + "Default setup file written: " + name);
+                    MultiVerseCore.log.info(MultiVerseCore.logPrefix + "Default setup file written: " + name);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.util.config.Configuration;
 
 import com.onarandombox.utils.stringLocation;
@@ -25,7 +24,11 @@ public class MVWorld {
     public String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
     
     public Boolean animals; // Does this World allow Animals to Spawn?
+    public List<String> animalList = new ArrayList<String>(); // Contain a list of Animals which we want to ignore the Spawn Setting.
+    
     public Boolean monsters; // Does this World allow Monsters to Spawn?
+    public List<String> monsterList = new ArrayList<String>(); // Contain a list of Monsters which we want to ignore the Spawn Setting.
+
     public Boolean pvp; // Does this World allow PVP?
     
     public List<String> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
@@ -34,11 +37,9 @@ public class MVWorld {
     public List<String> editWhitelist; // Contain a list of Players/Groups which can edit this World. (Place/Destroy Blocks)
     public List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
     public List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
-
-    public Double compression; //How stretched/compressed distances are
     
-    /**
-     */
+    public Double compression; //How stretched/compressed distances are
+
     public MVWorld(World world, Configuration config, MultiVerseCore instance){
         this.config = config;
         this.plugin = instance;
@@ -47,13 +48,6 @@ public class MVWorld {
         this.name = world.getName();
         this.environment = world.getEnvironment();
         
-        // The following should already of been set when the World was created, so we don't wan't to overwrite these values we'll just grab them.
-        this.monsters = ((CraftWorld) world).getHandle().D; // TODO: Swap to Bukkit Function when implemented.
-        this.animals = ((CraftWorld) world).getHandle().E; // TODO: Swap to Bukkit Function when implemented.
-        
-        // If MultiVerse created/loaded the World then it means we wan't to handle it as well, otherwise 
-        // we don't touch any settings unless the user specifically asks us to.
-
         this.alias = config.getString("worlds." + this.name + ".alias","");
         this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
         
@@ -65,5 +59,18 @@ public class MVWorld {
         this.blockBlacklist = config.getStringList("worlds." + name + ".blockBlacklist", new ArrayList<String>());
         this.editWhitelist = config.getStringList("worlds." + name + ".editWhitelist", new ArrayList<String>());
         this.editBlacklist = config.getStringList("worlds." + name + ".editBlacklist", new ArrayList<String>());
+        
+        this.animals = config.getBoolean("worlds." + name + ".animals.spawn", true);
+        this.monsters = config.getBoolean("worlds." + name + ".monsters.spawn", true);
+        
+        List<String> temp;
+        temp = config.getStringList("worlds." + name + ".animals.exceptions", new ArrayList<String>());
+        for(String s : temp){
+            this.animalList.add(s.toUpperCase());
+        }
+        temp = config.getStringList("worlds." + name + ".monsters.exceptions", new ArrayList<String>());
+        for(String s : temp){
+            this.monsterList.add(s.toUpperCase());
+        }
     }
 }

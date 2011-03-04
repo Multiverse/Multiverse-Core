@@ -9,7 +9,7 @@ import org.bukkit.util.config.Configuration;
 public class MVPlayerSession {
 
     private Player player; // Player holder, may be unnecessary.
-    public Location loc; // Contain the Players Location so on player move we can compare this and check if they've moved a block.
+    public Location loc = new Location(null, 0,0,0); // Contain the Players Location so on player move we can compare this and check if they've moved a block.
     
     public String portal = null; // Allow a player to target a portal to prevent them typing its name every command.
     
