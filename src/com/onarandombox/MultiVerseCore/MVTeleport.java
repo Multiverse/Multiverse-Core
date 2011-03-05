@@ -32,7 +32,7 @@ public class MVTeleport {
 	    double x, y, z;
 	    if(location==null){
 	        location = player.getLocation();
-		
+
 	        double srcComp = plugin.worlds.get(player.getWorld().getName()).compression;
 	        double trgComp = plugin.worlds.get(world.getName()).compression;
 	        
@@ -40,9 +40,9 @@ public class MVTeleport {
 	        
             // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
             if(trgComp==0.0){
-                x = world.getSpawnLocation().getX();
+                x = world.getSpawnLocation().getX()+0.5;
                 y = world.getSpawnLocation().getY();
-                z = world.getSpawnLocation().getZ();
+                z = world.getSpawnLocation().getZ()+0.5;
             } else {
                 x = location.getX() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
                 y = location.getY();
@@ -80,7 +80,7 @@ public class MVTeleport {
 		if (aux == -1) return null;
 		
 		MultiVerseCore.log.info("Target location (safe): " + x + ", " + aux + ", " + z);
-		
+
 		return new Location(world, x, aux, z, location.getYaw(),location.getPitch());
 	}
 	
