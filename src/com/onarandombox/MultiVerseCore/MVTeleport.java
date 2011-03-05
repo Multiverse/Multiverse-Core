@@ -2,6 +2,7 @@ package com.onarandombox.MultiVerseCore;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -26,34 +27,30 @@ public class MVTeleport {
 	 * @return
 	 */
 	public Location getDestination(World world, Player player, Location location) {
-		
+	    
 		MultiVerseCore.log.info(player.getName() + " wants to go to " + world.getName() + ". He's now at " + player.getLocation().toString());
 		
 	    double x, y, z;
-	    if(location==null){
-	        location = player.getLocation();
 
-	        double srcComp = plugin.worlds.get(player.getWorld().getName()).compression;
-	        double trgComp = plugin.worlds.get(world.getName()).compression;
-	        
-	        MultiVerseCore.log.info(player.getWorld().getName() + "(" + srcComp + ") -> " + world.getName() + "(" + trgComp + ")");
-	        
-            // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
-            if(trgComp==0.0){
-                x = world.getSpawnLocation().getX()+0.5;
-                y = world.getSpawnLocation().getY();
-                z = world.getSpawnLocation().getZ()+0.5;
-            } else {
-                x = location.getX() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
-                y = location.getY();
-                z = location.getZ() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
-            }
-             
-	    } else {
-	        x = location.getX();
-	        y = location.getY();
-	        z = location.getZ();
-	    }
+	    location = player.getLocation();
+
+        double srcComp = plugin.worlds.get(player.getWorld().getName()).compression;
+        double trgComp = plugin.worlds.get(world.getName()).compression;
+        
+        MultiVerseCore.log.info(player.getWorld().getName() + "(" + srcComp + ") -> " + world.getName() + "(" + trgComp + ")");
+        
+        // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
+        if(trgComp==0.0){
+            x = world.getSpawnLocation().getX()+0.5;
+            y = world.getSpawnLocation().getY();
+            z = world.getSpawnLocation().getZ()+0.5;
+        } else {
+            x = location.getX() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
+            y = location.getY();
+            z = location.getZ() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
+        }
+        
+	    world.loadChunk(world.getChunkAt(new Location(world,x,y,z)));
 	    
 		if (y < 1 && world.getEnvironment() == Environment.NORMAL)
 			y = 1;
@@ -119,6 +116,11 @@ public class MVTeleport {
 	 * @return
 	 */
 	private boolean blockIsNotSafe(World world, double x, double y, double z) {
+
+	    if (world.getBlockAt((int) Math.floor(x), (int) Math.floor(y),(int) Math.floor(z)).getType() != Material.AIR 
+                || world.getBlockAt((int) Math.floor(x),(int) Math.floor(y + 1), (int) Math.floor(z)).getType() != Material.AIR)
+            return true;
+	    
 		if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),(int) Math.floor(z)).getType() == Material.LAVA))
 			return true;
 		
@@ -128,9 +130,8 @@ public class MVTeleport {
 		if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),(int) Math.floor(z)).getType() == Material.FIRE))
 			return true;
 		
-		if (world.getBlockAt((int) Math.floor(x), (int) Math.floor(y),(int) Math.floor(z)).getType() != Material.AIR 
-		        || world.getBlockAt((int) Math.floor(x),(int) Math.floor(y + 1), (int) Math.floor(z)).getType() != Material.AIR)
-			return true;
+		if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y),(int) Math.floor(z)).getType() == Material.FIRE))
+            return true;
 		
 		if (blockIsAboveAir(world, x, y, z))
 			return true;
@@ -220,13 +221,16 @@ public class MVTeleport {
 		if (canTravelToWorld(w, p)) {
 			Location target = getDestination(w, p, location);
 			if (target != null) {
+			    this.plugin.getPlayerSession(p).message(ChatColor.RED + "Teleporting, hopefully you won't lose a limb.");
 				this.target = target;
 				p.teleportTo(target);
 				return true;
 			} else {
+			    this.plugin.getPlayerSession(p).message(ChatColor.RED + "Cannot find a safe location, try another portal/location.");
 			    return false;
 			}
 		} else {
+		    this.plugin.getPlayerSession(p).message(ChatColor.RED + "You cannot travel to this World.");
 		    return false;
 		}
 	}
