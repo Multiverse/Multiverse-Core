@@ -32,7 +32,7 @@ public class MVTeleport {
 		
 	    double x, y, z;
 
-	    location = player.getLocation();
+	    //location = player.getLocation();
 
         double srcComp = plugin.worlds.get(player.getWorld().getName()).compression;
         double trgComp = plugin.worlds.get(world.getName()).compression;
