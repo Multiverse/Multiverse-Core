@@ -3,7 +3,7 @@ package com.onarandombox.utils;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-public class blockSafety {
+public class BlockSafety {
     /**
      * This function checks whether the block at the given coordinates are above
      * air or not.

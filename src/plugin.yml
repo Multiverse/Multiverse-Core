@@ -5,28 +5,54 @@ version: 0.1
 commands:
   mvcreate:
     description: World create command
-    usage: /<command>
+    usage: |
+            /<command> <world> <environment>
+            /<command> creative normal -- Creates a world called 'creative' with a NORMAL environment.
+            /<command> hellworld nether -- Creates a world called 'hellworld' with a NETHER environment.
   mvimport:
     description: World import command
-    usage: /<command>
+    usage: |
+            /<command> <world> <environment>
+            /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
+            /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
   mvremove:
     description: World delete command
-    usage: /<command>
+    usage: |
+            /<command> <world>
+            /<command> creative -- Removes the world 'creative' from the MultiVerse setup.
+            /<command> hellworld -- Removes the world 'hellworld' from the MultiVerse setup.
   mvmodify:
     description: Modify the settings of an existing world
-    usage: /<command>
+    usage: |
+            /<command> <world> <option>:<value>
+            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
   mvtp:
     description: Command to teleport between Worlds
-    usage: /<command>
+    usage: |
+            /<command> <world>[:spawn]
+            Example: /<command> creative - Teleports you to the relevant location in the 'creative' world.
+            Example: /<command> creative:spawn - Teleports you to the spawn of the 'creative' world.
   mvlist:
     description: Print list of loaded Worlds
-    usage: /<command>
+    usage: |
+            /<command> [environment]
+            Example: /<command> NETHER - Shows all NETHER Worlds.
+            Example: /<command> NORMAL - Shows all NORMAL Worlds. 
   mvsetspawn:
-    description: Set the spawn area for a particular World
-    usage: /<command>
+    description: Set the spawn area for a particular world
+    usage: /<command> -- Sets the spawn area of the current world to your location.
   mvspawn:
     description: Teleport to the spawn area
-    usage: /<command>
+    usage: /<command> -- Teleports you to the spawn area of your current world.
   mvcoord:
-    description: Display World and Coordinates
-    usage: /<command>
+    description: Display World, Coordinates, Direction & Compression for a world.
+    usage: |
+            /<command> [world]
+            /<command> -- Shows the relevant coordinates in your current world. 
+            /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
+  mvwho:
+    description: Display online users per world.
+    usage: |
+            /<command> [world]
+            /<command> -- Shows who is online in each world.
+            /<command> creative -- Shows who is online in the 'creative' world.

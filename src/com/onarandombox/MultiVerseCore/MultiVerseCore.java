@@ -31,7 +31,7 @@ import org.bukkit.event.Event.Priority;
 //import com.nijiko.permissions.PermissionHandler;
 
 import com.onarandombox.MultiVerseCore.commands.*;
-import com.onarandombox.MultiVerseCore.configuration.defaultConfiguration;
+import com.onarandombox.MultiVerseCore.configuration.DefaultConfiguration;
 
 @SuppressWarnings("unused")
 public class MultiVerseCore extends JavaPlugin {
@@ -95,8 +95,8 @@ public class MultiVerseCore extends JavaPlugin {
         }*/
 
         // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new defaultConfiguration(dataFolder, "config.yml");
-        new defaultConfiguration(dataFolder, "worlds.yml");
+        new DefaultConfiguration(dataFolder, "config.yml");
+        new DefaultConfiguration(dataFolder, "worlds.yml");
         
         // Now grab the Configuration Files.
         configMV = new Configuration(new File(dataFolder, "config.yml"));
@@ -109,20 +109,21 @@ public class MultiVerseCore extends JavaPlugin {
         // Setup all the Events the plugin needs to Monitor.
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Low, this); // Low so it acts above any other.
-        pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.High, this); // To Add World Prefixing to Chat.
-        pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this); // Respawn Players at the right point.
-
+        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this); // Cancel Teleports if needed.
+        //pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.High, this); // To Add World Prefixing to Chat. -- Separate Plugin, maybe...
+        //pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this); // Respawn Players at the right point. -- No need to handle it anymore with setSpawnLocation()
+        
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener,Priority.Normal, this); // To remove Player Sessions
 
         pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this); // To prevent Blocks being destroyed.
         pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this); // To prevent Blocks being placed.
         
-        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this); // To Allow/Disallow PVP.
+        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this); // To Allow/Disallow PVP as well as EnableHealth.
         
-        pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this); // To prevent all or certain animals/monsters from spawning.
 
-        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
+        pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
         
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Normal, this); // Monitor for Permissions Plugin etc.
         
@@ -169,6 +170,7 @@ public class MultiVerseCore extends JavaPlugin {
         commands.put("mvsetspawn", new MVSetSpawn(this));
         commands.put("mvspawn", new MVSpawn(this));
         commands.put("mvcoord", new MVCoord(this));
+        commands.put("mvwho", new MVWho(this));
     }
     
     /**
@@ -248,7 +250,7 @@ public class MultiVerseCore extends JavaPlugin {
 	    
         MVCommandHandler handler = commands.get(command.getName().toLowerCase());
 	        
-        if (handler != null) {
+        if (handler!=null) {
             return handler.perform(sender, args);
         } else {
             return false;
@@ -258,6 +260,9 @@ public class MultiVerseCore extends JavaPlugin {
 	/**
 	 * Basic Debug Output function, if we've enabled debugging we'll output more information.
 	 */
+    public static void debugMsg(String msg){
+        debugMsg(msg,null);
+    }
 	public static void debugMsg(String msg, Player p){
 	    if(debug){
 	        log.info(msg);
@@ -265,9 +270,5 @@ public class MultiVerseCore extends JavaPlugin {
 	            p.sendMessage(msg);
 	        }
 	    }
-	}
-	
-	public static void debugMsg(String msg){
-	    debugMsg(msg,null);
 	}
 }

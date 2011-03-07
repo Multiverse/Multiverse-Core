@@ -63,8 +63,9 @@ public class MVEntityListener extends EntityListener {
         }
         
         if (defender instanceof Player && attacker instanceof Player){
+            Player player = (Player) attacker;
             if (!(this.plugin.worlds.get(w.getName()).pvp)) {
-                this.plugin.playerSessions.get(((Player) attacker)).message(ChatColor.RED + "PVP is disabled in this World.");
+                this.plugin.getPlayerSession(player).message(ChatColor.RED + "PVP is disabled in this World.");
                 event.setCancelled(true);
                 return;
             }

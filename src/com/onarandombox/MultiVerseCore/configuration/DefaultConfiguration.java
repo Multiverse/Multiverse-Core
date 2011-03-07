@@ -10,9 +10,9 @@ import com.onarandombox.MultiVerseCore.MultiVerseCore;
  * https://github.com/Nijikokun/iConomy3/blob/master/com/nijiko/coelho/iConomy/iConomy.java
  * @author Nijikokun & Coelho
  */
-public class defaultConfiguration {
+public class DefaultConfiguration {
 
-    public defaultConfiguration(File folder, String name){
+    public DefaultConfiguration(File folder, String name){
 
         File actual = new File(folder, name);
         if (!actual.exists()) {

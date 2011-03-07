@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.config.Configuration;
 
-import com.onarandombox.utils.stringLocation;
+import com.onarandombox.utils.LocationManipulation;
 
 @SuppressWarnings("unused")
 public class MVWorld {

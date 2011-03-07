@@ -50,8 +50,6 @@ public class MVTeleport {
             z = location.getZ() / (srcComp != 0 ? srcComp : 1) * trgComp + 0.5;
         }
         
-	    world.loadChunk(world.getChunkAt(new Location(world,x,y,z)));
-	    
 		if (y < 1 && world.getEnvironment() == Environment.NORMAL)
 			y = 1;
 
@@ -77,7 +75,9 @@ public class MVTeleport {
 		if (aux == -1) return null;
 		
 		MultiVerseCore.log.info("Target location (safe): " + x + ", " + aux + ", " + z);
-
+		
+		world.loadChunk(world.getChunkAt(new Location(world,x,aux,z))); // Try load the destination to chunk first before teleporting.
+		
 		return new Location(world, x, aux, z, location.getYaw(),location.getPitch());
 	}
 	

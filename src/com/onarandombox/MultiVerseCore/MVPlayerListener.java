@@ -14,6 +14,11 @@ public class MVPlayerListener extends PlayerListener {
         this.plugin = plugin;
     }
 
+    public void onPlayerTeleport(PlayerMoveEvent event){
+        //MultiVerseCore.debugMsg(event.getPlayer().getName() + " just tried to Teleport");
+        //event.setCancelled(true);
+    }
+    
     public void onPlayerMove(PlayerMoveEvent event){
         
     }
