@@ -15,9 +15,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Squid;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
@@ -151,7 +154,7 @@ public class MultiVerseCore extends JavaPlugin {
             // TODO: Refine this... need to cast to CreatureType or something, we only wan't to remove the creatures they don't want. Not all of them.
             // TODO: Lack of Internet & JavaDocs ftw...
             for (Entity entity: entities){
-                if(entity instanceof Monster || entity instanceof Animals){
+                if(entity instanceof Monster || entity instanceof Animals || entity instanceof Ghast || entity instanceof Squid || entity instanceof PigZombie){
                     entity.remove();
                 }
             }

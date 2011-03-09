@@ -1,7 +1,6 @@
 package com.onarandombox.MultiVerseCore;
 
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;

@@ -3,7 +3,6 @@ package com.onarandombox.MultiVerseCore.commands;
 import java.io.File;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 
