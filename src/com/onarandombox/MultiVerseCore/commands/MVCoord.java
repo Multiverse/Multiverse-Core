@@ -1,6 +1,7 @@
 package com.onarandombox.MultiVerseCore.commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -27,6 +28,7 @@ public class MVCoord extends MVCommandHandler {
             p.sendMessage(ChatColor.RED + "Compression: " + ChatColor.WHITE + plugin.worlds.get(p.getWorld().getName()).compression);
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + locMan.strCoords(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Direction: " + ChatColor.WHITE + locMan.getDirection(p.getLocation()));
+            p.sendMessage(ChatColor.RED + "Block: " + ChatColor.WHITE + Material.getMaterial(p.getWorld().getBlockTypeIdAt(p.getLocation())));
         }
         return true;
     }

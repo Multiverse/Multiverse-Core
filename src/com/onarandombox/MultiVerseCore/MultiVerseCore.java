@@ -127,6 +127,7 @@ public class MultiVerseCore extends JavaPlugin {
         
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Normal, this); // Monitor for Permissions Plugin etc.
         
+        pm.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
         // Call the Function to load all the Worlds and setup the HashMap
         loadWorlds();
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.

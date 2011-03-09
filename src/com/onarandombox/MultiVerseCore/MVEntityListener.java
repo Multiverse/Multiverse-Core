@@ -34,7 +34,7 @@ public class MVEntityListener extends EntityListener {
     }
     public void onExplosionPrimed(ExplosionPrimedEvent event){
         if(event.getEntity() instanceof Fireball){
-            MultiVerseCore.log.info("Fireball"); 
+            //MultiVerseCore.log.info();
             // Fireballs on Explode trigger this, sadly we can't get the blocks it would destroy... thats onEntityExplode
             // However can't figure out a way to check in onEntityExplode if it was a Fireball which caused it...
         }
@@ -79,6 +79,8 @@ public class MVEntityListener extends EntityListener {
         World world = event.getEntity().getWorld();
         if(event.isCancelled()) return;
         if(!(plugin.worlds.containsKey(world.getName()))) return; // Check if it's a world which we are meant to be managing.
+        
+        //event.getEntity().getWorld().spawnCreature(arg0, arg1);
         
         MVWorld mvworld = plugin.worlds.get(world.getName());
 

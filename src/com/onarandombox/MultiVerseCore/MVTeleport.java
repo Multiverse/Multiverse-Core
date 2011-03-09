@@ -28,7 +28,7 @@ public class MVTeleport {
 	 */
 	public Location getDestination(World world, Player player, Location location) {
 	    
-		MultiVerseCore.log.info(player.getName() + " wants to go to " + world.getName() + ". He's now at " + player.getLocation().toString());
+		//MultiVerseCore.log.info(player.getName() + " wants to go to " + world.getName() + ". He's now at " + player.getLocation().toString());
 		
 	    double x, y, z;
 
@@ -37,8 +37,8 @@ public class MVTeleport {
         double srcComp = plugin.worlds.get(player.getWorld().getName()).compression;
         double trgComp = plugin.worlds.get(world.getName()).compression;
         
-        MultiVerseCore.log.info(player.getWorld().getName() + "(" + srcComp + ") -> " + world.getName() + "(" + trgComp + ")");
-        
+        MultiVerseCore.log.info(player.getName() + " -> " + player.getWorld().getName() + "(" + srcComp + ") -> " + world.getName() + "(" + trgComp + ")");
+        //MultiVerseCore.log.info("Original location : " + x + ", " + aux + ", " + z);
         // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
         if(trgComp==0.0){
             x = world.getSpawnLocation().getX()+0.5;
@@ -72,7 +72,10 @@ public class MVTeleport {
 			if (aux > -1) {z = i; break;}
 		}
 		
-		if (aux == -1) return null;
+		if (aux == -1) {
+		    MultiVerseCore.log.info("Uh oh, no safe location.");
+		    return null;
+		}
 		
 		MultiVerseCore.log.info("Target location (safe): " + x + ", " + aux + ", " + z);
 		
@@ -82,13 +85,11 @@ public class MVTeleport {
 	}
 	
 	private double safeColumn(World world, double x, double y, double z) {
-		double ny; boolean res = false;
-        for (ny = y; ny < 120 && ny < y + 48; ny++)
-        	if (!this.blockIsNotSafe(world, x, y, z)) {res = true; break;}
-        for (ny = y; ny > 1 && ny > y - 48; ny--)
-        	if (!this.blockIsNotSafe(world, x, y, z)) {res = true; break;}
-        if (res) return y;
-        else return -1;
+	    for (double ny=0; ny<48;ny++){
+	        if ((y+ny<120) && !this.blockIsNotSafe(world, x, y+ny, z)) { return y+ny; }
+	        if ((y-ny>4) && !this.blockIsNotSafe(world, x, y-ny, z)) { return y-ny; }
+	    }
+	    return -1;
 	}
 
 	/**
