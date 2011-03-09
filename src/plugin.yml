@@ -56,3 +56,7 @@ commands:
             /<command> [world]
             /<command> -- Shows who is online in each world.
             /<command> creative -- Shows who is online in the 'creative' world.
+  mvreload:
+    description: Reload Configuration files.
+    usage: /<command>
+           

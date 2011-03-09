@@ -29,7 +29,7 @@ public class MVCreate extends MVCommandHandler {
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return true;
         }
-        String name = args[0].toString();
+        //String name = args[0].toString();
         String env = args[1].toString();
         Environment environment = null;
         if (env.equalsIgnoreCase("NETHER"))

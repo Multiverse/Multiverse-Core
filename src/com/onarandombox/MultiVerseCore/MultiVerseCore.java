@@ -97,17 +97,7 @@ public class MultiVerseCore extends JavaPlugin {
             Permissions = com.nijikokun.bukkit.Permissions.Permissions.Security;
         }*/
 
-        // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new DefaultConfiguration(dataFolder, "config.yml");
-        new DefaultConfiguration(dataFolder, "worlds.yml");
-        
-        // Now grab the Configuration Files.
-        configMV = new Configuration(new File(dataFolder, "config.yml"));
-        configWorlds = new Configuration(new File(dataFolder, "worlds.yml"));
-        
-        // Now attempt to Load the configurations.
-        try{ configMV.load(); } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml"); }
-        try{ configWorlds.load(); } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load worlds.yml"); }
+        loadConfigs();
         
         // Setup all the Events the plugin needs to Monitor.
         PluginManager pm = getServer().getPluginManager();
@@ -139,6 +129,27 @@ public class MultiVerseCore extends JavaPlugin {
         setupCommands();
     }
     
+    public void loadConfigs() {
+        // Call the defaultConfiguration class to create the config files if they don't already exist.
+        new DefaultConfiguration(dataFolder, "config.yml");
+        new DefaultConfiguration(dataFolder, "worlds.yml");
+        
+        // Now grab the Configuration Files.
+        configMV = new Configuration(new File(dataFolder, "config.yml"));
+        configWorlds = new Configuration(new File(dataFolder, "worlds.yml"));
+        
+        // Now attempt to Load the configurations.
+        try{ 
+            configMV.load();
+            log.info(logPrefix + "MultiVerse Config -- Loaded");
+        } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml"); }
+        
+        try{ 
+            configWorlds.load();
+            log.info(logPrefix + "World Config -- Loaded");
+        } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load worlds.yml"); }
+    }
+
     /**
      * Purge the Worlds of Entities that are disallowed.
      */
@@ -151,13 +162,66 @@ public class MultiVerseCore extends JavaPlugin {
             if(world==null) continue;
             
             List<LivingEntity> entities = world.getLivingEntities();
+
+            MVWorld mvworld = worlds.get(key);
+            for (Entity entity: entities){
+
+                /**
+                 * Animal Handling
+                 */
+                if(entity instanceof Animals){
+                    // If we have no exceptions for Animals then we just follow the Spawn setting.
+                    if(mvworld.animalList.size()<=0){
+                        if(mvworld.animals){
+                            return;
+                        } else {
+                            entity.remove();
+                            return;
+                        }
+                    }
+                    // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
+                    if(mvworld.animalList.contains(){
+                        if(mvworld.animals){
+                            entity.remove();
+                            return;
+                        } else {
+                            return;
+                        }
+                    }
+                }
+                /**
+                 * Monster Handling
+                 */
+                /*if(entity instanceof Monster || entity instanceof Ghast || entity instanceof PigZombie){
+                    // If we have no exceptions for Monsters then we just follow the Spawn setting.
+                    if(mvworld.monsterList.size()<=0){
+                        if(mvworld.monsters){
+                            return;
+                        } else {
+                            entity.remove();
+                            return;
+                        }
+                    }
+                    // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
+                    if(mvworld.monsterList.contains(event.getMobType().toString().toUpperCase())){
+                        if(mvworld.monsters){
+                            entity.remove();
+                            return;
+                        } else {
+                            return;
+                        }
+                    }
+                }*/
+            }
+            
+            
             // TODO: Refine this... need to cast to CreatureType or something, we only wan't to remove the creatures they don't want. Not all of them.
             // TODO: Lack of Internet & JavaDocs ftw...
-            for (Entity entity: entities){
+            /*for (Entity entity: entities){
                 if(entity instanceof Monster || entity instanceof Animals || entity instanceof Ghast || entity instanceof Squid || entity instanceof PigZombie){
                     entity.remove();
                 }
-            }
+            }*/
         }
     }
 
@@ -175,12 +239,13 @@ public class MultiVerseCore extends JavaPlugin {
         commands.put("mvspawn", new MVSpawn(this));
         commands.put("mvcoord", new MVCoord(this));
         commands.put("mvwho", new MVWho(this));
+        commands.put("mvreload", new MVReload(this));
     }
     
     /**
      * Load the Worlds & Settings from the configuration file.
      */
-	private void loadWorlds() {
+	public void loadWorlds() {
 	    // Basic Counter to count how many Worlds we are loading.
 	    int count = 0; 
 	    List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
