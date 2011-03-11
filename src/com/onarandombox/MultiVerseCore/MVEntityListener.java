@@ -12,6 +12,7 @@ import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
@@ -115,7 +116,7 @@ public class MVEntityListener extends EntityListener {
         /**
          * Monster Handling
          */
-        if(event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof PigZombie){
+        if(event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof PigZombie || event.getEntity() instanceof Slime){
             // If we have no exceptions for Monsters then we just follow the Spawn setting.
             if(mvworld.monsterList.size()<=0){
                 if(mvworld.monsters){
