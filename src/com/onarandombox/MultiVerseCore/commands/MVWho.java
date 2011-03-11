@@ -20,6 +20,7 @@ public class MVWho extends MVCommandHandler {
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
+        // TODO: Permissions
         List<World> worlds = new ArrayList<World>();
         
         if(args.length>1){

@@ -17,7 +17,7 @@ public class MVCreate extends MVCommandHandler {
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
-
+        // TODO: Permissions, check
         if (args.length != 2) {
             sender.sendMessage("Not enough parameters to create a new world");
             sender.sendMessage(ChatColor.RED + "/mvcreate WORLDNAME ENVIRONMENT - Create a new World.");

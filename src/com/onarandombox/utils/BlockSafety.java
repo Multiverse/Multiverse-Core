@@ -14,7 +14,7 @@ public class BlockSafety {
      * @param z
      * @return
      */
-    private boolean blockIsAboveAir(World world, double x, double y, double z) {
+    public boolean blockIsAboveAir(World world, double x, double y, double z) {
         return (world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),
                 (int) Math.floor(z)).getType() == Material.AIR);
     }
@@ -30,20 +30,22 @@ public class BlockSafety {
      * @return
      */
     public boolean blockIsNotSafe(World world, double x, double y, double z) {
-        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),
-                (int) Math.floor(z)).getType() == Material.LAVA))
+        if (world.getBlockAt((int) Math.floor(x), (int) Math.floor(y),(int) Math.floor(z)).getType() != Material.AIR 
+                || world.getBlockAt((int) Math.floor(x),(int) Math.floor(y + 1), (int) Math.floor(z)).getType() != Material.AIR)
             return true;
-        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),
-                (int) Math.floor(z)).getType() == Material.STATIONARY_LAVA))
+        
+        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),(int) Math.floor(z)).getType() == Material.LAVA))
             return true;
-        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),
-                (int) Math.floor(z)).getType() == Material.FIRE))
+        
+        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),(int) Math.floor(z)).getType() == Material.STATIONARY_LAVA))
             return true;
-        if (world.getBlockAt((int) Math.floor(x), (int) Math.floor(y),
-                (int) Math.floor(z)).getType() != Material.AIR
-                || world.getBlockAt((int) Math.floor(x),
-                        (int) Math.floor(y + 1), (int) Math.floor(z)).getType() != Material.AIR)
+        
+        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y - 1),(int) Math.floor(z)).getType() == Material.FIRE))
             return true;
+        
+        if ((world.getBlockAt((int) Math.floor(x), (int) Math.floor(y),(int) Math.floor(z)).getType() == Material.FIRE))
+            return true;
+        
         if (blockIsAboveAir(world, x, y, z))
             return true;
 
