@@ -1,6 +1,7 @@
 package com.onarandombox.MultiVerseCore;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,6 +143,7 @@ public class MultiVerseCore extends JavaPlugin {
         try{ 
             configMV.load();
             log.info(logPrefix + "MultiVerse Config -- Loaded");
+            MultiVerseCore.debug = configMV.getBoolean("debug", false);
         } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml"); }
         
         try{ 
@@ -166,52 +168,6 @@ public class MultiVerseCore extends JavaPlugin {
             MVWorld mvworld = worlds.get(key);
             for (Entity entity: entities){
 
-                /**
-                 * Animal Handling
-                 */
-                if(entity instanceof Animals){
-                    // If we have no exceptions for Animals then we just follow the Spawn setting.
-                    if(mvworld.animalList.size()<=0){
-                        if(mvworld.animals){
-                            return;
-                        } else {
-                            entity.remove();
-                            return;
-                        }
-                    }
-                    // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-                    if(mvworld.animalList.contains(){
-                        if(mvworld.animals){
-                            entity.remove();
-                            return;
-                        } else {
-                            return;
-                        }
-                    }
-                }
-                /**
-                 * Monster Handling
-                 */
-                /*if(entity instanceof Monster || entity instanceof Ghast || entity instanceof PigZombie){
-                    // If we have no exceptions for Monsters then we just follow the Spawn setting.
-                    if(mvworld.monsterList.size()<=0){
-                        if(mvworld.monsters){
-                            return;
-                        } else {
-                            entity.remove();
-                            return;
-                        }
-                    }
-                    // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-                    if(mvworld.monsterList.contains(event.getMobType().toString().toUpperCase())){
-                        if(mvworld.monsters){
-                            entity.remove();
-                            return;
-                        } else {
-                            return;
-                        }
-                    }
-                }*/
             }
             
             
