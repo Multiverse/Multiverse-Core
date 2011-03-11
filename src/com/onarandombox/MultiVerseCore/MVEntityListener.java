@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Ghast;
@@ -80,6 +81,8 @@ public class MVEntityListener extends EntityListener {
         if(event.isCancelled()) return;
         if(!(plugin.worlds.containsKey(world.getName()))) return; // Check if it's a world which we are meant to be managing.
         
+        CreatureType creature = event.getCreatureType();
+        
         //event.getEntity().getWorld().spawnCreature(arg0, arg1);
         
         MVWorld mvworld = plugin.worlds.get(world.getName());
@@ -100,7 +103,7 @@ public class MVEntityListener extends EntityListener {
                 }
             }
             // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-            if(mvworld.animalList.contains(event.getMobType().toString().toUpperCase())){
+            if(mvworld.animalList.contains(creature.toString())){
                 if(mvworld.animals){
                     event.setCancelled(true);
                     return;
@@ -123,7 +126,7 @@ public class MVEntityListener extends EntityListener {
                 }
             }
             // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-            if(mvworld.monsterList.contains(event.getMobType().toString().toUpperCase())){
+            if(mvworld.monsterList.contains(creature.toString())){
                 if(mvworld.monsters){
                     event.setCancelled(true);
                     return;
