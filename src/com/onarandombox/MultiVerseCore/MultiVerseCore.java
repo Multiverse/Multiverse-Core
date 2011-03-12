@@ -13,31 +13,24 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Squid;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 
-//import com.nijikokun.bukkit.Permissions.Permissions;
-//import com.nijiko.permissions.PermissionHandler;
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
 
 import com.onarandombox.MultiVerseCore.commands.*;
 import com.onarandombox.MultiVerseCore.configuration.DefaultConfiguration;
+import com.onarandombox.utils.UpdateChecker;
 
-@SuppressWarnings("unused")
 public class MultiVerseCore extends JavaPlugin {
     // Setup our Map for our Commands using the CommandHandler.
     private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
@@ -55,7 +48,7 @@ public class MultiVerseCore extends JavaPlugin {
     public static final File dataFolder = new File("plugins" + File.separator + "MultiVerse");
     
     // Permissions Handler
-    // public static PermissionHandler Permissions = null; // Scrapping Permissions till a stable release is out... this will be handled by isOP() for now.
+    public static PermissionHandler Permissions = null;
     
     // Configurations
     public static Configuration configMV = null;
@@ -66,6 +59,8 @@ public class MultiVerseCore extends JavaPlugin {
     private MVBlockListener blockListener = new MVBlockListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
+    
+    public UpdateChecker updateCheck;
     
     // HashMap to contain all the Worlds which this Plugin will manage.
     public HashMap<String,MVWorld> worlds = new HashMap<String,MVWorld>();
@@ -120,20 +115,35 @@ public class MultiVerseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
         
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Normal, this); // Monitor for Permissions Plugin etc.
-        
+
         pm.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
         // Call the Function to load all the Worlds and setup the HashMap
         loadWorlds();
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
         purgeWorlds();
+        // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
+        setupPermissions();
         // Call the Function to assign all the Commands to their Class.
         setupCommands();
+        
+        // Start the Update Checker
+        updateCheck = new UpdateChecker(this.getDescription().getName(),this.getDescription().getVersion());
+    }
+    
+    private void setupPermissions() {
+        Plugin test = this.getServer().getPluginManager().getPlugin("Permissions");
+
+        if (MultiVerseCore.Permissions == null) {
+            if (test != null) {
+                MultiVerseCore.Permissions = ((Permissions)test).getHandler();
+            }
+        }
     }
     
     public void loadConfigs() {
         // Call the defaultConfiguration class to create the config files if they don't already exist.
         new DefaultConfiguration(dataFolder, "config.yml");
-        new DefaultConfiguration(dataFolder, "worlds.yml");
+        new DefaultConfiguration(dataFolder, "worlds.yml", "worlds:");
         
         // Now grab the Configuration Files.
         configMV = new Configuration(new File(dataFolder, "config.yml"));
@@ -142,14 +152,16 @@ public class MultiVerseCore extends JavaPlugin {
         // Now attempt to Load the configurations.
         try{ 
             configMV.load();
-            log.info(logPrefix + "MultiVerse Config -- Loaded");
-            MultiVerseCore.debug = configMV.getBoolean("debug", false);
+            log.info(logPrefix + "- MultiVerse Config -- Loaded");
         } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml"); }
         
         try{ 
             configWorlds.load();
-            log.info(logPrefix + "World Config -- Loaded");
+            log.info(logPrefix + "- World Config -- Loaded");
         } catch (Exception e){ log.info(MultiVerseCore.logPrefix + "- Failed to load worlds.yml"); }
+        
+        // Setup the Debug option, we'll default to false because this option will not be in the default config.
+        MultiVerseCore.debug = configMV.getBoolean("debug", false);
     }
 
     /**
@@ -203,7 +215,7 @@ public class MultiVerseCore extends JavaPlugin {
      */
 	public void loadWorlds() {
 	    // Basic Counter to count how many Worlds we are loading.
-	    int count = 0; 
+	    int count = 0;
 	    List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
 	    
 	    if(worldKeys != null){
@@ -214,9 +226,6 @@ public class MultiVerseCore extends JavaPlugin {
 	            }
 	            
 	            String wEnvironment = MultiVerseCore.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
-	            
-	            Boolean monsters = MultiVerseCore.configWorlds.getBoolean("worlds." + worldKey + ".monsters", true); // Grab whether we want to spawn Monsters.
-	            Boolean animals = MultiVerseCore.configWorlds.getBoolean("worlds." + worldKey + ".animals", true); // Grab whether we want to spawn Animals.
 	         
 	            Environment env;
 	            if(wEnvironment.equalsIgnoreCase("NETHER")) // Check if the selected Environment is NETHER, otherwise we just default to NORMAL.
