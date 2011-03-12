@@ -1,8 +1,14 @@
 package com.onarandombox.MultiVerseCore.configuration;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import com.onarandombox.MultiVerseCore.MultiVerseCore;
 
@@ -13,8 +19,12 @@ import com.onarandombox.MultiVerseCore.MultiVerseCore;
 public class DefaultConfiguration {
 
     public DefaultConfiguration(File folder, String name){
-
+        new DefaultConfiguration(folder,name,null);
+    }
+    
+    public DefaultConfiguration(File folder, String name, String contains){
         File actual = new File(folder, name);
+       
         if (!actual.exists()) {
             InputStream input = this.getClass().getResourceAsStream("/defaults/" + name);
             if (input != null) {
@@ -29,7 +39,7 @@ public class DefaultConfiguration {
                         output.write(buf, 0, length);
                     }
                     
-                    MultiVerseCore.log.info(MultiVerseCore.logPrefix + "Default setup file written: " + name);
+                    MultiVerseCore.log.info(MultiVerseCore.logPrefix + "Default config file written: " + name);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -46,6 +56,52 @@ public class DefaultConfiguration {
                     }
                 }
             }
+        } else {
+            if(contains==null){
+                return;
+            }
+            
+            boolean found = false;
+            
+            try {
+                // Open the file that is the first 
+                // command line parameter
+                FileInputStream fstream = new FileInputStream(actual);
+                // Get the object of DataInputStream
+                DataInputStream in = new DataInputStream(fstream);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
+                //Read File Line By Line
+                
+                while ((strLine = br.readLine()) != null)   {
+                    if(strLine.equals(contains)){
+                        found = true;
+                        break;
+                    }
+                }
+                //Close the input stream
+                in.close();
+            } catch (Exception e) {//Catch exception if any
+                System.err.println("Error: Could not verify the contents of " + actual.toString());
+                System.err.println("Error: " + e.getMessage());
+                return;
+            }
+            
+            if(!found){
+                try {
+                    BufferedWriter out = new BufferedWriter(new FileWriter(actual, true)); 
+                    out.newLine();
+                    out.write(contains); 
+                    out.close(); 
+                } catch (Exception e) {
+                    System.err.println("Error: Could not write default node to " + actual.toString());
+                    System.err.println("Error: " + e.getMessage());
+                    return;
+                }
+            }
+            
         }
+        
     }
+    
 }
