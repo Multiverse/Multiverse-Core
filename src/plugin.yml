@@ -1,7 +1,7 @@
 name: MultiVerse-Core
 main: com.onarandombox.MultiVerseCore.MultiVerseCore
 author: Rigby
-version: 0.1
+version: 2.0
 commands:
   mvcreate:
     description: World create command
