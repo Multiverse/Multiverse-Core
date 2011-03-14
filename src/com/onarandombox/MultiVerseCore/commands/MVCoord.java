@@ -20,8 +20,13 @@ public class MVCoord extends MVCommandHandler {
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
-        // TODO: Add Permissions
+        // Check if the command was sent from a Player.
         if(sender instanceof Player){
+            // If this command was sent from a Player then we need to check Permissions
+            if(!(plugin.ph.has(((Player) sender), "multiverse.coord"))){
+                sender.sendMessage("You do not have access to this command.");
+                return true;
+            }
             Player p = (Player) sender;
             
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
@@ -29,6 +34,8 @@ public class MVCoord extends MVCommandHandler {
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + locMan.strCoords(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Direction: " + ChatColor.WHITE + locMan.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Block: " + ChatColor.WHITE + Material.getMaterial(p.getWorld().getBlockTypeIdAt(p.getLocation())));
+        } else {
+            sender.sendMessage("This command needs to be used from a Player.");
         }
         return true;
     }

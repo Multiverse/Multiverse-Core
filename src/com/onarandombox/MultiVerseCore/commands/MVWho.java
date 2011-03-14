@@ -20,7 +20,14 @@ public class MVWho extends MVCommandHandler {
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
-        // TODO: Permissions
+        // If this command was sent from a Player then we need to check Permissions
+        if(sender instanceof Player){
+            if(!(plugin.ph.has(((Player) sender), "multiverse.who"))){
+                sender.sendMessage("You do not have access to this command.");
+                return true;
+            }
+        }
+
         List<World> worlds = new ArrayList<World>();
         
         if(args.length>1){
