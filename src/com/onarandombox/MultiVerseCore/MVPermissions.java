@@ -18,6 +18,27 @@ public class MVPermissions {
     }
 
     /**
+     * Check if the player has the following Permission node, if a Permissions plugin
+     * is not installed then we default to isOp()
+     * @param p The player instance.
+     * @param node The permission node we are checking against.
+     * @return
+     */
+    public boolean has(Player p, String node){
+        boolean result = false;
+        
+        if(MultiVerseCore.GroupManager!=null){
+            result = MultiVerseCore.GroupManager.getWorldsHolder().getWorldPermissions(p).has(p, node);
+        } else if(MultiVerseCore.Permissions!=null){
+            result = MultiVerseCore.Permissions.has(p, node);
+        } else if(p.isOp()){
+            result = true;
+        }
+        
+        return result;
+    }
+    
+    /**
      * Check if a Player can teleport to the Destination world from there
      * current world. This checks against the Worlds Blacklist
      * 
