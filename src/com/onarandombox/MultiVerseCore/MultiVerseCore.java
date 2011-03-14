@@ -1,7 +1,6 @@
 package com.onarandombox.MultiVerseCore;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,6 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -26,6 +23,8 @@ import org.bukkit.event.Event.Priority;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+
+import com.nijiko.coelho.iConomy.iConomy;
 
 import com.onarandombox.MultiVerseCore.commands.*;
 import com.onarandombox.MultiVerseCore.configuration.DefaultConfiguration;
@@ -47,8 +46,15 @@ public class MultiVerseCore extends JavaPlugin {
     
     public static final File dataFolder = new File("plugins" + File.separator + "MultiVerse");
     
+    // MultiVerse Permissions Handler
+    public static MVPermissions ph;
+    
     // Permissions Handler
     public static PermissionHandler Permissions = null;
+    
+    // iConomy Handler
+    public static iConomy iConomy = null;
+    public static boolean useiConomy = false;
     
     // Configurations
     public static Configuration configMV = null;
@@ -84,23 +90,34 @@ public class MultiVerseCore extends JavaPlugin {
 
         // Output a little snippet to show it's enabled.
         log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled");
-
-        // Quick check for the Permissions Plugin, if we don't find it here then we'll check the plugin onEnable event.
-        // TODO: Sort out Permissions Support...
-        /*if(getServer().getPluginManager().getPlugin("Permissions")==null){
-            log.info(logPrefix + "- Commands have been DISABLED until Permissions has been found.");
-        } else {
-            Permissions = com.nijikokun.bukkit.Permissions.Permissions.Security;
-        }*/
-
+        
+        // Setup & Load our Configuration files.
         loadConfigs();
         
         // Setup all the Events the plugin needs to Monitor.
+        registerEvents();
+        // Call the Function to load all the Worlds and setup the HashMap
+        loadWorlds();
+        // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
+        purgeWorlds();
+        // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
+        setupPermissions();
+        // Setup iConomy.
+        setupiConomy();
+        // Call the Function to assign all the Commands to their Class.
+        setupCommands();
+        
+        // Start the Update Checker
+        updateCheck = new UpdateChecker(this.getDescription().getName(),this.getDescription().getVersion());
+    }
+    
+    /**
+     * Function to Register all the Events needed.
+     */
+    private void registerEvents(){
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Low, this); // Low so it acts above any other.
-        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this); // Cancel Teleports if needed.
-        //pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.High, this); // To Add World Prefixing to Chat. -- Separate Plugin, maybe...
-        //pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this); // Respawn Players at the right point. -- No need to handle it anymore with setSpawnLocation()
+        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
+        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Highest, this); // Cancel Teleports if needed.
         
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener,Priority.Normal, this); // To remove Player Sessions
 
@@ -114,22 +131,12 @@ public class MultiVerseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
         pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
         
-        pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Normal, this); // Monitor for Permissions Plugin etc.
-
-        pm.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
-        // Call the Function to load all the Worlds and setup the HashMap
-        loadWorlds();
-        // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
-        purgeWorlds();
-        // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
-        setupPermissions();
-        // Call the Function to assign all the Commands to their Class.
-        setupCommands();
-        
-        // Start the Update Checker
-        updateCheck = new UpdateChecker(this.getDescription().getName(),this.getDescription().getVersion());
+        pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this); // Monitor for Permissions Plugin etc.
     }
     
+    /**
+     * Check for Permissions plugin and then setup our own Permissions Handler.
+     */
     private void setupPermissions() {
         Plugin test = this.getServer().getPluginManager().getPlugin("Permissions");
 
@@ -140,6 +147,22 @@ public class MultiVerseCore extends JavaPlugin {
         }
     }
     
+    /**
+     * Check for the iConomy plugin and set it up accordingly.
+     */
+    private void setupiConomy() {
+        Plugin test = this.getServer().getPluginManager().getPlugin("iConomy");
+
+        if (MultiVerseCore.iConomy == null) {
+            if (test != null) {
+                MultiVerseCore.iConomy = (iConomy) test;
+            }
+        }
+    }
+    
+    /**
+     * Load the Configuration files OR create the default config files.
+     */
     public void loadConfigs() {
         // Call the defaultConfiguration class to create the config files if they don't already exist.
         new DefaultConfiguration(dataFolder, "config.yml");
@@ -175,20 +198,13 @@ public class MultiVerseCore extends JavaPlugin {
             World world = getServer().getWorld(key);
             if(world==null) continue;
             
-            List<LivingEntity> entities = world.getLivingEntities();
+            // TODO: Sort out the Entity Purge, only purge what is configured to be.
+            
+            /*List<LivingEntity> entities = world.getLivingEntities();
 
             MVWorld mvworld = worlds.get(key);
             for (Entity entity: entities){
 
-            }
-            
-            
-            // TODO: Refine this... need to cast to CreatureType or something, we only wan't to remove the creatures they don't want. Not all of them.
-            // TODO: Lack of Internet & JavaDocs ftw...
-            /*for (Entity entity: entities){
-                if(entity instanceof Monster || entity instanceof Animals || entity instanceof Ghast || entity instanceof Squid || entity instanceof PigZombie){
-                    entity.remove();
-                }
             }*/
         }
     }
@@ -266,17 +282,33 @@ public class MultiVerseCore extends JavaPlugin {
         }
     }
     
+    /**
+     * Grab and return the Teleport class.
+     * @return
+     */
     public MVTeleport getTeleporter() {
     	return new MVTeleport(this);
     }
 	
+    /**
+     * Grab the iConomy setup. 
+     * @return
+     */
+    public static iConomy getiConomy() {
+        return iConomy;
+    }
+    
+    /**
+     * Grab the Permissions Handler for MultiVerse
+     */
+    public static MVPermissions getPermissions() {
+        return ph;
+    }
+    
 	/**
 	 * onCommand
 	 */
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-	    /*if(Permissions==null || this.isEnabled()==false){
-	        return false;
-	    }*/
 	    if(this.isEnabled() == false){
 	        sender.sendMessage("This plugin is Disabled!");
 	        return true;
