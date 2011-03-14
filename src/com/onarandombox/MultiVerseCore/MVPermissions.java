@@ -13,7 +13,7 @@ public class MVPermissions {
      * Constructor FTW
      * @param plugin Pass along the Core Plugin.
      */
-    public MVPermissions(MultiVerseCore plugin){
+    public MVPermissions(MultiVerseCore plugin) {
         this.plugin = plugin;
     }
 
@@ -27,9 +27,7 @@ public class MVPermissions {
     public boolean has(Player p, String node){
         boolean result = false;
         
-        if(MultiVerseCore.GroupManager!=null){
-            result = MultiVerseCore.GroupManager.getWorldsHolder().getWorldPermissions(p).has(p, node);
-        } else if(MultiVerseCore.Permissions!=null){
+        if(MultiVerseCore.Permissions!=null){
             result = MultiVerseCore.Permissions.has(p, node);
         } else if(p.isOp()){
             result = true;
@@ -74,9 +72,7 @@ public class MVPermissions {
     public Boolean canEnterWorld(Player p, World w) {
         String group = "";
 
-        if(MultiVerseCore.GroupManager!=null){
-            group = MultiVerseCore.GroupManager.getWorldsHolder().getWorldPermissions(p).getGroup(p.getName());
-        } else if (MultiVerseCore.Permissions!=null){
+        if (MultiVerseCore.Permissions!=null){
             group = MultiVerseCore.Permissions.getGroup(p.getName(), p.getWorld().getName());
         }
         

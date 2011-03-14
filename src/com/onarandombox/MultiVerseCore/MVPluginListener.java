@@ -22,19 +22,9 @@ public class MVPluginListener extends ServerListener {
     public void onPluginEnabled(PluginEvent event){
         
         /**
-         * Check to see if GroupManager just enabled.
-         */
-        if(event.getPlugin().getDescription().getName().equals("GroupManager")){
-            MultiVerseCore.GroupManager = (GroupManager) plugin.getServer().getPluginManager().getPlugin("GroupManager");
-            MultiVerseCore.log.info(MultiVerseCore.logPrefix + " - Found GroupManager");
-        }
-        
-        /**
          * Check to see if Permissions was just enabled, we only wan't to perform the following if GroupManager is not found.
          */
-        if(event.getPlugin().getDescription().getName().equals("Permissions") 
-                && MultiVerseCore.GroupManager==null 
-                    && plugin.getServer().getPluginManager().getPlugin("GroupManager") == null) {
+        if(event.getPlugin().getDescription().getName().equals("Permissions")) {
             MultiVerseCore.Permissions = (PermissionHandler) plugin.getServer().getPluginManager().getPlugin("Permissions");
             MultiVerseCore.log.info(MultiVerseCore.logPrefix + "- Found Permissions");
         }
@@ -58,14 +48,6 @@ public class MVPluginListener extends ServerListener {
      * We'll check if any of the plugins we rely on decide to Disable themselves.
      */
     public void onPluginDisabled(PluginEvent event){
-        /**
-         * Check to see if GroupManager just disabled.
-         */
-        if(event.getPlugin().getDescription().getName().equals("GroupManager")){
-            MultiVerseCore.GroupManager = null;
-            MultiVerseCore.log.info(MultiVerseCore.logPrefix + " - GroupManager has been Disabled");
-        }
-        
         /**
          * Check to see if Permissions just disabled.
          */

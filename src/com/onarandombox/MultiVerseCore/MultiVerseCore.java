@@ -21,8 +21,6 @@ import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 
-import org.anjocaido.groupmanager.GroupManager;
-
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
@@ -51,13 +49,10 @@ public class MultiVerseCore extends JavaPlugin {
     public static final File dataFolder = new File("plugins" + File.separator + "MultiVerse");
     
     // MultiVerse Permissions Handler
-    public static MVPermissions ph;
+    public MVPermissions ph = new MVPermissions(this);
     
     // Permissions Handler
     public static PermissionHandler Permissions = null;
-    
-    // GroupManager Permissions Handler
-    public static GroupManager GroupManager = null;
     
     // iConomy Handler
     public static iConomy iConomy = null;
@@ -107,8 +102,6 @@ public class MultiVerseCore extends JavaPlugin {
         loadWorlds();
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
         purgeWorlds();
-        // Setup Group Manager.
-        setupGroupManager();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         setupPermissions();
         // Setup iConomy.
@@ -141,19 +134,6 @@ public class MultiVerseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
         
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this); // Monitor for Permissions Plugin etc.
-    }
-
-    /**
-     * Check to see if GroupManager is enabled and setup accordingly.
-     */
-    private void setupGroupManager(){
-        Plugin p = this.getServer().getPluginManager().getPlugin("GroupManager");
-        if (p != null) {
-            if (!this.getServer().getPluginManager().isPluginEnabled(p)) {
-                this.getServer().getPluginManager().enablePlugin(p);
-            }
-            MultiVerseCore.GroupManager = (GroupManager) p;
-        }
     }
     
     /**
@@ -323,8 +303,8 @@ public class MultiVerseCore extends JavaPlugin {
     /**
      * Grab the Permissions Handler for MultiVerse
      */
-    public static MVPermissions getPermissions() {
-        return ph;
+    public MVPermissions getPermissions() {
+        return this.ph;
     }
 
     /**
