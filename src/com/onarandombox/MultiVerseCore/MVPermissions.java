@@ -72,15 +72,16 @@ public class MVPermissions {
      * @return
      */
     public Boolean canEnterWorld(Player p, World w) {
-        // First check if we've got the Permissions plugin, we can't perform the group checks without it.
-        if(MultiVerseCore.Permissions==null) {
-            return true; // If we don't have it we must return true otherwise we are forcing people to use the Permissions plugin.
+        String group = "";
+
+        if(MultiVerseCore.GroupManager!=null){
+            group = MultiVerseCore.GroupManager.getWorldsHolder().getWorldPermissions(p).getGroup(p.getName());
+        } else if (MultiVerseCore.Permissions!=null){
+            group = MultiVerseCore.Permissions.getGroup(p.getName(), p.getWorld().getName());
         }
         
         List<String> whiteList = this.plugin.worlds.get(w.getName()).joinWhitelist;
         List<String> blackList = this.plugin.worlds.get(w.getName()).joinBlacklist;
-        @SuppressWarnings("deprecation")
-        String group = MultiVerseCore.Permissions.getGroup(p.getName());
         
         boolean returnValue = true;
 
