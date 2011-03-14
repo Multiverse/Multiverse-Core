@@ -96,7 +96,7 @@ public class MultiVerseCore extends JavaPlugin {
         dataFolder.mkdir();
 
         // Output a little snippet to show it's enabled.
-        log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled");
+        log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
         
         // Setup & Load our Configuration files.
         loadConfigs();
@@ -365,4 +365,20 @@ public class MultiVerseCore extends JavaPlugin {
 	        }
 	    }
 	}
+	
+    /**
+     * Parse the Authors Array into a readable String with ',' and 'and'.
+     * @return
+     */
+    private String getAuthors(){
+        String authors = "";
+        for(int i=0;i<this.getDescription().getAuthors().size();i++){
+            if(i==this.getDescription().getAuthors().size()-1){
+                authors += " and " + this.getDescription().getAuthors().get(i);
+            } else {
+                authors += ", " + this.getDescription().getAuthors().get(i);
+            }
+        }
+        return authors.substring(2);
+    }
 }
