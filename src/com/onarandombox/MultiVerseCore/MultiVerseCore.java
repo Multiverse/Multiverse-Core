@@ -21,6 +21,8 @@ import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 
+import org.anjocaido.groupmanager.GroupManager;
+
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
@@ -44,6 +46,8 @@ public class MultiVerseCore extends JavaPlugin {
     public static Server server;
     public static PluginDescriptionFile description;
     
+    // Setup a variable to hold our DataFolder which will house everything to do with MultiVerse
+    // Using this instead of getDataFolder(), allows all modules to use the same direectory.
     public static final File dataFolder = new File("plugins" + File.separator + "MultiVerse");
     
     // MultiVerse Permissions Handler
@@ -51,6 +55,9 @@ public class MultiVerseCore extends JavaPlugin {
     
     // Permissions Handler
     public static PermissionHandler Permissions = null;
+    
+    // GroupManager Permissions Handler
+    public static GroupManager GroupManager = null;
     
     // iConomy Handler
     public static iConomy iConomy = null;
@@ -100,6 +107,8 @@ public class MultiVerseCore extends JavaPlugin {
         loadWorlds();
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
         purgeWorlds();
+        // Setup Group Manager.
+        setupGroupManager();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         setupPermissions();
         // Setup iConomy.
@@ -133,16 +142,29 @@ public class MultiVerseCore extends JavaPlugin {
         
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this); // Monitor for Permissions Plugin etc.
     }
+
+    /**
+     * Check to see if GroupManager is enabled and setup accordingly.
+     */
+    private void setupGroupManager(){
+        Plugin p = this.getServer().getPluginManager().getPlugin("GroupManager");
+        if (p != null) {
+            if (!this.getServer().getPluginManager().isPluginEnabled(p)) {
+                this.getServer().getPluginManager().enablePlugin(p);
+            }
+            MultiVerseCore.GroupManager = (GroupManager) p;
+        }
+    }
     
     /**
      * Check for Permissions plugin and then setup our own Permissions Handler.
      */
     private void setupPermissions() {
-        Plugin test = this.getServer().getPluginManager().getPlugin("Permissions");
+        Plugin p = this.getServer().getPluginManager().getPlugin("Permissions");
 
         if (MultiVerseCore.Permissions == null) {
-            if (test != null) {
-                MultiVerseCore.Permissions = ((Permissions)test).getHandler();
+            if (p != null) {
+                MultiVerseCore.Permissions = ((Permissions)p).getHandler();
             }
         }
     }
