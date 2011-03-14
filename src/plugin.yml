@@ -1,8 +1,6 @@
 name: MultiVerse-Core
 main: com.onarandombox.MultiVerseCore.MultiVerseCore
-author:
-    - Rigby
-    - Protected
+authors: ['Rigby','Protected']
 version: 2.0
 commands:
   mvcreate:
