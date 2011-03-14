@@ -29,6 +29,10 @@ public class PurgeWorlds {
         this.plugin = plugin;
     }
     
+    public void purge(World w, List<String> creatures){
+        purge(null,w,creatures);
+    }
+    
     public void purge(CommandSender sender, World w, List<String> creatures){
         
         List<Entity> entities = w.getEntities();        
@@ -46,7 +50,10 @@ public class PurgeWorlds {
                 count++;
             }
         }
-        sender.sendMessage(count + " Entities Purged from " + w.getName());
+        
+        if(sender!=null){
+            sender.sendMessage(count + " Entities Purged from " + w.getName());
+        }
     }
     
 }
