@@ -5,8 +5,7 @@ import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 
 import com.nijiko.coelho.iConomy.iConomy;
-import com.nijiko.permissions.PermissionHandler;
-import org.anjocaido.groupmanager.GroupManager;
+import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class MVPluginListener extends ServerListener {
 
@@ -25,7 +24,7 @@ public class MVPluginListener extends ServerListener {
          * Check to see if Permissions was just enabled, we only wan't to perform the following if GroupManager is not found.
          */
         if(event.getPlugin().getDescription().getName().equals("Permissions")) {
-            MultiVerseCore.Permissions = (PermissionHandler) plugin.getServer().getPluginManager().getPlugin("Permissions");
+            MultiVerseCore.Permissions = ((Permissions) plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler();
             MultiVerseCore.log.info(MultiVerseCore.logPrefix + "- Found Permissions");
         }
         

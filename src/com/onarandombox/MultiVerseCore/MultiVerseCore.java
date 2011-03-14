@@ -143,8 +143,9 @@ public class MultiVerseCore extends JavaPlugin {
         Plugin p = this.getServer().getPluginManager().getPlugin("Permissions");
 
         if (MultiVerseCore.Permissions == null) {
-            if (p != null) {
+            if (p != null && p.isEnabled()) {
                 MultiVerseCore.Permissions = ((Permissions)p).getHandler();
+                MultiVerseCore.log.info(logPrefix + "- Attached to Permissions");
             }
         }
     }
