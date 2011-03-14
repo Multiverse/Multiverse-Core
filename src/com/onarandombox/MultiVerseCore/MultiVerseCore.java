@@ -326,6 +326,12 @@ public class MultiVerseCore extends JavaPlugin {
     public static MVPermissions getPermissions() {
         return ph;
     }
+
+    /**
+     * This fires before plugins get Enabled... Not needed but saves Console Spam.
+     */
+    public void onLoad() {
+    }
     
 	/**
 	 * onCommand
