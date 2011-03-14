@@ -59,4 +59,11 @@ commands:
   mvreload:
     description: Reload Configuration files.
     usage: /<command>
+  mvpurge:
+    description: Purge the targetted world of creatures.
+    usage: |
+            /<command> [world] [creatures]
+            /<command> -- Purges the players world of all creatures.
+            /<command> creative * -- Purges the creative world of all Creatures.
+            /<command> creative creeper -- Purges the creative world of all CREEPERS.
            
