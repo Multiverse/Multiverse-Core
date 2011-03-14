@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiVerseCore.MVCommandHandler;
-import com.onarandombox.MultiVerseCore.MVWorld;
 import com.onarandombox.MultiVerseCore.MultiVerseCore;
 
 public class MVList extends MVCommandHandler {
@@ -28,7 +27,6 @@ public class MVList extends MVCommandHandler {
         }
         
         String output = ChatColor.GREEN + "Worlds which you can view - \n";
-        MultiVerseCore.debugMsg("Size - " + plugin.worlds.size());
         for(int i=0;i<plugin.getServer().getWorlds().size();i++){
 
             World world = plugin.getServer().getWorlds().get(i);
