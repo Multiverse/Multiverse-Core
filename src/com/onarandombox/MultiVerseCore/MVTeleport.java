@@ -1,7 +1,6 @@
 package com.onarandombox.MultiVerseCore;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -122,9 +121,7 @@ public class MVTeleport {
 	    World world = location.getWorld();
 	    // Get list of columns in a circle around the block
         ArrayList<Block> columns = new ArrayList<Block>();
-        //for (int x = location.getBlockX() - 16; x <= location.getBlockX() + 16; ++x) {
         for (int x = location.getBlockX() - 8; x <= location.getBlockX() + 8; ++x) {
-            //for (int z = location.getBlockZ() - 16; z <= location.getBlockZ() + 16; ++z) {
             for (int z = location.getBlockZ() - 8; z <= location.getBlockZ() + 8; ++z) {
                 int dx = location.getBlockX() - x, dz = location.getBlockZ() - z;
                 if (dx * dx + dz * dz <= 256) {
@@ -141,19 +138,12 @@ public class MVTeleport {
                         if (b.getWorld().getBlockAt(b.getX() + 1, b.getY(), b.getZ()).getType().equals(Material.PORTAL) ||
                                 b.getWorld().getBlockAt(b.getX() - 1, b.getY(), b.getZ()).getType().equals(Material.PORTAL)) {
                             // portal is in X direction
-                            //return new Location(b.getWorld(), b.getX() + 0.5,b.getY(), b.getZ() + 1.5 - 2 * Math.round(Math.random()));
                             return new Location(b.getWorld(), b.getX() + 0.5,b.getY(), b.getZ() + 1.5);
-                            //return new Location(b.getWorld(),b.getX(),b.getY(),b.getZ());
                         } else {
                             // portal is in Z direction
-                            //return new Location(b.getWorld(), b.getX() + 1.5 - 2 * Math.round(Math.random()),b.getY(), b.getZ() + 0.5);
-                            //MultiVerseCore.log.info("This - " + 2* Math.round(Math.random()));
-                            //MultiVerseCore.log.info("This - " + 2* Math.round(Math.random()));
                             return new Location(b.getWorld(), b.getX() + 1.5,b.getY(), b.getZ() + 0.5);
-                            //return new Location(b.getWorld(),b.getX(),b.getY(),b.getZ());
                         }
                     }
-                    //return new Location(world,b.getX(),b.getY(),b.getZ());
                 }
         }
         return null;
