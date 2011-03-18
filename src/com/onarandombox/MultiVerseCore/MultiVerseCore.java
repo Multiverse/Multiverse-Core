@@ -1,6 +1,7 @@
 package com.onarandombox.MultiVerseCore;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import com.onarandombox.MultiVerseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.UpdateChecker;
 
 public class MultiVerseCore extends JavaPlugin {
+    
     // Setup our Map for our Commands using the CommandHandler.
     private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
     
@@ -112,7 +114,7 @@ public class MultiVerseCore extends JavaPlugin {
         // Start the Update Checker
         updateCheck = new UpdateChecker(this.getDescription().getName(),this.getDescription().getVersion());
     }
-    
+
     /**
      * Function to Register all the Events needed.
      */
@@ -268,7 +270,8 @@ public class MultiVerseCore extends JavaPlugin {
 	 * What happens when the plugin gets disabled...
 	 */
 	public void onDisable() {
-       log.info(logPrefix + "- Disabled");
+	    MultiVerseCore.Permissions = null;
+	    log.info(logPrefix + "- Disabled");
 	}
 	
     /**
@@ -353,7 +356,13 @@ public class MultiVerseCore extends JavaPlugin {
      */
     private String getAuthors(){
         String authors = "";
-        for(int i=0;i<this.getDescription().getAuthors().size();i++){
+        ArrayList<String> auths = this.getDescription().getAuthors();
+        
+        if(auths.size()==1){
+            return auths.get(0);
+        }
+        
+        for(int i=0;i<auths.size();i++){
             if(i==this.getDescription().getAuthors().size()-1){
                 authors += " and " + this.getDescription().getAuthors().get(i);
             } else {
