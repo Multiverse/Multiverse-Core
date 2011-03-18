@@ -73,7 +73,7 @@ public class MVPermissions {
         String group = "";
 
         if (MultiVerseCore.Permissions!=null){
-            group = MultiVerseCore.Permissions.getGroup(p.getName(), p.getWorld().getName());
+            group = MultiVerseCore.Permissions.getGroup(p.getName(),p.getWorld().getName());
         }
         
         List<String> whiteList = this.plugin.worlds.get(w.getName()).joinWhitelist;
