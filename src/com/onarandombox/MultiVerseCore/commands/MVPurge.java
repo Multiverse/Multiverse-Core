@@ -19,13 +19,21 @@ public class MVPurge extends MVCommandHandler {
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
+        if(!(args.length>0)){
+            return false;
+        }
+        
         if(!(sender instanceof Player)){
             sender.sendMessage("This command needs to be used from inside the game!");
             return true;
-        }
+        }        
+
         Player p = (Player) sender;
         List<String> creatures = new ArrayList<String>();
-        creatures.add(args[0].toUpperCase());        
+        
+        for(String creature : args[0].toUpperCase().split(",")){
+            creatures.add(creature);
+        }
         
         new PurgeWorlds(plugin).purge(sender, p.getWorld(), creatures);
         
