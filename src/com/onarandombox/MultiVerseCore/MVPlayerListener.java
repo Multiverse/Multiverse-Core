@@ -19,6 +19,9 @@ public class MVPlayerListener extends PlayerListener {
     public void onPlayerTeleport(PlayerMoveEvent event){
         //MultiVerseCore.debugMsg(event.getPlayer().getName() + " just tried to Teleport");
         //event.setCancelled(true);
+        // Entity entity = event.getPlayer().;
+        //MultiVerseCore.log.info("1 - " + event.getTo().toString());
+        //MultiVerseCore.log.info("2 - " + event.getPlayer().getLocation().toString());
     }
     
     public void onPlayerMove(PlayerMoveEvent event){

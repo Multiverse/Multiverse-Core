@@ -19,7 +19,7 @@ import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.ExplosionPrimedEvent;
+//import org.bukkit.event.entity.ExplosionPrimedEvent;
 
 public class MVEntityListener extends EntityListener {
 
@@ -34,13 +34,13 @@ public class MVEntityListener extends EntityListener {
     public void onEntityExplode(EntityExplodeEvent event){
 
     }
-    public void onExplosionPrimed(ExplosionPrimedEvent event){
-        if(event.getEntity() instanceof Fireball){
+    //public void onExplosionPrimed(ExplosionPrimedEvent event){
+        //if(event.getEntity() instanceof Fireball){
             //MultiVerseCore.log.info();
             // Fireballs on Explode trigger this, sadly we can't get the blocks it would destroy... thats onEntityExplode
             // However can't figure out a way to check in onEntityExplode if it was a Fireball which caused it...
-        }
-    }
+        //}
+    //}
     
     public void onEntityDamage(EntityDamageEvent event){
         if (event.isCancelled()) return;
