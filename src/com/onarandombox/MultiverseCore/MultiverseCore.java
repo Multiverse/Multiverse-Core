@@ -49,11 +49,11 @@ public class MultiverseCore extends JavaPlugin {
 
     // Variable to state whether we are displaying Debug Messages or not.
     public static boolean debug = true;
-    
+
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");
     private static DebugLog debugLog;
-    
+
     public static final String logPrefix = "[MultiVerse-Core] ";
     public static Plugin instance;
     public static Server server;
@@ -65,7 +65,7 @@ public class MultiverseCore extends JavaPlugin {
 
     // Messaging
     private Messaging messaging = new Messaging();
-    
+
     // MultiVerse Permissions Handler
     public MVPermissions ph = new MVPermissions(this);
 
@@ -128,7 +128,7 @@ public class MultiverseCore extends JavaPlugin {
         setupCommands();
 
         // Start the Update Checker
-        //updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
+        // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
     }
 
     /**

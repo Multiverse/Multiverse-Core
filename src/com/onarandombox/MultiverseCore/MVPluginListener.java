@@ -25,7 +25,7 @@ public class MVPluginListener extends ServerListener {
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             MultiverseCore.Permissions = ((Permissions) plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler();
-            //MultiverseCore.log.info(MultiverseCore.logPrefix + "- Found Permissions");
+            // MultiverseCore.log.info(MultiverseCore.logPrefix + "- Found Permissions");
         }
 
         /**
@@ -37,7 +37,7 @@ public class MVPluginListener extends ServerListener {
             if (iConomy != null) {
                 if (iConomy.isEnabled()) {
                     MultiverseCore.iConomy = (iConomy) iConomy;
-                    //MultiverseCore.log.info(MultiverseCore.logPrefix + "- Found iConomy");
+                    // MultiverseCore.log.info(MultiverseCore.logPrefix + "- Found iConomy");
                 }
             }
         }
@@ -52,7 +52,7 @@ public class MVPluginListener extends ServerListener {
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             MultiverseCore.Permissions = null;
-            //MultiverseCore.log.info(MultiverseCore.logPrefix + "- Permissions has been Disabled");
+            // MultiverseCore.log.info(MultiverseCore.logPrefix + "- Permissions has been Disabled");
         }
 
         /**
@@ -60,7 +60,7 @@ public class MVPluginListener extends ServerListener {
          */
         if (MultiverseCore.getiConomy() != null) {
             MultiverseCore.iConomy = null;
-            //MultiverseCore.log.info(MultiverseCore.logPrefix + "- iConom has been Disabled");
+            // MultiverseCore.log.info(MultiverseCore.logPrefix + "- iConom has been Disabled");
         }
     }
 

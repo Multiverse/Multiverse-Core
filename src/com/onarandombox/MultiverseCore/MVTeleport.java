@@ -39,7 +39,7 @@ public class MVTeleport {
         double srcComp = plugin.worlds.get(l.getWorld().getName()).compression;
         double trgComp = plugin.worlds.get(w.getName()).compression;
 
-        //MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
+        // MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
 
         // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
         if (trgComp == 0.0) {
@@ -105,11 +105,11 @@ public class MVTeleport {
         }
 
         if (aux == -1) {
-            //MultiverseCore.debugMsg("Uh oh, no safe location.");
+            // MultiverseCore.debugMsg("Uh oh, no safe location.");
             return null;
         }
 
-        //MultiverseCore.debugMsg("Target location (safe): " + x + ", " + aux + ", " + z);
+        // MultiverseCore.debugMsg("Target location (safe): " + x + ", " + aux + ", " + z);
 
         return new Location(w, x, aux, z);
     }

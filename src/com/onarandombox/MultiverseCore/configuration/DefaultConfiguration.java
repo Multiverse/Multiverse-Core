@@ -10,8 +10,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-
 /**
  * https://github.com/Nijikokun/iConomy3/blob/master/com/nijiko/coelho/iConomy/iConomy.java
  * @author Nijikokun & Coelho
@@ -39,7 +37,7 @@ public class DefaultConfiguration {
                         output.write(buf, 0, length);
                     }
 
-                    //MultiverseCore.log.info(MultiverseCore.logPrefix + "Default config file written: " + name);
+                    // MultiverseCore.log.info(MultiverseCore.logPrefix + "Default config file written: " + name);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
