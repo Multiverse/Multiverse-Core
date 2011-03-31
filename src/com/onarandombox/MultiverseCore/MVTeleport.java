@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import java.util.ArrayList;
 
@@ -12,11 +12,11 @@ import com.onarandombox.utils.BlockSafety;
 
 public class MVTeleport {
 
-    MultiVerseCore plugin;
+    MultiverseCore plugin;
 
     BlockSafety bs = new BlockSafety();
 
-    public MVTeleport(MultiVerseCore plugin) {
+    public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
@@ -39,7 +39,7 @@ public class MVTeleport {
         double srcComp = plugin.worlds.get(l.getWorld().getName()).compression;
         double trgComp = plugin.worlds.get(w.getName()).compression;
 
-        MultiVerseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
+        //MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
 
         // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
         if (trgComp == 0.0) {
@@ -105,11 +105,11 @@ public class MVTeleport {
         }
 
         if (aux == -1) {
-            MultiVerseCore.debugMsg("Uh oh, no safe location.");
+            //MultiverseCore.debugMsg("Uh oh, no safe location.");
             return null;
         }
 
-        MultiVerseCore.debugMsg("Target location (safe): " + x + ", " + aux + ", " + z);
+        //MultiverseCore.debugMsg("Target location (safe): " + x + ", " + aux + ", " + z);
 
         return new Location(w, x, aux, z);
     }

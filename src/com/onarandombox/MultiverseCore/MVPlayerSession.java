@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ public class MVPlayerSession {
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
 
-    public MVPlayerSession(Player player, Configuration config, MultiVerseCore multiVerseCore) {
+    public MVPlayerSession(Player player, Configuration config, MultiverseCore multiVerseCore) {
         this.player = player;
         this.loc = player.getLocation();
         this.config = config;

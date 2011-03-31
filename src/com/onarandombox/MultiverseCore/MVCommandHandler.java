@@ -1,12 +1,12 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import org.bukkit.command.CommandSender;
 
 public abstract class MVCommandHandler {
 
-    protected final MultiVerseCore plugin;
+    protected final MultiverseCore plugin;
 
-    public MVCommandHandler(MultiVerseCore plugin) {
+    public MVCommandHandler(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 

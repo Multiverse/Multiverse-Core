@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
@@ -25,30 +26,34 @@ import org.bukkit.util.config.Configuration;
 import com.nijiko.coelho.iConomy.iConomy;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
-import com.onarandombox.MultiVerseCore.commands.MVCoord;
-import com.onarandombox.MultiVerseCore.commands.MVCreate;
-import com.onarandombox.MultiVerseCore.commands.MVImport;
-import com.onarandombox.MultiVerseCore.commands.MVList;
-import com.onarandombox.MultiVerseCore.commands.MVModify;
-import com.onarandombox.MultiVerseCore.commands.MVReload;
-import com.onarandombox.MultiVerseCore.commands.MVRemove;
-import com.onarandombox.MultiVerseCore.commands.MVSetSpawn;
-import com.onarandombox.MultiVerseCore.commands.MVSpawn;
-import com.onarandombox.MultiVerseCore.commands.MVTP;
-import com.onarandombox.MultiVerseCore.commands.MVWho;
-import com.onarandombox.MultiVerseCore.configuration.DefaultConfiguration;
+import com.onarandombox.MultiverseCore.commands.MVCoord;
+import com.onarandombox.MultiverseCore.commands.MVCreate;
+import com.onarandombox.MultiverseCore.commands.MVImport;
+import com.onarandombox.MultiverseCore.commands.MVList;
+import com.onarandombox.MultiverseCore.commands.MVModify;
+import com.onarandombox.MultiverseCore.commands.MVReload;
+import com.onarandombox.MultiverseCore.commands.MVRemove;
+import com.onarandombox.MultiverseCore.commands.MVSetSpawn;
+import com.onarandombox.MultiverseCore.commands.MVSpawn;
+import com.onarandombox.MultiverseCore.commands.MVTP;
+import com.onarandombox.MultiverseCore.commands.MVWho;
+import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
+import com.onarandombox.utils.DebugLog;
+import com.onarandombox.utils.Messaging;
 import com.onarandombox.utils.UpdateChecker;
 
-public class MultiVerseCore extends JavaPlugin {
+public class MultiverseCore extends JavaPlugin {
 
     // Setup our Map for our Commands using the CommandHandler.
     private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
 
     // Variable to state whether we are displaying Debug Messages or not.
     public static boolean debug = true;
-
+    
     // Useless stuff to keep us going.
-    public static final Logger log = Logger.getLogger("Minecraft");
+    private static final Logger log = Logger.getLogger("Minecraft");
+    private static DebugLog debugLog;
+    
     public static final String logPrefix = "[MultiVerse-Core] ";
     public static Plugin instance;
     public static Server server;
@@ -56,8 +61,11 @@ public class MultiVerseCore extends JavaPlugin {
 
     // Setup a variable to hold our DataFolder which will house everything to do with MultiVerse
     // Using this instead of getDataFolder(), allows all modules to use the same direectory.
-    public static final File dataFolder = new File("plugins" + File.separator + "MultiVerse");
+    public static final File dataFolder = new File("plugins" + File.separator + "Multiverse");
 
+    // Messaging
+    private Messaging messaging = new Messaging();
+    
     // MultiVerse Permissions Handler
     public MVPermissions ph = new MVPermissions(this);
 
@@ -86,11 +94,10 @@ public class MultiVerseCore extends JavaPlugin {
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
 
-    /**
-     * Constructor... Perform the Necessary tasks here.
-     */
-    public MultiVerseCore() {
-
+    @Override
+    public void onLoad() {
+        dataFolder.mkdirs();
+        debugLog = new DebugLog("Multiverse", dataFolder + File.separator + "debug.log");
     }
 
     /**
@@ -121,7 +128,7 @@ public class MultiVerseCore extends JavaPlugin {
         setupCommands();
 
         // Start the Update Checker
-        updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
+        //updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
     }
 
     /**
@@ -153,10 +160,10 @@ public class MultiVerseCore extends JavaPlugin {
     private void setupPermissions() {
         Plugin p = this.getServer().getPluginManager().getPlugin("Permissions");
 
-        if (MultiVerseCore.Permissions == null) {
+        if (MultiverseCore.Permissions == null) {
             if (p != null && p.isEnabled()) {
-                MultiVerseCore.Permissions = ((Permissions) p).getHandler();
-                MultiVerseCore.log.info(logPrefix + "- Attached to Permissions");
+                MultiverseCore.Permissions = ((Permissions) p).getHandler();
+                MultiverseCore.log.info(logPrefix + "- Attached to Permissions");
             }
         }
     }
@@ -167,9 +174,9 @@ public class MultiVerseCore extends JavaPlugin {
     private void setupiConomy() {
         Plugin test = this.getServer().getPluginManager().getPlugin("iConomy");
 
-        if (MultiVerseCore.iConomy == null) {
+        if (MultiverseCore.iConomy == null) {
             if (test != null) {
-                MultiVerseCore.iConomy = (iConomy) test;
+                MultiverseCore.iConomy = (iConomy) test;
             }
         }
     }
@@ -191,18 +198,18 @@ public class MultiVerseCore extends JavaPlugin {
             configMV.load();
             log.info(logPrefix + "- MultiVerse Config -- Loaded");
         } catch (Exception e) {
-            log.info(MultiVerseCore.logPrefix + "- Failed to load config.yml");
+            log.info(MultiverseCore.logPrefix + "- Failed to load config.yml");
         }
 
         try {
             configWorlds.load();
             log.info(logPrefix + "- World Config -- Loaded");
         } catch (Exception e) {
-            log.info(MultiVerseCore.logPrefix + "- Failed to load worlds.yml");
+            log.info(MultiverseCore.logPrefix + "- Failed to load worlds.yml");
         }
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
-        MultiVerseCore.debug = configMV.getBoolean("debug", false);
+        MultiverseCore.debug = configMV.getBoolean("debug", false);
     }
 
     /**
@@ -254,7 +261,7 @@ public class MultiVerseCore extends JavaPlugin {
     public void loadWorlds() {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
-        List<String> worldKeys = MultiVerseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
+        List<String> worldKeys = MultiverseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
 
         if (worldKeys != null) {
             for (String worldKey : worldKeys) {
@@ -263,7 +270,7 @@ public class MultiVerseCore extends JavaPlugin {
                     continue;
                 }
 
-                String wEnvironment = MultiVerseCore.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
+                String wEnvironment = MultiverseCore.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
 
                 Environment env;
                 if (wEnvironment.equalsIgnoreCase("NETHER")) // Check if the selected Environment is NETHER, otherwise we just default to NORMAL.
@@ -275,7 +282,7 @@ public class MultiVerseCore extends JavaPlugin {
 
                 World world = getServer().createWorld(worldKey, env);
 
-                worlds.put(worldKey, new MVWorld(world, MultiVerseCore.configWorlds, this)); // Place the World into the HashMap.
+                worlds.put(worldKey, new MVWorld(world, MultiverseCore.configWorlds, this)); // Place the World into the HashMap.
 
                 count++; // Increment the World Count.
             }
@@ -288,7 +295,7 @@ public class MultiVerseCore extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        MultiVerseCore.Permissions = null;
+        MultiverseCore.Permissions = null;
         log.info(logPrefix + "- Disabled");
     }
 
@@ -301,7 +308,7 @@ public class MultiVerseCore extends JavaPlugin {
         if (playerSessions.containsKey(player.getName())) {
             return playerSessions.get(player.getName());
         } else {
-            playerSessions.put(player.getName(), new MVPlayerSession(player, MultiVerseCore.configMV, this));
+            playerSessions.put(player.getName(), new MVPlayerSession(player, MultiverseCore.configMV, this));
             return playerSessions.get(player.getName());
         }
     }
@@ -330,13 +337,6 @@ public class MultiVerseCore extends JavaPlugin {
     }
 
     /**
-     * This fires before plugins get Enabled... Not needed but saves Console Spam.
-     */
-    @Override
-    public void onLoad() {
-    }
-
-    /**
      * onCommand
      */
     @Override
@@ -356,19 +356,31 @@ public class MultiVerseCore extends JavaPlugin {
     }
 
     /**
-     * Basic Debug Output function, if we've enabled debugging we'll output more information.
+     * Print messages to the server Log as well as to our DebugLog.
+     * 'debugLog' is used to seperate Heroes information from the Servers Log Output.
+     * @param level
+     * @param msg
      */
-    public static void debugMsg(String msg) {
-        debugMsg(msg, null);
+    public void log(Level level, String msg) {
+        log.log(level, "[Multiverse-Core] " + msg);
+        debugLog.log(level, "[Multiverse-Core] " + msg);
     }
 
-    public static void debugMsg(String msg, Player p) {
-        if (debug) {
-            log.info(msg);
-            if (p != null) {
-                p.sendMessage(msg);
-            }
+    /**
+     * Print messages to the Debug Log, if the servers in Debug Mode then we
+     * also wan't to print the messages to the standard Server Console.
+     * @param level
+     * @param msg
+     */
+    public void debugLog(Level level, String msg) {
+        if (MultiverseCore.debug) {
+            log.log(level, "[Debug] " + msg);
         }
+        debugLog.log(level, "[Debug] " + msg);
+    }
+
+    public Messaging getMessaging() {
+        return messaging;
     }
 
     /**

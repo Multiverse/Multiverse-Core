@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import java.util.List;
 
@@ -23,9 +23,9 @@ import org.bukkit.event.entity.EntityListener;
 
 public class MVEntityListener extends EntityListener {
 
-    MultiVerseCore plugin;
+    MultiverseCore plugin;
 
-    public MVEntityListener(MultiVerseCore plugin) {
+    public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
@@ -53,7 +53,7 @@ public class MVEntityListener extends EntityListener {
         Entity defender = event.getEntity();
         World w = defender.getWorld();
 
-        if (!(MultiVerseCore.configWorlds.getBoolean("worlds." + w.getName() + ".enablehealth", true))) {
+        if (!(MultiverseCore.configWorlds.getBoolean("worlds." + w.getName() + ".enablehealth", true))) {
             event.setCancelled(true);
             return;
         }
@@ -153,7 +153,7 @@ public class MVEntityListener extends EntityListener {
             int count = 0;
             for (Entity entity : entities) {
                 if (entity instanceof Ghast) {
-                    if (count >= MultiVerseCore.configMV.getInt("ghastlimit", 50)) {
+                    if (count >= MultiverseCore.configMV.getInt("ghastlimit", 50)) {
                         event.setCancelled(true);
                         return;
                     }

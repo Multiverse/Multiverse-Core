@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,12 @@ import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiVerseCore.MVCommandHandler;
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MVCommandHandler;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class MVWho extends MVCommandHandler {
 
-    public MVWho(MultiVerseCore plugin) {
+    public MVWho(MultiverseCore plugin) {
         super(plugin);
     }
 

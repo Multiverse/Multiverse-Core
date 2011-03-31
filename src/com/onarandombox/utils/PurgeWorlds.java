@@ -19,13 +19,13 @@ import org.bukkit.entity.Spider;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Zombie;
 
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class PurgeWorlds {
 
-    MultiVerseCore plugin;
+    MultiverseCore plugin;
 
-    public PurgeWorlds(MultiVerseCore plugin) {
+    public PurgeWorlds(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 

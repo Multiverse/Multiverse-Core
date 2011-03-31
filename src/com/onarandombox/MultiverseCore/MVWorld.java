@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.bukkit.util.config.Configuration;
 @SuppressWarnings("unused")
 public class MVWorld {
 
-    private MultiVerseCore plugin; // Hold the Plugin Instance.
+    private MultiverseCore plugin; // Hold the Plugin Instance.
     private Configuration config; // Hold the Configuration File.
 
     public World world; // The World Instance.
@@ -36,7 +36,7 @@ public class MVWorld {
 
     public Double compression; // How stretched/compressed distances are
 
-    public MVWorld(World world, Configuration config, MultiVerseCore instance) {
+    public MVWorld(World world, Configuration config, MultiverseCore instance) {
         this.config = config;
         this.plugin = instance;
 

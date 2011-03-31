@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,9 +10,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class MVPlayerListener extends PlayerListener {
 
-    MultiVerseCore plugin;
+    MultiverseCore plugin;
 
-    public MVPlayerListener(MultiVerseCore plugin) {
+    public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 

@@ -1,16 +1,16 @@
-package com.onarandombox.MultiVerseCore.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiVerseCore.MVCommandHandler;
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MVCommandHandler;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class MVSetSpawn extends MVCommandHandler {
 
-    public MVSetSpawn(MultiVerseCore plugin) {
+    public MVSetSpawn(MultiverseCore plugin) {
         super(plugin);
     }
 

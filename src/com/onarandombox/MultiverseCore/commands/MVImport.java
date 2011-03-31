@@ -1,13 +1,13 @@
-package com.onarandombox.MultiVerseCore.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import org.bukkit.command.CommandSender;
 
-import com.onarandombox.MultiVerseCore.MVCommandHandler;
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MVCommandHandler;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
-public class MVModify extends MVCommandHandler {
+public class MVImport extends MVCommandHandler {
 
-    public MVModify(MultiVerseCore plugin) {
+    public MVImport(MultiverseCore plugin) {
         super(plugin);
         // TODO Auto-generated constructor stub
     }

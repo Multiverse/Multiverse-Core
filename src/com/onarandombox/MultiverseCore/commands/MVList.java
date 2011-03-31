@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -6,12 +6,12 @@ import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiVerseCore.MVCommandHandler;
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MVCommandHandler;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class MVList extends MVCommandHandler {
 
-    public MVList(MultiVerseCore plugin) {
+    public MVList(MultiverseCore plugin) {
         super(plugin);
     }
 

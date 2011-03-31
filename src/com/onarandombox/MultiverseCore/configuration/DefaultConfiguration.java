@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore.configuration;
+package com.onarandombox.MultiverseCore.configuration;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 /**
  * https://github.com/Nijikokun/iConomy3/blob/master/com/nijiko/coelho/iConomy/iConomy.java
@@ -39,7 +39,7 @@ public class DefaultConfiguration {
                         output.write(buf, 0, length);
                     }
 
-                    MultiVerseCore.log.info(MultiVerseCore.logPrefix + "Default config file written: " + name);
+                    //MultiverseCore.log.info(MultiverseCore.logPrefix + "Default config file written: " + name);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

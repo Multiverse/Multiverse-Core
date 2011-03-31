@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import java.util.List;
 
@@ -7,13 +7,13 @@ import org.bukkit.entity.Player;
 
 public class MVPermissions {
 
-    private MultiVerseCore plugin;
+    private MultiverseCore plugin;
 
     /**
      * Constructor FTW
      * @param plugin Pass along the Core Plugin.
      */
-    public MVPermissions(MultiVerseCore plugin) {
+    public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
@@ -27,8 +27,8 @@ public class MVPermissions {
     public boolean has(Player p, String node) {
         boolean result = false;
 
-        if (MultiVerseCore.Permissions != null) {
-            result = MultiVerseCore.Permissions.has(p, node);
+        if (MultiverseCore.Permissions != null) {
+            result = MultiverseCore.Permissions.has(p, node);
         } else if (p.isOp()) {
             result = true;
         }
@@ -72,8 +72,8 @@ public class MVPermissions {
     public Boolean canEnterWorld(Player p, World w) {
         String group = "";
 
-        if (MultiVerseCore.Permissions != null) {
-            group = MultiVerseCore.Permissions.getGroup(p.getName(), p.getWorld().getName());
+        if (MultiverseCore.Permissions != null) {
+            group = MultiverseCore.Permissions.getGroup(p.getName(), p.getWorld().getName());
         }
 
         List<String> whiteList = this.plugin.worlds.get(w.getName()).joinWhitelist;

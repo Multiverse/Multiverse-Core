@@ -1,21 +1,20 @@
-package com.onarandombox.MultiVerseCore.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiVerseCore.MVCommandHandler;
-import com.onarandombox.MultiVerseCore.MultiVerseCore;
+import com.onarandombox.MultiverseCore.MVCommandHandler;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.LocationManipulation;
 
 public class MVCoord extends MVCommandHandler {
 
     private LocationManipulation locMan = new LocationManipulation();
 
-    public MVCoord(MultiVerseCore plugin) {
+    public MVCoord(MultiverseCore plugin) {
         super(plugin);
-        // TODO Auto-generated constructor stub
     }
 
     @Override

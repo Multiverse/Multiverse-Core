@@ -1,4 +1,4 @@
-package com.onarandombox.MultiVerseCore;
+package com.onarandombox.MultiverseCore;
 
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
@@ -9,9 +9,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class MVBlockListener extends BlockListener {
 
-    MultiVerseCore plugin;
+    MultiverseCore plugin;
 
-    public MVBlockListener(MultiVerseCore plugin) {
+    public MVBlockListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
