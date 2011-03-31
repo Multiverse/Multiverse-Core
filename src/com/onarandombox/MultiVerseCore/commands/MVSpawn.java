@@ -15,7 +15,7 @@ public class MVSpawn extends MVCommandHandler {
     @Override
     public boolean perform(CommandSender sender, String[] args) {
         // TODO: Permissions
-        if(sender instanceof Player){
+        if (sender instanceof Player) {
             Player p = (Player) sender;
             p.teleportTo(p.getWorld().getSpawnLocation());
         } else {

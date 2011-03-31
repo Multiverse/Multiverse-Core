@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 public class LocationManipulation {
-    
+
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
      * @param location
@@ -19,6 +19,7 @@ public class LocationManipulation {
         l.append(location.getPitch());
         return l.toString();
     }
+
     /**
      * Convert a String to a Location.
      * @param world
@@ -29,7 +30,7 @@ public class LocationManipulation {
      * @param pitchStr
      * @return
      */
-    public Location stringToLocation(World world, String xStr, String yStr, String zStr, String yawStr, String pitchStr){
+    public Location stringToLocation(World world, String xStr, String yStr, String zStr, String yawStr, String pitchStr) {
         double x = Double.parseDouble(xStr);
         double y = Double.parseDouble(yStr);
         double z = Double.parseDouble(zStr);
@@ -38,18 +39,20 @@ public class LocationManipulation {
 
         return new Location(world, x, y, z, yaw, pitch);
     }
+
     /**
      * Convert a Location to XYZ Coordinates.
      * @param l
      * @return
      */
-    public String strCoords(Location l){
+    public String strCoords(Location l) {
         String result = "";
         result += "X: " + l.getBlockX() + " ";
         result += "Y: " + l.getBlockY() + " ";
         result += "Z: " + l.getBlockZ() + " ";
         return result;
     }
+
     /**
      * Return the NESW Direction a Location is facing.
      * @param location

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class MVPermissions {
 
     private MultiVerseCore plugin;
-    
+
     /**
      * Constructor FTW
      * @param plugin Pass along the Core Plugin.
@@ -24,18 +24,18 @@ public class MVPermissions {
      * @param node The permission node we are checking against.
      * @return
      */
-    public boolean has(Player p, String node){
+    public boolean has(Player p, String node) {
         boolean result = false;
-        
-        if(MultiVerseCore.Permissions!=null){
+
+        if (MultiVerseCore.Permissions != null) {
             result = MultiVerseCore.Permissions.has(p, node);
-        } else if(p.isOp()){
+        } else if (p.isOp()) {
             result = true;
         }
-        
+
         return result;
     }
-    
+
     /**
      * Check if a Player can teleport to the Destination world from there
      * current world. This checks against the Worlds Blacklist
@@ -62,7 +62,7 @@ public class MVPermissions {
 
         return returnValue;
     }
-    
+
     /**
      * Check if the Player has the permissions to enter this world.
      * @param p
@@ -72,13 +72,13 @@ public class MVPermissions {
     public Boolean canEnterWorld(Player p, World w) {
         String group = "";
 
-        if (MultiVerseCore.Permissions!=null){
-            group = MultiVerseCore.Permissions.getGroup(p.getName(),p.getWorld().getName());
+        if (MultiVerseCore.Permissions != null) {
+            group = MultiVerseCore.Permissions.getGroup(p.getName(), p.getWorld().getName());
         }
-        
+
         List<String> whiteList = this.plugin.worlds.get(w.getName()).joinWhitelist;
         List<String> blackList = this.plugin.worlds.get(w.getName()).joinBlacklist;
-        
+
         boolean returnValue = true;
 
         // TODO: Not sure if I want this.
@@ -86,34 +86,34 @@ public class MVPermissions {
             returnValue = false;
         }
 
-        for (int i = 0; i < whiteList.size(); i++){
+        for (int i = 0; i < whiteList.size(); i++) {
             if (whiteList.get(i).contains("g:") && group.equalsIgnoreCase(whiteList.get(i).split(":")[1])) {
                 returnValue = true;
                 break;
             }
         }
 
-        for (int i = 0; i < blackList.size(); i++){
+        for (int i = 0; i < blackList.size(); i++) {
             if (blackList.get(i).contains("g:") && group.equalsIgnoreCase(blackList.get(i).split(":")[1])) {
                 returnValue = false;
                 break;
             }
         }
 
-        for (int i = 0; i < whiteList.size(); i++){
+        for (int i = 0; i < whiteList.size(); i++) {
             if (whiteList.get(i).equalsIgnoreCase(p.getName())) {
                 returnValue = true;
                 break;
             }
         }
 
-        for (int i = 0; i < blackList.size(); i++){
+        for (int i = 0; i < blackList.size(); i++) {
             if (blackList.get(i).equalsIgnoreCase(p.getName())) {
                 returnValue = false;
                 break;
             }
         }
-        
+
         return returnValue;
     }
 }

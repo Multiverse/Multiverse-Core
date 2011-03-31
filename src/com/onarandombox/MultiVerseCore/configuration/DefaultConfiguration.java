@@ -18,27 +18,27 @@ import com.onarandombox.MultiVerseCore.MultiVerseCore;
  */
 public class DefaultConfiguration {
 
-    public DefaultConfiguration(File folder, String name){
-        new DefaultConfiguration(folder,name,null);
+    public DefaultConfiguration(File folder, String name) {
+        new DefaultConfiguration(folder, name, null);
     }
-    
-    public DefaultConfiguration(File folder, String name, String contains){
+
+    public DefaultConfiguration(File folder, String name, String contains) {
         File actual = new File(folder, name);
-       
+
         if (!actual.exists()) {
             InputStream input = this.getClass().getResourceAsStream("/defaults/" + name);
             if (input != null) {
                 FileOutputStream output = null;
-                
+
                 try {
                     output = new FileOutputStream(actual);
                     byte[] buf = new byte[8192];
                     int length = 0;
-                    
+
                     while ((length = input.read(buf)) > 0) {
                         output.write(buf, 0, length);
                     }
-                    
+
                     MultiVerseCore.log.info(MultiVerseCore.logPrefix + "Default config file written: " + name);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -46,62 +46,63 @@ public class DefaultConfiguration {
                     try {
                         if (input != null)
                             input.close();
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
 
                     try {
                         if (output != null)
                             output.close();
                     } catch (Exception e) {
-                        
+
                     }
                 }
             }
         } else {
-            if(contains==null){
+            if (contains == null) {
                 return;
             }
-            
+
             boolean found = false;
-            
+
             try {
-                // Open the file that is the first 
+                // Open the file that is the first
                 // command line parameter
                 FileInputStream fstream = new FileInputStream(actual);
                 // Get the object of DataInputStream
                 DataInputStream in = new DataInputStream(fstream);
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String strLine;
-                //Read File Line By Line
-                
-                while ((strLine = br.readLine()) != null)   {
-                    if(strLine.equals(contains)){
+                // Read File Line By Line
+
+                while ((strLine = br.readLine()) != null) {
+                    if (strLine.equals(contains)) {
                         found = true;
                         break;
                     }
                 }
-                //Close the input stream
+                // Close the input stream
                 in.close();
-            } catch (Exception e) {//Catch exception if any
+            } catch (Exception e) {// Catch exception if any
                 System.err.println("Error: Could not verify the contents of " + actual.toString());
                 System.err.println("Error: " + e.getMessage());
                 return;
             }
-            
-            if(!found){
+
+            if (!found) {
                 try {
-                    BufferedWriter out = new BufferedWriter(new FileWriter(actual, true)); 
+                    BufferedWriter out = new BufferedWriter(new FileWriter(actual, true));
                     out.newLine();
-                    out.write(contains); 
-                    out.close(); 
+                    out.write(contains);
+                    out.close();
                 } catch (Exception e) {
                     System.err.println("Error: Could not write default node to " + actual.toString());
                     System.err.println("Error: " + e.getMessage());
                     return;
                 }
             }
-            
+
         }
-        
+
     }
-    
+
 }

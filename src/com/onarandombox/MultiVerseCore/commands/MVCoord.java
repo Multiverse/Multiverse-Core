@@ -12,7 +12,7 @@ import com.onarandombox.utils.LocationManipulation;
 public class MVCoord extends MVCommandHandler {
 
     private LocationManipulation locMan = new LocationManipulation();
-    
+
     public MVCoord(MultiVerseCore plugin) {
         super(plugin);
         // TODO Auto-generated constructor stub
@@ -21,14 +21,14 @@ public class MVCoord extends MVCommandHandler {
     @Override
     public boolean perform(CommandSender sender, String[] args) {
         // Check if the command was sent from a Player.
-        if(sender instanceof Player){
+        if (sender instanceof Player) {
             // If this command was sent from a Player then we need to check Permissions
-            if(!(plugin.ph.has(((Player) sender), "multiverse.coord"))){
+            if (!(plugin.ph.has(((Player) sender), "multiverse.coord"))) {
                 sender.sendMessage("You do not have access to this command.");
                 return true;
             }
             Player p = (Player) sender;
-            
+
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
             p.sendMessage(ChatColor.RED + "Compression: " + ChatColor.WHITE + plugin.worlds.get(p.getWorld().getName()).compression);
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + locMan.strCoords(p.getLocation()));
