@@ -3,10 +3,12 @@ package com.onarandombox.MultiverseCore;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class MVPlayerListener extends PlayerListener {
 
@@ -16,7 +18,8 @@ public class MVPlayerListener extends PlayerListener {
         this.plugin = plugin;
     }
 
-    public void onPlayerTeleport(PlayerMoveEvent event) {
+    @Override
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
         // MultiVerseCore.debugMsg(event.getPlayer().getName() + " just tried to Teleport");
         // event.setCancelled(true);
         // Entity entity = event.getPlayer().;
@@ -50,11 +53,13 @@ public class MVPlayerListener extends PlayerListener {
 
     }
 
-    public void onPlayerJoin(PlayerEvent event) {
+    @Override
+    public void onPlayerJoin(PlayerJoinEvent event) {
 
     }
 
-    public void onPlayerQuit(PlayerEvent event) {
+    @Override
+    public void onPlayerQuit(PlayerQuitEvent event) {
 
     }
 }

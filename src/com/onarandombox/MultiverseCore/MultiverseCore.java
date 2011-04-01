@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -18,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
@@ -44,29 +42,23 @@ import com.onarandombox.utils.UpdateChecker;
 
 public class MultiverseCore extends JavaPlugin {
 
-    // Setup our Map for our Commands using the CommandHandler.
-    private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
-
-    // Variable to state whether we are displaying Debug Messages or not.
-    public static boolean debug = true;
+    // Setup a variable to hold our DataFolder which will house everything to do with Multiverse
+    public static final File dataFolder = new File("plugins" + File.separator + "Multiverse");
 
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");
     private static DebugLog debugLog;
 
-    public static final String logPrefix = "[MultiVerse-Core] ";
-    public static Plugin instance;
-    public static Server server;
-    public static PluginDescriptionFile description;
+    // Debug Mode
+    private boolean debug;
 
-    // Setup a variable to hold our DataFolder which will house everything to do with MultiVerse
-    // Using this instead of getDataFolder(), allows all modules to use the same direectory.
-    public static final File dataFolder = new File("plugins" + File.separator + "Multiverse");
+    // Setup our Map for our Commands using the CommandHandler.
+    private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
 
     // Messaging
     private Messaging messaging = new Messaging();
 
-    // MultiVerse Permissions Handler
+    // Multiverse Permissions Handler
     public MVPermissions ph = new MVPermissions(this);
 
     // Permissions Handler
@@ -77,8 +69,8 @@ public class MultiverseCore extends JavaPlugin {
     public static boolean useiConomy = false;
 
     // Configurations
-    public static Configuration configMV = null;
-    public static Configuration configWorlds = null;
+    public Configuration configMV = null;
+    public Configuration configWorlds = null;
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);;
@@ -100,16 +92,10 @@ public class MultiverseCore extends JavaPlugin {
         debugLog = new DebugLog("Multiverse", dataFolder + File.separator + "debug.log");
     }
 
-    /**
-     * What happens when the plugin gets around to being enabled...
-     */
     @Override
     public void onEnable() {
-        // Create the Plugin Data folder.
-        dataFolder.mkdir();
-
         // Output a little snippet to show it's enabled.
-        log.info(logPrefix + "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
+        log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
 
         // Setup & Load our Configuration files.
         loadConfigs();
@@ -138,20 +124,19 @@ public class MultiverseCore extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Highest, this); // Cancel Teleports if needed.
-
+        pm.registerEvent(Event.Type.PLAYER_LOGIN, playerListener, Priority.Normal, this); // To create the Player Session
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this); // To remove Player Sessions
 
-        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this); // To prevent Blocks being destroyed.
-        // pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this); // To prevent Blocks being placed.
-
-        // pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this); // To Allow/Disallow PVP as well as EnableHealth.
-
+        pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this); // To Allow/Disallow PVP as well as EnableHealth.
         pm.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this); // To prevent all or certain animals/monsters from spawning.
 
-        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
-        // pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
+        pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLUGIN_DISABLE, pluginListener, Priority.Monitor, this);
 
-        pm.registerEvent(Event.Type.PLUGIN_ENABLE, pluginListener, Priority.Monitor, this); // Monitor for Permissions Plugin etc.
+        // pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this); // To prevent Blocks being destroyed.
+        // pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this); // To prevent Blocks being placed.
+        // pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
+        // pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
     }
 
     /**
@@ -163,7 +148,7 @@ public class MultiverseCore extends JavaPlugin {
         if (MultiverseCore.Permissions == null) {
             if (p != null && p.isEnabled()) {
                 MultiverseCore.Permissions = ((Permissions) p).getHandler();
-                MultiverseCore.log.info(logPrefix + "- Attached to Permissions");
+                log(Level.INFO, "- Attached to Permissions");
             }
         }
     }
@@ -187,7 +172,7 @@ public class MultiverseCore extends JavaPlugin {
     public void loadConfigs() {
         // Call the defaultConfiguration class to create the config files if they don't already exist.
         new DefaultConfiguration(dataFolder, "config.yml");
-        new DefaultConfiguration(dataFolder, "worlds.yml", "worlds:");
+        new DefaultConfiguration(dataFolder, "worlds.yml");
 
         // Now grab the Configuration Files.
         configMV = new Configuration(new File(dataFolder, "config.yml"));
@@ -196,20 +181,20 @@ public class MultiverseCore extends JavaPlugin {
         // Now attempt to Load the configurations.
         try {
             configMV.load();
-            log.info(logPrefix + "- MultiVerse Config -- Loaded");
+            log(Level.INFO, "- Multiverse Config -- Loaded");
         } catch (Exception e) {
-            log.info(MultiverseCore.logPrefix + "- Failed to load config.yml");
+            log(Level.INFO, "- Failed to load config.yml");
         }
 
         try {
             configWorlds.load();
-            log.info(logPrefix + "- World Config -- Loaded");
+            log(Level.INFO, "- World Config -- Loaded");
         } catch (Exception e) {
-            log.info(MultiverseCore.logPrefix + "- Failed to load worlds.yml");
+            log(Level.INFO, "- Failed to load worlds.yml");
         }
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
-        MultiverseCore.debug = configMV.getBoolean("debug", false);
+        this.debug = configMV.getBoolean("debug", false);
     }
 
     /**
@@ -261,33 +246,69 @@ public class MultiverseCore extends JavaPlugin {
     public void loadWorlds() {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
-        List<String> worldKeys = MultiverseCore.configWorlds.getKeys("worlds"); // Grab all the Worlds from the Config.
+        // Grab all the Worlds from the Config.
+        List<String> worldKeys = configWorlds.getKeys("worlds");
 
-        if (worldKeys != null) {
+        // Check that the list actually contains any data.
+        if (worldKeys != null && worldKeys.size() > 0) {
             for (String worldKey : worldKeys) {
-                // If this World already exists within the HashMap then we don't need to process it.
+                // Check if the World is already loaded within the Plugin.
                 if (worlds.containsKey(worldKey)) {
                     continue;
                 }
-
-                String wEnvironment = MultiverseCore.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
-
+                // Grab the initial values from the config file.
+                String environment = configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
+                String seedString = configWorlds.getString("worlds." + worldKey + ".seed", null);
+                Long seed = null;
+                // Work out the Environment
                 Environment env;
-                if (wEnvironment.equalsIgnoreCase("NETHER")) // Check if the selected Environment is NETHER, otherwise we just default to NORMAL.
+                if (environment.equalsIgnoreCase("NETHER")) { // Check if the selected Environment is NETHER, otherwise we just default to NORMAL.
                     env = Environment.NETHER;
-                else
+                } else {
                     env = Environment.NORMAL;
-
-                log.info(logPrefix + "Loading World & Settings - '" + worldKey + "' - " + wEnvironment); // Output to the Log that wea re loading a world, specify the name and environment type.
-
-                World world = getServer().createWorld(worldKey, env);
-
-                worlds.put(worldKey, new MVWorld(world, MultiverseCore.configWorlds, this)); // Place the World into the HashMap.
-
-                count++; // Increment the World Count.
+                }
+                // Output to the Log that wea re loading a world, specify the name and environment type.
+                log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
+                
+                // If a seed was given we need to parse it to a Long Format.
+                if (seedString.length() > 0) {
+                    try {
+                        seed = Long.parseLong(seedString);
+                    } catch (NumberFormatException numberformatexception) {
+                        seed = (long) seedString.hashCode();
+                    }
+                } 
+                // If we don't have a seed then add a standard World, else add the world with the Seed.
+                if (seed == null) {
+                    addWorld(worldKey, env, null);
+                } else {
+                    addWorld(worldKey, env, seed);
+                }
+                // Increment the World Count.
+                count++;
             }
         }
-        log.info(logPrefix + count + " - World(s) loaded.");
+        // Simple Output to the Console to show how many Worlds were loaded.
+        log(Level.INFO, count + " - World(s) loaded.");
+    }
+
+    /**
+     * Add a new World to the Multiverse Setup.
+     * @param name World Name
+     * @param environment Environment Type
+     */
+    public void addWorld(String name, Environment environment, Long seed) {
+        if (seed != null) {
+            World world = getServer().createWorld(name, environment, seed);
+            worlds.put(name, new MVWorld(world, configWorlds, this, seed)); // Place the World into the HashMap.
+        } else {
+            World world = getServer().createWorld(name, environment);
+            worlds.put(name, new MVWorld(world, configWorlds, this, null)); // Place the World into the HashMap.
+        }
+    }
+
+    public void addWorld(String name, Environment environment) {
+        addWorld(name, environment, null);
     }
 
     /**
@@ -296,7 +317,7 @@ public class MultiverseCore extends JavaPlugin {
     @Override
     public void onDisable() {
         MultiverseCore.Permissions = null;
-        log.info(logPrefix + "- Disabled");
+        log(Level.INFO, "- Disabled");
     }
 
     /**
@@ -308,7 +329,7 @@ public class MultiverseCore extends JavaPlugin {
         if (playerSessions.containsKey(player.getName())) {
             return playerSessions.get(player.getName());
         } else {
-            playerSessions.put(player.getName(), new MVPlayerSession(player, MultiverseCore.configMV, this));
+            playerSessions.put(player.getName(), new MVPlayerSession(player, configMV, this));
             return playerSessions.get(player.getName());
         }
     }
@@ -373,7 +394,7 @@ public class MultiverseCore extends JavaPlugin {
      * @param msg
      */
     public void debugLog(Level level, String msg) {
-        if (MultiverseCore.debug) {
+        if (this.debug) {
             log.log(level, "[Debug] " + msg);
         }
         debugLog.log(level, "[Debug] " + msg);

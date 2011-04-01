@@ -17,7 +17,7 @@ public class MVSpawn extends MVCommandHandler {
         // TODO: Permissions
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            p.teleportTo(p.getWorld().getSpawnLocation());
+            p.teleport(p.getWorld().getSpawnLocation());
         } else {
             sender.sendMessage("Must be used in game.");
         }

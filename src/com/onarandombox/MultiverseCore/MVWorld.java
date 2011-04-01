@@ -15,7 +15,8 @@ public class MVWorld {
 
     public World world; // The World Instance.
     public Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
-
+    public Long seed;
+    
     public String name; // The Worlds Name, EG its folder name.
     public String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
 
@@ -36,13 +37,14 @@ public class MVWorld {
 
     public Double compression; // How stretched/compressed distances are
 
-    public MVWorld(World world, Configuration config, MultiverseCore instance) {
+    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed) {
         this.config = config;
         this.plugin = instance;
 
         this.world = world;
         this.name = world.getName();
         this.environment = world.getEnvironment();
+        this.seed = seed;
 
         this.alias = config.getString("worlds." + this.name + ".alias", "");
         this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);

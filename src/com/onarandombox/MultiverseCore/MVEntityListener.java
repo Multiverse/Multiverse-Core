@@ -53,7 +53,7 @@ public class MVEntityListener extends EntityListener {
         Entity defender = event.getEntity();
         World w = defender.getWorld();
 
-        if (!(MultiverseCore.configWorlds.getBoolean("worlds." + w.getName() + ".enablehealth", true))) {
+        if (!(plugin.configWorlds.getBoolean("worlds." + w.getName() + ".enablehealth", true))) {
             event.setCancelled(true);
             return;
         }
@@ -153,7 +153,7 @@ public class MVEntityListener extends EntityListener {
             int count = 0;
             for (Entity entity : entities) {
                 if (entity instanceof Ghast) {
-                    if (count >= MultiverseCore.configMV.getInt("ghastlimit", 50)) {
+                    if (count >= plugin.configMV.getInt("ghastlimit", 50)) {
                         event.setCancelled(true);
                         return;
                     }

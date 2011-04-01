@@ -1,5 +1,9 @@
 package com.onarandombox.MultiverseCore;
 
+import java.util.logging.Level;
+
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.PluginEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
@@ -18,14 +22,14 @@ public class MVPluginListener extends ServerListener {
     /**
      * Keep an eye out for Plugins which we can utilize.
      */
-    public void onPluginEnabled(PluginEvent event) {
+    public void onPluginEnable(PluginEnableEvent event) {
 
         /**
          * Check to see if Permissions was just enabled, we only wan't to perform the following if GroupManager is not found.
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             MultiverseCore.Permissions = ((Permissions) plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler();
-            // MultiverseCore.log.info(MultiverseCore.logPrefix + "- Found Permissions");
+            plugin.log(Level.INFO, "- Attached to Permissions");
         }
 
         /**
@@ -37,7 +41,6 @@ public class MVPluginListener extends ServerListener {
             if (iConomy != null) {
                 if (iConomy.isEnabled()) {
                     MultiverseCore.iConomy = (iConomy) iConomy;
-                    // MultiverseCore.log.info(MultiverseCore.logPrefix + "- Found iConomy");
                 }
             }
         }
@@ -46,13 +49,12 @@ public class MVPluginListener extends ServerListener {
     /**
      * We'll check if any of the plugins we rely on decide to Disable themselves.
      */
-    public void onPluginDisabled(PluginEvent event) {
+    public void onPluginDisable(PluginDisableEvent event) {
         /**
          * Check to see if Permissions just disabled.
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             MultiverseCore.Permissions = null;
-            // MultiverseCore.log.info(MultiverseCore.logPrefix + "- Permissions has been Disabled");
         }
 
         /**
@@ -60,7 +62,6 @@ public class MVPluginListener extends ServerListener {
          */
         if (MultiverseCore.getiConomy() != null) {
             MultiverseCore.iConomy = null;
-            // MultiverseCore.log.info(MultiverseCore.logPrefix + "- iConom has been Disabled");
         }
     }
 
