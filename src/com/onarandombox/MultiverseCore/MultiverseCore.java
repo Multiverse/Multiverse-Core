@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -258,7 +259,7 @@ public class MultiverseCore extends JavaPlugin {
                 }
                 // Grab the initial values from the config file.
                 String environment = configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
-                String seedString = configWorlds.getString("worlds." + worldKey + ".seed", null);
+                String seedString = configWorlds.getString("worlds." + worldKey + ".seed", "");
                 Long seed = null;
                 // Work out the Environment
                 Environment env;
@@ -301,9 +302,11 @@ public class MultiverseCore extends JavaPlugin {
         if (seed != null) {
             World world = getServer().createWorld(name, environment, seed);
             worlds.put(name, new MVWorld(world, configWorlds, this, seed)); // Place the World into the HashMap.
+            System.out.print("Seed - " + ((CraftWorld) world).getHandle().q.b());
         } else {
             World world = getServer().createWorld(name, environment);
             worlds.put(name, new MVWorld(world, configWorlds, this, null)); // Place the World into the HashMap.
+            System.out.print("Seed - " + ((CraftWorld) world).getHandle().q.b());
         }
     }
 
