@@ -16,7 +16,7 @@ public class MVWorld {
     public World world; // The World Instance.
     public Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
     public Long seed;
-    
+
     public String name; // The Worlds Name, EG its folder name.
     public String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
 
@@ -69,6 +69,7 @@ public class MVWorld {
         temp = config.getStringList("worlds." + name + ".monsters.exceptions", new ArrayList<String>());
         for (String s : temp) {
             this.monsterList.add(s.toUpperCase());
+            System.out.print(s);
         }
     }
 }

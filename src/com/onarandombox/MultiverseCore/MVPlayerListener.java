@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -25,6 +26,10 @@ public class MVPlayerListener extends PlayerListener {
         // Entity entity = event.getPlayer().;
         // MultiVerseCore.log.info("1 - " + event.getTo().toString());
         // MultiVerseCore.log.info("2 - " + event.getPlayer().getLocation().toString());
+    }
+
+    public void onPlayerKick(PlayerKickEvent event) {
+        event.setCancelled(true);
     }
 
     @Override

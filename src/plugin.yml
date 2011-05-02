@@ -3,6 +3,9 @@ main: com.onarandombox.MultiverseCore.MultiverseCore
 authors: ['Rigby', 'Herocraft Coding Team']
 version: 2.0
 commands:
+  mv:
+    description: Generic Multiverse Command
+    usage: /<command>
   mvcreate:
     description: World create command
     usage: |

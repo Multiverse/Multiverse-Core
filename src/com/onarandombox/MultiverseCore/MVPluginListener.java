@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.event.server.PluginEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 
@@ -22,6 +21,7 @@ public class MVPluginListener extends ServerListener {
     /**
      * Keep an eye out for Plugins which we can utilize.
      */
+    @Override
     public void onPluginEnable(PluginEnableEvent event) {
 
         /**
@@ -49,6 +49,7 @@ public class MVPluginListener extends ServerListener {
     /**
      * We'll check if any of the plugins we rely on decide to Disable themselves.
      */
+    @Override
     public void onPluginDisable(PluginDisableEvent event) {
         /**
          * Check to see if Permissions just disabled.
