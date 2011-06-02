@@ -1,24 +1,31 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.logging.Logger;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.onarandombox.utils.Destination;
 import com.onarandombox.utils.DestinationType;
 
 public class TeleportCommand extends BaseCommand {
+    private final Logger log = Logger.getLogger("Minecraft");
+    private MVTeleport playerTeleporter;
     
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
         name = "Teleport";
         description = "Teleports you to a different world.";
-        usage = "/mvcoord" + ChatColor.RED + "{WORLD}";
+        usage = "/mvtp" + ChatColor.GREEN + " {WORLD}";
         minArgs = 1;
         maxArgs = 1;
         identifiers.add("mvtp");
+        playerTeleporter = new MVTeleport(plugin);
     }
     
     @Override
@@ -31,12 +38,13 @@ public class TeleportCommand extends BaseCommand {
                 p.sendMessage("You do not have access to this command.");
                 return;
             }
-            Destination d = Destination.parseDestination(args[1]);
+            Destination d = Destination.parseDestination(args[0]);
             // TODO: I'd like to find a way to do these next bits inside Destination, so we're always valid --FF
             // TODO: Support portals, but I didn't see the portals list --FF
             if (this.plugin.worlds.containsKey(d.getName().toLowerCase())) {
-                if(d.getType() == DestinationType.World) {
-                    
+                if (d.getType() == DestinationType.World) {
+                    Location l = playerTeleporter.getSafeDestination(plugin.getServer().getWorld(d.getName()).getSpawnLocation());
+                    p.teleport(l);
                 }
             } else {
                 p.sendMessage("That was not a valid world (portals aren't yet supported)");

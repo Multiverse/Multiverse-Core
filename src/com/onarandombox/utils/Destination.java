@@ -1,7 +1,6 @@
 package com.onarandombox.utils;
 
 public class Destination {
-    
     private String name;
     private DestinationType type;
     
@@ -34,7 +33,7 @@ public class Destination {
         
         // If we only found one param, assume world
         // TODO: Check for a valid world
-        if (items.length == 0) {
+        if (items.length == 1) {
             return new Destination(items[0], DestinationType.World);
         }
         

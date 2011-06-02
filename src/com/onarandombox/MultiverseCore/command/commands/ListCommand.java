@@ -32,7 +32,7 @@ public class ListCommand extends BaseCommand {
             }
         }
         
-        String output = ChatColor.GREEN + "Worlds which you can view - \n";
+        String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
         for (int i = 0; i < plugin.getServer().getWorlds().size(); i++) {
             
             World world = plugin.getServer().getWorlds().get(i);
@@ -54,7 +54,7 @@ public class ListCommand extends BaseCommand {
                 color = ChatColor.GREEN;
             }
             
-            output += color + world.getName() + " - " + world.getEnvironment().toString() + " \n";
+            output += ChatColor.GOLD + world.getName() + ChatColor.WHITE + " - " + color + world.getEnvironment().toString() + " \n";
             
         }
         String[] response = output.split("\n");
