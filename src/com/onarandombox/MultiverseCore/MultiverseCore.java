@@ -45,11 +45,10 @@ import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.CoordCommand;
 import com.onarandombox.MultiverseCore.command.commands.HelpCommand;
 import com.onarandombox.MultiverseCore.command.commands.ListCommand;
+import com.onarandombox.MultiverseCore.command.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.command.commands.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.command.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.command.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commands.MVCoord;
-import com.onarandombox.MultiverseCore.commands.MVCreate;
 import com.onarandombox.MultiverseCore.commands.MVImport;
 import com.onarandombox.MultiverseCore.commands.MVModify;
 import com.onarandombox.MultiverseCore.commands.MVReload;
@@ -296,13 +295,14 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new ListCommand(this));
         commandManager.addCommand(new WhoCommand(this));
         commandManager.addCommand(new SetSpawnCommand(this));
+        commandManager.addCommand(new CreateCommand(this));
     }
 
     /**
      * Setup commands to the Command Handler
      */
     private void setupCommands() {
-        commands.put("mvcreate", new MVCreate(this));
+//        commands.put("mvcreate", new CreateCommand(this));
         commands.put("mvimport", new MVImport(this));
         commands.put("mvremove", new MVRemove(this));
         commands.put("mvmodify", new MVModify(this));
@@ -310,7 +310,7 @@ public class MultiverseCore extends JavaPlugin {
 //        commands.put("mvlist", new ListCommand(this));
 //        commands.put("mvsetspawn", new SetSpawnCommand(this));
         commands.put("mvspawn", new MVSpawn(this));
-        commands.put("mvcoord", new MVCoord(this));
+//        commands.put("mvcoord", new MVCoord(this));
 //        commands.put("mvwho", new WhoCommand(this));
         commands.put("mvreload", new MVReload(this));
     }
