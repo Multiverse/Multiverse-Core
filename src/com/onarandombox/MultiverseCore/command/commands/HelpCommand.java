@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.command.commands;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -22,7 +23,7 @@ public class HelpCommand extends BaseCommand {
         super(plugin);
         name = "Help";
         description = "Displays the help menu";
-        usage = "§e/mv help §8[page#]";
+        usage = ChatColor.AQUA + "/mv help " + ChatColor.GOLD + "[page#]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("mv help");
@@ -49,7 +50,7 @@ public class HelpCommand extends BaseCommand {
         if (page >= numPages || page < 0) {
             page = 0;
         }
-        sender.sendMessage("§c-----[ " + "§f" + plugin.getTag().replace("[", "").replace("]", "") + " Help <" + (page + 1) + "/" + numPages + ">§c ]-----");
+        sender.sendMessage(ChatColor.GREEN + "-----[ " + ChatColor.WHITE + plugin.getTag().replace("[", "").replace("]", "") + " Help <" + (page + 1) + "/" + numPages + ">" + ChatColor.GREEN + " ]-----");
         int start = page * CMDS_PER_PAGE;
         int end = start + CMDS_PER_PAGE;
         if (end > commands.size()) {
@@ -57,10 +58,10 @@ public class HelpCommand extends BaseCommand {
         }
         for (int c = start; c < end; c++) {
             BaseCommand cmd = commands.get(c);
-            sender.sendMessage("  §a" + cmd.getUsage());
+            sender.sendMessage(ChatColor.AQUA + "  " + cmd.getUsage());
         }
 
-        sender.sendMessage("§cFor more info on a particular command, type '/<command> ?'");
+        sender.sendMessage(ChatColor.GREEN + "For more info on a particular command, type '/<command> ?'");
     }
 
 }

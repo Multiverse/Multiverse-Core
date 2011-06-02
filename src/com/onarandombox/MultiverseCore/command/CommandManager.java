@@ -48,9 +48,9 @@ public class CommandManager {
                 match.execute(sender, trimmedArgs);
                 return true;
             } else {
-                sender.sendMessage("§cCommand: " + ChatColor.WHITE + match.getName());
-                sender.sendMessage("§cDescription: " + ChatColor.WHITE + match.getDescription());
-                sender.sendMessage("§cUsage: " + ChatColor.WHITE + match.getUsage());
+                sender.sendMessage(ChatColor.AQUA + "Command: " + ChatColor.WHITE + match.getName());
+                sender.sendMessage(ChatColor.AQUA + "Description: " + ChatColor.WHITE + match.getDescription());
+                sender.sendMessage(ChatColor.AQUA + "Usage: " + ChatColor.WHITE + match.getUsage());
             }
         }
         return true;

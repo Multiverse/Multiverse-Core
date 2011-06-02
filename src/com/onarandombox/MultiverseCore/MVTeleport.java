@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +16,7 @@ public class MVTeleport {
     MultiverseCore plugin;
 
     BlockSafety bs = new BlockSafety();
-
+    private static final Logger log = Logger.getLogger("Minecraft");
     public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
     }
@@ -105,11 +106,11 @@ public class MVTeleport {
         }
 
         if (aux == -1) {
-            // MultiverseCore.debugMsg("Uh oh, no safe location.");
+            log.warning("Uh oh, no safe location.");
             return null;
         }
 
-        // MultiverseCore.debugMsg("Target location (safe): " + x + ", " + aux + ", " + z);
+        log.info("Target location (safe): " + x + ", " + aux + ", " + z);
 
         return new Location(w, x, aux, z);
     }

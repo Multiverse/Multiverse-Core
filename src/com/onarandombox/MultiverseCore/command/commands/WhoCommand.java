@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commands;
+package com.onarandombox.MultiverseCore.command.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,30 +9,36 @@ import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiverseCore.MVCommandHandler;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.command.BaseCommand;
 
-public class MVWho extends MVCommandHandler {
+public class WhoCommand extends BaseCommand {
 
-    public MVWho(MultiverseCore plugin) {
+    public WhoCommand(MultiverseCore plugin) {
         super(plugin);
+        name = "Who";
+        description = "States who is in what world";
+        usage = "/mvwho [WORLD]";
+        minArgs = 0;
+        maxArgs = 1;
+        identifiers.add("mvwho");
     }
 
-    @Override
-    public boolean perform(CommandSender sender, String[] args) {
+	@Override
+	public void execute(CommandSender sender, String[] args) {
         // If this command was sent from a Player then we need to check Permissions
         if (sender instanceof Player) {
             if (!(plugin.ph.has(((Player) sender), "multiverse.who"))) {
                 sender.sendMessage("You do not have access to this command.");
-                return true;
+                return;
             }
         }
 
         List<World> worlds = new ArrayList<World>();
-
-        if (args.length > 1) {
-            return false;
-        }
+//		  No longer needed
+//        if (args.length > 1) {
+//            return false;
+//        }
 
         if (args.length > 0) {
             World world = plugin.getServer().getWorld(args[0].toString());
@@ -40,7 +46,7 @@ public class MVWho extends MVCommandHandler {
                 worlds.add(world);
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
-                return true;
+                return;
             }
         } else {
             worlds = plugin.getServer().getWorlds();
@@ -65,7 +71,7 @@ public class MVWho extends MVCommandHandler {
             }
             sender.sendMessage(color + world.getName() + ChatColor.WHITE + " - " + result);
         }
-        return true;
-    }
+        return;
+	}
 
 }

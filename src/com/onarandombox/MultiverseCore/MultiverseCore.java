@@ -44,17 +44,17 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.CoordCommand;
 import com.onarandombox.MultiverseCore.command.commands.HelpCommand;
+import com.onarandombox.MultiverseCore.command.commands.ListCommand;
+import com.onarandombox.MultiverseCore.command.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.command.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.MVCoord;
 import com.onarandombox.MultiverseCore.commands.MVCreate;
 import com.onarandombox.MultiverseCore.commands.MVImport;
-import com.onarandombox.MultiverseCore.commands.MVList;
 import com.onarandombox.MultiverseCore.commands.MVModify;
 import com.onarandombox.MultiverseCore.commands.MVReload;
 import com.onarandombox.MultiverseCore.commands.MVRemove;
 import com.onarandombox.MultiverseCore.commands.MVSetSpawn;
 import com.onarandombox.MultiverseCore.commands.MVSpawn;
-import com.onarandombox.MultiverseCore.commands.MVTP;
-import com.onarandombox.MultiverseCore.commands.MVWho;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.Messaging;
@@ -292,6 +292,9 @@ public class MultiverseCore extends JavaPlugin {
         // Page 1
         commandManager.addCommand(new HelpCommand(this));
         commandManager.addCommand(new CoordCommand(this));
+        commandManager.addCommand(new TeleportCommand(this));
+        commandManager.addCommand(new ListCommand(this));
+        commandManager.addCommand(new WhoCommand(this));
     }
 
     /**
@@ -302,12 +305,12 @@ public class MultiverseCore extends JavaPlugin {
         commands.put("mvimport", new MVImport(this));
         commands.put("mvremove", new MVRemove(this));
         commands.put("mvmodify", new MVModify(this));
-        commands.put("mvtp", new MVTP(this));
-        commands.put("mvlist", new MVList(this));
+//        commands.put("mvtp", new TeleportCommand(this));
+//        commands.put("mvlist", new ListCommand(this));
         commands.put("mvsetspawn", new MVSetSpawn(this));
         commands.put("mvspawn", new MVSpawn(this));
         commands.put("mvcoord", new MVCoord(this));
-        commands.put("mvwho", new MVWho(this));
+//        commands.put("mvwho", new WhoCommand(this));
         commands.put("mvreload", new MVReload(this));
     }
 
