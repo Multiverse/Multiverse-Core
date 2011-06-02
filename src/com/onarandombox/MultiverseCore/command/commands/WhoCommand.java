@@ -18,7 +18,7 @@ public class WhoCommand extends BaseCommand {
         super(plugin);
         name = "Who";
         description = "States who is in what world";
-        usage = "/mvwho [WORLD]";
+        usage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("mvwho");
@@ -35,10 +35,6 @@ public class WhoCommand extends BaseCommand {
         }
 
         List<World> worlds = new ArrayList<World>();
-//		  No longer needed
-//        if (args.length > 1) {
-//            return false;
-//        }
 
         if (args.length > 0) {
             World world = plugin.getServer().getWorld(args[0].toString());

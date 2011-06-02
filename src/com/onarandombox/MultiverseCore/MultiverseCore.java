@@ -45,6 +45,7 @@ import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.CoordCommand;
 import com.onarandombox.MultiverseCore.command.commands.HelpCommand;
 import com.onarandombox.MultiverseCore.command.commands.ListCommand;
+import com.onarandombox.MultiverseCore.command.commands.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.command.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.command.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.MVCoord;
@@ -53,7 +54,6 @@ import com.onarandombox.MultiverseCore.commands.MVImport;
 import com.onarandombox.MultiverseCore.commands.MVModify;
 import com.onarandombox.MultiverseCore.commands.MVReload;
 import com.onarandombox.MultiverseCore.commands.MVRemove;
-import com.onarandombox.MultiverseCore.commands.MVSetSpawn;
 import com.onarandombox.MultiverseCore.commands.MVSpawn;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
@@ -295,6 +295,7 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new TeleportCommand(this));
         commandManager.addCommand(new ListCommand(this));
         commandManager.addCommand(new WhoCommand(this));
+        commandManager.addCommand(new SetSpawnCommand(this));
     }
 
     /**
@@ -307,7 +308,7 @@ public class MultiverseCore extends JavaPlugin {
         commands.put("mvmodify", new MVModify(this));
 //        commands.put("mvtp", new TeleportCommand(this));
 //        commands.put("mvlist", new ListCommand(this));
-        commands.put("mvsetspawn", new MVSetSpawn(this));
+//        commands.put("mvsetspawn", new SetSpawnCommand(this));
         commands.put("mvspawn", new MVSpawn(this));
         commands.put("mvcoord", new MVCoord(this));
 //        commands.put("mvwho", new WhoCommand(this));

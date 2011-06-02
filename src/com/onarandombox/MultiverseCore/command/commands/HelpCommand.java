@@ -28,6 +28,7 @@ public class HelpCommand extends BaseCommand {
         maxArgs = 1;
         identifiers.add("mv help");
         identifiers.add("mv");
+        identifiers.add("mvhelp");
     }
 
     @Override

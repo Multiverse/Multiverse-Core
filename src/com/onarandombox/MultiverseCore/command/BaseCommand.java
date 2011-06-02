@@ -16,6 +16,8 @@ public abstract class BaseCommand {
     protected int minArgs;
     protected int maxArgs;
     protected List<String> identifiers;
+    
+    public final String IN_GAME_COMMAND_MSG = "This command needs to be used as a Player in game.";
 
     public BaseCommand(MultiverseCore plugin) {
         this.identifiers = new ArrayList<String>();

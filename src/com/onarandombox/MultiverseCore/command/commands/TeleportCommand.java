@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -14,7 +12,6 @@ import com.onarandombox.utils.Destination;
 import com.onarandombox.utils.DestinationType;
 
 public class TeleportCommand extends BaseCommand {
-    private final Logger log = Logger.getLogger("Minecraft");
     private MVTeleport playerTeleporter;
     
     public TeleportCommand(MultiverseCore plugin) {
@@ -51,7 +48,7 @@ public class TeleportCommand extends BaseCommand {
             }
             
         } else {
-            sender.sendMessage("This command needs to be used from a Player.");
+            sender.sendMessage(IN_GAME_COMMAND_MSG);
         }
     }
     
