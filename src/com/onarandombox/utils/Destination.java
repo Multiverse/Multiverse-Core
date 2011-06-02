@@ -1,10 +1,7 @@
 package com.onarandombox.utils;
 
-enum DestinationType {
-    World, Portal, Invalid
-}
-
 public class Destination {
+    
     private String name;
     private DestinationType type;
     
@@ -31,9 +28,16 @@ public class Destination {
         }
         
         String[] items = dest.split(":");
-        if (items.length != 2) {
+        if (items.length > 1) {
             return getBadDestination();
         }
+        
+        // If we only found one param, assume world
+        // TODO: Check for a valid world
+        if (items.length == 0) {
+            return new Destination(items[0], DestinationType.World);
+        }
+        
         if (items[0].equalsIgnoreCase("w")) {
             return new Destination(items[1], DestinationType.World);
         } else if (items[0].equalsIgnoreCase("p")) {
