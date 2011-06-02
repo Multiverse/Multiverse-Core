@@ -37,7 +37,7 @@ public abstract class BaseCommand {
                 args = new String[0];
             }
             int l = args.length;
-            if (l >= minArgs && l <= maxArgs) {
+            if (l >= minArgs && (maxArgs == -1 ||l <= maxArgs)) {
                 return args;
             }
         }

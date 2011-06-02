@@ -67,4 +67,25 @@ public class CommandManager {
     public List<BaseCommand> getCommands() {
         return commands;
     }
+    
+    private String[] parseAllQuotedStrings(String[] args) {
+        String[] returnVal = {};
+        return returnVal;
+    }
+    
+    /**
+     * Takes a string array and returns a combined string, excluding the stop position, including the start
+     * 
+     * @param args
+     * @param start
+     * @param stop
+     * @return
+     */
+    private String parseQuotedString(String[] args, int start, int stop) {
+        String returnVal = args[start];
+        for (int i = start + 1; i < stop; i++) {
+            returnVal += " " + args[i];
+        }
+        return returnVal.replace("\"", "");
+    }
 }
