@@ -12,17 +12,19 @@ import org.bukkit.entity.Player;
 import com.onarandombox.utils.BlockSafety;
 
 public class MVTeleport {
-
+    
     MultiverseCore plugin;
-
+    
     BlockSafety bs = new BlockSafety();
     private static final Logger log = Logger.getLogger("Minecraft");
+    
     public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
     }
-
+    
     /**
      * TODO: Sort out JavaDoc
+     * 
      * @param l
      * @param w
      * @return
@@ -33,15 +35,15 @@ public class MVTeleport {
         if (l.getWorld().getName().equalsIgnoreCase(w.getName())) {
             return l;
         }
-
+        
         double x, y, z;
-
+        
         // Grab the Compression value for each world.
         double srcComp = plugin.worlds.get(l.getWorld().getName()).compression;
         double trgComp = plugin.worlds.get(w.getName()).compression;
-
+        
         // MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
-
+        
         // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
         if (trgComp == 0.0) {
             x = w.getSpawnLocation().getX();
@@ -54,7 +56,7 @@ public class MVTeleport {
         }
         return new Location(w, x, y, z);
     }
-
+    
     /**
      * This function gets a safe place to teleport to.
      * 
@@ -67,12 +69,12 @@ public class MVTeleport {
         double y = l.getY();
         double z = l.getZ();
         World w = l.getWorld();
-
+        
         // To make things easier we'll start with the Y Coordinate on top of a Solid Block.
         // while (bs.blockIsAboveAir(w, x, y, z)) {
         // y--;
         // }
-
+        
         double i = 0, r = 0, aux = -1;
         for (r = 0; r < 32; r++) {
             for (i = x - r; i <= x + r; i++) {
@@ -104,19 +106,20 @@ public class MVTeleport {
                 break;
             }
         }
-
+        
         if (aux == -1) {
             log.warning("Uh oh, no safe location.");
             return null;
         }
-
+        
         log.info("Target location (safe): " + x + ", " + aux + ", " + z);
-
+        
         return new Location(w, x, aux, z);
     }
-
+    
     /**
      * Check the Column given to see if there is an available safe spot.
+     * 
      * @param world
      * @param x
      * @param y
@@ -134,9 +137,10 @@ public class MVTeleport {
         }
         return -1;
     }
-
+    
     /**
      * Find a portal around the given location and return a new location.
+     * 
      * @param location
      * @return
      */
@@ -152,7 +156,7 @@ public class MVTeleport {
                 }
             }
         }
-
+        
         // For each column try to find a portal block
         for (Block col : columns) {
             for (int y = 0; y <= 127; y++) {

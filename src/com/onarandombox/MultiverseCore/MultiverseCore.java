@@ -337,8 +337,10 @@ public class MultiverseCore extends JavaPlugin {
                 Long seed = null;
                 // Work out the Environment
                 Environment env;
-                if (environment.equalsIgnoreCase("NETHER")) { // Check if the selected Environment is NETHER, otherwise we just default to NORMAL.
+                if (environment.equalsIgnoreCase("NETHER")) { 
                     env = Environment.NETHER;
+                } else if(environment.equalsIgnoreCase("NETHER")) {
+                    env = Environment.SKYLANDS;
                 } else {
                     env = Environment.NORMAL;
                 }
