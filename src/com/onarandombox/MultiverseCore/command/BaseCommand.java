@@ -26,22 +26,20 @@ public abstract class BaseCommand {
 
     public abstract void execute(CommandSender sender, String[] args);
 
-    public String[] validate(String input, StringBuilder identifier) {
-        String match = matchIdentifier(input);
-
+    public boolean validate(String name, String[] parsedArgs, StringBuilder identifier) {
+        String match = matchIdentifier(name);
         if (match != null) {
             identifier = identifier.append(match);
             int i = identifier.length();
-            String[] args = input.substring(i).trim().split(" ");
-            if (args[0].isEmpty()) {
-                args = new String[0];
+            if (parsedArgs == null) {
+                parsedArgs = new String[0];
             }
-            int l = args.length;
+            int l = parsedArgs.length;
             if (l >= minArgs && (maxArgs == -1 ||l <= maxArgs)) {
-                return args;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     public String matchIdentifier(String input) {

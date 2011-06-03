@@ -20,59 +20,26 @@ public class CreateCommand extends BaseCommand {
         super(plugin);
         name = "Create World";
         description = "Creates a new world of the specified type";
-        // Syntax is s:SEED so we can see this variable seperately when spaces are allowed in worldnames
-        usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " [s:SEED]";
+        usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " [SEED]";
         minArgs = 2;
-        maxArgs = -1;
+        maxArgs = 3;
         identifiers.add("mvcreate");
     }
     
     @Override
     public void execute(CommandSender sender, String[] args) {
         // TODO: Permissions, check
-        // TODO: Allow spaces in world names, currently this will catch it --FF
         
         int numOfParams = args.length;
-        // We'll search for this in a minute, if it's still -1 after the search, a user did this:
-        // /mvcreate "My Awesome world NETHER
-        // ie. they forgot to close the "
-        int envPosition = -1;
-        boolean hasSeed = false;
-        
-        // Did the user input "s?
-        if (args[0].substring(0, 1).equals("\"")) {
-            // Find the magical keyword,
-            for (int i = 0; i < numOfParams; i++) {
-                if (args[i].substring(args[i].length() - 1, args[i].length()).equals("\"") && envPosition == -1) {
-                    // We found a word that ended with a quote, the next one MUST be the environment keyword
-                    envPosition = i + 1;
-                }
-            }
-        } else {
-            // There can only be one word, envPosition must be 1
-            envPosition = 1;
+
+        boolean hasSeed = numOfParams == 3;
+        String worldName = args[0];
+        String env = args[1];
+        String seed = "";
+        if(hasSeed) {
+            seed = args[2];
         }
         
-        if (envPosition == -1) {
-            sender.sendMessage("Why are you such a failure...");
-            return;
-        }
-        
-        // If the environment position is not the last in the list, we have a seed after it:
-        if (envPosition != numOfParams - 1) {
-            hasSeed = true;
-        }
-        String worldName = parseQuotedString(args, 0, envPosition);
-        String env = args[envPosition];
-        // If we have a seed, parse the quotes out of it, if not, it's == ""
-        String seed = hasSeed ? parseQuotedString(args, envPosition + 1, numOfParams) : "";
-        
-        if (args[numOfParams - 1].substring(0, 2).equalsIgnoreCase("s:")) {
-            envPosition--;
-            hasSeed = true;
-            // Pull out the seed name, drop the "s:"
-            seed = args[numOfParams - 1].split(":")[1];
-        }
         sender.sendMessage("Stuff I found:");
         sender.sendMessage(ChatColor.GREEN + "worldName" + ChatColor.WHITE + worldName);
         sender.sendMessage(ChatColor.GREEN + "env      " + ChatColor.WHITE + env);
@@ -94,29 +61,26 @@ public class CreateCommand extends BaseCommand {
         
         Environment environment = null;
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (env.equalsIgnoreCase("NETHER") || env.equalsIgnoreCase("HELL"))
-            environment = Environment.NETHER;
+        if (env.equalsIgnoreCase("HELL"))
+            env = "NETHER";;
         
-        if (env.equalsIgnoreCase("NORMAL"))
-            environment = Environment.NORMAL;
-        
-        if (env.equalsIgnoreCase("SKYLANDS") || env.equalsIgnoreCase("SKYLAND"))
-            environment = Environment.SKYLANDS;
-        
-        if (environment == null) {
+        if (env.equalsIgnoreCase("SKYLAND") || env.equalsIgnoreCase("STARWARS"))
+            env = "SKYLAND";
+        try {
+            environment = Environment.valueOf(env);
+        } catch (IllegalArgumentException e) {
             sender.sendMessage(ChatColor.RED + "Environment type " + env + " does not exist!");
+            // TODO: Show the player the mvenvironments command.
             return;
         }
         
         if (hasSeed) {
-            // plugin.getServer().createWorld(worldName, environment, Long.parseLong(seed));
             try {
                 plugin.addWorld(worldName, environment, Long.parseLong(seed));
             } catch (NumberFormatException e) {
                 plugin.addWorld(worldName, environment, (long) seed.hashCode());
             }
         } else {
-            // plugin.getServer().createWorld(worldName, environment);
             plugin.addWorld(worldName, environment);
         }
         return;

@@ -26,10 +26,6 @@ public class CommandManager {
     
     public boolean dispatch(CommandSender sender, Command command, String label, String[] args) {
         this.sender = sender;
-        String input = label + " ";
-        for (String s : args) {
-            input += s + " ";
-        }
         
         BaseCommand match = null;
         String[] trimmedArgs = null;
@@ -37,10 +33,8 @@ public class CommandManager {
         
         for (BaseCommand cmd : commands) {
             StringBuilder tmpIdentifier = new StringBuilder();
-            String[] tmpArgs = cmd.validate(input, tmpIdentifier);
-            // If temp args is not null, then we'll parse the quoted strings out of it
-            tmpArgs = tmpArgs == null ? null : parseAllQuotedStrings(tmpArgs);
-            if (tmpIdentifier.length() > identifier.length()) {
+            String[] tmpArgs = parseAllQuotedStrings(args);
+            if(cmd.validate(label, tmpArgs, tmpIdentifier) && tmpIdentifier.length() > identifier.length()) {
                 identifier = tmpIdentifier;
                 match = cmd;
                 trimmedArgs = tmpArgs;
@@ -113,7 +107,7 @@ public class CommandManager {
             this.sender.sendMessage(msg);
         }
         
-        return args;
+        return results;
     }
     
     /**

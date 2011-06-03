@@ -38,7 +38,7 @@ public class TeleportCommand extends BaseCommand {
             Destination d = Destination.parseDestination(args[0]);
             // TODO: I'd like to find a way to do these next bits inside Destination, so we're always valid --FF
             // TODO: Support portals, but I didn't see the portals list --FF
-            if (this.plugin.worlds.containsKey(d.getName().toLowerCase())) {
+            if (this.plugin.worlds.containsKey(d.getName())) {
                 if (d.getType() == DestinationType.World) {
                     Location l = playerTeleporter.getSafeDestination(plugin.getServer().getWorld(d.getName()).getSpawnLocation());
                     p.teleport(l);
