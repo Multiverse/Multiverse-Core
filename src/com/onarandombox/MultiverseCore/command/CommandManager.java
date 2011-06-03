@@ -95,19 +95,11 @@ public class CommandManager {
         }
         // If the string was ended but had an open quote...
         if(start != -1) {
+            //... then we want to close that quote and make that one arg.
             newArgs.add(parseQuotedString(args, start, args.length));
         }
-        String[] results = newArgs.toArray(new String[newArgs.size()]);
-        String msg = "Here's what I have boss: [";
-        if (results != null) {
-            for (String s : results) {
-                msg += s + ", ";
-            }
-            msg += "]";
-            this.sender.sendMessage(msg);
-        }
         
-        return results;
+        return newArgs.toArray(new String[newArgs.size()]);
     }
     
     /**
