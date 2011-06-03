@@ -62,7 +62,7 @@ public class CreateCommand extends BaseCommand {
         Environment environment = null;
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
         if (env.equalsIgnoreCase("HELL"))
-            env = "NETHER";;
+            env = "NETHER";
         
         if (env.equalsIgnoreCase("SKYLAND") || env.equalsIgnoreCase("STARWARS"))
             env = "SKYLAND";
