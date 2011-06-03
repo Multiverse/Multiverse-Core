@@ -44,7 +44,7 @@ public class ListCommand extends BaseCommand {
                 continue;
             }
             
-            ChatColor color;
+            ChatColor color = ChatColor.GREEN;
             
             if (world.getEnvironment() == Environment.NETHER) {
                 color = ChatColor.RED;
