@@ -1,8 +1,6 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -12,9 +10,6 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class CreateCommand extends BaseCommand {
-    
-    private final String envNameArray[] = { "NETHER", "NORMAL", "SKYLANDS", "SKYLAND", "HELL" };
-    private final HashSet<String> envNames = new HashSet<String>(Arrays.asList(envNameArray));
     
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -45,19 +40,8 @@ public class CreateCommand extends BaseCommand {
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
         }
-        
-        Environment environment = null;
-        // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (env.equalsIgnoreCase("HELL"))
-            env = "NETHER";
-        
-        if (env.equalsIgnoreCase("SKYLAND") || env.equalsIgnoreCase("STARWARS"))
-            env = "SKYLANDS";
-        try {
-            environment = Environment.valueOf(env);
-        } catch (IllegalArgumentException e) {
-            sender.sendMessage(ChatColor.RED + "Environment type " + env + " does not exist!");
-            // TODO: Show the player the mvenvironments command.
+        Environment environment = plugin.getEnvFromString(env, sender);
+        if(environment == null) {
             return;
         }
         
