@@ -342,16 +342,18 @@ public class MultiverseCore extends JavaPlugin {
                 if(env == null) {
                     env = Environment.NORMAL;
                 }
-                // Output to the Log that wea re loading a world, specify the name and environment type.
-                log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
-                
                 // If a seed was given we need to parse it to a Long Format.
                 if (seedString.length() > 0) {
+                    // Output to the Log that we are loading a world, specify the name, environment type and seed.
+                    log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment + " with seed: " + seedString);
                     try {
                         seed = Long.parseLong(seedString);
                     } catch (NumberFormatException numberformatexception) {
                         seed = (long) seedString.hashCode();
                     }
+                } else {
+                    // Output to the Log that we are loading a world, specify the name and environment type.
+                    log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
                 }
                 // If we don't have a seed then add a standard World, else add the world with the Seed.
                 if (seed == null) {
@@ -363,10 +365,39 @@ public class MultiverseCore extends JavaPlugin {
                 count++;
             }
         }
+        
+        // Ensure that the worlds created by the default server were loaded into MV, useful for first time runs
+        count += loadDefaultWorlds();
+        
         // Simple Output to the Console to show how many Worlds were loaded.
         log(Level.INFO, count + " - World(s) loaded.");
     }
     
+    /**
+     * 
+     * @return
+     */
+    private int loadDefaultWorlds() {
+        int additonalWorldsLoaded = 0;
+        // Load the default world:
+        World world = this.getServer().getWorlds().get(0);
+        if(!this.worlds.containsKey(world.getName())) {
+            log.info("Loading World & Settings - '" + world.getName() + "' - " + world.getEnvironment());
+            addWorld(world.getName(), Environment.NORMAL, null);
+            additonalWorldsLoaded++;
+        }
+        
+        // This next one could be null if they have it disabled in server.props
+        World world_nether = this.getServer().getWorld(world.getName() + "_nether");
+        if(world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
+            log.info("Loading World & Settings - '" + world.getName() + "' - " + world_nether.getEnvironment());
+            addWorld(world_nether.getName(), Environment.NETHER, null);
+            additonalWorldsLoaded++;
+        }
+        
+        return additonalWorldsLoaded;
+    }
+
     /**
      * Get the worlds Seed.
      * 
