@@ -30,7 +30,6 @@ public abstract class BaseCommand {
         String match = matchIdentifier(name);
         if (match != null) {
             identifier = identifier.append(match);
-            int i = identifier.length();
             if (parsedArgs == null) {
                 parsedArgs = new String[0];
             }
