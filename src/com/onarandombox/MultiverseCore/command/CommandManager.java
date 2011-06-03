@@ -18,14 +18,12 @@ import org.bukkit.command.CommandSender;
 public class CommandManager {
     
     protected List<BaseCommand> commands;
-    private CommandSender sender;
     
     public CommandManager() {
         commands = new ArrayList<BaseCommand>();
     }
     
     public boolean dispatch(CommandSender sender, Command command, String label, String[] args) {
-        this.sender = sender;
         
         BaseCommand match = null;
         String[] trimmedArgs = null;
@@ -34,9 +32,12 @@ public class CommandManager {
         for (BaseCommand cmd : commands) {
             StringBuilder tmpIdentifier = new StringBuilder();
             String[] tmpArgs = parseAllQuotedStrings(args);
-            if(cmd.validate(label, tmpArgs, tmpIdentifier) && tmpIdentifier.length() > identifier.length()) {
+            if (match == null) {
+                match = cmd.matchIdentifier(label) == null ? null : cmd;
+            }
+            
+            if (match != null && cmd.validate(label, tmpArgs, tmpIdentifier) && tmpIdentifier.length() > identifier.length()) {
                 identifier = tmpIdentifier;
-                match = cmd;
                 trimmedArgs = tmpArgs;
             }
         }
@@ -65,8 +66,10 @@ public class CommandManager {
     public List<BaseCommand> getCommands() {
         return commands;
     }
+    
     /**
      * Combines all quoted strings
+     * 
      * @param args
      * @return
      */
@@ -94,8 +97,8 @@ public class CommandManager {
             }
         }
         // If the string was ended but had an open quote...
-        if(start != -1) {
-            //... then we want to close that quote and make that one arg.
+        if (start != -1) {
+            // ... then we want to close that quote and make that one arg.
             newArgs.add(parseQuotedString(args, start, args.length));
         }
         

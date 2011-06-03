@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -523,5 +524,30 @@ public class MultiverseCore extends JavaPlugin {
 
     public String getTag() {
         return tag;
+    }
+    /**
+     * This code should get moved somewhere more appropriate, but for now, it's here.
+     * @param env
+     * @return
+     */
+    public Environment getEnvFromString(String env, CommandSender sender) {
+        Environment environment = null;
+        // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
+        if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
+            env = "NETHER";
+        
+        if (env.equalsIgnoreCase("SKYLANDS") || env.equalsIgnoreCase("SKYLAND") || env.equalsIgnoreCase("STARWARS"))
+            env = "SKYLANDS";
+        
+        if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD"))
+            env = "NORMAL";
+        
+        try {
+            environment = Environment.valueOf(env);
+        } catch (IllegalArgumentException e) {
+            sender.sendMessage(ChatColor.RED + "Environment type " + env + " does not exist!");
+            // TODO: Show the player the mvenvironments command.
+        }
+        return environment;
     }
 }

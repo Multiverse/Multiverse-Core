@@ -40,19 +40,6 @@ public class CreateCommand extends BaseCommand {
             seed = args[2];
         }
         
-        sender.sendMessage("Stuff I found:");
-        sender.sendMessage(ChatColor.GREEN + "worldName" + ChatColor.WHITE + worldName);
-        sender.sendMessage(ChatColor.GREEN + "env      " + ChatColor.WHITE + env);
-        sender.sendMessage(ChatColor.GREEN + "seed     " + ChatColor.WHITE + seed);
-        // This is unreachable code, will remove next commit
-//        if (args.length < 2) {
-//            sender.sendMessage("Not enough parameters to create a new world");
-//            sender.sendMessage(ChatColor.RED + "/mvcreate {WORLDNAME} {ENVIRONMENT} - Create a new World.");
-//            sender.sendMessage(ChatColor.RED + "Example - /mvcreate world NORMAL");
-//            sender.sendMessage(ChatColor.RED + "Example - /mvcreate airworld SKYLANDS");
-//            sender.sendMessage(ChatColor.RED + "Example - /mvcreate hellworld NETHER");
-//            return;
-//        }
         if (new File(worldName).exists() || this.plugin.worlds.containsKey(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
@@ -85,19 +72,5 @@ public class CreateCommand extends BaseCommand {
         }
         return;
     }
-    /**
-     * Takes a string array and returns a combined string, excluding the stop position, including the start
-     * 
-     * @param args
-     * @param start
-     * @param stop
-     * @return
-     */
-    private String parseQuotedString(String[] args, int start, int stop) {
-        String returnVal = args[start];
-        for (int i = start + 1; i < stop; i++) {
-            returnVal += " " + args[i];
-        }
-        return returnVal.replace("\"", "");
-    }
+
 }
