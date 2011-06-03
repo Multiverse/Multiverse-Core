@@ -65,7 +65,7 @@ public class CreateCommand extends BaseCommand {
             env = "NETHER";
         
         if (env.equalsIgnoreCase("SKYLAND") || env.equalsIgnoreCase("STARWARS"))
-            env = "SKYLAND";
+            env = "SKYLANDS";
         try {
             environment = Environment.valueOf(env);
         } catch (IllegalArgumentException e) {
