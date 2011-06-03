@@ -44,15 +44,15 @@ public class CreateCommand extends BaseCommand {
         sender.sendMessage(ChatColor.GREEN + "worldName" + ChatColor.WHITE + worldName);
         sender.sendMessage(ChatColor.GREEN + "env      " + ChatColor.WHITE + env);
         sender.sendMessage(ChatColor.GREEN + "seed     " + ChatColor.WHITE + seed);
-        
-        if (args.length < 2) {
-            sender.sendMessage("Not enough parameters to create a new world");
-            sender.sendMessage(ChatColor.RED + "/mvcreate {WORLDNAME} {ENVIRONMENT} - Create a new World.");
-            sender.sendMessage(ChatColor.RED + "Example - /mvcreate world NORMAL");
-            sender.sendMessage(ChatColor.RED + "Example - /mvcreate airworld SKYLANDS");
-            sender.sendMessage(ChatColor.RED + "Example - /mvcreate hellworld NETHER");
-            return;
-        }
+        // This is unreachable code, will remove next commit
+//        if (args.length < 2) {
+//            sender.sendMessage("Not enough parameters to create a new world");
+//            sender.sendMessage(ChatColor.RED + "/mvcreate {WORLDNAME} {ENVIRONMENT} - Create a new World.");
+//            sender.sendMessage(ChatColor.RED + "Example - /mvcreate world NORMAL");
+//            sender.sendMessage(ChatColor.RED + "Example - /mvcreate airworld SKYLANDS");
+//            sender.sendMessage(ChatColor.RED + "Example - /mvcreate hellworld NETHER");
+//            return;
+//        }
         if (new File(worldName).exists() || this.plugin.worlds.containsKey(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
