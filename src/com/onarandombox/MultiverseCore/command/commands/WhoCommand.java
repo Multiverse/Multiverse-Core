@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class WhoCommand extends BaseCommand {
-
+    
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
         name = "Who";
@@ -23,9 +23,9 @@ public class WhoCommand extends BaseCommand {
         maxArgs = 1;
         identifiers.add("mvwho");
     }
-
-	@Override
-	public void execute(CommandSender sender, String[] args) {
+    
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         // If this command was sent from a Player then we need to check Permissions
         if (sender instanceof Player) {
             if (!(plugin.ph.has(((Player) sender), "multiverse.who"))) {
@@ -33,9 +33,9 @@ public class WhoCommand extends BaseCommand {
                 return;
             }
         }
-
+        
         List<World> worlds = new ArrayList<World>();
-
+        
         if (args.length > 0) {
             World world = plugin.getServer().getWorld(args[0].toString());
             if (world != null) {
@@ -47,16 +47,18 @@ public class WhoCommand extends BaseCommand {
         } else {
             worlds = plugin.getServer().getWorlds();
         }
-
+        
         for (World world : worlds) {
             ChatColor color = ChatColor.BLUE;
             if (world.getEnvironment() == Environment.NETHER) {
                 color = ChatColor.RED;
             } else if (world.getEnvironment() == Environment.NORMAL) {
                 color = ChatColor.GREEN;
+            } else if (world.getEnvironment() == Environment.SKYLANDS) {
+                color = ChatColor.AQUA;
             }
             List<Player> players = world.getPlayers();
-
+            
             String result = "";
             if (players.size() <= 0) {
                 result = "Empty";
@@ -68,6 +70,6 @@ public class WhoCommand extends BaseCommand {
             sender.sendMessage(color + world.getName() + ChatColor.WHITE + " - " + result);
         }
         return;
-	}
-
+    }
+    
 }
