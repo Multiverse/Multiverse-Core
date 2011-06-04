@@ -31,8 +31,6 @@ public class ImportCommand extends BaseCommand {
         
         Environment env = plugin.getEnvFromString(args[1], sender);
         
-        // TODO: What if the folder does not exist but MV knows about the world?
-        
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
             plugin.addWorld(worldName, env);

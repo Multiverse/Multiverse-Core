@@ -430,6 +430,14 @@ public class MultiverseCore extends JavaPlugin {
         addWorld(name, environment, null);
     }
     
+    public boolean removeWorld(String name) {
+        if(worlds.containsKey(name)) {
+            worlds.remove(name);
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * What happens when the plugin gets disabled...
      */
