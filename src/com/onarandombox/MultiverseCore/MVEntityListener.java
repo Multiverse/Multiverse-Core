@@ -1,21 +1,13 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageByProjectileEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 
@@ -34,48 +26,6 @@ public class MVEntityListener extends EntityListener {
     @Override
     public void onEntityExplode(EntityExplodeEvent event) {
 
-    }
-
-    // public void onExplosionPrimed(ExplosionPrimedEvent event){
-    // if(event.getEntity() instanceof Fireball){
-    // MultiVerseCore.log.info();
-    // Fireballs on Explode trigger this, sadly we can't get the blocks it would destroy... thats onEntityExplode
-    // However can't figure out a way to check in onEntityExplode if it was a Fireball which caused it...
-    // }
-    // }
-
-    @Override
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (event.isCancelled())
-            return;
-
-        Entity attacker = null;
-        Entity defender = event.getEntity();
-        World w = defender.getWorld();
-
-        if (!(plugin.configWorlds.getBoolean("worlds." + w.getName() + ".enablehealth", true))) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (event instanceof EntityDamageByEntityEvent) {
-            attacker = ((EntityDamageByEntityEvent) event).getDamager();
-        } else if (event instanceof EntityDamageByProjectileEvent) {
-            attacker = ((EntityDamageByProjectileEvent) event).getDamager();
-        }
-
-        if (attacker == null || defender == null) {
-            return;
-        }
-
-        if (defender instanceof Player && attacker instanceof Player) {
-            Player player = (Player) attacker;
-            if (!(this.plugin.worlds.get(w.getName()).pvp)) {
-                this.plugin.getPlayerSession(player).message(ChatColor.RED + "PVP is disabled in this World.");
-                event.setCancelled(true);
-                return;
-            }
-        }
     }
 
     /**
@@ -140,24 +90,6 @@ public class MVEntityListener extends EntityListener {
                     return;
                 } else {
                     return;
-                }
-            }
-        }
-
-        /**
-         * Ghast Handling -- This should only be temporary, noticed a bug where Ghasts would keep spawning and flood the Nether.
-         * However not sure about it... not sure of the effect on performance... got a few 'server overloaded' warnings through testing but not sure of the cause.
-         */
-        if (event.getEntity() instanceof Ghast) {
-            List<Entity> entities = world.getEntities();
-            int count = 0;
-            for (Entity entity : entities) {
-                if (entity instanceof Ghast) {
-                    if (count >= plugin.configMV.getInt("ghastlimit", 50)) {
-                        event.setCancelled(true);
-                        return;
-                    }
-                    count++;
                 }
             }
         }

@@ -419,12 +419,17 @@ public class MultiverseCore extends JavaPlugin {
         if (seed != null) {
             World world = getServer().createWorld(name, environment, seed);
             worlds.put(name, new MVWorld(world, configWorlds, this, seed)); // Place the World into the HashMap.
+//            configWorlds.setProperty("worlds." + world.getName() + ".environment", environment.toString());
+//            configWorlds.save();
             System.out.print("Seed - " + getSeed(world));
         } else {
             World world = getServer().createWorld(name, environment);
             worlds.put(name, new MVWorld(world, configWorlds, this, null)); // Place the World into the HashMap.
+//            configWorlds.setProperty("worlds." + world.getName() + ".environment", environment.toString());
+//            configWorlds.save();
             System.out.print("Seed - " + getSeed(world));
         }
+        
     }
     
     public void addWorld(String name, Environment environment) {

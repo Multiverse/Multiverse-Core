@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore;
 
+import java.util.logging.Logger;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -12,7 +14,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class MVPlayerListener extends PlayerListener {
-
+    private final Logger log = Logger.getLogger("Minecraft");
     MultiverseCore plugin;
 
     public MVPlayerListener(MultiverseCore plugin) {
@@ -55,7 +57,12 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-
+        // TODO: Handle Global Respawn from config
+        
+        // TODO: Handle Alternate Respawn from config
+        
+        Location l = null;
+        log.warning(event.getPlayer().getWorld().getName());
     }
 
     @Override
