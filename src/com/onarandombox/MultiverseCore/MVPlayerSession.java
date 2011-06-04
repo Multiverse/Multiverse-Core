@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.util.Date;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
@@ -18,6 +19,8 @@ public class MVPlayerSession {
 
     private Long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
     private Long messageLast = 0L; // Timestamp for the Players last Alert Message.
+    
+    private World currentSpawn;
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
 
@@ -25,6 +28,7 @@ public class MVPlayerSession {
         this.player = player;
         this.loc = player.getLocation();
         this.config = config;
+        this.currentSpawn = player.getWorld();
     }
 
     /**
@@ -57,5 +61,13 @@ public class MVPlayerSession {
             this.player.sendMessage(msg);
             this.messageLast = time;
         }
+    }
+
+    public void setRespawnWorld(World world) {
+        this.currentSpawn = world;
+    }
+    
+    public World getRespawnWorld() {
+        return this.currentSpawn;
     }
 }

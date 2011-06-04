@@ -28,6 +28,8 @@ public class MVPlayerListener extends PlayerListener {
         // Entity entity = event.getPlayer().;
         // MultiVerseCore.log.info("1 - " + event.getTo().toString());
         // MultiVerseCore.log.info("2 - " + event.getPlayer().getLocation().toString());
+        MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
+        ps.setRespawnWorld(event.getTo().getWorld());
     }
 
     public void onPlayerKick(PlayerKickEvent event) {
@@ -61,8 +63,8 @@ public class MVPlayerListener extends PlayerListener {
         
         // TODO: Handle Alternate Respawn from config
         
-        Location l = null;
-        log.warning(event.getPlayer().getWorld().getName());
+        MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
+        event.setRespawnLocation(ps.getRespawnWorld().getSpawnLocation());
     }
 
     @Override
