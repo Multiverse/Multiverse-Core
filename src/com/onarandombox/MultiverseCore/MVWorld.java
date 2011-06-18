@@ -69,12 +69,12 @@ public class MVWorld {
         this.animalList.clear();
         for (String s : temp) {
             this.animalList.add(s.toUpperCase());
-            System.out.print(s);
+            //System.out.print(s);
         }
         temp = config.getStringList("worlds." + name + ".monsters.exceptions", monsterList);
         for (String s : temp) {
             this.monsterList.add(s.toUpperCase());
-            System.out.print(s);
+            //System.out.print(s);
         }
         config.setProperty("worlds." + this.name + ".environment", this.environment.toString());
         if(seed != null) {

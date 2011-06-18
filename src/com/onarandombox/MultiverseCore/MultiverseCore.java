@@ -243,7 +243,7 @@ public class MultiverseCore extends JavaPlugin {
             MVWorld mvworld = worlds.get(key);
             List<String> monsters = mvworld.monsterList;
             List<String> animals = mvworld.animalList;
-            System.out.print(monsters.size() + " - " + animals.size());
+            System.out.print("Monster Size:" + monsters.size() + " - " + "Animal Size: " +  animals.size());
             for (Entity e : world.getEntities()) {
                 // Check against Monsters
                 if (e instanceof Creeper || e instanceof Skeleton || e instanceof Spider || e instanceof Zombie || e instanceof Ghast || e instanceof PigZombie || e instanceof Giant || e instanceof Slime || e instanceof Monster) {
