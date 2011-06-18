@@ -465,6 +465,7 @@ public class MultiverseCore extends JavaPlugin {
     public boolean removeWorld(String name) {
         unloadWorld(name);
         configWorlds.removeProperty("worlds." + name);
+        configWorlds.save();
         return false;
     }
     

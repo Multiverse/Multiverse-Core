@@ -49,6 +49,7 @@ public class MVWorld {
         initLists();
         
         this.alias = config.getString("worlds." + this.name + ".alias", "");
+        
         this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
         
         this.compression = config.getDouble("worlds." + this.name + ".compression", 1.0);
@@ -75,7 +76,7 @@ public class MVWorld {
             this.monsterList.add(s.toUpperCase());
             System.out.print(s);
         }
-        
+        config.setProperty("worlds." + this.name + ".environment", this.environment.toString());
         config.save();
         if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
             addSampleData();
