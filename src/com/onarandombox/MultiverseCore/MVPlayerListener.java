@@ -30,11 +30,15 @@ public class MVPlayerListener extends PlayerListener {
         // MultiVerseCore.log.info("2 - " + event.getPlayer().getLocation().toString());
         MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
         ps.setRespawnWorld(event.getTo().getWorld());
+        
+        log.warning("To: " + event.getTo().getWorld().getName());
+        log.warning("From: " + event.getFrom().getWorld().getName());
     }
 
     public void onPlayerKick(PlayerKickEvent event) {
         event.setCancelled(true);
     }
+    
 
     @Override
     public void onPlayerMove(PlayerMoveEvent event) {

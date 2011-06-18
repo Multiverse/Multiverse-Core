@@ -19,11 +19,17 @@ commands:
             /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
             /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
   mvremove:
+    description: World remove command
+    usage: |
+            /<command> <world>
+  mvdelete:
     description: World delete command
     usage: |
             /<command> <world>
-            /<command> creative -- Removes the world 'creative' from the MultiVerse setup.
-            /<command> hellworld -- Removes the world 'hellworld' from the MultiVerse setup.
+  mvunload:
+    description: World unload command
+    usage: |
+            /<command> <world>
   mvmodify:
     description: Modify the settings of an existing world
     usage: |

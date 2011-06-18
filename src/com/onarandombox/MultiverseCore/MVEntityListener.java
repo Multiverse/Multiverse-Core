@@ -6,8 +6,10 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 
@@ -26,6 +28,15 @@ public class MVEntityListener extends EntityListener {
     @Override
     public void onEntityExplode(EntityExplodeEvent event) {
 
+    }
+    
+    @Override
+    public void onEntityDeath(EntityDeathEvent event) {
+        if(event.getEntity() instanceof Player) {
+            Player p = (Player)event.getEntity();
+            p.sendMessage("You died!");
+        }
+        super.onEntityDeath(event);
     }
 
     /**

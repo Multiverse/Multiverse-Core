@@ -44,17 +44,19 @@ import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.CoordCommand;
-import com.onarandombox.MultiverseCore.command.commands.HelpCommand;
-import com.onarandombox.MultiverseCore.command.commands.ListCommand;
 import com.onarandombox.MultiverseCore.command.commands.CreateCommand;
+import com.onarandombox.MultiverseCore.command.commands.DeleteCommand;
+import com.onarandombox.MultiverseCore.command.commands.HelpCommand;
 import com.onarandombox.MultiverseCore.command.commands.ImportCommand;
-import com.onarandombox.MultiverseCore.command.commands.SpawnCommand;
+import com.onarandombox.MultiverseCore.command.commands.ListCommand;
+import com.onarandombox.MultiverseCore.command.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.command.commands.SetSpawnCommand;
-import com.onarandombox.MultiverseCore.command.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.command.commands.SpawnCommand;
 import com.onarandombox.MultiverseCore.command.commands.TeleportCommand;
+import com.onarandombox.MultiverseCore.command.commands.UnloadCommand;
+import com.onarandombox.MultiverseCore.command.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.commands.MVModify;
 import com.onarandombox.MultiverseCore.commands.MVReload;
-import com.onarandombox.MultiverseCore.commands.MVRemove;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.Messaging;
@@ -300,6 +302,9 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new CreateCommand(this));
         commandManager.addCommand(new ImportCommand(this));
         commandManager.addCommand(new SpawnCommand(this));
+        commandManager.addCommand(new RemoveCommand(this));
+        commandManager.addCommand(new DeleteCommand(this));
+        commandManager.addCommand(new UnloadCommand(this));
     }
     
     /**
@@ -308,12 +313,12 @@ public class MultiverseCore extends JavaPlugin {
     private void setupCommands() {
         // commands.put("mvcreate", new CreateCommand(this));
         // commands.put("mvimport", new ImportCommand(this));
-        commands.put("mvremove", new MVRemove(this));
+        // commands.put("mvremove", new RemoveCommand(this));
         commands.put("mvmodify", new MVModify(this));
         // commands.put("mvtp", new TeleportCommand(this));
         // commands.put("mvlist", new ListCommand(this));
         // commands.put("mvsetspawn", new SetSpawnCommand(this));
-        //commands.put("mvspawn", new SpawnCommand(this));
+        // commands.put("mvspawn", new SpawnCommand(this));
         // commands.put("mvcoord", new MVCoord(this));
         // commands.put("mvwho", new WhoCommand(this));
         commands.put("mvreload", new MVReload(this));
@@ -341,7 +346,7 @@ public class MultiverseCore extends JavaPlugin {
                 Long seed = null;
                 // Work out the Environment
                 Environment env = getEnvFromString(environment, null);
-                if(env == null) {
+                if (env == null) {
                     env = Environment.NORMAL;
                 }
                 // If a seed was given we need to parse it to a Long Format.
@@ -383,7 +388,7 @@ public class MultiverseCore extends JavaPlugin {
         int additonalWorldsLoaded = 0;
         // Load the default world:
         World world = this.getServer().getWorlds().get(0);
-        if(!this.worlds.containsKey(world.getName())) {
+        if (!this.worlds.containsKey(world.getName())) {
             log.info("Loading World & Settings - '" + world.getName() + "' - " + world.getEnvironment());
             addWorld(world.getName(), Environment.NORMAL, null);
             additonalWorldsLoaded++;
@@ -391,7 +396,7 @@ public class MultiverseCore extends JavaPlugin {
         
         // This next one could be null if they have it disabled in server.props
         World world_nether = this.getServer().getWorld(world.getName() + "_nether");
-        if(world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
+        if (world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
             log.info("Loading World & Settings - '" + world.getName() + "' - " + world_nether.getEnvironment());
             addWorld(world_nether.getName(), Environment.NETHER, null);
             additonalWorldsLoaded++;
@@ -399,7 +404,7 @@ public class MultiverseCore extends JavaPlugin {
         
         return additonalWorldsLoaded;
     }
-
+    
     /**
      * Get the worlds Seed.
      * 
@@ -420,14 +425,14 @@ public class MultiverseCore extends JavaPlugin {
         if (seed != null) {
             World world = getServer().createWorld(name, environment, seed);
             worlds.put(name, new MVWorld(world, configWorlds, this, seed)); // Place the World into the HashMap.
-//            configWorlds.setProperty("worlds." + world.getName() + ".environment", environment.toString());
-//            configWorlds.save();
+            // configWorlds.setProperty("worlds." + world.getName() + ".environment", environment.toString());
+            // configWorlds.save();
             System.out.print("Seed - " + getSeed(world));
         } else {
             World world = getServer().createWorld(name, environment);
             worlds.put(name, new MVWorld(world, configWorlds, this, null)); // Place the World into the HashMap.
-//            configWorlds.setProperty("worlds." + world.getName() + ".environment", environment.toString());
-//            configWorlds.save();
+            // configWorlds.setProperty("worlds." + world.getName() + ".environment", environment.toString());
+            // configWorlds.save();
             System.out.print("Seed - " + getSeed(world));
         }
         
@@ -437,12 +442,68 @@ public class MultiverseCore extends JavaPlugin {
         addWorld(name, environment, null);
     }
     
-    public boolean removeWorld(String name) {
-        if(worlds.containsKey(name)) {
+    /**
+     * Remove the world from the Multiverse list
+     * 
+     * @param name The name of the world to remove
+     * @return True if success, false if failure.
+     */
+    public boolean unloadWorld(String name) {
+        if (worlds.containsKey(name)) {
             worlds.remove(name);
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Remove the world from the Multiverse list and from the config
+     * 
+     * @param name The name of the world to remove
+     * @return True if success, false if failure.
+     */
+    public boolean removeWorld(String name) {
+        unloadWorld(name);
+        configWorlds.removeProperty("worlds." + name);
+        return false;
+    }
+    
+    /**
+     * Remove the world from the Multiverse list, from the config and deletes the folder
+     * 
+     * @param name The name of the world to remove
+     * @return True if success, false if failure.
+     */
+    public boolean deleteWorld(String name) {
+        unloadWorld(name);
+        removeWorld(name);
+        if (getServer().unloadWorld(name, false)) {
+            return deleteFolder(new File(name));
+        }
+        return false;
+    }
+    
+    /**
+     * Delete a folder Courtesy of: lithium3141
+     * 
+     * @param file The folder to delete
+     * @return true if success
+     */
+    private boolean deleteFolder(File file) {
+        if (file.exists()) {
+            // If the file exists, and it has more than one file in it.
+            if (file.isDirectory()) {
+                for (File f : file.listFiles()) {
+                    if (!this.deleteFolder(f)) {
+                        return false;
+                    }
+                }
+            }
+            file.delete();
+            return !file.exists();
+        } else {
+            return false;
+        }
     }
     
     /**
