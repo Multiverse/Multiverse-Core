@@ -75,3 +75,7 @@ commands:
             /<command> -- Purges the players world of all creatures.
             /<command> creative * -- Purges the creative world of all Creatures.
             /<command> creative creeper -- Purges the creative world of all CREEPERS.
+  mvconfirm:
+    description: Confirms sensitive decisions like deleting a world.
+    usage: |
+            /<command> [Yes|No]

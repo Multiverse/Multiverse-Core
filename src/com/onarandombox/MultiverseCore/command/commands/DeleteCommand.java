@@ -20,11 +20,9 @@ public class DeleteCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (plugin.deleteWorld(args[0])) {
-            sender.sendMessage("World Deleted!");
-        } else {
-            sender.sendMessage("Error trying to delete World!");
-        }
+        
+        Class<?> paramTypes[] = {String.class};
+        plugin.queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
     
 }

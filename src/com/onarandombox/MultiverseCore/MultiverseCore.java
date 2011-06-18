@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ import com.iConomy.iConomy;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.command.CommandManager;
+import com.onarandombox.MultiverseCore.command.QueuedCommand;
+import com.onarandombox.MultiverseCore.command.commands.ConfirmCommand;
 import com.onarandombox.MultiverseCore.command.commands.CoordCommand;
 import com.onarandombox.MultiverseCore.command.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.command.commands.DeleteCommand;
@@ -108,6 +111,9 @@ public class MultiverseCore extends JavaPlugin {
     
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
+    
+    // List to hold commands that require approval
+    public List<QueuedCommand> queuedCommands = new ArrayList<QueuedCommand>();
     
     @Override
     public void onLoad() {
@@ -243,7 +249,7 @@ public class MultiverseCore extends JavaPlugin {
             MVWorld mvworld = worlds.get(key);
             List<String> monsters = mvworld.monsterList;
             List<String> animals = mvworld.animalList;
-            System.out.print("Monster Size:" + monsters.size() + " - " + "Animal Size: " +  animals.size());
+            System.out.print("Monster Size:" + monsters.size() + " - " + "Animal Size: " + animals.size());
             for (Entity e : world.getEntities()) {
                 // Check against Monsters
                 if (e instanceof Creeper || e instanceof Skeleton || e instanceof Spider || e instanceof Zombie || e instanceof Ghast || e instanceof PigZombie || e instanceof Giant || e instanceof Slime || e instanceof Monster) {
@@ -305,6 +311,7 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new RemoveCommand(this));
         commandManager.addCommand(new DeleteCommand(this));
         commandManager.addCommand(new UnloadCommand(this));
+        commandManager.addCommand(new ConfirmCommand(this));
     }
     
     /**
@@ -650,5 +657,56 @@ public class MultiverseCore extends JavaPlugin {
             // TODO: Show the player the mvenvironments command.
         }
         return environment;
+    }
+    
+    
+    // TODO: Find out where to put these next 3 methods! I just stuck them here for now --FF
+
+    
+    /**
+     * 
+     */
+    public void queueCommand(CommandSender sender, String commandName, String methodName, String[] args, Class<?>[] paramTypes, String success, String fail) {
+        cancelQueuedCommand(sender);
+        queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this, success, fail));
+        sender.sendMessage("The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could break something!");
+        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE + ", please type: " + ChatColor.GREEN + "/mvconfirm " + ChatColor.GOLD + "YES");
+        sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for 10 seconds.");
+    }
+    /**
+     * Tries to fire off the command
+     * @param sender
+     * @return
+     */
+    public boolean confirmQueuedCommand(CommandSender sender) {
+        for (QueuedCommand com : queuedCommands) {
+            if (com.getSender().equals(sender)) {
+                if(com.execute()) {
+                    sender.sendMessage(com.getSuccess());
+                    return true;
+                } else {
+                    sender.sendMessage(com.getFail());
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * Cancels(invalidates) a command that has been requested. This is called when a user types something other than 'yes' or when they try to queue a second command
+     * Queuing a second command will delete the first command entirely.
+     * @param sender
+     */
+    public void cancelQueuedCommand(CommandSender sender) {
+        QueuedCommand c = null;
+        for (QueuedCommand com : queuedCommands) {
+            if (com.getSender().equals(sender)) {
+                c = com;
+            }
+        }
+        if (c != null) {
+            // Each person is allowed at most one queued command.
+            queuedCommands.remove(c);
+        }
     }
 }
