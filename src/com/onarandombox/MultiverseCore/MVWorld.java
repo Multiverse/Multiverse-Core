@@ -77,10 +77,14 @@ public class MVWorld {
             System.out.print(s);
         }
         config.setProperty("worlds." + this.name + ".environment", this.environment.toString());
-        config.save();
-        if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
-            addSampleData();
+        if(seed != null) {
+            config.setProperty("worlds." + this.name + ".seed", this.seed);
         }
+        config.save();
+        // The following 3 lines will add some sample data to new worlds created.
+//        if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
+//            addSampleData();
+//        }
     }
     
     private void initLists() {
