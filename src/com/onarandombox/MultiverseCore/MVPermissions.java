@@ -5,8 +5,6 @@ import java.util.List;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.nijiko.permissions.Group;
-
 public class MVPermissions {
     
     private MultiverseCore plugin;
@@ -80,31 +78,30 @@ public class MVPermissions {
         boolean returnValue = true;
         
         // TODO: Not sure if I want this.
+        // I don't think so, I just reprioritized the whitelist after the blacklist in general --FF
         // if (whiteList.size() > 0) {
         // returnValue = false;
         // }
         for (String bls : blackList) {
-            System.out.print(w.getName() + " has " + bls + " BLACKlisted");
             if (bls.contains("g:") && inGroup(p, w.getName(), bls.split(":")[1])) {
-                System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
+                //System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
                 returnValue = false;
                 break;
             }
             if (bls.equalsIgnoreCase(p.getName())) {
-                System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
+                //System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
                 returnValue = false;
                 break;
             }
         }
         for (String wls : whiteList) {
-            System.out.print(w.getName() + " has " + wls + " WHTIElisted");
             if (wls.contains("g:") && inGroup(p, w.getName(), wls.split(":")[1])) {
-                System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
+                //System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
                 returnValue = true;
                 break;
             }
             if (wls.equalsIgnoreCase(p.getName())) {
-                System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
+                //System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
                 returnValue = true;
                 break;
             }

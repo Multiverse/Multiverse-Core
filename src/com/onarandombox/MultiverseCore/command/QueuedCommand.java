@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
