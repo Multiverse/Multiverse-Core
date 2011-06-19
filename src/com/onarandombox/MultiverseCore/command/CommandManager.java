@@ -69,8 +69,19 @@ public class CommandManager {
         this.commands.remove(command);
     }
     
+    @Deprecated
     public List<BaseCommand> getCommands() {
         return this.commands;
+    }
+    
+    public List<BaseCommand> getCommands(CommandSender sender) {
+        ArrayList<BaseCommand> playerCommands = new ArrayList<BaseCommand>();
+        for(BaseCommand c : this.commands) {
+            if(this.hasPermission(sender, c.permission, c.isOpRequired())) {
+                playerCommands.add(c);
+            }
+        }
+        return playerCommands;
     }
     
     /**
@@ -134,7 +145,6 @@ public class CommandManager {
             return true;
         }
         Player player = (Player) sender;
-        System.out.print("Checking permissions for " + player.getName());
         
         if (player.isOp()) {
             // If Player is Op we always let them use it.

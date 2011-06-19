@@ -42,7 +42,8 @@ public class HelpCommand extends BaseCommand {
             }
         }
 
-        List<BaseCommand> commands = plugin.getCommandManager().getCommands();
+        // Get only the commands this player has access to
+        List<BaseCommand> commands = plugin.getCommandManager().getCommands(sender);
 
         int numPages = commands.size() / CMDS_PER_PAGE;
         if (commands.size() % CMDS_PER_PAGE != 0) {
