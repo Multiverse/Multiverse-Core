@@ -27,8 +27,10 @@ public class WhoCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         // If this command was sent from a Player then we need to check Permissions
+        Player p = null;
         if (sender instanceof Player) {
-            if (!(plugin.ph.has(((Player) sender), "multiverse.who"))) {
+            p = (Player) sender;
+            if (!(plugin.ph.has(p, "multiverse.world.who"))) {
                 sender.sendMessage("You do not have access to this command.");
                 return;
             }
@@ -49,6 +51,12 @@ public class WhoCommand extends BaseCommand {
         }
         
         for (World world : worlds) {
+            if (!(plugin.worlds.containsKey(world.getName()))) {
+                continue;
+            }
+            if (p != null && (!plugin.ph.canEnterWorld(p, world))) {
+                continue;
+            }
             ChatColor color = ChatColor.BLUE;
             if (world.getEnvironment() == Environment.NETHER) {
                 color = ChatColor.RED;

@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.command.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
@@ -20,6 +21,11 @@ public class RemoveCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
+        if(sender instanceof Player) {
+            if(!plugin.ph.has((Player)sender,"multiverse.world.remove")) {
+                return;
+            }
+        }
         if (plugin.removeWorld(args[0])) {
             sender.sendMessage("World removed from config!");
         } else {

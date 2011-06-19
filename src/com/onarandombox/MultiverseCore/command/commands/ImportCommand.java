@@ -34,7 +34,7 @@ public class ImportCommand extends BaseCommand {
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
             plugin.addWorld(worldName, env);
-            sender.sendMessage(ChatColor.GREEN + "Complete!");            
+            sender.sendMessage(ChatColor.GREEN + "Complete!");
             return;
         }
     }

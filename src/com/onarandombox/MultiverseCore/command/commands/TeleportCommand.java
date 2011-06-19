@@ -37,7 +37,7 @@ public class TeleportCommand extends BaseCommand {
             }
             Destination d = Destination.parseDestination(args[0], this.plugin);
             // TODO: Support portals, but I didn't see the portals list --FF
-            if (d.getType() == DestinationType.World) {
+            if (d.getType() == DestinationType.World && plugin.ph.canEnterWorld(p, plugin.getServer().getWorld(d.getName()))) {
                 Location l = playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
                 p.teleport(l);
             } else {

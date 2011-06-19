@@ -33,9 +33,8 @@ public class ListCommand extends BaseCommand {
         }
         
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
-        for (int i = 0; i < plugin.getServer().getWorlds().size(); i++) {
+        for (World world : plugin.getServer().getWorlds()) {
             
-            World world = plugin.getServer().getWorlds().get(i);
             
             if (!(plugin.worlds.containsKey(world.getName()))) {
                 continue;

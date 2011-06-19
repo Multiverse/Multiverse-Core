@@ -44,7 +44,7 @@ public class CreateCommand extends BaseCommand {
         if(environment == null) {
             return;
         }
-        
+        sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
         if (hasSeed) {
             try {
                 plugin.addWorld(worldName, environment, Long.parseLong(seed));
@@ -54,6 +54,7 @@ public class CreateCommand extends BaseCommand {
         } else {
             plugin.addWorld(worldName, environment);
         }
+        sender.sendMessage(ChatColor.GREEN + "Complete!");
         return;
     }
 
