@@ -13,12 +13,14 @@ public class ListCommand extends BaseCommand {
     
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "World Listing";
-        description = "Returns all valid worlds";
-        usage = "/mvlist";
-        minArgs = 0;
-        maxArgs = 0;
-        identifiers.add("mvlist");
+        this.name = "World Listing";
+        this.description = "Displays a listing of all worlds that you can enter";
+        this.usage = "/mvlist";
+        this.minArgs = 0;
+        this.maxArgs = 0;
+        this.identifiers.add("mvlist");
+        this.permission = "multiverse.world.list";
+        this.requiresOp = false;
     }
     
     @Override
@@ -26,10 +28,6 @@ public class ListCommand extends BaseCommand {
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
-            if (!(plugin.ph.has(p, "multiverse.world.list"))) {
-                sender.sendMessage("You do not have access to this command.");
-                return;
-            }
         }
         
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";

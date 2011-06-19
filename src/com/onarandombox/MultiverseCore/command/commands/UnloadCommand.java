@@ -10,12 +10,14 @@ public class UnloadCommand extends BaseCommand {
     
     public UnloadCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Unload World";
-        description = "Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.";
-        usage = "/mvunload" + ChatColor.GREEN + " {WORLD} ";
-        minArgs = 1;
-        maxArgs = 1;
-        identifiers.add("mvunload");
+        this.name = "Unload World";
+        this.description = "Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.";
+        this.usage = "/mvunload" + ChatColor.GREEN + " {WORLD} ";
+        this.minArgs = 1;
+        this.maxArgs = 1;
+        this.identifiers.add("mvunload");
+        this.permission = "multiverse.world.unload";
+        this.requiresOp = true;
     }
     
     @Override

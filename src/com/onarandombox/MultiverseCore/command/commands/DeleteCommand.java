@@ -10,19 +10,20 @@ public class DeleteCommand extends BaseCommand {
     
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Delete World";
-        description = "Deletes a world on your server. " + ChatColor.RED + "PERMANENTLY.";
-        usage = "/mvdelete" + ChatColor.GREEN + " {WORLD} ";
-        minArgs = 1;
-        maxArgs = 1;
-        identifiers.add("mvdelete");
+        this.name = "Delete World";
+        this.description = "Deletes a world on your server. " + ChatColor.RED + "PERMANENTLY.";
+        this.usage = "/mvdelete" + ChatColor.GREEN + " {WORLD} ";
+        this.minArgs = 1;
+        this.maxArgs = 1;
+        this.identifiers.add("mvdelete");
+        this.permission = "multiverse.world.delete";
+        this.requiresOp = true;
     }
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        
         Class<?> paramTypes[] = {String.class};
-        plugin.queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
+        this.plugin.queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
     
 }

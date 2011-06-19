@@ -14,13 +14,16 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class CommandManager {
     
     protected List<BaseCommand> commands;
     
     public CommandManager() {
-        commands = new ArrayList<BaseCommand>();
+        this.commands = new ArrayList<BaseCommand>();
     }
     
     public boolean dispatch(CommandSender sender, Command command, String label, String[] args) {
@@ -29,7 +32,7 @@ public class CommandManager {
         String[] trimmedArgs = null;
         StringBuilder identifier = new StringBuilder();
         
-        for (BaseCommand cmd : commands) {
+        for (BaseCommand cmd : this.commands) {
             StringBuilder tmpIdentifier = new StringBuilder();
             String[] tmpArgs = parseAllQuotedStrings(args);
             if (match == null) {
@@ -43,28 +46,31 @@ public class CommandManager {
         }
         
         if (match != null) {
-            if (trimmedArgs != null) {
-                match.execute(sender, trimmedArgs);
-                return true;
+            if (this.hasPermission(sender, match.getPermission(), match.isOpRequired())) {
+                if (trimmedArgs != null) {
+                    match.execute(sender, trimmedArgs);
+                } else {
+                    sender.sendMessage(ChatColor.AQUA + "Command: " + ChatColor.WHITE + match.getName());
+                    sender.sendMessage(ChatColor.AQUA + "Description: " + ChatColor.WHITE + match.getDescription());
+                    sender.sendMessage(ChatColor.AQUA + "Usage: " + ChatColor.WHITE + match.getUsage());
+                }
             } else {
-                sender.sendMessage(ChatColor.AQUA + "Command: " + ChatColor.WHITE + match.getName());
-                sender.sendMessage(ChatColor.AQUA + "Description: " + ChatColor.WHITE + match.getDescription());
-                sender.sendMessage(ChatColor.AQUA + "Usage: " + ChatColor.WHITE + match.getUsage());
+                sender.sendMessage("You do not have permission to use this command. (" + match.getPermission() + ")");
             }
         }
         return true;
     }
     
     public void addCommand(BaseCommand command) {
-        commands.add(command);
+        this.commands.add(command);
     }
     
     public void removeCommand(BaseCommand command) {
-        commands.remove(command);
+        this.commands.remove(command);
     }
     
     public List<BaseCommand> getCommands() {
-        return commands;
+        return this.commands;
     }
     
     /**
@@ -74,6 +80,7 @@ public class CommandManager {
      * @return
      */
     private String[] parseAllQuotedStrings(String[] args) {
+        // TODO: Allow '
         ArrayList<String> newArgs = new ArrayList<String>();
         // Iterate through all command params:
         // we could have: "Fish dog" the man bear pig "lives today" and maybe "even tomorrow" or "the" next day
@@ -119,5 +126,25 @@ public class CommandManager {
             returnVal += " " + args[i];
         }
         return returnVal.replace("\"", "");
+    }
+    
+    public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
+        
+        if (!(sender instanceof Player)) {
+            return true;
+        }
+        Player player = (Player) sender;
+        System.out.print("Checking permissions for " + player.getName());
+        
+        if (player.isOp()) {
+            // If Player is Op we always let them use it.
+            return true;
+        } else if (MultiverseCore.Permissions != null && MultiverseCore.Permissions.has(player, node)) {
+            // If Permissions is enabled we check against them.
+            return true;
+        }
+        // If the Player doesn't have Permissions and isn't an Op then
+        // we return true if OP is not required, otherwise we return false
+        return !isOpRequired;
     }
 }

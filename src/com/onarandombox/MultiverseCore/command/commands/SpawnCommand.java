@@ -11,12 +11,14 @@ public class SpawnCommand extends BaseCommand {
     
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Spawn";
-        description = "Transports the player to the that player's current world Spawn Point.";
-        usage = "/mvspawn" + ChatColor.GOLD + " [PLAYER]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("mvspawn");
+        this.name = "Spawn";
+        this.description = "Transports the player to the that player's current world Spawn Point.";
+        this.usage = "/mvspawn" + ChatColor.GOLD + " [PLAYER]";
+        this.minArgs = 0;
+        this.maxArgs = 1;
+        this.identifiers.add("mvspawn");
+        this.permission = "multiverse.world.spawn";
+        this.requiresOp = true;
     }
     
     @Override

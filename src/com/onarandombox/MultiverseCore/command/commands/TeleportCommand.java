@@ -16,13 +16,15 @@ public class TeleportCommand extends BaseCommand {
     
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Teleport";
-        description = "Teleports you to a different world.";
-        usage = "/mvtp" + ChatColor.GREEN + " {WORLD}";
-        minArgs = 1;
-        maxArgs = 1;
-        identifiers.add("mvtp");
-        playerTeleporter = new MVTeleport(plugin);
+        this.name = "Teleport";
+        this.description = "Teleports you to a different world.";
+        this.usage = "/mvtp" + ChatColor.GREEN + " {WORLD}";
+        this.minArgs = 1;
+        this.maxArgs = 1;
+        this.identifiers.add("mvtp");
+        this.playerTeleporter = new MVTeleport(plugin);
+        this.permission = "multiverse.world.tp";
+        this.requiresOp = true;
     }
     
     @Override
@@ -30,18 +32,12 @@ public class TeleportCommand extends BaseCommand {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            // If this command was sent from a Player then we need to check Permissions
-            if (!(plugin.ph.has((p), "multiverse.tp"))) {
-                p.sendMessage("You do not have access to this command.");
-                return;
-            }
             Destination d = Destination.parseDestination(args[0], this.plugin);
-            // TODO: Support portals, but I didn't see the portals list --FF
             if (d.getType() == DestinationType.World && plugin.ph.canEnterWorld(p, plugin.getServer().getWorld(d.getName()))) {
                 Location l = playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
                 p.teleport(l);
             } else {
-                p.sendMessage("That was not a valid world (portals aren't yet supported)");
+                p.sendMessage("That was not a valid world.");
             }
             
         } else {

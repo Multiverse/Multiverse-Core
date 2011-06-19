@@ -25,6 +25,7 @@ public class MVPermissions {
      * @param node The permission node we are checking against.
      * @return
      */
+    @Deprecated
     public boolean has(Player p, String node) {
         boolean result = false;
         
@@ -84,24 +85,24 @@ public class MVPermissions {
         // }
         for (String bls : blackList) {
             if (bls.contains("g:") && inGroup(p, w.getName(), bls.split(":")[1])) {
-                //System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
+                // System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
                 returnValue = false;
                 break;
             }
             if (bls.equalsIgnoreCase(p.getName())) {
-                //System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
+                // System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
                 returnValue = false;
                 break;
             }
         }
         for (String wls : whiteList) {
             if (wls.contains("g:") && inGroup(p, w.getName(), wls.split(":")[1])) {
-                //System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
+                // System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
                 returnValue = true;
                 break;
             }
             if (wls.equalsIgnoreCase(p.getName())) {
-                //System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
+                // System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
                 returnValue = true;
                 break;
             }

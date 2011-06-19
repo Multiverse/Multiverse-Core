@@ -13,12 +13,15 @@ public class CreateCommand extends BaseCommand {
     
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Create World";
-        description = "Creates a new world of the specified type";
-        usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " [SEED]";
-        minArgs = 2;
-        maxArgs = 3;
-        identifiers.add("mvcreate");
+        this.name = "Create World";
+        this.description = "Creates a new world of the specified type";
+        this.usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " [SEED]";
+        this.minArgs = 2;
+        this.maxArgs = 3;
+        this.identifiers.add("mvcreate");
+        this.permission = "multiverse.world.create";
+        this.requiresOp = true;
+        
     }
     
     @Override
@@ -26,12 +29,12 @@ public class CreateCommand extends BaseCommand {
         // TODO: Permissions, check
         
         int numOfParams = args.length;
-
+        
         boolean hasSeed = numOfParams == 3;
         String worldName = args[0];
         String env = args[1];
         String seed = "";
-        if(hasSeed) {
+        if (hasSeed) {
             seed = args[2];
         }
         
@@ -41,7 +44,7 @@ public class CreateCommand extends BaseCommand {
             return;
         }
         Environment environment = plugin.getEnvFromString(env, sender);
-        if(environment == null) {
+        if (environment == null) {
             return;
         }
         sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
@@ -57,5 +60,5 @@ public class CreateCommand extends BaseCommand {
         sender.sendMessage(ChatColor.GREEN + "Complete!");
         return;
     }
-
+    
 }

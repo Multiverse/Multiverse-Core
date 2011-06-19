@@ -10,12 +10,14 @@ public class EnvironmentCommand extends BaseCommand{
 
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Create World";
-        description = "Creates a new world of the specified type";
-        usage = "/mvcoord" + ChatColor.GREEN + "{NAME} {TYPE}";
-        minArgs = 2;
-        maxArgs = 2;
-        identifiers.add("mvcoord");
+        this.name = "List Environments";
+        this.description = "Lists valid known environments";
+        this.usage = "/mvenv";
+        this.minArgs = 2;
+        this.maxArgs = 2;
+        this.identifiers.add("mvenv");
+        this.permission = "multiverse.world.list.environments";
+        this.requiresOp = false;
     }
 
     @Override

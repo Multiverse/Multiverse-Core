@@ -21,14 +21,15 @@ public class HelpCommand extends BaseCommand {
 
     public HelpCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Help";
-        description = "Displays the help menu";
-        usage = ChatColor.AQUA + "/mv help " + ChatColor.GOLD + "[page#]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("mv help");
-        identifiers.add("mv");
-        identifiers.add("mvhelp");
+        this.name = "Help";
+        this.description = "Displays the help menu";
+        this.usage = ChatColor.AQUA + "/mv help " + ChatColor.GOLD + "[page#]";
+        this.minArgs = 0;
+        this.maxArgs = 1;
+        this.identifiers.add("mv");
+        this.identifiers.add("mvhelp");
+        this.permission = "multiverse.help";
+        this.requiresOp = false;
     }
 
     @Override
@@ -59,6 +60,7 @@ public class HelpCommand extends BaseCommand {
         }
         for (int c = start; c < end; c++) {
             BaseCommand cmd = commands.get(c);
+            
             sender.sendMessage(ChatColor.AQUA + "  " + cmd.getUsage());
         }
 

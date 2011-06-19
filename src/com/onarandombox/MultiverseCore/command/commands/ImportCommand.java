@@ -13,12 +13,14 @@ public class ImportCommand extends BaseCommand {
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Import World";
-        description = "Imports a new world of the specified type";
-        usage = "/mvimport" + ChatColor.GREEN + " {NAME} {TYPE}";
-        minArgs = 2;
-        maxArgs = 2;
-        identifiers.add("mvimport");
+        this.name = "Import World";
+        this.description = "Imports a new world of the specified type";
+        this.usage = "/mvimport" + ChatColor.GREEN + " {NAME} {TYPE}";
+        this.minArgs = 2;
+        this.maxArgs = 2;
+        this.identifiers.add("mvimport");
+        this.permission = "multiverse.world.import";
+        this.requiresOp = true;
     }
 
     @Override

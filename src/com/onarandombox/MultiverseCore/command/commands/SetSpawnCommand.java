@@ -12,17 +12,18 @@ public class SetSpawnCommand extends BaseCommand {
     
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Set World Spawn";
-        description = "Sets the spawn for the current world.";
-        usage = "/mvsetspawn";
-        minArgs = 0;
-        maxArgs = 0;
-        identifiers.add("mvsetspawn");
+        this.name = "Set World Spawn";
+        this.description = "Sets the spawn for the current world.";
+        this.usage = "/mvsetspawn";
+        this.minArgs = 0;
+        this.maxArgs = 0;
+        this.identifiers.add("mvsetspawn");
+        this.permission = "multiverse.world.spawn.set";
+        this.requiresOp = true;
     }
-
+    
     @Override
     public void execute(CommandSender sender, String[] args) {
-        // TODO: Permissions
         if (sender instanceof Player) {
             Player p = (Player) sender;
             Location l = p.getLocation();
@@ -32,7 +33,7 @@ public class SetSpawnCommand extends BaseCommand {
         } else {
             sender.sendMessage(IN_GAME_COMMAND_MSG);
         }
-        return ;
+        return;
     }
     
 }

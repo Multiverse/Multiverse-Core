@@ -16,12 +16,14 @@ public class WhoCommand extends BaseCommand {
     
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Who";
-        description = "States who is in what world";
-        usage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("mvwho");
+        this.name = "Who";
+        this.description = "States who is in what world";
+        this.usage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
+        this.minArgs = 0;
+        this.maxArgs = 1;
+        this.identifiers.add("mvwho");
+        this.permission = "multiverse.world.list.who";
+        this.requiresOp = false;
     }
     
     @Override
@@ -30,10 +32,6 @@ public class WhoCommand extends BaseCommand {
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
-            if (!(plugin.ph.has(p, "multiverse.world.who"))) {
-                sender.sendMessage("You do not have access to this command.");
-                return;
-            }
         }
         
         List<World> worlds = new ArrayList<World>();

@@ -28,13 +28,6 @@ public class CoordCommand extends BaseCommand {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
         	Player p = (Player) sender;
-            // If this command was sent from a Player then we need to check Permissions
-            if (!(plugin.ph.has((p), "multiverse.coord"))) {
-                sender.sendMessage("You do not have access to this command.");
-                return;
-            }
-            
-
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
             p.sendMessage(ChatColor.RED + "Compression: " + ChatColor.WHITE + plugin.worlds.get(p.getWorld().getName()).compression);
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + locMan.strCoords(p.getLocation()));
