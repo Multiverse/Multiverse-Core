@@ -120,7 +120,7 @@ public class MultiverseCore extends JavaPlugin {
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
-        debugLog = new DebugLog("Multiverse", getDataFolder() + File.separator + "debug.log");
+        debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
         
         // Setup & Load our Configuration files.
         loadConfigs();

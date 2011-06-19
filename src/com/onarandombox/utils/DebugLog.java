@@ -15,7 +15,11 @@ public class DebugLog {
 
     private FileHandler fh;
     private Logger log;
-
+    /**
+     * Creates a new debug logger.
+     * @param logger The name of the logger.
+     * @param file The file to log to.
+     */
     public DebugLog(String logger, String file) {
         log = Logger.getLogger(logger);
 
@@ -34,7 +38,11 @@ public class DebugLog {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Log a message at a certain level
+     * @param level
+     * @param msg
+     */
     public void log(Level level, String msg) {
         log.log(level, msg);
     }
