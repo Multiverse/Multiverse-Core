@@ -39,8 +39,8 @@ public class MVTeleport {
         double x, y, z;
         
         // Grab the Compression value for each world.
-        double srcComp = plugin.worlds.get(l.getWorld().getName()).compression;
-        double trgComp = plugin.worlds.get(w.getName()).compression;
+        double srcComp = plugin.worlds.get(l.getWorld().getName()).scaling;
+        double trgComp = plugin.worlds.get(w.getName()).scaling;
         
         // MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
         

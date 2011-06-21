@@ -35,7 +35,7 @@ public class MVWorld {
     public List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
     public List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
     
-    public Double compression; // How stretched/compressed distances are
+    public Double scaling; // How stretched/compressed distances are
     
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed) {
         this.config = config;
@@ -52,7 +52,7 @@ public class MVWorld {
         
         this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
         
-        this.compression = config.getDouble("worlds." + this.name + ".compression", 1.0);
+        this.scaling = config.getDouble("worlds." + this.name + ".scale", 1.0);
         
         this.joinWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", joinWhitelist);
         this.joinBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", joinBlacklist);
