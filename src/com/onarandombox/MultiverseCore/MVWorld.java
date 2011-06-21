@@ -53,6 +53,11 @@ public class MVWorld {
         this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
         
         this.scaling = config.getDouble("worlds." + this.name + ".scale", 1.0);
+        if(this.scaling <= 0) {
+            // Disallow negative or 0 scalings.
+            config.setProperty("worlds." + this.name + ".scale", 1.0);
+            this.scaling = 1.0;
+        }
         
         this.joinWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", joinWhitelist);
         this.joinBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", joinBlacklist);
