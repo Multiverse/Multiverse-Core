@@ -29,8 +29,8 @@ public class MVWorld {
     public Boolean pvp; // Does this World allow PVP?
     
     public List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
-    public List<String> joinWhitelist; // Contain a list of Players/Groups which can join this World.
-    public List<String> joinBlacklist; // Contain a list of Players/Groups which cannot join this World.
+    public List<String> playerWhitelist; // Contain a list of Players/Groups which can join this World.
+    public List<String> playerBlacklist; // Contain a list of Players/Groups which cannot join this World.
     public List<String> editWhitelist; // Contain a list of Players/Groups which can edit this World. (Place/Destroy Blocks)
     public List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
     public List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
@@ -59,8 +59,8 @@ public class MVWorld {
             this.scaling = 1.0;
         }
         
-        this.joinWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", joinWhitelist);
-        this.joinBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", joinBlacklist);
+        this.playerWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", playerWhitelist);
+        this.playerBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", playerBlacklist);
         this.worldBlacklist = config.getStringList("worlds." + name + ".worldBlacklist", worldBlacklist);
         this.blockBlacklist = config.getIntList("worlds." + name + ".blockBlacklist", blockBlacklist);
         this.editWhitelist = config.getStringList("worlds." + name + ".editWhitelist", editWhitelist);
@@ -94,8 +94,8 @@ public class MVWorld {
     
     private void initLists() {
         blockBlacklist = new ArrayList<Integer>();
-        joinWhitelist = new ArrayList<String>();
-        joinBlacklist = new ArrayList<String>();
+        playerWhitelist = new ArrayList<String>();
+        playerBlacklist = new ArrayList<String>();
         editWhitelist = new ArrayList<String>();
         editBlacklist = new ArrayList<String>();
         worldBlacklist = new ArrayList<String>();
@@ -108,11 +108,11 @@ public class MVWorld {
         
         this.blockBlacklist.add(49);
         
-        this.joinWhitelist.add("fernferret");
-        this.joinWhitelist.add("g:Admins");
+        this.playerWhitelist.add("fernferret");
+        this.playerWhitelist.add("g:Admins");
         
-        this.joinBlacklist.add("Rigby90");
-        this.joinBlacklist.add("g:Banned");
+        this.playerBlacklist.add("Rigby90");
+        this.playerBlacklist.add("g:Banned");
         
         this.editWhitelist.add("fernferret");
         this.editWhitelist.add("g:Admins");
@@ -126,8 +126,8 @@ public class MVWorld {
         this.config.setProperty("worlds." + name + ".animals.exceptions", animalList);
         this.config.setProperty("worlds." + name + ".monsters.exceptions", monsterList);
         this.config.setProperty("worlds." + name + ".blockBlacklist", blockBlacklist);
-        this.config.setProperty("worlds." + name + ".playerWhitelist", joinWhitelist);
-        this.config.setProperty("worlds." + name + ".playerBlacklist", joinBlacklist);
+        this.config.setProperty("worlds." + name + ".playerWhitelist", playerWhitelist);
+        this.config.setProperty("worlds." + name + ".playerBlacklist", playerBlacklist);
         this.config.setProperty("worlds." + name + ".editWhitelist", editWhitelist);
         this.config.setProperty("worlds." + name + ".editBlacklist", editBlacklist);
         this.config.setProperty("worlds." + name + ".worldBlacklist", worldBlacklist);

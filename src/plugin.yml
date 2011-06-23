@@ -78,4 +78,8 @@ commands:
   mvconfirm:
     description: Confirms sensitive decisions like deleting a world.
     usage: |
-            /<command> [Yes|No]
+            /<command>
+  mvinfo:
+    description: Gets world info.
+    usage: |
+            /<command> [world]

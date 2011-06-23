@@ -73,36 +73,32 @@ public class MVPermissions {
      */
     public Boolean canEnterWorld(Player p, World w) {
         
-        List<String> whiteList = this.plugin.worlds.get(w.getName()).joinWhitelist;
-        List<String> blackList = this.plugin.worlds.get(w.getName()).joinBlacklist;
+        List<String> whiteList = this.plugin.worlds.get(w.getName()).playerWhitelist;
+        List<String> blackList = this.plugin.worlds.get(w.getName()).playerBlacklist;
         
         boolean returnValue = true;
         
-        // TODO: Not sure if I want this.
-        // I don't think so, I just reprioritized the whitelist after the blacklist in general --FF
-        // if (whiteList.size() > 0) {
-        // returnValue = false;
-        // }
+        // I lied. You definitely want this. Sorry Rigby :( You were right. --FF
+        // If there's anyone in the whitelist, then the whitelist is ACTIVE, anyone not in it is blacklisted.
+        if (whiteList.size() > 0) {
+            returnValue = false;
+        }
         for (String bls : blackList) {
-            if (bls.contains("g:") && inGroup(p, w.getName(), bls.split(":")[1])) {
-                // System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
+            if (bls.toLowerCase().contains("g:") && this.inGroup(p, w.getName(), bls.split(":")[1])) {
                 returnValue = false;
                 break;
             }
             if (bls.equalsIgnoreCase(p.getName())) {
-                // System.out.print(p.getName() + " Is on the BLACKlist for " + w.getName());
                 returnValue = false;
                 break;
             }
         }
         for (String wls : whiteList) {
-            if (wls.contains("g:") && inGroup(p, w.getName(), wls.split(":")[1])) {
-                // System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
+            if (wls.toLowerCase().contains("g:") && this.inGroup(p, w.getName(), wls.split(":")[1])) {
                 returnValue = true;
                 break;
             }
             if (wls.equalsIgnoreCase(p.getName())) {
-                // System.out.print(p.getName() + " Is on the WHITElist for " + w.getName());
                 returnValue = true;
                 break;
             }

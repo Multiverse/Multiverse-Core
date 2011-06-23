@@ -112,8 +112,6 @@ public class MultiverseCore extends JavaPlugin {
         
         // Setup & Load our Configuration files.
         loadConfigs();
-        // Call the Function to load all the Worlds and setup the HashMap
-        loadWorlds();
     }
     
     @Override
@@ -133,6 +131,9 @@ public class MultiverseCore extends JavaPlugin {
         
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
+        
+        // Call the Function to load all the Worlds and setup the HashMap
+        loadWorlds();
         
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
         purgeWorlds();
@@ -300,6 +301,7 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new DeleteCommand(this));
         commandManager.addCommand(new UnloadCommand(this));
         commandManager.addCommand(new ConfirmCommand(this));
+        commandManager.addCommand(new InfoCommand(this));
     }
     
     /**
