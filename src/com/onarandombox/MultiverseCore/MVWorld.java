@@ -47,7 +47,7 @@ public class MVWorld {
         this.environment = env;
         this.seed = seed;
         
-        initLists();
+        this.initLists();
         
         this.alias = config.getString("worlds." + this.name + ".alias", "");
         
@@ -70,18 +70,12 @@ public class MVWorld {
         this.animals = config.getBoolean("worlds." + name + ".animals.spawn", true);
         this.monsters = config.getBoolean("worlds." + name + ".monsters.spawn", true);
         
-        List<String> temp;
-        temp = config.getStringList("worlds." + name + ".animals.exceptions", animalList);
-        this.animalList.clear();
-        for (String s : temp) {
-            this.animalList.add(s.toUpperCase());
-            //System.out.print(s);
-        }
-        temp = config.getStringList("worlds." + name + ".monsters.exceptions", monsterList);
-        for (String s : temp) {
-            this.monsterList.add(s.toUpperCase());
-            //System.out.print(s);
-        }
+        
+        
+        this.getMobExceptions();
+        
+        this.setRealMobBehaviors();
+        
         config.setProperty("worlds." + this.name + ".environment", env);
         if(seed != null) {
             config.setProperty("worlds." + this.name + ".seed", this.seed);
@@ -92,7 +86,35 @@ public class MVWorld {
 //            addSampleData();
 //        }
     }
+
+    private void getMobExceptions() {
+        List<String> temp;
+        temp = this.config.getStringList("worlds." + name + ".animals.exceptions", animalList);
+        // Add Animals to the exclusion list
+        this.animalList.clear();
+        for (String s : temp) {
+            this.animalList.add(s.toUpperCase());
+        }
+        temp = this.config.getStringList("worlds." + name + ".monsters.exceptions", monsterList);
+        // Add Monsters to the exclusion list
+        for (String s : temp) {
+            this.monsterList.add(s.toUpperCase());
+        }
+    }
     
+    private void setRealMobBehaviors() {
+        boolean animals = true;
+        boolean monsters = true;
+        if(!this.animals && this.animalList.isEmpty()) {
+            animals = false;
+        }
+        if(!this.monsters && this.monsterList.isEmpty()) {
+            monsters = false;
+        }
+        this.world.setSpawnFlags(monsters, animals);
+        
+    }
+
     private void initLists() {
         blockBlacklist = new ArrayList<Integer>();
         playerWhitelist = new ArrayList<String>();
