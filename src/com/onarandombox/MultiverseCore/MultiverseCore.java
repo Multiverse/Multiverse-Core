@@ -35,6 +35,7 @@ import org.bukkit.entity.Squid;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,8 +47,6 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.QueuedCommand;
 import com.onarandombox.MultiverseCore.command.commands.*;
-import com.onarandombox.MultiverseCore.commands.MVModify;
-import com.onarandombox.MultiverseCore.commands.MVReload;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.Messaging;
@@ -97,6 +96,9 @@ public class MultiverseCore extends JavaPlugin {
     // HashMap to contain all the Worlds which this Plugin will manage.
     public HashMap<String, MVWorld> worlds = new HashMap<String, MVWorld>();
     
+    // HashMap to contain all custom generators. Plugins will have to register!
+    public HashMap<String, ChunkGenerator> worldGenerators = new HashMap<String, ChunkGenerator>();
+    
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
     
@@ -126,7 +128,6 @@ public class MultiverseCore extends JavaPlugin {
         // Setup iConomy.
         setupEconomy();
         // Call the Function to assign all the Commands to their Class.
-        setupCommands();
         registerCommands();
         
         // Start the Update Checker
@@ -284,7 +285,7 @@ public class MultiverseCore extends JavaPlugin {
     }
     
     /**
-     * Register Heroes commands to DThielke's Command Manager.
+     * Register Multiverse-Core commands to DThielke's Command Manager.
      */
     private void registerCommands() {
         // Page 1
@@ -302,23 +303,8 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new UnloadCommand(this));
         commandManager.addCommand(new ConfirmCommand(this));
         commandManager.addCommand(new InfoCommand(this));
-    }
-    
-    /**
-     * Setup commands to the Command Handler
-     */
-    private void setupCommands() {
-        // commands.put("mvcreate", new CreateCommand(this));
-        // commands.put("mvimport", new ImportCommand(this));
-        // commands.put("mvremove", new RemoveCommand(this));
-        commands.put("mvmodify", new MVModify(this));
-        // commands.put("mvtp", new TeleportCommand(this));
-        // commands.put("mvlist", new ListCommand(this));
-        // commands.put("mvsetspawn", new SetSpawnCommand(this));
-        // commands.put("mvspawn", new SpawnCommand(this));
-        // commands.put("mvcoord", new MVCoord(this));
-        // commands.put("mvwho", new WhoCommand(this));
-        commands.put("mvreload", new MVReload(this));
+        commandManager.addCommand(new ReloadCommand(this));
+        commandManager.addCommand(new ModifyCommand(this));
     }
     
     /**
@@ -340,31 +326,13 @@ public class MultiverseCore extends JavaPlugin {
                 // Grab the initial values from the config file.
                 String environment = configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
                 String seedString = configWorlds.getString("worlds." + worldKey + ".seed", "");
-                Long seed = null;
-                // Work out the Environment
-                Environment env = getEnvFromString(environment, null);
-                if (env == null) {
-                    env = Environment.NORMAL;
-                }
-                // If a seed was given we need to parse it to a Long Format.
-                if (seedString.length() > 0) {
-                    // Output to the Log that we are loading a world, specify the name, environment type and seed.
-                    log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment + " with seed: " + seedString);
-                    try {
-                        seed = Long.parseLong(seedString);
-                    } catch (NumberFormatException numberformatexception) {
-                        seed = (long) seedString.hashCode();
-                    }
-                } else {
-                    // Output to the Log that we are loading a world, specify the name and environment type.
-                    log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
-                }
+                
+                
+                log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
+                
+                
                 // If we don't have a seed then add a standard World, else add the world with the Seed.
-                if (seed == null) {
-                    addWorld(worldKey, env, null);
-                } else {
-                    addWorld(worldKey, env, seed);
-                }
+                addWorld(worldKey, environment, seedString);
                 // Increment the World Count.
                 count++;
             }
@@ -387,7 +355,7 @@ public class MultiverseCore extends JavaPlugin {
         World world = this.getServer().getWorlds().get(0);
         if (!this.worlds.containsKey(world.getName())) {
             log.info("Loading World & Settings - '" + world.getName() + "' - " + world.getEnvironment());
-            addWorld(world.getName(), Environment.NORMAL, null);
+            addWorld(world.getName(), Environment.NORMAL, null, null);
             additonalWorldsLoaded++;
         }
         
@@ -395,7 +363,7 @@ public class MultiverseCore extends JavaPlugin {
         World world_nether = this.getServer().getWorld(world.getName() + "_nether");
         if (world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
             log.info("Loading World & Settings - '" + world.getName() + "' - " + world_nether.getEnvironment());
-            addWorld(world_nether.getName(), Environment.NETHER, null);
+            addWorld(world_nether.getName(), Environment.NETHER, null, null);
             additonalWorldsLoaded++;
         }
         
@@ -411,26 +379,73 @@ public class MultiverseCore extends JavaPlugin {
     public long getSeed(World w) {
         return ((CraftWorld) w).getHandle().worldData.b();
     }
+    /**
+     * 
+     * @param name
+     * @param envString
+     * @param seedString
+     * @return
+     */
+    public boolean addWorld(String name, String envString, String seedString) {
+        Long seed = null;
+        Environment env = getEnvFromString(envString);
+        ChunkGenerator customGenerator = getChunkGenFromEnv(envString);
+        if(env == null) {
+            env = Environment.NORMAL;
+            // If the env was null, ie. not a built in one.
+            // AND the customGenerator is null, then someone 
+            // screwed up... return false!
+            if(customGenerator == null) {
+                return false;
+            }
+        }
+        
+        if (seedString.length() > 0) {
+            try {
+                seed = Long.parseLong(seedString);
+            } catch (NumberFormatException numberformatexception) {
+                seed = (long) seedString.hashCode();
+            }
+        }
+        this.addWorld(name, env, seed, customGenerator);
+        return true;
+    }
     
     /**
      * Add a new World to the Multiverse Setup.
      * 
+     * Isn't there a prettier way to do this??!!?!?!
+     * 
      * @param name World Name
      * @param environment Environment Type
      */
-    public void addWorld(String name, Environment environment, Long seed) {
+    private void addWorld(String name, Environment environment, Long seed, ChunkGenerator customGenerator) {
         if (seed != null) {
-            World world = getServer().createWorld(name, environment, seed);
-            worlds.put(name, new MVWorld(world, configWorlds, this, seed)); // Place the World into the HashMap.
+            if (customGenerator != null) {
+                World world = getServer().createWorld(name, environment, seed, customGenerator);
+                worlds.put(name, new MVWorld(world, configWorlds, this, seed, customGenerator)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - CUSTOMENV with seed: " + seed);
+            } else {
+                World world = getServer().createWorld(name, environment, seed);
+                worlds.put(name, new MVWorld(world, configWorlds, this, seed, null)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + environment + " with seed: " + seed);
+            }
         } else {
-            World world = getServer().createWorld(name, environment);
-            worlds.put(name, new MVWorld(world, configWorlds, this, null)); // Place the World into the HashMap.
+            if (customGenerator != null) {
+                World world = getServer().createWorld(name, environment, customGenerator);
+                worlds.put(name, new MVWorld(world, configWorlds, this, null, customGenerator)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - CUSTOMENV");
+            } else {
+                World world = getServer().createWorld(name, environment);
+                worlds.put(name, new MVWorld(world, configWorlds, this, null, null)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + environment);
+            }
         }
         
     }
     
     public void addWorld(String name, Environment environment) {
-        addWorld(name, environment, null);
+        addWorld(name, environment, null, null);
     }
     
     /**
@@ -625,8 +640,7 @@ public class MultiverseCore extends JavaPlugin {
      * @param env
      * @return
      */
-    public Environment getEnvFromString(String env, CommandSender sender) {
-        Environment environment = null;
+    public Environment getEnvFromString(String env) {
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
         if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
             env = "NETHER";
@@ -638,20 +652,30 @@ public class MultiverseCore extends JavaPlugin {
             env = "NORMAL";
         
         try {
-            environment = Environment.valueOf(env);
+            return Environment.valueOf(env);
         } catch (IllegalArgumentException e) {
             // Sender will be null on loadWorlds
-            if (sender != null) {
-                sender.sendMessage(ChatColor.RED + "Environment type " + env + " does not exist!");
-            }
+            return Environment.NORMAL;
             // TODO: Show the player the mvenvironments command.
         }
-        return environment;
     }
     
+    public ChunkGenerator getChunkGenFromEnv(String env) {
+        if (worldGenerators.containsKey(env)) {
+            return worldGenerators.get(env);
+        }
+        return null;
+    }
+    
+    public boolean registerEnvType(String name, ChunkGenerator generator) {
+        if (worldGenerators.containsKey(name)) {
+            return false;
+        }
+        worldGenerators.put(name, generator);
+        return true;
+    }
     
     // TODO: Find out where to put these next 3 methods! I just stuck them here for now --FF
-
     
     /**
      * 
@@ -663,15 +687,17 @@ public class MultiverseCore extends JavaPlugin {
         sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE + ", please type: " + ChatColor.GREEN + "/mvconfirm " + ChatColor.GOLD + "YES");
         sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for 10 seconds.");
     }
+    
     /**
      * Tries to fire off the command
+     * 
      * @param sender
      * @return
      */
     public boolean confirmQueuedCommand(CommandSender sender) {
         for (QueuedCommand com : queuedCommands) {
             if (com.getSender().equals(sender)) {
-                if(com.execute()) {
+                if (com.execute()) {
                     sender.sendMessage(com.getSuccess());
                     return true;
                 } else {
@@ -682,9 +708,10 @@ public class MultiverseCore extends JavaPlugin {
         }
         return false;
     }
+    
     /**
-     * Cancels(invalidates) a command that has been requested. This is called when a user types something other than 'yes' or when they try to queue a second command
-     * Queuing a second command will delete the first command entirely.
+     * Cancels(invalidates) a command that has been requested. This is called when a user types something other than 'yes' or when they try to queue a second command Queuing a second command will delete the first command entirely.
+     * 
      * @param sender
      */
     public void cancelQueuedCommand(CommandSender sender) {

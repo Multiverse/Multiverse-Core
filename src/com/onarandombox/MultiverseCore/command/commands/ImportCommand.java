@@ -31,13 +31,19 @@ public class ImportCommand extends BaseCommand {
             return;
         }
         
-        Environment env = plugin.getEnvFromString(args[1], sender);
+        Environment env = plugin.getEnvFromString(args[1]);
         
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
             plugin.addWorld(worldName, env);
             sender.sendMessage(ChatColor.GREEN + "Complete!");
             return;
+        } else if(env == null) {
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            sender.sendMessage("I should show valid envs here...");
+        } else {
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            sender.sendMessage("That world folder does not exist...");
         }
     }
 

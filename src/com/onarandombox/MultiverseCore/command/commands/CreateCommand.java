@@ -43,21 +43,14 @@ public class CreateCommand extends BaseCommand {
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
         }
-        Environment environment = plugin.getEnvFromString(env, sender);
-        if (environment == null) {
-            return;
-        }
-        sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
-        if (hasSeed) {
-            try {
-                plugin.addWorld(worldName, environment, Long.parseLong(seed));
-            } catch (NumberFormatException e) {
-                plugin.addWorld(worldName, environment, (long) seed.hashCode());
-            }
+        if (plugin.addWorld(worldName, env, seed)) {
+            sender.sendMessage(ChatColor.GREEN + "Complete!");
         } else {
-            plugin.addWorld(worldName, environment);
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            if(plugin.getEnvFromString(env) == null) {
+                sender.sendMessage("I should show the envs I know here...");
+            }
         }
-        sender.sendMessage(ChatColor.GREEN + "Complete!");
         return;
     }
     

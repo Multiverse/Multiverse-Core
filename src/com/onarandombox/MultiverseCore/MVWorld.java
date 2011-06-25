@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.config.Configuration;
 
 @SuppressWarnings("unused")
@@ -37,7 +38,7 @@ public class MVWorld {
     
     public Double scaling; // How stretched/compressed distances are
     
-    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed) {
+    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, ChunkGenerator customGenerator) {
         this.config = config;
         this.plugin = instance;
         
