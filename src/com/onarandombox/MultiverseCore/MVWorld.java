@@ -38,7 +38,7 @@ public class MVWorld {
     
     public Double scaling; // How stretched/compressed distances are
     
-    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, ChunkGenerator customGenerator) {
+    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String env) {
         this.config = config;
         this.plugin = instance;
         
@@ -82,7 +82,7 @@ public class MVWorld {
             this.monsterList.add(s.toUpperCase());
             //System.out.print(s);
         }
-        config.setProperty("worlds." + this.name + ".environment", this.environment.toString());
+        config.setProperty("worlds." + this.name + ".environment", env);
         if(seed != null) {
             config.setProperty("worlds." + this.name + ".seed", this.seed);
         }

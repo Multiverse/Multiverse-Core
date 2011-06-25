@@ -31,11 +31,11 @@ public class ImportCommand extends BaseCommand {
             return;
         }
         
-        Environment env = plugin.getEnvFromString(args[1]);
+        String env = args[1];
         
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
-            plugin.addWorld(worldName, env);
+            plugin.addWorld(worldName, env, "");
             sender.sendMessage(ChatColor.GREEN + "Complete!");
             return;
         } else if(env == null) {

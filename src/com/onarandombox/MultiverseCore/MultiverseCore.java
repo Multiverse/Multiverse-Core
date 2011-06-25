@@ -134,7 +134,9 @@ public class MultiverseCore extends JavaPlugin {
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
         
         // Call the Function to load all the Worlds and setup the HashMap
-        loadWorlds();
+        // When called with null, it tries to load ALL
+        // this function will be called every time a plugin registers a new envtype with MV
+        loadWorlds(null);
         
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
         purgeWorlds();
@@ -310,7 +312,7 @@ public class MultiverseCore extends JavaPlugin {
     /**
      * Load the Worlds & Settings from the configuration file.
      */
-    public void loadWorlds() {
+    public void loadWorlds(String filter) {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
         // Grab all the Worlds from the Config.
@@ -327,14 +329,22 @@ public class MultiverseCore extends JavaPlugin {
                 String environment = configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
                 String seedString = configWorlds.getString("worlds." + worldKey + ".seed", "");
                 
-                
                 log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
                 
+                boolean isStockWorldType = this.getEnvFromString(environment) != null;
                 
                 // If we don't have a seed then add a standard World, else add the world with the Seed.
-                addWorld(worldKey, environment, seedString);
-                // Increment the World Count.
-                count++;
+                if (filter == null && isStockWorldType) {
+                    addWorld(worldKey, environment, seedString);
+                    // Increment the world count
+                    count++;
+                } else if (filter != null && filter.equalsIgnoreCase(environment)) {
+                    addWorld(worldKey, environment, seedString);
+                    // Increment the world count
+                    count++;
+                } else {
+                    log(Level.INFO, "World " + worldKey + " was not loaded YET. Multiverse is waiting for a plugin to handle the environment type " + environment);
+                }
             }
         }
         
@@ -355,7 +365,7 @@ public class MultiverseCore extends JavaPlugin {
         World world = this.getServer().getWorlds().get(0);
         if (!this.worlds.containsKey(world.getName())) {
             log.info("Loading World & Settings - '" + world.getName() + "' - " + world.getEnvironment());
-            addWorld(world.getName(), Environment.NORMAL, null, null);
+            addWorld(world.getName(), "NORMAL", "");
             additonalWorldsLoaded++;
         }
         
@@ -363,7 +373,7 @@ public class MultiverseCore extends JavaPlugin {
         World world_nether = this.getServer().getWorld(world.getName() + "_nether");
         if (world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
             log.info("Loading World & Settings - '" + world.getName() + "' - " + world_nether.getEnvironment());
-            addWorld(world_nether.getName(), Environment.NETHER, null, null);
+            addWorld(world_nether.getName(), "NORMAL", "");
             additonalWorldsLoaded++;
         }
         
@@ -379,37 +389,6 @@ public class MultiverseCore extends JavaPlugin {
     public long getSeed(World w) {
         return ((CraftWorld) w).getHandle().worldData.b();
     }
-    /**
-     * 
-     * @param name
-     * @param envString
-     * @param seedString
-     * @return
-     */
-    public boolean addWorld(String name, String envString, String seedString) {
-        Long seed = null;
-        Environment env = getEnvFromString(envString);
-        ChunkGenerator customGenerator = getChunkGenFromEnv(envString);
-        if(env == null) {
-            env = Environment.NORMAL;
-            // If the env was null, ie. not a built in one.
-            // AND the customGenerator is null, then someone 
-            // screwed up... return false!
-            if(customGenerator == null) {
-                return false;
-            }
-        }
-        
-        if (seedString.length() > 0) {
-            try {
-                seed = Long.parseLong(seedString);
-            } catch (NumberFormatException numberformatexception) {
-                seed = (long) seedString.hashCode();
-            }
-        }
-        this.addWorld(name, env, seed, customGenerator);
-        return true;
-    }
     
     /**
      * Add a new World to the Multiverse Setup.
@@ -419,33 +398,52 @@ public class MultiverseCore extends JavaPlugin {
      * @param name World Name
      * @param environment Environment Type
      */
-    private void addWorld(String name, Environment environment, Long seed, ChunkGenerator customGenerator) {
-        if (seed != null) {
-            if (customGenerator != null) {
-                World world = getServer().createWorld(name, environment, seed, customGenerator);
-                worlds.put(name, new MVWorld(world, configWorlds, this, seed, customGenerator)); // Place the World into the HashMap.
-                log(Level.INFO, "Loading World & Settings - '" + name + "' - CUSTOMENV with seed: " + seed);
-            } else {
-                World world = getServer().createWorld(name, environment, seed);
-                worlds.put(name, new MVWorld(world, configWorlds, this, seed, null)); // Place the World into the HashMap.
-                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + environment + " with seed: " + seed);
-            }
-        } else {
-            if (customGenerator != null) {
-                World world = getServer().createWorld(name, environment, customGenerator);
-                worlds.put(name, new MVWorld(world, configWorlds, this, null, customGenerator)); // Place the World into the HashMap.
-                log(Level.INFO, "Loading World & Settings - '" + name + "' - CUSTOMENV");
-            } else {
-                World world = getServer().createWorld(name, environment);
-                worlds.put(name, new MVWorld(world, configWorlds, this, null, null)); // Place the World into the HashMap.
-                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + environment);
+    public boolean addWorld(String name, String envString, String seedString) {
+        
+        Long seed = null;
+        if (seedString.length() > 0) {
+            try {
+                seed = Long.parseLong(seedString);
+            } catch (NumberFormatException numberformatexception) {
+                seed = (long) seedString.hashCode();
             }
         }
         
-    }
-    
-    public void addWorld(String name, Environment environment) {
-        addWorld(name, environment, null, null);
+        Environment env = getEnvFromString(envString);
+        ChunkGenerator customGenerator = getChunkGenFromEnv(envString);
+        if (env == null) {
+            env = Environment.NORMAL;
+            // If the env was null, ie. not a built in one.
+            // AND the customGenerator is null, then someone
+            // screwed up... return false!
+            if (customGenerator == null) {
+                return false;
+            }
+        }
+        
+        if (seed != null) {
+            if (customGenerator != null) {
+                World world = getServer().createWorld(name, env, seed, customGenerator);
+                worlds.put(name, new MVWorld(world, configWorlds, this, seed, envString)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + envString + " with seed: " + seed);
+            } else {
+                World world = getServer().createWorld(name, env, seed);
+                worlds.put(name, new MVWorld(world, configWorlds, this, seed, envString)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env + " with seed: " + seed);
+            }
+        } else {
+            if (customGenerator != null) {
+                World world = getServer().createWorld(name, env, customGenerator);
+                worlds.put(name, new MVWorld(world, configWorlds, this, null, envString)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + envString);
+            } else {
+                World world = getServer().createWorld(name, env);
+                worlds.put(name, new MVWorld(world, configWorlds, this, null, envString)); // Place the World into the HashMap.
+                log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env);
+            }
+        }
+        return true;
+        
     }
     
     /**
@@ -655,7 +653,7 @@ public class MultiverseCore extends JavaPlugin {
             return Environment.valueOf(env);
         } catch (IllegalArgumentException e) {
             // Sender will be null on loadWorlds
-            return Environment.NORMAL;
+            return null;
             // TODO: Show the player the mvenvironments command.
         }
     }
@@ -668,10 +666,11 @@ public class MultiverseCore extends JavaPlugin {
     }
     
     public boolean registerEnvType(String name, ChunkGenerator generator) {
-        if (worldGenerators.containsKey(name)) {
+        if (this.worldGenerators.containsKey(name)) {
             return false;
         }
-        worldGenerators.put(name, generator);
+        this.worldGenerators.put(name, generator);
+        this.loadWorlds(name);
         return true;
     }
     
