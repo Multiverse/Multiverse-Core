@@ -38,9 +38,9 @@ public class MVTeleport {
         
         double x, y, z;
         
-        // Grab the Compression value for each world.
-        double srcComp = plugin.worlds.get(l.getWorld().getName()).scaling;
-        double trgComp = plugin.worlds.get(w.getName()).scaling;
+        // Grab the Scaling value for each world.
+        double srcComp = this.plugin.getMVWorld(l.getWorld().getName()).scaling;
+        double trgComp = this.plugin.getMVWorld(w.getName()).scaling;
         
         // MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
         
@@ -128,10 +128,10 @@ public class MVTeleport {
      */
     private double safeColumn(World world, double x, double y, double z) {
         for (double ny = 0; ny < 48; ny++) {
-            if ((y + ny < 120) && !bs.blockIsNotSafe(world, x, y + ny, z)) {
+            if ((y + ny < 120) && !this.bs.blockIsNotSafe(world, x, y + ny, z)) {
                 return y + ny;
             }
-            if ((y - ny > 4) && !bs.blockIsNotSafe(world, x, y - ny, z)) {
+            if ((y - ny > 4) && !this.bs.blockIsNotSafe(world, x, y - ny, z)) {
                 return y - ny;
             }
         }

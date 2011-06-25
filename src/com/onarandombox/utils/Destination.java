@@ -39,11 +39,11 @@ public class Destination {
         }
         
         // If we only found one param, assume world, but still check for validity
-        if (items.length == 1 && plugin.worlds.containsKey(items[0])) {
+        if (items.length == 1 && plugin.isMVWorld(items[0])) {
             return new Destination(items[0], DestinationType.World);
         }
         
-        if (items[0].equalsIgnoreCase("w") && plugin.worlds.containsKey(items[0])) {
+        if (items[0].equalsIgnoreCase("w") && plugin.isMVWorld(items[0])) {
             return new Destination(items[1], DestinationType.World);
         } else if (items[0].equalsIgnoreCase("p")) {
             // TODO: Check for a valid portal, we can't right now, as portals aren't really in yet.

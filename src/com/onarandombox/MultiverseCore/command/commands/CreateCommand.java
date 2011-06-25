@@ -37,7 +37,7 @@ public class CreateCommand extends BaseCommand {
             seed = args[2];
         }
         
-        if (new File(worldName).exists() || this.plugin.worlds.containsKey(worldName)) {
+        if (new File(worldName).exists() || this.plugin.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;

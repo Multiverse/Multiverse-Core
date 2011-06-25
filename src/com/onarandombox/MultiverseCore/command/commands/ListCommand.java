@@ -31,7 +31,7 @@ public class ListCommand extends BaseCommand {
         }
         
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
-        for (MVWorld world : this.plugin.worlds.values()) {
+        for (MVWorld world : this.plugin.getMVWorlds()) {
             
             if (p != null && (!this.plugin.ph.canEnterWorld(p, world.getCBWorld()))) {
                 continue;

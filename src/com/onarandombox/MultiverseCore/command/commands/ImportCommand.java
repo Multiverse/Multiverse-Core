@@ -25,7 +25,7 @@ public class ImportCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         String worldName = args[0];
-        if (this.plugin.worlds.containsKey(worldName) && new File(worldName).exists()) {
+        if (this.plugin.isMVWorld(worldName) && new File(worldName).exists()) {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
             return;
         }

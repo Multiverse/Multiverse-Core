@@ -47,14 +47,14 @@ public class MVEntityListener extends EntityListener {
         World world = event.getEntity().getWorld();
         if (event.isCancelled())
             return;
-        if (!(plugin.worlds.containsKey(world.getName())))
+        if (!(this.plugin.isMVWorld(world.getName())))
             return; // Check if it's a world which we are meant to be managing.
 
         CreatureType creature = event.getCreatureType();
 
         // event.getEntity().getWorld().spawnCreature(arg0, arg1);
 
-        MVWorld mvworld = plugin.worlds.get(world.getName());
+        MVWorld mvworld = this.plugin.getMVWorld(world.getName());
 
         // TODO: Look of this and see if there's a cleaner/better method of doing so...
 

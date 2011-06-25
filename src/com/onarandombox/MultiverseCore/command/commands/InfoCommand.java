@@ -36,8 +36,8 @@ public class InfoCommand extends BaseCommand {
         } else {
             worldName = args[0];
         }
-        if (this.plugin.worlds.containsKey(worldName)) {
-            for (String s : buildEntireCommand(this.plugin.worlds.get(worldName))) {
+        if (this.plugin.isMVWorld(worldName)) {
+            for (String s : buildEntireCommand(this.plugin.getMVWorld(worldName))) {
                 sender.sendMessage(s);
             }
         }

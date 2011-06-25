@@ -38,18 +38,18 @@ public class WhoCommand extends BaseCommand {
         List<MVWorld> worlds = new ArrayList<MVWorld>();
         
         if (args.length > 0) {
-            if (this.plugin.worlds.containsKey(args[0])) {
-                worlds.add(this.plugin.worlds.get(args[0]));
+            if (this.plugin.isMVWorld(args[0])) {
+                worlds.add(this.plugin.getMVWorld(args[0]));
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
                 return;
             }
         } else {
-            worlds = new ArrayList<MVWorld>(this.plugin.getWorlds());
+            worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
         }
         
         for (MVWorld world : worlds) {
-            if (!(this.plugin.worlds.containsKey(world.name))) {
+            if (!(this.plugin.isMVWorld(world.name))) {
                 continue;
             }
             
