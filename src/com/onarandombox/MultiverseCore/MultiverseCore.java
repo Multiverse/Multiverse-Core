@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class MultiverseCore extends JavaPlugin {
     public HashMap<String, MVWorld> worlds = new HashMap<String, MVWorld>();
     
     // HashMap to contain all custom generators. Plugins will have to register!
-    public HashMap<String, ChunkGenerator> worldGenerators = new HashMap<String, ChunkGenerator>();
+    private HashMap<String, ChunkGenerator> worldGenerators = new HashMap<String, ChunkGenerator>();
     
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
@@ -307,6 +308,7 @@ public class MultiverseCore extends JavaPlugin {
         commandManager.addCommand(new InfoCommand(this));
         commandManager.addCommand(new ReloadCommand(this));
         commandManager.addCommand(new ModifyCommand(this));
+        commandManager.addCommand(new EnvironmentCommand(this));
     }
     
     /**
@@ -652,19 +654,22 @@ public class MultiverseCore extends JavaPlugin {
         try {
             return Environment.valueOf(env);
         } catch (IllegalArgumentException e) {
-            // Sender will be null on loadWorlds
             return null;
-            // TODO: Show the player the mvenvironments command.
         }
     }
     
-    public ChunkGenerator getChunkGenFromEnv(String env) {
+    private ChunkGenerator getChunkGenFromEnv(String env) {
         if (worldGenerators.containsKey(env)) {
             return worldGenerators.get(env);
         }
         return null;
     }
-    
+    /**
+     * Other plugin devs can use this to tell MultiVerse about other environment types
+     * @param name
+     * @param generator
+     * @return
+     */
     public boolean registerEnvType(String name, ChunkGenerator generator) {
         if (this.worldGenerators.containsKey(name)) {
             return false;
@@ -724,5 +729,13 @@ public class MultiverseCore extends JavaPlugin {
             // Each person is allowed at most one queued command.
             queuedCommands.remove(c);
         }
+    }
+    
+    public Set<String> getWorldGenerators() {
+        return this.worldGenerators.keySet();
+    }
+    
+    public Collection<MVWorld> getWorlds() {
+        return this.worlds.values();
     }
 }

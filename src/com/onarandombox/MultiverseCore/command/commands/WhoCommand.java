@@ -9,6 +9,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
@@ -34,36 +35,42 @@ public class WhoCommand extends BaseCommand {
             p = (Player) sender;
         }
         
-        List<World> worlds = new ArrayList<World>();
+        List<MVWorld> worlds = new ArrayList<MVWorld>();
         
         if (args.length > 0) {
-            World world = plugin.getServer().getWorld(args[0].toString());
-            if (world != null) {
-                worlds.add(world);
+            if (plugin.worlds.containsKey(args[0])) {
+                worlds.add(plugin.worlds.get(args[0]));
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
                 return;
             }
         } else {
-            worlds = plugin.getServer().getWorlds();
+            worlds = new ArrayList<MVWorld>(plugin.getWorlds());
         }
         
-        for (World world : worlds) {
-            if (!(plugin.worlds.containsKey(world.getName()))) {
+        for (MVWorld world : worlds) {
+            if (!(plugin.worlds.containsKey(world.name))) {
                 continue;
             }
-            if (p != null && (!plugin.ph.canEnterWorld(p, world))) {
+            
+            World w = plugin.getServer().getWorld(world.name);
+            if (p != null && (!plugin.ph.canEnterWorld(p, w))) {
                 continue;
             }
-            ChatColor color = ChatColor.BLUE;
-            if (world.getEnvironment() == Environment.NETHER) {
+            
+            ChatColor color = ChatColor.GOLD;
+            Environment env = plugin.getEnvFromString(world.environment);
+            if(plugin.getEnvFromString(world.environment) == null) {
+                color = ChatColor.GOLD;
+            }
+            else if (env == Environment.NETHER) {
                 color = ChatColor.RED;
-            } else if (world.getEnvironment() == Environment.NORMAL) {
+            } else if (env == Environment.NORMAL) {
                 color = ChatColor.GREEN;
-            } else if (world.getEnvironment() == Environment.SKYLANDS) {
+            } else if (env == Environment.SKYLANDS) {
                 color = ChatColor.AQUA;
             }
-            List<Player> players = world.getPlayers();
+            List<Player> players = w.getPlayers();
             
             String result = "";
             if (players.size() <= 0) {
@@ -73,7 +80,7 @@ public class WhoCommand extends BaseCommand {
                     result += player.getName() + " ";
                 }
             }
-            sender.sendMessage(color + world.getName() + ChatColor.WHITE + " - " + result);
+            sender.sendMessage(color + world.name + ChatColor.WHITE + " - " + result);
         }
         return;
     }

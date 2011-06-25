@@ -83,3 +83,7 @@ commands:
     description: Gets world info.
     usage: |
             /<command> [world]
+  mvenv:
+    description: Tells the user all possible world types.
+    usage: |
+            /<command>

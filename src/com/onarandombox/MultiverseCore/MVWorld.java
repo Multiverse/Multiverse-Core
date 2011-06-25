@@ -15,7 +15,7 @@ public class MVWorld {
     private Configuration config; // Hold the Configuration File.
     
     public World world; // The World Instance.
-    public Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
+    public String environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
     public Long seed;
     
     public String name; // The Worlds Name, EG its folder name.
@@ -44,7 +44,7 @@ public class MVWorld {
         
         this.world = world;
         this.name = world.getName();
-        this.environment = world.getEnvironment();
+        this.environment = env;
         this.seed = seed;
         
         initLists();

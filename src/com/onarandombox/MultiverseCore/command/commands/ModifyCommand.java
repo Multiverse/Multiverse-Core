@@ -2,7 +2,6 @@ package com.onarandombox.MultiverseCore.command.commands;
 
 import org.bukkit.command.CommandSender;
 
-import com.onarandombox.MultiverseCore.MVCommandHandler;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 

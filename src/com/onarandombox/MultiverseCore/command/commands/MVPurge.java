@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiverseCore.MVCommandHandler;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.onarandombox.utils.PurgeWorlds;

@@ -3,7 +3,6 @@ package com.onarandombox.MultiverseCore.command.commands;
 import java.io.File;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -48,7 +47,8 @@ public class CreateCommand extends BaseCommand {
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             if(plugin.getEnvFromString(env) == null) {
-                sender.sendMessage("I should show the envs I know here...");
+                sender.sendMessage("That world type did not exist.");
+                sender.sendMessage("For a list of available world types, type: /mvenv");
             }
         }
         return;

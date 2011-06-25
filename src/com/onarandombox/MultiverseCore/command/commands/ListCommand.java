@@ -25,6 +25,7 @@ public class ListCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
+        //TODO: Show custom worldtypes
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
