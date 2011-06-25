@@ -38,29 +38,29 @@ public class WhoCommand extends BaseCommand {
         List<MVWorld> worlds = new ArrayList<MVWorld>();
         
         if (args.length > 0) {
-            if (plugin.worlds.containsKey(args[0])) {
-                worlds.add(plugin.worlds.get(args[0]));
+            if (this.plugin.worlds.containsKey(args[0])) {
+                worlds.add(this.plugin.worlds.get(args[0]));
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
                 return;
             }
         } else {
-            worlds = new ArrayList<MVWorld>(plugin.getWorlds());
+            worlds = new ArrayList<MVWorld>(this.plugin.getWorlds());
         }
         
         for (MVWorld world : worlds) {
-            if (!(plugin.worlds.containsKey(world.name))) {
+            if (!(this.plugin.worlds.containsKey(world.name))) {
                 continue;
             }
             
-            World w = plugin.getServer().getWorld(world.name);
-            if (p != null && (!plugin.ph.canEnterWorld(p, w))) {
+            World w = this.plugin.getServer().getWorld(world.name);
+            if (p != null && (!this.plugin.ph.canEnterWorld(p, w))) {
                 continue;
             }
             
             ChatColor color = ChatColor.GOLD;
-            Environment env = plugin.getEnvFromString(world.environment);
-            if(plugin.getEnvFromString(world.environment) == null) {
+            Environment env = this.plugin.getEnvFromString(world.environment);
+            if(this.plugin.getEnvFromString(world.environment) == null) {
                 color = ChatColor.GOLD;
             }
             else if (env == Environment.NETHER) {

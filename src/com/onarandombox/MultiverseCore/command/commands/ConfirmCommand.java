@@ -9,12 +9,12 @@ public class ConfirmCommand extends BaseCommand {
     
     public ConfirmCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Confirms a command that could destroy life, the universe and everything.";
-        description = "If you have not been prompted to use this, it will not do anything.";
-        usage = "/mvconfirm";
-        minArgs = 0;
-        maxArgs = 0;
-        identifiers.add("mvconfirm");
+        this.name = "Confirms a command that could destroy life, the universe and everything.";
+        this.description = "If you have not been prompted to use this, it will not do anything.";
+        this.usage = "/mvconfirm";
+        this.minArgs = 0;
+        this.maxArgs = 0;
+        this.identifiers.add("mvconfirm");
         this.permission = "multiverse.world.confirm";
         // Any command that is dangerous should require op
         this.requiresOp = true;
@@ -22,7 +22,7 @@ public class ConfirmCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        plugin.confirmQueuedCommand(sender);
+        this.plugin.confirmQueuedCommand(sender);
     }
     
 }

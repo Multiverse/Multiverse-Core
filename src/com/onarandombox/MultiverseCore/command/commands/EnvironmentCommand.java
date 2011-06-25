@@ -30,10 +30,10 @@ public class EnvironmentCommand extends BaseCommand{
         sender.sendMessage(ChatColor.GREEN + "NORMAL");
         sender.sendMessage(ChatColor.RED + "NETHER");
         sender.sendMessage(ChatColor.AQUA + "SKYLANDS");
-        if(plugin.getWorldGenerators().size() > 0) {
+        if(this.plugin.getWorldGenerators().size() > 0) {
             sender.sendMessage(ChatColor.DARK_AQUA + "CUSTOM WORLD TYPES:");
         }
-        for(String s : plugin.getWorldGenerators()) {
+        for(String s : this.plugin.getWorldGenerators()) {
             sender.sendMessage(ChatColor.GOLD + s);
         }
     }

@@ -22,7 +22,7 @@ public class RemoveCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (plugin.removeWorld(args[0])) {
+        if (this.plugin.removeWorld(args[0])) {
             sender.sendMessage("World removed from config!");
         } else {
             sender.sendMessage("Error trying to remove world from config!");

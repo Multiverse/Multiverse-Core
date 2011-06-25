@@ -29,7 +29,7 @@ public class SpawnCommand extends BaseCommand {
             commandSender = (Player) sender;
         }
         if (args.length == 1) {
-            Player target = plugin.getServer().getPlayer(args[0]);
+            Player target = this.plugin.getServer().getPlayer(args[0]);
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");
                 target.teleport(target.getWorld().getSpawnLocation());

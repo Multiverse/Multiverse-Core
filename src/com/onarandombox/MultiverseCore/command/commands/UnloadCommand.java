@@ -22,7 +22,7 @@ public class UnloadCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (plugin.unloadWorld(args[0])) {
+        if (this.plugin.unloadWorld(args[0])) {
             sender.sendMessage("World Unloaded!");
         } else {
             sender.sendMessage("Error trying to unload world!");

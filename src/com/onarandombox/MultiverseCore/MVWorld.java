@@ -60,15 +60,15 @@ public class MVWorld {
             this.scaling = 1.0;
         }
         
-        this.playerWhitelist = config.getStringList("worlds." + name + ".playerWhitelist", playerWhitelist);
-        this.playerBlacklist = config.getStringList("worlds." + name + ".playerBlacklist", playerBlacklist);
-        this.worldBlacklist = config.getStringList("worlds." + name + ".worldBlacklist", worldBlacklist);
-        this.blockBlacklist = config.getIntList("worlds." + name + ".blockBlacklist", blockBlacklist);
-        this.editWhitelist = config.getStringList("worlds." + name + ".editWhitelist", editWhitelist);
-        this.editBlacklist = config.getStringList("worlds." + name + ".editBlacklist", editBlacklist);
+        this.playerWhitelist = config.getStringList("worlds." + this.name + ".playerWhitelist", this.playerWhitelist);
+        this.playerBlacklist = config.getStringList("worlds." + this.name + ".playerBlacklist", this.playerBlacklist);
+        this.worldBlacklist = config.getStringList("worlds." + this.name + ".worldBlacklist", this.worldBlacklist);
+        this.blockBlacklist = config.getIntList("worlds." + this.name + ".blockBlacklist", this.blockBlacklist);
+        this.editWhitelist = config.getStringList("worlds." + this.name + ".editWhitelist", this.editWhitelist);
+        this.editBlacklist = config.getStringList("worlds." + this.name + ".editBlacklist", this.editBlacklist);
         
-        this.animals = config.getBoolean("worlds." + name + ".animals.spawn", true);
-        this.monsters = config.getBoolean("worlds." + name + ".monsters.spawn", true);
+        this.animals = config.getBoolean("worlds." + this.name + ".animals.spawn", true);
+        this.monsters = config.getBoolean("worlds." + this.name + ".monsters.spawn", true);
         
         
         
@@ -89,17 +89,21 @@ public class MVWorld {
 
     private void getMobExceptions() {
         List<String> temp;
-        temp = this.config.getStringList("worlds." + name + ".animals.exceptions", animalList);
+        temp = this.config.getStringList("worlds." + this.name + ".animals.exceptions", this.animalList);
         // Add Animals to the exclusion list
         this.animalList.clear();
         for (String s : temp) {
             this.animalList.add(s.toUpperCase());
         }
-        temp = this.config.getStringList("worlds." + name + ".monsters.exceptions", monsterList);
+        temp = this.config.getStringList("worlds." + this.name + ".monsters.exceptions", this.monsterList);
         // Add Monsters to the exclusion list
         for (String s : temp) {
             this.monsterList.add(s.toUpperCase());
         }
+    }
+    
+    public World getCBWorld() {
+        return this.world;
     }
     
     private void setRealMobBehaviors() {
@@ -116,12 +120,12 @@ public class MVWorld {
     }
 
     private void initLists() {
-        blockBlacklist = new ArrayList<Integer>();
-        playerWhitelist = new ArrayList<String>();
-        playerBlacklist = new ArrayList<String>();
-        editWhitelist = new ArrayList<String>();
-        editBlacklist = new ArrayList<String>();
-        worldBlacklist = new ArrayList<String>();
+        this.blockBlacklist = new ArrayList<Integer>();
+        this.playerWhitelist = new ArrayList<String>();
+        this.playerBlacklist = new ArrayList<String>();
+        this.editWhitelist = new ArrayList<String>();
+        this.editBlacklist = new ArrayList<String>();
+        this.worldBlacklist = new ArrayList<String>();
     }
     
     public void addSampleData() {
@@ -146,14 +150,14 @@ public class MVWorld {
         this.worldBlacklist.add("world5");
         this.worldBlacklist.add("A world with spaces");
         
-        this.config.setProperty("worlds." + name + ".animals.exceptions", animalList);
-        this.config.setProperty("worlds." + name + ".monsters.exceptions", monsterList);
-        this.config.setProperty("worlds." + name + ".blockBlacklist", blockBlacklist);
-        this.config.setProperty("worlds." + name + ".playerWhitelist", playerWhitelist);
-        this.config.setProperty("worlds." + name + ".playerBlacklist", playerBlacklist);
-        this.config.setProperty("worlds." + name + ".editWhitelist", editWhitelist);
-        this.config.setProperty("worlds." + name + ".editBlacklist", editBlacklist);
-        this.config.setProperty("worlds." + name + ".worldBlacklist", worldBlacklist);
+        this.config.setProperty("worlds." + this.name + ".animals.exceptions", this.animalList);
+        this.config.setProperty("worlds." + this.name + ".monsters.exceptions", this.monsterList);
+        this.config.setProperty("worlds." + this.name + ".blockBlacklist", this.blockBlacklist);
+        this.config.setProperty("worlds." + this.name + ".playerWhitelist", this.playerWhitelist);
+        this.config.setProperty("worlds." + this.name + ".playerBlacklist", this.playerBlacklist);
+        this.config.setProperty("worlds." + this.name + ".editWhitelist", this.editWhitelist);
+        this.config.setProperty("worlds." + this.name + ".editBlacklist", this.editBlacklist);
+        this.config.setProperty("worlds." + this.name + ".worldBlacklist", this.worldBlacklist);
         this.config.save();
     }
 }

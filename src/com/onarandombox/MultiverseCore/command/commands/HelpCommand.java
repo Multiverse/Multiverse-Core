@@ -43,7 +43,7 @@ public class HelpCommand extends BaseCommand {
         }
 
         // Get only the commands this player has access to
-        List<BaseCommand> commands = plugin.getCommandManager().getCommands(sender);
+        List<BaseCommand> commands = this.plugin.getCommandManager().getCommands(sender);
 
         int numPages = commands.size() / CMDS_PER_PAGE;
         if (commands.size() % CMDS_PER_PAGE != 0) {
@@ -53,7 +53,7 @@ public class HelpCommand extends BaseCommand {
         if (page >= numPages || page < 0) {
             page = 0;
         }
-        sender.sendMessage(ChatColor.GREEN + "-----[ " + ChatColor.WHITE + plugin.getTag().replace("[", "").replace("]", "") + " Help <" + (page + 1) + "/" + numPages + ">" + ChatColor.GREEN + " ]-----");
+        sender.sendMessage(ChatColor.GREEN + "-----[ " + ChatColor.WHITE + this.plugin.getTag().replace("[", "").replace("]", "") + " Help <" + (page + 1) + "/" + numPages + ">" + ChatColor.GREEN + " ]-----");
         int start = page * CMDS_PER_PAGE;
         int end = start + CMDS_PER_PAGE;
         if (end > commands.size()) {

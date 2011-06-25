@@ -42,11 +42,11 @@ public class CreateCommand extends BaseCommand {
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
         }
-        if (plugin.addWorld(worldName, env, seed)) {
+        if (this.plugin.addWorld(worldName, env, seed)) {
             sender.sendMessage(ChatColor.GREEN + "Complete!");
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
-            if(plugin.getEnvFromString(env) == null) {
+            if(this.plugin.getEnvFromString(env) == null) {
                 sender.sendMessage("That world type did not exist.");
                 sender.sendMessage("For a list of available world types, type: /mvenv");
             }

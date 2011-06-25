@@ -31,7 +31,7 @@ public class SetSpawnCommand extends BaseCommand {
             w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
             p.sendMessage(w.getName() + " - Spawn set to X: " + l.getBlockX() + "  Y: " + l.getBlockY() + " Z: " + l.getBlockZ());
         } else {
-            sender.sendMessage(IN_GAME_COMMAND_MSG);
+            sender.sendMessage(this.IN_GAME_COMMAND_MSG);
         }
         return;
     }

@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
 
-import com.onarandombox.MultiverseCore.MVCommandHandler;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
@@ -24,10 +23,10 @@ public class ReloadCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        plugin.log(Level.INFO, "Reloading Multiverse-Core config");
-        plugin.loadConfigs();
-        plugin.loadWorlds(null);
-        plugin.log(Level.INFO, "Reload Complete!");
+        this.plugin.log(Level.INFO, "Reloading Multiverse-Core config");
+        this.plugin.loadConfigs();
+        this.plugin.loadWorlds(null);
+        this.plugin.log(Level.INFO, "Reload Complete!");
     }
 
 }

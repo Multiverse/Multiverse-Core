@@ -15,12 +15,12 @@ public class CoordCommand extends BaseCommand {
 
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);
-        name = "Coordinates";
-        description = "Returns detailed information on the Players where abouts.";
-        usage = "/mvcoord";
-        minArgs = 0;
-        maxArgs = 0;
-        identifiers.add("mvcoord");
+        this.name = "Coordinates";
+        this.description = "Returns detailed information on the Players where abouts.";
+        this.usage = "/mvcoord";
+        this.minArgs = 0;
+        this.maxArgs = 0;
+        this.identifiers.add("mvcoord");
     }
 
     @Override
@@ -29,9 +29,9 @@ public class CoordCommand extends BaseCommand {
         if (sender instanceof Player) {
         	Player p = (Player) sender;
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
-            p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + plugin.worlds.get(p.getWorld().getName()).scaling);
-            p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + locMan.strCoords(p.getLocation()));
-            p.sendMessage(ChatColor.RED + "Direction: " + ChatColor.WHITE + locMan.getDirection(p.getLocation()));
+            p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + this.plugin.worlds.get(p.getWorld().getName()).scaling);
+            p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));
+            p.sendMessage(ChatColor.RED + "Direction: " + ChatColor.WHITE + this.locMan.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Block: " + ChatColor.WHITE + Material.getMaterial(p.getWorld().getBlockTypeIdAt(p.getLocation())));
         } else {
             sender.sendMessage("This command needs to be used from a Player.");

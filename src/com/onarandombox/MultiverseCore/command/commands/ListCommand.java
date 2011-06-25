@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
@@ -25,34 +25,32 @@ public class ListCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        //TODO: Show custom worldtypes
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
         }
         
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
-        for (World world : plugin.getServer().getWorlds()) {
+        for (MVWorld world : this.plugin.worlds.values()) {
             
-            
-            if (!(plugin.worlds.containsKey(world.getName()))) {
-                continue;
-            }
-            if (p != null && (!plugin.ph.canEnterWorld(p, world))) {
+            if (p != null && (!this.plugin.ph.canEnterWorld(p, world.getCBWorld()))) {
                 continue;
             }
             
-            ChatColor color = ChatColor.GREEN;
-            
-            if (world.getEnvironment() == Environment.NETHER) {
+            ChatColor color = ChatColor.GOLD;
+            Environment env = this.plugin.getEnvFromString(world.environment);
+            if(this.plugin.getEnvFromString(world.environment) == null) {
+                color = ChatColor.GOLD;
+            }
+            else if (env == Environment.NETHER) {
                 color = ChatColor.RED;
-            } else if(world.getEnvironment() == Environment.SKYLANDS) {
-                color = ChatColor.AQUA;
-            } else {
+            } else if (env == Environment.NORMAL) {
                 color = ChatColor.GREEN;
+            } else if (env == Environment.SKYLANDS) {
+                color = ChatColor.AQUA;
             }
             
-            output += ChatColor.GOLD + world.getName() + ChatColor.WHITE + " - " + color + world.getEnvironment().toString() + " \n";
+            output += ChatColor.WHITE + world.name + " - " + color + world.environment + " \n";
             
         }
         String[] response = output.split("\n");

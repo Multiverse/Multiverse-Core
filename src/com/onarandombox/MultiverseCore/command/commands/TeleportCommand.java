@@ -33,15 +33,15 @@ public class TeleportCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             Destination d = Destination.parseDestination(args[0], this.plugin);
-            if (d.getType() == DestinationType.World && plugin.ph.canEnterWorld(p, plugin.getServer().getWorld(d.getName()))) {
-                Location l = playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
+            if (d.getType() == DestinationType.World && this.plugin.ph.canEnterWorld(p, this.plugin.getServer().getWorld(d.getName()))) {
+                Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
                 p.teleport(l);
             } else {
                 p.sendMessage("That was not a valid world.");
             }
             
         } else {
-            sender.sendMessage(IN_GAME_COMMAND_MSG);
+            sender.sendMessage(this.IN_GAME_COMMAND_MSG);
         }
     }
     
