@@ -17,18 +17,22 @@ public class SpawnCommand extends BaseCommand {
         this.minArgs = 0;
         this.maxArgs = 1;
         this.identifiers.add("mvspawn");
-        this.permission = "multiverse.world.spawn";
-        this.requiresOp = true;
+        this.permission = "multiverse.world.spawn.self";
+        this.requiresOp = false;
     }
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        // TODO: Permissions
         Player commandSender = null;
         if (sender instanceof Player) {
             commandSender = (Player) sender;
         }
+        // If a persons name was passed in, you must be A. the console, or B have permissions
         if (args.length == 1) {
+            if(commandSender != null && !this.plugin.ph.hasPermission(commandSender, "multiverse.world.spawn.self", true)) {
+                sender.sendMessage("You don't have permission to teleport another player to spawn.");
+                return;
+            }
             Player target = this.plugin.getServer().getPlayer(args[0]);
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");

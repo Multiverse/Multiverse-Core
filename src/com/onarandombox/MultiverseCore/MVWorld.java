@@ -170,7 +170,6 @@ public class MVWorld {
     }
     
     public boolean addToList(String list, String value) {
-        System.out.print("Trying to add " + value + " to " + list);
         if (list.equalsIgnoreCase("blockblacklist")) {
             try {
                 int intVal = Integer.parseInt(value);
@@ -179,7 +178,6 @@ public class MVWorld {
             }
         } else if (this.masterList.keySet().contains(list)) {
             this.masterList.get(list).add(value);
-            System.out.print(this.masterList.get(list));
             if (list.equalsIgnoreCase("animals") || list.equalsIgnoreCase("monsters")) {
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase() + ".exceptions", this.masterList.get(list));
                 this.syncMobs();
@@ -187,7 +185,6 @@ public class MVWorld {
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
             }
             this.config.save();
-            System.out.print(this.masterList.get(list));
             return true;
         }
         return false;
@@ -226,9 +223,6 @@ public class MVWorld {
         }
         
         if (this.getMonsterList().isEmpty()) {
-            System.out.print(this.allowMonsters);
-            System.out.print(this.world);
-            System.out.print(this.world.getAllowAnimals());
             this.world.setSpawnFlags(this.allowMonsters, this.world.getAllowAnimals());
             if (!this.allowMonsters) {
                 // TODO: Purge
@@ -341,12 +335,10 @@ public class MVWorld {
     }
     
     private void setAnimals(Boolean animals) {
-        System.out.print("Animals setting recieved: " + animals);
         this.allowAnimals = animals;
         // If animals are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
         
-        System.out.print("Animals setting saved: " + animals);
         this.config.setProperty("worlds." + this.name + ".animals.spawn", animals);
         this.config.save();
         this.syncMobs();

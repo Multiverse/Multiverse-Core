@@ -1,11 +1,8 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
-import java.lang.reflect.Method;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -27,7 +24,6 @@ enum SetProperties {
 
 public class ModifyCommand extends BaseCommand {
     
-    private Configuration config;
     
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
@@ -39,7 +35,6 @@ public class ModifyCommand extends BaseCommand {
         this.identifiers.add("mvmodify");
         this.permission = "multiverse.world.modify";
         this.requiresOp = true;
-        this.config = plugin.configWorlds;
     }
     
     @Override
@@ -68,7 +63,6 @@ public class ModifyCommand extends BaseCommand {
             value = args[3];
             property = args[2];
         }
-        System.out.print(args[0]);
         
         if (world == null) {
             sender.sendMessage("That world does not exist!");

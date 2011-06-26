@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.util.List;
 
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class MVPermissions {
@@ -19,7 +20,7 @@ public class MVPermissions {
     }
     
     /**
-     * Check if the player has the following Permission node, if a Permissions plugin is not installed then we default to isOp()
+     * Use hasPermission() Now
      * 
      * @param p The player instance.
      * @param node The permission node we are checking against.
@@ -36,6 +37,25 @@ public class MVPermissions {
         }
         
         return result;
+    }
+    
+    public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
+        
+        if (!(sender instanceof Player)) {
+            return true;
+        }
+        Player player = (Player) sender;
+        // TODO: 
+        if (player.isOp()) {
+            // If Player is Op we always let them use it.
+            return true;
+        } else if (MultiverseCore.Permissions != null && MultiverseCore.Permissions.has(player, node)) {
+            // If Permissions is enabled we check against them.
+            return true;
+        }
+        // If the Player doesn't have Permissions and isn't an Op then
+        // we return true if OP is not required, otherwise we return false
+        return !isOpRequired;
     }
     
     
@@ -55,8 +75,8 @@ public class MVPermissions {
             returnValue = true;
         }
         
-        for (int i = 0; i < blackList.size(); i++) {
-            if (blackList.get(i).equalsIgnoreCase(p.getWorld().getName())) {
+        for (String s : blackList) {
+            if (s.equalsIgnoreCase(p.getWorld().getName())) {
                 returnValue = false;
                 break;
             }
@@ -76,8 +96,6 @@ public class MVPermissions {
         
         List<String> whiteList = this.plugin.getMVWorld(w.getName()).getPlayerWhitelist();
         List<String> blackList = this.plugin.getMVWorld(w.getName()).getPlayerBlacklist();
-        System.out.print(blackList);
-        System.out.print(whiteList);
         boolean returnValue = true;
         
         // I lied. You definitely want this. Sorry Rigby :( You were right. --FF

@@ -18,12 +18,12 @@ public class TeleportCommand extends BaseCommand {
         super(plugin);
         this.name = "Teleport";
         this.description = "Teleports you to a different world.";
-        this.usage = "/mvtp" + ChatColor.GREEN + " {WORLD}";
+        this.usage = "/mvtp" + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}";
         this.minArgs = 1;
-        this.maxArgs = 1;
+        this.maxArgs = 2;
         this.identifiers.add("mvtp");
         this.playerTeleporter = new MVTeleport(plugin);
-        this.permission = "multiverse.world.tp";
+        this.permission = "multiverse.world.tp.self";
         this.requiresOp = true;
     }
     
@@ -33,7 +33,14 @@ public class TeleportCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             Destination d = Destination.parseDestination(args[0], this.plugin);
-            if (d.getType() == DestinationType.World && this.plugin.ph.canEnterWorld(p, this.plugin.getServer().getWorld(d.getName()))) {
+            if (d.getType() == DestinationType.World) {
+                if (!this.plugin.ph.canEnterWorld(p, this.plugin.getServer().getWorld(d.getName()))) {
+                    p.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
+                    return;
+                } else if (!this.plugin.ph.canTravelFromWorld(p, this.plugin.getServer().getWorld(d.getName()))) {
+                    p.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + d.getName() + " from " + ChatColor.GREEN + p.getWorld().getName());
+                    return;
+                }
                 Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
                 p.teleport(l);
             } else {
