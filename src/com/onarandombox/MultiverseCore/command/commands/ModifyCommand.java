@@ -81,7 +81,7 @@ public class ModifyCommand extends BaseCommand {
             sender.sendMessage("Please visit our wiki for more information: URLGOESHERE FERNFERRET DON'T FORGET IT!");
             return;
         }
-        
+        // TODO: Refactor this garbage. But I have deadlines to meet...
         if(action == Action.Set) {
             if(world.setVariable(property, value)) {
                 sender.sendMessage("Property " + property + " was set to " + value);
@@ -89,10 +89,40 @@ public class ModifyCommand extends BaseCommand {
                 sender.sendMessage("There was an error setting " + property);
             }
             return;
+        } else if(action == Action.Add) {
+            if(AddProperties.valueOf(property) == AddProperties.blockblacklist) {
+                try {
+                    world.addToList("blockblacklist", Integer.parseInt(property));
+                } catch(Exception e) {
+                    sender.sendMessage("There was an error setting " + property);
+                    sender.sendMessage("You must pass an integer");
+                    return;
+                }
+            } else {
+                world.addToList(property, value);
+                sender.sendMessage(value + " was added to " + property);
+            }
+        } else if(action == Action.Remove) {
+            if(AddProperties.valueOf(property) == AddProperties.blockblacklist) {
+                try {
+                    if(world.removeFromList("blockblacklist", Integer.parseInt(property))) {
+                        sender.sendMessage(value + " was removed from " + property);
+                    } else {
+                        sender.sendMessage(value + " could not be removed from " + property);
+                    }
+                } catch(Exception e) {
+                    sender.sendMessage("There was an error setting " + property);
+                    sender.sendMessage("You must pass an integer");
+                    return;
+                }
+            } else {
+                if(world.removeFromList(property, value)){
+                    sender.sendMessage(value + " was removed from " + property);
+                } else {
+                    sender.sendMessage(value + " could not be removed from " + property);
+                }
+            }
         }
-        
-        
-        
     }
     
     private boolean validateAction(Action action, String property) {

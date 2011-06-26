@@ -161,7 +161,7 @@ public class MVWorld {
         return false;
     }
     
-    // This has been checked, see 3 lines below.
+    
     public boolean addToList(String list, String value) {
         if (this.masterList.keySet().contains(list)) {
             
@@ -172,10 +172,29 @@ public class MVWorld {
         }
         return false;
     }
+    public boolean removeFromList(String list, String value) {
+        if (this.masterList.keySet().contains(list)) {
+            
+            this.masterList.get(list).remove(value);
+            this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.blockBlacklist);
+            this.config.save();
+            return true;
+        }
+        return false;
+    }
     
     public boolean addToList(String list, Integer value) {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.add(value);
+            this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
+        }
+        return false;
+        
+    }
+    
+    public boolean removeFromList(String list, Integer value) {
+        if (list.equalsIgnoreCase("blockblacklist")) {
+            this.blockBlacklist.remove(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
         }
         return false;
@@ -204,15 +223,6 @@ public class MVWorld {
     }
     
     public boolean setVariable(String name, String value) {
-        
-        // The Doubles
-        try {
-            double doubleValue = Double.parseDouble(value);
-            
-        } catch (Exception e) {
-        }
-        
-        // The Strings
         if (name.equalsIgnoreCase("alias")) {
             this.alias = value;
             return true;
