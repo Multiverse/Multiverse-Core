@@ -86,7 +86,7 @@ public class MultiverseCore extends JavaPlugin {
     
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);;
-    @SuppressWarnings("unused")
+    
     private MVBlockListener blockListener = new MVBlockListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
@@ -329,10 +329,9 @@ public class MultiverseCore extends JavaPlugin {
                 
                 log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
                 
-                String generator = this.configWorlds.getString("worlds." + worldKey + ".generator.name");
-                String generatorID = this.configWorlds.getString("worlds." + worldKey + ".generator.id");
+                String generatorstring = this.configWorlds.getString("worlds." + worldKey + ".generator");
                 
-                addWorld(worldKey, getEnvFromString(environment), seedString, generator + ":" + generatorID);
+                addWorld(worldKey, getEnvFromString(environment), seedString, generatorstring);
                 
                 // Increment the world count
                 count++;
@@ -390,7 +389,7 @@ public class MultiverseCore extends JavaPlugin {
      * @param environment Environment Type
      */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
-        
+        this.debugLog(Level.CONFIG, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
         if (seedString != null && seedString.length() > 0) {
             try {
@@ -410,6 +409,18 @@ public class MultiverseCore extends JavaPlugin {
         }
         
         ChunkGenerator customGenerator = getChunkGenerator(generatorName, generatorID, name);
+        
+        if (customGenerator == null && generator != null && !generator.isEmpty()) {
+            if(!pluginExists(generatorName)) {
+                log(Level.WARNING, "Could not find plugin: " + generatorName);
+            } else {
+                log(Level.WARNING, "Found plugin: " + generatorName + ", but did not find generatorID: " + generatorID);
+                
+            }
+            
+            return false;
+        }
+        
         World world = null;
         if (seed != null) {
             if (customGenerator != null) {
@@ -431,6 +442,10 @@ public class MultiverseCore extends JavaPlugin {
         this.worlds.put(name, new MVWorld(world, this.configWorlds, this, seed, generator));
         return true;
         
+    }
+    private boolean pluginExists(String generator) {
+        Plugin plugin = getServer().getPluginManager().getPlugin(generator);
+        return plugin != null;
     }
     
     private ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
@@ -666,7 +681,7 @@ public class MultiverseCore extends JavaPlugin {
         cancelQueuedCommand(sender);
         this.queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this, success, fail));
         sender.sendMessage("The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could break something!");
-        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE); 
+        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE);
         sender.sendMessage("please type: " + ChatColor.GREEN + "/mvconfirm");
         sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for 10 seconds.");
     }
