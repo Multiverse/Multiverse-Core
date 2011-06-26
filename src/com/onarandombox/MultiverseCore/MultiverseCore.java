@@ -327,8 +327,6 @@ public class MultiverseCore extends JavaPlugin {
                 String environment = this.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
                 String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", "");
                 
-                log(Level.INFO, "Loading World & Settings - '" + worldKey + "' - " + environment);
-                
                 String generatorstring = this.configWorlds.getString("worlds." + worldKey + ".generator");
                 
                 addWorld(worldKey, getEnvFromString(environment), seedString, generatorstring);
@@ -354,7 +352,6 @@ public class MultiverseCore extends JavaPlugin {
         // Load the default world:
         World world = this.getServer().getWorlds().get(0);
         if (!this.worlds.containsKey(world.getName())) {
-            log.info("Loading World & Settings - '" + world.getName() + "' - " + world.getEnvironment());
             addWorld(world.getName(), Environment.NORMAL, null, null);
             additonalWorldsLoaded++;
         }
@@ -362,7 +359,6 @@ public class MultiverseCore extends JavaPlugin {
         // This next one could be null if they have it disabled in server.props
         World world_nether = this.getServer().getWorld(world.getName() + "_nether");
         if (world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
-            log.info("Loading World & Settings - '" + world.getName() + "' - " + world_nether.getEnvironment());
             addWorld(world_nether.getName(), Environment.NETHER, null, null);
             additonalWorldsLoaded++;
         }

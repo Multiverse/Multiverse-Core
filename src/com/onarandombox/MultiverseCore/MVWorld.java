@@ -158,11 +158,27 @@ public class MVWorld {
     }
     
     public boolean clearVariable(String property) {
-        return false;
+        if(property.equalsIgnoreCase("blockblacklist")) {
+            this.blockBlacklist.clear();
+        }
+        else if (this.masterList.keySet().contains(property)) {
+            this.masterList.get(property).clear();
+        } else {
+            return false;
+        }
+        this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.blockBlacklist);
+        this.config.save();
+        return true;
     }
     
-    
     public boolean addToList(String list, String value) {
+        if(list.equalsIgnoreCase("blockblacklist")) {
+            try{
+                int intVal = Integer.parseInt(value);
+                return addToList(list, intVal);
+            } catch (Exception e) {
+            }
+        }
         if (this.masterList.keySet().contains(list)) {
             
             this.masterList.get(list).add(value);
@@ -172,7 +188,15 @@ public class MVWorld {
         }
         return false;
     }
+    
     public boolean removeFromList(String list, String value) {
+        if(list.equalsIgnoreCase("blockblacklist")) {
+            try{
+                int intVal = Integer.parseInt(value);
+                return removeFromList(list, intVal);
+            } catch (Exception e) {
+            }
+        }
         if (this.masterList.keySet().contains(list)) {
             
             this.masterList.get(list).remove(value);
@@ -183,7 +207,7 @@ public class MVWorld {
         return false;
     }
     
-    public boolean addToList(String list, Integer value) {
+    private boolean addToList(String list, Integer value) {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.add(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
@@ -192,7 +216,7 @@ public class MVWorld {
         
     }
     
-    public boolean removeFromList(String list, Integer value) {
+    private boolean removeFromList(String list, Integer value) {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.remove(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
@@ -201,7 +225,7 @@ public class MVWorld {
         
     }
     
-    public boolean setVariable(String name, boolean value) {
+    private boolean setVariable(String name, boolean value) {
         if (name.equalsIgnoreCase("pvp")) {
             this.setPvp(value);
         } else if (name.equalsIgnoreCase("animals")) {
@@ -214,18 +238,35 @@ public class MVWorld {
         return true;
     }
     
-    public boolean setVariable(String name, double value) {
+    private boolean setVariable(String name, double value) {
         if (name.equalsIgnoreCase("scaling")) {
             this.setScaling(value);
             return true;
         }
+        
         return false;
     }
-    
+    /**
+     * This is the one people have access to. It'll handle the rest.
+     * @param name
+     * @param value
+     * @return
+     */
     public boolean setVariable(String name, String value) {
         if (name.equalsIgnoreCase("alias")) {
             this.alias = value;
             return true;
+        }
+        try {
+            boolean boolValue = Boolean.parseBoolean(value);
+            return this.setVariable(name, boolValue);
+        } catch (Exception e) {
+        }
+        
+        try {
+            double doubValue = Double.parseDouble(value);
+            return this.setVariable(name, doubValue);
+        } catch (Exception e) {
         }
         
         return false;
@@ -272,6 +313,9 @@ public class MVWorld {
         // If there are ANY exceptions, there will be something spawning, so turn them on
         if (this.getAnimalList().isEmpty()) {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), animals);
+            if(!animals) {
+                // TODO: Purge
+            }
         } else {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), true);
         }
@@ -293,6 +337,9 @@ public class MVWorld {
         // If there are ANY exceptions, there will be something spawning, so turn them on
         if (this.getAnimalList().isEmpty()) {
             this.world.setSpawnFlags(monsters, this.world.getAllowAnimals());
+            if(!monsters) {
+                // TODO: Purge
+            }
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }

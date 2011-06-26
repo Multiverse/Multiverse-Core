@@ -12,24 +12,28 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 enum Action {
-    Set, Add, Remove
+    Set, Add, Remove, Clear
 }
 
 // This will contain all the properties that support the ADD/REMOVE
 // Anything not in here will only support the SET action
-enum AddProperties {animallist,monsterlist,blockblacklist,playerwhitelist,playerblacklist,editwhitelist,editblacklist,worldblacklist}
+enum AddProperties {
+    animallist, monsterlist, blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist
+}
 
-enum SetProperties {alias,animals,monsters,pvp,scaling}
+enum SetProperties {
+    alias, animals, monsters, pvp, scaling
+}
 
 public class ModifyCommand extends BaseCommand {
     
     private Configuration config;
-
+    
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Modify a World";
         this.description = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used";
-        this.usage = "/mvmodify" + ChatColor.GOLD + " [WORLD] " + ChatColor.GREEN + "{SET|ADD|REMOVE} {VALUE} {PROPERTY}";
+        this.usage = "/mvmodify" + ChatColor.GOLD + " [WORLD] " + ChatColor.GREEN + "{SET|ADD|REMOVE|CLEAR} {PROPERTY} {VALUE}";
         this.minArgs = 3;
         this.maxArgs = 4;
         this.identifiers.add("mvmodify");
@@ -56,14 +60,15 @@ public class ModifyCommand extends BaseCommand {
             p = (Player) sender;
             world = this.plugin.getMVWorld(p.getWorld().getName());
             action = getActionEnum(args[0]);
-            value = args[1];
-            property = args[2];
+            value = args[2];
+            property = args[1];
         } else {
             world = this.plugin.getMVWorld(args[0]);
             action = getActionEnum(args[1]);
-            value = args[2];
-            property = args[3];
+            value = args[3];
+            property = args[2];
         }
+        System.out.print(args[0]);
         
         if (world == null) {
             sender.sendMessage("That world does not exist!");
@@ -81,47 +86,27 @@ public class ModifyCommand extends BaseCommand {
             sender.sendMessage("Please visit our wiki for more information: URLGOESHERE FERNFERRET DON'T FORGET IT!");
             return;
         }
-        // TODO: Refactor this garbage. But I have deadlines to meet...
-        if(action == Action.Set) {
-            if(world.setVariable(property, value)) {
+        if (action == Action.Set) {
+            if (world.setVariable(property, value)) {
                 sender.sendMessage("Property " + property + " was set to " + value);
             } else {
                 sender.sendMessage("There was an error setting " + property);
             }
             return;
-        } else if(action == Action.Add) {
-            if(AddProperties.valueOf(property) == AddProperties.blockblacklist) {
-                try {
-                    world.addToList("blockblacklist", Integer.parseInt(property));
-                } catch(Exception e) {
-                    sender.sendMessage("There was an error setting " + property);
-                    sender.sendMessage("You must pass an integer");
-                    return;
-                }
-            } else {
-                world.addToList(property, value);
+        } else if (action == Action.Add) {
+            if (world.removeFromList(property, value)) {
                 sender.sendMessage(value + " was added to " + property);
-            }
-        } else if(action == Action.Remove) {
-            if(AddProperties.valueOf(property) == AddProperties.blockblacklist) {
-                try {
-                    if(world.removeFromList("blockblacklist", Integer.parseInt(property))) {
-                        sender.sendMessage(value + " was removed from " + property);
-                    } else {
-                        sender.sendMessage(value + " could not be removed from " + property);
-                    }
-                } catch(Exception e) {
-                    sender.sendMessage("There was an error setting " + property);
-                    sender.sendMessage("You must pass an integer");
-                    return;
-                }
             } else {
-                if(world.removeFromList(property, value)){
-                    sender.sendMessage(value + " was removed from " + property);
-                } else {
-                    sender.sendMessage(value + " could not be removed from " + property);
-                }
+                sender.sendMessage(value + " could not be added to " + property);
             }
+        } else if (action == Action.Remove) {
+            if (world.removeFromList(property, value)) {
+                sender.sendMessage(value + " was removed from " + property);
+            } else {
+                sender.sendMessage(value + " could not be removed from " + property);
+            }
+        } else if(action == Action.Clear) {
+            
         }
     }
     
