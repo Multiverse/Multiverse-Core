@@ -81,7 +81,7 @@ public class TeleportCommand extends BaseCommand {
             }
         }
         Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
-        teleporter.teleport(l);
+        teleportee.teleport(l);
     }
     
 }
