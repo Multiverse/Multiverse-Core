@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.World;
 import org.bukkit.World.Environment;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.config.Configuration;
 
 public class MVWorld {
@@ -35,10 +35,11 @@ public class MVWorld {
     public List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
     public List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
     
+    public HashMap<String, List<String>> masterList;
+    
     public Double scaling; // How stretched/compressed distances are
     /**
-     * The generator as a string. This is used only for reporting.
-     * ex: BukkitFullOfMoon:GenID
+     * The generator as a string. This is used only for reporting. ex: BukkitFullOfMoon:GenID
      */
     private String generator;
     
@@ -74,12 +75,12 @@ public class MVWorld {
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
         this.getMobExceptions();
         
-        this.playerWhitelist = config.getStringList("worlds." + this.name + ".playerWhitelist", this.playerWhitelist);
-        this.playerBlacklist = config.getStringList("worlds." + this.name + ".playerBlacklist", this.playerBlacklist);
-        this.worldBlacklist = config.getStringList("worlds." + this.name + ".worldBlacklist", this.worldBlacklist);
-        this.blockBlacklist = config.getIntList("worlds." + this.name + ".blockBlacklist", this.blockBlacklist);
-        this.editWhitelist = config.getStringList("worlds." + this.name + ".editWhitelist", this.editWhitelist);
-        this.editBlacklist = config.getStringList("worlds." + this.name + ".editBlacklist", this.editBlacklist);
+        this.playerWhitelist = config.getStringList("worlds." + this.name + ".playerwhitelist", this.playerWhitelist);
+        this.playerBlacklist = config.getStringList("worlds." + this.name + ".playerblacklist", this.playerBlacklist);
+        this.worldBlacklist = config.getStringList("worlds." + this.name + ".worldblacklist", this.worldBlacklist);
+        this.blockBlacklist = config.getIntList("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
+        this.editWhitelist = config.getStringList("worlds." + this.name + ".editwhitelist", this.editWhitelist);
+        this.editBlacklist = config.getStringList("worlds." + this.name + ".editblacklist", this.editBlacklist);
         
         config.save();
         // The following 3 lines will add some sample data to new worlds created.
@@ -108,12 +109,19 @@ public class MVWorld {
     }
     
     private void initLists() {
+        this.masterList = new HashMap<String, List<String>>();
         this.blockBlacklist = new ArrayList<Integer>();
+        // Only int list, we don't need to add it to the masterlist
         this.playerWhitelist = new ArrayList<String>();
+        this.masterList.put("playerwhitelist", this.playerWhitelist);
         this.playerBlacklist = new ArrayList<String>();
+        this.masterList.put("playerblacklist", this.playerBlacklist);
         this.editWhitelist = new ArrayList<String>();
+        this.masterList.put("editwhitelist", this.editWhitelist);
         this.editBlacklist = new ArrayList<String>();
+        this.masterList.put("editblacklist", this.editBlacklist);
         this.worldBlacklist = new ArrayList<String>();
+        this.masterList.put("worldblacklist", this.worldBlacklist);
     }
     
     public void addSampleData() {
@@ -153,30 +161,53 @@ public class MVWorld {
         return false;
     }
     
-    public boolean setVariable(String name, String value) {
-        // The booleans
-        try {
-            boolean boolValue = Boolean.parseBoolean(value);
-            if (name.equalsIgnoreCase("pvp")) {
-                this.setPvp(boolValue);
-            } else if (name.equalsIgnoreCase("animals")) {
-                this.setAnimals(boolValue);
-            } else if (name.equalsIgnoreCase("monsters")) {
-                this.setMonsters(boolValue);
-            } else {
-                return false;
-            }
+    // This has been checked, see 3 lines below.
+    public boolean addToList(String list, String value) {
+        if (this.masterList.keySet().contains(list)) {
+            
+            this.masterList.get(list).add(value);
+            this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.blockBlacklist);
+            this.config.save();
             return true;
-        } catch (Exception e) {
         }
+        return false;
+    }
+    
+    public boolean addToList(String list, Integer value) {
+        if (list.equalsIgnoreCase("blockblacklist")) {
+            this.blockBlacklist.add(value);
+            this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
+        }
+        return false;
+        
+    }
+    
+    public boolean setVariable(String name, boolean value) {
+        if (name.equalsIgnoreCase("pvp")) {
+            this.setPvp(value);
+        } else if (name.equalsIgnoreCase("animals")) {
+            this.setAnimals(value);
+        } else if (name.equalsIgnoreCase("monsters")) {
+            this.setMonsters(value);
+        } else {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean setVariable(String name, double value) {
+        if (name.equalsIgnoreCase("scaling")) {
+            this.setScaling(value);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean setVariable(String name, String value) {
         
         // The Doubles
         try {
             double doubleValue = Double.parseDouble(value);
-            if (name.equalsIgnoreCase("scaling")) {
-                this.setScaling(doubleValue);
-                return true;
-            }
             
         } catch (Exception e) {
         }
