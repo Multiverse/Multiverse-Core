@@ -393,7 +393,7 @@ public class MultiverseCore extends JavaPlugin {
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         
         Long seed = null;
-        if (seedString.length() > 0) {
+        if (seedString != null && seedString.length() > 0) {
             try {
                 seed = Long.parseLong(seedString);
             } catch (NumberFormatException numberformatexception) {

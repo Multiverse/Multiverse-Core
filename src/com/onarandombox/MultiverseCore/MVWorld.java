@@ -50,6 +50,7 @@ public class MVWorld {
         this.generator = world.getGenerator();
         this.generatorString = generatorString;
         this.seed = seed;
+        this.environment = world.getEnvironment();
         
         this.initLists();
         
@@ -78,7 +79,7 @@ public class MVWorld {
         
         this.setRealMobBehaviors();
         
-        config.setProperty("worlds." + this.name + ".environment", world.getEnvironment());
+        config.setProperty("worlds." + this.name + ".environment", this.environment);
         config.setProperty("worlds." + this.name + ".generatorString",generatorString);
         if (seed != null) {
             config.setProperty("worlds." + this.name + ".seed", this.seed);
