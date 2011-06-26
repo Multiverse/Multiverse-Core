@@ -54,7 +54,7 @@ public class InfoCommand extends BaseCommand {
         aPage[1] = "World Scale: " + world.scaling;
         
         // PVP: 1
-        aPage[2] = "PVP: " + world.pvp;
+        aPage[2] = "PVP: " + world.getPvp();
         
         // This feature is not mission critical and I am spending too much time on it...
         // Stopping work on it for now --FF 20110623

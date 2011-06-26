@@ -38,11 +38,8 @@ public class ListCommand extends BaseCommand {
             }
             
             ChatColor color = ChatColor.GOLD;
-            Environment env = this.plugin.getEnvFromString(world.environment);
-            if(this.plugin.getEnvFromString(world.environment) == null) {
-                color = ChatColor.GOLD;
-            }
-            else if (env == Environment.NETHER) {
+            Environment env = world.getEnvironment();
+            if (env == Environment.NETHER) {
                 color = ChatColor.RED;
             } else if (env == Environment.NORMAL) {
                 color = ChatColor.GREEN;
@@ -50,7 +47,7 @@ public class ListCommand extends BaseCommand {
                 color = ChatColor.AQUA;
             }
             
-            output += ChatColor.WHITE + world.name + " - " + color + world.environment + " \n";
+            output += ChatColor.WHITE + world.name + " - " + color + world.getEnvironment() + " \n";
             
         }
         String[] response = output.split("\n");

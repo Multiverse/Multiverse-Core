@@ -15,8 +15,8 @@ public class MVWorld {
     private Configuration config; // Hold the Configuration File.
     
     public World world; // The World Instance.
-    public String environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
-    public Long seed;
+    private Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
+    private Long seed;
     
     public String name; // The Worlds Name, EG its folder name.
     public String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
@@ -27,8 +27,8 @@ public class MVWorld {
     public Boolean monsters; // Does this World allow Monsters to Spawn?
     public List<String> monsterList = new ArrayList<String>(); // Contain a list of Monsters which we want to ignore the Spawn Setting.
     
-    public Boolean pvp; // Does this World allow PVP?
-    
+    private Boolean pvp; // Does this World allow PVP?
+
     public List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
     public List<String> playerWhitelist; // Contain a list of Players/Groups which can join this World.
     public List<String> playerBlacklist; // Contain a list of Players/Groups which cannot join this World.
@@ -37,24 +37,28 @@ public class MVWorld {
     public List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
     
     public Double scaling; // How stretched/compressed distances are
+    private ChunkGenerator generator;
+    private String generatorString;
     
-    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String env) {
+    
+    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
         this.plugin = instance;
         
         this.world = world;
         this.name = world.getName();
-        this.environment = env;
+        this.generator = world.getGenerator();
+        this.generatorString = generatorString;
         this.seed = seed;
         
         this.initLists();
         
-        this.alias = config.getString("worlds." + this.name + ".alias", "");
+        this.setAlias(config.getString("worlds." + this.name + ".alias", ""));
         
-        this.pvp = config.getBoolean("worlds." + this.name + ".pvp", true);
+        this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
         
-        this.scaling = config.getDouble("worlds." + this.name + ".scale", 1.0);
-        if(this.scaling <= 0) {
+        this.setScaling(config.getDouble("worlds." + this.name + ".scale", 1.0));
+        if (this.scaling <= 0) {
             // Disallow negative or 0 scalings.
             config.setProperty("worlds." + this.name + ".scale", 1.0);
             this.scaling = 1.0;
@@ -70,23 +74,22 @@ public class MVWorld {
         this.animals = config.getBoolean("worlds." + this.name + ".animals.spawn", true);
         this.monsters = config.getBoolean("worlds." + this.name + ".monsters.spawn", true);
         
-        
-        
         this.getMobExceptions();
         
         this.setRealMobBehaviors();
         
-        config.setProperty("worlds." + this.name + ".environment", env);
-        if(seed != null) {
+        config.setProperty("worlds." + this.name + ".environment", world.getEnvironment());
+        config.setProperty("worlds." + this.name + ".generatorString",generatorString);
+        if (seed != null) {
             config.setProperty("worlds." + this.name + ".seed", this.seed);
         }
         config.save();
         // The following 3 lines will add some sample data to new worlds created.
-//        if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
-//            addSampleData();
-//        }
+        // if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
+        // addSampleData();
+        // }
     }
-
+    
     private void getMobExceptions() {
         List<String> temp;
         temp = this.config.getStringList("worlds." + this.name + ".animals.exceptions", this.animalList);
@@ -109,16 +112,16 @@ public class MVWorld {
     private void setRealMobBehaviors() {
         boolean animals = true;
         boolean monsters = true;
-        if(!this.animals && this.animalList.isEmpty()) {
+        if (!this.animals && this.animalList.isEmpty()) {
             animals = false;
         }
-        if(!this.monsters && this.monsterList.isEmpty()) {
+        if (!this.monsters && this.monsterList.isEmpty()) {
             monsters = false;
         }
         this.world.setSpawnFlags(monsters, animals);
         
     }
-
+    
     private void initLists() {
         this.blockBlacklist = new ArrayList<Integer>();
         this.playerWhitelist = new ArrayList<String>();
@@ -158,6 +161,163 @@ public class MVWorld {
         this.config.setProperty("worlds." + this.name + ".editWhitelist", this.editWhitelist);
         this.config.setProperty("worlds." + this.name + ".editBlacklist", this.editBlacklist);
         this.config.setProperty("worlds." + this.name + ".worldBlacklist", this.worldBlacklist);
+        this.config.save();
+    }
+    
+    public boolean clearVariable(String property) {
+        return false;
+    }
+    
+    public boolean setVariable(String name, String value) {
+        // The booleans
+        try {
+            boolean boolValue = Boolean.parseBoolean(value);
+            if(name.equalsIgnoreCase("pvp")){
+                this.pvp = boolValue;
+            }
+            else if(name.equalsIgnoreCase("animals")){
+                this.animals = boolValue;
+            }
+            else if(name.equalsIgnoreCase("monsters")){
+                this.monsters = boolValue;
+            } else {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {}
+        
+        // The Doubles
+        try {
+            double doubleValue = Double.parseDouble(value);
+            if(name.equalsIgnoreCase("scaling")){
+                this.scaling = doubleValue;
+                return true;
+            }
+            
+        } catch (Exception e) {}
+        
+        // The Strings
+        if(name.equalsIgnoreCase("alias")) {
+            this.alias = value;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public Environment getEnvironment() {
+        return this.environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public Long getSeed() {
+        return this.seed;
+    }
+
+    public void setSeed(Long seed) {
+        this.seed = seed;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getAlias() {
+        return this.alias;
+        
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+        this.config.setProperty("worlds." + this.name + ".alias", alias);
+        this.config.save();
+    }
+
+    public Boolean hasAnimals() {
+        return this.animals;
+    }
+
+    public void setAnimals(Boolean animals) {
+        this.animals = animals;
+        // If animals are a boolean, then we can turn them on or off on the server
+        // If there are ANY exceptions, there will be something spawning, so turn them on
+        if(this.getAnimalList().isEmpty()) {
+            this.world.setSpawnFlags(this.world.getAllowMonsters(), animals);
+        } else {
+            this.world.setSpawnFlags(this.world.getAllowMonsters(), true);
+        }
+        this.config.setProperty("worlds." + this.name + ".animals", animals);
+        this.config.save();
+    }
+
+    public List<String> getAnimalList() {
+        return this.animalList;
+    }
+
+    public Boolean hasMonsters() {
+        return this.monsters;
+    }
+
+    public void setMonsters(Boolean monsters) {
+        this.monsters = monsters;
+        // If monsters are a boolean, then we can turn them on or off on the server
+        // If there are ANY exceptions, there will be something spawning, so turn them on
+        if(this.getAnimalList().isEmpty()) {
+            this.world.setSpawnFlags(monsters, this.world.getAllowAnimals());
+        } else {
+            this.world.setSpawnFlags(true, this.world.getAllowAnimals());
+        }
+        this.config.setProperty("worlds." + this.name + ".monsters", monsters);
+        this.config.save();
+    }
+
+    public List<String> getMonsterList() {
+        return this.monsterList;
+    }
+
+
+    public Boolean getPvp() {
+        return this.pvp;
+    }
+
+    public void setPvp(Boolean pvp) {
+        this.world.setPVP(pvp);
+        this.pvp = pvp;
+        this.config.setProperty("worlds." + this.name + ".pvp", pvp);
+        this.config.save();
+        
+    }
+
+    public List<Integer> getBlockBlacklist() {
+        return this.blockBlacklist;
+    }
+
+    public List<String> getPlayerWhitelist() {
+        return this.playerWhitelist;
+    }
+
+    public List<String> getPlayerBlacklist() {
+        return this.playerBlacklist;
+    }
+
+    public List<String> getEditWhitelist() {
+        return this.editWhitelist;
+    }
+
+    public List<String> getEditBlacklist() {
+        return this.editBlacklist;
+    }
+
+    public Double getScaling() {
+        return this.scaling;
+    }
+
+    public void setScaling(Double scaling) {
+        this.scaling = scaling;
+        this.config.setProperty("worlds." + this.name + ".scaling", scaling);
         this.config.save();
     }
 }

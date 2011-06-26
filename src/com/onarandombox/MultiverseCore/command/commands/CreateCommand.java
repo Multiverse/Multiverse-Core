@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.command.commands;
 import java.io.File;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -14,9 +15,9 @@ public class CreateCommand extends BaseCommand {
         super(plugin);
         this.name = "Create World";
         this.description = "Creates a new world of the specified type";
-        this.usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " [SEED]";
+        this.usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:GENID]]";
         this.minArgs = 2;
-        this.maxArgs = 3;
+        this.maxArgs = 4;
         this.identifiers.add("mvcreate");
         this.permission = "multiverse.world.create";
         this.requiresOp = true;
@@ -25,33 +26,46 @@ public class CreateCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        // TODO: Permissions, check
-        
-        int numOfParams = args.length;
-        
-        boolean hasSeed = numOfParams == 3;
         String worldName = args[0];
         String env = args[1];
-        String seed = "";
-        if (hasSeed) {
-            seed = args[2];
-        }
+        String seed = this.getFlag("-s", args);
+        String generator = this.getFlag("-g", args);
         
         if (new File(worldName).exists() || this.plugin.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
         }
-        if (this.plugin.addWorld(worldName, env, seed)) {
+        
+        Environment environment = this.plugin.getEnvFromString(env);
+        
+        if (this.plugin.addWorld(worldName, environment, seed, generator)) {
             sender.sendMessage(ChatColor.GREEN + "Complete!");
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
-            if(this.plugin.getEnvFromString(env) == null) {
-                sender.sendMessage("That world type did not exist.");
-                sender.sendMessage("For a list of available world types, type: /mvenv");
-            }
         }
         return;
     }
     
+    
+    /**
+     * Returns the given flag value
+     * 
+     * @param flag A param flag, like -s or -g
+     * @param args All arguments to search through
+     * @return A string or null
+     */
+    private String getFlag(String flag, String[] args) {
+        int i = 0;
+        try {
+            for (String s : args) {
+                if (s.equalsIgnoreCase(flag)) {
+                    return args[i++];
+                }
+                i++;
+            }
+        } catch (IndexOutOfBoundsException e) {
+        }
+        return null;
+    }
 }
