@@ -69,11 +69,7 @@ public class MVWorld {
         this.setAlias(config.getString("worlds." + this.name + ".alias", ""));
         this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", 1.0));
-        if (this.scaling <= 0) {
-            // Disallow negative or 0 scalings.
-            config.setProperty("worlds." + this.name + ".scale", 1.0);
-            this.scaling = 1.0;
-        }
+        
         this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
         this.getMobExceptions();
@@ -162,11 +158,11 @@ public class MVWorld {
         try {
             boolean boolValue = Boolean.parseBoolean(value);
             if (name.equalsIgnoreCase("pvp")) {
-                this.pvp = boolValue;
+                this.setPvp(boolValue);
             } else if (name.equalsIgnoreCase("animals")) {
-                this.animals = boolValue;
+                this.setAnimals(boolValue);
             } else if (name.equalsIgnoreCase("monsters")) {
-                this.monsters = boolValue;
+                this.setMonsters(boolValue);
             } else {
                 return false;
             }
@@ -178,7 +174,7 @@ public class MVWorld {
         try {
             double doubleValue = Double.parseDouble(value);
             if (name.equalsIgnoreCase("scaling")) {
-                this.scaling = doubleValue;
+                this.setScaling(doubleValue);
                 return true;
             }
             
@@ -304,6 +300,10 @@ public class MVWorld {
     }
     
     public void setScaling(Double scaling) {
+        if (scaling <= 0) {
+            // Disallow negative or 0 scalings.
+            scaling = 1.0;
+        }
         this.scaling = scaling;
         this.config.setProperty("worlds." + this.name + ".scaling", scaling);
         this.config.save();
