@@ -443,6 +443,7 @@ public class MultiverseCore extends JavaPlugin {
         return true;
         
     }
+    
     private boolean pluginExists(String generator) {
         Plugin plugin = getServer().getPluginManager().getPlugin(generator);
         return plugin != null;
