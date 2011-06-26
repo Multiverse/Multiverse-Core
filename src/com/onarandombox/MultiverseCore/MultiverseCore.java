@@ -63,7 +63,6 @@ public class MultiverseCore extends JavaPlugin {
     private boolean debug;
     
     // Setup our Map for our Commands using the CommandHandler.
-    private Map<String, MVCommandHandler> commands = new HashMap<String, MVCommandHandler>();
     private CommandManager commandManager = new CommandManager();
     
     private final String tag = "[Multiverse-Core]";
