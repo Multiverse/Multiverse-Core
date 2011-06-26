@@ -306,8 +306,8 @@ public class MVWorld {
     public Boolean hasAnimals() {
         return this.animals;
     }
-    
-    public void setAnimals(Boolean animals) {
+    private void setAnimals(Boolean animals) {
+        System.out.print("Animals setting recieved: " + animals);
         this.animals = animals;
         // If animals are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
@@ -319,7 +319,8 @@ public class MVWorld {
         } else {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), true);
         }
-        this.config.setProperty("worlds." + this.name + ".animals", animals);
+        System.out.print("Animals setting saved: " + animals);
+        this.config.setProperty("worlds." + this.name + ".animals.spawn", animals);
         this.config.save();
     }
     
@@ -331,7 +332,7 @@ public class MVWorld {
         return this.monsters;
     }
     
-    public void setMonsters(Boolean monsters) {
+    private void setMonsters(Boolean monsters) {
         this.monsters = monsters;
         // If monsters are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
@@ -343,7 +344,7 @@ public class MVWorld {
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
-        this.config.setProperty("worlds." + this.name + ".monsters", monsters);
+        this.config.setProperty("worlds." + this.name + ".monsters.spawn", monsters);
         this.config.save();
     }
     
