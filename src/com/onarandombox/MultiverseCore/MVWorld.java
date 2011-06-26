@@ -8,7 +8,6 @@ import org.bukkit.World.Environment;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.config.Configuration;
 
-@SuppressWarnings("unused")
 public class MVWorld {
     
     private MultiverseCore plugin; // Hold the Plugin Instance.
@@ -79,7 +78,7 @@ public class MVWorld {
         
         this.setRealMobBehaviors();
         
-        config.setProperty("worlds." + this.name + ".environment", this.environment);
+        config.setProperty("worlds." + this.name + ".environment", this.environment.toString());    
         config.setProperty("worlds." + this.name + ".generatorString",generatorString);
         if (seed != null) {
             config.setProperty("worlds." + this.name + ".seed", this.seed);

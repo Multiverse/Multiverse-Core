@@ -666,7 +666,8 @@ public class MultiverseCore extends JavaPlugin {
         cancelQueuedCommand(sender);
         this.queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this, success, fail));
         sender.sendMessage("The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could break something!");
-        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE + ", please type: " + ChatColor.GREEN + "/mvconfirm " + ChatColor.GOLD + "YES");
+        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE); 
+        sender.sendMessage("please type: " + ChatColor.GREEN + "/mvconfirm");
         sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for 10 seconds.");
     }
     
