@@ -47,7 +47,7 @@ public class MVPermissions {
      * @return
      */
     public Boolean canTravelFromWorld(Player p, World w) {
-        List<String> blackList = this.plugin.getMVWorld(w.getName()).worldBlacklist;
+        List<String> blackList = this.plugin.getMVWorld(w.getName()).getWorldBlacklist();
         
         boolean returnValue = true;
         
@@ -74,9 +74,10 @@ public class MVPermissions {
      */
     public Boolean canEnterWorld(Player p, World w) {
         
-        List<String> whiteList = this.plugin.getMVWorld(w.getName()).playerWhitelist;
-        List<String> blackList = this.plugin.getMVWorld(w.getName()).playerBlacklist;
-        
+        List<String> whiteList = this.plugin.getMVWorld(w.getName()).getPlayerWhitelist();
+        List<String> blackList = this.plugin.getMVWorld(w.getName()).getPlayerBlacklist();
+        System.out.print(blackList);
+        System.out.print(whiteList);
         boolean returnValue = true;
         
         // I lied. You definitely want this. Sorry Rigby :( You were right. --FF

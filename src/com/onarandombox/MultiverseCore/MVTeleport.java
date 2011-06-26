@@ -39,8 +39,8 @@ public class MVTeleport {
         double x, y, z;
         
         // Grab the Scaling value for each world.
-        double srcComp = this.plugin.getMVWorld(l.getWorld().getName()).scaling;
-        double trgComp = this.plugin.getMVWorld(w.getName()).scaling;
+        double srcComp = this.plugin.getMVWorld(l.getWorld().getName()).getScaling();
+        double trgComp = this.plugin.getMVWorld(w.getName()).getScaling();
         
         // MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
         

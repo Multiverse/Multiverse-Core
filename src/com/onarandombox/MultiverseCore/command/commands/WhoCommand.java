@@ -49,11 +49,11 @@ public class WhoCommand extends BaseCommand {
         }
         
         for (MVWorld world : worlds) {
-            if (!(this.plugin.isMVWorld(world.name))) {
+            if (!(this.plugin.isMVWorld(world.getName()))) {
                 continue;
             }
             
-            World w = this.plugin.getServer().getWorld(world.name);
+            World w = this.plugin.getServer().getWorld(world.getName());
             if (p != null && (!this.plugin.ph.canEnterWorld(p, w))) {
                 continue;
             }
@@ -77,7 +77,7 @@ public class WhoCommand extends BaseCommand {
                     result += player.getName() + " ";
                 }
             }
-            sender.sendMessage(color + world.name + ChatColor.WHITE + " - " + result);
+            sender.sendMessage(color + world.getName() + ChatColor.WHITE + " - " + result);
         }
         return;
     }

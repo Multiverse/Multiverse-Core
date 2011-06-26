@@ -47,7 +47,7 @@ public class ListCommand extends BaseCommand {
                 color = ChatColor.AQUA;
             }
             
-            output += ChatColor.WHITE + world.name + " - " + color + world.getEnvironment() + " \n";
+            output += ChatColor.WHITE + world.getName() + " - " + color + world.getEnvironment() + " \n";
             
         }
         String[] response = output.split("\n");

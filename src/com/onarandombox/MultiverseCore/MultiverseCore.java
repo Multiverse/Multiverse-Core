@@ -236,24 +236,24 @@ public class MultiverseCore extends JavaPlugin {
             if (world == null)
                 continue;
             MVWorld mvworld = this.worlds.get(key);
-            List<String> monsters = mvworld.monsterList;
-            List<String> animals = mvworld.animalList;
+            List<String> monsters = mvworld.getMonsterList();
+            List<String> animals = mvworld.getAnimalList();
             System.out.print("Monster Size:" + monsters.size() + " - " + "Animal Size: " + animals.size());
             for (Entity e : world.getEntities()) {
                 // Check against Monsters
                 if (e instanceof Creeper || e instanceof Skeleton || e instanceof Spider || e instanceof Zombie || e instanceof Ghast || e instanceof PigZombie || e instanceof Giant || e instanceof Slime || e instanceof Monster) {
                     // If Monsters are disabled and there's no exceptions we can simply remove them.
-                    if (mvworld.monsters == false && !(monsters.size() > 0)) {
+                    if (mvworld.hasMonsters() == false && !(monsters.size() > 0)) {
                         e.remove();
                         continue;
                     }
                     // If monsters are enabled and there's no exceptions we can continue to the next set.
-                    if (mvworld.monsters == true && !(monsters.size() > 0)) {
+                    if (mvworld.hasMonsters() == true && !(monsters.size() > 0)) {
                         continue;
                     }
                     String creature = e.toString().replaceAll("Craft", "");
                     if (monsters.contains(creature.toUpperCase())) {
-                        if (mvworld.monsters) {
+                        if (mvworld.hasMonsters()) {
                             System.out.print(creature + " - Removed");
                             e.remove();
                             continue;
@@ -263,17 +263,17 @@ public class MultiverseCore extends JavaPlugin {
                 // Check against Animals
                 if (e instanceof Chicken || e instanceof Cow || e instanceof Sheep || e instanceof Pig || e instanceof Squid || e instanceof Animals) {
                     // If Monsters are disabled and there's no exceptions we can simply remove them.
-                    if (mvworld.animals == false && !(animals.size() > 0)) {
+                    if (mvworld.hasAnimals() == false && !(animals.size() > 0)) {
                         e.remove();
                         continue;
                     }
                     // If monsters are enabled and there's no exceptions we can continue to the next set.
-                    if (mvworld.animals == true && !(animals.size() > 0)) {
+                    if (mvworld.hasAnimals() == true && !(animals.size() > 0)) {
                         continue;
                     }
                     String creature = e.toString().replaceAll("Craft", "");
                     if (animals.contains(creature.toUpperCase())) {
-                        if (mvworld.animals) {
+                        if (mvworld.hasAnimals()) {
                             e.remove();
                             continue;
                         }

@@ -18,7 +18,7 @@ enum Action {
 // This will contain all the properties that support the ADD/REMOVE
 // Anything not in here will only support the SET action
 enum AddProperties {
-    animallist, monsterlist, blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist
+    animallist, monsterlist, blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist, animals, monsters
 }
 
 enum SetProperties {
@@ -92,9 +92,8 @@ public class ModifyCommand extends BaseCommand {
             } else {
                 sender.sendMessage("There was an error setting " + property);
             }
-            return;
         } else if (action == Action.Add) {
-            if (world.removeFromList(property, value)) {
+            if (world.addToList(property, value)) {
                 sender.sendMessage(value + " was added to " + property);
             } else {
                 sender.sendMessage(value + " could not be added to " + property);

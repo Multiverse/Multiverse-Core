@@ -29,7 +29,7 @@ public class CoordCommand extends BaseCommand {
         if (sender instanceof Player) {
         	Player p = (Player) sender;
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
-            p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + this.plugin.getMVWorld(p.getWorld().getName()).scaling);
+            p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + this.plugin.getMVWorld(p.getWorld().getName()).getScaling());
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Direction: " + ChatColor.WHITE + this.locMan.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Block: " + ChatColor.WHITE + Material.getMaterial(p.getWorld().getBlockTypeIdAt(p.getLocation())));

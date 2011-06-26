@@ -48,10 +48,10 @@ public class InfoCommand extends BaseCommand {
         ArrayList<String[]> pagedInfo = new ArrayList<String[]>();
         String[] aPage = new String[3];
         // World Name: 1
-        aPage[0] = "World: " + world.name;
+        aPage[0] = "World: " + world.getName();
         
         // World Scale: 1
-        aPage[1] = "World Scale: " + world.scaling;
+        aPage[1] = "World Scale: " + world.getScaling();
         
         // PVP: 1
         aPage[2] = "PVP: " + world.getPvp();

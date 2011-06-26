@@ -63,8 +63,8 @@ public class MVEntityListener extends EntityListener {
          */
         if (event.getEntity() instanceof Animals) {
             // If we have no exceptions for Animals then we just follow the Spawn setting.
-            if (mvworld.animalList.size() <= 0) {
-                if (mvworld.animals) {
+            if (mvworld.getAnimalList().isEmpty()) {
+                if (mvworld.hasAnimals()) {
                     return;
                 } else {
                     event.setCancelled(true);
@@ -72,8 +72,8 @@ public class MVEntityListener extends EntityListener {
                 }
             }
             // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-            if (mvworld.animalList.contains(creature.toString())) {
-                if (mvworld.animals) {
+            if (mvworld.getAnimalList().contains(creature.toString())) {
+                if (mvworld.hasAnimals()) {
                     event.setCancelled(true);
                     return;
                 } else {
@@ -86,8 +86,8 @@ public class MVEntityListener extends EntityListener {
          */
         if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof PigZombie || event.getEntity() instanceof Slime) {
             // If we have no exceptions for Monsters then we just follow the Spawn setting.
-            if (mvworld.monsterList.size() <= 0) {
-                if (mvworld.monsters) {
+            if (mvworld.getMonsterList().isEmpty()) {
+                if (mvworld.hasMonsters()) {
                     return;
                 } else {
                     event.setCancelled(true);
@@ -95,8 +95,8 @@ public class MVEntityListener extends EntityListener {
                 }
             }
             // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-            if (mvworld.monsterList.contains(creature.toString())) {
-                if (mvworld.monsters) {
+            if (mvworld.getMonsterList().contains(creature.toString())) {
+                if (mvworld.hasMonsters()) {
                     event.setCancelled(true);
                     return;
                 } else {
