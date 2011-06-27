@@ -60,6 +60,8 @@ public class TeleportCommand extends BaseCommand {
             teleporter = (Player) sender;
             teleportee = (Player) sender;
         }
+        System.out.print("Teleporter: " + teleporter);
+        System.out.print("Teleportee: " + teleportee);
         
         Destination d = Destination.parseDestination(worldName, this.plugin);
         if (!(d.getType() == DestinationType.World)) {
