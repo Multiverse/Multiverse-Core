@@ -77,7 +77,13 @@ public class WhoCommand extends BaseCommand {
                     result += player.getName() + " ";
                 }
             }
-            sender.sendMessage(color + world.getName() + ChatColor.WHITE + " - " + result);
+            String worldName = world.getName();
+            if(world.getAlias() != null && world.getAlias().length() > 0) {
+                worldName = world.getAlias();
+                color = world.getAliasColor();
+            }
+            
+            sender.sendMessage(color + worldName + ChatColor.WHITE + " - " + result);
         }
         return;
     }

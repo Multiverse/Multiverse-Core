@@ -441,7 +441,7 @@ public class MVWorld {
     private ChatColor translateStringToChatColor(String color) {
         if (color.equalsIgnoreCase("aqua"))
             return ChatColor.AQUA;
-        if (color.equalsIgnoreCase("aqua"))
+        if (color.equalsIgnoreCase("black"))
             return ChatColor.BLACK;
         if (color.equalsIgnoreCase("blue"))
             return ChatColor.BLUE;
