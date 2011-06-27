@@ -1,15 +1,27 @@
-#True/False - Whether MultiVerse should handle all respawns on every World including the Default.
-#Disable this if you have a form of Respawn Teleportation plugin.
+# True/False - Whether MultiVerse should handle all respawns on every World including the Default.
+# Disable this if you have a form of Respawn Teleportation plugin.
 globalrespawn: false
 
-#True/False - Whether MultiVerse should handle all respawns on the MultiVerse Worlds.
-#If 'globalrespawn:true' then this will have no effect.
+# True/False - Whether MultiVerse should handle all respawns on the MultiVerse Worlds.
+# If 'globalrespawn:true' then this will have no effect.
 alternaterespawn: true
 
-#How long to leave in between sending a message to the player.
-#In Milliseconds - Default is '5000' which is 5 Seconds.
+# How long to leave in between sending a message to the player.
+# In Milliseconds - Default is '5000' which is 5 Seconds.
 messagecooldown: 5000
 
-#Portal Cooldown, only affects MultiVerse portals.
-#In Milliseconds - Default is '5000' which is 5 Seconds.
+# Portal Cooldown, only affects MultiVerse portals.
+# In Milliseconds - Default is '5000' which is 5 Seconds.
 portalcooldown: 5000
+
+# If this is set to true, we will prefix the chat with 
+# a colorful world alias if it's present. If not, we simply
+# show the world's name in white. If this is false Multiverse
+# won't touch your chat
+worldnameprefix: true
+
+# If Multiverse does not find permissions should it automattically fall back to
+# people defined in ops.txt? Remember, if you use ops based permissions
+# the awesome Multiverse devs get to decide which commands require op!
+# (Which is why we highly recomend a permissions plugin! You shouldn't trust us this much...)
+fallbacktoops: true

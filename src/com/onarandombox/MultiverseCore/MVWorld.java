@@ -95,6 +95,14 @@ public class MVWorld {
         // }
     }
     
+    public String getColoredWorldString() {
+        if (this.getAlias() != null && this.getAlias().length() > 0) {
+            return this.getAliasColor() + this.getAlias() + ChatColor.WHITE;
+        } else {
+            return this.world.getName();
+        }
+    }
+    
     private void getMobExceptions() {
         List<String> temp;
         temp = this.config.getStringList("worlds." + this.name + ".animals.exceptions", new ArrayList<String>());
