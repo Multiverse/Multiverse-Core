@@ -16,7 +16,6 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
@@ -364,16 +363,6 @@ public class MultiverseCore extends JavaPlugin {
         }
         
         return additonalWorldsLoaded;
-    }
-    
-    /**
-     * Get the worlds Seed.
-     * 
-     * @param w World
-     * @return Seed
-     */
-    public long getSeed(World w) {
-        return ((CraftWorld) w).getHandle().worldData.b();
     }
     
     /**
