@@ -24,4 +24,4 @@ worldnameprefix: true
 # people defined in ops.txt? Remember, if you use ops based permissions
 # the awesome Multiverse devs get to decide which commands require op!
 # (Which is why we highly recomend a permissions plugin! You shouldn't trust us this much...)
-fallbacktoops: true
+opfallback: true

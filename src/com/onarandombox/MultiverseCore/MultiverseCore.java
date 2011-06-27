@@ -61,7 +61,7 @@ public class MultiverseCore extends JavaPlugin {
     private boolean debug;
     
     // Setup our Map for our Commands using the CommandHandler.
-    private CommandManager commandManager = new CommandManager();
+    private CommandManager commandManager;
     
     private final String tag = "[Multiverse-Core]";
     
@@ -117,6 +117,8 @@ public class MultiverseCore extends JavaPlugin {
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.setupPermissions();
+        // Setup thte command manager
+        this.commandManager = new CommandManager(this);
         // Setup iConomy.
         this.setupEconomy();
         // Call the Function to assign all the Commands to their Class.

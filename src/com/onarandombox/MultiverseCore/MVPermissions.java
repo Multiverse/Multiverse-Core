@@ -45,9 +45,9 @@ public class MVPermissions {
             return true;
         }
         Player player = (Player) sender;
-        // TODO: 
-        if (player.isOp()) {
-            // If Player is Op we always let them use it.
+        boolean opFallback = this.plugin.configMV.getBoolean("opfallback", true);
+        if (player.isOp() && opFallback) {
+            // If Player is Op we always let them use it if they have the fallback enabled!
             return true;
         } else if (MultiverseCore.Permissions != null && MultiverseCore.Permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
@@ -55,7 +55,10 @@ public class MVPermissions {
         }
         // If the Player doesn't have Permissions and isn't an Op then
         // we return true if OP is not required, otherwise we return false
-        return !isOpRequired;
+        // This allows us to act as a default permission guidance 
+        
+        // If they have the op fallback disabled, NO commands will work without a permissions plugin.
+        return !isOpRequired && opFallback;
     }
     
     

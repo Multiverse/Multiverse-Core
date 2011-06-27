@@ -21,9 +21,11 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 public class CommandManager {
     
     protected List<BaseCommand> commands;
+    private MultiverseCore plugin;
     
-    public CommandManager() {
+    public CommandManager(MultiverseCore plugin) {
         this.commands = new ArrayList<BaseCommand>();
+        this.plugin = plugin;
     }
     
     public boolean dispatch(CommandSender sender, Command command, String label, String[] args) {
@@ -46,7 +48,7 @@ public class CommandManager {
         }
         
         if (match != null) {
-            if (this.hasPermission(sender, match.getPermission(), match.isOpRequired())) {
+            if (this.plugin.ph.hasPermission(sender, match.getPermission(), match.isOpRequired())) {
                 if (trimmedArgs != null) {
                     match.execute(sender, trimmedArgs);
                 } else {
@@ -77,7 +79,7 @@ public class CommandManager {
     public List<BaseCommand> getCommands(CommandSender sender) {
         ArrayList<BaseCommand> playerCommands = new ArrayList<BaseCommand>();
         for(BaseCommand c : this.commands) {
-            if(this.hasPermission(sender, c.permission, c.isOpRequired())) {
+            if(this.plugin.ph.hasPermission(sender, c.permission, c.isOpRequired())) {
                 playerCommands.add(c);
             }
         }
@@ -137,24 +139,5 @@ public class CommandManager {
             returnVal += " " + args[i];
         }
         return returnVal.replace("\"", "");
-    }
-    
-    public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
-        
-        if (!(sender instanceof Player)) {
-            return true;
-        }
-        Player player = (Player) sender;
-        
-        if (player.isOp()) {
-            // If Player is Op we always let them use it.
-            return true;
-        } else if (MultiverseCore.Permissions != null && MultiverseCore.Permissions.has(player, node)) {
-            // If Permissions is enabled we check against them.
-            return true;
-        }
-        // If the Player doesn't have Permissions and isn't an Op then
-        // we return true if OP is not required, otherwise we return false
-        return !isOpRequired;
     }
 }

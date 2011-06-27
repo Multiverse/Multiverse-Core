@@ -28,15 +28,15 @@ public class MVPluginListener extends ServerListener {
          * Check to see if Permissions was just enabled, we only wan't to perform the following if GroupManager is not found.
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-            MultiverseCore.Permissions = ((Permissions) plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler();
-            plugin.log(Level.INFO, "- Attached to Permissions");
+            MultiverseCore.Permissions = ((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler();
+            this.plugin.log(Level.INFO, "- Attached to Permissions");
         }
-
+        // TODO: Use AllPay
         /**
          * Use the METHOD supplied by iConomy to register it etc...
          */
-        if (MultiverseCore.getiConomy() == null) {
-            Plugin iConomy = plugin.getServer().getPluginManager().getPlugin("iConomy");
+        if(event.getPlugin().getDescription().getName().equals("iConomy")) {
+            Plugin iConomy = this.plugin.getServer().getPluginManager().getPlugin("iConomy");
 
             if (iConomy != null) {
                 if (iConomy.isEnabled()) {
