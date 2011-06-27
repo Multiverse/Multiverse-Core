@@ -3,7 +3,9 @@ package com.onarandombox.MultiverseCore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.config.Configuration;
@@ -19,23 +21,24 @@ public class MVWorld {
     
     private String name; // The Worlds Name, EG its folder name.
     private String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
+    private ChatColor aliasColor; // Color for this world
     
     private boolean allowAnimals; // Does this World allow Animals to Spawn?
-    //public List<String> animals = new ArrayList<String>(); // Contain a list of Animals which we want to ignore the Spawn Setting.
+    // public List<String> animals = new ArrayList<String>(); // Contain a list of Animals which we want to ignore the Spawn Setting.
     
     private boolean allowMonsters; // Does this World allow Monsters to Spawn?
-    //public List<String> monsters = new ArrayList<String>(); // Contain a list of Monsters which we want to ignore the Spawn Setting.
+    // public List<String> monsters = new ArrayList<String>(); // Contain a list of Monsters which we want to ignore the Spawn Setting.
     
     private Boolean pvp; // Does this World allow PVP?
     
     private List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
     
     // These have been moved to a hash, for easy editing with strings.
-//    private List<String> playerWhitelist; // Contain a list of Players/Groups which can join this World.
-//    private List<String> playerBlacklist; // Contain a list of Players/Groups which cannot join this World.
-//    private List<String> editWhitelist; // Contain a list of Players/Groups which can edit this World. (Place/Destroy Blocks)
-//    private List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
-//    private List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
+    // private List<String> playerWhitelist; // Contain a list of Players/Groups which can join this World.
+    // private List<String> playerBlacklist; // Contain a list of Players/Groups which cannot join this World.
+    // private List<String> editWhitelist; // Contain a list of Players/Groups which can edit this World. (Place/Destroy Blocks)
+    // private List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
+    // private List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
     
     private HashMap<String, List<String>> masterList;
     
@@ -69,7 +72,8 @@ public class MVWorld {
         config.setProperty("worlds." + this.name + ".environment", this.environment.toString());
         
         // Set local values that CAN be changed by the user
-        this.setAlias(config.getString("worlds." + this.name + ".alias", ""));
+        this.setAlias(config.getString("worlds." + this.name + ".alias.name", ""));
+        this.setAliasColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
         this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", 1.0));
         
@@ -326,7 +330,7 @@ public class MVWorld {
     
     public void setAlias(String alias) {
         this.alias = alias;
-        this.config.setProperty("worlds." + this.name + ".alias", alias);
+        this.config.setProperty("worlds." + this.name + ".alias.name", alias);
         this.config.save();
     }
     
@@ -414,5 +418,59 @@ public class MVWorld {
         this.scaling = scaling;
         this.config.setProperty("worlds." + this.name + ".scaling", scaling);
         this.config.save();
+    }
+    
+    public void setAliasColor(String aliasColor) {
+        this.aliasColor = translateStringToChatColor(aliasColor);
+        if (this.aliasColor != null) {
+            this.config.setProperty("worlds." + this.name + ".alias.color", aliasColor);
+            this.config.save();
+        } else {
+            this.plugin.log(Level.WARNING, "Color \"" + aliasColor + "\" was not found.");
+            this.aliasColor = ChatColor.WHITE;
+        }
+        
+        return;
+    }
+    
+    public ChatColor getAliasColor() {
+        return this.aliasColor;
+    }
+    
+    // I disgust myself. Seriously is there not a better way?
+    private ChatColor translateStringToChatColor(String color) {
+        if (color.equalsIgnoreCase("aqua"))
+            return ChatColor.AQUA;
+        if (color.equalsIgnoreCase("aqua"))
+            return ChatColor.BLACK;
+        if (color.equalsIgnoreCase("blue"))
+            return ChatColor.BLUE;
+        if (color.equalsIgnoreCase("darkaqua"))
+            return ChatColor.DARK_AQUA;
+        if (color.equalsIgnoreCase("darkblue"))
+            return ChatColor.DARK_BLUE;
+        if (color.equalsIgnoreCase("darkgray"))
+            return ChatColor.DARK_GRAY;
+        if (color.equalsIgnoreCase("darkgreen"))
+            return ChatColor.DARK_GREEN;
+        if (color.equalsIgnoreCase("darkpurple"))
+            return ChatColor.DARK_PURPLE;
+        if (color.equalsIgnoreCase("darkred"))
+            return ChatColor.DARK_RED;
+        if (color.equalsIgnoreCase("gold"))
+            return ChatColor.GOLD;
+        if (color.equalsIgnoreCase("gray"))
+            return ChatColor.GRAY;
+        if (color.equalsIgnoreCase("green"))
+            return ChatColor.GREEN;
+        if (color.equalsIgnoreCase("lightpurple"))
+            return ChatColor.LIGHT_PURPLE;
+        if (color.equalsIgnoreCase("red"))
+            return ChatColor.RED;
+        if (color.equalsIgnoreCase("yellow"))
+            return ChatColor.YELLOW;
+        if (color.equalsIgnoreCase("white"))
+            return ChatColor.WHITE;
+        return null;
     }
 }

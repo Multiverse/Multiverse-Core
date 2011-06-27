@@ -49,7 +49,6 @@ import com.onarandombox.MultiverseCore.command.QueuedCommand;
 import com.onarandombox.MultiverseCore.command.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
-import com.onarandombox.utils.Messaging;
 import com.onarandombox.utils.UpdateChecker;
 
 public class MultiverseCore extends JavaPlugin {
@@ -65,9 +64,6 @@ public class MultiverseCore extends JavaPlugin {
     private CommandManager commandManager = new CommandManager();
     
     private final String tag = "[Multiverse-Core]";
-    
-    // Messaging
-    private Messaging messaging = new Messaging();
     
     // Multiverse Permissions Handler
     public MVPermissions ph = new MVPermissions(this);
@@ -115,16 +111,16 @@ public class MultiverseCore extends JavaPlugin {
     @Override
     public void onEnable() {
         // Output a little snippet to show it's enabled.
-        log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
+        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
         
         // Setup all the Events the plugin needs to Monitor.
-        registerEvents();
+        this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
-        setupPermissions();
+        this.setupPermissions();
         // Setup iConomy.
-        setupEconomy();
+        this.setupEconomy();
         // Call the Function to assign all the Commands to their Class.
-        registerCommands();
+        this.registerCommands();
         
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
@@ -132,10 +128,10 @@ public class MultiverseCore extends JavaPlugin {
         // Call the Function to load all the Worlds and setup the HashMap
         // When called with null, it tries to load ALL
         // this function will be called every time a plugin registers a new envtype with MV
-        loadWorlds(null);
+        this.loadWorlds(true);
         
         // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
-        purgeWorlds();
+        this.purgeWorlds();
     }
     
     /**
@@ -309,11 +305,15 @@ public class MultiverseCore extends JavaPlugin {
     /**
      * Load the Worlds & Settings from the configuration file.
      */
-    public void loadWorlds(String filter) {
+    public void loadWorlds(boolean forceLoad) {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
         // Grab all the Worlds from the Config.
         List<String> worldKeys = this.configWorlds.getKeys("worlds");
+        
+        if(forceLoad) {
+            this.worlds.clear();
+        }
         
         // Check that the list is not null.
         if (worldKeys != null) {
@@ -597,10 +597,6 @@ public class MultiverseCore extends JavaPlugin {
             log.log(level, "[Debug] " + msg);
         }
         debugLog.log(level, "[Debug] " + msg);
-    }
-    
-    public Messaging getMessaging() {
-        return this.messaging;
     }
     
     /**

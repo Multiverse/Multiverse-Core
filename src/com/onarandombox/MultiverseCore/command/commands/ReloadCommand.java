@@ -25,7 +25,7 @@ public class ReloadCommand extends BaseCommand {
     public void execute(CommandSender sender, String[] args) {
         this.plugin.log(Level.INFO, "Reloading Multiverse-Core config");
         this.plugin.loadConfigs();
-        this.plugin.loadWorlds(null);
+        this.plugin.loadWorlds(true);
         this.plugin.log(Level.INFO, "Reload Complete!");
     }
 

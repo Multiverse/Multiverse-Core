@@ -46,8 +46,11 @@ public class ListCommand extends BaseCommand {
             } else if (env == Environment.SKYLANDS) {
                 color = ChatColor.AQUA;
             }
-            
-            output += ChatColor.WHITE + world.getName() + " - " + color + world.getEnvironment() + " \n";
+            String worldName = world.getName();
+            if(world.getAlias() != null && world.getAlias().length() > 0) {
+                worldName = world.getAliasColor() + world.getAlias() + ChatColor.WHITE;
+            }
+            output += ChatColor.WHITE + worldName + " - " + color + world.getEnvironment() + " \n";
             
         }
         String[] response = output.split("\n");
