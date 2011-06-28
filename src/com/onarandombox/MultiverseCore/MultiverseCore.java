@@ -314,6 +314,7 @@ public class MultiverseCore extends JavaPlugin {
         // Grab all the Worlds from the Config.
         List<String> worldKeys = this.configWorlds.getKeys("worlds");
         
+        // Force the worlds to be loaded, ie don't just load new worlds.
         if(forceLoad) {
             this.worlds.clear();
         }
@@ -339,7 +340,10 @@ public class MultiverseCore extends JavaPlugin {
         }
         
         // Ensure that the worlds created by the default server were loaded into MV, useful for first time runs
-        count += loadDefaultWorlds();
+        //count += loadDefaultWorlds();
+        // TODO: This was taken out because some people don't want nether! Instead show a message to people who have MVImport
+        // and tell them to do MVImports for their worlds!
+        
         
         // Simple Output to the Console to show how many Worlds were loaded.
         log(Level.INFO, count + " - World(s) loaded.");
