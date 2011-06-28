@@ -23,7 +23,7 @@ public class DeleteCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         Class<?> paramTypes[] = {String.class};
-        this.plugin.queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
+        this.plugin.getCommandManager().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
     
 }

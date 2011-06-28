@@ -94,8 +94,6 @@ public class MultiverseCore extends JavaPlugin {
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
     
-    // List to hold commands that require approval
-    public List<QueuedCommand> queuedCommands = new ArrayList<QueuedCommand>();
     
     @Override
     public void onLoad() {
@@ -315,7 +313,7 @@ public class MultiverseCore extends JavaPlugin {
         List<String> worldKeys = this.configWorlds.getKeys("worlds");
         
         // Force the worlds to be loaded, ie don't just load new worlds.
-        if(forceLoad) {
+        if (forceLoad) {
             this.worlds.clear();
         }
         
@@ -340,10 +338,9 @@ public class MultiverseCore extends JavaPlugin {
         }
         
         // Ensure that the worlds created by the default server were loaded into MV, useful for first time runs
-        //count += loadDefaultWorlds();
+        // count += loadDefaultWorlds();
         // TODO: This was taken out because some people don't want nether! Instead show a message to people who have MVImport
         // and tell them to do MVImports for their worlds!
-        
         
         // Simple Output to the Console to show how many Worlds were loaded.
         log(Level.INFO, count + " - World(s) loaded.");
@@ -403,7 +400,7 @@ public class MultiverseCore extends JavaPlugin {
         ChunkGenerator customGenerator = getChunkGenerator(generatorName, generatorID, name);
         
         if (customGenerator == null && generator != null && !generator.isEmpty()) {
-            if(!pluginExists(generatorName)) {
+            if (!pluginExists(generatorName)) {
                 log(Level.WARNING, "Could not find plugin: " + generatorName);
             } else {
                 log(Level.WARNING, "Found plugin: " + generatorName + ", but did not find generatorID: " + generatorID);
@@ -589,8 +586,8 @@ public class MultiverseCore extends JavaPlugin {
      * @param msg
      */
     public void log(Level level, String msg) {
-        log.log(level, "[Multiverse-Core] " + msg);
-        debugLog.log(level, "[Multiverse-Core] " + msg);
+        log.log(level, this.tag + " " + msg);
+        debugLog.log(level, this.tag + " " + msg);
     }
     
     /**
@@ -663,56 +660,7 @@ public class MultiverseCore extends JavaPlugin {
     
     // TODO: Find out where to put these next 3 methods! I just stuck them here for now --FF
     
-    /**
-     * 
-     */
-    public void queueCommand(CommandSender sender, String commandName, String methodName, String[] args, Class<?>[] paramTypes, String success, String fail) {
-        cancelQueuedCommand(sender);
-        this.queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this, success, fail));
-        sender.sendMessage("The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could break something!");
-        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE);
-        sender.sendMessage("please type: " + ChatColor.GREEN + "/mvconfirm");
-        sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for 10 seconds.");
-    }
-    
-    /**
-     * Tries to fire off the command
-     * 
-     * @param sender
-     * @return
-     */
-    public boolean confirmQueuedCommand(CommandSender sender) {
-        for (QueuedCommand com : this.queuedCommands) {
-            if (com.getSender().equals(sender)) {
-                if (com.execute()) {
-                    sender.sendMessage(com.getSuccess());
-                    return true;
-                } else {
-                    sender.sendMessage(com.getFail());
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * Cancels(invalidates) a command that has been requested. This is called when a user types something other than 'yes' or when they try to queue a second command Queuing a second command will delete the first command entirely.
-     * 
-     * @param sender
-     */
-    public void cancelQueuedCommand(CommandSender sender) {
-        QueuedCommand c = null;
-        for (QueuedCommand com : this.queuedCommands) {
-            if (com.getSender().equals(sender)) {
-                c = com;
-            }
-        }
-        if (c != null) {
-            // Each person is allowed at most one queued command.
-            this.queuedCommands.remove(c);
-        }
-    }
+
     
     public Collection<MVWorld> getMVWorlds() {
         return this.worlds.values();

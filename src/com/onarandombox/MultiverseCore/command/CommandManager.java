@@ -9,6 +9,7 @@
 package com.onarandombox.MultiverseCore.command;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -22,6 +23,9 @@ public class CommandManager {
     
     protected List<BaseCommand> commands;
     private MultiverseCore plugin;
+    
+    // List to hold commands that require approval
+    public List<QueuedCommand> queuedCommands = new ArrayList<QueuedCommand>();
     
     public CommandManager(MultiverseCore plugin) {
         this.commands = new ArrayList<BaseCommand>();
@@ -139,5 +143,56 @@ public class CommandManager {
             returnVal += " " + args[i];
         }
         return returnVal.replace("\"", "");
+    }
+    
+    /**
+     * 
+     */
+    public void queueCommand(CommandSender sender, String commandName, String methodName, String[] args, Class<?>[] paramTypes, String success, String fail) {
+        cancelQueuedCommand(sender);
+        this.queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this.plugin, success, fail));
+        sender.sendMessage("The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could break something!");
+        sender.sendMessage("If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE);
+        sender.sendMessage("please type: " + ChatColor.GREEN + "/mvconfirm");
+        sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for 10 seconds.");
+    }
+    
+    /**
+     * Tries to fire off the command
+     * 
+     * @param sender
+     * @return
+     */
+    public boolean confirmQueuedCommand(CommandSender sender) {
+        for (QueuedCommand com : this.queuedCommands) {
+            if (com.getSender().equals(sender)) {
+                if (com.execute()) {
+                    sender.sendMessage(com.getSuccess());
+                    return true;
+                } else {
+                    sender.sendMessage(com.getFail());
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Cancels(invalidates) a command that has been requested. This is called when a user types something other than 'yes' or when they try to queue a second command Queuing a second command will delete the first command entirely.
+     * 
+     * @param sender
+     */
+    public void cancelQueuedCommand(CommandSender sender) {
+        QueuedCommand c = null;
+        for (QueuedCommand com : this.queuedCommands) {
+            if (com.getSender().equals(sender)) {
+                c = com;
+            }
+        }
+        if (c != null) {
+            // Each person is allowed at most one queued command.
+            this.queuedCommands.remove(c);
+        }
     }
 }

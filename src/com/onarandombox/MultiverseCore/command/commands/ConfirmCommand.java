@@ -22,7 +22,7 @@ public class ConfirmCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        this.plugin.confirmQueuedCommand(sender);
+        this.plugin.getCommandManager().confirmQueuedCommand(sender);
     }
     
 }
