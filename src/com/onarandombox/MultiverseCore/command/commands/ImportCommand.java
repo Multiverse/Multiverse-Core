@@ -38,6 +38,11 @@ public class ImportCommand extends BaseCommand {
         
         String env = args[1];
         Environment environment = this.plugin.getEnvFromString(env);
+        if(environment == null) {
+            sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
+            EnvironmentCommand.showEnvironments(sender);
+            return;
+        }
         
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");

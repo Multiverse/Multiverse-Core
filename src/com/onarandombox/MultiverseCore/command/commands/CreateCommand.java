@@ -44,6 +44,11 @@ public class CreateCommand extends BaseCommand {
         }
         
         Environment environment = this.plugin.getEnvFromString(env);
+        if(environment == null) {
+            sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
+            EnvironmentCommand.showEnvironments(sender);
+            return;
+        }
         sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
         if (this.plugin.addWorld(worldName, environment, seed, generator)) {
             sender.sendMessage(ChatColor.GREEN + "Complete!");

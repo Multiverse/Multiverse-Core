@@ -653,7 +653,7 @@ public class MultiverseCore extends JavaPlugin {
         try {
             return Environment.valueOf(env);
         } catch (IllegalArgumentException e) {
-            return Environment.NORMAL;
+            return null;
         }
     }
     

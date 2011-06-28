@@ -22,10 +22,10 @@ public class EnvironmentCommand extends BaseCommand{
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        this.showEnvironments(sender);
+        EnvironmentCommand.showEnvironments(sender);
     }
     
-    public void showEnvironments(CommandSender sender) {
+    public static void showEnvironments(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");
         sender.sendMessage(ChatColor.GREEN + "NORMAL");
         sender.sendMessage(ChatColor.RED + "NETHER");

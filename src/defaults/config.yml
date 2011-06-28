@@ -1,10 +1,13 @@
-# True/False - Whether MultiVerse should handle all respawns on every World including the Default.
-# Disable this if you have a form of Respawn Teleportation plugin.
-globalrespawn: false
+# !!!This only applies to worlds being handled by Multiverse!!!
+# If you don't see it using /mvlist this setting WILL HAVE NO EFFECT
+# Valid values are:
+# all: If you die in a Nether an attempt will be made to spawn you in the corresponding Normal world, if not you go to defaultspawnworld
+# default: If you die in a Nether you will respawn in the world defined below in defaultspawnworld
+# none: You will always respawn in the same world you died in
+notchrespawnstyle: none
 
-# True/False - Whether MultiVerse should handle all respawns on the MultiVerse Worlds.
-# If 'globalrespawn:true' then this will have no effect.
-alternaterespawn: true
+#
+defaultspawnworld: world
 
 # How long to leave in between sending a message to the player.
 # In Milliseconds - Default is '5000' which is 5 Seconds.
@@ -20,8 +23,8 @@ portalcooldown: 5000
 # won't touch your chat
 worldnameprefix: true
 
-# If Multiverse does not find permissions should it automattically fall back to
+# If Multiverse does not find permissions should it automatically fall back to
 # people defined in ops.txt? Remember, if you use ops based permissions
 # the awesome Multiverse devs get to decide which commands require op!
-# (Which is why we highly recomend a permissions plugin! You shouldn't trust us this much...)
+# (Which is why we highly recommend a permissions plugin! You shouldn't trust us this much...)
 opfallback: true
