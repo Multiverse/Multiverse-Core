@@ -16,29 +16,29 @@ import org.bukkit.event.entity.EntityListener;
 //import org.bukkit.event.entity.ExplosionPrimedEvent;
 
 public class MVEntityListener extends EntityListener {
-
+    
     MultiverseCore plugin;
-
+    
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
-
+    
     // Need to find a way to stop the Ghast Fireballs damaging
     // surroundings but still doing damage to players.
     @Override
     public void onEntityExplode(EntityExplodeEvent event) {
-
+        
     }
     
     @Override
     public void onEntityDeath(EntityDeathEvent event) {
-        if(event.getEntity() instanceof Player) {
-            Player p = (Player)event.getEntity();
+        if (event.getEntity() instanceof Player) {
+            Player p = (Player) event.getEntity();
             p.sendMessage("You died!");
         }
         super.onEntityDeath(event);
     }
-
+    
     /**
      * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
      */
@@ -47,24 +47,26 @@ public class MVEntityListener extends EntityListener {
         World world = event.getEntity().getWorld();
         if (event.isCancelled())
             return;
+        
+        // Check if it's a world which we are meant to be managing.
         if (!(this.plugin.isMVWorld(world.getName())))
-            return; // Check if it's a world which we are meant to be managing.
-
+            return;
+        
         CreatureType creature = event.getCreatureType();
-
+        
         // event.getEntity().getWorld().spawnCreature(arg0, arg1);
-
+        
         MVWorld mvworld = this.plugin.getMVWorld(world.getName());
-
+        
         // TODO: Look of this and see if there's a cleaner/better method of doing so...
-
+        
         /**
          * Animal Handling
          */
         if (event.getEntity() instanceof Animals) {
             // If we have no exceptions for Animals then we just follow the Spawn setting.
             if (mvworld.getAnimalList().isEmpty()) {
-                if (mvworld.hasAnimals()) {
+                if (mvworld.allowAnimalSpawning()) {
                     return;
                 } else {
                     event.setCancelled(true);
@@ -72,8 +74,8 @@ public class MVEntityListener extends EntityListener {
                 }
             }
             // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-            if (mvworld.getAnimalList().contains(creature.toString())) {
-                if (mvworld.hasAnimals()) {
+            if (mvworld.getAnimalList().contains(creature.toString().toUpperCase())) {
+                if (mvworld.allowAnimalSpawning()) {
                     event.setCancelled(true);
                     return;
                 } else {
@@ -84,10 +86,10 @@ public class MVEntityListener extends EntityListener {
         /**
          * Monster Handling
          */
-        if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof PigZombie || event.getEntity() instanceof Slime) {
+        if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime) {
             // If we have no exceptions for Monsters then we just follow the Spawn setting.
             if (mvworld.getMonsterList().isEmpty()) {
-                if (mvworld.hasMonsters()) {
+                if (mvworld.allowMonsterSpawning()) {
                     return;
                 } else {
                     event.setCancelled(true);
@@ -95,8 +97,8 @@ public class MVEntityListener extends EntityListener {
                 }
             }
             // The idea of the Exceptions is they do the OPPOSITE of what the Spawn setting is...
-            if (mvworld.getMonsterList().contains(creature.toString())) {
-                if (mvworld.hasMonsters()) {
+            if (mvworld.getMonsterList().contains(creature.toString().toUpperCase())) {
+                if (mvworld.allowMonsterSpawning()) {
                     event.setCancelled(true);
                     return;
                 } else {
@@ -105,5 +107,5 @@ public class MVEntityListener extends EntityListener {
             }
         }
     }
-
+    
 }

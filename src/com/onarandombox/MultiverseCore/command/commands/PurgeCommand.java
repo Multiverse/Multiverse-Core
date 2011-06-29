@@ -36,14 +36,8 @@ public class PurgeCommand extends BaseCommand {
             sender.sendMessage(this.usage);
             return;
         }
-
-        List<String> creatures = new ArrayList<String>();
-
-        for (String creature : args[0].toUpperCase().split(",")) {
-            creatures.add(creature);
-        }
-
-        new PurgeWorlds(plugin).purge(sender, p.getWorld(), creatures);
+        System.out.println("Purged");
+        this.plugin.purgeWorlds();
 
         return;
     }

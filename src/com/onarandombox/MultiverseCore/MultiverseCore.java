@@ -220,7 +220,7 @@ public class MultiverseCore extends JavaPlugin {
     /**
      * Purge the Worlds of Entities that are disallowed.
      */
-    private void purgeWorlds() {
+    public void purgeWorlds() {
         if (this.worlds.size() <= 0)
             return;
         
@@ -236,40 +236,41 @@ public class MultiverseCore extends JavaPlugin {
             List<String> animals = mvworld.getAnimalList();
             System.out.print("Monster Size:" + monsters.size() + " - " + "Animal Size: " + animals.size());
             for (Entity e : world.getEntities()) {
+                String creatureName = e.toString().replaceAll("Craft", "").toLowerCase();
                 // Check against Monsters
-                if (e instanceof Creeper || e instanceof Skeleton || e instanceof Spider || e instanceof Zombie || e instanceof Ghast || e instanceof PigZombie || e instanceof Giant || e instanceof Slime || e instanceof Monster) {
+                if (e instanceof Slime || e instanceof Monster) {
                     // If Monsters are disabled and there's no exceptions we can simply remove them.
-                    if (mvworld.hasMonsters() == false && !(monsters.size() > 0)) {
+                    if (mvworld.allowMonsterSpawning() == false && !(monsters.size() > 0)) {
                         e.remove();
                         continue;
                     }
                     // If monsters are enabled and there's no exceptions we can continue to the next set.
-                    if (mvworld.hasMonsters() == true && !(monsters.size() > 0)) {
+                    if (mvworld.allowMonsterSpawning() == true && !(monsters.size() > 0)) {
                         continue;
                     }
-                    String creature = e.toString().replaceAll("Craft", "");
-                    if (monsters.contains(creature.toUpperCase())) {
-                        if (mvworld.hasMonsters()) {
-                            System.out.print(creature + " - Removed");
+                    
+                    if (monsters.contains(creatureName.toUpperCase())) {
+                        if (mvworld.allowMonsterSpawning()) {
+                            System.out.print(creatureName + " - Removed");
                             e.remove();
                             continue;
                         }
                     }
                 }
                 // Check against Animals
-                if (e instanceof Chicken || e instanceof Cow || e instanceof Sheep || e instanceof Pig || e instanceof Squid || e instanceof Animals) {
-                    // If Monsters are disabled and there's no exceptions we can simply remove them.
-                    if (mvworld.hasAnimals() == false && !(animals.size() > 0)) {
+                if (e instanceof Squid || e instanceof Animals) {
+                    // If Animals are disabled and there's no exceptions we can simply remove them.
+                    if (mvworld.allowAnimalSpawning() == false && !(animals.size() > 0)) {
                         e.remove();
                         continue;
                     }
-                    // If monsters are enabled and there's no exceptions we can continue to the next set.
-                    if (mvworld.hasAnimals() == true && !(animals.size() > 0)) {
+                    // If Animals are enabled and there's no exceptions we can continue to the next set.
+                    if (mvworld.allowAnimalSpawning() == true && !(animals.size() > 0)) {
                         continue;
                     }
-                    String creature = e.toString().replaceAll("Craft", "");
-                    if (animals.contains(creature.toUpperCase())) {
-                        if (mvworld.hasAnimals()) {
+                    if (animals.contains(creatureName.toUpperCase())) {
+                        if (mvworld.allowAnimalSpawning()) {
+                            System.out.print(creatureName + " - Removed");
                             e.remove();
                             continue;
                         }
@@ -301,6 +302,7 @@ public class MultiverseCore extends JavaPlugin {
         this.commandManager.addCommand(new ReloadCommand(this));
         this.commandManager.addCommand(new ModifyCommand(this));
         this.commandManager.addCommand(new EnvironmentCommand(this));
+        this.commandManager.addCommand(new PurgeCommand(this));
     }
     
     /**

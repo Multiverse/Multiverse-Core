@@ -342,7 +342,7 @@ public class MVWorld {
         this.config.save();
     }
     
-    public Boolean hasAnimals() {
+    public Boolean allowAnimalSpawning() {
         return this.allowAnimals;
     }
     
@@ -360,7 +360,7 @@ public class MVWorld {
         return this.masterList.get("animals");
     }
     
-    public Boolean hasMonsters() {
+    public Boolean allowMonsterSpawning() {
         return this.allowMonsters;
     }
     
