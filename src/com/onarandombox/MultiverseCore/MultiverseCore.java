@@ -49,6 +49,7 @@ import com.onarandombox.MultiverseCore.command.QueuedCommand;
 import com.onarandombox.MultiverseCore.command.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
+import com.onarandombox.utils.PurgeWorlds;
 import com.onarandombox.utils.UpdateChecker;
 
 public class MultiverseCore extends JavaPlugin {
@@ -93,7 +94,7 @@ public class MultiverseCore extends JavaPlugin {
     
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
-    
+    private PurgeWorlds worldPurger;
     
     @Override
     public void onLoad() {
@@ -115,8 +116,10 @@ public class MultiverseCore extends JavaPlugin {
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.setupPermissions();
-        // Setup thte command manager
+        // Setup the command manager
         this.commandManager = new CommandManager(this);
+        // Setup the world purger
+        this.worldPurger = new PurgeWorlds(this);
         // Setup iConomy.
         this.setupEconomy();
         // Call the Function to assign all the Commands to their Class.
@@ -129,9 +132,6 @@ public class MultiverseCore extends JavaPlugin {
         // When called with null, it tries to load ALL
         // this function will be called every time a plugin registers a new envtype with MV
         this.loadWorlds(true);
-        
-        // Purge Worlds of old Monsters/Animals which don't adhere to the setup.
-        this.purgeWorlds();
     }
     
     /**
@@ -215,69 +215,6 @@ public class MultiverseCore extends JavaPlugin {
         
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
         this.debug = this.configMV.getBoolean("debug", false);
-    }
-    
-    /**
-     * Purge the Worlds of Entities that are disallowed.
-     */
-    public void purgeWorlds() {
-        if (this.worlds.size() <= 0)
-            return;
-        
-        // TODO: Need a better method than this... too messy and atm it's not complete.
-        
-        Set<String> worldKeys = this.worlds.keySet();
-        for (String key : worldKeys) {
-            World world = getServer().getWorld(key);
-            if (world == null)
-                continue;
-            MVWorld mvworld = this.worlds.get(key);
-            List<String> monsters = mvworld.getMonsterList();
-            List<String> animals = mvworld.getAnimalList();
-            System.out.print("Monster Size:" + monsters.size() + " - " + "Animal Size: " + animals.size());
-            for (Entity e : world.getEntities()) {
-                String creatureName = e.toString().replaceAll("Craft", "").toLowerCase();
-                // Check against Monsters
-                if (e instanceof Slime || e instanceof Monster) {
-                    // If Monsters are disabled and there's no exceptions we can simply remove them.
-                    if (mvworld.allowMonsterSpawning() == false && !(monsters.size() > 0)) {
-                        e.remove();
-                        continue;
-                    }
-                    // If monsters are enabled and there's no exceptions we can continue to the next set.
-                    if (mvworld.allowMonsterSpawning() == true && !(monsters.size() > 0)) {
-                        continue;
-                    }
-                    
-                    if (monsters.contains(creatureName.toUpperCase())) {
-                        if (mvworld.allowMonsterSpawning()) {
-                            System.out.print(creatureName + " - Removed");
-                            e.remove();
-                            continue;
-                        }
-                    }
-                }
-                // Check against Animals
-                if (e instanceof Squid || e instanceof Animals) {
-                    // If Animals are disabled and there's no exceptions we can simply remove them.
-                    if (mvworld.allowAnimalSpawning() == false && !(animals.size() > 0)) {
-                        e.remove();
-                        continue;
-                    }
-                    // If Animals are enabled and there's no exceptions we can continue to the next set.
-                    if (mvworld.allowAnimalSpawning() == true && !(animals.size() > 0)) {
-                        continue;
-                    }
-                    if (animals.contains(creatureName.toUpperCase())) {
-                        if (mvworld.allowAnimalSpawning()) {
-                            System.out.print(creatureName + " - Removed");
-                            e.remove();
-                            continue;
-                        }
-                    }
-                }
-            }
-        }
     }
     
     /**
@@ -430,7 +367,9 @@ public class MultiverseCore extends JavaPlugin {
                 log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env);
             }
         }
-        this.worlds.put(name, new MVWorld(world, this.configWorlds, this, seed, generator));
+        MVWorld mvworld = new MVWorld(world, this.configWorlds, this, seed, generator);
+        this.worldPurger.purgeWorld(null, mvworld);
+        this.worlds.put(name, mvworld);
         return true;
         
     }
@@ -569,6 +508,10 @@ public class MultiverseCore extends JavaPlugin {
         return this.ph;
     }
     
+    public PurgeWorlds getWorldPurger() {
+        return this.worldPurger;
+    }
+    
     /**
      * onCommand
      */
@@ -661,8 +604,6 @@ public class MultiverseCore extends JavaPlugin {
     }
     
     // TODO: Find out where to put these next 3 methods! I just stuck them here for now --FF
-    
-
     
     public Collection<MVWorld> getMVWorlds() {
         return this.worlds.values();

@@ -54,8 +54,6 @@ public class MVEntityListener extends EntityListener {
         
         CreatureType creature = event.getCreatureType();
         
-        // event.getEntity().getWorld().spawnCreature(arg0, arg1);
-        
         MVWorld mvworld = this.plugin.getMVWorld(world.getName());
         
         // TODO: Look of this and see if there's a cleaner/better method of doing so...

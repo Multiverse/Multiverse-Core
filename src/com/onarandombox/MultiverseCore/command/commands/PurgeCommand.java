@@ -1,12 +1,15 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import sun.tools.tree.ArrayAccessExpression;
+
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.onarandombox.utils.PurgeWorlds;
@@ -36,8 +39,32 @@ public class PurgeCommand extends BaseCommand {
             sender.sendMessage(this.usage);
             return;
         }
+        String worldName = null;
+        String deathName = null;
+        if(args.length == 1) {
+            worldName = p.getWorld().getName();
+            deathName = args[0];
+        } else {
+            worldName = args[0];
+            deathName = args[1];
+        }
+        
+        if(!this.plugin.isMVWorld(worldName)) {
+            sender.sendMessage("Multiverse doesn't know about " + worldName);
+            sender.sendMessage("... so It cannot be purged");
+            return;
+        }
+        MVWorld world = this.plugin.getMVWorld(worldName);
+        
         System.out.println("Purged");
-        this.plugin.purgeWorlds();
+        PurgeWorlds purger = this.plugin.getWorldPurger();
+        ArrayList<String> thingsToKill = new ArrayList<String>();
+        if(deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
+            thingsToKill.add(deathName.toUpperCase());
+        } else {
+            Collections.addAll(thingsToKill, deathName.split(","));
+        }
+        purger.purgeWorld(sender, world, thingsToKill, false, false);
 
         return;
     }
