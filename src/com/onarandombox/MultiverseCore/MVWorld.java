@@ -490,7 +490,7 @@ public class MVWorld {
             return true;
         } else if(this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
-            this.config.setProperty("worlds." + this.masterList.get(property) + "." + property.toLowerCase(), this.blockBlacklist);
+            this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
             this.config.save();
             return true;
         }
