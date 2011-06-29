@@ -7,8 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import sun.tools.tree.ArrayAccessExpression;
-
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
@@ -60,6 +58,8 @@ public class PurgeCommand extends BaseCommand {
         PurgeWorlds purger = this.plugin.getWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
         if(deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
+            System.out.print("Found a special case: ");
+            System.out.print(deathName.toUpperCase());
             thingsToKill.add(deathName.toUpperCase());
         } else {
             Collections.addAll(thingsToKill, deathName.split(","));

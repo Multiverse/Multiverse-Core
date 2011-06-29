@@ -24,13 +24,12 @@ enum SetProperties {
 
 public class ModifyCommand extends BaseCommand {
     
-    
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Modify a World";
         this.description = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used";
-        this.usage = "/mvmodify" + ChatColor.GOLD + " [WORLD] " + ChatColor.GREEN + "{SET|ADD|REMOVE|CLEAR} {PROPERTY} {VALUE}";
-        this.minArgs = 3;
+        this.usage = "/mvmodify" + ChatColor.GOLD + " [WORLD] " + ChatColor.GREEN + "{SET|ADD|REMOVE|CLEAR} {PROPERTY} {VALUE|all}";
+        this.minArgs = 2;
         this.maxArgs = 4;
         this.identifiers.add("mvmodify");
         this.permission = "multiverse.world.modify";
@@ -51,6 +50,7 @@ public class ModifyCommand extends BaseCommand {
         String value;
         String property;
         Player p;
+        // Handle special CLEAR case
         if (args.length == 3) {
             p = (Player) sender;
             world = this.plugin.getMVWorld(p.getWorld().getName());
@@ -98,8 +98,12 @@ public class ModifyCommand extends BaseCommand {
             } else {
                 sender.sendMessage(value + " could not be removed from " + property);
             }
-        } else if(action == Action.Clear) {
-            
+        } else if (action == Action.Clear) {
+            if (world.clearList(property)) {
+                sender.sendMessage(property + " was cleared. It contains 0 values now.");
+            } else {
+                sender.sendMessage(property + " was NOT cleared.");
+            }
         }
     }
     
@@ -131,6 +135,9 @@ public class ModifyCommand extends BaseCommand {
         }
         if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("-")) {
             return Action.Remove;
+        }
+        if (action.equalsIgnoreCase("clear")) {
+            return Action.Clear;
         }
         return null;
     }

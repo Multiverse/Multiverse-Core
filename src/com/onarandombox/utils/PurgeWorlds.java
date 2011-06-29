@@ -73,7 +73,7 @@ public class PurgeWorlds {
     private boolean killCreature(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
         if (e instanceof Squid || e instanceof Animals) {
-            if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("CREATURES")) {
+            if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("ANIMALS")) {
                 if (!negate) {
                     System.out.print(entityName + " - Removed");
                     e.remove();

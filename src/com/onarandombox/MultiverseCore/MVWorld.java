@@ -227,27 +227,26 @@ public class MVWorld {
     private void syncMobs() {
         if (this.getAnimalList().isEmpty()) {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), this.allowAnimals);
-            if (!this.allowAnimals) {
-                // TODO: Purge
-            }
         } else {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), true);
         }
-        
         if (this.getMonsterList().isEmpty()) {
             this.world.setSpawnFlags(this.allowMonsters, this.world.getAllowAnimals());
-            if (!this.allowMonsters) {
-                // TODO: Purge
-            }
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
+        System.out.print("Animals: " + this.world.getAllowAnimals());
+        System.out.print("Monsters: " + this.world.getAllowMonsters());
+        System.out.print("Animal List: " + this.getAnimalList());
+        System.out.print("Monster List: " + this.getMonsterList());
+        this.plugin.getWorldPurger().purgeWorld(null, this);
     }
     
     private boolean addToList(String list, Integer value) {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.add(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
+            this.config.save();
         }
         return false;
         
@@ -257,6 +256,7 @@ public class MVWorld {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.remove(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
+            this.config.save();
         }
         return false;
         
@@ -266,8 +266,10 @@ public class MVWorld {
         if (name.equalsIgnoreCase("pvp")) {
             this.setPvp(value);
         } else if (name.equalsIgnoreCase("animals")) {
+            
             this.setAnimals(value);
         } else if (name.equalsIgnoreCase("monsters")) {
+            System.out.print("Trying to set monsters to: " + value);
             this.setMonsters(value);
         } else {
             return false;
@@ -350,7 +352,6 @@ public class MVWorld {
         this.allowAnimals = animals;
         // If animals are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
-        
         this.config.setProperty("worlds." + this.name + ".animals.spawn", animals);
         this.config.save();
         this.syncMobs();
@@ -368,7 +369,6 @@ public class MVWorld {
         this.allowMonsters = monsters;
         // If monsters are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
-        
         this.config.setProperty("worlds." + this.name + ".monsters.spawn", monsters);
         this.config.save();
         this.syncMobs();
@@ -480,5 +480,20 @@ public class MVWorld {
         if (color.equalsIgnoreCase("white"))
             return ChatColor.WHITE;
         return null;
+    }
+
+    public boolean clearList(String property) {
+        if(property.equalsIgnoreCase("blockblacklist")) {
+            this.blockBlacklist.clear();
+            this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
+            this.config.save();
+            return true;
+        } else if(this.masterList.containsKey(property)) {
+            this.masterList.get(property).clear();
+            this.config.setProperty("worlds." + this.masterList.get(property) + "." + property.toLowerCase(), this.blockBlacklist);
+            this.config.save();
+            return true;
+        }
+        return false;
     }
 }

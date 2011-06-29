@@ -46,7 +46,7 @@ public class InfoCommand extends BaseCommand {
     private String[] buildEntireCommand(MVWorld world) {
         StringBuilder sb = new StringBuilder();
         ArrayList<String[]> pagedInfo = new ArrayList<String[]>();
-        String[] aPage = new String[3];
+        String[] aPage = new String[5];
         // World Name: 1
         aPage[0] = "World: " + world.getName();
         
@@ -55,6 +55,8 @@ public class InfoCommand extends BaseCommand {
         
         // PVP: 1
         aPage[2] = "PVP: " + world.getPvp();
+        aPage[3] = "Animals: " + world.allowAnimalSpawning();
+        aPage[4] = "Monsters: " + world.allowMonsterSpawning();
         
         // This feature is not mission critical and I am spending too much time on it...
         // Stopping work on it for now --FF 20110623
