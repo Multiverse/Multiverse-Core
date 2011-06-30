@@ -59,7 +59,7 @@ public class PurgeCommand extends BaseCommand {
         if(deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
             thingsToKill.add(deathName.toUpperCase());
         } else {
-            Collections.addAll(thingsToKill, deathName.split(","));
+            Collections.addAll(thingsToKill, deathName.toUpperCase().split(","));
         }
         purger.purgeWorld(sender, world, thingsToKill, false, false);
 
