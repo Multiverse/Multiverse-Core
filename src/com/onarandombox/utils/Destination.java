@@ -12,11 +12,11 @@ public class Destination {
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public DestinationType getType() {
-        return type;
+        return this.type;
     }
     
     private static Destination getBadDestination() {

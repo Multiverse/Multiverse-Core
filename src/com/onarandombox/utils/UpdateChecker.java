@@ -27,7 +27,7 @@ public class UpdateChecker {
         int delay = 0; // No Delay, fire the first check instantly.
         int period = 1800; // Delay 30 Minutes
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 checkUpdate();
@@ -37,7 +37,7 @@ public class UpdateChecker {
 
     public void checkUpdate() {
         try {
-            URL url = new URL("http://bukkit.onarandombox.com/multiverse/version.php?n=" + URLEncoder.encode(name, "UTF-8") + "&v=" + cversion);
+            URL url = new URL("http://bukkit.onarandombox.com/multiverse/version.php?n=" + URLEncoder.encode(this.name, "UTF-8") + "&v=" + this.cversion);
             URLConnection conn = url.openConnection();
             conn.setReadTimeout(2000); // 2000 = 2 Seconds.
 
@@ -63,12 +63,12 @@ public class UpdateChecker {
             }
 
             String v1 = normalisedVersion(version);
-            String v2 = normalisedVersion(cversion);
+            String v2 = normalisedVersion(this.cversion);
 
             int compare = v1.compareTo(v2);
 
             if (compare > 0) {
-                log.info("[" + name + "]" + " - Update Available (" + version + ")");
+                log.info("[" + this.name + "]" + " - Update Available (" + version + ")");
             }
 
             rd.close();

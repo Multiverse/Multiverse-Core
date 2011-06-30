@@ -21,17 +21,17 @@ public class DebugLog {
      * @param file The file to log to.
      */
     public DebugLog(String logger, String file) {
-        log = Logger.getLogger(logger);
+        this.log = Logger.getLogger(logger);
 
         try {
-            fh = new FileHandler(file, true);
-            log.setUseParentHandlers(false);
-            for (Handler handler : log.getHandlers()) {
-                log.removeHandler(handler);
+            this.fh = new FileHandler(file, true);
+            this.log.setUseParentHandlers(false);
+            for (Handler handler : this.log.getHandlers()) {
+                this.log.removeHandler(handler);
             }
-            log.addHandler(fh);
-            log.setLevel(Level.ALL);
-            fh.setFormatter(new LogFormatter());
+            this.log.addHandler(this.fh);
+            this.log.setLevel(Level.ALL);
+            this.fh.setFormatter(new LogFormatter());
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class DebugLog {
      * @param msg
      */
     public void log(Level level, String msg) {
-        log.log(level, msg);
+        this.log.log(level, msg);
     }
 
     private class LogFormatter extends Formatter {
@@ -55,7 +55,7 @@ public class DebugLog {
             StringBuilder builder = new StringBuilder();
             Throwable ex = record.getThrown();
 
-            builder.append(date.format(record.getMillis()));
+            builder.append(this.date.format(record.getMillis()));
             builder.append(" [");
             builder.append(record.getLevel().getLocalizedName().toUpperCase());
             builder.append("] ");
@@ -73,6 +73,6 @@ public class DebugLog {
     }
 
     public void close() {
-        fh.close();
+        this.fh.close();
     }
 }

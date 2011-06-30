@@ -31,16 +31,16 @@ public class QueuedCommand {
     }
     
     public CommandSender getSender() {
-        return sender;
+        return this.sender;
     }
     
     public boolean execute() {
-        timeRequested.add(Calendar.SECOND, 10);
-        if (timeRequested.after(Calendar.getInstance())) {
+        this.timeRequested.add(Calendar.SECOND, 10);
+        if (this.timeRequested.after(Calendar.getInstance())) {
             try {
-                Method method = plugin.getClass().getMethod(name, paramTypes);
+                Method method = this.plugin.getClass().getMethod(this.name, this.paramTypes);
                 try {
-                    method.invoke(plugin, args);
+                    method.invoke(this.plugin, this.args);
                 } catch (IllegalArgumentException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -65,7 +65,7 @@ public class QueuedCommand {
             }
             return true;
         } else {
-            sender.sendMessage("This command has expried. Please type the original command again.");
+            this.sender.sendMessage("This command has expried. Please type the original command again.");
         }
         return false;
     }
@@ -75,7 +75,7 @@ public class QueuedCommand {
     }
     
     public String getSuccess() {
-        return success;
+        return this.success;
     }
     
     private void setFail(String fail) {
@@ -83,6 +83,6 @@ public class QueuedCommand {
     }
     
     public String getFail() {
-        return fail;
+        return this.fail;
     }
 }

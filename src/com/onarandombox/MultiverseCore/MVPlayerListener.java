@@ -24,8 +24,10 @@ public class MVPlayerListener extends PlayerListener {
         ps.setRespawnWorld(event.getTo().getWorld());
     }
     
+    @Override
     public void onPlayerKick(PlayerKickEvent event) {
-        event.setCancelled(true);
+        // TODO Auto-generated method stub
+        super.onPlayerKick(event);
     }
     
     @Override

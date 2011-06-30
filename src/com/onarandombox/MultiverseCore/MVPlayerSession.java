@@ -44,7 +44,7 @@ public class MVPlayerSession {
      */
     public boolean getTeleportable() {
         Long time = (new Date()).getTime();
-        if ((time - this.teleportLast) > config.getInt("portalcooldown", 5000)) {
+        if ((time - this.teleportLast) > this.config.getInt("portalcooldown", 5000)) {
             return true;
         } else {
             return false;
@@ -57,7 +57,7 @@ public class MVPlayerSession {
      */
     public void message(String msg) {
         Long time = (new Date()).getTime();
-        if ((time - this.messageLast) > config.getInt("messagecooldown", 2000)) {
+        if ((time - this.messageLast) > this.config.getInt("messagecooldown", 2000)) {
             this.player.sendMessage(msg);
             this.messageLast = time;
         }
