@@ -271,10 +271,6 @@ public class MVWorld {
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
-        System.out.print("Animals: " + this.world.getAllowAnimals());
-        System.out.print("Monsters: " + this.world.getAllowMonsters());
-        System.out.print("Animal List: " + this.getAnimalList());
-        System.out.print("Monster List: " + this.getMonsterList());
         this.plugin.getWorldPurger().purgeWorld(null, this);
     }
     
@@ -305,7 +301,6 @@ public class MVWorld {
             
             this.setAnimals(value);
         } else if (name.equalsIgnoreCase("monsters")) {
-            System.out.print("Trying to set monsters to: " + value);
             this.setMonsters(value);
         } else {
             return false;

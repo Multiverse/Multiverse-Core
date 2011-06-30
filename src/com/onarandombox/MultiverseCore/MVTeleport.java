@@ -112,7 +112,7 @@ public class MVTeleport {
             return null;
         }
         
-        log.info("Target location (safe): " + x + ", " + aux + ", " + z);
+        //log.info("Target location (safe): " + x + ", " + aux + ", " + z);
         
         return new Location(w, x, aux, z);
     }

@@ -1,8 +1,5 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.logging.Logger;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -15,7 +12,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class MVPlayerListener extends PlayerListener {
-    private final Logger log = Logger.getLogger("Minecraft");
     MultiverseCore plugin;
     
     public MVPlayerListener(MultiverseCore plugin) {
@@ -24,16 +20,8 @@ public class MVPlayerListener extends PlayerListener {
     
     @Override
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        // MultiVerseCore.debugMsg(event.getPlayer().getName() + " just tried to Teleport");
-        // event.setCancelled(true);
-        // Entity entity = event.getPlayer().;
-        // MultiVerseCore.log.info("1 - " + event.getTo().toString());
-        // MultiVerseCore.log.info("2 - " + event.getPlayer().getLocation().toString());
         MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
         ps.setRespawnWorld(event.getTo().getWorld());
-        
-        log.warning("To: " + event.getTo().getWorld().getName());
-        log.warning("From: " + event.getFrom().getWorld().getName());
     }
     
     public void onPlayerKick(PlayerKickEvent event) {

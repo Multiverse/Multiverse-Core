@@ -52,7 +52,6 @@ public class PurgeWorlds {
             return;
         }
         int entitiesKilled = 0;
-        //System.out.print("Monster Size:" + monstersToKill.size() + " - " + "Animal Size: " + creaturesToKill.size());
         for (Entity e : world.getEntities()) {
             
             // Check against Monsters
@@ -66,7 +65,6 @@ public class PurgeWorlds {
                 continue;
             }
         }
-        System.out.print(entitiesKilled + " entities killed in " + mvworld.getName());
         entitiesKilled = 0;
     }
     
@@ -75,13 +73,11 @@ public class PurgeWorlds {
         if (e instanceof Squid || e instanceof Animals) {
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("ANIMALS")) {
                 if (!negate) {
-                    System.out.print(entityName + " - Removed");
                     e.remove();
                     return true;
                 }
             } else {
                 if (negate) {
-                    System.out.print(entityName + " - Removed");
                     e.remove();
                     return true;
                 }
@@ -104,13 +100,11 @@ public class PurgeWorlds {
         if (e instanceof Slime || e instanceof Monster) {
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
                 if (!negate) {
-                    System.out.print(entityName + " - Removed");
                     e.remove();
                     return true;
                 }
             } else {
                 if (negate) {
-                    System.out.print(entityName + " - Removed");
                     e.remove();
                     return true;
                 }

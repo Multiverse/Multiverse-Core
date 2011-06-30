@@ -54,12 +54,9 @@ public class PurgeCommand extends BaseCommand {
         }
         MVWorld world = this.plugin.getMVWorld(worldName);
         
-        System.out.println("Purged");
         PurgeWorlds purger = this.plugin.getWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
         if(deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
-            System.out.print("Found a special case: ");
-            System.out.print(deathName.toUpperCase());
             thingsToKill.add(deathName.toUpperCase());
         } else {
             Collections.addAll(thingsToKill, deathName.split(","));
