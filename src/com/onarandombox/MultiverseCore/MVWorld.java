@@ -10,6 +10,38 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.config.Configuration;
 
+enum EnglishChatColor {
+        AQUA(ChatColor.AQUA),
+        BLACK(ChatColor.BLACK),
+        BLUE(ChatColor.BLUE),
+        DARKAQUA(ChatColor.DARK_AQUA),
+        DARKBLUE(ChatColor.DARK_BLUE),
+        DARKGRAY(ChatColor.DARK_GRAY),
+        DARKGREEN(ChatColor.DARK_GREEN),
+        DARKPURPLE(ChatColor.DARK_PURPLE),
+        DARKRED(ChatColor.DARK_RED),
+        GOLD(ChatColor.GOLD),
+        GRAY(ChatColor.GRAY),
+        GREEN(ChatColor.GREEN),
+        LIGHTPURPLE(ChatColor.LIGHT_PURPLE),
+        RED(ChatColor.RED),
+        YELLOW(ChatColor.YELLOW),
+        WHITE(ChatColor.WHITE);
+    private ChatColor color;
+    
+    EnglishChatColor(ChatColor color) {
+        this.color = color;
+    }
+    
+    public String getText() {
+        return this.toString();
+    }
+    
+    public ChatColor getColor() {
+        return this.color;
+    }
+}
+
 public class MVWorld {
     
     private MultiverseCore plugin; // Hold the Plugin Instance.
@@ -189,11 +221,13 @@ public class MVWorld {
             } catch (Exception e) {
             }
         } else if (this.masterList.keySet().contains(list)) {
-            this.masterList.get(list).add(value);
+            
             if (list.equalsIgnoreCase("animals") || list.equalsIgnoreCase("monsters")) {
+                this.masterList.get(list).add(value.toUpperCase());
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase() + ".exceptions", this.masterList.get(list));
                 this.syncMobs();
             } else {
+                this.masterList.get(list).add(value);
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
             }
             this.config.save();
@@ -211,11 +245,13 @@ public class MVWorld {
             }
         }
         if (this.masterList.keySet().contains(list)) {
-            this.masterList.get(list).remove(value);
+            
             if (list.equalsIgnoreCase("animals") || list.equalsIgnoreCase("monsters")) {
+                this.masterList.get(list).remove(value.toUpperCase());
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase() + ".exceptions", this.masterList.get(list));
                 this.syncMobs();
             } else {
+                this.masterList.get(list).remove(value);
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
             }
             this.config.save();
@@ -429,7 +465,11 @@ public class MVWorld {
     }
     
     public void setAliasColor(String aliasColor) {
-        this.aliasColor = translateStringToChatColor(aliasColor);
+        try {
+        this.aliasColor = EnglishChatColor.valueOf(aliasColor).getColor();
+        } catch (Exception e) {
+            this.aliasColor = ChatColor.WHITE;
+        }
         if (this.aliasColor != null) {
             this.config.setProperty("worlds." + this.name + ".alias.color", aliasColor);
             this.config.save();
@@ -445,50 +485,13 @@ public class MVWorld {
         return this.aliasColor;
     }
     
-    // I disgust myself. Seriously is there not a better way?
-    private ChatColor translateStringToChatColor(String color) {
-        if (color.equalsIgnoreCase("aqua"))
-            return ChatColor.AQUA;
-        if (color.equalsIgnoreCase("black"))
-            return ChatColor.BLACK;
-        if (color.equalsIgnoreCase("blue"))
-            return ChatColor.BLUE;
-        if (color.equalsIgnoreCase("darkaqua"))
-            return ChatColor.DARK_AQUA;
-        if (color.equalsIgnoreCase("darkblue"))
-            return ChatColor.DARK_BLUE;
-        if (color.equalsIgnoreCase("darkgray"))
-            return ChatColor.DARK_GRAY;
-        if (color.equalsIgnoreCase("darkgreen"))
-            return ChatColor.DARK_GREEN;
-        if (color.equalsIgnoreCase("darkpurple"))
-            return ChatColor.DARK_PURPLE;
-        if (color.equalsIgnoreCase("darkred"))
-            return ChatColor.DARK_RED;
-        if (color.equalsIgnoreCase("gold"))
-            return ChatColor.GOLD;
-        if (color.equalsIgnoreCase("gray"))
-            return ChatColor.GRAY;
-        if (color.equalsIgnoreCase("green"))
-            return ChatColor.GREEN;
-        if (color.equalsIgnoreCase("lightpurple"))
-            return ChatColor.LIGHT_PURPLE;
-        if (color.equalsIgnoreCase("red"))
-            return ChatColor.RED;
-        if (color.equalsIgnoreCase("yellow"))
-            return ChatColor.YELLOW;
-        if (color.equalsIgnoreCase("white"))
-            return ChatColor.WHITE;
-        return null;
-    }
-
     public boolean clearList(String property) {
-        if(property.equalsIgnoreCase("blockblacklist")) {
+        if (property.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.clear();
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
             this.config.save();
             return true;
-        } else if(this.masterList.containsKey(property)) {
+        } else if (this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
             this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
             this.config.save();
