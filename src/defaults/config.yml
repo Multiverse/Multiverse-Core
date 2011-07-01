@@ -28,3 +28,8 @@ worldnameprefix: true
 # the awesome Multiverse devs get to decide which commands require op!
 # (Which is why we highly recommend a permissions plugin! You shouldn't trust us this much...)
 opfallback: true
+
+
+# If you have a world(s) that has monsters = false, and you want to disable the built
+# in autohealing, set this to true. This will have NO EFFECT if monsters = true for a given world. 
+disableautoheal: false
