@@ -144,6 +144,28 @@ public class CommandManager {
         return returnVal.replace("\"", "");
     }
     
+    
+    /**
+     * Returns the given flag value
+     * 
+     * @param flag A param flag, like -s or -g
+     * @param args All arguments to search through
+     * @return A string or null
+     */
+    public static String getFlag(String flag, String[] args) {
+        int i = 0;
+        try {
+            for (String s : args) {
+                if (s.equalsIgnoreCase(flag)) {
+                    return args[i + 1];
+                }
+                i++;
+            }
+        } catch (IndexOutOfBoundsException e) {
+        }
+        return null;
+    }
+    
     /**
      * 
      */

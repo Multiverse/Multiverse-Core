@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.onarandombox.MultiverseCore.command.CommandManager;
 
 public class CreateCommand extends BaseCommand {
     
@@ -16,7 +17,7 @@ public class CreateCommand extends BaseCommand {
         super(plugin);
         this.name = "Create World";
         this.description = "Creates a new world of the specified type";
-        this.usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {TYPE}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:GENID]]";
+        this.usage = "/mvcreate" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]]";
         this.minArgs = 2;
         this.maxArgs = 6;
         this.identifiers.add("mvcreate");
@@ -27,15 +28,14 @@ public class CreateCommand extends BaseCommand {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length %2 != 0) {
+        if (args.length % 2 != 0) {
             sender.sendMessage("You must preface your SEED with -s OR your GENERATOR with -g. Type /mv for help");
             return;
         }
         String worldName = args[0];
         String env = args[1];
-        String seed = this.getFlag("-s", args);
-        String generator = this.getFlag("-g", args);
-        
+        String seed = CommandManager.getFlag("-s", args);
+        String generator = CommandManager.getFlag("-g", args);
         
         if (new File(worldName).exists() || this.plugin.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
@@ -44,7 +44,7 @@ public class CreateCommand extends BaseCommand {
         }
         
         Environment environment = this.plugin.getEnvFromString(env);
-        if(environment == null) {
+        if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
@@ -57,27 +57,5 @@ public class CreateCommand extends BaseCommand {
         }
         return;
     }
-    
-    
-    /**
-     * Returns the given flag value
-     * 
-     * @param flag A param flag, like -s or -g
-     * @param args All arguments to search through
-     * @return A string or null
-     */
-    private String getFlag(String flag, String[] args) {
-        int i = 0;
-        try {
-            for (String s : args) {
-                if (s.equalsIgnoreCase(flag)) {
-                    this.plugin.debugLog(Level.CONFIG, args[i+1]);
-                    return args[i+1];
-                }
-                i++;
-            }
-        } catch (IndexOutOfBoundsException e) {
-        }
-        return null;
-    }
+
 }
