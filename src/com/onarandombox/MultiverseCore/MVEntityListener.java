@@ -7,12 +7,9 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -25,22 +22,6 @@ public class MVEntityListener extends EntityListener {
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
-    }
-
-    // Need to find a way to stop the Ghast Fireballs damaging
-    // surroundings but still doing damage to players.
-    @Override
-    public void onEntityExplode(EntityExplodeEvent event) {
-
-    }
-
-    @Override
-    public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player p = (Player) event.getEntity();
-            p.sendMessage("You died!");
-        }
-        super.onEntityDeath(event);
     }
     
     @Override

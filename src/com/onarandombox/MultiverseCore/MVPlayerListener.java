@@ -11,6 +11,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+
 public class MVPlayerListener extends PlayerListener {
     MultiverseCore plugin;
     
@@ -82,7 +84,10 @@ public class MVPlayerListener extends PlayerListener {
         // TODO: Handle Alternate Respawn from config
         
         MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
-        event.setRespawnLocation(ps.getRespawnWorld().getSpawnLocation());
+        Location newrespawn = ps.getRespawnWorld().getSpawnLocation();
+        MVRespawnEvent mvevent = new MVRespawnEvent(newrespawn, event.getPlayer(), this.plugin.configMV.getString("notchrespawnstyle", "none"));
+        this.plugin.getServer().getPluginManager().callEvent(mvevent);
+        event.setRespawnLocation(mvevent.getPlayersRespawnLocation());
     }
     
     @Override
