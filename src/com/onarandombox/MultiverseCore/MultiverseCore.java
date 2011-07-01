@@ -119,7 +119,7 @@ public class MultiverseCore extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         // pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener, Priority.Highest, this); // Cancel Teleports if needed.
-        pm.registerEvent(Event.Type.PLAYER_LOGIN, this.playerListener, Priority.Normal, this); // To create the Player Session
+        pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this); // To create the Player Session
         pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener, Priority.Normal, this); // To remove Player Sessions
         pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Normal, this);

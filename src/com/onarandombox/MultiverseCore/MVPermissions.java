@@ -97,6 +97,9 @@ public class MVPermissions {
      */
     public Boolean canEnterWorld(Player p, World w) {
         
+        if(!this.plugin.isMVWorld(w.getName())) {
+            return false;
+        }
         List<String> whiteList = this.plugin.getMVWorld(w.getName()).getPlayerWhitelist();
         List<String> blackList = this.plugin.getMVWorld(w.getName()).getPlayerBlacklist();
         boolean returnValue = true;

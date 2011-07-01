@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -84,7 +85,7 @@ public class MVPlayerListener extends PlayerListener {
         // TODO: Handle Alternate Respawn from config
         
         MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
-        //Location newrespawn = ps.getRespawnWorld().getSpawnLocation();
+        // Location newrespawn = ps.getRespawnWorld().getSpawnLocation();
         Location newrespawn = event.getPlayer().getWorld().getSpawnLocation();
         String respawnStyle = this.plugin.configMV.getString("notchrespawnstyle", "none");
         String defaultWorld = this.plugin.configMV.getString("defaultspawnworld", "world");
@@ -93,7 +94,7 @@ public class MVPlayerListener extends PlayerListener {
             event.setRespawnLocation(newrespawn);
         } else if (respawnStyle.equalsIgnoreCase("default")) {
             
-            if(this.plugin.isMVWorld(defaultWorld)) {
+            if (this.plugin.isMVWorld(defaultWorld)) {
                 event.setRespawnLocation(this.plugin.getServer().getWorld(defaultWorld).getSpawnLocation());
             } else {
                 event.setRespawnLocation(newrespawn);
@@ -107,7 +108,12 @@ public class MVPlayerListener extends PlayerListener {
     
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        
+        if (this.plugin.getMVWorlds().size() == 0 && this.plugin.ph.hasPermission(event.getPlayer(), "multiverse.world.import", true)) {
+            event.getPlayer().sendMessage("You don't have any worlds imported into Multiverse!");
+            event.getPlayer().sendMessage("You can import your current worlds with " + ChatColor.AQUA + "/mvimport");
+            event.getPlayer().sendMessage("or you can create new ones with " + ChatColor.GOLD + "/mvcreate");
+            event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
+        }
     }
     
     @Override
