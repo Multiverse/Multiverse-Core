@@ -124,7 +124,8 @@ public class MultiverseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
-
+        
+        pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow PVP as well as EnableHealth.
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this); // To prevent all or certain animals/monsters from spawning.
 

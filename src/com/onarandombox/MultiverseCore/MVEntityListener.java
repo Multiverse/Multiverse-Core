@@ -14,6 +14,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 //import org.bukkit.event.entity.ExplosionPrimedEvent;
 
@@ -39,6 +41,18 @@ public class MVEntityListener extends EntityListener {
             p.sendMessage("You died!");
         }
         super.onEntityDeath(event);
+    }
+    
+    @Override
+    public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+        if(event.isCancelled()) {
+            return;
+        }
+        RegainReason reason = event.getRegainReason();
+        if(reason == RegainReason.REGEN && this.plugin.configMV.getBoolean("disableautoheal", false)) {
+            event.setCancelled(true);
+            return;
+        }
     }
 
     /**
