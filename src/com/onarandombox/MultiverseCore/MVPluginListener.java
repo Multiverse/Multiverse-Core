@@ -1,22 +1,23 @@
 package com.onarandombox.MultiverseCore;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
-import org.bukkit.plugin.Plugin;
 
+import com.fernferret.allpay.AllPay;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class MVPluginListener extends ServerListener {
-
+    
     MultiverseCore plugin;
-
+    
     public MVPluginListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
-
+    
     /**
      * Keep an eye out for Plugins which we can utilize.
      */
@@ -29,21 +30,12 @@ public class MVPluginListener extends ServerListener {
             this.plugin.ph.setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
             this.plugin.log(Level.INFO, "- Attached to Permissions");
         }
-        // TODO: Use AllPay
-        /**
-         * Use the METHOD supplied by iConomy to register it etc...
-         */
-        if(event.getPlugin().getDescription().getName().equals("iConomy")) {
-            //Plugin iConomy = this.plugin.getServer().getPluginManager().getPlugin("iConomy");
-
-//            if (iConomy != null) {
-//                if (iConomy.isEnabled()) {
-//                    MultiverseCore.iConomy = (iConomy) iConomy;
-//                }
-//            }
+        // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
+        if (Arrays.asList(AllPay.validEconPlugins).contains(event.getPlugin().getDescription().getName())) {
+            this.plugin.bank = this.plugin.banker.loadEconPlugin();
         }
     }
-
+    
     /**
      * We'll check if any of the plugins we rely on decide to Disable themselves.
      */
@@ -56,13 +48,7 @@ public class MVPluginListener extends ServerListener {
             this.plugin.log(Level.INFO, "Permissions disabled");
             this.plugin.ph.setPermissions(null);
         }
-
-        /**
-         * Check to see if iConomy just disabled.
-         */
-//        if (MultiverseCore.getiConomy() != null) {
-//            MultiverseCore.iConomy = null;
-//        }
+        // TODO: Disable econ when it disables.
     }
-
+    
 }

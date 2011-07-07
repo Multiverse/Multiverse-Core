@@ -21,6 +21,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
+import com.fernferret.allpay.AllPay;
+import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
@@ -64,6 +66,8 @@ public class MultiverseCore extends JavaPlugin {
     // HashMap to contain information relating to the Players.
     public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
     private PurgeWorlds worldPurger;
+    public GenericBank bank = null;
+    public AllPay banker = new AllPay(this, "[Multiverse-Core] ");;
 
     @Override
     public void onLoad() {
@@ -84,6 +88,8 @@ public class MultiverseCore extends JavaPlugin {
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
+        
+        this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
         this.commandManager = new CommandManager(this);
         // Setup the world purger
