@@ -73,12 +73,14 @@ public class TeleportCommand extends BaseCommand {
             } else {
                 teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
+            return;
         } else if (teleporter != null && !this.plugin.ph.canTravelFromWorld(teleporter, this.plugin.getServer().getWorld(d.getName()))) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + d.getName() + " from " + ChatColor.GREEN + teleporter.getWorld().getName());
             } else {
                 teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + teleporter.getWorld().getName() + " can get to " + ChatColor.RED + d.getName() + " from where they are...");
             }
+            return;
         }
         Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
         teleportee.teleport(l);
