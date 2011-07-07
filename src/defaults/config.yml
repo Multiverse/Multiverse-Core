@@ -6,7 +6,12 @@
 # none: You will always respawn in the same world you died in
 notchrespawnstyle: none
 
-#
+# Should multivers spawn players at their bed if they've slept there?
+# This value will OVERRIDE notchrespawnstyle
+bedrespawn: true
+
+# Used only in notchrespawnstyle, this is the default world players will spawn in if they die.
+# If you type some world that does not exist, this will default to your default world.
 defaultspawnworld: world
 
 # How long to leave in between sending a message to the player.

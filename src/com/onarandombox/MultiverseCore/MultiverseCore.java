@@ -21,9 +21,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-import com.iConomy.iConomy;
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
@@ -46,14 +43,7 @@ public class MultiverseCore extends JavaPlugin {
     private final String tag = "[Multiverse-Core]";
 
     // Multiverse Permissions Handler
-    public MVPermissions ph = new MVPermissions(this);
-
-    // Permissions Handler
-    public static PermissionHandler Permissions = null;
-
-    // iConomy Handler
-    public static iConomy iConomy = null;
-    public static boolean useiConomy = false;
+    public MVPermissions ph;
 
     // Configurations
     public Configuration configMV = null;
@@ -89,17 +79,15 @@ public class MultiverseCore extends JavaPlugin {
     public void onEnable() {
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
-
+        
         // Setup all the Events the plugin needs to Monitor.
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
-        this.setupPermissions();
+        this.ph = new MVPermissions(this);
         // Setup the command manager
         this.commandManager = new CommandManager(this);
         // Setup the world purger
         this.worldPurger = new PurgeWorlds(this);
-        // Setup iConomy.
-        this.setupEconomy();
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
 
@@ -136,33 +124,6 @@ public class MultiverseCore extends JavaPlugin {
         // pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this); // To prevent Blocks being placed.
         // pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
         // pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
-    }
-
-    /**
-     * Check for Permissions plugin and then setup our own Permissions Handler.
-     */
-    private void setupPermissions() {
-        Plugin p = this.getServer().getPluginManager().getPlugin("Permissions");
-
-        if (MultiverseCore.Permissions == null) {
-            if (p != null && p.isEnabled()) {
-                MultiverseCore.Permissions = ((Permissions) p).getHandler();
-                log(Level.INFO, "- Attached to Permissions");
-            }
-        }
-    }
-
-    /**
-     * Check for the iConomy plugin and set it up accordingly.
-     */
-    private void setupEconomy() {
-        Plugin test = this.getServer().getPluginManager().getPlugin("iConomy");
-
-        if (MultiverseCore.iConomy == null) {
-            if (test != null) {
-                MultiverseCore.iConomy = (iConomy) test;
-            }
-        }
     }
 
     /**
@@ -442,7 +403,6 @@ public class MultiverseCore extends JavaPlugin {
      */
     public void onDisable() {
         debugLog.close();
-        MultiverseCore.Permissions = null;
         log(Level.INFO, "- Disabled");
     }
 
@@ -468,15 +428,6 @@ public class MultiverseCore extends JavaPlugin {
      */
     public MVTeleport getTeleporter() {
         return new MVTeleport(this);
-    }
-
-    /**
-     * Grab the iConomy setup.
-     *
-     * @return
-     */
-    public static iConomy getiConomy() {
-        return iConomy;
     }
 
     /**

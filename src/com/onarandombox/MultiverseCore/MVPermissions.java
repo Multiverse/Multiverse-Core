@@ -1,14 +1,18 @@
 package com.onarandombox.MultiverseCore;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.nijiko.permissions.PermissionHandler;
+
 public class MVPermissions {
     
     private MultiverseCore plugin;
+    public PermissionHandler permissions = null;
     
     /**
      * Constructor FTW
@@ -17,6 +21,11 @@ public class MVPermissions {
      */
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
+        // We have to see if permissions was loaded before MV was
+        if(this.plugin.getServer().getPluginManager().getPlugin("Permissions") != null) {
+            this.setPermissions(((com.nijikokun.bukkit.Permissions.Permissions)this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
+            this.plugin.log(Level.INFO, "- Attached to Permissions");
+        }
     }
     
     /**
@@ -30,8 +39,8 @@ public class MVPermissions {
     public boolean has(Player p, String node) {
         boolean result = false;
         
-        if (MultiverseCore.Permissions != null) {
-            result = MultiverseCore.Permissions.has(p, node);
+        if (this.permissions != null) {
+            result = this.permissions.has(p, node);
         } else if (p.isOp()) {
             result = true;
         }
@@ -49,18 +58,17 @@ public class MVPermissions {
         if (player.isOp() && opFallback) {
             // If Player is Op we always let them use it if they have the fallback enabled!
             return true;
-        } else if (MultiverseCore.Permissions != null && MultiverseCore.Permissions.has(player, node)) {
+        } else if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
             return true;
         }
         // If the Player doesn't have Permissions and isn't an Op then
         // we return true if OP is not required, otherwise we return false
-        // This allows us to act as a default permission guidance 
+        // This allows us to act as a default permission guidance
         
         // If they have the op fallback disabled, NO commands will work without a permissions plugin.
         return !isOpRequired && opFallback;
     }
-    
     
     /**
      * Check if a Player can teleport to the Destination world from there current world. This checks against the Worlds Blacklist
@@ -97,7 +105,7 @@ public class MVPermissions {
      */
     public Boolean canEnterWorld(Player p, World w) {
         
-        if(!this.plugin.isMVWorld(w.getName())) {
+        if (!this.plugin.isMVWorld(w.getName())) {
             return false;
         }
         List<String> whiteList = this.plugin.getMVWorld(w.getName()).getPlayerWhitelist();
@@ -141,10 +149,14 @@ public class MVPermissions {
      * @return True if the player is in the group, false if not.
      */
     private boolean inGroup(Player player, String worldName, String group) {
-        if (MultiverseCore.Permissions != null) {
-            return MultiverseCore.Permissions.inGroup(worldName, player.getName(), group);
+        if (this.permissions != null) {
+            return this.permissions.inGroup(worldName, player.getName(), group);
         } else {
             return player.isOp();
         }
+    }
+
+    public void setPermissions(PermissionHandler handler) {
+        this.permissions = handler;
     }
 }

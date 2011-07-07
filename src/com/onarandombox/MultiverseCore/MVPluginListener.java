@@ -7,7 +7,6 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 
-import com.iConomy.iConomy;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class MVPluginListener extends ServerListener {
@@ -23,12 +22,11 @@ public class MVPluginListener extends ServerListener {
      */
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
-
         /**
-         * Check to see if Permissions was just enabled, we only wan't to perform the following if GroupManager is not found.
+         * Check to see if Permissions was just enabled
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-            MultiverseCore.Permissions = ((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler();
+            this.plugin.ph.setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
             this.plugin.log(Level.INFO, "- Attached to Permissions");
         }
         // TODO: Use AllPay
@@ -36,13 +34,13 @@ public class MVPluginListener extends ServerListener {
          * Use the METHOD supplied by iConomy to register it etc...
          */
         if(event.getPlugin().getDescription().getName().equals("iConomy")) {
-            Plugin iConomy = this.plugin.getServer().getPluginManager().getPlugin("iConomy");
+            //Plugin iConomy = this.plugin.getServer().getPluginManager().getPlugin("iConomy");
 
-            if (iConomy != null) {
-                if (iConomy.isEnabled()) {
-                    MultiverseCore.iConomy = (iConomy) iConomy;
-                }
-            }
+//            if (iConomy != null) {
+//                if (iConomy.isEnabled()) {
+//                    MultiverseCore.iConomy = (iConomy) iConomy;
+//                }
+//            }
         }
     }
 
@@ -55,15 +53,16 @@ public class MVPluginListener extends ServerListener {
          * Check to see if Permissions just disabled.
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-            MultiverseCore.Permissions = null;
+            this.plugin.log(Level.INFO, "Permissions disabled");
+            this.plugin.ph.setPermissions(null);
         }
 
         /**
          * Check to see if iConomy just disabled.
          */
-        if (MultiverseCore.getiConomy() != null) {
-            MultiverseCore.iConomy = null;
-        }
+//        if (MultiverseCore.getiConomy() != null) {
+//            MultiverseCore.iConomy = null;
+//        }
     }
 
 }
