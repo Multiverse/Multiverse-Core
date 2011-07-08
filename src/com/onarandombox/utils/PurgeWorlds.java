@@ -2,12 +2,14 @@ package com.onarandombox.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 
 
+import com.earth2me.essentials.Mob.Enemies;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -64,8 +66,9 @@ public class PurgeWorlds {
                 entitiesKilled++;
                 continue;
             }
+            
         }
-        entitiesKilled = 0;
+        this.plugin.log(Level.INFO, "I just murdered " + entitiesKilled + " in " + world.getName());
     }
     
     private boolean killCreature(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
@@ -97,7 +100,7 @@ public class PurgeWorlds {
      */
     private boolean killMonster(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
-        if (e instanceof Slime || e instanceof Monster) {
+        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast) {
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
                 if (!negate) {
                     e.remove();

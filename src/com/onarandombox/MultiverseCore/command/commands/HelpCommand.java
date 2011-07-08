@@ -27,7 +27,7 @@ public class HelpCommand extends BaseCommand {
         this.minArgs = 0;
         this.maxArgs = 1;
         this.identifiers.add("mv");
-        this.identifiers.add("mvhelp");
+        this.identifiers.add("mv help");
         this.permission = "multiverse.help";
         this.requiresOp = false;
     }

@@ -40,9 +40,11 @@ public class CommandManager {
         for (BaseCommand cmd : this.commands) {
             StringBuilder tmpIdentifier = new StringBuilder();
             String[] tmpArgs = parseAllQuotedStrings(args);
+            
             if (match == null) {
-                match = cmd.matchIdentifier(label) == null ? null : cmd;
+                match = cmd.matchIdentifier(label, tmpArgs) == null ? null : cmd;
             }
+            
             
             if (match != null && cmd.validate(label, tmpArgs, tmpIdentifier) && tmpIdentifier.length() > identifier.length()) {
                 identifier = tmpIdentifier;
