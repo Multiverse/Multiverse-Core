@@ -183,11 +183,13 @@ public class MultiverseCore extends JavaPlugin {
         this.commandManager.addCommand(new ConfirmCommand(this));
         this.commandManager.addCommand(new InfoCommand(this));
         this.commandManager.addCommand(new ReloadCommand(this));
-        this.commandManager.addCommand(new ModifyCommand(this));
+        
         this.commandManager.addCommand(new ModifyAddCommand(this));
         this.commandManager.addCommand(new ModifySetCommand(this));
         this.commandManager.addCommand(new ModifyRemoveCommand(this));
         this.commandManager.addCommand(new ModifyClearCommand(this));
+        // This modify MUST go last.
+        this.commandManager.addCommand(new ModifyCommand(this));
         this.commandManager.addCommand(new EnvironmentCommand(this));
         this.commandManager.addCommand(new PurgeCommand(this));
     }

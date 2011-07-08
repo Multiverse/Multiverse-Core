@@ -47,12 +47,11 @@ public abstract class BaseCommand {
         
         String argsString = this.getArgsString(args);
         String lower = input.toLowerCase() + argsString;
-        System.out.print("Trying to match Identifer: " + lower);
         int index = -1;
         int n = this.identifiers.size();
         for (int i = 0; i < n; i++) {
             String identifier = this.identifiers.get(i).toLowerCase();
-            if (lower.matches(identifier + "(\\s+.*|\\s*)")) {
+            if (index == -1 && lower.matches(identifier + "(\\s+.*|\\s*)")) {
                 index = i;
             }
         }
