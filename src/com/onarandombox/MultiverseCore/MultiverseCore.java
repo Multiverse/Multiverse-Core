@@ -239,29 +239,6 @@ public class MultiverseCore extends JavaPlugin {
     }
 
     /**
-     * 
-     * @return
-     */
-    private int loadDefaultWorlds() {
-        int additonalWorldsLoaded = 0;
-        // Load the default world:
-        World world = this.getServer().getWorlds().get(0);
-        if (!this.worlds.containsKey(world.getName())) {
-            addWorld(world.getName(), Environment.NORMAL, null, null);
-            additonalWorldsLoaded++;
-        }
-
-        // This next one could be null if they have it disabled in server.props
-        World world_nether = this.getServer().getWorld(world.getName() + "_nether");
-        if (world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
-            addWorld(world_nether.getName(), Environment.NETHER, null, null);
-            additonalWorldsLoaded++;
-        }
-
-        return additonalWorldsLoaded;
-    }
-
-    /**
      * Add a new World to the Multiverse Setup.
      * 
      * Isn't there a prettier way to do this??!!?!?!
@@ -416,6 +393,9 @@ public class MultiverseCore extends JavaPlugin {
      */
     public void onDisable() {
         debugLog.close();
+        this.ph.setPermissions(null);
+        this.banker = null;
+        this.bank = null;
         log(Level.INFO, "- Disabled");
     }
 
