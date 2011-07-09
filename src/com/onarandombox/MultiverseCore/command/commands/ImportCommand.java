@@ -14,7 +14,7 @@ public class ImportCommand extends BaseCommand {
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Import World";
-        this.description = "Imports a new world of the specified type";
+        this.description = "Imports a new world of the specified type.";
         this.usage = "/mvimport" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]";
         this.minArgs = 2;
         this.maxArgs = 3;
@@ -30,12 +30,12 @@ public class ImportCommand extends BaseCommand {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
             return;
         }
-        
+
         String generator = null;
         if(args.length == 3) {
             generator = args[2];
         }
-        
+
         String env = args[1];
         Environment environment = this.plugin.getEnvFromString(env);
         if(environment == null) {
@@ -43,7 +43,7 @@ public class ImportCommand extends BaseCommand {
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
-        
+
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
             this.plugin.addWorld(worldName, environment, null, generator);

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2011 DThielke <dave.thielke@gmail.com>
- * 
+ *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to
  * Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
@@ -22,7 +22,7 @@ public class HelpCommand extends BaseCommand {
     public HelpCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Help";
-        this.description = "Displays the help menu";
+        this.description = "Displays the help menu.";
         this.usage = ChatColor.AQUA + "/mv help " + ChatColor.GOLD + "[page#]";
         this.minArgs = 0;
         this.maxArgs = 1;
@@ -61,7 +61,7 @@ public class HelpCommand extends BaseCommand {
         }
         for (int c = start; c < end; c++) {
             BaseCommand cmd = commands.get(c);
-            
+
             sender.sendMessage(ChatColor.AQUA + "  " + cmd.getUsage());
         }
 

@@ -8,11 +8,11 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class SpawnCommand extends BaseCommand {
-    
+
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Spawn";
-        this.description = "Transports the player to the that player's current world Spawn Point.";
+        this.description = "Teleports target player to the Spawn Point of the world they are in.";
         this.usage = "/mvspawn" + ChatColor.GOLD + " [PLAYER]";
         this.minArgs = 0;
         this.maxArgs = 1;
@@ -20,7 +20,7 @@ public class SpawnCommand extends BaseCommand {
         this.permission = "multiverse.world.spawn.self";
         this.requiresOp = false;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         Player commandSender = null;
