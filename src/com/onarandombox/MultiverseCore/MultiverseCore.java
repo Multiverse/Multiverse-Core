@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -83,12 +84,12 @@ public class MultiverseCore extends JavaPlugin {
     public void onEnable() {
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
-        
+
         // Setup all the Events the plugin needs to Monitor.
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
-        
+
         this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
         this.commandManager = new CommandManager(this);
@@ -118,7 +119,7 @@ public class MultiverseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
-        
+
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow PVP as well as EnableHealth.
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this); // To prevent all or certain animals/monsters from spawning.
@@ -168,22 +169,22 @@ public class MultiverseCore extends JavaPlugin {
      */
     private void registerCommands() {
         // Page 1
-        this.commandManager.addCommand(new HelpCommand(this));
-        this.commandManager.addCommand(new CoordCommand(this));
-        this.commandManager.addCommand(new TeleportCommand(this));
-        this.commandManager.addCommand(new ListCommand(this));
-        this.commandManager.addCommand(new WhoCommand(this));
-        this.commandManager.addCommand(new SetSpawnCommand(this));
-        this.commandManager.addCommand(new CreateCommand(this));
-        this.commandManager.addCommand(new ImportCommand(this));
-        this.commandManager.addCommand(new SpawnCommand(this));
-        this.commandManager.addCommand(new RemoveCommand(this));
-        this.commandManager.addCommand(new DeleteCommand(this));
-        this.commandManager.addCommand(new UnloadCommand(this));
-        this.commandManager.addCommand(new ConfirmCommand(this));
-        this.commandManager.addCommand(new InfoCommand(this));
-        this.commandManager.addCommand(new ReloadCommand(this));
-        
+        // this.commandManager.addCommand(new HelpCommand(this));
+        // this.commandManager.addCommand(new CoordCommand(this));
+        // this.commandManager.addCommand(new TeleportCommand(this));
+        // this.commandManager.addCommand(new ListCommand(this));
+        // this.commandManager.addCommand(new WhoCommand(this));
+        // this.commandManager.addCommand(new SetSpawnCommand(this));
+        // this.commandManager.addCommand(new CreateCommand(this));
+        // this.commandManager.addCommand(new ImportCommand(this));
+        // this.commandManager.addCommand(new SpawnCommand(this));
+        // this.commandManager.addCommand(new RemoveCommand(this));
+        // this.commandManager.addCommand(new DeleteCommand(this));
+        // this.commandManager.addCommand(new UnloadCommand(this));
+        // this.commandManager.addCommand(new ConfirmCommand(this));
+        // this.commandManager.addCommand(new InfoCommand(this));
+        // this.commandManager.addCommand(new ReloadCommand(this));
+
         this.commandManager.addCommand(new ModifyAddCommand(this));
         this.commandManager.addCommand(new ModifySetCommand(this));
         this.commandManager.addCommand(new ModifyRemoveCommand(this));
@@ -238,7 +239,7 @@ public class MultiverseCore extends JavaPlugin {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private int loadDefaultWorlds() {
@@ -262,9 +263,9 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Add a new World to the Multiverse Setup.
-     *
+     * 
      * Isn't there a prettier way to do this??!!?!?!
-     *
+     * 
      * @param name World Name
      * @param environment Environment Type
      */
@@ -347,7 +348,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -361,7 +362,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list and from the config
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -374,7 +375,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list, from the config and deletes the folder
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -389,7 +390,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Delete a folder Courtesy of: lithium3141
-     *
+     * 
      * @param file The folder to delete
      * @return true if success
      */
@@ -420,7 +421,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Grab the players session if one exists, otherwise create a session then return it.
-     *
+     * 
      * @param player
      * @return
      */
@@ -435,7 +436,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Grab and return the Teleport class.
-     *
+     * 
      * @return
      */
     public MVTeleport getTeleporter() {
@@ -462,12 +463,18 @@ public class MultiverseCore extends JavaPlugin {
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
-        return this.commandManager.dispatch(sender, command, commandLabel, args);
+        System.out.print("Command executed!");
+        System.out.print(command.getName());
+        System.out.print(Arrays.toString(args));
+        ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
+        allArgs.add(0, command.getName());
+        return this.commandManager.dispatch(sender, allArgs);
+        // return this.commandManager.dispatch(sender, command, commandLabel, args);
     }
 
     /**
      * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information from the Servers Log Output.
-     *
+     * 
      * @param level
      * @param msg
      */
@@ -478,7 +485,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the standard Server Console.
-     *
+     * 
      * @param level
      * @param msg
      */
@@ -491,7 +498,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Parse the Authors Array into a readable String with ',' and 'and'.
-     *
+     * 
      * @return
      */
     private String getAuthors() {
@@ -522,7 +529,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * This code should get moved somewhere more appropriate, but for now, it's here.
-     *
+     * 
      * @param env
      * @return
      */

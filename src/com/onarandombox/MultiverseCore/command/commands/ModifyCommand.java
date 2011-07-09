@@ -43,6 +43,7 @@ public class ModifyCommand extends BaseCommand {
         // ModifySetCommand
         // ModifyClearCommand
     }
+    
     protected static boolean validateAction(Action action, String property) {
         if (action == Action.Set) {
             try {
