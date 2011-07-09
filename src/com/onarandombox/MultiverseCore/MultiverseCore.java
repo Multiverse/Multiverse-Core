@@ -165,25 +165,25 @@ public class MultiverseCore extends JavaPlugin {
     }
 
     /**
-     * Register Multiverse-Core commands to DThielke's Command Manager.
+     * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
         // Page 1
-        // this.commandManager.addCommand(new HelpCommand(this));
-        // this.commandManager.addCommand(new CoordCommand(this));
-        // this.commandManager.addCommand(new TeleportCommand(this));
-        // this.commandManager.addCommand(new ListCommand(this));
-        // this.commandManager.addCommand(new WhoCommand(this));
-        // this.commandManager.addCommand(new SetSpawnCommand(this));
-        // this.commandManager.addCommand(new CreateCommand(this));
-        // this.commandManager.addCommand(new ImportCommand(this));
-        // this.commandManager.addCommand(new SpawnCommand(this));
-        // this.commandManager.addCommand(new RemoveCommand(this));
-        // this.commandManager.addCommand(new DeleteCommand(this));
-        // this.commandManager.addCommand(new UnloadCommand(this));
-        // this.commandManager.addCommand(new ConfirmCommand(this));
-        // this.commandManager.addCommand(new InfoCommand(this));
-        // this.commandManager.addCommand(new ReloadCommand(this));
+        this.commandManager.addCommand(new HelpCommand(this));
+        this.commandManager.addCommand(new CoordCommand(this));
+        this.commandManager.addCommand(new TeleportCommand(this));
+        this.commandManager.addCommand(new ListCommand(this));
+        this.commandManager.addCommand(new WhoCommand(this));
+        this.commandManager.addCommand(new SetSpawnCommand(this));
+        this.commandManager.addCommand(new CreateCommand(this));
+        this.commandManager.addCommand(new ImportCommand(this));
+        this.commandManager.addCommand(new SpawnCommand(this));
+        this.commandManager.addCommand(new RemoveCommand(this));
+        this.commandManager.addCommand(new DeleteCommand(this));
+        this.commandManager.addCommand(new UnloadCommand(this));
+        this.commandManager.addCommand(new ConfirmCommand(this));
+        this.commandManager.addCommand(new InfoCommand(this));
+        this.commandManager.addCommand(new ReloadCommand(this));
 
         this.commandManager.addCommand(new ModifyAddCommand(this));
         this.commandManager.addCommand(new ModifySetCommand(this));
@@ -463,13 +463,9 @@ public class MultiverseCore extends JavaPlugin {
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
-        System.out.print("Command executed!");
-        System.out.print(command.getName());
-        System.out.print(Arrays.toString(args));
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
         return this.commandManager.dispatch(sender, allArgs);
-        // return this.commandManager.dispatch(sender, command, commandLabel, args);
     }
 
     /**

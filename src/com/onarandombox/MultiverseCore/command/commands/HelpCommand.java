@@ -5,7 +5,8 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to
  * Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
  **/
-
+// Technically this is already a derivative work even by changing the package name. DThielke voiced it OK to modify, but we really should
+// get this license changed...
 package com.onarandombox.MultiverseCore.command.commands;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class HelpCommand extends BaseCommand {
         }
         for (int c = start; c < end; c++) {
             BaseCommand cmd = commands.get(c);
-            
+
             sender.sendMessage(ChatColor.AQUA + "  " + cmd.getUsage());
         }
 

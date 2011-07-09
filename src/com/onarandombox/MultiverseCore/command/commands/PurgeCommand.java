@@ -29,7 +29,7 @@ public class PurgeCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         Player p = null;
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             p = (Player) sender;
         }
         if (args.length == 1 && p == null) {
@@ -39,24 +39,24 @@ public class PurgeCommand extends BaseCommand {
         }
         String worldName = null;
         String deathName = null;
-        if(args.length == 1) {
+        if (args.length == 1) {
             worldName = p.getWorld().getName();
             deathName = args[0];
         } else {
             worldName = args[0];
             deathName = args[1];
         }
-        
-        if(!this.plugin.isMVWorld(worldName)) {
+
+        if (!this.plugin.isMVWorld(worldName)) {
             sender.sendMessage("Multiverse doesn't know about " + worldName);
             sender.sendMessage("... so It cannot be purged");
             return;
         }
         MVWorld world = this.plugin.getMVWorld(worldName);
-        
+
         PurgeWorlds purger = this.plugin.getWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
-        if(deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
+        if (deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
             thingsToKill.add(deathName.toUpperCase());
         } else {
             Collections.addAll(thingsToKill, deathName.toUpperCase().split(","));

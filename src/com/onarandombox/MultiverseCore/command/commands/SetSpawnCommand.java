@@ -9,7 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class SetSpawnCommand extends BaseCommand {
-    
+
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Set World Spawn";
@@ -21,7 +21,7 @@ public class SetSpawnCommand extends BaseCommand {
         this.permission = "multiverse.world.spawn.set";
         this.requiresOp = true;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
@@ -35,5 +35,4 @@ public class SetSpawnCommand extends BaseCommand {
         }
         return;
     }
-    
 }

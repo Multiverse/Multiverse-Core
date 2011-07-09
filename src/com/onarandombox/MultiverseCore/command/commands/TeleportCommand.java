@@ -13,7 +13,7 @@ import com.onarandombox.utils.DestinationType;
 
 public class TeleportCommand extends BaseCommand {
     private MVTeleport playerTeleporter;
-    
+
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Teleport";
@@ -26,7 +26,7 @@ public class TeleportCommand extends BaseCommand {
         this.permission = "multiverse.world.tp.self";
         this.requiresOp = true;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         // Check if the command was sent from a Player.
@@ -35,9 +35,9 @@ public class TeleportCommand extends BaseCommand {
         if (sender instanceof Player) {
             teleporter = (Player) sender;
         }
-        
+
         String worldName;
-        
+
         if (args.length == 2) {
             if (teleporter != null && !this.plugin.ph.hasPermission(sender, "multiverse.world.tp.other", true)) {
                 sender.sendMessage("You don't have permission to teleport another player.");
@@ -49,10 +49,10 @@ public class TeleportCommand extends BaseCommand {
                 return;
             }
             worldName = args[1];
-            
+
         } else {
             worldName = args[0];
-            
+
             if (!(sender instanceof Player)) {
                 sender.sendMessage("You can only teleport other players from the command line.");
                 return;
@@ -60,13 +60,13 @@ public class TeleportCommand extends BaseCommand {
             teleporter = (Player) sender;
             teleportee = (Player) sender;
         }
-        
+
         Destination d = Destination.parseDestination(worldName, this.plugin);
         if (!(d.getType() == DestinationType.World)) {
             sender.sendMessage("Multiverse does not know about this world: " + worldName);
             return;
         }
-        
+
         if (teleporter != null && !this.plugin.ph.canEnterWorld(teleporter, this.plugin.getServer().getWorld(d.getName()))) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
@@ -85,5 +85,4 @@ public class TeleportCommand extends BaseCommand {
         Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
         teleportee.teleport(l);
     }
-    
 }

@@ -6,7 +6,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class ConfirmCommand extends BaseCommand {
-    
+
     public ConfirmCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Confirms a command that could destroy life, the universe and everything.";
@@ -19,10 +19,10 @@ public class ConfirmCommand extends BaseCommand {
         // Any command that is dangerous should require op
         this.requiresOp = true;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         this.plugin.getCommandManager().confirmQueuedCommand(sender);
     }
-    
+
 }

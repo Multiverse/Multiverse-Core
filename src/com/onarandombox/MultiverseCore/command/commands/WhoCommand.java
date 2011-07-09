@@ -14,7 +14,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class WhoCommand extends BaseCommand {
-    
+
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Who";
@@ -26,7 +26,7 @@ public class WhoCommand extends BaseCommand {
         this.permission = "multiverse.world.list.who";
         this.requiresOp = false;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         // If this command was sent from a Player then we need to check Permissions
@@ -34,9 +34,9 @@ public class WhoCommand extends BaseCommand {
         if (sender instanceof Player) {
             p = (Player) sender;
         }
-        
+
         List<MVWorld> worlds = new ArrayList<MVWorld>();
-        
+
         if (args.length > 0) {
             if (this.plugin.isMVWorld(args[0])) {
                 worlds.add(this.plugin.getMVWorld(args[0]));
@@ -47,17 +47,17 @@ public class WhoCommand extends BaseCommand {
         } else {
             worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
         }
-        
+
         for (MVWorld world : worlds) {
             if (!(this.plugin.isMVWorld(world.getName()))) {
                 continue;
             }
-            
+
             World w = this.plugin.getServer().getWorld(world.getName());
             if (p != null && (!this.plugin.ph.canEnterWorld(p, w))) {
                 continue;
             }
-            
+
             ChatColor color = ChatColor.GOLD;
             Environment env = world.getEnvironment();
             if (env == Environment.NETHER) {
@@ -68,7 +68,7 @@ public class WhoCommand extends BaseCommand {
                 color = ChatColor.AQUA;
             }
             List<Player> players = w.getPlayers();
-            
+
             String result = "";
             if (players.size() <= 0) {
                 result = "Empty";
@@ -78,14 +78,13 @@ public class WhoCommand extends BaseCommand {
                 }
             }
             String worldName = world.getName();
-            if(world.getAlias() != null && world.getAlias().length() > 0) {
+            if (world.getAlias() != null && world.getAlias().length() > 0) {
                 worldName = world.getAlias();
                 color = world.getAliasColor();
             }
-            
+
             sender.sendMessage(color + worldName + ChatColor.WHITE + " - " + result);
         }
         return;
     }
-    
 }

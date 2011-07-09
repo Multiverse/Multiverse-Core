@@ -7,7 +7,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class DeleteCommand extends BaseCommand {
-    
+
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Delete World";
@@ -19,11 +19,10 @@ public class DeleteCommand extends BaseCommand {
         this.permission = "multiverse.world.delete";
         this.requiresOp = true;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Class<?> paramTypes[] = {String.class};
+        Class<?> paramTypes[] = { String.class };
         this.plugin.getCommandManager().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
-    
 }

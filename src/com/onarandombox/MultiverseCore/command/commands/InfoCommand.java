@@ -11,7 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class InfoCommand extends BaseCommand {
-    
+
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "World Information";
@@ -23,7 +23,7 @@ public class InfoCommand extends BaseCommand {
         this.permission = "multiverse.world.info";
         this.requiresOp = false;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         // Check if the command was sent from a Player.
@@ -42,22 +42,22 @@ public class InfoCommand extends BaseCommand {
             }
         }
     }
-    
+
     private String[] buildEntireCommand(MVWorld world) {
         StringBuilder sb = new StringBuilder();
         ArrayList<String[]> pagedInfo = new ArrayList<String[]>();
         String[] aPage = new String[5];
         // World Name: 1
         aPage[0] = "World: " + world.getName();
-        
+
         // World Scale: 1
         aPage[1] = "World Scale: " + world.getScaling();
-        
+
         // PVP: 1
         aPage[2] = "PVP: " + world.getPvp();
         aPage[3] = "Animals: " + world.allowAnimalSpawning();
         aPage[4] = "Monsters: " + world.allowMonsterSpawning();
-        
+
         // This feature is not mission critical and I am spending too much time on it...
         // Stopping work on it for now --FF 20110623
         // // Animal Spawning: X
@@ -99,7 +99,7 @@ public class InfoCommand extends BaseCommand {
         // }
         return aPage;
     }
-    
+
     private ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }

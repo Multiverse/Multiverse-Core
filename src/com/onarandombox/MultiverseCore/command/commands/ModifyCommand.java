@@ -19,31 +19,29 @@ enum SetProperties {
 }
 
 public class ModifyCommand extends BaseCommand {
-    
+
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Modify a World";
         this.description = "MVModify requires an extra parameter: SET,ADD,REMOVE or CLEAR. See below for usage.";
         this.usage = "/mvmodify" + ChatColor.GREEN + " {SET|ADD|REMOVE|CLEAR} ...";
-        this.minArgs = 0;
+        // Make it so they can NEVER execute this one
+        this.minArgs = 1;
         this.maxArgs = 0;
         this.identifiers.add("mvmodify");
         this.permission = "multiverse.world.modify";
         this.requiresOp = true;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(this.name);
-        sender.sendMessage(this.description);
-        sender.sendMessage(this.usage);
         // This is just a place holder. The real commands are in:
         // ModifyAddCommand
         // ModifyRemoveCommand
         // ModifySetCommand
         // ModifyClearCommand
     }
-    
+
     protected static boolean validateAction(Action action, String property) {
         if (action == Action.Set) {
             try {
@@ -60,6 +58,6 @@ public class ModifyCommand extends BaseCommand {
                 return false;
             }
         }
-        
+
     }
 }

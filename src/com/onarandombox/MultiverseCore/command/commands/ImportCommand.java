@@ -30,26 +30,26 @@ public class ImportCommand extends BaseCommand {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
             return;
         }
-        
+
         String generator = null;
-        if(args.length == 3) {
+        if (args.length == 3) {
             generator = args[2];
         }
-        
+
         String env = args[1];
         Environment environment = this.plugin.getEnvFromString(env);
-        if(environment == null) {
+        if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
-        
+
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
             this.plugin.addWorld(worldName, environment, null, generator);
             sender.sendMessage(ChatColor.GREEN + "Complete!");
             return;
-        } else if(env == null) {
+        } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world type did not exist.");
             sender.sendMessage("For a list of available world types, type: /mvenv");
@@ -58,5 +58,4 @@ public class ImportCommand extends BaseCommand {
             sender.sendMessage("That world folder does not exist...");
         }
     }
-
 }

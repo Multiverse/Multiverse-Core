@@ -27,7 +27,7 @@ public class CoordCommand extends BaseCommand {
     public void execute(CommandSender sender, String[] args) {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
-        	Player p = (Player) sender;
+            Player p = (Player) sender;
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
             p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + this.plugin.getMVWorld(p.getWorld().getName()).getScaling());
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));

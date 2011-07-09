@@ -11,7 +11,7 @@ import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.onarandombox.MultiverseCore.command.CommandManager;
 
 public class CreateCommand extends BaseCommand {
-    
+
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Create World";
@@ -22,9 +22,8 @@ public class CreateCommand extends BaseCommand {
         this.identifiers.add("mvcreate");
         this.permission = "multiverse.world.create";
         this.requiresOp = true;
-        
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length % 2 != 0) {
@@ -35,13 +34,13 @@ public class CreateCommand extends BaseCommand {
         String env = args[1];
         String seed = CommandManager.getFlag("-s", args);
         String generator = CommandManager.getFlag("-g", args);
-        
+
         if (new File(worldName).exists() || this.plugin.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
         }
-        
+
         Environment environment = this.plugin.getEnvFromString(env);
         if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
@@ -56,5 +55,4 @@ public class CreateCommand extends BaseCommand {
         }
         return;
     }
-
 }

@@ -7,7 +7,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.command.BaseCommand;
 
 public class RemoveCommand extends BaseCommand {
-    
+
     public RemoveCommand(MultiverseCore plugin) {
         super(plugin);
         this.name = "Remove World";
@@ -19,7 +19,7 @@ public class RemoveCommand extends BaseCommand {
         this.permission = "multiverse.world.remove";
         this.requiresOp = true;
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (this.plugin.removeWorld(args[0])) {

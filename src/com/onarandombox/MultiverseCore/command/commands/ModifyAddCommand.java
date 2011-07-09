@@ -34,7 +34,7 @@ public class ModifyAddCommand extends BaseCommand {
         }
 
         if (args.length == 2 && p == null) {
-            sender.sendMessage(ChatColor.RED + "From the command line, WORLD is required.");
+            sender.sendMessage(ChatColor.RED + "From the console, WORLD is required.");
             sender.sendMessage(this.description);
             sender.sendMessage(this.usage);
             sender.sendMessage("Nothing changed.");
