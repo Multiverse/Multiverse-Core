@@ -1,34 +1,37 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class EnvironmentCommand extends BaseCommand {
+public class EnvironmentCommand extends Command {
 
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "List Environments";
-        this.description = "Lists valid known environments";
-        this.usage = "/mvenv";
-        this.minArgs = 0;
-        this.maxArgs = 0;
-        this.identifiers.add("mvenv");
+        this.commandName = "List Environments";
+        this.commandDesc = "Lists valid known environments";
+        this.commandUsage = "/mvenv";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 0;
+        this.commandKeys.add("mvenv");
         this.permission = "multiverse.world.list.environments";
-        this.requiresOp = false;
+        this.opRequired = false;
     }
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
-        EnvironmentCommand.showEnvironments(sender);
-    }
 
     public static void showEnvironments(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");
         sender.sendMessage(ChatColor.GREEN + "NORMAL");
         sender.sendMessage(ChatColor.RED + "NETHER");
         sender.sendMessage(ChatColor.AQUA + "SKYLANDS");
+    }
+
+    @Override
+    public void runCommand(CommandSender sender, List<String> args) {
+        EnvironmentCommand.showEnvironments(sender);
     }
 }

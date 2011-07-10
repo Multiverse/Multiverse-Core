@@ -1,10 +1,12 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
 enum AddProperties {
     animallist, monsterlist, blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist, animals, monsters
@@ -18,28 +20,19 @@ enum SetProperties {
     alias, animals, monsters, pvp, scaling
 }
 
-public class ModifyCommand extends BaseCommand {
+public class ModifyCommand extends Command {
 
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Modify a World";
-        this.description = "MVModify requires an extra parameter: SET,ADD,REMOVE or CLEAR. See below for usage.";
-        this.usage = "/mvmodify" + ChatColor.GREEN + " {SET|ADD|REMOVE|CLEAR} ...";
+        this.commandName = "Modify a World";
+        this.commandDesc = "MVModify requires an extra parameter: SET,ADD,REMOVE or CLEAR. See below for usage.";
+        this.commandUsage = "/mvmodify" + ChatColor.GREEN + " {SET|ADD|REMOVE|CLEAR} ...";
         // Make it so they can NEVER execute this one
-        this.minArgs = 1;
-        this.maxArgs = 0;
-        this.identifiers.add("mvmodify");
+        this.minimumArgLength = 1;
+        this.maximumArgLength = 0;
+        this.commandKeys.add("mvmodify");
         this.permission = "multiverse.world.modify";
-        this.requiresOp = true;
-    }
-
-    @Override
-    public void execute(CommandSender sender, String[] args) {
-        // This is just a place holder. The real commands are in:
-        // ModifyAddCommand
-        // ModifyRemoveCommand
-        // ModifySetCommand
-        // ModifyClearCommand
+        this.opRequired = true;
     }
 
     protected static boolean validateAction(Action action, String property) {
@@ -59,5 +52,14 @@ public class ModifyCommand extends BaseCommand {
             }
         }
 
+    }
+
+    @Override
+    public void runCommand(CommandSender sender, List<String> args) {
+        // This is just a place holder. The real commands are in:
+        // ModifyAddCommand
+        // ModifyRemoveCommand
+        // ModifySetCommand
+        // ModifyClearCommand
     }
 }

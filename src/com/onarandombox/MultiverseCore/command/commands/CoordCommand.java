@@ -17,12 +17,12 @@ public class CoordCommand extends Command {
 
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Coordinates";
-        this.description = "Returns detailed information on the Players where abouts.";
-        this.usage = "/mvcoord";
-        this.minArgs = 0;
-        this.maxArgs = 0;
-        this.identifiers.add("mvcoord");
+        this.commandName = "Coordinates";
+        this.commandDesc = "Returns detailed information on the Players where abouts.";
+        this.commandUsage = "/mvcoord";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 0;
+        this.commandKeys.add("mvcoord");
     }
 
     @Override

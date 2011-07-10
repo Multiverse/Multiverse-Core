@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -8,36 +9,36 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class InfoCommand extends BaseCommand {
+public class InfoCommand extends Command {
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "World Information";
-        this.description = "Returns detailed information on the world.";
-        this.usage = "/mvinfo" + ChatColor.GOLD + "[WORLD]" + ChatColor.DARK_PURPLE + "<Page #>";
-        this.minArgs = 0;
-        this.maxArgs = 2;
-        this.identifiers.add("mvinfo");
+        this.commandName = "World Information";
+        this.commandDesc = "Returns detailed information on the world.";
+        this.commandUsage = "/mvinfo" + ChatColor.GOLD + "[WORLD]" + ChatColor.DARK_PURPLE + "<Page #>";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 2;
+        this.commandKeys.add("mvinfo");
         this.permission = "multiverse.world.info";
-        this.requiresOp = false;
+        this.opRequired = false;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         // Check if the command was sent from a Player.
         String worldName = "";
-        if (sender instanceof Player && args.length == 0) {
+        if (sender instanceof Player && args.size() == 0) {
             worldName = ((Player) sender).getWorld().getName();
-        } else if (args.length == 0) {
+        } else if (args.size() == 0) {
             sender.sendMessage("You must enter a" + ChatColor.GOLD + " world" + ChatColor.WHITE + " from the console!");
             return;
         } else {
-            worldName = args[0];
+            worldName = args.get(0);
         }
-        if (this.plugin.isMVWorld(worldName)) {
-            for (String s : buildEntireCommand(this.plugin.getMVWorld(worldName))) {
+        if (((MultiverseCore) this.plugin).isMVWorld(worldName)) {
+            for (String s : buildEntireCommand(((MultiverseCore) this.plugin).getMVWorld(worldName))) {
                 sender.sendMessage(s);
             }
         }
@@ -103,4 +104,5 @@ public class InfoCommand extends BaseCommand {
     private ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }
+
 }

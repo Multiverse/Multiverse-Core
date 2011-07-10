@@ -1,32 +1,33 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class ReloadCommand extends BaseCommand {
+public class ReloadCommand extends Command {
 
     public ReloadCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Reload worlds.yml";
-        this.description = "Reloads all worlds that are in worlds.yml. Use this if you've modified worlds.yml.";
-        this.usage = "/mvreload";
-        this.minArgs = 0;
-        this.maxArgs = 0;
-        this.identifiers.add("mvreload");
+        this.commandName = "Reload worlds.yml";
+        this.commandDesc = "Reloads all worlds that are in worlds.yml. Use this if you've modified worlds.yml.";
+        this.commandUsage = "/mvreload";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 0;
+        this.commandKeys.add("mvreload");
         this.permission = "multiverse.world.reload";
-        this.requiresOp = true;
+        this.opRequired = true;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        this.plugin.log(Level.INFO, "Reloading Multiverse-Core config");
-        this.plugin.loadConfigs();
-        this.plugin.loadWorlds(true);
-        this.plugin.log(Level.INFO, "Reload Complete!");
+    public void runCommand(CommandSender sender, List<String> args) {
+        ((MultiverseCore) this.plugin).log(Level.INFO, "Reloading Multiverse-Core config");
+        ((MultiverseCore) this.plugin).loadConfigs();
+        ((MultiverseCore) this.plugin).loadWorlds(true);
+        ((MultiverseCore) this.plugin).log(Level.INFO, "Reload Complete!");
     }
 
 }

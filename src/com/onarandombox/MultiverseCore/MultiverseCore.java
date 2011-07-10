@@ -24,7 +24,6 @@ import org.bukkit.util.config.Configuration;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.command.CommandManager;
 import com.onarandombox.MultiverseCore.command.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
@@ -446,7 +445,7 @@ public class MultiverseCore extends JavaPlugin {
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
-        return this.commandHandler.dispatch(sender, allArgs);
+        return this.commandHandler.locateAndRunCommand(sender, allArgs);
     }
 
     /**

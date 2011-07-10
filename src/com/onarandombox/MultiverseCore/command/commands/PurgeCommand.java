@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.command.commands;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,52 +10,52 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.onarandombox.utils.PurgeWorlds;
+import com.pneumaticraft.commandhandler.Command;
 
-public class PurgeCommand extends BaseCommand {
+public class PurgeCommand extends Command {
 
     public PurgeCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Purge the world ";
-        this.description = "Removed the specified type of mob from the specified world.";
-        this.usage = "/mvpurge" + ChatColor.GOLD + " [WORLD|all] " + ChatColor.GREEN + "{all|animals|monsters|MOBNAME}";
-        this.minArgs = 1;
-        this.maxArgs = 2;
-        this.identifiers.add("mvpurge");
+        this.commandName = "Purge the world ";
+        this.commandDesc = "Removed the specified type of mob from the specified world.";
+        this.commandUsage = "/mvpurge" + ChatColor.GOLD + " [WORLD|all] " + ChatColor.GREEN + "{all|animals|monsters|MOBNAME}";
+        this.minimumArgLength = 1;
+        this.maximumArgLength = 2;
+        this.commandKeys.add("mvpurge");
         this.permission = "multiverse.world.purge";
-        this.requiresOp = true;
+        this.opRequired = true;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
         }
-        if (args.length == 1 && p == null) {
+        if (args.size() == 1 && p == null) {
             sender.sendMessage("This command requires a WORLD when being run from the console!");
-            sender.sendMessage(this.usage);
+            sender.sendMessage(this.commandUsage);
             return;
         }
         String worldName = null;
         String deathName = null;
-        if (args.length == 1) {
+        if (args.size() == 1) {
             worldName = p.getWorld().getName();
-            deathName = args[0];
+            deathName = args.get(0);
         } else {
-            worldName = args[0];
-            deathName = args[1];
+            worldName = args.get(0);
+            deathName = args.get(1);
         }
 
-        if (!this.plugin.isMVWorld(worldName)) {
+        if (!((MultiverseCore) this.plugin).isMVWorld(worldName)) {
             sender.sendMessage("Multiverse doesn't know about " + worldName);
             sender.sendMessage("... so It cannot be purged");
             return;
         }
-        MVWorld world = this.plugin.getMVWorld(worldName);
+        MVWorld world = ((MultiverseCore) this.plugin).getMVWorld(worldName);
 
-        PurgeWorlds purger = this.plugin.getWorldPurger();
+        PurgeWorlds purger = ((MultiverseCore) this.plugin).getWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
         if (deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
             thingsToKill.add(deathName.toUpperCase());

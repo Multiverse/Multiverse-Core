@@ -11,24 +11,24 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class WhoCommand extends BaseCommand {
+public class WhoCommand extends Command {
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Who";
-        this.description = "States who is in what world";
-        this.usage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
-        this.minArgs = 0;
-        this.maxArgs = 1;
-        this.identifiers.add("mvwho");
+        this.commandName = "Who";
+        this.commandDesc = "States who is in what world";
+        this.commandUsage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 1;
+        this.commandKeys.add("mvwho");
         this.permission = "multiverse.world.list.who";
-        this.requiresOp = false;
+        this.opRequired = false;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         // If this command was sent from a Player then we need to check Permissions
         Player p = null;
         if (sender instanceof Player) {
@@ -37,24 +37,24 @@ public class WhoCommand extends BaseCommand {
 
         List<MVWorld> worlds = new ArrayList<MVWorld>();
 
-        if (args.length > 0) {
-            if (this.plugin.isMVWorld(args[0])) {
-                worlds.add(this.plugin.getMVWorld(args[0]));
+        if (args.size() > 0) {
+            if (((MultiverseCore) this.plugin).isMVWorld(args.get(0))) {
+                worlds.add(((MultiverseCore) this.plugin).getMVWorld(args.get(0)));
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
                 return;
             }
         } else {
-            worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
+            worlds = new ArrayList<MVWorld>(((MultiverseCore) this.plugin).getMVWorlds());
         }
 
         for (MVWorld world : worlds) {
-            if (!(this.plugin.isMVWorld(world.getName()))) {
+            if (!(((MultiverseCore) this.plugin).isMVWorld(world.getName()))) {
                 continue;
             }
 
             World w = this.plugin.getServer().getWorld(world.getName());
-            if (p != null && (!this.plugin.ph.canEnterWorld(p, w))) {
+            if (p != null && (!((MultiverseCore) this.plugin).getPermissions().canEnterWorld(p, w))) {
                 continue;
             }
 
@@ -85,6 +85,5 @@ public class WhoCommand extends BaseCommand {
 
             sender.sendMessage(color + worldName + ChatColor.WHITE + " - " + result);
         }
-        return;
     }
 }

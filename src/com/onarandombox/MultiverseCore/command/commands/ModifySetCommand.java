@@ -1,51 +1,53 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class ModifySetCommand extends BaseCommand {
+public class ModifySetCommand extends Command {
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Modify a World (Set a value)";
-        this.description = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used";
-        this.usage = "/mvmodify" + ChatColor.GREEN + " SET {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]";
-        this.minArgs = 2;
-        this.maxArgs = 3;
-        this.identifiers.add("mvmodify set");
+        this.commandName = "Modify a World (Set a value)";
+        this.commandDesc = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used";
+        this.commandUsage = "/mvmodify" + ChatColor.GREEN + " SET {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]";
+        this.minimumArgLength = 2;
+        this.maximumArgLength = 3;
+        this.commandKeys.add("mvmodify set");
         this.permission = "multiverse.world.modify";
-        this.requiresOp = true;
+        this.opRequired = true;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         // We NEED a world from the command line
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
         }
 
-        if (args.length == 2 && p == null) {
+        if (args.size() == 2 && p == null) {
             sender.sendMessage("From the command line, WORLD is required.");
-            sender.sendMessage(this.description);
-            sender.sendMessage(this.usage);
+            sender.sendMessage(this.commandDesc);
+            sender.sendMessage(this.commandUsage);
             sender.sendMessage("Nothing changed.");
             return;
         }
 
         MVWorld world;
-        String value = args[1];
-        String property = args[0];
+        String value = args.get(1);
+        String property = args.get(0);
 
-        if (args.length == 2) {
-            world = this.plugin.getMVWorld(p.getWorld().getName());
+        if (args.size() == 2) {
+            world = ((MultiverseCore) this.plugin).getMVWorld(p.getWorld().getName());
         } else {
-            world = this.plugin.getMVWorld(args[2]);
+            world = ((MultiverseCore) this.plugin).getMVWorld(args.get(2));
         }
 
         if (world == null) {
