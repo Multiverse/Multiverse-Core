@@ -8,8 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.nijiko.permissions.PermissionHandler;
+import com.pneumaticraft.commandhandler.PermissionsInterface;
 
-public class MVPermissions {
+public class MVPermissions implements PermissionsInterface{
     
     private MultiverseCore plugin;
     public PermissionHandler permissions = null;
