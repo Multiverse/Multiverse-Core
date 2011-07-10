@@ -92,7 +92,7 @@ public class MultiverseCore extends JavaPlugin {
 
         this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
-        this.commandHandler = new CommandHandler(this);
+        this.commandHandler = new CommandHandler(this,this.ph);
         // Setup the world purger
         this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
