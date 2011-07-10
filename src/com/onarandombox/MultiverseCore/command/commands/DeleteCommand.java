@@ -1,12 +1,14 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class DeleteCommand extends BaseCommand {
+public class DeleteCommand extends Command {
 
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
@@ -21,8 +23,8 @@ public class DeleteCommand extends BaseCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         Class<?> paramTypes[] = { String.class };
-        this.plugin.getCommandManager().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
+        ((MultiverseCore) this.plugin).getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
 }
