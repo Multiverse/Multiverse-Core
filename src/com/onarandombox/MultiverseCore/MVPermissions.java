@@ -30,26 +30,6 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
-     * Use hasPermission() Now
-     * 
-     * @param p The player instance.
-     * @param node The permission node we are checking against.
-     * @return
-     */
-    @Deprecated
-    public boolean has(Player p, String node) {
-        boolean result = false;
-
-        if (this.permissions != null) {
-            result = this.permissions.has(p, node);
-        } else if (p.isOp()) {
-            result = true;
-        }
-
-        return result;
-    }
-
-    /**
      * Check if a Player can teleport to the Destination world from there current world. This checks against the Worlds Blacklist
      * 
      * @param p
