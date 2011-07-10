@@ -17,7 +17,7 @@ public class InfoCommand extends Command {
         super(plugin);
         this.commandName = "World Information";
         this.commandDesc = "Returns detailed information on the world.";
-        this.commandUsage = "/mvinfo" + ChatColor.GOLD + "[WORLD]" + ChatColor.DARK_PURPLE + "<Page #>";
+        this.commandUsage = "/mvinfo" + ChatColor.GOLD + " [WORLD] " + ChatColor.DARK_PURPLE + " <Page #>";
         this.minimumArgLength = 0;
         this.maximumArgLength = 2;
         this.commandKeys.add("mvinfo");

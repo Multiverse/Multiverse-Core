@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 
 public class MVPermissions implements PermissionsInterface {
@@ -24,7 +25,7 @@ public class MVPermissions implements PermissionsInterface {
         this.plugin = plugin;
         // We have to see if permissions was loaded before MV was
         if (this.plugin.getServer().getPluginManager().getPlugin("Permissions") != null) {
-            this.setPermissions(((com.nijikokun.bukkit.Permissions.Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
+            this.setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
             this.plugin.log(Level.INFO, "- Attached to Permissions");
         }
     }
@@ -71,7 +72,6 @@ public class MVPermissions implements PermissionsInterface {
         List<String> blackList = this.plugin.getMVWorld(w.getName()).getPlayerBlacklist();
         boolean returnValue = true;
 
-        // I lied. You definitely want this. Sorry Rigby :( You were right. --FF
         // If there's anyone in the whitelist, then the whitelist is ACTIVE, anyone not in it is blacklisted.
         if (whiteList.size() > 0) {
             returnValue = false;

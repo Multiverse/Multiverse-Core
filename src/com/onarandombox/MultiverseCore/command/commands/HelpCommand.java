@@ -5,13 +5,14 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
 
 public class HelpCommand extends Command {
-    private static final int CMDS_PER_PAGE = 10;
+    private static final int CMDS_PER_PAGE = 8;
 
     public HelpCommand(JavaPlugin plugin) {
         super(plugin);
@@ -53,8 +54,13 @@ public class HelpCommand extends Command {
     private void showPage(int page, CommandSender sender, List<Command> cmds) {
         int start = (page - 1) * CMDS_PER_PAGE;
         int end = start + CMDS_PER_PAGE;
-        for (int i = start; i < cmds.size() && i < end; i++) {
+        for (int i = start; i < end; i++) {
+            // For consistancy, print some extra lines if it's a player:
+            if (i < cmds.size()) {
             sender.sendMessage(ChatColor.AQUA + cmds.get(i).getCommandUsage());
+            } else if(sender instanceof Player) {
+                sender.sendMessage(" ");
+            }
         }
     }
 
