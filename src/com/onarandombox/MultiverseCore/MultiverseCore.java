@@ -30,6 +30,7 @@ import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.PurgeWorlds;
 import com.onarandombox.utils.UpdateChecker;
+import com.pneumaticraft.commandhandler.CommandHandler;
 
 public class MultiverseCore extends JavaPlugin {
 
@@ -41,7 +42,7 @@ public class MultiverseCore extends JavaPlugin {
     private boolean debug;
 
     // Setup our Map for our Commands using the CommandHandler.
-    private CommandManager commandManager;
+    private CommandHandler commandManager;
 
     private final String tag = "[Multiverse-Core]";
 
@@ -92,7 +93,7 @@ public class MultiverseCore extends JavaPlugin {
 
         this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
-        this.commandManager = new CommandManager(this);
+        this.commandManager = new CommandHandler(this);
         // Setup the world purger
         this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
@@ -169,30 +170,30 @@ public class MultiverseCore extends JavaPlugin {
      */
     private void registerCommands() {
         // Page 1
-        this.commandManager.addCommand(new HelpCommand(this));
-        this.commandManager.addCommand(new CoordCommand(this));
-        this.commandManager.addCommand(new TeleportCommand(this));
-        this.commandManager.addCommand(new ListCommand(this));
-        this.commandManager.addCommand(new WhoCommand(this));
-        this.commandManager.addCommand(new SetSpawnCommand(this));
-        this.commandManager.addCommand(new CreateCommand(this));
-        this.commandManager.addCommand(new ImportCommand(this));
-        this.commandManager.addCommand(new SpawnCommand(this));
-        this.commandManager.addCommand(new RemoveCommand(this));
-        this.commandManager.addCommand(new DeleteCommand(this));
-        this.commandManager.addCommand(new UnloadCommand(this));
-        this.commandManager.addCommand(new ConfirmCommand(this));
-        this.commandManager.addCommand(new InfoCommand(this));
-        this.commandManager.addCommand(new ReloadCommand(this));
+        this.commandManager.registerCommand(new HelpCommand(this));
+        this.commandManager.registerCommand(new CoordCommand(this));
+        this.commandManager.registerCommand(new TeleportCommand(this));
+        this.commandManager.registerCommand(new ListCommand(this));
+        this.commandManager.registerCommand(new WhoCommand(this));
+        this.commandManager.registerCommand(new SetSpawnCommand(this));
+        this.commandManager.registerCommand(new CreateCommand(this));
+        this.commandManager.registerCommand(new ImportCommand(this));
+        this.commandManager.registerCommand(new SpawnCommand(this));
+        this.commandManager.registerCommand(new RemoveCommand(this));
+        this.commandManager.registerCommand(new DeleteCommand(this));
+        this.commandManager.registerCommand(new UnloadCommand(this));
+        this.commandManager.registerCommand(new ConfirmCommand(this));
+        this.commandManager.registerCommand(new InfoCommand(this));
+        this.commandManager.registerCommand(new ReloadCommand(this));
 
-        this.commandManager.addCommand(new ModifyAddCommand(this));
-        this.commandManager.addCommand(new ModifySetCommand(this));
-        this.commandManager.addCommand(new ModifyRemoveCommand(this));
-        this.commandManager.addCommand(new ModifyClearCommand(this));
+        this.commandManager.registerCommand(new ModifyAddCommand(this));
+        this.commandManager.registerCommand(new ModifySetCommand(this));
+        this.commandManager.registerCommand(new ModifyRemoveCommand(this));
+        this.commandManager.registerCommand(new ModifyClearCommand(this));
         // This modify MUST go last.
-        this.commandManager.addCommand(new ModifyCommand(this));
-        this.commandManager.addCommand(new EnvironmentCommand(this));
-        this.commandManager.addCommand(new PurgeCommand(this));
+        this.commandManager.registerCommand(new ModifyCommand(this));
+        this.commandManager.registerCommand(new EnvironmentCommand(this));
+        this.commandManager.registerCommand(new PurgeCommand(this));
     }
 
     /**
