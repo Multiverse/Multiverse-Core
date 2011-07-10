@@ -42,7 +42,7 @@ public class MultiverseCore extends JavaPlugin {
     private boolean debug;
 
     // Setup our Map for our Commands using the CommandHandler.
-    private CommandHandler commandManager;
+    private CommandHandler commandHandler;
 
     private final String tag = "[Multiverse-Core]";
 
@@ -93,7 +93,7 @@ public class MultiverseCore extends JavaPlugin {
 
         this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
-        this.commandManager = new CommandHandler(this);
+        this.commandHandler = new CommandHandler(this);
         // Setup the world purger
         this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
@@ -170,30 +170,30 @@ public class MultiverseCore extends JavaPlugin {
      */
     private void registerCommands() {
         // Page 1
-        this.commandManager.registerCommand(new HelpCommand(this));
-        this.commandManager.registerCommand(new CoordCommand(this));
-        this.commandManager.registerCommand(new TeleportCommand(this));
-        this.commandManager.registerCommand(new ListCommand(this));
-        this.commandManager.registerCommand(new WhoCommand(this));
-        this.commandManager.registerCommand(new SetSpawnCommand(this));
-        this.commandManager.registerCommand(new CreateCommand(this));
-        this.commandManager.registerCommand(new ImportCommand(this));
-        this.commandManager.registerCommand(new SpawnCommand(this));
-        this.commandManager.registerCommand(new RemoveCommand(this));
-        this.commandManager.registerCommand(new DeleteCommand(this));
-        this.commandManager.registerCommand(new UnloadCommand(this));
-        this.commandManager.registerCommand(new ConfirmCommand(this));
-        this.commandManager.registerCommand(new InfoCommand(this));
-        this.commandManager.registerCommand(new ReloadCommand(this));
+        this.commandHandler.registerCommand(new HelpCommand(this));
+        this.commandHandler.registerCommand(new CoordCommand(this));
+        this.commandHandler.registerCommand(new TeleportCommand(this));
+        this.commandHandler.registerCommand(new ListCommand(this));
+        this.commandHandler.registerCommand(new WhoCommand(this));
+        this.commandHandler.registerCommand(new SetSpawnCommand(this));
+        this.commandHandler.registerCommand(new CreateCommand(this));
+        this.commandHandler.registerCommand(new ImportCommand(this));
+        this.commandHandler.registerCommand(new SpawnCommand(this));
+        this.commandHandler.registerCommand(new RemoveCommand(this));
+        this.commandHandler.registerCommand(new DeleteCommand(this));
+        this.commandHandler.registerCommand(new UnloadCommand(this));
+        this.commandHandler.registerCommand(new ConfirmCommand(this));
+        this.commandHandler.registerCommand(new InfoCommand(this));
+        this.commandHandler.registerCommand(new ReloadCommand(this));
 
-        this.commandManager.registerCommand(new ModifyAddCommand(this));
-        this.commandManager.registerCommand(new ModifySetCommand(this));
-        this.commandManager.registerCommand(new ModifyRemoveCommand(this));
-        this.commandManager.registerCommand(new ModifyClearCommand(this));
+        this.commandHandler.registerCommand(new ModifyAddCommand(this));
+        this.commandHandler.registerCommand(new ModifySetCommand(this));
+        this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
+        this.commandHandler.registerCommand(new ModifyClearCommand(this));
         // This modify MUST go last.
-        this.commandManager.registerCommand(new ModifyCommand(this));
-        this.commandManager.registerCommand(new EnvironmentCommand(this));
-        this.commandManager.registerCommand(new PurgeCommand(this));
+        this.commandHandler.registerCommand(new ModifyCommand(this));
+        this.commandHandler.registerCommand(new EnvironmentCommand(this));
+        this.commandHandler.registerCommand(new PurgeCommand(this));
     }
 
     /**
@@ -446,7 +446,7 @@ public class MultiverseCore extends JavaPlugin {
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
-        return this.commandManager.dispatch(sender, allArgs);
+        return this.commandHandler.dispatch(sender, allArgs);
     }
 
     /**
@@ -496,8 +496,8 @@ public class MultiverseCore extends JavaPlugin {
         return authors.substring(2);
     }
 
-    public CommandManager getCommandManager() {
-        return this.commandManager;
+    public CommandHandler getCommandHandler() {
+        return this.commandHandler;
     }
 
     public String getTag() {

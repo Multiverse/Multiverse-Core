@@ -5,7 +5,6 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.pneumaticraft.commandhandler.Command;
 
 public class ConfirmCommand extends Command {
@@ -25,8 +24,7 @@ public class ConfirmCommand extends Command {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        this.plugin.getCommandManager().confirmQueuedCommand(sender);
-        
+        ((MultiverseCore) this.plugin).getCommandHandler().confirmQueuedCommand(sender);
     }
 
 }
