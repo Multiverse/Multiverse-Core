@@ -1,6 +1,7 @@
 // This file is no longer licensed under that silly CC license. I have blanked it out and will start implementaiton of my own in a few days. For now there is no help.
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -38,7 +39,12 @@ public class HelpCommand extends Command {
             }
         }
 
-        List<Command> availableCommands = ((MultiverseCore) this.plugin).getCommandHandler().getCommands(sender);
+        List<Command> availableCommands = new ArrayList<Command> (((MultiverseCore) this.plugin).getCommandHandler().getAllCommands());
+        for(Command c : availableCommands) {
+            if(!((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, c.getPermission(), c.isOpRequired())) {
+                availableCommands.remove(c);
+            }
+        }
         int totalPages = (int) Math.ceil(availableCommands.size() / ( CMDS_PER_PAGE + 0.0));
 
         if (page > totalPages) {
