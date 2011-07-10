@@ -171,31 +171,32 @@ public class MultiverseCore extends JavaPlugin {
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        // Page 1
-        
-        this.commandHandler.registerCommand(new CoordCommand(this));
-        this.commandHandler.registerCommand(new TeleportCommand(this));
+        // Intro Commands
         this.commandHandler.registerCommand(new ListCommand(this));
-        this.commandHandler.registerCommand(new WhoCommand(this));
-        this.commandHandler.registerCommand(new SetSpawnCommand(this));
+        this.commandHandler.registerCommand(new InfoCommand(this));
         this.commandHandler.registerCommand(new CreateCommand(this));
         this.commandHandler.registerCommand(new ImportCommand(this));
+        this.commandHandler.registerCommand(new ReloadCommand(this));
+        this.commandHandler.registerCommand(new SetSpawnCommand(this));
+        this.commandHandler.registerCommand(new CoordCommand(this));
+        this.commandHandler.registerCommand(new TeleportCommand(this));
+        this.commandHandler.registerCommand(new WhoCommand(this));
         this.commandHandler.registerCommand(new SpawnCommand(this));
+        // Dangerous Commands
         this.commandHandler.registerCommand(new RemoveCommand(this));
         this.commandHandler.registerCommand(new DeleteCommand(this));
         this.commandHandler.registerCommand(new UnloadCommand(this));
         this.commandHandler.registerCommand(new ConfirmCommand(this));
-        this.commandHandler.registerCommand(new InfoCommand(this));
-        this.commandHandler.registerCommand(new ReloadCommand(this));
-
+        // Modification commands
+        this.commandHandler.registerCommand(new PurgeCommand(this));
         this.commandHandler.registerCommand(new ModifyAddCommand(this));
         this.commandHandler.registerCommand(new ModifySetCommand(this));
         this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
         this.commandHandler.registerCommand(new ModifyClearCommand(this));
         // This modify MUST go last.
         this.commandHandler.registerCommand(new ModifyCommand(this));
+        // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
-        this.commandHandler.registerCommand(new PurgeCommand(this));
         this.commandHandler.registerCommand(new SleepCommand(this));
         this.commandHandler.registerCommand(new HelpCommand(this));
     }
