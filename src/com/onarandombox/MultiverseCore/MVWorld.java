@@ -78,13 +78,6 @@ public class MVWorld {
     
     private List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
     
-    // These have been moved to a hash, for easy editing with strings.
-    // private List<String> playerWhitelist; // Contain a list of Players/Groups which can join this World.
-    // private List<String> playerBlacklist; // Contain a list of Players/Groups which cannot join this World.
-    // private List<String> editWhitelist; // Contain a list of Players/Groups which can edit this World. (Place/Destroy Blocks)
-    // private List<String> editBlacklist; // Contain a list of Players/Groups which cannot edit this World. (Place/Destroy Blocks)
-    // private List<String> worldBlacklist; // Contain a list of Worlds which Players cannot use to Portal to this World.
-    
     private HashMap<String, List<String>> masterList;
     
     private Double scaling; // How stretched/compressed distances are
@@ -274,6 +267,7 @@ public class MVWorld {
     }
     
     private void syncMobs() {
+        
         if (this.getAnimalList().isEmpty()) {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), this.allowAnimals);
         } else {
@@ -427,7 +421,12 @@ public class MVWorld {
     }
     
     public void setPvp(Boolean pvp) {
-        this.world.setPVP(pvp);
+        boolean fakepvp = this.plugin.configMV.getBoolean("fakepvp", false);
+        if(fakepvp) {
+            this.world.setPVP(false);
+        } else {
+            this.world.setPVP(pvp);
+        }
         this.pvp = pvp;
         this.config.setProperty("worlds." + this.name + ".pvp", pvp);
         this.config.save();
