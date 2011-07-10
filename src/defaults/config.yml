@@ -38,3 +38,7 @@ opfallback: true
 # If you have a world(s) that has monsters = false, and you want to disable the built
 # in autohealing, set this to true. This will have NO EFFECT if monsters = true for a given world. 
 disableautoheal: false
+
+# This will use the old style of PVP prevention so you can have zones of PVP
+# Players will be notified when they punch/shoot and it's not allowed.
+fakepvp: false
