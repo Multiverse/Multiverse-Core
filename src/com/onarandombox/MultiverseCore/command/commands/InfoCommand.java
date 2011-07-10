@@ -44,20 +44,22 @@ public class InfoCommand extends Command {
         }
     }
 
-    private String[] buildEntireCommand(MVWorld world) {
-        StringBuilder sb = new StringBuilder();
-        ArrayList<String[]> pagedInfo = new ArrayList<String[]>();
-        String[] aPage = new String[5];
+    private List<String> buildEntireCommand(MVWorld world) {
+        List<String> page = new ArrayList<String>();
         // World Name: 1
-        aPage[0] = "World: " + world.getName();
+        page.add("World: " + world.getName());
 
         // World Scale: 1
-        aPage[1] = "World Scale: " + world.getScaling();
+        page.add("World Scale: " + world.getScaling());
 
         // PVP: 1
-        aPage[2] = "PVP: " + world.getPvp();
-        aPage[3] = "Animals: " + world.allowAnimalSpawning();
-        aPage[4] = "Monsters: " + world.allowMonsterSpawning();
+        page.add("PVP (MV): " + world.getPvp());
+        page.add("PVP: " + world.getCBWorld().getPVP());
+        page.add("Fake PVP: " + world.getFakePVP());
+        page.add("Animals (MV): " + world.allowAnimalSpawning());
+        page.add("Animals: " + world.getCBWorld().getAllowAnimals());
+        page.add("Monsters (MV): " + world.allowMonsterSpawning());
+        page.add("Monsters: " + world.getCBWorld().getAllowMonsters());
 
         // This feature is not mission critical and I am spending too much time on it...
         // Stopping work on it for now --FF 20110623
@@ -98,7 +100,7 @@ public class InfoCommand extends Command {
         // }
         // }
         // }
-        return aPage;
+        return page;
     }
 
     private ChatColor getChatColor(boolean positive) {

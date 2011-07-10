@@ -75,6 +75,7 @@ public class MVWorld {
     // public List<String> monsters = new ArrayList<String>(); // Contain a list of Monsters which we want to ignore the Spawn Setting.
     
     private Boolean pvp; // Does this World allow PVP?
+    private Boolean fakepvp;
     
     private List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
     
@@ -421,9 +422,9 @@ public class MVWorld {
     }
     
     public void setPvp(Boolean pvp) {
-        boolean fakepvp = this.plugin.configMV.getBoolean("fakepvp", false);
-        if(fakepvp) {
-            this.world.setPVP(false);
+        this.fakepvp = this.plugin.configMV.getBoolean("fakepvp", false);
+        if(this.fakepvp) {
+            this.world.setPVP(true);
         } else {
             this.world.setPVP(pvp);
         }
@@ -496,5 +497,9 @@ public class MVWorld {
             return true;
         }
         return false;
+    }
+
+    public boolean getFakePVP() {
+        return this.fakepvp;
     }
 }
