@@ -129,19 +129,10 @@ public class MVPermissions implements PermissionsInterface {
         if (player.isOp() && opFallback) {
             // If Player is Op we always let them use it if they have the fallback enabled!
             return true;
-        //} else if (this.permissions != null && this.permissions.has(player, node)) {
-        } else
-            try {
-                if (this.permissions != null && this.permissions.safeGetUser(player.getWorld().getName(), player.getName()).hasPermission(node)) {
-                    // If Permissions 3 is enabled we check against them.
-                    return true;
-                }
-            } catch (Exception e) {
-                if (this.permissions != null && this.permissions.has(player, node)) {
-                    // If Permissions 2 is enabled we check against them.
-                    return true;
-                }
-            }
+        } else if (this.permissions != null && this.permissions.has(player, node)) {
+            // If Permissions is enabled we check against them.
+            return true;
+        }
         // If the Player doesn't have Permissions and isn't an Op then
         // we return true if OP is not required, otherwise we return false
         // This allows us to act as a default permission guidance
