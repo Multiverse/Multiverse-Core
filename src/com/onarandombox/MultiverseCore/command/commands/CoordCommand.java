@@ -1,15 +1,17 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
 import com.onarandombox.utils.LocationManipulation;
+import com.pneumaticraft.commandhandler.Command;
 
-public class CoordCommand extends BaseCommand {
+public class CoordCommand extends Command {
 
     private LocationManipulation locMan = new LocationManipulation();
 
@@ -24,12 +26,12 @@ public class CoordCommand extends BaseCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
             Player p = (Player) sender;
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
-            p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + this.plugin.getMVWorld(p.getWorld().getName()).getScaling());
+            p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + ((MultiverseCore) this.plugin).getMVWorld(p.getWorld().getName()).getScaling());
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Direction: " + ChatColor.WHITE + this.locMan.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.RED + "Block: " + ChatColor.WHITE + Material.getMaterial(p.getWorld().getBlockTypeIdAt(p.getLocation())));

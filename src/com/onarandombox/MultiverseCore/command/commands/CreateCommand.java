@@ -1,16 +1,16 @@
 package com.onarandombox.MultiverseCore.command.commands;
 
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
-import com.onarandombox.MultiverseCore.command.CommandManager;
+import com.pneumaticraft.commandhandler.Command;
 
-public class CreateCommand extends BaseCommand {
+public class CreateCommand extends Command {
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -25,7 +25,7 @@ public class CreateCommand extends BaseCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         if (args.length % 2 != 0) {
             sender.sendMessage("You must preface your SEED with -s OR your GENERATOR with -g. Type /mv for help");
             return;
