@@ -65,7 +65,7 @@ public class MultiverseCore extends JavaPlugin {
     private HashMap<String, MVWorld> worlds = new HashMap<String, MVWorld>();
 
     // HashMap to contain information relating to the Players.
-    public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
+    private HashMap<String, MVPlayerSession> playerSessions;
     private PurgeWorlds worldPurger;
     public GenericBank bank = null;
     public AllPay banker = new AllPay(this, "[Multiverse-Core] ");;
@@ -97,6 +97,8 @@ public class MultiverseCore extends JavaPlugin {
         this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
+        
+        this.playerSessions = new HashMap<String, MVPlayerSession>();
 
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
@@ -119,6 +121,7 @@ public class MultiverseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_BED_LEAVE, this.playerListener, Priority.Normal, this);
 
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow fake PVP
@@ -169,7 +172,7 @@ public class MultiverseCore extends JavaPlugin {
      */
     private void registerCommands() {
         // Page 1
-        this.commandHandler.registerCommand(new HelpCommand(this));
+        
         this.commandHandler.registerCommand(new CoordCommand(this));
         this.commandHandler.registerCommand(new TeleportCommand(this));
         this.commandHandler.registerCommand(new ListCommand(this));
@@ -193,6 +196,8 @@ public class MultiverseCore extends JavaPlugin {
         this.commandHandler.registerCommand(new ModifyCommand(this));
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new PurgeCommand(this));
+        this.commandHandler.registerCommand(new SleepCommand(this));
+        this.commandHandler.registerCommand(new HelpCommand(this));
     }
 
     /**

@@ -42,3 +42,7 @@ disableautoheal: false
 # This will use the old style of PVP prevention so you can have zones of PVP
 # Players will be notified when they punch/shoot and it's not allowed.
 fakepvp: false
+
+# When this is enabled, users will spawn at their last bed slept at. If the bed is destroyed or obstructed,
+# they will spawn according to how you have 'notchrespawnstyle' set.
+bedrespawn: true
