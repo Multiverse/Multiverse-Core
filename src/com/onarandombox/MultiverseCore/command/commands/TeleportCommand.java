@@ -25,7 +25,7 @@ public class TeleportCommand extends Command {
         this.maximumArgLength = 2;
         this.commandKeys.add("mvtp");
         this.playerTeleporter = new MVTeleport(plugin);
-        this.permission = "multiverse.world.tp.self";
+        this.permission = "multiverse.world.tp";
         this.opRequired = true;
     }
 
@@ -42,7 +42,7 @@ public class TeleportCommand extends Command {
 
         if (args.size() == 2) {
             if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, "multiverse.world.tp.other", true)) {
-                sender.sendMessage("You don't have permission to teleport another player.");
+                sender.sendMessage("You don't have permission to teleport another player. (multiverse.world.tp.other)");
                 return;
             }
             teleportee = this.plugin.getServer().getPlayer(args.get(0));
@@ -54,6 +54,10 @@ public class TeleportCommand extends Command {
 
         } else {
             worldName = args.get(0);
+            if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, "multiverse.world.tp.self", true)) {
+                sender.sendMessage("You don't have permission to teleport yourself between worlds. (multiverse.world.tp.self)");
+                return;
+            }
 
             if (!(sender instanceof Player)) {
                 sender.sendMessage("You can only teleport other players from the command line.");
