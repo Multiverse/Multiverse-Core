@@ -20,6 +20,8 @@ public class SetSpawnCommand extends Command {
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;
         this.commandKeys.add("mvsetspawn");
+        this.commandKeys.add("mvss");
+        this.commandKeys.add("mv set spawn");
         this.permission = "multiverse.world.spawn.set";
         this.opRequired = true;
     }

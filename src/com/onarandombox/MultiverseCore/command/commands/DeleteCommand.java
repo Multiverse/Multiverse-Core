@@ -18,6 +18,7 @@ public class DeleteCommand extends Command {
         this.minimumArgLength = 1;
         this.maximumArgLength = 1;
         this.commandKeys.add("mvdelete");
+        this.commandKeys.add("mv delete");
         this.permission = "multiverse.world.delete";
         this.opRequired = true;
     }

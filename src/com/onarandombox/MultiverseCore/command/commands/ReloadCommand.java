@@ -12,19 +12,21 @@ public class ReloadCommand extends Command {
 
     public ReloadCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Reload worlds.yml";
-        this.commandDesc = "Reloads all worlds that are in worlds.yml. Use this if you've modified worlds.yml.";
+        this.commandName = "Reload";
+        this.commandDesc = "Reloads worlds.yml and config.yml";
         this.commandUsage = "/mvreload";
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;
         this.commandKeys.add("mvreload");
-        this.permission = "multiverse.world.reload";
+        this.commandKeys.add("mv reload");
+        this.commandKeys.add("mvr");
+        this.permission = "multiverse.reload";
         this.opRequired = true;
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        ((MultiverseCore) this.plugin).log(Level.INFO, "Reloading Multiverse-Core config");
+        ((MultiverseCore) this.plugin).log(Level.INFO, "Reloading Multiverse-Core config.yml and worlds.yml");
         ((MultiverseCore) this.plugin).loadConfigs();
         ((MultiverseCore) this.plugin).loadWorlds(true);
         ((MultiverseCore) this.plugin).log(Level.INFO, "Reload Complete!");

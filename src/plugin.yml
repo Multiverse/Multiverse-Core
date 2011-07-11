@@ -47,6 +47,26 @@ commands:
     usage: |
             /<command> <world> <option>:<value>
             /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+  mvmset:
+    description: Modify the settings of an existing world
+    usage: |
+            /<command> <world> <option>:<value>
+            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+  mvmadd:
+    description: Modify the settings of an existing world
+    usage: |
+            /<command> <world> <option>:<value>
+            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+  mvmremove:
+    description: Modify the settings of an existing world
+    usage: |
+            /<command> <world> <option>:<value>
+            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+  mvmclear:
+    description: Modify the settings of an existing world
+    usage: |
+            /<command> <world> <option>:<value>
+            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
   mvm:
     description: Modify the settings of an existing world
     usage: |
@@ -107,6 +127,9 @@ commands:
             /<command> -- Shows who is online in each world.
             /<command> creative -- Shows who is online in the 'creative' world.
   mvreload:
+    description: Reload Configuration files.
+    usage: /<command>
+  mvr:
     description: Reload Configuration files.
     usage: /<command>
   mvpurge:

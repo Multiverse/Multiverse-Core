@@ -16,10 +16,13 @@ public class ModifySetCommand extends Command {
         super(plugin);
         this.commandName = "Modify a World (Set a value)";
         this.commandDesc = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used";
-        this.commandUsage = "/mvmodify" + ChatColor.GREEN + " SET {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]";
+        this.commandUsage = "/mvmodify" + ChatColor.GREEN + " set {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]";
         this.minimumArgLength = 2;
         this.maximumArgLength = 3;
         this.commandKeys.add("mvmodify set");
+        this.commandKeys.add("mv modify set");
+        this.commandKeys.add("mvm set");
+        this.commandKeys.add("mvmset");
         this.permission = "multiverse.world.modify";
         this.opRequired = true;
     }
@@ -57,7 +60,7 @@ public class ModifySetCommand extends Command {
 
         if (!ModifyCommand.validateAction(Action.Set, property)) {
             sender.sendMessage("Sorry, you can't SET " + property);
-            sender.sendMessage("Please visit our wiki for more information: URLGOESHERE FERNFERRET DON'T FORGET IT!");
+            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/l54PH");
             return;
         }
         if (world.setVariable(property, value)) {

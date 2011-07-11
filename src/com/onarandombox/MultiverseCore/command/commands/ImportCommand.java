@@ -20,6 +20,8 @@ public class ImportCommand extends Command {
         this.minimumArgLength = 2;
         this.maximumArgLength = 3;
         this.commandKeys.add("mvimport");
+        this.commandKeys.add("mvi");
+        this.commandKeys.add("mv import");
         this.permission = "multiverse.world.import";
         this.opRequired = true;
     }

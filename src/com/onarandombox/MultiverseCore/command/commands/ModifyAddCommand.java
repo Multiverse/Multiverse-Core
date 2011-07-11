@@ -23,6 +23,9 @@ public class ModifyAddCommand extends Command {
         this.minimumArgLength = 2;
         this.maximumArgLength = 3;
         this.commandKeys.add("mvmodify add");
+        this.commandKeys.add("mv modify add");
+        this.commandKeys.add("mvm add");
+        this.commandKeys.add("mvmadd");
         this.permission = "multiverse.world.modify";
         this.opRequired = true;
     }
@@ -60,7 +63,7 @@ public class ModifyAddCommand extends Command {
 
         if (!ModifyCommand.validateAction(Action.Add, property)) {
             sender.sendMessage("Sorry, you can't ADD to " + property);
-            sender.sendMessage("Please visit our wiki for more information: URLGOESHERE FERNFERRET DON'T FORGET IT!");
+            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/4W8cY");
             return;
         }
 

@@ -19,28 +19,30 @@ public class SpawnCommand extends Command {
         this.minimumArgLength = 0;
         this.maximumArgLength = 1;
         this.commandKeys.add("mvspawn");
-        this.permission = "multiverse.world.spawn.self";
+        this.commandKeys.add("mv spawn");
+        this.commandKeys.add("mvs");
+        this.permission = "multiverse.world.spawn";
         this.opRequired = false;
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Player commandSender = null;
+        Player player = null;
         if (sender instanceof Player) {
-            commandSender = (Player) sender;
+            player = (Player) sender;
         }
         // If a persons name was passed in, you must be A. the console, or B have permissions
         if (args.size() == 1) {
-            if (commandSender != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(commandSender, "multiverse.world.spawn.other", true)) {
-                sender.sendMessage("You don't have permission to teleport another player to spawn.");
+            if (player != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(player, "multiverse.world.spawn.other", true)) {
+                sender.sendMessage("You don't have permission to teleport another player to spawn. (multiverse.world.spawn.other)");
                 return;
             }
             Player target = this.plugin.getServer().getPlayer(args.get(0));
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");
                 target.teleport(target.getWorld().getSpawnLocation());
-                if (commandSender != null) {
-                    target.sendMessage("You were teleported by: " + ChatColor.YELLOW + commandSender.getName());
+                if (player != null) {
+                    target.sendMessage("You were teleported by: " + ChatColor.YELLOW + player.getName());
                 } else {
                     target.sendMessage("You were teleported by: " + ChatColor.LIGHT_PURPLE + "the console");
                 }
@@ -48,9 +50,13 @@ public class SpawnCommand extends Command {
                 sender.sendMessage(args.get(0) + " is not logged on right now!");
             }
         } else {
-            if (commandSender != null) {
-                commandSender.sendMessage("Teleporting to this world's spawn...");
-                commandSender.teleport(commandSender.getWorld().getSpawnLocation());
+            if (player != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(player, "multiverse.world.spawn.self", true)) {
+                sender.sendMessage("You don't have permission to teleport yourself to spawn. (multiverse.world.spawn.self)");
+                return;
+            }
+            if (player != null) {
+                player.sendMessage("Teleporting to this world's spawn...");
+                player.teleport(player.getWorld().getSpawnLocation());
             } else {
                 sender.sendMessage("From the console, you must provide a PLAYER.");
             }

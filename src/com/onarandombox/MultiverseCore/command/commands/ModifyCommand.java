@@ -9,7 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
 
 enum AddProperties {
-    animallist, monsterlist, blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist, animals, monsters
+    blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist, animals, monsters
 }
 
 enum Action {
@@ -31,6 +31,7 @@ public class ModifyCommand extends Command {
         this.minimumArgLength = 1;
         this.maximumArgLength = 0;
         this.commandKeys.add("mvmodify");
+        this.commandKeys.add("mvm");
         this.permission = "multiverse.world.modify";
         this.opRequired = true;
     }

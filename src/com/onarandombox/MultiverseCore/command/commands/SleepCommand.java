@@ -23,7 +23,7 @@ public class SleepCommand extends Command {
         this.maximumArgLength = 0;
         this.commandKeys.add("mv sleep");
         this.permission = "multiverse.sleep";
-        this.opRequired = false;
+        this.opRequired = true;
     }
 
     @Override

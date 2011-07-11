@@ -23,6 +23,7 @@ public class PurgeCommand extends Command {
         this.minimumArgLength = 1;
         this.maximumArgLength = 2;
         this.commandKeys.add("mvpurge");
+        this.commandKeys.add("mv purge");
         this.permission = "multiverse.world.purge";
         this.opRequired = true;
     }
@@ -48,12 +49,19 @@ public class PurgeCommand extends Command {
             deathName = args.get(1);
         }
 
-        if (!((MultiverseCore) this.plugin).isMVWorld(worldName)) {
+        if (!worldName.equalsIgnoreCase("all") && !((MultiverseCore) this.plugin).isMVWorld(worldName)) {
             sender.sendMessage("Multiverse doesn't know about " + worldName);
             sender.sendMessage("... so It cannot be purged");
             return;
         }
-        MVWorld world = ((MultiverseCore) this.plugin).getMVWorld(worldName);
+
+        List<MVWorld> worldsToRemoveEntitiesFrom = new ArrayList<MVWorld>();
+        // Handle all case any user who names a world "all" should know better...
+        if (worldName.equalsIgnoreCase("all")) {
+            worldsToRemoveEntitiesFrom.addAll(((MultiverseCore) this.plugin).getMVWorlds());
+        } else {
+            worldsToRemoveEntitiesFrom.add(((MultiverseCore) this.plugin).getMVWorld(worldName));
+        }
 
         PurgeWorlds purger = ((MultiverseCore) this.plugin).getWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
@@ -62,7 +70,9 @@ public class PurgeCommand extends Command {
         } else {
             Collections.addAll(thingsToKill, deathName.toUpperCase().split(","));
         }
-        purger.purgeWorld(sender, world, thingsToKill, false, false);
+        for (MVWorld w : worldsToRemoveEntitiesFrom) {
+            purger.purgeWorld(sender, w, thingsToKill, false, false);
+        }
 
         return;
     }

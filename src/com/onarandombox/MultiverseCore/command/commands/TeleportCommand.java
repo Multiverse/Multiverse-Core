@@ -24,6 +24,7 @@ public class TeleportCommand extends Command {
         this.minimumArgLength = 1;
         this.maximumArgLength = 2;
         this.commandKeys.add("mvtp");
+        this.commandKeys.add("mv tp");
         this.playerTeleporter = new MVTeleport(plugin);
         this.permission = "multiverse.world.tp";
         this.opRequired = true;

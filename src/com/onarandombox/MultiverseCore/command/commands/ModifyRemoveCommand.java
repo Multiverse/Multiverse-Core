@@ -20,9 +20,9 @@ public class ModifyRemoveCommand extends Command {
         this.minimumArgLength = 2;
         this.maximumArgLength = 3;
         this.commandKeys.add("mvmodify remove");
-        this.commandKeys.add("mvmodify r");
+        this.commandKeys.add("mv modify remove");
+        this.commandKeys.add("mvm remove");
         this.commandKeys.add("mvmremove");
-        this.commandKeys.add("mvmr");
         this.permission = "multiverse.world.modify";
         this.opRequired = true;
     }
@@ -60,7 +60,7 @@ public class ModifyRemoveCommand extends Command {
 
         if (!ModifyCommand.validateAction(Action.Remove, property)) {
             sender.sendMessage("Sorry, you can't REMOVE anything from" + property);
-            sender.sendMessage("Please visit our wiki for more information: URLGOESHERE FERNFERRET DON'T FORGET IT!");
+            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/4W8cY");
             return;
         }
         if (world.removeFromList(property, value)) {

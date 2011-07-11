@@ -18,6 +18,7 @@ public class EnvironmentCommand extends Command {
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;
         this.commandKeys.add("mvenv");
+        this.commandKeys.add("mv env");
         this.permission = "multiverse.world.list.environments";
         this.opRequired = false;
     }

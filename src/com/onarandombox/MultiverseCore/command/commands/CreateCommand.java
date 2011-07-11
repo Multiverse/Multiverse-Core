@@ -16,11 +16,13 @@ public class CreateCommand extends Command {
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Create World";
-        this.commandDesc = "Creates a new world of the specified type";
+        this.commandDesc = "Creates a new world and loads it.";
         this.commandUsage = "/mvcreate" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]]";
         this.minimumArgLength = 2;
         this.maximumArgLength = 6;
         this.commandKeys.add("mvcreate");
+        this.commandKeys.add("mvc");
+        this.commandKeys.add("mv create");
         this.permission = "multiverse.world.create";
         this.opRequired = true;
     }

@@ -23,6 +23,8 @@ public class CoordCommand extends Command {
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;
         this.commandKeys.add("mvcoord");
+        this.permission = "multiverse.world.coord";
+        this.opRequired = false;
     }
 
     @Override

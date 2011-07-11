@@ -21,6 +21,8 @@ public class ListCommand extends Command {
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;
         this.commandKeys.add("mvlist");
+        this.commandKeys.add("mvl");
+        this.commandKeys.add("mv list");
         this.permission = "multiverse.world.list";
         this.opRequired = false;
     }

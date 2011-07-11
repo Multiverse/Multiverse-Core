@@ -18,6 +18,7 @@ public class UnloadCommand extends Command {
         this.minimumArgLength = 1;
         this.maximumArgLength = 1;
         this.commandKeys.add("mvunload");
+        this.commandKeys.add("mv unload");
         this.permission = "multiverse.world.unload";
         this.opRequired = true;
     }
