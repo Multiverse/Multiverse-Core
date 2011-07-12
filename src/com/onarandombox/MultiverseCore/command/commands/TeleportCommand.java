@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.Destination;
 import com.onarandombox.utils.DestinationType;
@@ -69,19 +70,20 @@ public class TeleportCommand extends Command {
         }
 
         Destination d = Destination.parseDestination(worldName, (MultiverseCore) this.plugin);
-        if (!(d.getType() == DestinationType.World)) {
+        if (!(d.getType() == DestinationType.World) || !((MultiverseCore)this.plugin).isMVWorld(d.getName())) {
             sender.sendMessage("Multiverse does not know about this world: " + worldName);
             return;
         }
+        MVWorld world = ((MultiverseCore)this.plugin).getMVWorld(d.getName());
 
-        if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canEnterWorld(teleporter, this.plugin.getServer().getWorld(d.getName()))) {
+        if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canEnterWorld(teleporter, world)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {
                 teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
             return;
-        } else if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canTravelFromWorld(teleporter, this.plugin.getServer().getWorld(d.getName()))) {
+        } else if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canTravelFromWorld(teleporter, world)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + d.getName() + " from " + ChatColor.GREEN + teleporter.getWorld().getName());
             } else {
@@ -89,7 +91,7 @@ public class TeleportCommand extends Command {
             }
             return;
         }
-        Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(d.getName()).getSpawnLocation());
+        Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(world.getName()).getSpawnLocation());
         teleportee.teleport(l);
     }
 }

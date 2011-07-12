@@ -37,7 +37,7 @@ public class ListCommand extends Command {
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
         for (MVWorld world : ((MultiverseCore) this.plugin).getMVWorlds()) {
 
-            if (p != null && (!((MultiverseCore) this.plugin).ph.canEnterWorld(p, world.getCBWorld()))) {
+            if (p != null && (!((MultiverseCore) this.plugin).ph.canEnterWorld(p, world))) {
                 continue;
             }
 
@@ -50,11 +50,7 @@ public class ListCommand extends Command {
             } else if (env == Environment.SKYLANDS) {
                 color = ChatColor.AQUA;
             }
-            String worldName = world.getName();
-            if (world.getAlias() != null && world.getAlias().length() > 0) {
-                worldName = world.getAliasColor() + world.getAlias() + ChatColor.WHITE;
-            }
-            output += ChatColor.WHITE + worldName + " - " + color + world.getEnvironment() + " \n";
+            output += world.getColoredWorldString() + ChatColor.WHITE + " - " + color + world.getEnvironment() + " \n";
 
         }
         String[] response = output.split("\n");

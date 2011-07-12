@@ -41,13 +41,6 @@ public class BlockSafety {
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
         
-        System.out.print("Location Up:   " + upOne.getBlock().getType());
-        System.out.print("               " + upOne);
-        System.out.print("Location:      " + actual.getBlock().getType());
-        System.out.print("               " + actual);
-        System.out.print("Location Down: " + downOne.getBlock().getType());
-        System.out.print("               " + downOne);
-        
         if (actual.getBlock().getType() != Material.AIR || upOne.getBlock().getType() != Material.AIR)
             return false;
 

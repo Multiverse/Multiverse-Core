@@ -3,7 +3,6 @@ package com.onarandombox.MultiverseCore;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,8 +36,8 @@ public class MVPermissions implements PermissionsInterface {
      * @param w
      * @return
      */
-    public Boolean canTravelFromWorld(Player p, World w) {
-        List<String> blackList = this.plugin.getMVWorld(w.getName()).getWorldBlacklist();
+    public Boolean canTravelFromWorld(Player p, MVWorld w) {
+        List<String> blackList = w.getWorldBlacklist();
 
         boolean returnValue = true;
 
@@ -63,13 +62,10 @@ public class MVPermissions implements PermissionsInterface {
      * @param w
      * @return
      */
-    public Boolean canEnterWorld(Player p, World w) {
+    public Boolean canEnterWorld(Player p, MVWorld w) {
 
-        if (!this.plugin.isMVWorld(w.getName())) {
-            return false;
-        }
-        List<String> whiteList = this.plugin.getMVWorld(w.getName()).getPlayerWhitelist();
-        List<String> blackList = this.plugin.getMVWorld(w.getName()).getPlayerBlacklist();
+        List<String> whiteList = w.getPlayerWhitelist();
+        List<String> blackList = w.getPlayerBlacklist();
         boolean returnValue = true;
 
         // If there's anyone in the whitelist, then the whitelist is ACTIVE, anyone not in it is blacklisted.
@@ -77,7 +73,7 @@ public class MVPermissions implements PermissionsInterface {
             returnValue = false;
         }
         for (String bls : blackList) {
-            if (bls.toLowerCase().contains("g:") && this.inGroup(p, w.getName(), bls.split(":")[1])) {
+            if (bls.toLowerCase().contains("g:") && this.inGroup(p, w.getAlias(), bls.split(":")[1])) {
                 returnValue = false;
                 break;
             }
@@ -87,7 +83,7 @@ public class MVPermissions implements PermissionsInterface {
             }
         }
         for (String wls : whiteList) {
-            if (wls.toLowerCase().contains("g:") && this.inGroup(p, w.getName(), wls.split(":")[1])) {
+            if (wls.toLowerCase().contains("g:") && this.inGroup(p, w.getAlias(), wls.split(":")[1])) {
                 returnValue = true;
                 break;
             }

@@ -92,12 +92,12 @@ public class MultiverseCore extends JavaPlugin {
 
         this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
-        this.commandHandler = new CommandHandler(this,this.ph);
+        this.commandHandler = new CommandHandler(this, this.ph);
         // Setup the world purger
         this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
-        
+
         this.playerSessions = new HashMap<String, MVPlayerSession>();
 
         // Start the Update Checker
@@ -543,10 +543,34 @@ public class MultiverseCore extends JavaPlugin {
         if (this.worlds.containsKey(name)) {
             return this.worlds.get(name);
         }
+        return this.getMVWorldByAlias(name);
+    }
+
+    public MVWorld getMVWorldByAlias(String alias) {
+        for (MVWorld w : this.worlds.values()) {
+            if (w.getAlias().equalsIgnoreCase(alias)) {
+                return w;
+            }
+        }
         return null;
     }
 
     public boolean isMVWorld(String name) {
-        return this.worlds.containsKey(name);
+        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+    }
+
+    /**
+     * This method ONLY checks the alias of each world.
+     * 
+     * @param name
+     * @return
+     */
+    private boolean isMVWorldAlias(String name) {
+        for (MVWorld w : this.worlds.values()) {
+            if (w.getAlias().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -102,8 +102,8 @@ public class MVPlayerSession {
     }
 
     private boolean bedStillExists(Location bedSpawn) {
-        System.out.print("Dangers:");
-        this.bs.showDangers(bedSpawn);
+        //System.out.print("Dangers:");
+        //this.bs.showDangers(bedSpawn);
         Location locationDown = new Location(bedSpawn.getWorld(), bedSpawn.getX(), bedSpawn.getY(), bedSpawn.getZ());
         locationDown.setY(locationDown.getY() - 1);
         if (locationDown.getBlock().getType() != Material.BED_BLOCK) {

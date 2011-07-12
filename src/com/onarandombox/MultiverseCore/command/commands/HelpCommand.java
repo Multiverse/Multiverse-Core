@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
 
 public class HelpCommand extends Command {
-    private static final int CMDS_PER_PAGE = 8;
+    private static final int CMDS_PER_PAGE = 7;
 
     public HelpCommand(JavaPlugin plugin) {
         super(plugin);
@@ -53,6 +53,7 @@ public class HelpCommand extends Command {
 
         sender.sendMessage(ChatColor.AQUA + "====[ Multiverse Help ]====");
         sender.sendMessage(ChatColor.AQUA + " Page " + page + " of " + totalPages);
+        sender.sendMessage(ChatColor.AQUA + " Add a '" + ChatColor.DARK_PURPLE + "?" + ChatColor.AQUA + "' after a command to see more about it.");
         this.showPage(page, sender, availableCommands);
 
     }

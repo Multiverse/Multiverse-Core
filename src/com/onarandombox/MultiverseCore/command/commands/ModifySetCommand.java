@@ -63,11 +63,13 @@ public class ModifySetCommand extends Command {
             sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/l54PH");
             return;
         }
-        if (world.setVariable(property, value)) {
+        if((property.equalsIgnoreCase("aliascolor") || property.equalsIgnoreCase("color")) && !world.isValidAliasColor(value)) {
+            sender.sendMessage(value + " is not a valid color. Please see our Github Wiki for the complete color list.");
+        }
+        else if (world.setVariable(property, value)) {
             sender.sendMessage("Property " + property + " was set to " + value);
         } else {
             sender.sendMessage("There was an error setting " + property);
         }
     }
-
 }

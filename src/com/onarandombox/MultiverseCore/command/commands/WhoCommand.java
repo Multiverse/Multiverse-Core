@@ -53,21 +53,10 @@ public class WhoCommand extends Command {
                 continue;
             }
 
-            World w = this.plugin.getServer().getWorld(world.getName());
-            if (p != null && (!((MultiverseCore) this.plugin).getPermissions().canEnterWorld(p, w))) {
+            if (p != null && (!((MultiverseCore) this.plugin).getPermissions().canEnterWorld(p, world))) {
                 continue;
             }
-
-            ChatColor color = ChatColor.GOLD;
-            Environment env = world.getEnvironment();
-            if (env == Environment.NETHER) {
-                color = ChatColor.RED;
-            } else if (env == Environment.NORMAL) {
-                color = ChatColor.GREEN;
-            } else if (env == Environment.SKYLANDS) {
-                color = ChatColor.AQUA;
-            }
-            List<Player> players = w.getPlayers();
+            List<Player> players = world.getCBWorld().getPlayers();
 
             String result = "";
             if (players.size() <= 0) {
@@ -77,13 +66,8 @@ public class WhoCommand extends Command {
                     result += player.getName() + " ";
                 }
             }
-            String worldName = world.getName();
-            if (world.getAlias() != null && world.getAlias().length() > 0) {
-                worldName = world.getAlias();
-                color = world.getAliasColor();
-            }
 
-            sender.sendMessage(color + worldName + ChatColor.WHITE + " - " + result);
+            sender.sendMessage(world.getColoredWorldString() + ChatColor.WHITE + " - " + result);
         }
     }
 }
