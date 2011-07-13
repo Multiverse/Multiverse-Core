@@ -76,6 +76,8 @@ public class MVWorld {
     private Boolean pvp; // Does this World allow PVP?
     private Boolean fakepvp;
 
+    private String respawnToWorld; // Contains the name of the World to respawn the player to
+
     private List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
 
     private HashMap<String, List<String>> masterList;
@@ -114,6 +116,7 @@ public class MVWorld {
         this.setAliasColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
         this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", 1.0));
+        this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawntoworld", ""));
 
         this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
@@ -525,5 +528,13 @@ public class MVWorld {
 
     public boolean getFakePVP() {
         return this.fakepvp;
+    }
+
+    public String getRespawnToWorld() {
+        return respawnToWorld;
+    }
+
+    public void setRespawnToWorld(String respawnToWorld) {
+        this.respawnToWorld = respawnToWorld;
     }
 }

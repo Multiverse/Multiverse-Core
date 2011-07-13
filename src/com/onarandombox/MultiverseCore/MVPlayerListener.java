@@ -2,17 +2,15 @@ package com.onarandombox.MultiverseCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 
@@ -79,36 +77,30 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        // TODO: Handle Global Respawn from config
+        // TODO: Reimplement bed respawning, needs to be a way to persist the bed location or something otherwise it's not very effective.
 
-        // TODO: Handle Alternate Respawn from config
+        World world = event.getPlayer().getWorld();
 
-        MVPlayerSession ps = this.plugin.getPlayerSession(event.getPlayer());
-        // Location newrespawn = ps.getRespawnWorld().getSpawnLocation();
-        Location newrespawn = event.getPlayer().getWorld().getSpawnLocation();
-        String respawnStyle = this.plugin.configMV.getString("notchrespawnstyle", "none");
-        String defaultWorld = this.plugin.configMV.getString("defaultspawnworld", "world");
-        boolean bedRespawn = this.plugin.configMV.getBoolean("bedrespawn", true);
-        Location bedRespawnLoc = this.plugin.getPlayerSession(event.getPlayer()).getBedRespawnLocation();
-
-
-        if (bedRespawn && bedRespawnLoc != null) {
-            Location correctedBedRespawn = new Location(bedRespawnLoc.getWorld(), bedRespawnLoc.getX(), bedRespawnLoc.getY() + 1, bedRespawnLoc.getZ());
-            event.setRespawnLocation(correctedBedRespawn);
-        } else if (respawnStyle.equalsIgnoreCase("none")) {
-            event.setRespawnLocation(newrespawn);
-        } else if (respawnStyle.equalsIgnoreCase("default")) {
-
-            if (this.plugin.isMVWorld(defaultWorld)) {
-                event.setRespawnLocation(this.plugin.getServer().getWorld(defaultWorld).getSpawnLocation());
-            } else {
-                event.setRespawnLocation(newrespawn);
-            }
-        } else {
-            MVRespawnEvent mvevent = new MVRespawnEvent(newrespawn, event.getPlayer(), respawnStyle);
-            this.plugin.getServer().getPluginManager().callEvent(mvevent);
-            event.setRespawnLocation(mvevent.getPlayersRespawnLocation());
+        // If it's not a World MV manages we stop.
+        if (this.plugin.isMVWorld(world.getName())) {
+            return;
         }
+
+        // Get the MVWorld
+        MVWorld mvWorld = this.plugin.getMVWorld(world.getName());
+        // Get the instance of the World the player should respawn at.
+        World respawnWorld = this.plugin.getServer().getWorld(mvWorld.getRespawnToWorld());
+
+        // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
+        if (respawnWorld == null) {
+            return;
+        }
+
+        Location respawnLocation = respawnWorld.getSpawnLocation();
+
+        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
+        this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
+        event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
     }
 
     @Override
