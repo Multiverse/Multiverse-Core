@@ -1,6 +1,6 @@
 name: Multiverse-Core
 main: com.onarandombox.MultiverseCore.MultiverseCore
-authors: ['Rigby', 'Herocraft Coding Team']
+authors: ['Rigby', 'fernferret']
 version: 2.0
 commands:
   mv:
@@ -83,13 +83,13 @@ commands:
     usage: |
             /<command> [environment]
             Example: /<command> NETHER - Shows all NETHER Worlds.
-            Example: /<command> NORMAL - Shows all NORMAL Worlds. 
+            Example: /<command> NORMAL - Shows all NORMAL Worlds.
   mvl:
     description: Print list of loaded Worlds
     usage: |
             /<command> [environment]
             Example: /<command> NETHER - Shows all NETHER Worlds.
-            Example: /<command> NORMAL - Shows all NORMAL Worlds. 
+            Example: /<command> NORMAL - Shows all NORMAL Worlds.
   mvsetspawn:
     description: Set the spawn area for a particular world
     usage: /<command> -- Sets the spawn area of the current world to your location.
@@ -106,13 +106,13 @@ commands:
     description: Display World, Coordinates, Direction & Compression for a world.
     usage: |
             /<command> [world]
-            /<command> -- Shows the relevant coordinates in your current world. 
+            /<command> -- Shows the relevant coordinates in your current world.
             /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
   mvc:
     description: Display World, Coordinates, Direction & Compression for a world.
     usage: |
             /<command> [world]
-            /<command> -- Shows the relevant coordinates in your current world. 
+            /<command> -- Shows the relevant coordinates in your current world.
             /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
   mvwho:
     description: Display online users per world.
