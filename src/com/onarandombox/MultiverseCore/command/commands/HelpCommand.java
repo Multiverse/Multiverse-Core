@@ -31,6 +31,9 @@ public class HelpCommand extends Command {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        sender.sendMessage(ChatColor.AQUA + "====[ Multiverse Help ]====");
+        
+
         int page = 1;
         if (args.size() == 1) {
             try {
@@ -39,21 +42,30 @@ public class HelpCommand extends Command {
             }
         }
 
-        List<Command> availableCommands = new ArrayList<Command> (((MultiverseCore) this.plugin).getCommandHandler().getAllCommands());
-        for(Command c : availableCommands) {
-            if(!((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, c.getPermission(), c.isOpRequired())) {
+        List<Command> availableCommands = new ArrayList<Command>(((MultiverseCore) this.plugin).getCommandHandler().getAllCommands());
+        for (Command c : availableCommands) {
+            if (!((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, c.getPermission(), c.isOpRequired())) {
                 availableCommands.remove(c);
             }
         }
-        int totalPages = (int) Math.ceil(availableCommands.size() / ( CMDS_PER_PAGE + 0.0));
+
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.AQUA + " Add a '" + ChatColor.DARK_PURPLE + "?" + ChatColor.AQUA + "' after a command to see more about it.");
+            for (Command c : availableCommands) {
+                sender.sendMessage(ChatColor.AQUA + c.getCommandUsage());
+            }
+            return;
+        }
+
+        int totalPages = (int) Math.ceil(availableCommands.size() / (CMDS_PER_PAGE + 0.0));
 
         if (page > totalPages) {
             page = totalPages;
         }
 
-        sender.sendMessage(ChatColor.AQUA + "====[ Multiverse Help ]====");
         sender.sendMessage(ChatColor.AQUA + " Page " + page + " of " + totalPages);
         sender.sendMessage(ChatColor.AQUA + " Add a '" + ChatColor.DARK_PURPLE + "?" + ChatColor.AQUA + "' after a command to see more about it.");
+        
         this.showPage(page, sender, availableCommands);
 
     }
@@ -64,8 +76,8 @@ public class HelpCommand extends Command {
         for (int i = start; i < end; i++) {
             // For consistancy, print some extra lines if it's a player:
             if (i < cmds.size()) {
-            sender.sendMessage(ChatColor.AQUA + cmds.get(i).getCommandUsage());
-            } else if(sender instanceof Player) {
+                sender.sendMessage(ChatColor.AQUA + cmds.get(i).getCommandUsage());
+            } else if (sender instanceof Player) {
                 sender.sendMessage(" ");
             }
         }

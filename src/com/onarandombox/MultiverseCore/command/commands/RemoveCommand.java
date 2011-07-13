@@ -14,7 +14,7 @@ public class RemoveCommand extends Command {
         super(plugin);
         this.commandName = "Remove World";
         this.commandDesc = "Unloads a world from Multiverse and removes it from worlds.yml, this does NOT remove the world folder.";
-        this.commandUsage = "/mvremove" + ChatColor.GREEN + " {WORLD} ";
+        this.commandUsage = "/mvremove " + ChatColor.GREEN + " {WORLD} ";
         this.minimumArgLength = 1;
         this.maximumArgLength = 1;
         this.commandKeys.add("mvremove");

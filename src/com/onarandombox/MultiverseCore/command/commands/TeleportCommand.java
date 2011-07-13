@@ -21,7 +21,7 @@ public class TeleportCommand extends Command {
         super(plugin);
         this.commandName = "Teleport";
         this.commandDesc = "Teleports you to a different world.";
-        this.commandUsage = "/mvtp" + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}";
+        this.commandUsage = "/mvtp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}";
         this.minimumArgLength = 1;
         this.maximumArgLength = 2;
         this.commandKeys.add("mvtp");
