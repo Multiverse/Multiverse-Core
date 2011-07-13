@@ -32,7 +32,7 @@ public class HelpCommand extends Command {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         sender.sendMessage(ChatColor.AQUA + "====[ Multiverse Help ]====");
-        
+
 
         int page = 1;
         if (args.size() == 1) {
@@ -65,7 +65,7 @@ public class HelpCommand extends Command {
 
         sender.sendMessage(ChatColor.AQUA + " Page " + page + " of " + totalPages);
         sender.sendMessage(ChatColor.AQUA + " Add a '" + ChatColor.DARK_PURPLE + "?" + ChatColor.AQUA + "' after a command to see more about it.");
-        
+
         this.showPage(page, sender, availableCommands);
 
     }

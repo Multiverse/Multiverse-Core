@@ -11,13 +11,13 @@ import com.fernferret.allpay.AllPay;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class MVPluginListener extends ServerListener {
-    
+
     MultiverseCore plugin;
-    
+
     public MVPluginListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
-    
+
     /**
      * Keep an eye out for Plugins which we can utilize.
      */
@@ -35,7 +35,7 @@ public class MVPluginListener extends ServerListener {
             this.plugin.bank = this.plugin.banker.loadEconPlugin();
         }
     }
-    
+
     /**
      * We'll check if any of the plugins we rely on decide to Disable themselves.
      */
@@ -50,5 +50,5 @@ public class MVPluginListener extends ServerListener {
         }
         // TODO: Disable econ when it disables.
     }
-    
+
 }

@@ -10,22 +10,22 @@ import org.bukkit.World.Environment;
 import org.bukkit.util.config.Configuration;
 
 enum EnglishChatColor {
-        AQUA("AQUA", ChatColor.AQUA),
-        BLACK("BLACK", ChatColor.BLACK),
-        BLUE("BLUE", ChatColor.BLUE),
-        DARKAQUA("DARKAQUA", ChatColor.DARK_AQUA),
-        DARKBLUE("DARKBLUE", ChatColor.DARK_BLUE),
-        DARKGRAY("DARKGRAY", ChatColor.DARK_GRAY),
-        DARKGREEN("DARKGREEN", ChatColor.DARK_GREEN),
-        DARKPURPLE("DARKPURPLE", ChatColor.DARK_PURPLE),
-        DARKRED("DARKRED", ChatColor.DARK_RED),
-        GOLD("GOLD", ChatColor.GOLD),
-        GRAY("GRAY", ChatColor.GRAY),
-        GREEN("GREEN", ChatColor.GREEN),
-        LIGHTPURPLE("LIGHTPURPLE", ChatColor.LIGHT_PURPLE),
-        RED("RED", ChatColor.RED),
-        YELLOW("YELLOW", ChatColor.YELLOW),
-        WHITE("WHITE", ChatColor.WHITE);
+    AQUA("AQUA", ChatColor.AQUA),
+    BLACK("BLACK", ChatColor.BLACK),
+    BLUE("BLUE", ChatColor.BLUE),
+    DARKAQUA("DARKAQUA", ChatColor.DARK_AQUA),
+    DARKBLUE("DARKBLUE", ChatColor.DARK_BLUE),
+    DARKGRAY("DARKGRAY", ChatColor.DARK_GRAY),
+    DARKGREEN("DARKGREEN", ChatColor.DARK_GREEN),
+    DARKPURPLE("DARKPURPLE", ChatColor.DARK_PURPLE),
+    DARKRED("DARKRED", ChatColor.DARK_RED),
+    GOLD("GOLD", ChatColor.GOLD),
+    GRAY("GRAY", ChatColor.GRAY),
+    GREEN("GREEN", ChatColor.GREEN),
+    LIGHTPURPLE("LIGHTPURPLE", ChatColor.LIGHT_PURPLE),
+    RED("RED", ChatColor.RED),
+    YELLOW("YELLOW", ChatColor.YELLOW),
+    WHITE("WHITE", ChatColor.WHITE);
     private ChatColor color;
     private String text;
 
@@ -135,7 +135,7 @@ public class MVWorld {
 
     public String getColoredWorldString() {
         ChatColor color = this.getAliasColor();
-        if(color == null) {
+        if (color == null) {
             if (this.environment == Environment.NETHER) {
                 color = ChatColor.RED;
             } else if (this.environment == Environment.NORMAL) {
@@ -332,7 +332,7 @@ public class MVWorld {
 
     /**
      * This is the one people have access to. It'll handle the rest.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -486,7 +486,7 @@ public class MVWorld {
 
     /**
      * Sets the chat color from a string.
-     * 
+     *
      * @param aliasColor
      */
     public void setAliasColor(String aliasColor) {

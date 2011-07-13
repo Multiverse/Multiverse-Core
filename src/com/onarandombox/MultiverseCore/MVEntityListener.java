@@ -60,18 +60,17 @@ public class MVEntityListener extends EntityListener {
         if (defender instanceof Player) {
             Player player = (Player) defender;
             World w = player.getWorld();
-            
-            if(!this.plugin.isMVWorld(w.getName())) {
+
+            if (!this.plugin.isMVWorld(w.getName())) {
                 //if the world is not handled, we don't care
                 return;
             }
             MVWorld world = this.plugin.getMVWorld(w.getName());
-            
+
             if (attacker != null && attacker instanceof Player) {
                 Player pattacker = (Player) attacker;
-                
-                
-                
+
+
                 if (!world.getPvp() && this.plugin.configMV.getBoolean("fakepvp", false)) {
                     pattacker.sendMessage(ChatColor.RED + "PVP is disabled in this World.");
                     event.setCancelled(true);
@@ -80,14 +79,14 @@ public class MVEntityListener extends EntityListener {
             }
         }
     }
-    
+
     @Override
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
         RegainReason reason = event.getRegainReason();
-        if(reason == RegainReason.REGEN && this.plugin.configMV.getBoolean("disableautoheal", false)) {
+        if (reason == RegainReason.REGEN && this.plugin.configMV.getBoolean("disableautoheal", false)) {
             event.setCancelled(true);
             return;
         }

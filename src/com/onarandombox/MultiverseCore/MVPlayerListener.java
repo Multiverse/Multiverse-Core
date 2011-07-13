@@ -90,8 +90,8 @@ public class MVPlayerListener extends PlayerListener {
         String defaultWorld = this.plugin.configMV.getString("defaultspawnworld", "world");
         boolean bedRespawn = this.plugin.configMV.getBoolean("bedrespawn", true);
         Location bedRespawnLoc = this.plugin.getPlayerSession(event.getPlayer()).getBedRespawnLocation();
-        
-        
+
+
         if (bedRespawn && bedRespawnLoc != null) {
             Location correctedBedRespawn = new Location(bedRespawnLoc.getWorld(), bedRespawnLoc.getX(), bedRespawnLoc.getY() + 1, bedRespawnLoc.getZ());
             event.setRespawnLocation(correctedBedRespawn);

@@ -70,11 +70,11 @@ public class TeleportCommand extends Command {
         }
 
         Destination d = Destination.parseDestination(worldName, (MultiverseCore) this.plugin);
-        if (!(d.getType() == DestinationType.World) || !((MultiverseCore)this.plugin).isMVWorld(d.getName())) {
+        if (!(d.getType() == DestinationType.World) || !((MultiverseCore) this.plugin).isMVWorld(d.getName())) {
             sender.sendMessage("Multiverse does not know about this world: " + worldName);
             return;
         }
-        MVWorld world = ((MultiverseCore)this.plugin).getMVWorld(d.getName());
+        MVWorld world = ((MultiverseCore) this.plugin).getMVWorld(d.getName());
 
         if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canEnterWorld(teleporter, world)) {
             if (teleportee.equals(teleporter)) {

@@ -17,7 +17,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Constructor FTW
-     * 
+     *
      * @param plugin Pass along the Core Plugin.
      */
     public MVPermissions(MultiverseCore plugin) {
@@ -31,7 +31,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Check if a Player can teleport to the Destination world from there current world. This checks against the Worlds Blacklist
-     * 
+     *
      * @param p
      * @param w
      * @return
@@ -57,7 +57,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Check if the Player has the permissions to enter this world.
-     * 
+     *
      * @param p
      * @param w
      * @return
@@ -97,10 +97,10 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Returns true if a player is in a group.
-     * 
-     * @param player The player to check
+     *
+     * @param player    The player to check
      * @param worldName The world to check in
-     * @param group The group are we checking
+     * @param group     The group are we checking
      * @return True if the player is in the group, false if not.
      */
     private boolean inGroup(Player player, String worldName, String group) {

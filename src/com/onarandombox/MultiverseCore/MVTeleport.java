@@ -24,7 +24,7 @@ public class MVTeleport {
 
     /**
      * TODO: Sort out JavaDoc
-     * 
+     *
      * @param l
      * @param w
      * @return
@@ -59,7 +59,7 @@ public class MVTeleport {
 
     /**
      * This method will be specific to beds, and check on top of the bed then around it.
-     * 
+     *
      * @return
      */
     public Location getSafeBedDestination(Location bedLocation) {
@@ -78,7 +78,7 @@ public class MVTeleport {
 
     /**
      * This function gets a safe place to teleport to.
-     * 
+     *
      * @param world
      * @param player
      * @return
@@ -138,7 +138,7 @@ public class MVTeleport {
 
     /**
      * Check the Column given to see if there is an available safe spot.
-     * 
+     *
      * @param world
      * @param x
      * @param y
@@ -159,7 +159,7 @@ public class MVTeleport {
 
     /**
      * Find a portal around the given location and return a new location.
-     * 
+     *
      * @param location
      * @return
      */

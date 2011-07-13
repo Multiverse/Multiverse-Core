@@ -48,7 +48,7 @@ public class MVPlayerSession {
 
     /**
      * Grab whether the cooldown on Portal use has expired or not.
-     * 
+     *
      * @return
      */
     public boolean getTeleportable() {
@@ -62,7 +62,7 @@ public class MVPlayerSession {
 
     /**
      * Send a Message to the Player as long as enough time has passed since the last message.
-     * 
+     *
      * @param msg
      */
     public void message(String msg) {

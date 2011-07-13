@@ -25,7 +25,7 @@ public class DeleteCommand extends Command {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Class<?> paramTypes[] = { String.class };
+        Class<?> paramTypes[] = {String.class};
         ((MultiverseCore) this.plugin).getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
 }

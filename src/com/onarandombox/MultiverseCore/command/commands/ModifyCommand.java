@@ -15,6 +15,7 @@ enum AddProperties {
 enum Action {
     Set, Add, Remove, Clear
 }
+
 // Color == Aliascolor
 enum SetProperties {
     alias, animals, monsters, pvp, scaling, aliascolor, color

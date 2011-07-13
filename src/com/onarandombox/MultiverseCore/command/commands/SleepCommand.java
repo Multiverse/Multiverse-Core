@@ -32,12 +32,12 @@ public class SleepCommand extends Command {
         if (sender instanceof Player) {
             p = (Player) sender;
         }
-        
-        if(p == null) {
+
+        if (p == null) {
             return;
         }
         MVPlayerSession session = ((MultiverseCore) this.plugin).getPlayerSession(p);
-        if(session.getBedRespawnLocation() != null) {
+        if (session.getBedRespawnLocation() != null) {
             p.teleport(session.getBedRespawnLocation());
         } else {
             sender.sendMessage("Hmm this is awkward...");
