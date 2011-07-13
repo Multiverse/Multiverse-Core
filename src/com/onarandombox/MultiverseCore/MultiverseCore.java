@@ -303,6 +303,12 @@ public class MultiverseCore extends JavaPlugin {
                 log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env);
             }
         }
+
+        if (world == null) {
+            log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
+            return false;
+        }
+
         MVWorld mvworld = new MVWorld(world, this.configWorlds, this, seed, generator);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
