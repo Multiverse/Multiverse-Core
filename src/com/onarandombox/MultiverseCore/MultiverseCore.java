@@ -143,7 +143,7 @@ public class MultiverseCore extends JavaPlugin {
      * Load the Configuration files OR create the default config files.
      */
     public void loadConfigs() {
-        
+
         // Call the defaultConfiguration class to create the config files if they don't already exist.
         new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator);
         new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator);

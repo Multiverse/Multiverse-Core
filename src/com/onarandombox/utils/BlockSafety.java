@@ -7,7 +7,7 @@ import org.bukkit.World;
 public class BlockSafety {
     /**
      * This function checks whether the block at the given coordinates are above air or not.
-     * 
+     *
      * @param world
      * @param x
      * @param y
@@ -27,7 +27,7 @@ public class BlockSafety {
 
     /**
      * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air etc. This also ensures there is enough space for a player to spawn!
-     * 
+     *
      * @param world
      * @param x
      * @param y
@@ -40,7 +40,7 @@ public class BlockSafety {
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
-        
+
         if (actual.getBlock().getType() != Material.AIR || upOne.getBlock().getType() != Material.AIR)
             return false;
 
@@ -61,14 +61,14 @@ public class BlockSafety {
 
         return true;
     }
-    
+
     public void showDangers(Location l) {
         Location actual = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         Location upOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
-        
+
         System.out.print("Location Up:   " + upOne.getBlock().getType());
         System.out.print("               " + upOne);
         System.out.print("Location:      " + actual.getBlock().getType());

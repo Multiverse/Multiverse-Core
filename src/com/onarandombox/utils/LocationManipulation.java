@@ -7,6 +7,7 @@ public class LocationManipulation {
 
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
+     *
      * @param location
      * @return
      */
@@ -22,6 +23,7 @@ public class LocationManipulation {
 
     /**
      * Convert a String to a Location.
+     *
      * @param world
      * @param xStr
      * @param yStr
@@ -42,6 +44,7 @@ public class LocationManipulation {
 
     /**
      * Convert a Location to XYZ Coordinates.
+     *
      * @param l
      * @return
      */
@@ -55,6 +58,7 @@ public class LocationManipulation {
 
     /**
      * Return the NESW Direction a Location is facing.
+     *
      * @param location
      * @return
      */

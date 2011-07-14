@@ -87,8 +87,8 @@ public class MVConfigMigrator {
 
     private void migrateListItem(Configuration newConfig, Configuration oldConfig, String key, String oldProperty, String newProperty) {
         List<String> list = Arrays.asList(oldConfig.getString("worlds." + key + oldProperty).split(","));
-        if(list.size() > 0) {
-            if(list.get(0).length() == 0) {
+        if (list.size() > 0) {
+            if (list.get(0).length() == 0) {
                 list = new ArrayList<String>();
             }
         }

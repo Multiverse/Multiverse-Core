@@ -9,7 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 
 /**
  * https://github.com/Nijikokun/iConomy3/blob/master/com/nijiko/coelho/iConomy/iConomy.java
- * 
+ *
  * @author Nijikokun & Coelho
  */
 public class DefaultConfiguration {

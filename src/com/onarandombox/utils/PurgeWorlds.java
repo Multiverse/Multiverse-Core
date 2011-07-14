@@ -14,13 +14,13 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class PurgeWorlds {
-    
+
     MultiverseCore plugin;
-    
+
     public PurgeWorlds(MultiverseCore plugin) {
         this.plugin = plugin;
     }
-    
+
     /**
      * Synchronizes the given world with it's settings
      */
@@ -32,8 +32,10 @@ public class PurgeWorlds {
             this.purgeWorld(sender, world);
         }
     }
+
     /**
      * Convince method for clearing all the animals that do not belong according to the config.
+     *
      * @param sender
      * @param world
      */
@@ -45,17 +47,18 @@ public class PurgeWorlds {
         allMobs.addAll(world.getMonsterList());
         purgeWorld(sender, world, allMobs, !world.allowAnimalSpawning(), !world.allowMonsterSpawning());
     }
-    
+
     public void purgeWorld(CommandSender sender, MVWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
-        if (mvworld == null)
+        if (mvworld == null) {
             return;
+        }
         World world = this.plugin.getServer().getWorld(mvworld.getName());
         if (world == null) {
             return;
         }
         int entitiesKilled = 0;
         for (Entity e : world.getEntities()) {
-            
+
             // Check against Monsters
             if (killMonster(mvworld, e, thingsToKill, negateMonsters)) {
                 entitiesKilled++;
@@ -66,13 +69,13 @@ public class PurgeWorlds {
                 entitiesKilled++;
                 continue;
             }
-            
+
         }
         if (sender != null) {
             sender.sendMessage(entitiesKilled + " entities purged from the world.");
         }
     }
-    
+
     private boolean killCreature(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
         if (e instanceof Squid || e instanceof Animals) {
@@ -90,10 +93,10 @@ public class PurgeWorlds {
         }
         return false;
     }
-    
+
     /**
      * Will kill the monster if it's in the list UNLESS the NEGATE boolean is set, then it will kill it if it's NOT
-     * 
+     *
      * @param mvworld
      * @param e
      * @param creaturesToKill
@@ -117,5 +120,5 @@ public class PurgeWorlds {
         }
         return false;
     }
-    
+
 }
