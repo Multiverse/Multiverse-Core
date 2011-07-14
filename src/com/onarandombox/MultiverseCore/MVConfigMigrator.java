@@ -107,6 +107,7 @@ public class MVConfigMigrator {
         newConfig.setProperty("disableautoheal", false);
         newConfig.setProperty("fakepvp", false);
         newConfig.setProperty("bedrespawn", true);
+        newConfig.setProperty("version", 2.0);
         newConfig.save();
         return true;
     }

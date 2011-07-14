@@ -29,3 +29,7 @@ fakepvp: false
 # When this is enabled, users will spawn at their last bed slept at. If the bed is destroyed or obstructed,
 # they will spawn according to how you have 'notchrespawnstyle' set.
 bedrespawn: true
+
+# This just signifies the version number so we can see what version of config you have.
+# NEVER TOUCH THIS VALUE
+version: 2.0
