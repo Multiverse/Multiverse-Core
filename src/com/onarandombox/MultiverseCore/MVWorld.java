@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -128,6 +129,26 @@ public class MVWorld {
         this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
         this.getEditWhitelist().addAll(config.getStringList("worlds." + this.name + ".editwhitelist", new ArrayList<String>()));
         this.getEditBlacklist().addAll(config.getStringList("worlds." + this.name + ".editblacklist", new ArrayList<String>()));
+        String tempspawn = config.getString("worlds." + this.name + ".tempspawn", "");
+        if (tempspawn.length() > 0) {
+            String[] coordsString = tempspawn.split(":");
+            if (coordsString.length >= 3) {
+                int[] coords = new int[3];
+                try {
+                    for (int i = 0; i < 3; i++) {
+
+                        coords[i] = Integer.parseInt(coordsString[i]);
+                    }
+                    this.world.setSpawnLocation(coords[0], coords[1], coords[2]);
+                } catch (NumberFormatException e) {
+                    this.plugin.log(Level.WARNING, "A MV1 spawn value was found, but it could not be migrated. Format Error. Sorry.");
+                }
+            } else {
+                this.plugin.log(Level.WARNING, "A MV1 spawn value was found, but it could not be migrated. Format Error. Sorry.");
+            }
+
+            this.config.removeProperty("worlds." + this.name + ".tempspawn");
+        }
 
         config.save();
         // The following 3 lines will add some sample data to new worlds created.
@@ -335,7 +356,7 @@ public class MVWorld {
 
     /**
      * This is the one people have access to. It'll handle the rest.
-     *
+     * 
      * @param name
      * @param value
      * @return
@@ -489,7 +510,7 @@ public class MVWorld {
 
     /**
      * Sets the chat color from a string.
-     *
+     * 
      * @param aliasColor
      */
     public void setAliasColor(String aliasColor) {

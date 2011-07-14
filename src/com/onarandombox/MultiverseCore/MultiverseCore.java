@@ -22,6 +22,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
+import sun.tools.attach.MacosxVirtualMachine;
+
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.command.commands.*;
@@ -70,7 +72,8 @@ public class MultiverseCore extends JavaPlugin {
     private PurgeWorlds worldPurger;
     public GenericBank bank = null;
     public AllPay banker = new AllPay(this, "[Multiverse-Core] ");
-    ;
+    public static boolean defaultConfigsCreated = false;
+    protected MVConfigMigrator migrator = new MVConfigMigrator(this);
 
     @Override
     public void onLoad() {
@@ -142,9 +145,10 @@ public class MultiverseCore extends JavaPlugin {
      * Load the Configuration files OR create the default config files.
      */
     public void loadConfigs() {
+        
         // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new DefaultConfiguration(getDataFolder(), "config.yml");
-        new DefaultConfiguration(getDataFolder(), "worlds.yml");
+        new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator);
+        new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator);
 
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));

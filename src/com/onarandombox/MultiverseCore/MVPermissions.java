@@ -70,6 +70,7 @@ public class MVPermissions implements PermissionsInterface {
 
         // If there's anyone in the whitelist, then the whitelist is ACTIVE, anyone not in it is blacklisted.
         if (whiteList.size() > 0) {
+            p.sendMessage("Whitelist Active!");
             returnValue = false;
         }
         for (String bls : blackList) {
