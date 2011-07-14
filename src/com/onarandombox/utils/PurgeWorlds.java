@@ -68,7 +68,9 @@ public class PurgeWorlds {
             }
             
         }
-        this.plugin.log(Level.INFO, "I just murdered " + entitiesKilled + " in " + world.getName());
+        if (sender != null) {
+            sender.sendMessage(entitiesKilled + " entities purged from the world.");
+        }
     }
     
     private boolean killCreature(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
