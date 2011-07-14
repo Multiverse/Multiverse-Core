@@ -72,7 +72,7 @@ public class PurgeWorlds {
 
         }
         if (sender != null) {
-            sender.sendMessage(entitiesKilled + " entities purged from the world.");
+            sender.sendMessage(entitiesKilled + " entities purged from the world '" + world.getName() + "'");
         }
     }
 
