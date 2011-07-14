@@ -1,26 +1,9 @@
 # !!!This only applies to worlds being handled by Multiverse!!!
 # If you don't see it using /mvlist this setting WILL HAVE NO EFFECT
-# Valid values are:
-# all: If you die in a Nether an attempt will be made to spawn you in the corresponding Normal world, if not you go to defaultspawnworld
-# default: If you die in a Nether you will respawn in the world defined below in defaultspawnworld
-# none: You will always respawn in the same world you died in
-notchrespawnstyle: none
-
-# Should multivers spawn players at their bed if they've slept there?
-# This value will OVERRIDE notchrespawnstyle
-bedrespawn: true
-
-# Used only in notchrespawnstyle, this is the default world players will spawn in if they die.
-# If you type some world that does not exist, this will default to your default world.
-defaultspawnworld: world
 
 # How long to leave in between sending a message to the player.
 # In Milliseconds - Default is '5000' which is 5 Seconds.
 messagecooldown: 5000
-
-# Portal Cooldown, only affects MultiVerse portals.
-# In Milliseconds - Default is '5000' which is 5 Seconds.
-portalcooldown: 5000
 
 # If this is set to true, we will prefix the chat with 
 # a colorful world alias if it's present. If not, we simply

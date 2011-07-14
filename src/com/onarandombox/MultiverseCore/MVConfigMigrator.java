@@ -98,8 +98,16 @@ public class MVConfigMigrator {
     private boolean migrateMainConfig(String name, File oldFolder, File newFolder) {
         Configuration newConfig = new Configuration(new File(newFolder, "config.yml"));
         this.core.log(Level.INFO, "Migrating config.yml...");
-        Configuration oldConfig = new Configuration(oldFolder);
+        Configuration oldConfig = new Configuration(new File(oldFolder, "MultiVerse.yml"));
         oldConfig.load();
+        newConfig.setProperty("worldnameprefix", oldConfig.getProperty("prefix"));
+        newConfig.setProperty("messagecooldown", oldConfig.getProperty("alertcooldown"));
+        // Default values:
+        newConfig.setProperty("opfallback", true);
+        newConfig.setProperty("disableautoheal", false);
+        newConfig.setProperty("fakepvp", false);
+        newConfig.setProperty("bedrespawn", true);
+        newConfig.save();
         return true;
     }
 }
