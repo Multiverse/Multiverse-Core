@@ -1,5 +1,5 @@
 // This file is no longer licensed under that silly CC license. I have blanked it out and will start implementaiton of my own in a few days. For now there is no help.
-package com.onarandombox.MultiverseCore.command.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import java.util.ArrayList;
 import java.util.List;

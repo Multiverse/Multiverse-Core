@@ -24,7 +24,7 @@ import org.bukkit.util.config.Configuration;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.command.commands.*;
+import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.PurgeWorlds;

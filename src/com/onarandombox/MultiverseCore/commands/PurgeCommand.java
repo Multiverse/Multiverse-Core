@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.command.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import java.util.ArrayList;
 import java.util.Collections;
