@@ -85,7 +85,6 @@ public class MVPlayerListener extends PlayerListener {
 
         // If it's not a World MV manages we stop.
         if (!this.plugin.isMVWorld(world.getName())) {
-            this.plugin.log(Level.WARNING, "The world(" + world.getName() + ") " + event.getPlayer().getName() + " is not handled by Multiverse. No respawn action is being taken.");
             return;
         }
 
