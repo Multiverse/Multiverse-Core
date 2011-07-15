@@ -62,6 +62,7 @@ public class InfoCommand extends Command {
         page.add("Animals: " + world.getCBWorld().getAllowAnimals());
         page.add("Monsters (MV): " + world.allowMonsterSpawning());
         page.add("Monsters: " + world.getCBWorld().getAllowMonsters());
+        page.add("Respawn to: " + world.getRespawnToWorld());
 
         // This feature is not mission critical and I am spending too much time on it...
         // Stopping work on it for now --FF 20110623

@@ -18,7 +18,7 @@ enum Action {
 
 // Color == Aliascolor
 enum SetProperties {
-    alias, animals, monsters, pvp, scaling, aliascolor, color
+    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn
 }
 
 public class ModifyCommand extends Command {

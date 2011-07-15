@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore;
 
+import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -82,21 +84,25 @@ public class MVPlayerListener extends PlayerListener {
         World world = event.getPlayer().getWorld();
 
         // If it's not a World MV manages we stop.
-        if (this.plugin.isMVWorld(world.getName())) {
+        if (!this.plugin.isMVWorld(world.getName())) {
+            this.plugin.log(Level.WARNING, "The world(" + world.getName() + ") " + event.getPlayer().getName() + " is not handled by Multiverse. No respawn action is being taken.");
             return;
         }
 
         // Get the MVWorld
         MVWorld mvWorld = this.plugin.getMVWorld(world.getName());
         // Get the instance of the World the player should respawn at.
-        World respawnWorld = this.plugin.getServer().getWorld(mvWorld.getRespawnToWorld());
+        MVWorld respawnWorld = null;
+        if (this.plugin.isMVWorld(mvWorld.getRespawnToWorld())) {
+            respawnWorld = this.plugin.getMVWorld(mvWorld.getRespawnToWorld());
+        }
 
         // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
         if (respawnWorld == null) {
             return;
         }
 
-        Location respawnLocation = respawnWorld.getSpawnLocation();
+        Location respawnLocation = respawnWorld.getCBWorld().getSpawnLocation();
 
         MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);

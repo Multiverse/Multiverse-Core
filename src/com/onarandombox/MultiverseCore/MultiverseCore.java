@@ -555,7 +555,7 @@ public class MultiverseCore extends JavaPlugin {
         return this.getMVWorldByAlias(name);
     }
 
-    public MVWorld getMVWorldByAlias(String alias) {
+    private MVWorld getMVWorldByAlias(String alias) {
         for (MVWorld w : this.worlds.values()) {
             if (w.getAlias().equalsIgnoreCase(alias)) {
                 return w;
@@ -575,8 +575,11 @@ public class MultiverseCore extends JavaPlugin {
      * @return
      */
     private boolean isMVWorldAlias(String name) {
+        System.out.println("Looking for an alias of " + name);
         for (MVWorld w : this.worlds.values()) {
+            System.out.println(w.getAlias());    
             if (w.getAlias().equalsIgnoreCase(name)) {
+                    
                 return true;
             }
         }
