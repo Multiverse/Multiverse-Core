@@ -9,7 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
 
 enum AddProperties {
-    blockblacklist, playerwhitelist, playerblacklist, editwhitelist, editblacklist, worldblacklist, animals, monsters
+    blockblacklist, playerwhitelist, playerblacklist, worldblacklist, animals, monsters
 }
 
 enum Action {

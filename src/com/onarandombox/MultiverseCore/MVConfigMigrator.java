@@ -77,9 +77,6 @@ public class MVConfigMigrator {
             migrateListItem(newConfig, oldConfig, key, ".worldBlacklist", ".worldblacklist");
             migrateListItem(newConfig, oldConfig, key, ".playerBlacklist", ".playerblacklist");
             migrateListItem(newConfig, oldConfig, key, ".playerWhitelist", ".playerwhitelist");
-            migrateListItem(newConfig, oldConfig, key, ".editBlacklist", ".editblacklist");
-            migrateListItem(newConfig, oldConfig, key, ".editWhitelist", ".editwhitelist");
-
         }
         newConfig.save();
         return true;

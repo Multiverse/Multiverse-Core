@@ -127,8 +127,16 @@ public class MVWorld {
         this.getPlayerBlacklist().addAll(config.getStringList("worlds." + this.name + ".playerblacklist", new ArrayList<String>()));
         this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
         this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
-        this.getEditWhitelist().addAll(config.getStringList("worlds." + this.name + ".editwhitelist", new ArrayList<String>()));
-        this.getEditBlacklist().addAll(config.getStringList("worlds." + this.name + ".editblacklist", new ArrayList<String>()));
+        this.translateTempSpawn(config);
+
+        config.save();
+        // The following 3 lines will add some sample data to new worlds created.
+        // if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
+        // addSampleData();
+        // }
+    }
+
+    private void translateTempSpawn(Configuration config) {
         String tempspawn = config.getString("worlds." + this.name + ".tempspawn", "");
         if (tempspawn.length() > 0) {
             String[] coordsString = tempspawn.split(":");
@@ -149,12 +157,6 @@ public class MVWorld {
 
             this.config.removeProperty("worlds." + this.name + ".tempspawn");
         }
-
-        config.save();
-        // The following 3 lines will add some sample data to new worlds created.
-        // if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
-        // addSampleData();
-        // }
     }
 
     public String getColoredWorldString() {
@@ -196,8 +198,6 @@ public class MVWorld {
         // Only int list, we don't need to add it to the masterlist
         this.masterList.put("playerwhitelist", new ArrayList<String>());
         this.masterList.put("playerblacklist", new ArrayList<String>());
-        this.masterList.put("editwhitelist", new ArrayList<String>());
-        this.masterList.put("editblacklist", new ArrayList<String>());
         this.masterList.put("worldblacklist", new ArrayList<String>());
         this.masterList.put("animals", new ArrayList<String>());
         this.masterList.put("monsters", new ArrayList<String>());
@@ -216,12 +216,6 @@ public class MVWorld {
         this.getPlayerBlacklist().add("Rigby90");
         this.getPlayerBlacklist().add("g:Banned");
 
-        this.getEditWhitelist().add("fernferret");
-        this.getEditWhitelist().add("g:Admins");
-
-        this.getEditBlacklist().add("Rigby90");
-        this.getEditBlacklist().add("g:Banned");
-
         this.getWorldBlacklist().add("world5");
         this.getWorldBlacklist().add("A world with spaces");
 
@@ -230,8 +224,6 @@ public class MVWorld {
         this.config.setProperty("worlds." + this.name + ".blockblacklist", this.getBlockBlacklist());
         this.config.setProperty("worlds." + this.name + ".playerwhitelist", this.getPlayerWhitelist());
         this.config.setProperty("worlds." + this.name + ".playerblacklist", this.getPlayerBlacklist());
-        this.config.setProperty("worlds." + this.name + ".editwhitelist", this.getEditWhitelist());
-        this.config.setProperty("worlds." + this.name + ".editblacklist", this.getEditBlacklist());
         this.config.setProperty("worlds." + this.name + ".worldblacklist", this.getWorldBlacklist());
         this.config.save();
     }
@@ -482,14 +474,6 @@ public class MVWorld {
         return this.masterList.get("playerblacklist");
     }
 
-    public List<String> getEditWhitelist() {
-        return this.masterList.get("editwhitelist");
-    }
-
-    public List<String> getEditBlacklist() {
-        return this.masterList.get("editblacklist");
-    }
-
     public List<String> getWorldBlacklist() {
         return this.masterList.get("worldblacklist");
     }
@@ -552,7 +536,7 @@ public class MVWorld {
     }
 
     public String getRespawnToWorld() {
-        return respawnToWorld;
+        return this.respawnToWorld;
     }
 
     public void setRespawnToWorld(String respawnToWorld) {
