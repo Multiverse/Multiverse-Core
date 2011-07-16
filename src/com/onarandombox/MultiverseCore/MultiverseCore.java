@@ -79,8 +79,8 @@ public class MultiverseCore extends JavaPlugin {
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
 
-        // Setup & Load our Configuration files.
-        loadConfigs();
+        
+        
     }
 
     public void onEnable() {
@@ -108,7 +108,10 @@ public class MultiverseCore extends JavaPlugin {
         // Call the Function to load all the Worlds and setup the HashMap
         // When called with null, it tries to load ALL
         // this function will be called every time a plugin registers a new envtype with MV
+        // Setup & Load our Configuration files.
+        loadConfigs();
         if (this.configMV != null) {
+            
             this.loadWorlds(true);
         } else {
             this.log(Level.WARNING, "Your configs were not loaded. Very little will function in MV.");

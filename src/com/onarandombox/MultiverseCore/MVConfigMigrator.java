@@ -59,7 +59,7 @@ public class MVConfigMigrator {
     private boolean migrateWorlds(String name, File oldFolder, File newFolder) {
         Configuration newConfig = new Configuration(new File(newFolder, "worlds.yml"));
         this.core.log(Level.INFO, "Trying to migrate worlds.yml...");
-        Configuration oldConfig = new Configuration(new File(oldFolder, "worlds.yml"));
+        Configuration oldConfig = new Configuration(new File(oldFolder, "Worlds.yml"));
         oldConfig.load();
         List<String> keys = oldConfig.getKeys("worlds");
         if (keys == null) {
