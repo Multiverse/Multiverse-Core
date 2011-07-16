@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
