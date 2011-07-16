@@ -13,7 +13,7 @@ public class ReloadCommand extends Command {
     public ReloadCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Reload";
-        this.commandDesc = "Reloads worlds.yml and config.yml";
+        this.commandDesc = "Reloads worlds.yml and config.yml.";
         this.commandUsage = "/mvreload";
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;

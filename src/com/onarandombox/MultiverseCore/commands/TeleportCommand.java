@@ -20,7 +20,7 @@ public class TeleportCommand extends Command {
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Teleport";
-        this.commandDesc = "Teleports you to a different world.";
+        this.commandDesc = "Teleports target player to a different world. If no player is specified, teleports you instead.";
         this.commandUsage = "/mvtp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}";
         this.minimumArgLength = 1;
         this.maximumArgLength = 2;
