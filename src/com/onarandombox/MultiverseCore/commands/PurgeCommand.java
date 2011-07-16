@@ -50,8 +50,8 @@ public class PurgeCommand extends Command {
         }
 
         if (!worldName.equalsIgnoreCase("all") && !((MultiverseCore) this.plugin).isMVWorld(worldName)) {
-            sender.sendMessage("Multiverse doesn't know about " + worldName);
-            sender.sendMessage("... so It cannot be purged");
+            ((MultiverseCore)this.plugin).showNotMVWorldMessage(sender, worldName);
+            sender.sendMessage("It cannot be purged.");
             return;
         }
 

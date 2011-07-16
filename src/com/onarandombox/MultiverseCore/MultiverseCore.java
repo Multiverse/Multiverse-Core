@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -79,8 +80,6 @@ public class MultiverseCore extends JavaPlugin {
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
 
-        
-        
     }
 
     public void onEnable() {
@@ -111,7 +110,7 @@ public class MultiverseCore extends JavaPlugin {
         // Setup & Load our Configuration files.
         loadConfigs();
         if (this.configMV != null) {
-            
+
             this.loadWorlds(true);
         } else {
             this.log(Level.WARNING, "Your configs were not loaded. Very little will function in MV.");
@@ -588,5 +587,10 @@ public class MultiverseCore extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    public void showNotMVWorldMessage(CommandSender sender, String worldName) {
+        sender.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
+        sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
     }
 }
