@@ -545,6 +545,6 @@ public class MVWorld {
 
     public void setRespawnToWorld(String respawnToWorld) {
         this.respawnWorld = respawnToWorld;
-        this.config.setProperty("world."+this.name+".respawnworld", respawnToWorld);
+        this.config.setProperty("worlds."+this.name+".respawnworld", respawnToWorld);
     }
 }
