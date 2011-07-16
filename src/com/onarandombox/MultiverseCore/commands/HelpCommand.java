@@ -42,12 +42,7 @@ public class HelpCommand extends Command {
             }
         }
 
-        List<Command> availableCommands = new ArrayList<Command>(((MultiverseCore) this.plugin).getCommandHandler().getAllCommands());
-        for (Command c : availableCommands) {
-            if (!((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, c.getPermission(), c.isOpRequired())) {
-                availableCommands.remove(c);
-            }
-        }
+        List<Command> availableCommands = new ArrayList<Command>(((MultiverseCore) this.plugin).getCommandHandler().getCommands(sender));
 
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.AQUA + " Add a '" + ChatColor.DARK_PURPLE + "?" + ChatColor.AQUA + "' after a command to see more about it.");
