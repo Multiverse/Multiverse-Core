@@ -9,6 +9,21 @@ public class Destination {
     public Destination(String name, DestinationType type) {
         this.name = name;
         this.type = type;
+        
+        if(name.split(":").length > 1) {
+            this.type = DestinationType.Invalid;
+        }
+    }
+    
+    @Override
+    public String toString() {
+        if(this.type == DestinationType.Portal) {
+            return "p:" + this.name;            
+        } else if(this.type == DestinationType.World) {
+            return "w:" + this.name;
+        }
+        return "i:" + this.name;
+        
     }
 
     public String getName() {

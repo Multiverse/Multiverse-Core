@@ -53,8 +53,7 @@ public class MultiverseCore extends JavaPlugin {
     public Configuration configWorlds = null;
 
     // Setup the block/player/entity listener.
-    private MVPlayerListener playerListener = new MVPlayerListener(this);
-    ;
+    private MVPlayerListener playerListener = new MVPlayerListener(this);;
 
     private MVBlockListener blockListener = new MVBlockListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
@@ -109,7 +108,11 @@ public class MultiverseCore extends JavaPlugin {
         // Call the Function to load all the Worlds and setup the HashMap
         // When called with null, it tries to load ALL
         // this function will be called every time a plugin registers a new envtype with MV
-        this.loadWorlds(true);
+        if (this.configMV != null) {
+            this.loadWorlds(true);
+        } else {
+            this.log(Level.WARNING, "Your configs were not loaded. Very little will function in MV.");
+        }
     }
 
     /**
@@ -252,9 +255,9 @@ public class MultiverseCore extends JavaPlugin {
      * Add a new World to the Multiverse Setup.
      * <p/>
      * Isn't there a prettier way to do this??!!?!?!
-     *
+     * 
      * @param name World Name
-     * @param env  Environment Type
+     * @param env Environment Type
      */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         this.debugLog(Level.CONFIG, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
@@ -340,7 +343,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -354,7 +357,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list and from the config
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -367,7 +370,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list, from the config and deletes the folder
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -382,7 +385,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Delete a folder Courtesy of: lithium3141
-     *
+     * 
      * @param file The folder to delete
      * @return true if success
      */
@@ -416,7 +419,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Grab the players session if one exists, otherwise create a session then return it.
-     *
+     * 
      * @param player
      * @return
      */
@@ -431,7 +434,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Grab and return the Teleport class.
-     *
+     * 
      * @return
      */
     public MVTeleport getTeleporter() {
@@ -465,7 +468,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information from the Servers Log Output.
-     *
+     * 
      * @param level
      * @param msg
      */
@@ -476,7 +479,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the standard Server Console.
-     *
+     * 
      * @param level
      * @param msg
      */
@@ -489,7 +492,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Parse the Authors Array into a readable String with ',' and 'and'.
-     *
+     * 
      * @return
      */
     private String getAuthors() {
@@ -520,7 +523,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * This code should get moved somewhere more appropriate, but for now, it's here.
-     *
+     * 
      * @param env
      * @return
      */
@@ -570,14 +573,14 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * This method ONLY checks the alias of each world.
-     *
+     * 
      * @param name
      * @return
      */
     private boolean isMVWorldAlias(String name) {
         for (MVWorld w : this.worlds.values()) {
             if (w.getAlias().equalsIgnoreCase(name)) {
-                    
+
                 return true;
             }
         }

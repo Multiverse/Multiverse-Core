@@ -59,10 +59,14 @@ public class MVConfigMigrator {
 
     private boolean migrateWorlds(String name, File oldFolder, File newFolder) {
         Configuration newConfig = new Configuration(new File(newFolder, "worlds.yml"));
-        this.core.log(Level.INFO, "Migrating worlds.yml...");
+        this.core.log(Level.INFO, "Trying to migrate worlds.yml...");
         Configuration oldConfig = new Configuration(new File(oldFolder, "worlds.yml"));
         oldConfig.load();
         List<String> keys = oldConfig.getKeys("worlds");
+        if (keys == null) {
+            this.core.log(Level.WARNING, "Migration FAILURE!");
+            return false;
+        }
         for (String key : keys) {
             newConfig.setProperty("worlds." + key + ".animals.spawn", oldConfig.getProperty("worlds." + key + ".animals"));
             newConfig.setProperty("worlds." + key + ".monsters.spawn", oldConfig.getProperty("worlds." + key + ".mobs"));
@@ -78,6 +82,7 @@ public class MVConfigMigrator {
             migrateListItem(newConfig, oldConfig, key, ".playerWhitelist", ".playerwhitelist");
         }
         newConfig.save();
+        this.core.log(Level.INFO, "Migration SUCCESS!");
         return true;
     }
 
