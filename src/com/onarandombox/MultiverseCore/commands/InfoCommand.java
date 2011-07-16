@@ -1,6 +1,7 @@
-package com.onarandombox.MultiverseCore.command.commands;
+package com.onarandombox.MultiverseCore.commands;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -8,56 +9,61 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class InfoCommand extends BaseCommand {
-    
+public class InfoCommand extends Command {
+
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "World Information";
-        this.description = "Returns detailed information on the world.";
-        this.usage = "/mvinfo" + ChatColor.GOLD + "[WORLD]" + ChatColor.DARK_PURPLE + "<Page #>";
-        this.minArgs = 0;
-        this.maxArgs = 2;
-        this.identifiers.add("mvinfo");
+        this.commandName = "World Information";
+        this.commandDesc = "Returns detailed information on the world.";
+        this.commandUsage = "/mvinfo" + ChatColor.GOLD + " [WORLD] ";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 2;
+        this.commandKeys.add("mvinfo");
+        this.commandKeys.add("mv info");
+        this.commandKeys.add("mvi");
         this.permission = "multiverse.world.info";
-        this.requiresOp = false;
+        this.opRequired = false;
     }
-    
+
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         // Check if the command was sent from a Player.
         String worldName = "";
-        if (sender instanceof Player && args.length == 0) {
+        if (sender instanceof Player && args.size() == 0) {
             worldName = ((Player) sender).getWorld().getName();
-        } else if (args.length == 0) {
+        } else if (args.size() == 0) {
             sender.sendMessage("You must enter a" + ChatColor.GOLD + " world" + ChatColor.WHITE + " from the console!");
             return;
         } else {
-            worldName = args[0];
+            worldName = args.get(0);
         }
-        if (this.plugin.isMVWorld(worldName)) {
-            for (String s : buildEntireCommand(this.plugin.getMVWorld(worldName))) {
+        if (((MultiverseCore) this.plugin).isMVWorld(worldName)) {
+            for (String s : buildEntireCommand(((MultiverseCore) this.plugin).getMVWorld(worldName))) {
                 sender.sendMessage(s);
             }
         }
     }
-    
-    private String[] buildEntireCommand(MVWorld world) {
-        StringBuilder sb = new StringBuilder();
-        ArrayList<String[]> pagedInfo = new ArrayList<String[]>();
-        String[] aPage = new String[5];
+
+    private List<String> buildEntireCommand(MVWorld world) {
+        List<String> page = new ArrayList<String>();
         // World Name: 1
-        aPage[0] = "World: " + world.getName();
-        
+        page.add("World: " + world.getName());
+
         // World Scale: 1
-        aPage[1] = "World Scale: " + world.getScaling();
-        
+        page.add("World Scale: " + world.getScaling());
+
         // PVP: 1
-        aPage[2] = "PVP: " + world.getPvp();
-        aPage[3] = "Animals: " + world.allowAnimalSpawning();
-        aPage[4] = "Monsters: " + world.allowMonsterSpawning();
-        
+        page.add("PVP (MV): " + world.getPvp());
+        page.add("PVP: " + world.getCBWorld().getPVP());
+        page.add("Fake PVP: " + world.getFakePVP());
+        page.add("Animals (MV): " + world.allowAnimalSpawning());
+        page.add("Animals: " + world.getCBWorld().getAllowAnimals());
+        page.add("Monsters (MV): " + world.allowMonsterSpawning());
+        page.add("Monsters: " + world.getCBWorld().getAllowMonsters());
+        page.add("Respawn to: " + world.getRespawnToWorld());
+
         // This feature is not mission critical and I am spending too much time on it...
         // Stopping work on it for now --FF 20110623
         // // Animal Spawning: X
@@ -97,10 +103,11 @@ public class InfoCommand extends BaseCommand {
         // }
         // }
         // }
-        return aPage;
+        return page;
     }
-    
+
     private ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }
+
 }

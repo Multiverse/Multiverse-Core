@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +24,12 @@ import org.bukkit.util.config.Configuration;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.command.CommandManager;
-import com.onarandombox.MultiverseCore.command.commands.*;
+import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.PurgeWorlds;
 import com.onarandombox.utils.UpdateChecker;
+import com.pneumaticraft.commandhandler.CommandHandler;
 
 public class MultiverseCore extends JavaPlugin {
 
@@ -40,7 +41,7 @@ public class MultiverseCore extends JavaPlugin {
     private boolean debug;
 
     // Setup our Map for our Commands using the CommandHandler.
-    private CommandManager commandManager;
+    private CommandHandler commandHandler;
 
     private final String tag = "[Multiverse-Core]";
 
@@ -64,10 +65,12 @@ public class MultiverseCore extends JavaPlugin {
     private HashMap<String, MVWorld> worlds = new HashMap<String, MVWorld>();
 
     // HashMap to contain information relating to the Players.
-    public HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
+    private HashMap<String, MVPlayerSession> playerSessions;
     private PurgeWorlds worldPurger;
     public GenericBank bank = null;
-    public AllPay banker = new AllPay(this, "[Multiverse-Core] ");;
+    public AllPay banker = new AllPay(this, "[Multiverse-Core] ");
+    public static boolean defaultConfigsCreated = false;
+    protected MVConfigMigrator migrator = new MVConfigMigrator(this);
 
     @Override
     public void onLoad() {
@@ -83,19 +86,21 @@ public class MultiverseCore extends JavaPlugin {
     public void onEnable() {
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
-        
+
         // Setup all the Events the plugin needs to Monitor.
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
-        
+
         this.bank = this.banker.loadEconPlugin();
         // Setup the command manager
-        this.commandManager = new CommandManager(this);
+        this.commandHandler = new CommandHandler(this, this.ph);
         // Setup the world purger
         this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
+
+        this.playerSessions = new HashMap<String, MVPlayerSession>();
 
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
@@ -103,7 +108,11 @@ public class MultiverseCore extends JavaPlugin {
         // Call the Function to load all the Worlds and setup the HashMap
         // When called with null, it tries to load ALL
         // this function will be called every time a plugin registers a new envtype with MV
-        this.loadWorlds(true);
+        if (this.configMV != null) {
+            this.loadWorlds(true);
+        } else {
+            this.log(Level.WARNING, "Your configs were not loaded. Very little will function in MV.");
+        }
     }
 
     /**
@@ -116,11 +125,12 @@ public class MultiverseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this); // To create the Player Session
         pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener, Priority.Normal, this); // To remove Player Sessions
         pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
-        pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
-        
+        pm.registerEvent(Event.Type.PLAYER_BED_LEAVE, this.playerListener, Priority.Normal, this);
+
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow PVP as well as EnableHealth.
+        pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow fake PVP
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this); // To prevent all or certain animals/monsters from spawning.
 
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.pluginListener, Priority.Monitor, this);
@@ -136,9 +146,10 @@ public class MultiverseCore extends JavaPlugin {
      * Load the Configuration files OR create the default config files.
      */
     public void loadConfigs() {
+
         // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new DefaultConfiguration(getDataFolder(), "config.yml");
-        new DefaultConfiguration(getDataFolder(), "worlds.yml");
+        new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator);
+        new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator);
 
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
@@ -164,34 +175,37 @@ public class MultiverseCore extends JavaPlugin {
     }
 
     /**
-     * Register Multiverse-Core commands to DThielke's Command Manager.
+     * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        // Page 1
-        this.commandManager.addCommand(new HelpCommand(this));
-        this.commandManager.addCommand(new CoordCommand(this));
-        this.commandManager.addCommand(new TeleportCommand(this));
-        this.commandManager.addCommand(new ListCommand(this));
-        this.commandManager.addCommand(new WhoCommand(this));
-        this.commandManager.addCommand(new SetSpawnCommand(this));
-        this.commandManager.addCommand(new CreateCommand(this));
-        this.commandManager.addCommand(new ImportCommand(this));
-        this.commandManager.addCommand(new SpawnCommand(this));
-        this.commandManager.addCommand(new RemoveCommand(this));
-        this.commandManager.addCommand(new DeleteCommand(this));
-        this.commandManager.addCommand(new UnloadCommand(this));
-        this.commandManager.addCommand(new ConfirmCommand(this));
-        this.commandManager.addCommand(new InfoCommand(this));
-        this.commandManager.addCommand(new ReloadCommand(this));
-        
-        this.commandManager.addCommand(new ModifyAddCommand(this));
-        this.commandManager.addCommand(new ModifySetCommand(this));
-        this.commandManager.addCommand(new ModifyRemoveCommand(this));
-        this.commandManager.addCommand(new ModifyClearCommand(this));
+        // Intro Commands
+        this.commandHandler.registerCommand(new ListCommand(this));
+        this.commandHandler.registerCommand(new InfoCommand(this));
+        this.commandHandler.registerCommand(new CreateCommand(this));
+        this.commandHandler.registerCommand(new ImportCommand(this));
+        this.commandHandler.registerCommand(new ReloadCommand(this));
+        this.commandHandler.registerCommand(new SetSpawnCommand(this));
+        this.commandHandler.registerCommand(new CoordCommand(this));
+        this.commandHandler.registerCommand(new TeleportCommand(this));
+        this.commandHandler.registerCommand(new WhoCommand(this));
+        this.commandHandler.registerCommand(new SpawnCommand(this));
+        // Dangerous Commands
+        this.commandHandler.registerCommand(new UnloadCommand(this));
+        this.commandHandler.registerCommand(new RemoveCommand(this));
+        this.commandHandler.registerCommand(new DeleteCommand(this));
+        this.commandHandler.registerCommand(new ConfirmCommand(this));
+        // Modification commands
+        this.commandHandler.registerCommand(new PurgeCommand(this));
+        this.commandHandler.registerCommand(new ModifyAddCommand(this));
+        this.commandHandler.registerCommand(new ModifySetCommand(this));
+        this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
+        this.commandHandler.registerCommand(new ModifyClearCommand(this));
         // This modify MUST go last.
-        this.commandManager.addCommand(new ModifyCommand(this));
-        this.commandManager.addCommand(new EnvironmentCommand(this));
-        this.commandManager.addCommand(new PurgeCommand(this));
+        this.commandHandler.registerCommand(new ModifyCommand(this));
+        // Misc Commands
+        this.commandHandler.registerCommand(new EnvironmentCommand(this));
+        this.commandHandler.registerCommand(new SleepCommand(this));
+        this.commandHandler.registerCommand(new HelpCommand(this));
     }
 
     /**
@@ -238,35 +252,12 @@ public class MultiverseCore extends JavaPlugin {
     }
 
     /**
-     *
-     * @return
-     */
-    private int loadDefaultWorlds() {
-        int additonalWorldsLoaded = 0;
-        // Load the default world:
-        World world = this.getServer().getWorlds().get(0);
-        if (!this.worlds.containsKey(world.getName())) {
-            addWorld(world.getName(), Environment.NORMAL, null, null);
-            additonalWorldsLoaded++;
-        }
-
-        // This next one could be null if they have it disabled in server.props
-        World world_nether = this.getServer().getWorld(world.getName() + "_nether");
-        if (world_nether != null && !this.worlds.containsKey(world_nether.getName())) {
-            addWorld(world_nether.getName(), Environment.NETHER, null, null);
-            additonalWorldsLoaded++;
-        }
-
-        return additonalWorldsLoaded;
-    }
-
-    /**
      * Add a new World to the Multiverse Setup.
-     *
+     * <p/>
      * Isn't there a prettier way to do this??!!?!?!
-     *
+     * 
      * @param name World Name
-     * @param environment Environment Type
+     * @param env Environment Type
      */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         this.debugLog(Level.CONFIG, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
@@ -319,11 +310,16 @@ public class MultiverseCore extends JavaPlugin {
                 log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env);
             }
         }
+
+        if (world == null) {
+            log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
+            return false;
+        }
+
         MVWorld mvworld = new MVWorld(world, this.configWorlds, this, seed, generator);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
         return true;
-
     }
 
     private boolean pluginExists(String generator) {
@@ -347,7 +343,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -361,7 +357,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list and from the config
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -374,7 +370,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Remove the world from the Multiverse list, from the config and deletes the folder
-     *
+     * 
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -389,7 +385,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Delete a folder Courtesy of: lithium3141
-     *
+     * 
      * @param file The folder to delete
      * @return true if success
      */
@@ -415,12 +411,15 @@ public class MultiverseCore extends JavaPlugin {
      */
     public void onDisable() {
         debugLog.close();
+        this.ph.setPermissions(null);
+        this.banker = null;
+        this.bank = null;
         log(Level.INFO, "- Disabled");
     }
 
     /**
      * Grab the players session if one exists, otherwise create a session then return it.
-     *
+     * 
      * @param player
      * @return
      */
@@ -435,7 +434,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Grab and return the Teleport class.
-     *
+     * 
      * @return
      */
     public MVTeleport getTeleporter() {
@@ -462,12 +461,14 @@ public class MultiverseCore extends JavaPlugin {
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
-        return this.commandManager.dispatch(sender, command, commandLabel, args);
+        ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
+        allArgs.add(0, command.getName());
+        return this.commandHandler.locateAndRunCommand(sender, allArgs);
     }
 
     /**
      * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information from the Servers Log Output.
-     *
+     * 
      * @param level
      * @param msg
      */
@@ -478,7 +479,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the standard Server Console.
-     *
+     * 
      * @param level
      * @param msg
      */
@@ -491,7 +492,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * Parse the Authors Array into a readable String with ',' and 'and'.
-     *
+     * 
      * @return
      */
     private String getAuthors() {
@@ -512,8 +513,8 @@ public class MultiverseCore extends JavaPlugin {
         return authors.substring(2);
     }
 
-    public CommandManager getCommandManager() {
-        return this.commandManager;
+    public CommandHandler getCommandHandler() {
+        return this.commandHandler;
     }
 
     public String getTag() {
@@ -522,7 +523,7 @@ public class MultiverseCore extends JavaPlugin {
 
     /**
      * This code should get moved somewhere more appropriate, but for now, it's here.
-     *
+     * 
      * @param env
      * @return
      */
@@ -554,10 +555,35 @@ public class MultiverseCore extends JavaPlugin {
         if (this.worlds.containsKey(name)) {
             return this.worlds.get(name);
         }
+        return this.getMVWorldByAlias(name);
+    }
+
+    private MVWorld getMVWorldByAlias(String alias) {
+        for (MVWorld w : this.worlds.values()) {
+            if (w.getAlias().equalsIgnoreCase(alias)) {
+                return w;
+            }
+        }
         return null;
     }
 
     public boolean isMVWorld(String name) {
-        return this.worlds.containsKey(name);
+        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+    }
+
+    /**
+     * This method ONLY checks the alias of each world.
+     * 
+     * @param name
+     * @return
+     */
+    private boolean isMVWorldAlias(String name) {
+        for (MVWorld w : this.worlds.values()) {
+            if (w.getAlias().equalsIgnoreCase(name)) {
+
+                return true;
+            }
+        }
+        return false;
     }
 }

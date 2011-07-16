@@ -3,24 +3,32 @@ package com.onarandombox.MultiverseCore;
 import java.util.Date;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
+import com.onarandombox.utils.BlockSafety;
+
 public class MVPlayerSession {
 
     private Player player; // Player holder, may be unnecessary.
-    public Location loc = new Location(null, 0, 0, 0); // Contain the Players Location so on player move we can compare this and check if they've moved a block.
-
-    public String portal = null; // Allow a player to target a portal to prevent them typing its name every command.
-
+    protected Location loc = new Location(null, 0, 0, 0); // Contain the Players Location so on player move we can compare this and check if they've moved a block.
+    private BlockSafety bs = new BlockSafety();
+    // Move to portals plugin
+    protected String portal = null; // Allow a player to target a portal to prevent them typing its name every command.
+    // Move to portals plugin
     public Location coord1 = null; // Coordinate 1 (Left Click)
     public Location coord2 = null; // Coordinate 2 (Right Click)
 
     private Long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
     private Long messageLast = 0L; // Timestamp for the Players last Alert Message.
-    
-    private World currentSpawn;
+
+    private Location bedSpawn;
+
+    // Beds are 2 blocks, thus we need to store both places
+    private Location bedA;
+    private Location bedB;
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
 
@@ -28,7 +36,7 @@ public class MVPlayerSession {
         this.player = player;
         this.loc = player.getLocation();
         this.config = config;
-        this.currentSpawn = player.getWorld();
+        this.bedSpawn = null;
     }
 
     /**
@@ -40,6 +48,7 @@ public class MVPlayerSession {
 
     /**
      * Grab whether the cooldown on Portal use has expired or not.
+     *
      * @return
      */
     public boolean getTeleportable() {
@@ -53,6 +62,7 @@ public class MVPlayerSession {
 
     /**
      * Send a Message to the Player as long as enough time has passed since the last message.
+     *
      * @param msg
      */
     public void message(String msg) {
@@ -63,11 +73,42 @@ public class MVPlayerSession {
         }
     }
 
-    public void setRespawnWorld(World world) {
-        this.currentSpawn = world;
+    public void setRespawnLocation(Location location) {
+        this.bedSpawn = location;
     }
-    
-    public World getRespawnWorld() {
-        return this.currentSpawn;
+
+    //
+    // public Location getRespawnLocation() {
+    // if (this.bedSpawn != null && !this.bs.playerCanSpawnHereSafely(this.bedSpawn)) {
+    // this.bedSpawn = null;
+    // }
+    // return this.bedSpawn;
+    // }
+
+    // This one simply spawns the player closer to the bed.
+    public Location getBedRespawnLocation() {
+        // There is a bedrespawn set
+        if (this.bedSpawn != null) {
+            if (!this.bs.playerCanSpawnHereSafely(this.bedSpawn) || !bedStillExists(this.bedSpawn)) {
+                this.bedSpawn = null;
+                return this.bedSpawn;
+            }
+            Location actualRespawn = this.bedSpawn;
+            Location bedRespawn = new Location(actualRespawn.getWorld(), actualRespawn.getX(), actualRespawn.getY(), actualRespawn.getZ());
+            bedRespawn.setY(bedRespawn.getY() - .25);
+            return bedRespawn;
+        }
+        return null;
+    }
+
+    private boolean bedStillExists(Location bedSpawn) {
+        //System.out.print("Dangers:");
+        //this.bs.showDangers(bedSpawn);
+        Location locationDown = new Location(bedSpawn.getWorld(), bedSpawn.getX(), bedSpawn.getY(), bedSpawn.getZ());
+        locationDown.setY(locationDown.getY() - 1);
+        if (locationDown.getBlock().getType() != Material.BED_BLOCK) {
+            return false;
+        }
+        return true;
     }
 }

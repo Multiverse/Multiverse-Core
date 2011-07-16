@@ -2,14 +2,20 @@ package com.onarandombox.MultiverseCore;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageByProjectileEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -23,14 +29,64 @@ public class MVEntityListener extends EntityListener {
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
-    
+
+    /**
+     * Event - When a Entity is Damaged, we first sort out whether it is of
+     * importance to us, such as EntityVSEntity or EntityVSProjectile. Then we
+     * grab the attacked and defender and check if its a player. Then deal with
+     * the PVP Aspect.
+     */
+    @Override
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        Entity attacker = null;
+        Entity defender = null;
+        if (event instanceof EntityDamageByEntityEvent) {
+            EntityDamageByEntityEvent sub = (EntityDamageByEntityEvent) event;
+            attacker = sub.getDamager();
+            defender = sub.getEntity();
+        } else if (event instanceof EntityDamageByProjectileEvent) {
+            EntityDamageByProjectileEvent sub = (EntityDamageByProjectileEvent) event;
+            attacker = sub.getDamager();
+            defender = sub.getEntity();
+        } else {
+            return;
+        }
+        if (attacker == null || defender == null) {
+            return;
+        }
+        if (defender instanceof Player) {
+            Player player = (Player) defender;
+            World w = player.getWorld();
+
+            if (!this.plugin.isMVWorld(w.getName())) {
+                //if the world is not handled, we don't care
+                return;
+            }
+            MVWorld world = this.plugin.getMVWorld(w.getName());
+
+            if (attacker != null && attacker instanceof Player) {
+                Player pattacker = (Player) attacker;
+
+
+                if (!world.getPvp() && this.plugin.configMV.getBoolean("fakepvp", false)) {
+                    pattacker.sendMessage(ChatColor.RED + "PVP is disabled in this World.");
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
     @Override
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
         RegainReason reason = event.getRegainReason();
-        if(reason == RegainReason.REGEN && this.plugin.configMV.getBoolean("disableautoheal", false)) {
+        if (reason == RegainReason.REGEN && this.plugin.configMV.getBoolean("disableautoheal", false)) {
             event.setCancelled(true);
             return;
         }

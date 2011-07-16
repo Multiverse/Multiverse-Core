@@ -1,4 +1,6 @@
-package com.onarandombox.MultiverseCore.command.commands;
+package com.onarandombox.MultiverseCore.commands;
+
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -6,24 +8,26 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.command.BaseCommand;
+import com.pneumaticraft.commandhandler.Command;
 
-public class SetSpawnCommand extends BaseCommand {
-    
+public class SetSpawnCommand extends Command {
+
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
-        this.name = "Set World Spawn";
-        this.description = "Sets the spawn for the current world.";
-        this.usage = "/mvsetspawn";
-        this.minArgs = 0;
-        this.maxArgs = 0;
-        this.identifiers.add("mvsetspawn");
+        this.commandName = "Set World Spawn";
+        this.commandDesc = "Sets the spawn for the current world.";
+        this.commandUsage = "/mvsetspawn";
+        this.minimumArgLength = 0;
+        this.maximumArgLength = 0;
+        this.commandKeys.add("mvsetspawn");
+        this.commandKeys.add("mvss");
+        this.commandKeys.add("mv set spawn");
         this.permission = "multiverse.world.spawn.set";
-        this.requiresOp = true;
+        this.opRequired = true;
     }
-    
+
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void runCommand(CommandSender sender, List<String> args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             Location l = p.getLocation();
@@ -31,9 +35,7 @@ public class SetSpawnCommand extends BaseCommand {
             w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
             p.sendMessage(w.getName() + " - Spawn set to X: " + l.getBlockX() + "  Y: " + l.getBlockY() + " Z: " + l.getBlockZ());
         } else {
-            sender.sendMessage(this.IN_GAME_COMMAND_MSG);
+            sender.sendMessage("You cannot use this command from the console.");
         }
-        return;
     }
-    
 }
