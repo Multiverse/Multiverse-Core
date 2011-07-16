@@ -15,7 +15,7 @@ public class ModifyClearCommand extends Command {
     public ModifyClearCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Modify a World (Clear a property)";
-        this.commandDesc = "Removes all values from a property. This will work on properties that contain lists";
+        this.commandDesc = "Removes all values from a property. This will work on properties that contain lists.";
         this.commandUsage = "/mvmodify" + ChatColor.GREEN + " CLEAR {PROPERTY}" + ChatColor.GOLD + " [WORLD] ";
         this.minimumArgLength = 1;
         this.maximumArgLength = 2;
