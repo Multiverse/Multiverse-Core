@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -92,6 +93,13 @@ public class TeleportCommand extends Command {
             return;
         }
         Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(world.getName()).getSpawnLocation());
+        if(l == null) {
+            l = this.plugin.getServer().getWorld(world.getName()).getSpawnLocation();
+        }
+        if (l == null) {
+            teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
+            return;
+        }
         teleportee.teleport(l);
     }
 }
