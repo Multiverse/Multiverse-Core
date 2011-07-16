@@ -13,7 +13,7 @@ public class EnvironmentCommand extends Command {
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "List Environments";
-        this.commandDesc = "Lists valid known environments";
+        this.commandDesc = "Lists valid known environments.";
         this.commandUsage = "/mvenv";
         this.minimumArgLength = 0;
         this.maximumArgLength = 0;

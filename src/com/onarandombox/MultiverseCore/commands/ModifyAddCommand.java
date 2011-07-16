@@ -18,7 +18,7 @@ public class ModifyAddCommand extends Command {
     public ModifyAddCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Modify a World (Add a value)";
-        this.commandDesc = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used";
+        this.commandDesc = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.";
         this.commandUsage = "/mvmodify " + ChatColor.GREEN + "ADD {VALUE} {PROPERTY}" + ChatColor.GOLD + " [WORLD] ";
         this.minimumArgLength = 2;
         this.maximumArgLength = 3;

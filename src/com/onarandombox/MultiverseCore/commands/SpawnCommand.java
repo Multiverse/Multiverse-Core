@@ -14,7 +14,7 @@ public class SpawnCommand extends Command {
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Spawn";
-        this.commandDesc = "Transports the player to the that player's current world Spawn Point.";
+        this.commandDesc = "Teleports target player to the Spawn Point of the world they are in.";
         this.commandUsage = "/mvspawn" + ChatColor.GOLD + " [PLAYER]";
         this.minimumArgLength = 0;
         this.maximumArgLength = 1;

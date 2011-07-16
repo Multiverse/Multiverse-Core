@@ -18,7 +18,7 @@ public class WhoCommand extends Command {
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Who";
-        this.commandDesc = "States who is in what world";
+        this.commandDesc = "States who is in what world.";
         this.commandUsage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
         this.minimumArgLength = 0;
         this.maximumArgLength = 1;

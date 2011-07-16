@@ -18,7 +18,7 @@ public class HelpCommand extends Command {
     public HelpCommand(JavaPlugin plugin) {
         super(plugin);
         this.commandName = "Get Help with Multiverse";
-        this.commandDesc = "Displays a nice help menu";
+        this.commandDesc = "Displays a nice help menu.";
         this.commandUsage = "/mv " + ChatColor.GOLD + "[PAGE #]";
         this.minimumArgLength = 0;
         this.maximumArgLength = 1;
