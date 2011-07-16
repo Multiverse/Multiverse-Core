@@ -31,15 +31,14 @@ public class MVConfigMigrator {
             // They didn't have MV 1 enabled... let's try and find the folder...
             File[] folders = folder.getParentFile().listFiles();
             List<File> folderList = Arrays.asList(folders);
-            File MV1Folder = null;
             for (File f : folderList) {
                 if (f.getName().equalsIgnoreCase("MultiVerse")) {
                     this.core.log(Level.INFO, "Found the MultiVerse 1 config folder. Starting Config Migration...");
-                    MV1Folder = f;
+                    oldFolder = f;
                 }
 
             }
-            if (MV1Folder == null) {
+            if (oldFolder == null) {
                 this.core.log(Level.INFO, "Did not find the MV1 Folder. If you did not have MultiVerse 1 installed and this is the FIRST time you're running MV2, this message is GOOD. ");
                 this.core.log(Level.INFO, "If you did, your configs were **NOT** migrated! Go Here: INSERTURLFORHELP");
                 return false;
