@@ -63,29 +63,6 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
 
-    /**
-     * Returns true if a player is in a group. DEPRECATED: We're moving away from groups. Use permissions nodes in the groups instead.
-     * 
-     * @param player The player to check
-     * @param worldName The world to check in
-     * @param group The group are we checking
-     * @return True if the player is in the group, false if not.
-     */
-    @Deprecated
-    private boolean inGroup(Player player, String worldName, String group) {
-        if (this.permissions != null) {
-
-            return this.permissions.inGroup(worldName, player.getName(), group);
-        } else {
-            return player.isOp();
-        }
-    }
-
-    @Deprecated
-    public List<String> getGroups(String worldName, String name) {
-        return Arrays.asList(this.permissions.getGroups(worldName, name));
-    }
-
     public void setPermissions(PermissionHandler handler) {
         this.permissions = handler;
     }

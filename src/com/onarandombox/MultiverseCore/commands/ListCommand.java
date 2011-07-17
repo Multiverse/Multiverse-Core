@@ -21,7 +21,7 @@ public class ListCommand extends MultiverseCommand {
         this.addKey("mvlist");
         this.addKey("mvl");
         this.addKey("mv list");
-        this.setPermission("multiverse.core.list.worlds", "Displays a listing of all worlds that you can enter.", PermissionDefault.TRUE);
+        this.setPermission("multiverse.core.list.worlds", "Displays a listing of all worlds that you can enter.", PermissionDefault.OP);
     }
 
     @Override

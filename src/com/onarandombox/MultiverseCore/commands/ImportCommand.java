@@ -20,7 +20,7 @@ public class ImportCommand extends MultiverseCommand {
         this.addKey("mvimport");
         this.addKey("mvi");
         this.addKey("mv import");
-        this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.TRUE);
+        this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.OP);
     }
 
     @Override

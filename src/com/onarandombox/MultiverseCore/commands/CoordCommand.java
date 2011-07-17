@@ -22,7 +22,7 @@ public class CoordCommand extends MultiverseCommand {
         this.setArgRange(0, 0);
         this.addKey("mv coord");
         this.addKey("mvcoord");
-        this.setPermission("multiverse.core.coord", "Returns detailed information on the Players where abouts.", PermissionDefault.TRUE);
+        this.setPermission("multiverse.core.coord", "Returns detailed information on the Players where abouts.", PermissionDefault.OP);
     }
 
     @Override
