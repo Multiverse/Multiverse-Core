@@ -6,9 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class RemoveCommand extends Command {
+public class RemoveCommand extends MultiverseCommand {
 
     public RemoveCommand(MultiverseCore plugin) {
         super(plugin);
@@ -25,7 +24,7 @@ public class RemoveCommand extends Command {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        if (((MultiverseCore) this.plugin).removeWorld(args.get(0))) {
+        if (this.plugin.removeWorld(args.get(0))) {
             sender.sendMessage("World removed from config!");
         } else {
             sender.sendMessage("Error trying to remove world from config!");

@@ -8,12 +8,11 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
 // This will contain all the properties that support the ADD/REMOVE
 // Anything not in here will only support the SET action
 
-public class ModifyAddCommand extends Command {
+public class ModifyAddCommand extends MultiverseCommand {
 
     public ModifyAddCommand(MultiverseCore plugin) {
         super(plugin);
@@ -51,9 +50,9 @@ public class ModifyAddCommand extends Command {
         String property = args.get(1);
 
         if (args.size() == 2) {
-            world = ((MultiverseCore) this.plugin).getMVWorld(p.getWorld().getName());
+            world = this.plugin.getMVWorld(p.getWorld().getName());
         } else {
-            world = ((MultiverseCore) this.plugin).getMVWorld(args.get(2));
+            world = this.plugin.getMVWorld(args.get(2));
         }
 
         if (world == null) {

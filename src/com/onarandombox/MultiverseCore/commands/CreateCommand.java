@@ -8,10 +8,9 @@ import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
-public class CreateCommand extends Command {
+public class CreateCommand extends MultiverseCommand {
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -38,20 +37,20 @@ public class CreateCommand extends Command {
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
 
-        if (new File(worldName).exists() || ((MultiverseCore) this.plugin).isMVWorld(worldName)) {
+        if (new File(worldName).exists() || this.plugin.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
         }
 
-        Environment environment = ((MultiverseCore) this.plugin).getEnvFromString(env);
+        Environment environment = this.plugin.getEnvFromString(env);
         if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
         sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
-        if (((MultiverseCore) this.plugin).addWorld(worldName, environment, seed, generator)) {
+        if (this.plugin.addWorld(worldName, environment, seed, generator)) {
             sender.sendMessage(ChatColor.GREEN + "Complete!");
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");

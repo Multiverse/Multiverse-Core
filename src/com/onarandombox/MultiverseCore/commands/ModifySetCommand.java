@@ -8,9 +8,8 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class ModifySetCommand extends Command {
+public class ModifySetCommand extends MultiverseCommand {
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);
@@ -48,9 +47,9 @@ public class ModifySetCommand extends Command {
         String property = args.get(0);
 
         if (args.size() == 2) {
-            world = ((MultiverseCore) this.plugin).getMVWorld(p.getWorld().getName());
+            world = this.plugin.getMVWorld(p.getWorld().getName());
         } else {
-            world = ((MultiverseCore) this.plugin).getMVWorld(args.get(2));
+            world = this.plugin.getMVWorld(args.get(2));
         }
 
         if (world == null) {

@@ -2,17 +2,13 @@ package com.onarandombox.MultiverseCore.commands;
 
 import java.util.List;
 
-import org.bukkit.ChatColor;
-import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVPlayerSession;
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class SleepCommand extends Command {
+public class SleepCommand extends MultiverseCommand {
 
     public SleepCommand(MultiverseCore plugin) {
         super(plugin);
@@ -36,7 +32,7 @@ public class SleepCommand extends Command {
         if (p == null) {
             return;
         }
-        MVPlayerSession session = ((MultiverseCore) this.plugin).getPlayerSession(p);
+        MVPlayerSession session = this.plugin.getPlayerSession(p);
         if (session.getBedRespawnLocation() != null) {
             p.teleport(session.getBedRespawnLocation());
         } else {

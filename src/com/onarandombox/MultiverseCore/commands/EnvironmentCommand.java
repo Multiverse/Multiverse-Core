@@ -6,9 +6,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class EnvironmentCommand extends Command {
+
+public class EnvironmentCommand extends MultiverseCommand {
 
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);

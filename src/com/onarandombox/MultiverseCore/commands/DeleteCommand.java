@@ -6,9 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class DeleteCommand extends Command {
+public class DeleteCommand extends MultiverseCommand {
 
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
@@ -25,7 +24,7 @@ public class DeleteCommand extends Command {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Class<?> paramTypes[] = {String.class};
-        ((MultiverseCore) this.plugin).getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
+        Class<?> paramTypes[] = { String.class };
+        this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", args, paramTypes, "World Deleted!", "World was not deleted!");
     }
 }

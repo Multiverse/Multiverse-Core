@@ -7,9 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class SpawnCommand extends Command {
+public class SpawnCommand extends MultiverseCommand {
 
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);
@@ -33,7 +32,7 @@ public class SpawnCommand extends Command {
         }
         // If a persons name was passed in, you must be A. the console, or B have permissions
         if (args.size() == 1) {
-            if (player != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(player, "multiverse.world.spawn.other", true)) {
+            if (player != null && !this.plugin.getPermissions().hasPermission(player, "multiverse.world.spawn.other", true)) {
                 sender.sendMessage("You don't have permission to teleport another player to spawn. (multiverse.world.spawn.other)");
                 return;
             }
@@ -50,7 +49,7 @@ public class SpawnCommand extends Command {
                 sender.sendMessage(args.get(0) + " is not logged on right now!");
             }
         } else {
-            if (player != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(player, "multiverse.world.spawn.self", true)) {
+            if (player != null && !this.plugin.getPermissions().hasPermission(player, "multiverse.world.spawn.self", true)) {
                 sender.sendMessage("You don't have permission to teleport yourself to spawn. (multiverse.world.spawn.self)");
                 return;
             }

@@ -9,9 +9,8 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class ListCommand extends Command {
+public class ListCommand extends MultiverseCommand {
 
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
@@ -35,9 +34,9 @@ public class ListCommand extends Command {
         }
 
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
-        for (MVWorld world : ((MultiverseCore) this.plugin).getMVWorlds()) {
+        for (MVWorld world : this.plugin.getMVWorlds()) {
 
-            if (p != null && (!((MultiverseCore) this.plugin).ph.canEnterWorld(p, world))) {
+            if (p != null && (!this.plugin.ph.canEnterWorld(p, world))) {
                 continue;
             }
 

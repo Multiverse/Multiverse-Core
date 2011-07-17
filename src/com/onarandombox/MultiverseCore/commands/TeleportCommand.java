@@ -12,9 +12,8 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.Destination;
 import com.onarandombox.utils.DestinationType;
-import com.pneumaticraft.commandhandler.Command;
 
-public class TeleportCommand extends Command {
+public class TeleportCommand extends MultiverseCommand {
     private MVTeleport playerTeleporter;
 
     public TeleportCommand(MultiverseCore plugin) {
@@ -43,7 +42,7 @@ public class TeleportCommand extends Command {
         String worldName;
 
         if (args.size() == 2) {
-            if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, "multiverse.world.tp.other", true)) {
+            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.world.tp.other", true)) {
                 sender.sendMessage("You don't have permission to teleport another player. (multiverse.world.tp.other)");
                 return;
             }
@@ -56,7 +55,7 @@ public class TeleportCommand extends Command {
 
         } else {
             worldName = args.get(0);
-            if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().hasPermission(sender, "multiverse.world.tp.self", true)) {
+            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.world.tp.self", true)) {
                 sender.sendMessage("You don't have permission to teleport yourself between worlds. (multiverse.world.tp.self)");
                 return;
             }
@@ -70,20 +69,20 @@ public class TeleportCommand extends Command {
         }
 
         Destination d = Destination.parseDestination(worldName, (MultiverseCore) this.plugin);
-        if (!(d.getType() == DestinationType.World) || !((MultiverseCore) this.plugin).isMVWorld(d.getName())) {
+        if (!(d.getType() == DestinationType.World) || !this.plugin.isMVWorld(d.getName())) {
             sender.sendMessage("Multiverse does not know about this world: " + worldName);
             return;
         }
-        MVWorld world = ((MultiverseCore) this.plugin).getMVWorld(d.getName());
+        MVWorld world = this.plugin.getMVWorld(d.getName());
 
-        if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canEnterWorld(teleporter, world)) {
+        if (teleporter != null && !this.plugin.getPermissions().canEnterWorld(teleporter, world)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {
                 teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
             return;
-        } else if (teleporter != null && !((MultiverseCore) this.plugin).getPermissions().canTravelFromWorld(teleporter, world)) {
+        } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromWorld(teleporter, world)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + d.getName() + " from " + ChatColor.GREEN + teleporter.getWorld().getName());
             } else {

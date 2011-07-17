@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
 enum AddProperties {
     blockblacklist, playerwhitelist, playerblacklist, worldblacklist, animals, monsters
@@ -21,7 +20,7 @@ enum SetProperties {
     alias, animals, monsters, pvp, scaling, aliascolor, color, respawn
 }
 
-public class ModifyCommand extends Command {
+public class ModifyCommand extends MultiverseCommand {
 
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
@@ -53,7 +52,6 @@ public class ModifyCommand extends Command {
                 return false;
             }
         }
-
     }
 
     @Override

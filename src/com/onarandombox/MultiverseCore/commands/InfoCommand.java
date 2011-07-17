@@ -9,9 +9,8 @@ import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class InfoCommand extends Command {
+public class InfoCommand extends MultiverseCommand {
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
@@ -39,8 +38,8 @@ public class InfoCommand extends Command {
         } else {
             worldName = args.get(0);
         }
-        if (((MultiverseCore) this.plugin).isMVWorld(worldName)) {
-            for (String s : buildEntireCommand(((MultiverseCore) this.plugin).getMVWorld(worldName))) {
+        if (this.plugin.isMVWorld(worldName)) {
+            for (String s : buildEntireCommand(this.plugin.getMVWorld(worldName))) {
                 sender.sendMessage(s);
             }
         }

@@ -6,9 +6,8 @@ import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class ReloadCommand extends Command {
+public class ReloadCommand extends MultiverseCommand {
 
     public ReloadCommand(MultiverseCore plugin) {
         super(plugin);
@@ -26,10 +25,10 @@ public class ReloadCommand extends Command {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        ((MultiverseCore) this.plugin).log(Level.INFO, "Reloading Multiverse-Core config.yml and worlds.yml");
-        ((MultiverseCore) this.plugin).loadConfigs();
-        ((MultiverseCore) this.plugin).loadWorlds(true);
-        ((MultiverseCore) this.plugin).log(Level.INFO, "Reload Complete!");
+        this.plugin.log(Level.INFO, "Reloading Multiverse-Core config.yml and worlds.yml");
+        this.plugin.loadConfigs();
+        this.plugin.loadWorlds(true);
+        this.plugin.log(Level.INFO, "Reload Complete!");
     }
 
 }

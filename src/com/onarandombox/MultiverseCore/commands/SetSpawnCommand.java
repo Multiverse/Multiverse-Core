@@ -8,9 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
 
-public class SetSpawnCommand extends Command {
+public class SetSpawnCommand extends MultiverseCommand {
 
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);

@@ -7,15 +7,14 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
 
-public class HelpCommand extends Command {
+public class HelpCommand extends MultiverseCommand {
     private static final int CMDS_PER_PAGE = 7;
 
-    public HelpCommand(JavaPlugin plugin) {
+    public HelpCommand(MultiverseCore plugin) {
         super(plugin);
         this.commandName = "Get Help with Multiverse";
         this.commandDesc = "Displays a nice help menu.";
@@ -42,7 +41,7 @@ public class HelpCommand extends Command {
             }
         }
 
-        List<Command> availableCommands = new ArrayList<Command>(((MultiverseCore) this.plugin).getCommandHandler().getCommands(sender));
+        List<Command> availableCommands = new ArrayList<Command>(this.plugin.getCommandHandler().getCommands(sender));
 
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.AQUA + " Add a '" + ChatColor.DARK_PURPLE + "?" + ChatColor.AQUA + "' after a command to see more about it.");
