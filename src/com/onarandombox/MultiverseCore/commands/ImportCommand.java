@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -13,16 +14,13 @@ public class ImportCommand extends MultiverseCommand {
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Import World";
-        this.commandDesc = "Imports a new world of the specified type";
-        this.commandUsage = "/mvimport" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]";
-        this.minimumArgLength = 2;
-        this.maximumArgLength = 3;
-        this.commandKeys.add("mvimport");
-        this.commandKeys.add("mvi");
-        this.commandKeys.add("mv import");
-        this.permission = "multiverse.world.import";
-        this.opRequired = true;
+        this.setName("Import World");
+        this.setCommandUsage("/mvimport" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]");
+        this.setArgRange(2, 3);
+        this.addKey("mvimport");
+        this.addKey("mvi");
+        this.addKey("mv import");
+        this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.TRUE);
     }
 
     @Override

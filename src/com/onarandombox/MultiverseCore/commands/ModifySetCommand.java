@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -13,17 +14,14 @@ public class ModifySetCommand extends MultiverseCommand {
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Modify a World (Set a value)";
-        this.commandDesc = "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.";
-        this.commandUsage = "/mvmodify" + ChatColor.GREEN + " set {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]";
-        this.minimumArgLength = 2;
-        this.maximumArgLength = 3;
-        this.commandKeys.add("mvmodify set");
-        this.commandKeys.add("mv modify set");
-        this.commandKeys.add("mvm set");
-        this.commandKeys.add("mvmset");
-        this.permission = "multiverse.world.modify";
-        this.opRequired = true;
+        this.setName("Modify a World (Set a value)");
+        this.setCommandUsage("/mvmodify" + ChatColor.GREEN + " set {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
+        this.setArgRange(2, 3);
+        this.addKey("mvm set");
+        this.addKey("mvmset");
+        this.addKey("mv modify set");
+        this.addKey("mvmodify set");
+        this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
     }
 
     @Override
@@ -36,8 +34,8 @@ public class ModifySetCommand extends MultiverseCommand {
 
         if (args.size() == 2 && p == null) {
             sender.sendMessage("From the command line, WORLD is required.");
-            sender.sendMessage(this.commandDesc);
-            sender.sendMessage(this.commandUsage);
+            sender.sendMessage(this.getCommandDesc());
+            sender.sendMessage(this.getCommandUsage());
             sender.sendMessage("Nothing changed.");
             return;
         }

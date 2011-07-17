@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -12,16 +13,13 @@ public class SpawnCommand extends MultiverseCommand {
 
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Spawn";
-        this.commandDesc = "Teleports target player to the Spawn Point of the world they are in.";
-        this.commandUsage = "/mvspawn" + ChatColor.GOLD + " [PLAYER]";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 1;
-        this.commandKeys.add("mvspawn");
-        this.commandKeys.add("mv spawn");
-        this.commandKeys.add("mvs");
-        this.permission = "multiverse.world.spawn";
-        this.opRequired = false;
+        this.setName("Spawn");
+        this.setCommandUsage("/mvspawn" + ChatColor.GOLD + " [PLAYER]");
+        this.setArgRange(0, 1);
+        this.addKey("mvspawn");
+        this.addKey("mv spawn");
+        this.addKey("mvs");
+        this.setPermission("multiverse.core.spawn.use", "Teleports target player to the Spawn Point of the world they are in.", PermissionDefault.OP);
     }
 
     @Override

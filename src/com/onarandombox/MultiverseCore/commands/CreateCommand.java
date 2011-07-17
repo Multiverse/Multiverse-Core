@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.CommandHandler;
@@ -14,16 +15,13 @@ public class CreateCommand extends MultiverseCommand {
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Create World";
-        this.commandDesc = "Creates a new world and loads it.";
-        this.commandUsage = "/mvcreate" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]]";
-        this.minimumArgLength = 2;
-        this.maximumArgLength = 6;
-        this.commandKeys.add("mvcreate");
-        this.commandKeys.add("mvc");
-        this.commandKeys.add("mv create");
-        this.permission = "multiverse.world.create";
-        this.opRequired = true;
+        this.setName("Create World");
+        this.setCommandUsage("/mvcreate" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]]");
+        this.setArgRange(2, 6);
+        this.addKey("mvcreate");
+        this.addKey("mvc");
+        this.addKey("mv create");
+        this.setPermission("multiverse.core.create", "Creates a new world and loads it.", PermissionDefault.OP);
     }
 
     @Override

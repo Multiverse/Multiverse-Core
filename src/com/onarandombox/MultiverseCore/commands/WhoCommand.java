@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -14,14 +15,11 @@ public class WhoCommand extends MultiverseCommand {
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Who";
-        this.commandDesc = "States who is in what world.";
-        this.commandUsage = "/mvwho" + ChatColor.GOLD + " [WORLD]";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 1;
-        this.commandKeys.add("mvwho");
-        this.permission = "multiverse.world.list.who";
-        this.opRequired = false;
+        this.setName("Who?");
+        this.setCommandUsage("/mvwho" + ChatColor.GOLD + " [WORLD]");
+        this.setArgRange(0, 1);
+        this.addKey("mvwho");
+        this.setPermission("multiverse.core.list.who", "States who is in what world.", PermissionDefault.TRUE);
     }
 
     @Override

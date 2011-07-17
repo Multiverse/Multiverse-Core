@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -14,16 +15,13 @@ public class InfoCommand extends MultiverseCommand {
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "World Information";
-        this.commandDesc = "Returns detailed information on the world.";
-        this.commandUsage = "/mvinfo" + ChatColor.GOLD + " [WORLD] ";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 2;
-        this.commandKeys.add("mvinfo");
-        this.commandKeys.add("mv info");
-        this.commandKeys.add("mvi");
-        this.permission = "multiverse.world.info";
-        this.opRequired = false;
+        this.setName("World Information");
+        this.setCommandUsage("/mvinfo" + ChatColor.GOLD + " [WORLD]");
+        this.setArgRange(0, 1);
+        this.addKey("mvinfo");
+        this.addKey("mvi");
+        this.addKey("mv info");
+        this.setPermission("multiverse.world.coord", "Returns detailed information on the world.", PermissionDefault.TRUE);
     }
 
     @Override

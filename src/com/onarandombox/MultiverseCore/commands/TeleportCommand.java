@@ -1,11 +1,15 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MVWorld;
@@ -18,16 +22,21 @@ public class TeleportCommand extends MultiverseCommand {
 
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Teleport";
-        this.commandDesc = "Teleports target player to a different world. If no player is specified, teleports you instead.";
-        this.commandUsage = "/mvtp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}";
-        this.minimumArgLength = 1;
-        this.maximumArgLength = 2;
-        this.commandKeys.add("mvtp");
-        this.commandKeys.add("mv tp");
-        this.playerTeleporter = new MVTeleport(plugin);
-        this.permission = "multiverse.world.tp";
-        this.opRequired = true;
+        Permission self = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
+        Permission other = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
+        this.plugin.getServer().getPluginManager().addPermission(self);
+        this.plugin.getServer().getPluginManager().addPermission(other);
+        Map<String, Boolean> children = new HashMap<String, Boolean>();
+        children.put(self.getName(), true);
+        children.put(other.getName(), true);
+        Permission tp = new Permission("multiverse.core.tp", "Allows teleportation to other worlds.", PermissionDefault.OP, children);
+        
+        this.setName("Teleport");
+        this.setCommandUsage("/mvtp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
+        this.setArgRange(1, 2);
+        this.addKey("mvtp");
+        this.addKey("mv tp");
+        this.setPermission(tp);
     }
 
     @Override

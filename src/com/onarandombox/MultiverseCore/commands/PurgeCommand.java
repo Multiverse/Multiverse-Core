@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -16,15 +17,12 @@ public class PurgeCommand extends MultiverseCommand {
 
     public PurgeCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Purge the world ";
-        this.commandDesc = "Removed the specified type of mob from the specified world.";
-        this.commandUsage = "/mvpurge" + ChatColor.GOLD + " [WORLD|all] " + ChatColor.GREEN + "{all|animals|monsters|MOBNAME}";
-        this.minimumArgLength = 1;
-        this.maximumArgLength = 2;
-        this.commandKeys.add("mvpurge");
-        this.commandKeys.add("mv purge");
-        this.permission = "multiverse.world.purge";
-        this.opRequired = true;
+        this.setName("Purge World of Creatures");
+        this.setCommandUsage("/mvpurge" + ChatColor.GOLD + " [WORLD|all] " + ChatColor.GREEN + "{all|animals|monsters|MOBNAME}");
+        this.setArgRange(1, 2);
+        this.addKey("mvpurge");
+        this.addKey("mv purge");
+        this.setPermission("multiverse.core.purge", "Removed the specified type of mob from the specified world.", PermissionDefault.OP);
     }
 
     @Override
@@ -35,7 +33,7 @@ public class PurgeCommand extends MultiverseCommand {
         }
         if (args.size() == 1 && p == null) {
             sender.sendMessage("This command requires a WORLD when being run from the console!");
-            sender.sendMessage(this.commandUsage);
+            sender.sendMessage(this.getCommandUsage());
             return;
         }
         String worldName = null;

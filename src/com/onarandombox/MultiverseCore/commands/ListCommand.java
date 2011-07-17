@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -14,16 +15,13 @@ public class ListCommand extends MultiverseCommand {
 
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "World Listing";
-        this.commandDesc = "Displays a listing of all worlds that you can enter";
-        this.commandUsage = "/mvlist";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 0;
-        this.commandKeys.add("mvlist");
-        this.commandKeys.add("mvl");
-        this.commandKeys.add("mv list");
-        this.permission = "multiverse.world.list";
-        this.opRequired = false;
+        this.setName("World Listing");
+        this.setCommandUsage("/mvlist");
+        this.setArgRange(0, 0);
+        this.addKey("mvlist");
+        this.addKey("mvl");
+        this.addKey("mv list");
+        this.setPermission("multiverse.core.list.worlds", "Displays a listing of all worlds that you can enter.", PermissionDefault.TRUE);
     }
 
     @Override

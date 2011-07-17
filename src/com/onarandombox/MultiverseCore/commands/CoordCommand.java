@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.LocationManipulation;
@@ -16,14 +17,12 @@ public class CoordCommand extends MultiverseCommand {
 
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Coordinates";
-        this.commandDesc = "Returns detailed information on the Players where abouts.";
-        this.commandUsage = "/mvcoord";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 0;
-        this.commandKeys.add("mvcoord");
-        this.permission = "multiverse.world.coord";
-        this.opRequired = false;
+        this.setName("Coordinates");
+        this.setCommandUsage("/mvcoord");
+        this.setArgRange(0, 0);
+        this.addKey("mv coord");
+        this.addKey("mvcoord");
+        this.setPermission("multiverse.core.coord", "Returns detailed information on the Players where abouts.", PermissionDefault.TRUE);
     }
 
     @Override

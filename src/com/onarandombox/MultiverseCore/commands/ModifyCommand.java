@@ -1,9 +1,13 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -24,16 +28,18 @@ public class ModifyCommand extends MultiverseCommand {
 
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Modify a World";
-        this.commandDesc = "MVModify requires an extra parameter: SET,ADD,REMOVE or CLEAR. See below for usage.";
-        this.commandUsage = "/mvmodify" + ChatColor.GREEN + " {SET|ADD|REMOVE|CLEAR} ...";
-        // Make it so they can NEVER execute this one
-        this.minimumArgLength = 1;
-        this.maximumArgLength = 0;
-        this.commandKeys.add("mvmodify");
-        this.commandKeys.add("mvm");
-        this.permission = "multiverse.world.modify";
-        this.opRequired = true;
+        this.setName("Modify a World");
+        this.setCommandUsage("/mvmodify" + ChatColor.GREEN + " {set|add|remove|clear} ...");
+        this.setArgRange(2, 3);
+        this.addKey("mvm");
+        this.addKey("mvmodify");
+        Map<String, Boolean> children = new HashMap<String, Boolean>();
+        children.put("multiverse.core.modify.add", true);
+        children.put("multiverse.core.modify.modify", true);
+        children.put("multiverse.core.modify.clear", true);
+        children.put("multiverse.core.modify.remove", true);
+        Permission modify = new Permission("multiverse.core.modify", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP, children);
+        this.setPermission(modify);
     }
 
     protected static boolean validateAction(Action action, String property) {

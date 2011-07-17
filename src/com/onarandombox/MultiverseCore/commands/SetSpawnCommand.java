@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -13,16 +14,13 @@ public class SetSpawnCommand extends MultiverseCommand {
 
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Set World Spawn";
-        this.commandDesc = "Sets the spawn for the current world.";
-        this.commandUsage = "/mvsetspawn";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 0;
-        this.commandKeys.add("mvsetspawn");
-        this.commandKeys.add("mvss");
-        this.commandKeys.add("mv set spawn");
-        this.permission = "multiverse.world.spawn.set";
-        this.opRequired = true;
+        this.setName("Set World Spawn");
+        this.setCommandUsage("/mvsetspawn");
+        this.setArgRange(0, 0);
+        this.addKey("mvsetspawn");
+        this.addKey("mvss");
+        this.addKey("mv set spawn");
+        this.setPermission("multiverse.core.spawn.set", "Sets the spawn for the current world.", PermissionDefault.OP);
     }
 
     @Override

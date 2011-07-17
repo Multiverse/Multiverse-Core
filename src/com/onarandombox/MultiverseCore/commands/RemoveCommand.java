@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -11,15 +12,11 @@ public class RemoveCommand extends MultiverseCommand {
 
     public RemoveCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Remove World";
-        this.commandDesc = "Unloads a world from Multiverse and removes it from worlds.yml, this does NOT remove the world folder.";
-        this.commandUsage = "/mvremove " + ChatColor.GREEN + " {WORLD} ";
-        this.minimumArgLength = 1;
-        this.maximumArgLength = 1;
-        this.commandKeys.add("mvremove");
-        this.commandKeys.add("mv remove");
-        this.permission = "multiverse.world.remove";
-        this.opRequired = true;
+        this.setName("Remove World");
+        this.setCommandUsage("/mvremove " + ChatColor.GREEN + " {WORLD}");
+        this.setArgRange(1, 1);
+        this.addKey("mvcoord");
+        this.setPermission("multiverse.core.remove", "Unloads a world from Multiverse and removes it from worlds.yml, this does NOT remove the world folder.", PermissionDefault.OP);
     }
 
     @Override

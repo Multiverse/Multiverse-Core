@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
@@ -16,16 +17,13 @@ public class HelpCommand extends MultiverseCommand {
 
     public HelpCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "Get Help with Multiverse";
-        this.commandDesc = "Displays a nice help menu.";
-        this.commandUsage = "/mv " + ChatColor.GOLD + "[PAGE #]";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 1;
-        this.commandKeys.add("mv");
-        this.commandKeys.add("mvhelp");
-        this.commandKeys.add("mv help");
-        this.permission = "multiverse.help";
-        this.opRequired = false;
+        this.setName("Get Help with Multiverse");
+        this.setCommandUsage("/mv " + ChatColor.GOLD + "[PAGE #]");
+        this.setArgRange(0, 1);
+        this.addKey("mv");
+        this.addKey("mvhelp");
+        this.addKey("mv help");
+        this.setPermission("multiverse.help", "Displays a nice help menu.", PermissionDefault.TRUE);
     }
 
     @Override

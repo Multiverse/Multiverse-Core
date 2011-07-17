@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -12,15 +13,12 @@ public class EnvironmentCommand extends MultiverseCommand {
 
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);
-        this.commandName = "List Environments";
-        this.commandDesc = "Lists valid known environments.";
-        this.commandUsage = "/mvenv";
-        this.minimumArgLength = 0;
-        this.maximumArgLength = 0;
-        this.commandKeys.add("mvenv");
-        this.commandKeys.add("mv env");
-        this.permission = "multiverse.world.list.environments";
-        this.opRequired = false;
+        this.setName("List Environments");
+        this.setCommandUsage("/mvenv");
+        this.setArgRange(0, 0);
+        this.addKey("mvenv");
+        this.addKey("mv env");
+        this.setPermission("multiverse.core.list.environments", "Lists valid known environments.", PermissionDefault.TRUE);
     }
 
 
