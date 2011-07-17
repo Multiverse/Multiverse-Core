@@ -61,7 +61,7 @@ public class TeleportCommand extends MultiverseCommand {
             }
 
             if (!(sender instanceof Player)) {
-                sender.sendMessage("You can only teleport other players from the command line.");
+                sender.sendMessage("From the console, you must specifiy a player to teleport");
                 return;
             }
             teleporter = (Player) sender;

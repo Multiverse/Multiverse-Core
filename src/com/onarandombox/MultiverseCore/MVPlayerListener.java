@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 
@@ -121,5 +122,25 @@ public class MVPlayerListener extends PlayerListener {
     @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
 
+    }
+
+    @Override
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        MVWorld fromWorld = this.plugin.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld toWorld = this.plugin.getMVWorld(event.getTo().getWorld().getName());
+        if (toWorld != null) {
+            if (!this.plugin.getPermissions().canEnterWorld(event.getPlayer(), toWorld)) {
+                event.getPlayer().sendMessage("You don't have access to go here...");
+                event.setCancelled(true);
+                return;
+            }
+        }
+        if (fromWorld != null) {
+            if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
+                event.getPlayer().sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 }

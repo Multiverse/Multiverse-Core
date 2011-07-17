@@ -123,8 +123,6 @@ public class MVWorld {
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
         this.getMobExceptions();
 
-        this.getPlayerWhitelist().addAll(config.getStringList("worlds." + this.name + ".playerwhitelist", new ArrayList<String>()));
-        this.getPlayerBlacklist().addAll(config.getStringList("worlds." + this.name + ".playerblacklist", new ArrayList<String>()));
         this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
         this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
         this.translateTempSpawn(config);
@@ -196,8 +194,6 @@ public class MVWorld {
         this.masterList = new HashMap<String, List<String>>();
         this.blockBlacklist = new ArrayList<Integer>();
         // Only int list, we don't need to add it to the masterlist
-        this.masterList.put("playerwhitelist", new ArrayList<String>());
-        this.masterList.put("playerblacklist", new ArrayList<String>());
         this.masterList.put("worldblacklist", new ArrayList<String>());
         this.masterList.put("animals", new ArrayList<String>());
         this.masterList.put("monsters", new ArrayList<String>());
@@ -210,20 +206,12 @@ public class MVWorld {
 
         this.blockBlacklist.add(49);
 
-        this.getPlayerWhitelist().add("fernferret");
-        this.getPlayerBlacklist().add("g:Admins");
-
-        this.getPlayerBlacklist().add("Rigby90");
-        this.getPlayerBlacklist().add("g:Banned");
-
         this.getWorldBlacklist().add("world5");
         this.getWorldBlacklist().add("A world with spaces");
 
         this.config.setProperty("worlds." + this.name + ".animals.exceptions", this.getAnimalList());
         this.config.setProperty("worlds." + this.name + ".monsters.exceptions", this.getMonsterList());
         this.config.setProperty("worlds." + this.name + ".blockblacklist", this.getBlockBlacklist());
-        this.config.setProperty("worlds." + this.name + ".playerwhitelist", this.getPlayerWhitelist());
-        this.config.setProperty("worlds." + this.name + ".playerblacklist", this.getPlayerBlacklist());
         this.config.setProperty("worlds." + this.name + ".worldblacklist", this.getWorldBlacklist());
         this.config.save();
     }
@@ -468,14 +456,6 @@ public class MVWorld {
 
     public List<Integer> getBlockBlacklist() {
         return this.blockBlacklist;
-    }
-
-    public List<String> getPlayerWhitelist() {
-        return this.masterList.get("playerwhitelist");
-    }
-
-    public List<String> getPlayerBlacklist() {
-        return this.masterList.get("playerblacklist");
     }
 
     public List<String> getWorldBlacklist() {

@@ -18,7 +18,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Constructor FTW
-     *
+     * 
      * @param plugin Pass along the Core Plugin.
      */
     public MVPermissions(MultiverseCore plugin) {
@@ -32,7 +32,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Check if a Player can teleport to the Destination world from there current world. This checks against the Worlds Blacklist
-     *
+     * 
      * @param p
      * @param w
      * @return
@@ -41,10 +41,6 @@ public class MVPermissions implements PermissionsInterface {
         List<String> blackList = w.getWorldBlacklist();
 
         boolean returnValue = true;
-
-        if (blackList.size() == 0) {
-            returnValue = true;
-        }
 
         for (String s : blackList) {
             if (s.equalsIgnoreCase(p.getWorld().getName())) {
@@ -58,61 +54,34 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Check if the Player has the permissions to enter this world.
-     *
+     * 
      * @param p
      * @param w
      * @return
      */
     public Boolean canEnterWorld(Player p, MVWorld w) {
-
-        List<String> whiteList = w.getPlayerWhitelist();
-        List<String> blackList = w.getPlayerBlacklist();
-        boolean returnValue = true;
-
-        // If there's anyone in the whitelist, then the whitelist is ACTIVE, anyone not in it is blacklisted.
-        if (whiteList.size() > 0) {
-            returnValue = false;
-        }
-        for (String bls : blackList) {
-            if (bls.toLowerCase().contains("g:") && this.inGroup(p, w.getAlias(), bls.split(":")[1])) {
-                returnValue = false;
-                break;
-            }
-            if (bls.equalsIgnoreCase(p.getName())) {
-                returnValue = false;
-                break;
-            }
-        }
-        for (String wls : whiteList) {
-            if (wls.toLowerCase().contains("g:") && this.inGroup(p, w.getAlias(), wls.split(":")[1])) {
-                returnValue = true;
-                break;
-            }
-            if (wls.equalsIgnoreCase(p.getName())) {
-                returnValue = true;
-                break;
-            }
-        }
-        return returnValue;
+        return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
 
     /**
-     * Returns true if a player is in a group.
-     *
-     * @param player    The player to check
+     * Returns true if a player is in a group. DEPRECATED: We're moving away from groups. Use permissions nodes in the groups instead.
+     * 
+     * @param player The player to check
      * @param worldName The world to check in
-     * @param group     The group are we checking
+     * @param group The group are we checking
      * @return True if the player is in the group, false if not.
      */
+    @Deprecated
     private boolean inGroup(Player player, String worldName, String group) {
         if (this.permissions != null) {
-            
+
             return this.permissions.inGroup(worldName, player.getName(), group);
         } else {
             return player.isOp();
         }
     }
-    
+
+    @Deprecated
     public List<String> getGroups(String worldName, String name) {
         return Arrays.asList(this.permissions.getGroups(worldName, name));
     }
