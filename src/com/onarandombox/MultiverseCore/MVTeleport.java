@@ -63,14 +63,14 @@ public class MVTeleport {
      * @return
      */
     public Location getSafeBedDestination(Location bedLocation) {
-        System.out.print(bedLocation);
+        //System.out.print(bedLocation);
         Location idealLocation = bedLocation;
         idealLocation.setY(idealLocation.getY() + 1);
         idealLocation.setX(idealLocation.getX() + .5);
         idealLocation.setZ(idealLocation.getZ() + .5);
-        System.out.print(idealLocation);
+        //System.out.print(idealLocation);
         if (this.bs.playerCanSpawnHereSafely(idealLocation)) {
-            System.out.print(idealLocation);
+            //System.out.print(idealLocation);
             return bedLocation;
         }
         return null;

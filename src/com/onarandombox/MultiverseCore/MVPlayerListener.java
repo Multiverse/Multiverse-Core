@@ -30,10 +30,12 @@ public class MVPlayerListener extends PlayerListener {
          * Check the Player has actually moved a block to prevent unneeded calculations... This is to prevent huge performance drops on high player count servers.
          */
         MVPlayerSession ps = this.plugin.getPlayerSession(p);
-        if (ps.loc.getBlockX() == loc.getBlockX() && ps.loc.getBlockY() == loc.getBlockY() && ps.loc.getBlockZ() == loc.getBlockZ()) {
+        if (ps.getLocation().getBlockX() == loc.getBlockX() && ps.getLocation().getBlockY() == loc.getBlockY() && ps.getLocation().getBlockZ() == loc.getBlockZ()) {
+            ps.setStaleLocation(true);
             return;
         } else {
-            ps.loc = loc; // Update the Players Session to the new Location.
+            ps.setLocation(loc); // Update the Players Session to the new Location.
+            ps.setStaleLocation(false);
         }
     }
 

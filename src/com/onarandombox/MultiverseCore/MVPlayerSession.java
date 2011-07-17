@@ -13,13 +13,8 @@ import com.onarandombox.utils.BlockSafety;
 public class MVPlayerSession {
 
     private Player player; // Player holder, may be unnecessary.
-    protected Location loc = new Location(null, 0, 0, 0); // Contain the Players Location so on player move we can compare this and check if they've moved a block.
+    private Location loc = new Location(null, 0, 0, 0); // Contain the Players Location so on player move we can compare this and check if they've moved a block.
     private BlockSafety bs = new BlockSafety();
-    // Move to portals plugin
-    protected String portal = null; // Allow a player to target a portal to prevent them typing its name every command.
-    // Move to portals plugin
-    public Location coord1 = null; // Coordinate 1 (Left Click)
-    public Location coord2 = null; // Coordinate 2 (Right Click)
 
     private Long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
     private Long messageLast = 0L; // Timestamp for the Players last Alert Message.
@@ -31,10 +26,11 @@ public class MVPlayerSession {
     private Location bedB;
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
+    private boolean staleLocation;
 
     public MVPlayerSession(Player player, Configuration config, MultiverseCore multiVerseCore) {
         this.player = player;
-        this.loc = player.getLocation();
+        this.setLocation(player.getLocation());
         this.config = config;
         this.bedSpawn = null;
     }
@@ -77,14 +73,6 @@ public class MVPlayerSession {
         this.bedSpawn = location;
     }
 
-    //
-    // public Location getRespawnLocation() {
-    // if (this.bedSpawn != null && !this.bs.playerCanSpawnHereSafely(this.bedSpawn)) {
-    // this.bedSpawn = null;
-    // }
-    // return this.bedSpawn;
-    // }
-
     // This one simply spawns the player closer to the bed.
     public Location getBedRespawnLocation() {
         // There is a bedrespawn set
@@ -111,4 +99,23 @@ public class MVPlayerSession {
         }
         return true;
     }
+
+    public void setStaleLocation(boolean active) {
+        this.staleLocation = active;
+    }
+    
+    public boolean isStaleLocation() {
+        return this.staleLocation;
+    }
+
+    public void setLocation(Location loc) {
+        // Perform rounding to always have integer values
+        this.loc = loc;
+        
+    }
+
+    public Location getLocation() {
+        return this.loc;
+    }
+    
 }

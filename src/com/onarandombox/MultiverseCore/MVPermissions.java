@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -105,10 +106,15 @@ public class MVPermissions implements PermissionsInterface {
      */
     private boolean inGroup(Player player, String worldName, String group) {
         if (this.permissions != null) {
+            
             return this.permissions.inGroup(worldName, player.getName(), group);
         } else {
             return player.isOp();
         }
+    }
+    
+    public List<String> getGroups(String worldName, String name) {
+        return Arrays.asList(this.permissions.getGroups(worldName, name));
     }
 
     public void setPermissions(PermissionHandler handler) {

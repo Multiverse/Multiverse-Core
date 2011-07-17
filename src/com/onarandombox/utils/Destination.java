@@ -1,5 +1,7 @@
 package com.onarandombox.utils;
 
+import java.util.Arrays;
+
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class Destination {
@@ -60,12 +62,13 @@ public class Destination {
             return new Destination(items[0], DestinationType.World);
         }
 
-        if (items[0].equalsIgnoreCase("w") && plugin.isMVWorld(items[0])) {
+        if (items[0].equalsIgnoreCase("w") && plugin.isMVWorld(items[1])) {
             return new Destination(items[1], DestinationType.World);
         } else if (items[0].equalsIgnoreCase("p")) {
             // TODO: Check for a valid portal, we can't right now, as portals aren't really in yet.
             return new Destination(items[1], DestinationType.Portal);
         }
+        System.out.print("Nothing valid found!!");
         return getBadDestination();
     }
 }

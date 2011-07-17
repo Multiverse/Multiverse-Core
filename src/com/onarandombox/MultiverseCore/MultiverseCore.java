@@ -129,6 +129,7 @@ public class MultiverseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener, Priority.Low, this);
         pm.registerEvent(Event.Type.PLAYER_BED_LEAVE, this.playerListener, Priority.Normal, this);
 
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
