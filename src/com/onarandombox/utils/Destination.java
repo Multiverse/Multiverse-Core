@@ -53,10 +53,13 @@ public class Destination {
         }
 
         String[] items = dest.split(":");
-        if (items.length > 2) {
+        if (items.length == 0) {
             return getBadDestination();
         }
-
+        if (items.length == 1 && items[0].equalsIgnoreCase("here")) {
+            return new Destination(items[0], DestinationType.Exact);
+        }
+        
         // If we only found one param, assume world, but still check for validity
         if (items.length == 1 && plugin.isMVWorld(items[0])) {
             return new Destination(items[0], DestinationType.World);
@@ -67,6 +70,8 @@ public class Destination {
         } else if (items[0].equalsIgnoreCase("p")) {
             // TODO: Check for a valid portal, we can't right now, as portals aren't really in yet.
             return new Destination(items[1], DestinationType.Portal);
+        } else if(items[0].equalsIgnoreCase("e")) {
+            // TODO: The new 'exact' dest type
         }
         System.out.print("Nothing valid found!!");
         return getBadDestination();
