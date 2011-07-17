@@ -95,17 +95,19 @@ public class MVPermissions implements PermissionsInterface {
         if (!(sender instanceof Player)) {
             return true;
         }
-        
+
         Player player = (Player) sender;
-        
+
         boolean opFallback = this.plugin.configMV.getBoolean("opfallback", true);
-        if (player.isOp() && opFallback) {
-            // If Player is Op we always let them use it if they have the fallback enabled!
-            return true;
-        } else if (this.permissions != null && this.permissions.has(player, node)) {
+        if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
             return true;
-        } else if(sender.hasPermission(node)) {
+        } else if (sender.hasPermission(node) && !opFallback) {
+            // If Now check the bukkit permissions
+            // OpFallback must be disabled for this to work
+            return true;
+        } else if (player.isOp() && opFallback) {
+            // If Player is Op we always let them use it if they have the fallback enabled!
             return true;
         }
         // If the Player doesn't have Permissions and isn't an Op then

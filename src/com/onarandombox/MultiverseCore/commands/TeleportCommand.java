@@ -23,7 +23,7 @@ public class TeleportCommand extends MultiverseCommand {
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
         Permission self = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
-        Permission other = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
+        Permission other = new Permission("multiverse.core.tp.other", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
         this.plugin.getServer().getPluginManager().addPermission(self);
         this.plugin.getServer().getPluginManager().addPermission(other);
         Map<String, Boolean> children = new HashMap<String, Boolean>();
@@ -37,6 +37,7 @@ public class TeleportCommand extends MultiverseCommand {
         this.addKey("mvtp");
         this.addKey("mv tp");
         this.setPermission(tp);
+        this.playerTeleporter = new MVTeleport(this.plugin);
     }
 
     @Override
@@ -51,8 +52,8 @@ public class TeleportCommand extends MultiverseCommand {
         String worldName;
 
         if (args.size() == 2) {
-            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.world.tp.other", true)) {
-                sender.sendMessage("You don't have permission to teleport another player. (multiverse.world.tp.other)");
+            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.core.tp.other", true)) {
+                sender.sendMessage("You don't have permission to teleport another player. (multiverse.core.tp.other)");
                 return;
             }
             teleportee = this.plugin.getServer().getPlayer(args.get(0));
@@ -64,8 +65,8 @@ public class TeleportCommand extends MultiverseCommand {
 
         } else {
             worldName = args.get(0);
-            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.world.tp.self", true)) {
-                sender.sendMessage("You don't have permission to teleport yourself between worlds. (multiverse.world.tp.self)");
+            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.core.tp.self", true)) {
+                sender.sendMessage("You don't have permission to teleport yourself between worlds. (multiverse.core.tp.self)");
                 return;
             }
 

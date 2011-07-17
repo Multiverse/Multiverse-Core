@@ -8,6 +8,8 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.config.Configuration;
 
 enum EnglishChatColor {
@@ -88,6 +90,7 @@ public class MVWorld {
      * The generator as a string. This is used only for reporting. ex: BukkitFullOfMoon:GenID
      */
     private String generator;
+    private Permission permission;
 
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -128,6 +131,11 @@ public class MVWorld {
         this.translateTempSpawn(config);
 
         config.save();
+        this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.TRUE);
+        try {
+        this.plugin.getServer().getPluginManager().addPermission(this.permission);
+        } catch (IllegalArgumentException e) {
+        }
         // The following 3 lines will add some sample data to new worlds created.
         // if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
         // addSampleData();
