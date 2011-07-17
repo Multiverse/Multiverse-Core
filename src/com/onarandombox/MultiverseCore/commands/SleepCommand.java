@@ -30,13 +30,13 @@ public class SleepCommand extends MultiverseCommand {
         if (p == null) {
             return;
         }
-        MVPlayerSession session = this.plugin.getPlayerSession(p);
-        if (session.getBedRespawnLocation() != null) {
-            p.teleport(session.getBedRespawnLocation());
-        } else {
-            sender.sendMessage("Hmm this is awkward...");
-            sender.sendMessage("Something is wrong with your bed.");
-            sender.sendMessage("It has either been destroyed or obstructed.");
-        }
+//        MVPlayerSession session = this.plugin.getPlayerSession(p);
+//        if (session.getBedRespawnLocation() != null) {
+//            p.teleport(session.getBedRespawnLocation());
+//        } else {
+//            sender.sendMessage("Hmm this is awkward...");
+//            sender.sendMessage("Something is wrong with your bed.");
+//            sender.sendMessage("It has either been destroyed or obstructed.");
+//        }
     }
 }

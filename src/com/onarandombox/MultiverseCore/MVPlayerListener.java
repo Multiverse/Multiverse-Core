@@ -23,57 +23,31 @@ public class MVPlayerListener extends PlayerListener {
         this.plugin = plugin;
     }
 
-    @Override
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player p = event.getPlayer(); // Grab Player
-        Location loc = p.getLocation(); // Grab Location
-        /**
-         * Check the Player has actually moved a block to prevent unneeded calculations... This is to prevent huge performance drops on high player count servers.
-         */
-        MVPlayerSession ps = this.plugin.getPlayerSession(p);
-        if (ps.getLocation().getBlockX() == loc.getBlockX() && ps.getLocation().getBlockY() == loc.getBlockY() && ps.getLocation().getBlockZ() == loc.getBlockZ()) {
-            ps.setStaleLocation(true);
-            return;
-        } else {
-            ps.setLocation(loc); // Update the Players Session to the new Location.
-            ps.setStaleLocation(false);
-        }
-    }
-
-    @Override
-    public void onPlayerBedLeave(PlayerBedLeaveEvent event) {
-        Location bedLoc = event.getBed().getLocation();
-        bedLoc = this.plugin.getTeleporter().getSafeBedDestination(bedLoc);
-        this.plugin.getPlayerSession(event.getPlayer()).setRespawnLocation(bedLoc);
-        event.getPlayer().sendMessage("You should come back here when you type '/mv sleep'!");
-    }
+    // Taken out until we do persistance.
+    // @Override
+    // public void onPlayerBedLeave(PlayerBedLeaveEvent event) {
+    // Location bedLoc = event.getBed().getLocation();
+    // bedLoc = this.plugin.getTeleporter().getSafeBedDestination(bedLoc);
+    // this.plugin.getPlayerSession(event.getPlayer()).setRespawnLocation(bedLoc);
+    // event.getPlayer().sendMessage("You should come back here when you type '/mv sleep'!");
+    // }
 
     @Override
     public void onPlayerChat(PlayerChatEvent event) {
-        // Not sure if this should be a separate plugin... in here for now!!!
-        // FernFerret
-
         if (event.isCancelled()) {
             return;
         }
-        /**
-         * Check whether the Server is set to prefix the chat with the World name. If not we do nothing, if so we need to check if the World has an Alias.
-         */
+        // Check whether the Server is set to prefix the chat with the World name. If not we do nothing, if so we need to check if the World has an Alias.
         if (this.plugin.configMV.getBoolean("worldnameprefix", true)) {
-
             String world = event.getPlayer().getWorld().getName();
-
             String prefix = "";
-
             // If we're not a MV world, don't do anything
             if (!this.plugin.isMVWorld(world)) {
                 return;
             }
             MVWorld mvworld = this.plugin.getMVWorld(world);
             prefix = mvworld.getColoredWorldString();
-
             String format = event.getFormat();
-
             event.setFormat("[" + prefix + "]" + format);
         }
     }
@@ -118,10 +92,10 @@ public class MVPlayerListener extends PlayerListener {
             event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
         }
     }
-
+    
     @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
-
+        this.plugin.removePlayerSession(event.getPlayer());
     }
 
     @Override

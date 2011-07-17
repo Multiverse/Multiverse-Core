@@ -13,7 +13,6 @@ import com.onarandombox.utils.BlockSafety;
 public class MVPlayerSession {
 
     private Player player; // Player holder, may be unnecessary.
-    private Location loc = new Location(null, 0, 0, 0); // Contain the Players Location so on player move we can compare this and check if they've moved a block.
     private BlockSafety bs = new BlockSafety();
 
     private Long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
@@ -26,11 +25,9 @@ public class MVPlayerSession {
     private Location bedB;
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
-    private boolean staleLocation;
 
     public MVPlayerSession(Player player, Configuration config, MultiverseCore multiVerseCore) {
         this.player = player;
-        this.setLocation(player.getLocation());
         this.config = config;
         this.bedSpawn = null;
     }
@@ -73,49 +70,30 @@ public class MVPlayerSession {
         this.bedSpawn = location;
     }
 
-    // This one simply spawns the player closer to the bed.
-    public Location getBedRespawnLocation() {
-        // There is a bedrespawn set
-        if (this.bedSpawn != null) {
-            if (!this.bs.playerCanSpawnHereSafely(this.bedSpawn) || !bedStillExists(this.bedSpawn)) {
-                this.bedSpawn = null;
-                return this.bedSpawn;
-            }
-            Location actualRespawn = this.bedSpawn;
-            Location bedRespawn = new Location(actualRespawn.getWorld(), actualRespawn.getX(), actualRespawn.getY(), actualRespawn.getZ());
-            bedRespawn.setY(bedRespawn.getY() - .25);
-            return bedRespawn;
-        }
-        return null;
-    }
-
-    private boolean bedStillExists(Location bedSpawn) {
-        //System.out.print("Dangers:");
-        //this.bs.showDangers(bedSpawn);
-        Location locationDown = new Location(bedSpawn.getWorld(), bedSpawn.getX(), bedSpawn.getY(), bedSpawn.getZ());
-        locationDown.setY(locationDown.getY() - 1);
-        if (locationDown.getBlock().getType() != Material.BED_BLOCK) {
-            return false;
-        }
-        return true;
-    }
-
-    public void setStaleLocation(boolean active) {
-        this.staleLocation = active;
-    }
-    
-    public boolean isStaleLocation() {
-        return this.staleLocation;
-    }
-
-    public void setLocation(Location loc) {
-        // Perform rounding to always have integer values
-        this.loc = loc;
-        
-    }
-
-    public Location getLocation() {
-        return this.loc;
-    }
-    
+//    // This one simply spawns the player closer to the bed.
+//    public Location getBedRespawnLocation() {
+//        // There is a bedrespawn set
+//        if (this.bedSpawn != null) {
+//            if (!this.bs.playerCanSpawnHereSafely(this.bedSpawn) || !bedStillExists(this.bedSpawn)) {
+//                this.bedSpawn = null;
+//                return this.bedSpawn;
+//            }
+//            Location actualRespawn = this.bedSpawn;
+//            Location bedRespawn = new Location(actualRespawn.getWorld(), actualRespawn.getX(), actualRespawn.getY(), actualRespawn.getZ());
+//            bedRespawn.setY(bedRespawn.getY() - .25);
+//            return bedRespawn;
+//        }
+//        return null;
+//    }
+//
+//    private boolean bedStillExists(Location bedSpawn) {
+//        //System.out.print("Dangers:");
+//        //this.bs.showDangers(bedSpawn);
+//        Location locationDown = new Location(bedSpawn.getWorld(), bedSpawn.getX(), bedSpawn.getY(), bedSpawn.getZ());
+//        locationDown.setY(locationDown.getY() - 1);
+//        if (locationDown.getBlock().getType() != Material.BED_BLOCK) {
+//            return false;
+//        }
+//        return true;
+//    }    
 }

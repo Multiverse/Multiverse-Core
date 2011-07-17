@@ -56,7 +56,6 @@ public class MultiverseCore extends JavaPlugin {
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);;
 
-    private MVBlockListener blockListener = new MVBlockListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
 
@@ -126,11 +125,8 @@ public class MultiverseCore extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener, Priority.Highest, this); // Cancel Teleports if needed.
         pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this); // To create the Player Session
         pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener, Priority.Normal, this); // To remove Player Sessions
-        pm.registerEvent(Event.Type.PLAYER_KICK, this.playerListener, Priority.Highest, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
-        pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener, Priority.Low, this);
-        pm.registerEvent(Event.Type.PLAYER_BED_LEAVE, this.playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this); // To prepend the world name
 
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow fake PVP
@@ -138,11 +134,6 @@ public class MultiverseCore extends JavaPlugin {
 
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.pluginListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLUGIN_DISABLE, this.pluginListener, Priority.Monitor, this);
-
-        // pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this); // To prevent Blocks being destroyed.
-        // pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this); // To prevent Blocks being placed.
-        // pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
-        // pm.registerEvent(Event.Type.EXPLOSION_PRIMED, entityListener, Priority.Normal, this); // Try to prevent Ghasts from blowing up structures.
     }
 
     /**
@@ -593,5 +584,11 @@ public class MultiverseCore extends JavaPlugin {
     public void showNotMVWorldMessage(CommandSender sender, String worldName) {
         sender.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
         sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
+    }
+
+    public void removePlayerSession(Player player) {
+        if(this.playerSessions.containsKey(player.getName())) {
+            this.playerSessions.remove(player.getName());
+        }
     }
 }
