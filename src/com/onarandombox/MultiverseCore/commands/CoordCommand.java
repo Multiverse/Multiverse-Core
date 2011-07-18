@@ -30,6 +30,10 @@ public class CoordCommand extends MultiverseCommand {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
             Player p = (Player) sender;
+            if(!this.plugin.isMVWorld(p.getWorld().getName())) {
+                this.plugin.showNotMVWorldMessage(sender, p.getWorld().getName());
+                return;
+            }
             p.sendMessage(ChatColor.RED + "World: " + ChatColor.WHITE + p.getWorld().getName());
             p.sendMessage(ChatColor.RED + "World Scale: " + ChatColor.WHITE + this.plugin.getMVWorld(p.getWorld().getName()).getScaling());
             p.sendMessage(ChatColor.RED + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));
