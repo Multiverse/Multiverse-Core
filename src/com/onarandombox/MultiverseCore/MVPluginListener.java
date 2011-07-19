@@ -33,9 +33,9 @@ public class MVPluginListener extends ServerListener {
         }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
         if (Arrays.asList(AllPay.validEconPlugins).contains(event.getPlugin().getDescription().getName())) {
-            this.plugin.bank = this.plugin.banker.loadEconPlugin();
+            this.plugin.setBank(this.plugin.getBanker().loadEconPlugin());
         }
-        if (event.getPlugin().getDescription().getName().equalsIgnoreCase("MultiVerse")) {
+        if (event.getPlugin().getDescription().getName().equals("MultiVerse")) {
             this.plugin.getServer().getPluginManager().disablePlugin(event.getPlugin());
             this.plugin.log(Level.WARNING, "I just disabled the old version of Multiverse for you. You should remove the JAR now, your configs have been migrated.");
             new DefaultConfiguration(this.plugin.getDataFolder(), "config.yml", this.plugin.migrator);

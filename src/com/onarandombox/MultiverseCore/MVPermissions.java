@@ -13,7 +13,7 @@ import com.pneumaticraft.commandhandler.PermissionsInterface;
 public class MVPermissions implements PermissionsInterface {
 
     private MultiverseCore plugin;
-    public PermissionHandler permissions = null;
+    private PermissionHandler permissions = null;
 
     /**
      * Constructor FTW
@@ -93,5 +93,12 @@ public class MVPermissions implements PermissionsInterface {
         // If they have the op fallback disabled, NO commands will work without a permissions plugin.
         return !isOpRequired && opFallback;
 
+    }
+
+    public String getType() {
+        if (this.permissions != null) {
+            return "Permissions " + this.plugin.getServer().getPluginManager().getPlugin("Permissions").getDescription().getVersion();
+        }
+        return "Bukkit Permissions/OPs.txt";
     }
 }
