@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -75,7 +74,7 @@ public class MVPermissions implements PermissionsInterface {
 
         Player player = (Player) sender;
 
-        boolean opFallback = this.plugin.configMV.getBoolean("opfallback", true);
+        boolean opFallback = this.plugin.getConfig().getBoolean("opfallback", true);
         if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
             return true;

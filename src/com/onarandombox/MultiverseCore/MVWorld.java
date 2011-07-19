@@ -450,7 +450,7 @@ public class MVWorld {
     }
 
     public void setPvp(Boolean pvp) {
-        this.fakepvp = this.plugin.configMV.getBoolean("fakepvp", false);
+        this.fakepvp = this.plugin.getConfig().getBoolean("fakepvp", false);
         if (this.fakepvp) {
             this.world.setPVP(true);
         } else {

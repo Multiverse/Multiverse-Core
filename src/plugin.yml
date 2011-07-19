@@ -155,3 +155,11 @@ commands:
     description: Tells the user all possible world types.
     usage: |
             /<command>
+  mvv:
+    description: Prints out version invo.
+    usage: |
+            /<command>
+  mvversion:
+    description: Prints out version invo.
+    usage: |
+            /<command>

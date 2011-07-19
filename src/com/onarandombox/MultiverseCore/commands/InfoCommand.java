@@ -103,7 +103,7 @@ public class InfoCommand extends MultiverseCommand {
         return page;
     }
 
-    private ChatColor getChatColor(boolean positive) {
+    protected ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }
 

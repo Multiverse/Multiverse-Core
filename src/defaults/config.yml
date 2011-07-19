@@ -1,9 +1,13 @@
 # !!!This only applies to worlds being handled by Multiverse!!!
 # If you don't see it using /mvlist this setting WILL HAVE NO EFFECT
 
-# How long to leave in between sending a message to the player.
+# How long to leave in between sending a message to the player. (NOT YET IMPLEMENTED)
 # In Milliseconds - Default is '5000' which is 5 Seconds.
 messagecooldown: 5000
+
+# How fast are people allowed to use /MVTP (NOT YET IMPLEMENTED)
+# In Milliseconds - Default is '5000' which is 5 Seconds.
+teleportcooldown: 5000
 
 # If this is set to true, we will prefix the chat with 
 # a colorful world alias if it's present. If not, we simply
@@ -26,10 +30,6 @@ disableautoheal: false
 # Players will be notified when they punch/shoot and it's not allowed.
 fakepvp: false
 
-# When this is enabled, users will spawn at their last bed slept at. If the bed is destroyed or obstructed,
-# they will spawn according to how you have 'notchrespawnstyle' set.
-bedrespawn: true
-
 # This just signifies the version number so we can see what version of config you have.
 # NEVER TOUCH THIS VALUE
-version: 2.0
+version: 2.1

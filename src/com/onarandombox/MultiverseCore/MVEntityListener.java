@@ -71,7 +71,7 @@ public class MVEntityListener extends EntityListener {
                 Player pattacker = (Player) attacker;
 
 
-                if (!world.getPvp() && this.plugin.configMV.getBoolean("fakepvp", false)) {
+                if (!world.getPvp() && this.plugin.getConfig().getBoolean("fakepvp", false)) {
                     pattacker.sendMessage(ChatColor.RED + "PVP is disabled in this World.");
                     event.setCancelled(true);
                     return;
@@ -86,7 +86,7 @@ public class MVEntityListener extends EntityListener {
             return;
         }
         RegainReason reason = event.getRegainReason();
-        if (reason == RegainReason.REGEN && this.plugin.configMV.getBoolean("disableautoheal", false)) {
+        if (reason == RegainReason.REGEN && this.plugin.getConfig().getBoolean("disableautoheal", false)) {
             event.setCancelled(true);
             return;
         }

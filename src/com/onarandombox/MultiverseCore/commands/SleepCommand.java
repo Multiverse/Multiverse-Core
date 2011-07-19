@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MVPlayerSession;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class SleepCommand extends MultiverseCommand {

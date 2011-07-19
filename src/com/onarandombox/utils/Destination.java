@@ -1,7 +1,5 @@
 package com.onarandombox.utils;
 
-import java.util.Arrays;
-
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class Destination {
