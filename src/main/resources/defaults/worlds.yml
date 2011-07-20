@@ -1,0 +1,44 @@
+worlds:
+
+#############################################
+### - Examples & Explanation of Settings- ###
+#############################################
+##worlds:
+##    default:                           ## This world is called 'default'
+##        environment: NORMAL            ## Created with a NORMAL environment.
+##        animals:
+##            spawn: true                ## We want animals to Spawn.
+##            exceptions:                ## We want all animals to spawn so we won't make any exceptions.
+##        monsters:
+##            spawn: true                ## We want monsters to Spawn.
+##            exceptions: 'CREEPER'      ## But we don't want Creepers to spawn as they destroy peoples homes and valuables. 
+##        pvp: true                      ## We wan't PVP to be enabled so players can fight each other.
+##        worldBlacklist: ''             ## We are not blacklisting any worlds so this allows Players to teleport to this world from all other worlds.
+##        playerBlacklist: ''            ## We are not blacklisting any players or groups so anyone can enter this world.
+##        playerWhitelist: ''            ## Because we have not blacklisted anyone we do not have to Whitelist someone.
+##   
+##    creative:                          ## This world is called 'creative'
+##        environment: NORMAL            ## Created with a NORMAL environment.
+##        animals:   
+##            spawn: true                ## We want animals to spawn.
+##            exceptions:                ## We want all animals to spawn so we won't make any exceptions.
+##        monsters:  
+##            spawn: false               ## We don't want monsters to Spawn because this is a Creative World.
+##            enforced: true             ## We want to enforce this rule, this means any Monster that was alive during world load/creation will be removed. No monsters can inhabit this world.
+##            exceptions:                ## We don't want to make any exceptions to this.
+##        pvp: false                     ## We want to disable PVP because this world is for creativeness only.
+##        worldBlacklist: ''             ## We are not blacklisting any worlds so this allows Players to teleport to this world from all other worlds.
+##        playerBlacklist: 'g:Griefers'  ## We don't want to allow the group 'Griefers' into the World.
+##        playerWhitelist: 'g:Artists'   ## We want to allow the group 'Artists' to enter this World.
+##
+##    nether:                            ## This world is called 'nether'
+##        environment: NETHER            ## Created with a NETHER environment.      
+##        animals: 
+##            spawn: true                ## We want animals to spawn.
+##        monsters:
+##            spawn: true                ## We want monsters to spawn.
+##        pvp: true                      ## We want to enable PVP on this World.
+##        worldBlacklist: ''             ## We are not blacklisting any worlds so this allows Players to teleport to this world from all other worlds.
+##        playerBlacklist: ''            ## We are not blacklisting any players or groups so anyone can enter this world.
+##        playerWhitelist: ''            ## Because we have not blacklisted anyone we do not have to Whitelist someone.
+

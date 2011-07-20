@@ -1,0 +1,155 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.onarandombox.multiversecore</groupId>
+    <artifactId>MultiverseCore</artifactId>
+    <version>2.0</version>
+    <name>Multiverse-Core</name>
+    <description>World Management Plugin</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.number>UNKNOWN</project.build.number>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>OnARandomBox</id>
+            <url>http://repo.onarandombox.com/artifactory/repo</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <!-- Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <!-- Build Helper - Additional Source Folders -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-wsdl-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/lib/allpay/src</source>
+                                <source>${project.basedir}/lib/commandhandler/src</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.3.8</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>target/classes/plugin.yml</file>
+                    <replacements>
+                        <replacement>
+                            <token>maven-version-number</token>
+                            <value>${project.version}-${project.build.number}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+            <!-- Jar Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- Bukkit Dependency -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Bukkit Dependency -->
+
+        <!-- Start of Economy Dependencies -->
+        <dependency>
+            <groupId>cosine.boseconomy</groupId>
+            <artifactId>BOSEconomy</artifactId>
+            <version>0.6.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.crafter.tickleman.RealShop</groupId>
+            <artifactId>RealShop</artifactId>
+            <version>0.63</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.iConomy</groupId>
+            <artifactId>iConomy</artifactId>
+            <version>5.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nijiko.coelho.iConomy</groupId>
+            <artifactId>iConomy</artifactId>
+            <version>4.65</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.earth2me.essentials</groupId>
+            <artifactId>Essentials</artifactId>
+            <version>2.4.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of Economy Dependencies -->
+
+        <!-- Start of Permissions Dependencies -->
+        <dependency>
+            <groupId>com.nijikokun.bukkit</groupId>
+            <artifactId>Permissions</artifactId>
+            <version>3.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of Permissions Dependencies -->
+
+    </dependencies>
+</project>
