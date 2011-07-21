@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,7 +26,30 @@ import org.bukkit.util.config.Configuration;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.commands.*;
+import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
+import com.onarandombox.MultiverseCore.commands.CoordCommand;
+import com.onarandombox.MultiverseCore.commands.CreateCommand;
+import com.onarandombox.MultiverseCore.commands.DeleteCommand;
+import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commands.HelpCommand;
+import com.onarandombox.MultiverseCore.commands.ImportCommand;
+import com.onarandombox.MultiverseCore.commands.InfoCommand;
+import com.onarandombox.MultiverseCore.commands.ListCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyAddCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyClearCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyRemoveCommand;
+import com.onarandombox.MultiverseCore.commands.ModifySetCommand;
+import com.onarandombox.MultiverseCore.commands.PurgeCommand;
+import com.onarandombox.MultiverseCore.commands.ReloadCommand;
+import com.onarandombox.MultiverseCore.commands.RemoveCommand;
+import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
+import com.onarandombox.MultiverseCore.commands.SleepCommand;
+import com.onarandombox.MultiverseCore.commands.SpawnCommand;
+import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.onarandombox.MultiverseCore.commands.UnloadCommand;
+import com.onarandombox.MultiverseCore.commands.VersionCommand;
+import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.PurgeWorlds;
@@ -81,11 +105,11 @@ public class MultiverseCore extends JavaPlugin {
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
 
     }
-    
+
     public Configuration getConfig() {
         return this.configMV;
     }
-    
+
     public GenericBank getBank() {
         return this.bank;
     }
@@ -100,7 +124,7 @@ public class MultiverseCore extends JavaPlugin {
         this.ph = new MVPermissions(this);
 
         this.bank = this.banker.loadEconPlugin();
-        
+
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
         // Setup the world purger
@@ -224,6 +248,18 @@ public class MultiverseCore extends JavaPlugin {
 
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
+            // Remove all world permissions.
+            Permission all = this.getServer().getPluginManager().getPermission("multiverse.*");
+            for (MVWorld w : this.worlds.values()) {
+                // Remove this world from the master list
+                if (all != null) {
+                    all.getChildren().remove(w.getPermission().getName());
+                }
+                this.getServer().getPluginManager().removePermission(w.getPermission().getName());
+            }
+            // Recalc the all permission
+            this.getServer().getPluginManager().recalculatePermissionDefaults(all);
+            this.getServer().getPluginManager().removePermission("multiverse.access.*");
             this.worlds.clear();
         }
 

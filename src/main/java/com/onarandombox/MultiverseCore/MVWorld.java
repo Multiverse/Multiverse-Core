@@ -133,13 +133,31 @@ public class MVWorld {
         config.save();
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.TRUE);
         try {
-        this.plugin.getServer().getPluginManager().addPermission(this.permission);
+            this.plugin.getServer().getPluginManager().addPermission(this.permission);
+            addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
         }
         // The following 3 lines will add some sample data to new worlds created.
         // if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
         // addSampleData();
         // }
+    }
+
+    private void addToUpperLists(Permission permission2) {
+        Permission all = this.plugin.getServer().getPluginManager().getPermission("multiverse.*");
+        Permission allWorlds = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
+        if(all == null) {
+            all = new Permission("multiverse.*");
+            this.plugin.getServer().getPluginManager().addPermission(all);
+        }
+        if(allWorlds == null) {
+            allWorlds = new Permission("multiverse.access.*");
+            this.plugin.getServer().getPluginManager().addPermission(allWorlds);
+        }
+        all.getChildren().put(this.permission.getName(), true);
+        allWorlds.getChildren().put(this.permission.getName(), true);
+        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(all);
+        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allWorlds);
     }
 
     private void translateTempSpawn(Configuration config) {
@@ -344,7 +362,7 @@ public class MVWorld {
 
     /**
      * This is the one people have access to. It'll handle the rest.
-     *
+     * 
      * @param name
      * @param value
      * @return
@@ -486,7 +504,7 @@ public class MVWorld {
 
     /**
      * Sets the chat color from a string.
-     *
+     * 
      * @param aliasColor
      */
     public void setAliasColor(String aliasColor) {
@@ -533,6 +551,10 @@ public class MVWorld {
 
     public void setRespawnToWorld(String respawnToWorld) {
         this.respawnWorld = respawnToWorld;
-        this.config.setProperty("worlds."+this.name+".respawnworld", respawnToWorld);
+        this.config.setProperty("worlds." + this.name + ".respawnworld", respawnToWorld);
+    }
+
+    public Permission getPermission() {
+        return this.permission;
     }
 }
