@@ -25,7 +25,7 @@ public class Destination {
 
     public Destination(String coordString) {
         this.type = DestinationType.Invalid;
-        if(this.setExactDest(coordString.split(":"))) {
+        if (this.setExactDest(coordString.split(":"))) {
             this.type = DestinationType.Exact;
         }
     }
@@ -37,7 +37,7 @@ public class Destination {
         } else if (this.type == DestinationType.World) {
             return "w:" + this.name;
         } else if (this.type == DestinationType.Exact) {
-            return "e:" + this.x + "," + this.y + "," + this.z + ":" + this.pitch + ":" + this.yaw;
+            return "e:" + this.name + ":" + this.x + "," + this.y + "," + this.z + ":" + this.pitch + ":" + this.yaw;
         }
         return "i:" + this.name;
 
@@ -95,8 +95,10 @@ public class Destination {
     private boolean setExactDest(String[] items) {
         List<String> parsed = Arrays.asList(items);
         // we already know this is an 'e'
-        // e:x,y,z:pitch:yaw
+
         parsed.remove(0);
+        // e:name:x,y,z:pitch:yaw
+        this.name = parsed.remove(0);
         String[] coordString = parsed.get(0).split(",");
         Double[] coords = new Double[3];
         for (int i = 0; i < 3; i++) {
