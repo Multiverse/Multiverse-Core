@@ -24,13 +24,15 @@ public class TeleportCommand extends MultiverseCommand {
         super(plugin);
         Permission self = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
         Permission other = new Permission("multiverse.core.tp.other", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
+        
         this.plugin.getServer().getPluginManager().addPermission(self);
         this.plugin.getServer().getPluginManager().addPermission(other);
         Map<String, Boolean> children = new HashMap<String, Boolean>();
         children.put(self.getName(), true);
         children.put(other.getName(), true);
+        Permission alltp = new Permission("multiverse.core.tp.*", "Allows teleportation to other worlds.", PermissionDefault.OP, children);
         Permission tp = new Permission("multiverse.core.tp", "Allows teleportation to other worlds.", PermissionDefault.OP, children);
-        
+        this.plugin.getServer().getPluginManager().addPermission(alltp);
         this.setName("Teleport");
         this.setCommandUsage("/mvtp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
         this.setArgRange(1, 2);
