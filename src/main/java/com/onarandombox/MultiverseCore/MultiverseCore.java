@@ -388,9 +388,12 @@ public class MultiverseCore extends JavaPlugin {
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
-    public boolean unloadWorld(String name) {
+    public boolean removeWorldFromList(String name) {
+        
         if (this.worlds.containsKey(name)) {
             this.worlds.remove(name);
+            this.log(Level.INFO, "World " + name + " was unloaded from memory.");
+            this.unloadWorld(name, true);
             return true;
         }
         return false;
@@ -402,10 +405,14 @@ public class MultiverseCore extends JavaPlugin {
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
-    public boolean removeWorld(String name) {
-        unloadWorld(name);
-        this.configWorlds.removeProperty("worlds." + name);
-        this.configWorlds.save();
+    public boolean removeWorldFromConfig(String name) {
+        if(this.configWorlds.getProperty("worlds." + name) != null) {
+            removeWorldFromList(name);
+            this.log(Level.INFO, "World " + name + " was removed from config.yml");
+            this.configWorlds.removeProperty("worlds." + name);
+            this.configWorlds.save();
+            return true;
+        }
         return false;
     }
 
@@ -416,12 +423,30 @@ public class MultiverseCore extends JavaPlugin {
      * @return True if success, false if failure.
      */
     public boolean deleteWorld(String name) {
-        unloadWorld(name);
-        removeWorld(name);
-        if (getServer().unloadWorld(name, false)) {
-            return deleteFolder(new File(name));
+        removeWorldFromConfig(name);
+        if (unloadWorld(name, false)) {
+            boolean deletedWorld = deleteFolder(new File(name));
+            if (deletedWorld)
+            {
+                this.log(Level.INFO, "World " + name + " was DELETED.");
+            }
+            return deletedWorld;
         }
         return false;
+    }
+
+    private boolean unloadWorld(String name, boolean safely) {
+        this.removePlayersFromWorld(name);
+        return getServer().unloadWorld(name, safely);
+    }
+
+    private void removePlayersFromWorld(String name) {
+        World w = this.getServer().getWorld(name);
+        World safeWorld = this.getServer().getWorlds().get(0);
+        List<Player> ps = w.getPlayers();
+        for(Player p : ps) {
+            p.teleport(safeWorld.getSpawnLocation());
+        }
     }
 
     /**

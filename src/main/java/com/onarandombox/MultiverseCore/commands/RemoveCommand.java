@@ -21,7 +21,7 @@ public class RemoveCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        if (this.plugin.removeWorld(args.get(0))) {
+        if (this.plugin.removeWorldFromConfig(args.get(0))) {
             sender.sendMessage("World removed from config!");
         } else {
             sender.sendMessage("Error trying to remove world from config!");
