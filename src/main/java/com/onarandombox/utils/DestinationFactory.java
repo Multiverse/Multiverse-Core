@@ -15,7 +15,11 @@ public class DestinationFactory {
     }
 
     public Destination getDestination(String dest) {
-        String idenChar = dest.substring(0, 1);
+        String idenChar = "";
+        if(dest.split(":").length > 1) {
+            idenChar = dest.substring(0, 1);
+        }
+        
         if (this.destList.containsKey(idenChar)) {
             Class<? extends Destination> myClass = this.destList.get(idenChar);
             try {
