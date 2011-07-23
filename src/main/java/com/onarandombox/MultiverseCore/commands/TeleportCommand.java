@@ -15,7 +15,10 @@ import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.Destination;
+import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.DestinationType;
+import com.onarandombox.utils.InvalidDestination;
+import com.onarandombox.utils.WorldDestination;
 
 public class TeleportCommand extends MultiverseCommand {
     private MVTeleport playerTeleporter;
@@ -24,7 +27,7 @@ public class TeleportCommand extends MultiverseCommand {
         super(plugin);
         Permission self = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
         Permission other = new Permission("multiverse.core.tp.other", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
-        
+
         this.plugin.getServer().getPluginManager().addPermission(self);
         this.plugin.getServer().getPluginManager().addPermission(other);
         Map<String, Boolean> children = new HashMap<String, Boolean>();
@@ -80,32 +83,29 @@ public class TeleportCommand extends MultiverseCommand {
             teleportee = (Player) sender;
         }
 
-        Destination d = Destination.parseDestination(worldName, (MultiverseCore) this.plugin);
-        if (!(d.getType() == DestinationType.World) || !this.plugin.isMVWorld(d.getName())) {
-            sender.sendMessage("Multiverse does not know about this world: " + worldName);
+        DestinationFactory df = this.plugin.getDestinationFactory();// .parseDestination(worldName, (MultiverseCore) this.plugin);
+        Destination d = df.getDestination(worldName);
+        if (d != null && d instanceof InvalidDestination) {
+            sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + worldName);
             return;
         }
-        MVWorld world = this.plugin.getMVWorld(d.getName());
 
-        if (teleporter != null && !this.plugin.getPermissions().canEnterWorld(teleporter, world)) {
+        if (teleporter != null && !this.plugin.getPermissions().canEnterLocation(teleporter, d.getLocation())) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {
                 teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
             return;
-        } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromWorld(teleporter, world)) {
+        } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromLocation(teleporter, d.getLocation())) {
             if (teleportee.equals(teleporter)) {
-                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + d.getName() + " from " + ChatColor.GREEN + teleporter.getWorld().getName());
+                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + teleporter.getWorld().getName());
             } else {
-                teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + teleporter.getWorld().getName() + " can get to " + ChatColor.RED + d.getName() + " from where they are...");
+                teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + teleporter.getWorld().getName() + " can get to " + ChatColor.RED + "THERE from where they are...");
             }
             return;
         }
-        Location l = this.playerTeleporter.getSafeDestination(this.plugin.getServer().getWorld(world.getName()).getSpawnLocation());
-        if(l == null) {
-            l = this.plugin.getServer().getWorld(world.getName()).getSpawnLocation();
-        }
+        Location l = d.getLocation();
         if (l == null) {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;

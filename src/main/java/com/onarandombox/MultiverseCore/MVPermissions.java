@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,7 +31,7 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
-     * Check if a Player can teleport to the Destination world from there current world. This checks against the Worlds Blacklist
+     * Check if a Player can teleport to the Destination world from there current world.
      * 
      * @param p
      * @param w
@@ -51,6 +52,13 @@ public class MVPermissions implements PermissionsInterface {
         return returnValue;
     }
 
+    public boolean canTravelFromLocation(Player teleporter, Location location) {
+        if(!this.plugin.isMVWorld(location.getWorld().getName())){
+            return false;
+        }
+        return canTravelFromWorld(teleporter, this.plugin.getMVWorld(location.getWorld().getName()));
+    }
+
     /**
      * Check if the Player has the permissions to enter this world.
      * 
@@ -60,6 +68,14 @@ public class MVPermissions implements PermissionsInterface {
      */
     public Boolean canEnterWorld(Player p, MVWorld w) {
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
+    }
+    
+    public Boolean canEnterLocation(Player p, Location l) {
+        String worldName = l.getWorld().getName();
+        if(!this.plugin.isMVWorld(worldName)) {
+            return false;
+        }
+        return this.hasPermission(p, "multiverse.access." + worldName, false);
     }
 
     public void setPermissions(PermissionHandler handler) {
@@ -101,4 +117,5 @@ public class MVPermissions implements PermissionsInterface {
         }
         return "Bukkit Permissions/OPs.txt";
     }
+
 }

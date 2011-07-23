@@ -52,8 +52,10 @@ import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
+import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.PurgeWorlds;
 import com.onarandombox.utils.UpdateChecker;
+import com.onarandombox.utils.WorldDestination;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
 public class MultiverseCore extends JavaPlugin {
@@ -96,6 +98,7 @@ public class MultiverseCore extends JavaPlugin {
     public static boolean defaultConfigsCreated = false;
     protected MVConfigMigrator migrator = new MVConfigMigrator(this);
     protected int pluginCount;
+    private DestinationFactory destFactory;
 
     @Override
     public void onLoad() {
@@ -119,6 +122,7 @@ public class MultiverseCore extends JavaPlugin {
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
 
         // Setup all the Events the plugin needs to Monitor.
+        this.initializeDestinationFactory();
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
@@ -148,6 +152,12 @@ public class MultiverseCore extends JavaPlugin {
         } else {
             this.log(Level.WARNING, "Your configs were not loaded. Very little will function in MV.");
         }
+    }
+
+    private void initializeDestinationFactory() {
+        this.destFactory = new DestinationFactory(this);
+        this.destFactory.registerDestinationType(WorldDestination.class, "");
+        this.destFactory.registerDestinationType(WorldDestination.class, "w");
     }
 
     /**
@@ -693,5 +703,9 @@ public class MultiverseCore extends JavaPlugin {
 
     public void setBank(GenericBank bank) {
         this.bank = bank;
+    }
+
+    public DestinationFactory getDestinationFactory() {
+        return this.destFactory;
     }
 }
