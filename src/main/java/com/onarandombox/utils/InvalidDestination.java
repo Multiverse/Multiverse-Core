@@ -42,4 +42,9 @@ public class InvalidDestination extends Destination {
         return ChatColor.RED + "Invalid Destination";
     }
 
+    @Override
+    public String toString() {
+        return "i:Invalid Destination";
+    }
+
 }

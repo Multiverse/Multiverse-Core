@@ -68,4 +68,9 @@ public class WorldDestination extends Destination {
         return this.world.getColoredWorldString();
     }
 
+    @Override
+    public String toString() {
+        return this.world.getCBWorld().getName();
+    }
+
 }

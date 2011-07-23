@@ -12,4 +12,5 @@ public abstract class Destination {
     public abstract void setDestination(MultiverseCore plugin, String dest);
     public abstract String getType();
     public abstract String getName();
+    public abstract String toString();
 }

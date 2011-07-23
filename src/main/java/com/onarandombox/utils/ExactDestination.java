@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class ExactDestination extends Destination {
-    private final String coordRegex = "([\\d]+\\.?[\\d]*),([\\d]+\\.?[\\d]*),([\\d]+\\.?[\\d]*)";
+    private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
     private boolean isValid;
     private Location location;
 
@@ -57,7 +57,7 @@ public class ExactDestination extends Destination {
         }
 
         try {
-            
+
         } catch (NumberFormatException e) {
             return false;
         }
@@ -113,13 +113,12 @@ public class ExactDestination extends Destination {
         this.location.setX(coords[0]);
         this.location.setY(coords[1]);
         this.location.setZ(coords[2]);
-        
-        if(parsed.size() == 3) {
+
+        if (parsed.size() == 3) {
             this.isValid = true;
             return;
         }
-        
-        
+
         try {
             this.location.setPitch(Float.parseFloat(parsed.get(3)));
             this.location.setYaw(Float.parseFloat(parsed.get(4)));
@@ -128,7 +127,7 @@ public class ExactDestination extends Destination {
             return;
         }
         this.isValid = true;
-        
+
     }
 
     @Override
@@ -138,6 +137,22 @@ public class ExactDestination extends Destination {
 
     @Override
     public String getName() {
-        return "Exact (" + this.location.getX() + ", "+ this.location.getY() + ", "+ this.location.getZ() + ")";
+        return "Exact (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ() + ")";
+    }
+
+    public void setDestination(Location location) {
+        if (location != null) {
+            this.location = location;
+            this.isValid = false;
+        }
+        this.isValid = true;
+    }
+
+    @Override
+    public String toString() {
+        if (isValid) {
+            return "e:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY() + "," + location.getZ() + ":    " + location.getX() + ":" + location.getX();
+        }
+        return "i:Invalid Destination";
     }
 }
