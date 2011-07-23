@@ -20,9 +20,9 @@ public class HelpCommand extends MultiverseCommand {
         this.setName("Get Help with Multiverse");
         this.setCommandUsage("/mv " + ChatColor.GOLD + "[PAGE #]");
         this.setArgRange(0, 1);
-        this.addKey("mv help");
         this.addKey("mv");
         this.addKey("mvhelp");
+        this.addKey("mv help");
         this.setPermission("multiverse.help", "Displays a nice help menu.", PermissionDefault.TRUE);
     }
 
