@@ -12,13 +12,10 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.Destination;
 import com.onarandombox.utils.DestinationFactory;
-import com.onarandombox.utils.DestinationType;
 import com.onarandombox.utils.InvalidDestination;
-import com.onarandombox.utils.WorldDestination;
 
 public class TeleportCommand extends MultiverseCommand {
     private MVTeleport playerTeleporter;
@@ -110,6 +107,7 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
         }
+        // TODO: Put our teleporter back in...
         teleportee.teleport(l);
     }
 }
