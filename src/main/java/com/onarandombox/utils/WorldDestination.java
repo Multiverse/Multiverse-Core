@@ -6,7 +6,6 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class WorldDestination extends Destination {
-    private MultiverseCore plugin;
     private boolean isValid;
     private MVWorld world;
 
@@ -16,10 +15,13 @@ public class WorldDestination extends Destination {
     }
 
     @Override
-    public boolean isThisType(String destination) {
+    public boolean isThisType(MultiverseCore plugin, String destination) {
         String[] items = destination.split(":");
-        if (items.length != 2) {
+        if (items.length > 2) {
             return false;
+        }
+        if (items.length == 1 && plugin.isMVWorld(items[0])) {
+            return true;
         }
         if (items[0].equalsIgnoreCase("w") && plugin.isMVWorld(items[1])) {
             return true;
@@ -39,7 +41,6 @@ public class WorldDestination extends Destination {
 
     @Override
     public void setDestination(MultiverseCore plugin, String dest) {
-        this.plugin = plugin;
         String[] items = dest.split(":");
         if (items.length > 2) {
             isValid = false;

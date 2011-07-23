@@ -13,7 +13,7 @@ public class InvalidDestination extends Destination {
     }
 
     @Override
-    public boolean isThisType(String destination) {
+    public boolean isThisType(MultiverseCore plugin, String dest) {
         return false;
     }
 

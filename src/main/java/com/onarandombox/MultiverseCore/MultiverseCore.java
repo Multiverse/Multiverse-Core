@@ -53,6 +53,7 @@ import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.DestinationFactory;
+import com.onarandombox.utils.ExactDestination;
 import com.onarandombox.utils.PurgeWorlds;
 import com.onarandombox.utils.UpdateChecker;
 import com.onarandombox.utils.WorldDestination;
@@ -158,6 +159,7 @@ public class MultiverseCore extends JavaPlugin {
         this.destFactory = new DestinationFactory(this);
         this.destFactory.registerDestinationType(WorldDestination.class, "");
         this.destFactory.registerDestinationType(WorldDestination.class, "w");
+        this.destFactory.registerDestinationType(ExactDestination.class, "e");
     }
 
     /**

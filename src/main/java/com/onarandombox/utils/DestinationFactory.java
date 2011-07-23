@@ -21,15 +21,23 @@ public class DestinationFactory {
         }
         
         if (this.destList.containsKey(idenChar)) {
+            System.out.print("Found the dest key!");
             Class<? extends Destination> myClass = this.destList.get(idenChar);
             try {
                 Destination mydest = myClass.newInstance();
+                System.out.print(idenChar);
+                if(!mydest.isThisType(plugin, dest)) {
+                    System.out.print("Invalid A!");
+                    return new InvalidDestination();
+                }
                 mydest.setDestination(this.plugin, dest);
+                System.out.print("Valid!");
                 return mydest;
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
             }
         }
+        System.out.print("Invalid C!");
         return new InvalidDestination();
     }
 

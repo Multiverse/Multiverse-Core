@@ -71,6 +71,9 @@ public class MVPermissions implements PermissionsInterface {
     }
     
     public Boolean canEnterLocation(Player p, Location l) {
+        if(l == null) {
+            return false;
+        }
         String worldName = l.getWorld().getName();
         if(!this.plugin.isMVWorld(worldName)) {
             return false;

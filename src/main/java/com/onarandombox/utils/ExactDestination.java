@@ -5,18 +5,12 @@ import java.util.List;
 
 import org.bukkit.Location;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class ExactDestination extends Destination {
-    private MultiverseCore plugin;
-    private MVWorld world;
     private final String coordRegex = "([\\d]+\\.?[\\d]*),([\\d]+\\.?[\\d]*),([\\d]+\\.?[\\d]*)";
-    private String name;
-
-    public ExactDestination(MultiverseCore plugin) {
-        this.plugin = plugin;
-    }
+    private boolean isValid;
+    private Location location;
 
     @Override
     public String getIdentifer() {
@@ -24,40 +18,46 @@ public class ExactDestination extends Destination {
     }
 
     @Override
-    public boolean isThisType(String destination) {
+    public boolean isThisType(MultiverseCore plugin, String destination) {
+        System.out.print("Checking Exact Dest");
         List<String> parsed = Arrays.asList(destination.split(":"));
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
         if (!(parsed.size() == 3 || parsed.size() == 5)) {
+            System.out.print("Invalid Args:" + parsed.size());
             return false;
         }
         // If it's not an Exact type
         if (!parsed.get(0).equalsIgnoreCase("e")) {
+            System.out.print("No E found");
             return false;
         }
-        parsed.remove(0);
+
         // If it's not a MV world
-        if (!this.plugin.isMVWorld(parsed.get(0))) {
+        if (!plugin.isMVWorld(parsed.get(1))) {
+            System.out.print("Not a MV world");
             return false;
         }
-        parsed.remove(0);
-        if (!parsed.get(0).matches(coordRegex)) {
+
+        if (!parsed.get(2).matches(coordRegex)) {
+            System.out.print("Invalid Regex");
             return false;
         }
         // This is 1 now, because we've removed 2
-        if (parsed.size() == 1) {
+        if (parsed.size() == 3) {
             return true;
         }
-        parsed.remove(0);
+
         try {
-            Double.parseDouble(parsed.get(0));
+            Float.parseFloat(parsed.get(3));
+            Float.parseFloat(parsed.get(4));
         } catch (NumberFormatException e) {
             return false;
         }
-        parsed.remove(0);
+
         try {
-            Double.parseDouble(parsed.get(0));
+            
         } catch (NumberFormatException e) {
             return false;
         }
@@ -66,28 +66,78 @@ public class ExactDestination extends Destination {
 
     @Override
     public Location getLocation() {
-        return null;
+        return this.location;
     }
 
     @Override
     public boolean isValid() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.isValid;
     }
 
     @Override
     public void setDestination(MultiverseCore plugin, String dest) {
-        // TODO Auto-generated method stub
+        List<String> parsed = Arrays.asList(dest.split(":"));
+        // Need at least: e:world:x,y,z
+        // OR e:world:x,y,z:pitch:yaw
+        // so basically 3 or 5
+        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+            this.isValid = false;
+            return;
+        }
+
+        if (!parsed.get(0).equalsIgnoreCase(this.getIdentifer())) {
+            this.isValid = false;
+            return;
+        }
+
+        if (!plugin.isMVWorld(parsed.get(1))) {
+            this.isValid = false;
+            return;
+        }
+        this.location = new Location(plugin.getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
+
+        if (!parsed.get(2).matches(this.coordRegex)) {
+            this.isValid = false;
+            return;
+        }
+        double[] coords = new double[3];
+        String[] coordString = parsed.get(2).split(",");
+        for (int i = 0; i < 3; i++) {
+            try {
+                coords[i] = Double.parseDouble(coordString[i]);
+            } catch (NumberFormatException e) {
+                this.isValid = false;
+                return;
+            }
+        }
+        this.location.setX(coords[0]);
+        this.location.setY(coords[1]);
+        this.location.setZ(coords[2]);
+        
+        if(parsed.size() == 3) {
+            this.isValid = true;
+            return;
+        }
+        
+        
+        try {
+            this.location.setPitch(Float.parseFloat(parsed.get(3)));
+            this.location.setYaw(Float.parseFloat(parsed.get(4)));
+        } catch (NumberFormatException e) {
+            this.isValid = false;
+            return;
+        }
+        this.isValid = true;
         
     }
 
     @Override
     public String getType() {
-        return "Portal";
+        return "Exact";
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return "Exact (" + this.location.getX() + ", "+ this.location.getY() + ", "+ this.location.getZ() + ")";
     }
 }
