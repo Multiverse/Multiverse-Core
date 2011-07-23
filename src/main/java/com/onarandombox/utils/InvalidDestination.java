@@ -2,8 +2,7 @@ package com.onarandombox.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class InvalidDestination extends Destination {
 
@@ -13,7 +12,7 @@ public class InvalidDestination extends Destination {
     }
 
     @Override
-    public boolean isThisType(MultiverseCore plugin, String dest) {
+    public boolean isThisType(JavaPlugin plugin, String dest) {
         return false;
     }
 
@@ -28,7 +27,7 @@ public class InvalidDestination extends Destination {
     }
 
     @Override
-    public void setDestination(MultiverseCore plugin, String dest) {
+    public void setDestination(JavaPlugin plugin, String dest) {
         // Nothing needed, it's invalid.
     }
 

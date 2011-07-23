@@ -108,6 +108,16 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         }
         // TODO: Put our teleporter back in...
-        teleportee.teleport(l);
+        System.out.print("Unsure:");
+        System.out.print(l);
+        System.out.print("Safe:");
+        Location safeLoc = this.playerTeleporter.getSafeDestination(l);
+        System.out.print(safeLoc);
+        if(safeLoc != null) {
+            teleportee.teleport(safeLoc);            
+        } else {
+            teleportee.teleport(l);
+        }
+        
     }
 }

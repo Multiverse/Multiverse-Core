@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
@@ -18,7 +19,10 @@ public class ExactDestination extends Destination {
     }
 
     @Override
-    public boolean isThisType(MultiverseCore plugin, String destination) {
+    public boolean isThisType(JavaPlugin plugin, String destination) {
+        if (!(plugin instanceof MultiverseCore)) {
+            return false;
+        }
         System.out.print("Checking Exact Dest");
         List<String> parsed = Arrays.asList(destination.split(":"));
         // Need at least: e:world:x,y,z
@@ -35,7 +39,7 @@ public class ExactDestination extends Destination {
         }
 
         // If it's not a MV world
-        if (!plugin.isMVWorld(parsed.get(1))) {
+        if (!((MultiverseCore)plugin).isMVWorld(parsed.get(1))) {
             System.out.print("Not a MV world");
             return false;
         }
@@ -75,7 +79,10 @@ public class ExactDestination extends Destination {
     }
 
     @Override
-    public void setDestination(MultiverseCore plugin, String dest) {
+    public void setDestination(JavaPlugin plugin, String dest) {
+        if (!(plugin instanceof MultiverseCore)) {
+            return;
+        }
         List<String> parsed = Arrays.asList(dest.split(":"));
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
@@ -90,11 +97,11 @@ public class ExactDestination extends Destination {
             return;
         }
 
-        if (!plugin.isMVWorld(parsed.get(1))) {
+        if (!((MultiverseCore)plugin).isMVWorld(parsed.get(1))) {
             this.isValid = false;
             return;
         }
-        this.location = new Location(plugin.getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
+        this.location = new Location(((MultiverseCore)plugin).getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
 
         if (!parsed.get(2).matches(this.coordRegex)) {
             this.isValid = false;

@@ -26,7 +26,7 @@ public class DestinationFactory {
             try {
                 Destination mydest = myClass.newInstance();
                 System.out.print(idenChar);
-                if(!mydest.isThisType(plugin, dest)) {
+                if(!mydest.isThisType((MultiverseCore) this.plugin, dest)) {
                     System.out.print("Invalid A!");
                     return new InvalidDestination();
                 }

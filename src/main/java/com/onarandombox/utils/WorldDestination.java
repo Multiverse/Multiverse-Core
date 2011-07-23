@@ -1,6 +1,7 @@
 package com.onarandombox.utils;
 
 import org.bukkit.Location;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -15,15 +16,15 @@ public class WorldDestination extends Destination {
     }
 
     @Override
-    public boolean isThisType(MultiverseCore plugin, String destination) {
+    public boolean isThisType(JavaPlugin plugin, String destination) {
         String[] items = destination.split(":");
         if (items.length > 2) {
             return false;
         }
-        if (items.length == 1 && plugin.isMVWorld(items[0])) {
+        if (items.length == 1 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
             return true;
         }
-        if (items[0].equalsIgnoreCase("w") && plugin.isMVWorld(items[1])) {
+        if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).isMVWorld(items[1])) {
             return true;
         }
         return false;
@@ -40,19 +41,19 @@ public class WorldDestination extends Destination {
     }
 
     @Override
-    public void setDestination(MultiverseCore plugin, String dest) {
+    public void setDestination(JavaPlugin plugin, String dest) {
         String[] items = dest.split(":");
         if (items.length > 2) {
             isValid = false;
             return;
         }
-        if(items.length == 1 && plugin.isMVWorld(items[0])) {
+        if(items.length == 1 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
             isValid = true;
-            this.world = plugin.getMVWorld(items[0]);
+            this.world = ((MultiverseCore) plugin).getMVWorld(items[0]);
             return;
         }
-        if (items[0].equalsIgnoreCase("w") && plugin.isMVWorld(items[1])) {
-            this.world = plugin.getMVWorld(items[1]);
+        if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).isMVWorld(items[1])) {
+            this.world = ((MultiverseCore) plugin).getMVWorld(items[1]);
             isValid = true;
             return;
         }
