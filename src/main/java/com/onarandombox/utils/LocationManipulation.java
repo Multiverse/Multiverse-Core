@@ -18,7 +18,7 @@ public class LocationManipulation {
         orientationInts.put("sw", 45);
         orientationInts.put("w", 90);
         orientationInts.put("nw", 135);
-        
+
     }
 
     /**
@@ -109,8 +109,34 @@ public class LocationManipulation {
         }
         return 0;
     }
-    
+
     public static float getSpeed(Vector v) {
-        return (float) Math.sqrt(v.getX() *v.getX() + v.getZ() *v.getZ());
+        return (float) Math.sqrt(v.getX() * v.getX() + v.getZ() * v.getZ());
+    }
+
+    // X, Y, Z
+    // -W/+E,0, -N/+S
+    public static Vector getTranslatedVector(Vector v, String direction) {
+        float speed = getSpeed(v);
+        float halfSpeed = (float) (speed / 2.0);
+        // TODO: Mathmatacize this:
+        if (direction.equalsIgnoreCase("n")) {
+            return new Vector(0, 0, -1 * speed);
+        } else if (direction.equalsIgnoreCase("ne")) {
+            return new Vector(halfSpeed, 0, -1 * halfSpeed);
+        } else if (direction.equalsIgnoreCase("e")) {
+            return new Vector(speed, 0, 0);
+        } else if (direction.equalsIgnoreCase("se")) {
+            return new Vector(halfSpeed, 0, halfSpeed);
+        } else if (direction.equalsIgnoreCase("s")) {
+            return new Vector(0, 0, speed);
+        } else if (direction.equalsIgnoreCase("sw")) {
+            return new Vector(-1 * halfSpeed, 0, halfSpeed);
+        } else if (direction.equalsIgnoreCase("w")) {
+            return new Vector(-1 * speed, 0, 0);
+        } else if (direction.equalsIgnoreCase("nw")) {
+            return new Vector(-1 * halfSpeed, 0, -1 * halfSpeed);
+        }
+        return v;
     }
 }
