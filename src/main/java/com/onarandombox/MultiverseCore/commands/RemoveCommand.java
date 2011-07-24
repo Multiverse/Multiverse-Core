@@ -15,7 +15,7 @@ public class RemoveCommand extends MultiverseCommand {
         this.setName("Remove World");
         this.setCommandUsage("/mvremove " + ChatColor.GREEN + " {WORLD}");
         this.setArgRange(1, 1);
-        this.addKey("mvcoord");
+        this.addKey("mvremove");
         this.setPermission("multiverse.core.remove", "Unloads a world from Multiverse and removes it from worlds.yml, this does NOT remove the world folder.", PermissionDefault.OP);
     }
 
