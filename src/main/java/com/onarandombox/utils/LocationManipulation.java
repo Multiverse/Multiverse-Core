@@ -5,19 +5,20 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
+import org.bukkit.util.Vector;
 
 public class LocationManipulation {
     private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
     static {
-        orientationInts.put("n", 0);
-        orientationInts.put("nw", 45);
-        orientationInts.put("w", 90);
-        orientationInts.put("sw", 135);
-        orientationInts.put("s", 180);
-        orientationInts.put("se", 225);
+        orientationInts.put("n", 180);
+        orientationInts.put("ne", 225);
         orientationInts.put("e", 270);
-        orientationInts.put("ne", 315);
+        orientationInts.put("se", 315);
+        orientationInts.put("s", 0);
+        orientationInts.put("sw", 45);
+        orientationInts.put("w", 90);
+        orientationInts.put("nw", 135);
+        
     }
 
     /**
@@ -104,8 +105,12 @@ public class LocationManipulation {
 
     public static float getYaw(String orientation) {
         if (orientationInts.containsKey(orientation)) {
-            return (orientationInts.get(orientation) + 90) % 360;
+            return orientationInts.get(orientation);
         }
         return 0;
+    }
+    
+    public static float getSpeed(Vector v) {
+        return (float) Math.sqrt(v.getX() *v.getX() + v.getZ() *v.getZ());
     }
 }
