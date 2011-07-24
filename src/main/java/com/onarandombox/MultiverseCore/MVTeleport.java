@@ -1,13 +1,10 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 
 import com.onarandombox.utils.BlockSafety;
 
@@ -20,41 +17,6 @@ public class MVTeleport {
 
     public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
-    }
-
-    /**
-     * TODO: Sort out JavaDoc
-     *
-     * @param l
-     * @param w
-     * @return
-     */
-    public Location getCompressedLocation(Player p, World w) {
-        Location l = p.getLocation();
-        // Check if they are the same world, might as well skip any calculations.
-        if (l.getWorld().getName().equalsIgnoreCase(w.getName())) {
-            return l;
-        }
-
-        double x, y, z;
-
-        // Grab the Scaling value for each world.
-        double srcComp = this.plugin.getMVWorld(l.getWorld().getName()).getScaling();
-        double trgComp = this.plugin.getMVWorld(w.getName()).getScaling();
-
-        // MultiverseCore.debugMsg(p.getName() + " -> " + p.getWorld().getName() + "(" + srcComp + ") -> " + w.getName() + "(" + trgComp + ")");
-
-        // If the Targets Compression is 0 then we teleport them to the Spawn of the World.
-        if (trgComp == 0.0) {
-            x = w.getSpawnLocation().getX();
-            y = w.getSpawnLocation().getY();
-            z = w.getSpawnLocation().getZ();
-        } else {
-            x = l.getX() / (srcComp != 0 ? srcComp : 1) * trgComp;
-            y = l.getY();
-            z = l.getZ() / (srcComp != 0 ? srcComp : 1) * trgComp;
-        }
-        return new Location(w, x, y, z);
     }
 
     /**
@@ -75,6 +37,24 @@ public class MVTeleport {
         }
         return null;
     }
+    
+    private Location getSafeLocation(Location l) {
+        return null;
+    }
+    
+    public boolean safelyTeleport(Entity e, Location l) {
+        if(this.bs.playerCanSpawnHereSafely(l)) {
+            e.teleport(l);
+            System.out.print("The first location you gave me was safe!");
+            return true;
+        } else if (this.getSafeLocation(l) != null) {
+            e.teleport(this.getSafeLocation(l));
+            System.out.print("Had to look for a bit, but I found a safe place for ya!");
+            return true;
+        }
+        System.out.print("Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
+        return false;
+    }
 
     /**
      * This function gets a safe place to teleport to.
@@ -83,7 +63,8 @@ public class MVTeleport {
      * @param player
      * @return
      */
-    public Location getSafeDestination(Location l) {
+    @Deprecated
+    private Location getSafeDestination(Location l) {
         double x = l.getX();
         double y = l.getY();
         double z = l.getZ();
@@ -155,42 +136,5 @@ public class MVTeleport {
             }
         }
         return -1;
-    }
-
-    /**
-     * Find a portal around the given location and return a new location.
-     *
-     * @param location
-     * @return
-     */
-    public Location findPortal(Location location) {
-        World world = location.getWorld();
-        // Get list of columns in a circle around the block
-        ArrayList<Block> columns = new ArrayList<Block>();
-        for (int x = location.getBlockX() - 8; x <= location.getBlockX() + 8; ++x) {
-            for (int z = location.getBlockZ() - 8; z <= location.getBlockZ() + 8; ++z) {
-                int dx = location.getBlockX() - x, dz = location.getBlockZ() - z;
-                if (dx * dx + dz * dz <= 256) {
-                    columns.add(world.getBlockAt(x, 0, z));
-                }
-            }
-        }
-
-        // For each column try to find a portal block
-        for (Block col : columns) {
-            for (int y = 0; y <= 127; y++) {
-                Block b = world.getBlockAt(col.getX(), y, col.getZ());
-                if (b.getType().equals(Material.PORTAL)) {
-                    if (b.getWorld().getBlockAt(b.getX() + 1, b.getY(), b.getZ()).getType().equals(Material.PORTAL) || b.getWorld().getBlockAt(b.getX() - 1, b.getY(), b.getZ()).getType().equals(Material.PORTAL)) {
-                        // portal is in X direction
-                        return new Location(b.getWorld(), b.getX() + 0.5, b.getY(), b.getZ() + 1.5);
-                    } else {
-                        // portal is in Z direction
-                        return new Location(b.getWorld(), b.getX() + 1.5, b.getY(), b.getZ() + 0.5);
-                    }
-                }
-            }
-        }
-        return null;
     }
 }

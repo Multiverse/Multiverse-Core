@@ -7,7 +7,7 @@ import org.bukkit.World;
 public class BlockSafety {
     /**
      * This function checks whether the block at the given coordinates are above air or not.
-     *
+     * 
      * @param world
      * @param x
      * @param y
@@ -27,7 +27,7 @@ public class BlockSafety {
 
     /**
      * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air etc. This also ensures there is enough space for a player to spawn!
-     *
+     * 
      * @param world
      * @param x
      * @param y
@@ -41,23 +41,37 @@ public class BlockSafety {
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
 
-        if (actual.getBlock().getType() != Material.AIR || upOne.getBlock().getType() != Material.AIR)
+        if (/*actual.getBlock().getType() != Material.AIR || */upOne.getBlock().getType() != Material.AIR) {
+            System.out.print("Air!");
             return false;
+        }
 
-        if (downOne.getBlock().getType() == Material.LAVA)
+        if (downOne.getBlock().getType() == Material.LAVA) {
+            System.out.print("Lava!");
             return false;
+        }
 
-        if (downOne.getBlock().getType() == Material.STATIONARY_LAVA)
+        if (downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+            System.out.print("Lava!!");
             return false;
+        }
 
-        if (downOne.getBlock().getType() == Material.FIRE)
+        if (downOne.getBlock().getType() == Material.FIRE) {
+            System.out.print("Fire Below!");
             return false;
+        }
 
-        if (actual.getBlock().getType() == Material.FIRE)
+        if (actual.getBlock().getType() == Material.FIRE) {
+            System.out.print("Fire!");
             return false;
+        }
 
-        if (blockIsAboveAir(actual))
-            return false;
+        if (blockIsAboveAir(actual)) {
+            System.out.print("Above Air!");
+            // FOR NOW THIS IS OK
+            // TODO: Take out once the other one is fixed.
+            return true;
+        }
 
         return true;
     }
