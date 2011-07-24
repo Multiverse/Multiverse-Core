@@ -1,13 +1,28 @@
 package com.onarandombox.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 
 public class LocationManipulation {
+    private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
+    static {
+        orientationInts.put("n", 0);
+        orientationInts.put("nw", 45);
+        orientationInts.put("w", 90);
+        orientationInts.put("sw", 135);
+        orientationInts.put("s", 180);
+        orientationInts.put("se", 225);
+        orientationInts.put("e", 270);
+        orientationInts.put("ne", 315);
+    }
 
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
-     *
+     * 
      * @param location
      * @return
      */
@@ -23,7 +38,7 @@ public class LocationManipulation {
 
     /**
      * Convert a String to a Location.
-     *
+     * 
      * @param world
      * @param xStr
      * @param yStr
@@ -44,7 +59,7 @@ public class LocationManipulation {
 
     /**
      * Convert a Location to XYZ Coordinates.
-     *
+     * 
      * @param l
      * @return
      */
@@ -58,7 +73,7 @@ public class LocationManipulation {
 
     /**
      * Return the NESW Direction a Location is facing.
-     *
+     * 
      * @param location
      * @return
      */
@@ -85,5 +100,12 @@ public class LocationManipulation {
             dir = "N";
 
         return dir;
+    }
+
+    public static float getYaw(String orientation) {
+        if (orientationInts.containsKey(orientation)) {
+            return (orientationInts.get(orientation) + 90) % 360;
+        }
+        return 0;
     }
 }
