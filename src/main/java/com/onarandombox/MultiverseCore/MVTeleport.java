@@ -40,6 +40,7 @@ public class MVTeleport {
         // TODO: Make this configurable
         Location safe = checkAboveAndBelowLocation(l, 6, 9);
         if (safe != null) {
+            System.out.print("Safe was NULL!");
             safe.setX(safe.getBlockX() + .5);
             safe.setZ(safe.getBlockZ() + .5);
         }
@@ -63,7 +64,9 @@ public class MVTeleport {
         }
         // We've already checked zero right above this.
         int currentLevel = 1;
+        System.out.print("Checking Level: 0");
         while (currentLevel <= tolerance) {
+            System.out.print("Checking Level: " + currentLevel);
             // Check above
             locToCheck = l.clone();
             locToCheck.add(0, currentLevel, 0);
@@ -71,6 +74,7 @@ public class MVTeleport {
             if (safe != null) {
                 return safe;
             }
+
             // Check below
             locToCheck = l.clone();
             locToCheck.subtract(0, currentLevel, 0);
@@ -169,15 +173,25 @@ public class MVTeleport {
 
     public boolean safelyTeleport(Entity e, Location l) {
         if (this.bs.playerCanSpawnHereSafely(l)) {
+            l.setX(l.getBlockX() + .5);
+            l.setZ(l.getBlockZ() + .5);
             e.teleport(l);
             System.out.print("The first location you gave me was safe!");
             return true;
-        } else if (this.getSafeLocation(l) != null) {
-            e.teleport(this.getSafeLocation(l));
-            System.out.print("Had to look for a bit, but I found a safe place for ya!");
+        }
+        Location safeLocation = this.getSafeLocation(l);
+        if (safeLocation != null) {
+            // Add offset to account for a vehicle on dry land!
+            if(!this.bs.isEntitiyOnTrack(e, safeLocation)) {
+                safeLocation.setY(safeLocation.getBlockY() + .5);
+            }
+            e.teleport(safeLocation);
+            System.out.print("Had to look for a bit, but I found a safe place for ya!" + safeLocation);
             return true;
         }
         System.out.print("Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return false;
     }
+    
+    
 }

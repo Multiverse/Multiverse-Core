@@ -117,6 +117,9 @@ public class LocationManipulation {
     // X, Y, Z
     // -W/+E,0, -N/+S
     public static Vector getTranslatedVector(Vector v, String direction) {
+        if(direction == null) {
+            return v;
+        }
         float speed = getSpeed(v);
         float halfSpeed = (float) (speed / 2.0);
         // TODO: Mathmatacize this:

@@ -3,6 +3,7 @@ package com.onarandombox.utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 public class BlockSafety {
     /**
@@ -35,36 +36,32 @@ public class BlockSafety {
      * @return
      */
     public boolean playerCanSpawnHereSafely(Location l) {
-        Location actual = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
-        Location upOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
-        Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
+        Location actual = l.clone();
+        Location upOne = l.clone();
+        Location downOne = l.clone();
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
 
-        if (this.isNotSolidBlock(actual.getBlock().getType()) || this.isNotSolidBlock(upOne.getBlock().getType())) {
+        if (this.isSolidBlock(actual.getBlock().getType()) || this.isSolidBlock(upOne.getBlock().getType())) {
+            System.out.print("On or Above is not safe");
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA) {
-            return false;
-        }
-
-        if (downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+            System.out.print("Lava Below");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            return false;
-        }
-
-        if (actual.getBlock().getType() == Material.FIRE) {
+            System.out.print("Fire Below");
             return false;
         }
 
         if (blockIsAboveAir(actual)) {
+            System.out.print("Above Air");
             return false;
         }
-
+        System.out.print("All Good!");
         return true;
     }
 
@@ -74,60 +71,67 @@ public class BlockSafety {
      * @param type
      * @return
      */
-    private boolean isNotSolidBlock(Material type) {
+    private boolean isSolidBlock(Material type) {
         switch (type) {
             case AIR:
-                return true;
+                return false;
+            case SNOW:
+                return false;
             case TRAP_DOOR:
-                return true;
+                return false;
             case TORCH:
-                return true;
+                return false;
             case YELLOW_FLOWER:
-                return true;
+                return false;
             case RED_ROSE:
-                return true;
+                return false;
             case RED_MUSHROOM:
-                return true;
+                return false;
             case BROWN_MUSHROOM:
-                return true;
+                return false;
             case REDSTONE:
-                return true;
+                return false;
             case REDSTONE_WIRE:
-                return true;
+                return false;
             case RAILS:
-                return true;
+                return false;
             case POWERED_RAIL:
-                return true;
+                return false;
             case REDSTONE_TORCH_ON:
-                return true;
+                return false;
             case REDSTONE_TORCH_OFF:
-                return true;
+                return false;
             case DEAD_BUSH:
-                return true;
+                return false;
             case SAPLING:
-                return true;
+                return false;
             case STONE_BUTTON:
-                return true;
+                return false;
             case LEVER:
-                return true;
+                return false;
             case LONG_GRASS:
-                return true;
+                return false;
             case PORTAL:
-                return true;
+                return false;
             case STONE_PLATE:
-                return true;
+                return false;
             case WOOD_PLATE:
-                return true;
+                return false;
             case SEEDS:
-                return true;
+                return false;
             case SUGAR_CANE_BLOCK:
-                return true;
+                return false;
             case WALL_SIGN:
-                return true;
+                return false;
             case SIGN_POST:
-                return true;
+                return false;
         }
-        return false;
+        return true;
+    }
+
+    public boolean isEntitiyOnTrack(Entity e, Location l) {
+        Material currentBlock = l.getBlock().getType();
+        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
     }
 
     public void showDangers(Location l) {
