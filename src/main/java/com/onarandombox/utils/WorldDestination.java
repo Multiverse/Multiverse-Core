@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 public class WorldDestination extends Destination {
     private boolean isValid;
     private MVWorld world;
+    float yaw = -1;
 
     @Override
     public String getIdentifer() {
@@ -18,13 +19,19 @@ public class WorldDestination extends Destination {
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         String[] items = destination.split(":");
-        if (items.length > 2) {
+        if (items.length > 3) {
             return false;
         }
         if (items.length == 1 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
+            // This case is: world
             return true;
         }
-        if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).isMVWorld(items[1])) {
+        if (items.length == 2 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
+            // This case is: world:n
+            return true;
+        } else if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).isMVWorld(items[1])) {
+            // This case is: w:world
+            // and w:world:ne
             return true;
         }
         return false;
@@ -32,7 +39,12 @@ public class WorldDestination extends Destination {
 
     @Override
     public Location getLocation() {
-        return this.world.getCBWorld().getSpawnLocation();
+        Location spawnLoc = this.world.getCBWorld().getSpawnLocation();
+        if (this.yaw >= 0) {
+            // Only modify the yaw if its set. 
+            spawnLoc.setYaw(this.yaw);
+        }
+        return spawnLoc;
     }
 
     @Override
@@ -43,19 +55,26 @@ public class WorldDestination extends Destination {
     @Override
     public void setDestination(JavaPlugin plugin, String dest) {
         String[] items = dest.split(":");
-        if (items.length > 2) {
+        if (items.length > 3) {
             isValid = false;
             return;
         }
-        if(items.length == 1 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
+        if (items.length == 1 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
             isValid = true;
             this.world = ((MultiverseCore) plugin).getMVWorld(items[0]);
+            return;
+        }
+        if (items.length == 2 && ((MultiverseCore) plugin).isMVWorld(items[0])) {
+            this.world = ((MultiverseCore) plugin).getMVWorld(items[0]);
+            this.yaw = LocationManipulation.getYaw(items[1]);
             return;
         }
         if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).isMVWorld(items[1])) {
             this.world = ((MultiverseCore) plugin).getMVWorld(items[1]);
             isValid = true;
-            return;
+            if (items.length == 3) {
+                this.yaw = LocationManipulation.getYaw(items[2]);
+            }
         }
     }
 
