@@ -41,39 +41,93 @@ public class BlockSafety {
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
 
-        if (/*actual.getBlock().getType() != Material.AIR || */upOne.getBlock().getType() != Material.AIR) {
-            System.out.print("Air!");
+        if (this.isNotSolidBlock(actual.getBlock().getType()) || this.isNotSolidBlock(upOne.getBlock().getType())) {
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA) {
-            System.out.print("Lava!");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            System.out.print("Lava!!");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            System.out.print("Fire Below!");
             return false;
         }
 
         if (actual.getBlock().getType() == Material.FIRE) {
-            System.out.print("Fire!");
             return false;
         }
 
         if (blockIsAboveAir(actual)) {
-            System.out.print("Above Air!");
-            // FOR NOW THIS IS OK
-            // TODO: Take out once the other one is fixed.
-            return true;
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * If someone has a better way of this... Please either tell us, or submit a pull request!
+     * 
+     * @param type
+     * @return
+     */
+    private boolean isNotSolidBlock(Material type) {
+        switch (type) {
+            case AIR:
+                return true;
+            case TRAP_DOOR:
+                return true;
+            case TORCH:
+                return true;
+            case YELLOW_FLOWER:
+                return true;
+            case RED_ROSE:
+                return true;
+            case RED_MUSHROOM:
+                return true;
+            case BROWN_MUSHROOM:
+                return true;
+            case REDSTONE:
+                return true;
+            case REDSTONE_WIRE:
+                return true;
+            case RAILS:
+                return true;
+            case POWERED_RAIL:
+                return true;
+            case REDSTONE_TORCH_ON:
+                return true;
+            case REDSTONE_TORCH_OFF:
+                return true;
+            case DEAD_BUSH:
+                return true;
+            case SAPLING:
+                return true;
+            case STONE_BUTTON:
+                return true;
+            case LEVER:
+                return true;
+            case LONG_GRASS:
+                return true;
+            case PORTAL:
+                return true;
+            case STONE_PLATE:
+                return true;
+            case WOOD_PLATE:
+                return true;
+            case SEEDS:
+                return true;
+            case SUGAR_CANE_BLOCK:
+                return true;
+            case WALL_SIGN:
+                return true;
+            case SIGN_POST:
+                return true;
+        }
+        return false;
     }
 
     public void showDangers(Location l) {

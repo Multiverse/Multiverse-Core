@@ -1,9 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 import com.onarandombox.utils.BlockSafety;
@@ -13,7 +10,6 @@ public class MVTeleport {
     MultiverseCore plugin;
 
     BlockSafety bs = new BlockSafety();
-    private static final Logger log = Logger.getLogger("Minecraft");
 
     public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
@@ -21,29 +17,158 @@ public class MVTeleport {
 
     /**
      * This method will be specific to beds, and check on top of the bed then around it.
-     *
+     * 
      * @return
      */
     public Location getSafeBedDestination(Location bedLocation) {
-        //System.out.print(bedLocation);
+        // System.out.print(bedLocation);
         Location idealLocation = bedLocation;
         idealLocation.setY(idealLocation.getY() + 1);
         idealLocation.setX(idealLocation.getX() + .5);
         idealLocation.setZ(idealLocation.getZ() + .5);
-        //System.out.print(idealLocation);
+        // System.out.print(idealLocation);
         if (this.bs.playerCanSpawnHereSafely(idealLocation)) {
-            //System.out.print(idealLocation);
+            // System.out.print(idealLocation);
             return bedLocation;
         }
         return null;
     }
-    
+
     private Location getSafeLocation(Location l) {
+
+        // Check around the player first in a configurable radius:
+        // TODO: Make this configurable
+        Location safe = checkAboveAndBelowLocation(l, 6, 9);
+        if (safe != null) {
+            safe.setX(safe.getBlockX() + .5);
+            safe.setZ(safe.getBlockZ() + .5);
+        }
+        return safe;
+    }
+
+    private Location checkAboveAndBelowLocation(Location l, int tolerance, int radius) {
+        // Tolerance must be an even number:
+        if (tolerance % 2 != 0) {
+            tolerance += 1;
+        }
+        // We want half of it, so we can go up and down
+        tolerance /= 2;
+
+        // For now this will just do a straight up block.
+        Location locToCheck = l.clone();
+        // Check the main level
+        Location safe = this.checkAroundLocation(locToCheck, radius);
+        if (safe != null) {
+            return safe;
+        }
+        // We've already checked zero right above this.
+        int currentLevel = 1;
+        while (currentLevel <= tolerance) {
+            // Check above
+            locToCheck = l.clone();
+            locToCheck.add(0, currentLevel, 0);
+            safe = this.checkAroundLocation(locToCheck, radius);
+            if (safe != null) {
+                return safe;
+            }
+            // Check below
+            locToCheck = l.clone();
+            locToCheck.subtract(0, currentLevel, 0);
+            safe = this.checkAroundLocation(locToCheck, radius);
+            if (safe != null) {
+                return safe;
+            }
+            currentLevel++;
+        }
+
         return null;
     }
-    
+
+    /**
+     * For my crappy algorithm, radius MUST be odd
+     * 
+     * @param l
+     * @param radius
+     * @return
+     */
+    private Location checkAroundLocation(Location l, int diameter) {
+        if (diameter % 2 == 0) {
+            diameter += 1;
+        }
+        Location checkLoc = l.clone();
+
+        // Start at 3, the min diameter around a block
+        int loopcounter = 3;
+        while (loopcounter <= diameter) {
+            boolean foundSafeArea = checkAroundSpecificDiameter(checkLoc, loopcounter);
+            // If a safe area was found:
+            if (foundSafeArea) {
+                // Return the checkLoc, it is the safe location.
+                return checkLoc;
+            }
+            // Otherwise, let's reset our location
+            checkLoc = l.clone();
+            // And increment the radius
+            loopcounter += 2;
+        }
+        return null;
+    }
+
+    private boolean checkAroundSpecificDiameter(Location checkLoc, int circle) {
+        // Adjust the circle to get how many blocks to step out.
+        // A radius of 3 makes the block step 1
+        // A radius of 5 makes the block step 2
+        // A radius of 7 makes the block step 3
+        // ...
+        int adjustedCircle = ((circle - 1) / 2);
+        checkLoc.add(adjustedCircle, 0, 0);
+        if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            return true;
+        }
+        // Now we go to the right that adjustedCircle many
+        for (int i = 0; i < adjustedCircle; i++) {
+            checkLoc.add(0, 0, 1);
+            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+                return true;
+            }
+        }
+
+        // Then down adjustedCircle *2
+        for (int i = 0; i < adjustedCircle * 2; i++) {
+            checkLoc.add(-1, 0, 0);
+            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+                return true;
+            }
+        }
+
+        // Then left adjustedCircle *2
+        for (int i = 0; i < adjustedCircle * 2; i++) {
+            checkLoc.add(0, 0, -1);
+            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+                return true;
+            }
+        }
+
+        // Then up Then left adjustedCircle *2
+        for (int i = 0; i < adjustedCircle * 2; i++) {
+            checkLoc.add(1, 0, 0);
+            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+                return true;
+            }
+        }
+
+        // Then finish up by doing adjustedCircle - 1
+        for (int i = 0; i < adjustedCircle - 1; i++) {
+            checkLoc.add(0, 0, 1);
+            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean safelyTeleport(Entity e, Location l) {
-        if(this.bs.playerCanSpawnHereSafely(l)) {
+        if (this.bs.playerCanSpawnHereSafely(l)) {
             e.teleport(l);
             System.out.print("The first location you gave me was safe!");
             return true;
@@ -54,87 +179,5 @@ public class MVTeleport {
         }
         System.out.print("Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return false;
-    }
-
-    /**
-     * This function gets a safe place to teleport to.
-     *
-     * @param world
-     * @param player
-     * @return
-     */
-    @Deprecated
-    private Location getSafeDestination(Location l) {
-        double x = l.getX();
-        double y = l.getY();
-        double z = l.getZ();
-        World w = l.getWorld();
-
-        // To make things easier we'll start with the Y Coordinate on top of a Solid Block.
-        // while (bs.blockIsAboveAir(w, x, y, z)) {
-        // y--;
-        // }
-
-        double i = 0, r = 0, aux = -1;
-        for (r = 0; r < 32; r++) {
-            for (i = x - r; i <= x + r; i++) {
-                if ((aux = safeColumn(w, i, y, z - r)) > -1) {
-                    z = z - r;
-                    break;
-                }
-                if ((aux = safeColumn(w, i, y, z + r)) > -1) {
-                    z = z + r;
-                    break;
-                }
-            }
-            if (aux > -1) {
-                x = i;
-                break;
-            }
-            for (i = z - r + 1; i <= z + r - 1; i++) {
-                if ((aux = safeColumn(w, x - r, y, i)) > -1) {
-                    x = x - r;
-                    break;
-                }
-                if ((aux = safeColumn(w, x + r, y, i)) > -1) {
-                    x = x + r;
-                    break;
-                }
-            }
-            if (aux > -1) {
-                z = i;
-                break;
-            }
-        }
-
-        if (aux == -1) {
-            log.warning("Uh oh, no safe location.");
-            return null;
-        }
-
-        // log.info("Target location (safe): " + x + ", " + aux + ", " + z);
-
-        return new Location(w, x, aux, z);
-    }
-
-    /**
-     * Check the Column given to see if there is an available safe spot.
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @return
-     */
-    private double safeColumn(World world, double x, double y, double z) {
-        for (double ny = 0; ny < 48; ny++) {
-            if ((y + ny < 120) && !this.bs.blockIsNotSafe(world, x, y + ny, z)) {
-                return y + ny;
-            }
-            if ((y - ny > 4) && !this.bs.blockIsNotSafe(world, x, y - ny, z)) {
-                return y - ny;
-            }
-        }
-        return -1;
     }
 }
