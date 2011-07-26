@@ -9,7 +9,7 @@ public class MVConfigReloadEvent extends Event {
     private List<String> configsLoaded;
 
     public MVConfigReloadEvent(List<String> configsLoaded) {
-        super("MVTeleport");
+        super("MVConfigReload");
         this.configsLoaded = configsLoaded;
     }
     
