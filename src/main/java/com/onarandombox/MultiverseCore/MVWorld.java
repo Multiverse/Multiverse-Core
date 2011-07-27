@@ -71,13 +71,10 @@ public class MVWorld {
     private ChatColor aliasColor; // Color for this world
 
     private boolean allowAnimals; // Does this World allow Animals to Spawn?
-    // public List<String> animals = new ArrayList<String>(); // Contain a list of Animals which we want to ignore the Spawn Setting.
-
     private boolean allowMonsters; // Does this World allow Monsters to Spawn?
-    // public List<String> monsters = new ArrayList<String>(); // Contain a list of Monsters which we want to ignore the Spawn Setting.
 
     private Boolean pvp; // Does this World allow PVP?
-    private Boolean fakepvp;
+    private Boolean fakepvp; // Should this world have fakePVP on? (used for PVP zones)
 
     private String respawnWorld; // Contains the name of the World to respawn the player to
 
@@ -86,6 +83,8 @@ public class MVWorld {
     private HashMap<String, List<String>> masterList;
 
     private Double scaling; // How stretched/compressed distances are
+    private Double price; // How much does it cost to enter this world
+    private int currency = -1; // What is the currency
     /**
      * The generator as a string. This is used only for reporting. ex: BukkitFullOfMoon:GenID
      */
@@ -124,6 +123,8 @@ public class MVWorld {
 
         this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
+        this.setPrice(config.getDouble("worlds." + this.name + ".entryfee.amount", 0.0));
+        this.setCurrency(config.getInt("worlds." + this.name + ".entryfee.currency", -1));
         this.getMobExceptions();
 
         this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
@@ -143,14 +144,26 @@ public class MVWorld {
         // }
     }
 
+    private void setCurrency(int currency) {
+        this.currency = currency;
+        config.getInt("worlds." + this.name + ".entryfee.currency", currency);
+        config.save();
+    }
+
+    private void setPrice(double price) {
+        this.price = price;
+        config.setProperty("worlds." + this.name + ".entryfee.amount", price);
+        config.save();
+    }
+
     private void addToUpperLists(Permission permission2) {
         Permission all = this.plugin.getServer().getPluginManager().getPermission("multiverse.*");
         Permission allWorlds = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
-        if(all == null) {
+        if (all == null) {
             all = new Permission("multiverse.*");
             this.plugin.getServer().getPluginManager().addPermission(all);
         }
-        if(allWorlds == null) {
+        if (allWorlds == null) {
             allWorlds = new Permission("multiverse.access.*");
             this.plugin.getServer().getPluginManager().addPermission(allWorlds);
         }
@@ -223,23 +236,6 @@ public class MVWorld {
         this.masterList.put("worldblacklist", new ArrayList<String>());
         this.masterList.put("animals", new ArrayList<String>());
         this.masterList.put("monsters", new ArrayList<String>());
-    }
-
-    public void addSampleData() {
-        this.getMonsterList().add("creeper");
-
-        this.getAnimalList().add("pig");
-
-        this.blockBlacklist.add(49);
-
-        this.getWorldBlacklist().add("world5");
-        this.getWorldBlacklist().add("A world with spaces");
-
-        this.config.setProperty("worlds." + this.name + ".animals.exceptions", this.getAnimalList());
-        this.config.setProperty("worlds." + this.name + ".monsters.exceptions", this.getMonsterList());
-        this.config.setProperty("worlds." + this.name + ".blockblacklist", this.getBlockBlacklist());
-        this.config.setProperty("worlds." + this.name + ".worldblacklist", this.getWorldBlacklist());
-        this.config.save();
     }
 
     public boolean clearVariable(String property) {
@@ -356,6 +352,10 @@ public class MVWorld {
             this.setScaling(value);
             return true;
         }
+        if (name.equalsIgnoreCase("price")) {
+            this.setPrice(value);
+            return true;
+        }
 
         return false;
     }
@@ -379,6 +379,14 @@ public class MVWorld {
         if (name.equalsIgnoreCase("aliascolor") || name.equalsIgnoreCase("color")) {
             this.setAliasColor(value);
             return true;
+        }
+        if (name.equalsIgnoreCase("currency")) {
+            try {
+                int intValue = Integer.parseInt(value);
+                this.setCurrency(intValue);
+                return true;
+            } catch (Exception e) {
+            }
         }
         try {
             boolean boolValue = Boolean.parseBoolean(value);
@@ -556,5 +564,13 @@ public class MVWorld {
 
     public Permission getPermission() {
         return this.permission;
+    }
+    
+    public int getCurrency() {
+        return this.currency;
+    }
+    
+    public double getPrice() {
+        return this.price;
     }
 }
