@@ -261,17 +261,16 @@ public class MultiverseCore extends JavaPlugin {
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
             // Remove all world permissions.
-            Permission all = this.getServer().getPluginManager().getPermission("multiverse.*");
+            Permission allAccess = this.getServer().getPluginManager().getPermission("multiverse.access.*");
             for (MVWorld w : this.worlds.values()) {
                 // Remove this world from the master list
-                if (all != null) {
-                    all.getChildren().remove(w.getPermission().getName());
+                if (allAccess != null) {
+                    allAccess.getChildren().remove(w.getPermission().getName());
                 }
                 this.getServer().getPluginManager().removePermission(w.getPermission().getName());
             }
             // Recalc the all permission
-            this.getServer().getPluginManager().recalculatePermissionDefaults(all);
-            this.getServer().getPluginManager().removePermission("multiverse.access.*");
+            this.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
             this.worlds.clear();
         }
 
