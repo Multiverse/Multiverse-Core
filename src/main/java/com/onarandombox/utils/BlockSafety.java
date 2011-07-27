@@ -43,25 +43,20 @@ public class BlockSafety {
         downOne.setY(downOne.getY() - 1);
 
         if (this.isSolidBlock(actual.getBlock().getType()) || this.isSolidBlock(upOne.getBlock().getType())) {
-            System.out.print("On or Above is not safe");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            System.out.print("Lava Below");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            System.out.print("Fire Below");
             return false;
         }
 
         if (blockIsAboveAir(actual)) {
-            System.out.print("Above Air");
             return false;
         }
-        System.out.print("All Good!");
         return true;
     }
 
