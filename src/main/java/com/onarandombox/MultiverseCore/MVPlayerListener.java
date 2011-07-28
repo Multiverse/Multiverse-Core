@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 
 public class MVPlayerListener extends PlayerListener {
@@ -89,7 +90,7 @@ public class MVPlayerListener extends PlayerListener {
             event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
         }
     }
-    
+
     @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
         this.plugin.removePlayerSession(event.getPlayer());
@@ -111,6 +112,19 @@ public class MVPlayerListener extends PlayerListener {
                 event.getPlayer().sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
                 event.setCancelled(true);
                 return;
+            }
+        }
+        // Only check payments if it's a different world:
+        if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+            // If the player does not have to pay, return now.
+            if(toWorld.isExempt(event.getPlayer())) {
+                return;
+            }
+            GenericBank bank = plugin.getBank();
+            if (!bank.hasEnough(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency(), "You need " + bank.getFormattedAmount(toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString())) {
+                event.setCancelled(true);
+            } else {
+                bank.pay(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency());
             }
         }
     }

@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.config.Configuration;
@@ -90,6 +91,7 @@ public class MVWorld {
      */
     private String generator;
     private Permission permission;
+    private Permission exempt;
 
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -133,8 +135,10 @@ public class MVWorld {
 
         config.save();
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.TRUE);
+        this.exempt = new Permission("multiverse.exempt." + this.getName(), "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
         try {
             this.plugin.getServer().getPluginManager().addPermission(this.permission);
+            this.plugin.getServer().getPluginManager().addPermission(this.exempt);
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
         }
@@ -156,19 +160,28 @@ public class MVWorld {
         config.save();
     }
 
-    private void addToUpperLists(Permission permission2) {
+    private void addToUpperLists(Permission permission) {
         Permission all = this.plugin.getServer().getPluginManager().getPermission("multiverse.*");
         Permission allWorlds = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
-        if (all == null) {
-            all = new Permission("multiverse.*");
-            this.plugin.getServer().getPluginManager().addPermission(all);
-        }
+        Permission allExemption = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
+
         if (allWorlds == null) {
             allWorlds = new Permission("multiverse.access.*");
             this.plugin.getServer().getPluginManager().addPermission(allWorlds);
         }
-        all.getChildren().put(this.permission.getName(), true);
-        allWorlds.getChildren().put(this.permission.getName(), true);
+        allWorlds.getChildren().put(permission.getName(), true);
+        if (allExemption == null) {
+            allExemption = new Permission("multiverse.exempt.*");
+            this.plugin.getServer().getPluginManager().addPermission(allExemption);
+        }
+        allExemption.getChildren().put(this.exempt.getName(), true);
+        if (all == null) {
+            all = new Permission("multiverse.*");
+            this.plugin.getServer().getPluginManager().addPermission(all);
+        }
+        all.getChildren().put("multiverse.access.*", true);
+        all.getChildren().put("multiverse.exempt.*", true);
+
         this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(all);
         this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allWorlds);
     }
@@ -565,12 +578,16 @@ public class MVWorld {
     public Permission getPermission() {
         return this.permission;
     }
-    
+
     public int getCurrency() {
         return this.currency;
     }
-    
+
     public double getPrice() {
         return this.price;
+    }
+
+    public boolean isExempt(Player p) {
+        return (this.plugin.getPermissions().hasPermission(p, this.exempt.getName(), true));
     }
 }
