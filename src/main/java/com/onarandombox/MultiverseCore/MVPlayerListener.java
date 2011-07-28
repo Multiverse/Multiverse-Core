@@ -83,7 +83,7 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.plugin.getMVWorlds().size() == 0 && this.plugin.ph.hasPermission(event.getPlayer(), "multiverse.world.import", true)) {
+        if (this.plugin.getMVWorlds().size() == 0 && this.plugin.ph.hasPermission(event.getPlayer(), "multiverse.core.import", true)) {
             event.getPlayer().sendMessage("You don't have any worlds imported into Multiverse!");
             event.getPlayer().sendMessage("You can import your current worlds with " + ChatColor.AQUA + "/mvimport");
             event.getPlayer().sendMessage("or you can create new ones with " + ChatColor.GOLD + "/mvcreate");

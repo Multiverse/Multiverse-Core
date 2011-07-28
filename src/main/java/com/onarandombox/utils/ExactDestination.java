@@ -23,29 +23,24 @@ public class ExactDestination extends Destination {
         if (!(plugin instanceof MultiverseCore)) {
             return false;
         }
-        System.out.print("Checking Exact Dest");
         List<String> parsed = Arrays.asList(destination.split(":"));
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
         if (!(parsed.size() == 3 || parsed.size() == 5)) {
-            System.out.print("Invalid Args:" + parsed.size());
             return false;
         }
         // If it's not an Exact type
         if (!parsed.get(0).equalsIgnoreCase("e")) {
-            System.out.print("No E found");
             return false;
         }
 
         // If it's not a MV world
         if (!((MultiverseCore)plugin).isMVWorld(parsed.get(1))) {
-            System.out.print("Not a MV world");
             return false;
         }
 
         if (!parsed.get(2).matches(coordRegex)) {
-            System.out.print("Invalid Regex");
             return false;
         }
         // This is 1 now, because we've removed 2

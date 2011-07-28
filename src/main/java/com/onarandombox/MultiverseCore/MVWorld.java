@@ -148,18 +148,6 @@ public class MVWorld {
         // }
     }
 
-    private void setCurrency(int currency) {
-        this.currency = currency;
-        config.getInt("worlds." + this.name + ".entryfee.currency", currency);
-        config.save();
-    }
-
-    private void setPrice(double price) {
-        this.price = price;
-        config.setProperty("worlds." + this.name + ".entryfee.amount", price);
-        config.save();
-    }
-
     private void addToUpperLists(Permission permission) {
         Permission all = this.plugin.getServer().getPluginManager().getPermission("multiverse.*");
         Permission allWorlds = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
@@ -393,7 +381,7 @@ public class MVWorld {
             this.setAliasColor(value);
             return true;
         }
-        if (name.equalsIgnoreCase("currency")) {
+        if (name.equalsIgnoreCase("currency") || name.equalsIgnoreCase("curr")) {
             try {
                 int intValue = Integer.parseInt(value);
                 this.setCurrency(intValue);
@@ -587,7 +575,23 @@ public class MVWorld {
         return this.price;
     }
 
+    private void setCurrency(int currency) {
+        this.currency = currency;
+        config.getInt("worlds." + this.name + ".entryfee.currency", currency);
+        config.save();
+    }
+
+    private void setPrice(double price) {
+        this.price = price;
+        config.setProperty("worlds." + this.name + ".entryfee.amount", price);
+        config.save();
+    }
+
     public boolean isExempt(Player p) {
         return (this.plugin.getPermissions().hasPermission(p, this.exempt.getName(), true));
+    }
+
+    public Permission getExempt() {
+        return this.exempt;
     }
 }

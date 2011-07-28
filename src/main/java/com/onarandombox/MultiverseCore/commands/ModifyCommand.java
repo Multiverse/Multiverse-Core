@@ -21,7 +21,7 @@ enum Action {
 
 // Color == Aliascolor
 enum SetProperties {
-    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn
+    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn, currency, curr, price
 }
 
 public class ModifyCommand extends MultiverseCommand {

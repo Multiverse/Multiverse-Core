@@ -262,15 +262,21 @@ public class MultiverseCore extends JavaPlugin {
         if (forceLoad) {
             // Remove all world permissions.
             Permission allAccess = this.getServer().getPluginManager().getPermission("multiverse.access.*");
+            Permission allExempt = this.getServer().getPluginManager().getPermission("multiverse.exempt.*");
             for (MVWorld w : this.worlds.values()) {
                 // Remove this world from the master list
                 if (allAccess != null) {
                     allAccess.getChildren().remove(w.getPermission().getName());
                 }
+                if (allExempt != null) {
+                    allExempt.getChildren().remove(w.getPermission().getName());
+                }
                 this.getServer().getPluginManager().removePermission(w.getPermission().getName());
+                this.getServer().getPluginManager().removePermission(w.getExempt().getName());
             }
             // Recalc the all permission
             this.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
+            this.getServer().getPluginManager().recalculatePermissionDefaults(allExempt);
             this.worlds.clear();
         }
 
