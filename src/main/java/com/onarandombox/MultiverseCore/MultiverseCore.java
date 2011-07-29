@@ -151,7 +151,7 @@ public class MultiverseCore extends JavaPlugin {
 
             this.loadWorlds(true);
         } else {
-            this.log(Level.WARNING, "Your configs were not loaded. Very little will function in MV.");
+            this.log(Level.SEVERE , "Your configs were not loaded. Very little will function in Multiverse.");
         }
     }
 

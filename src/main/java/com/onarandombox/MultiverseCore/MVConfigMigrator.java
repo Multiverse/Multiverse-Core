@@ -63,7 +63,7 @@ public class MVConfigMigrator {
         oldConfig.load();
         List<String> keys = oldConfig.getKeys("worlds");
         if (keys == null) {
-            this.core.log(Level.WARNING, "Migration FAILURE!");
+            this.core.log(Level.SEVERE, "Migration FAILURE!");
             return false;
         }
         for (String key : keys) {

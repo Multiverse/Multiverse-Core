@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import com.onarandombox.utils.BlockSafety;
 
@@ -175,22 +176,29 @@ public class MVTeleport {
             l.setX(l.getBlockX() + .5);
             l.setZ(l.getBlockZ() + .5);
             e.teleport(l);
-            //System.out.print("The first location you gave me was safe!");
+            // System.out.print("The first location you gave me was safe!");
             return true;
         }
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {
             // Add offset to account for a vehicle on dry land!
-            if(!this.bs.isEntitiyOnTrack(e, safeLocation)) {
+            if (!this.bs.isEntitiyOnTrack(e, safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
             }
             e.teleport(safeLocation);
-            //System.out.print("Had to look for a bit, but I found a safe place for ya!" + safeLocation);
+            // System.out.print("Had to look for a bit, but I found a safe place for ya!" + safeLocation);
             return true;
         }
-        this.plugin.log(Level.WARNING, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
+        if (e instanceof Player) {
+            Player p = (Player) e;
+            p.sendMessage("No safe locations found!");
+        }
+        else if (e.getPassenger() instanceof Player) {
+            Player p = (Player) e.getPassenger();
+            p.sendMessage("No safe locations found!");
+        }
+        this.plugin.log(Level.WARNING, "Sorry champ, you're(" + e.getEntityId() + ")     basically trying to teleport into a minefield. I should just kill you now.");
         return false;
     }
-    
-    
+
 }
