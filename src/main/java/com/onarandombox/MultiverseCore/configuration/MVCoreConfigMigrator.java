@@ -1,7 +1,6 @@
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.configuration;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -9,10 +8,12 @@ import java.util.logging.Level;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
 
-public class MVConfigMigrator {
+import com.onarandombox.MultiverseCore.MultiverseCore;
+
+public class MVCoreConfigMigrator extends MVConfigMigrator {
     private MultiverseCore core;
 
-    public MVConfigMigrator(MultiverseCore core) {
+    public MVCoreConfigMigrator(MultiverseCore core) {
         this.core = core;
     }
 
@@ -72,27 +73,16 @@ public class MVConfigMigrator {
             newConfig.setProperty("worlds." + key + ".pvp", oldConfig.getProperty("worlds." + key + ".pvp"));
             newConfig.setProperty("worlds." + key + ".alias.name", oldConfig.getProperty("worlds." + key + ".alias"));
             newConfig.setProperty("worlds." + key + ".tempspawn", oldConfig.getProperty("worlds." + key + ".spawn"));
-            newConfig.setProperty("worlds." + key + ".price", oldConfig.getProperty("worlds." + key + ".price"));
+            newConfig.setProperty("worlds." + key + ".entryfee.amount", oldConfig.getProperty("worlds." + key + ".price"));
+            newConfig.setProperty("worlds." + key + ".entryfee.currency", -1);
             newConfig.setProperty("worlds." + key + ".environment", oldConfig.getProperty("worlds." + key + ".environment"));
             // Have to convert CSLs to arrays
             migrateListItem(newConfig, oldConfig, key, ".blockBlacklist", ".blockblacklist");
             migrateListItem(newConfig, oldConfig, key, ".worldBlacklist", ".worldblacklist");
-            migrateListItem(newConfig, oldConfig, key, ".playerBlacklist", ".playerblacklist");
-            migrateListItem(newConfig, oldConfig, key, ".playerWhitelist", ".playerwhitelist");
         }
         newConfig.save();
         this.core.log(Level.INFO, "Migration SUCCESS!");
         return true;
-    }
-
-    private void migrateListItem(Configuration newConfig, Configuration oldConfig, String key, String oldProperty, String newProperty) {
-        List<String> list = Arrays.asList(oldConfig.getString("worlds." + key + oldProperty).split(","));
-        if (list.size() > 0) {
-            if (list.get(0).length() == 0) {
-                list = new ArrayList<String>();
-            }
-        }
-        newConfig.setProperty("worlds." + key + newProperty, list);
     }
 
     private boolean migrateMainConfig(String name, File oldFolder, File newFolder) {
@@ -107,7 +97,7 @@ public class MVConfigMigrator {
         newConfig.setProperty("disableautoheal", false);
         newConfig.setProperty("fakepvp", false);
         newConfig.setProperty("bedrespawn", true);
-        newConfig.setProperty("version", 2.0);
+        newConfig.setProperty("version", 2.2);
         newConfig.save();
         return true;
     }

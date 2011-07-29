@@ -38,7 +38,7 @@ public class MVPluginListener extends ServerListener {
         if (event.getPlugin().getDescription().getName().equals("MultiVerse")) {
             this.plugin.getServer().getPluginManager().disablePlugin(event.getPlugin());
             this.plugin.log(Level.WARNING, "I just disabled the old version of Multiverse for you. You should remove the JAR now, your configs have been migrated.");
-            new DefaultConfiguration(this.plugin.getDataFolder(), "config.yml", this.plugin.migrator);
+            new DefaultConfiguration(this.plugin.getDataFolder(), "config.yml", this.plugin.migrator, MultiverseCore.defaultConfigsCreated);
         }
     }
 

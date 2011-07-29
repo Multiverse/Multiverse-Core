@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import com.onarandombox.MultiverseCore.MVConfigMigrator;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-
 /**
  * https://github.com/Nijikokun/iConomy3/blob/master/com/nijiko/coelho/iConomy/iConomy.java
  *
@@ -14,12 +11,10 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
  */
 public class DefaultConfiguration {
 
-    public DefaultConfiguration(File folder, String name, MVConfigMigrator migrator) {
+    public DefaultConfiguration(File folder, String name, MVConfigMigrator migrator, boolean defaultsCreated) {
         File actual = new File(folder, name);
         // If defaults have been created, and we're being called again, we should try to migrate
-        if (MultiverseCore.defaultConfigsCreated) {
-            migrator.migrate(name, folder);
-        } else if (!actual.exists() && !migrator.migrate(name, folder)) {
+        if (!actual.exists() && !migrator.migrate(name, folder)) {
 
             InputStream input = this.getClass().getResourceAsStream("/defaults/" + name);
             if (input != null) {

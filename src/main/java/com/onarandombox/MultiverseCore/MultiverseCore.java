@@ -51,6 +51,8 @@ import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
+import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.ExactDestination;
@@ -95,9 +97,9 @@ public class MultiverseCore extends JavaPlugin {
     private HashMap<String, MVPlayerSession> playerSessions;
     private PurgeWorlds worldPurger;
     private GenericBank bank = null;
-    private AllPay banker = new AllPay(this, "[Multiverse-Core] ");
+    private AllPay banker = new AllPay(this, tag + " ");
     public static boolean defaultConfigsCreated = false;
-    protected MVConfigMigrator migrator = new MVConfigMigrator(this);
+    protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
 
@@ -188,8 +190,8 @@ public class MultiverseCore extends JavaPlugin {
     public void loadConfigs() {
 
         // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator);
-        new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator);
+        new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator, MultiverseCore.defaultConfigsCreated);
+        new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator, MultiverseCore.defaultConfigsCreated);
 
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
