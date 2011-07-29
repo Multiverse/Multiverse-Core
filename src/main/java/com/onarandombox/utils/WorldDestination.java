@@ -10,6 +10,7 @@ public class WorldDestination extends Destination {
     private boolean isValid;
     private MVWorld world;
     float yaw = -1;
+    String direction = "";
 
     @Override
     public String getIdentifer() {
@@ -90,6 +91,9 @@ public class WorldDestination extends Destination {
 
     @Override
     public String toString() {
+        if(direction.length() > 0 && yaw >= 0) {
+            return this.world.getCBWorld().getName() + ":"+this.direction;            
+        }
         return this.world.getCBWorld().getName();
     }
 
