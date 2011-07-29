@@ -122,7 +122,7 @@ public class MVEntityListener extends EntityListener {
 
     private boolean shouldWeKillThisCreature(List<String> creatureList, boolean allowCreatureSpawning, String creature) {
         if (creatureList.isEmpty() && allowCreatureSpawning) {
-            // 1. There are no exceptions and animals are allowd. Save it.
+            // 1. There are no exceptions and animals are allowed. Save it.
             return false;
         } else if (creatureList.isEmpty()) {
             // 2. There are no exceptions and animals are NOT allowed. Kill it.
@@ -137,7 +137,7 @@ public class MVEntityListener extends EntityListener {
             // 5. No animals are allowed to be spawned, BUT this one can stay...
             return false;
         } else if (!creatureList.contains(creature.toString().toUpperCase()) && !allowCreatureSpawning) {
-            // 6. Animals are NOT allowd to spawn, and this creature is not in the save list... KILL IT
+            // 6. Animals are NOT allowed to spawn, and this creature is not in the save list... KILL IT
             return true;
         }
         // This code should NEVER execute. I just left the verbose conditions in right now.
