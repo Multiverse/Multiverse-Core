@@ -11,7 +11,7 @@ import java.io.InputStream;
  */
 public class DefaultConfiguration {
 
-    public DefaultConfiguration(File folder, String name, MVConfigMigrator migrator, boolean defaultsCreated) {
+    public DefaultConfiguration(File folder, String name, MVConfigMigrator migrator) {
         File actual = new File(folder, name);
         // If defaults have been created, and we're being called again, we should try to migrate
         if (!actual.exists() && !migrator.migrate(name, folder)) {
