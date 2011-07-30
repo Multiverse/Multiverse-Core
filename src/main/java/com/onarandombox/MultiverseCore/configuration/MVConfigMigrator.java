@@ -10,7 +10,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
 
 import com.onarandombox.MultiverseCore.LoggablePlugin;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public abstract class MVConfigMigrator {
     public List<String> createdDefaults = new ArrayList<String>();
@@ -43,7 +42,6 @@ public abstract class MVConfigMigrator {
                     mvPlugin.log(Level.INFO, "Found the MultiVerse 1 config folder. Starting Config Migration...");
                     oldFolder = f;
                 }
-
             }
             if (oldFolder == null) {
                 mvPlugin.log(Level.INFO, "Did not find the MV1 Folder. If you did not have MultiVerse 1 installed and this is the FIRST time you're running MV2, this message is GOOD. ");

@@ -389,6 +389,13 @@ public class MVWorld {
             } catch (Exception e) {
             }
         }
+        if (name.equalsIgnoreCase("price")) {
+            try {
+                double doubValue = Double.parseDouble(value);
+                return this.setPrice(doubValue);
+            } catch (Exception e) {
+            }
+        }
         try {
             boolean boolValue = Boolean.parseBoolean(value);
             return this.setVariable(name, boolValue);
@@ -575,16 +582,18 @@ public class MVWorld {
         return this.price;
     }
 
-    private void setCurrency(int currency) {
+    private boolean setCurrency(int currency) {
         this.currency = currency;
         config.getInt("worlds." + this.name + ".entryfee.currency", currency);
         config.save();
+        return true;
     }
 
-    private void setPrice(double price) {
+    private boolean setPrice(double price) {
         this.price = price;
         config.setProperty("worlds." + this.name + ".entryfee.amount", price);
         config.save();
+        return true;
     }
 
     public boolean isExempt(Player p) {
