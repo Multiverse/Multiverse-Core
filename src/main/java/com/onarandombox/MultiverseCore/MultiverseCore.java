@@ -64,7 +64,7 @@ import com.onarandombox.utils.UpdateChecker;
 import com.onarandombox.utils.WorldDestination;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
-public class MultiverseCore extends JavaPlugin {
+public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
 
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");

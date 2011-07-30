@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
 
+import com.onarandombox.MultiverseCore.LoggablePlugin;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public abstract class MVConfigMigrator {
@@ -25,13 +26,13 @@ public abstract class MVConfigMigrator {
         newConfig.setProperty("worlds." + key + newProperty, list);
     }
     
-    protected final File detectMultiverseFolders(File folder, MultiverseCore core) {
+    protected final File detectMultiverseFolders(File folder, LoggablePlugin mvPlugin) {
         File oldFolder = null;
-        core.log(Level.INFO, "Starting Multiverse Configuration Migrator(MVCM)!");
+        mvPlugin.log(Level.INFO, "Starting Multiverse Configuration Migrator(MVCM)!");
         // They still have MV 1 installed! Good!
-        if (core.getServer().getPluginManager().getPlugin("MultiVerse") != null) {
-            core.log(Level.INFO, "Found MultiVerse 1. Starting Config Migration...");
-            Plugin plugin = core.getServer().getPluginManager().getPlugin("MultiVerse");
+        if (mvPlugin.getServer().getPluginManager().getPlugin("MultiVerse") != null) {
+            mvPlugin.log(Level.INFO, "Found MultiVerse 1. Starting Config Migration...");
+            Plugin plugin = mvPlugin.getServer().getPluginManager().getPlugin("MultiVerse");
             oldFolder = plugin.getDataFolder();
         } else {
             // They didn't have MV 1 enabled... let's try and find the folder...
@@ -39,14 +40,14 @@ public abstract class MVConfigMigrator {
             List<File> folderList = Arrays.asList(folders);
             for (File f : folderList) {
                 if (f.getName().equalsIgnoreCase("MultiVerse")) {
-                    core.log(Level.INFO, "Found the MultiVerse 1 config folder. Starting Config Migration...");
+                    mvPlugin.log(Level.INFO, "Found the MultiVerse 1 config folder. Starting Config Migration...");
                     oldFolder = f;
                 }
 
             }
             if (oldFolder == null) {
-                core.log(Level.INFO, "Did not find the MV1 Folder. If you did not have MultiVerse 1 installed and this is the FIRST time you're running MV2, this message is GOOD. ");
-                core.log(Level.INFO, "If you did, your configs were **NOT** migrated! Go Here: INSERTURLFORHELP");
+                mvPlugin.log(Level.INFO, "Did not find the MV1 Folder. If you did not have MultiVerse 1 installed and this is the FIRST time you're running MV2, this message is GOOD. ");
+                mvPlugin.log(Level.INFO, "If you did, your configs were **NOT** migrated! Go Here: INSERTURLFORHELP");
                 return null;
             }
         }
