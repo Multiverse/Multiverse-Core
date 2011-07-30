@@ -15,7 +15,7 @@ public class ModifyRemoveCommand extends MultiverseCommand {
     public ModifyRemoveCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Modify a World (Remove a value)");
-        this.setCommandUsage("/mv modify" + ChatColor.GREEN + "REMOVE {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
+        this.setCommandUsage("/mv modify" + ChatColor.GREEN + " remove {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(2, 3);
         this.addKey("mvm remove");
         this.addKey("mvmremove");

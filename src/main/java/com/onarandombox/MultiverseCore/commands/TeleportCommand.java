@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,8 +107,13 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
         }
-        if(this.playerTeleporter.safelyTeleport(teleportee, l)) {
-            
+        if(!this.playerTeleporter.safelyTeleport(teleportee, l)) {
+            Class<?> paramTypes[] = { Player.class, Location.class };
+            List<Object> items = new ArrayList<Object>();
+            items.add(teleportee);
+            items.add(l);
+            String message = "Multiverse" + ChatColor.WHITE + " did not teleport you to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
+            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, "", "", ChatColor.GREEN + message, "Would you like to try anyway?", 15);
         }
     }
 }

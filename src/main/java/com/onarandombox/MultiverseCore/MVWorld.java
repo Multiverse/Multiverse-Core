@@ -349,7 +349,7 @@ public class MVWorld {
     }
 
     private boolean setVariable(String name, double value) {
-        if (name.equalsIgnoreCase("scaling")) {
+        if (name.equalsIgnoreCase("scaling") || name.equalsIgnoreCase("scale")) {
             this.setScaling(value);
             return true;
         }

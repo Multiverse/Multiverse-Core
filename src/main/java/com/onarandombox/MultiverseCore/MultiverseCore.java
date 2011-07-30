@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -64,7 +65,7 @@ import com.onarandombox.utils.UpdateChecker;
 import com.onarandombox.utils.WorldDestination;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
-public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
+public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");
@@ -155,7 +156,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
 
             this.loadWorlds(true);
         } else {
-            this.log(Level.SEVERE , "Your configs were not loaded. Very little will function in Multiverse.");
+            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
     }
 
@@ -410,7 +411,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
      * @return True if success, false if failure.
      */
     public boolean removeWorldFromList(String name) {
-        
+
         if (this.worlds.containsKey(name)) {
             this.worlds.remove(name);
             this.log(Level.INFO, "World " + name + " was unloaded from memory.");
@@ -427,7 +428,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
      * @return True if success, false if failure.
      */
     public boolean removeWorldFromConfig(String name) {
-        if(this.configWorlds.getProperty("worlds." + name) != null) {
+        if (this.configWorlds.getProperty("worlds." + name) != null) {
             removeWorldFromList(name);
             this.log(Level.INFO, "World " + name + " was removed from config.yml");
             this.configWorlds.removeProperty("worlds." + name);
@@ -465,7 +466,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
         World w = this.getServer().getWorld(name);
         World safeWorld = this.getServer().getWorlds().get(0);
         List<Player> ps = w.getPlayers();
-        for(Player p : ps) {
+        for (Player p : ps) {
             p.teleport(safeWorld.getSpawnLocation());
         }
     }
@@ -718,5 +719,15 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin{
 
     public DestinationFactory getDestinationFactory() {
         return this.destFactory;
+    }
+
+    /**
+     * This is a convenience method to allow the QueuedCommand system to call it. You should NEVER call this directly.
+     * 
+     * @param p Player
+     * @param l The potentially unsafe location.
+     */
+    public void teleportPlayer(Player p, Location l) {
+        p.teleport(l);
     }
 }
