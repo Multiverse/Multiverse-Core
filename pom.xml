@@ -48,7 +48,7 @@
 								<source>${project.basedir}/lib/allpay/src</source>
 								<source>${project.basedir}/lib/commandhandler/src</source>
 								<source>${project.basedir}/lib/commandhandler/lib/ShellParser/src</source>
-
+								<source>${project.basedir}/lib/commandhandler/lib/JavaStructures/src</source>
 							</sources>
 						</configuration>
 					</execution>
