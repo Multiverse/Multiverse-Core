@@ -18,6 +18,8 @@ public class WhoCommand extends MultiverseCommand {
         this.setName("Who?");
         this.setCommandUsage("/mvwho" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(0, 1);
+        this.addKey("mv who");
+        this.addKey("mvw");
         this.addKey("mvwho");
         this.setPermission("multiverse.core.list.who", "States who is in what world.", PermissionDefault.OP);
     }
