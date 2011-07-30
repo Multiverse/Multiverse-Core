@@ -18,7 +18,7 @@ public class ModifyAddCommand extends MultiverseCommand {
     public ModifyAddCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Modify a World (Add a value)");
-        this.setCommandUsage("/mvmodify " + ChatColor.GREEN + "ADD {VALUE} {PROPERTY}" + ChatColor.GOLD + " [WORLD] ");
+        this.setCommandUsage("/mv modify " + ChatColor.GREEN + "ADD {VALUE} {PROPERTY}" + ChatColor.GOLD + " [WORLD] ");
         this.setArgRange(2, 3);
         this.addKey("mvm add");
         this.addKey("mvmadd");

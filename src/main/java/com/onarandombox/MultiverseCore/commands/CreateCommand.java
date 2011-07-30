@@ -16,7 +16,7 @@ public class CreateCommand extends MultiverseCommand {
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Create World");
-        this.setCommandUsage("/mvcreate" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]]");
+        this.setCommandUsage("/mv create" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]]");
         this.setArgRange(2, 6);
         this.addKey("mvcreate");
         this.addKey("mvc");

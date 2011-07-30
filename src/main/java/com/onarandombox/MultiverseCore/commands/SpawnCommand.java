@@ -16,7 +16,7 @@ public class SpawnCommand extends MultiverseCommand {
         super(plugin);
         Permission otherPerm = new Permission("multiverse.core.spawn.other", "Teleports another player to the spawn of the world they are in.", PermissionDefault.OP);
         this.setName("Spawn");
-        this.setCommandUsage("/mvspawn" + ChatColor.GOLD + " [PLAYER]");
+        this.setCommandUsage("/mv spawn" + ChatColor.GOLD + " [PLAYER]");
         this.setArgRange(0, 1);
         this.addKey("mvspawn");
         this.addKey("mv spawn");

@@ -15,7 +15,7 @@ public class ModifyClearCommand extends MultiverseCommand {
     public ModifyClearCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Modify a World (Clear a property)");
-        this.setCommandUsage("/mvmodify" + ChatColor.GREEN + " clear {PROPERTY}" + ChatColor.GOLD + " [WORLD]");
+        this.setCommandUsage("/mv modify" + ChatColor.GREEN + " clear {PROPERTY}" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(1, 2);
         this.addKey("mvm clear");
         this.addKey("mvmclear");

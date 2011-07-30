@@ -14,7 +14,7 @@ public class EnvironmentCommand extends MultiverseCommand {
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("List Environments");
-        this.setCommandUsage("/mvenv");
+        this.setCommandUsage("/mv env");
         this.setArgRange(0, 0);
         this.addKey("mvenv");
         this.addKey("mv env");

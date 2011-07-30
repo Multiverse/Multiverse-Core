@@ -18,7 +18,7 @@ public class PurgeCommand extends MultiverseCommand {
     public PurgeCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Purge World of Creatures");
-        this.setCommandUsage("/mvpurge" + ChatColor.GOLD + " [WORLD|all] " + ChatColor.GREEN + "{all|animals|monsters|MOBNAME}");
+        this.setCommandUsage("/mv purge" + ChatColor.GOLD + " [WORLD|all] " + ChatColor.GREEN + "{all|animals|monsters|MOBNAME}");
         this.setArgRange(1, 2);
         this.addKey("mvpurge");
         this.addKey("mv purge");

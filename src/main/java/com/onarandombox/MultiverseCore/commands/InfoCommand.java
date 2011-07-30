@@ -16,7 +16,7 @@ public class InfoCommand extends MultiverseCommand {
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("World Information");
-        this.setCommandUsage("/mvinfo" + ChatColor.GOLD + " [WORLD]");
+        this.setCommandUsage("/mv info" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(0, 1);
         this.addKey("mvinfo");
         this.addKey("mvi");

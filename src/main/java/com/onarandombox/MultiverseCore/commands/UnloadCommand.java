@@ -13,7 +13,7 @@ public class UnloadCommand extends MultiverseCommand {
     public UnloadCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Unload World");
-        this.setCommandUsage("/mvunload" + ChatColor.GREEN + " {WORLD}");
+        this.setCommandUsage("/mv unload" + ChatColor.GREEN + " {WORLD}");
         this.setArgRange(1, 1);
         this.addKey("mvunload");
         this.addKey("mv unload");

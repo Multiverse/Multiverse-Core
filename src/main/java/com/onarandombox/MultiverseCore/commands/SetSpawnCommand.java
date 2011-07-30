@@ -15,7 +15,7 @@ public class SetSpawnCommand extends MultiverseCommand {
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Set World Spawn");
-        this.setCommandUsage("/mvsetspawn");
+        this.setCommandUsage("/mv setspawn");
         this.setArgRange(0, 0);
         this.addKey("mvsetspawn");
         this.addKey("mvss");

@@ -13,7 +13,7 @@ public class DeleteCommand extends MultiverseCommand {
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Delete World");
-        this.setCommandUsage("/mvdelete" + ChatColor.GREEN + " {WORLD}");
+        this.setCommandUsage("/mv delete" + ChatColor.GREEN + " {WORLD}");
         this.setArgRange(1, 1);
         this.addKey("mvdelete");
         this.addKey("mv delete");

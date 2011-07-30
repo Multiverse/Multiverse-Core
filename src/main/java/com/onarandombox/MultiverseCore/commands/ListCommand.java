@@ -16,7 +16,7 @@ public class ListCommand extends MultiverseCommand {
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("World Listing");
-        this.setCommandUsage("/mvlist");
+        this.setCommandUsage("/mv list");
         this.setArgRange(0, 0);
         this.addKey("mvlist");
         this.addKey("mvl");

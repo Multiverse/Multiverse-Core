@@ -15,7 +15,7 @@ public class ImportCommand extends MultiverseCommand {
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Import World");
-        this.setCommandUsage("/mvimport" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]");
+        this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]");
         this.setArgRange(2, 3);
         this.addKey("mvimport");
         this.addKey("mvi");

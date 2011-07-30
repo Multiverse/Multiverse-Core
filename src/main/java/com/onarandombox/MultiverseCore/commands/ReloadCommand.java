@@ -15,7 +15,7 @@ public class ReloadCommand extends MultiverseCommand {
     public ReloadCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Reload Configs");
-        this.setCommandUsage("/mvreload");
+        this.setCommandUsage("/mv reload");
         this.setArgRange(0, 0);
         this.addKey("mvreload");
         this.addKey("mv reload");

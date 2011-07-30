@@ -18,7 +18,7 @@ public class CoordCommand extends MultiverseCommand {
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Coordinates");
-        this.setCommandUsage("/mvcoord");
+        this.setCommandUsage("/mv coord");
         this.setArgRange(0, 0);
         this.addKey("mv coord");
         this.addKey("mvcoord");

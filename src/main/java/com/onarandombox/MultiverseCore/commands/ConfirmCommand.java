@@ -13,7 +13,7 @@ public class ConfirmCommand extends MultiverseCommand {
         super(plugin);
         // Any command that is dangerous should require op
         this.setName("Confirms a command that could destroy life, the universe and everything.");
-        this.setCommandUsage("/mvconfirm");
+        this.setCommandUsage("/mv confirm");
         this.setArgRange(0, 0);
         this.addKey("mvconfirm");
         this.setPermission("multiverse.core.confirm", "If you have not been prompted to use this, it will not do anything.", PermissionDefault.OP);

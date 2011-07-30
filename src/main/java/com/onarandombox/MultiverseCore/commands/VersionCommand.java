@@ -41,6 +41,7 @@ public class VersionCommand extends MultiverseCommand {
         this.plugin.log(Level.INFO, "opfallback: " + this.plugin.getConfig().getString("opfallback", "NOT SET"));
         this.plugin.log(Level.INFO, "disableautoheal: " + this.plugin.getConfig().getString("disableautoheal", "NOT SET"));
         this.plugin.log(Level.INFO, "fakepvp: " + this.plugin.getConfig().getString("fakepvp", "NOT SET"));
+        this.plugin.log(Level.INFO, "fakepvp: " + this.plugin.getConfig().getString("fakepvp", "NOT SET"));
         this.plugin.log(Level.INFO, "Special Code: FRN001");
     }
 }

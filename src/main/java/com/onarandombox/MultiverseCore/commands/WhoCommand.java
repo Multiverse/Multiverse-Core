@@ -16,7 +16,7 @@ public class WhoCommand extends MultiverseCommand {
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Who?");
-        this.setCommandUsage("/mvwho" + ChatColor.GOLD + " [WORLD]");
+        this.setCommandUsage("/mv   who" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(0, 1);
         this.addKey("mv who");
         this.addKey("mvw");

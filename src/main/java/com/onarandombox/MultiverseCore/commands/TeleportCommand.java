@@ -30,7 +30,7 @@ public class TeleportCommand extends MultiverseCommand {
         Permission tp = new Permission("multiverse.core.tp", "Allows teleportation to other worlds.", PermissionDefault.OP, children);
 
         this.setName("Teleport");
-        this.setCommandUsage("/mvtp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
+        this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
         this.setArgRange(1, 2);
         this.addKey("mvtp");
         this.addKey("mv tp");
@@ -106,6 +106,8 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
         }
-        this.playerTeleporter.safelyTeleport(teleportee, l);
+        if(this.playerTeleporter.safelyTeleport(teleportee, l)) {
+            
+        }
     }
 }
