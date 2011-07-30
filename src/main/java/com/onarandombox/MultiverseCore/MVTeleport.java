@@ -197,7 +197,7 @@ public class MVTeleport {
             Player p = (Player) e.getPassenger();
             p.sendMessage("No safe locations found!");
         }
-        this.plugin.log(Level.WARNING, "Sorry champ, you're(" + e.getEntityId() + ")     basically trying to teleport into a minefield. I should just kill you now.");
+        this.plugin.log(Level.WARNING, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return false;
     }
 

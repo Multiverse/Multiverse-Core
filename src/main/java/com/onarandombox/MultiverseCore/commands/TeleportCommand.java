@@ -107,13 +107,17 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
         }
-        if(!this.playerTeleporter.safelyTeleport(teleportee, l)) {
+        if (!this.playerTeleporter.safelyTeleport(teleportee, l)) {
             Class<?> paramTypes[] = { Player.class, Location.class };
             List<Object> items = new ArrayList<Object>();
             items.add(teleportee);
             items.add(l);
-            String message = "Multiverse" + ChatColor.WHITE + " did not teleport you to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
-            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, "", "", ChatColor.GREEN + message, "Would you like to try anyway?", 15);
+            String player = "you";
+            if (!teleportee.equals(teleporter)) {
+                player = teleportee.getName();
+            }
+            String message = ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " did not teleport " + ChatColor.AQUA + player + ChatColor.WHITE + " to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
+            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, message, "Would you like to try anyway?", "", "", 15);
         }
     }
 }
