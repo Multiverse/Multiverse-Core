@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.List;
 
@@ -18,6 +18,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 //import org.bukkit.event.entity.ExplosionPrimedEvent;
 

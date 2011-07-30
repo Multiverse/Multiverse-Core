@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,6 +11,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 
 public class MVPlayerListener extends PlayerListener {

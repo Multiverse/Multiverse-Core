@@ -1,9 +1,11 @@
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.listeners;
 
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 //import org.bukkit.event.block.BlockRightClickEvent;
 
