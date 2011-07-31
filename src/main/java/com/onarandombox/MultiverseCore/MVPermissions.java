@@ -53,7 +53,7 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     public boolean canTravelFromLocation(Player teleporter, Location location) {
-        if(!this.plugin.isMVWorld(location.getWorld().getName())){
+        if (!this.plugin.isMVWorld(location.getWorld().getName())) {
             return false;
         }
         return canTravelFromWorld(teleporter, this.plugin.getMVWorld(location.getWorld().getName()));
@@ -69,13 +69,13 @@ public class MVPermissions implements PermissionsInterface {
     public Boolean canEnterWorld(Player p, MVWorld w) {
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
-    
+
     public Boolean canEnterLocation(Player p, Location l) {
-        if(l == null) {
+        if (l == null) {
             return false;
         }
         String worldName = l.getWorld().getName();
-        if(!this.plugin.isMVWorld(worldName)) {
+        if (!this.plugin.isMVWorld(worldName)) {
             return false;
         }
         return this.hasPermission(p, "multiverse.access." + worldName, false);
@@ -94,16 +94,21 @@ public class MVPermissions implements PermissionsInterface {
         Player player = (Player) sender;
 
         boolean opFallback = this.plugin.getConfig().getBoolean("opfallback", true);
+        this.plugin.log(Level.WARNING, "Checking to see if person has " + node);
         if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
+            this.plugin.log(Level.WARNING, "Allowed by P3/P2 ");
             return true;
         } else if (sender.hasPermission(node)) {
             // If Now check the bukkit permissions
+            this.plugin.log(Level.WARNING, "Allowed by BukkitPerms");
             return true;
         } else if (player.isOp() && opFallback) {
             // If Player is Op we always let them use it if they have the fallback enabled!
+            this.plugin.log(Level.WARNING, "Allowed by OP");
             return true;
         }
+        
         // If the Player doesn't have Permissions and isn't an Op then
         // we return true if OP is not required, otherwise we return false
         // This allows us to act as a default permission guidance
@@ -118,6 +123,25 @@ public class MVPermissions implements PermissionsInterface {
             return "Permissions " + this.plugin.getServer().getPluginManager().getPlugin("Permissions").getDescription().getVersion();
         }
         return "Bukkit Permissions/OPs.txt";
+    }
+
+    public boolean hasAnyPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
+        for (String node : nodes) {
+            if (this.hasPermission(sender, node, isOpRequired)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasAllPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
+        for (String node : nodes) {
+            if (!this.hasPermission(sender, node, isOpRequired)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

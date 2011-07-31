@@ -41,7 +41,9 @@ public class CoordCommand extends MultiverseCommand {
             }
             
             MVWorld mvworld = this.plugin.getMVWorld(world.getName());
-            p.sendMessage(ChatColor.AQUA + "--- World Information ---");
+            // TODO: Convert to fancy stuff
+            
+            p.sendMessage(ChatColor.AQUA + "--- Location Information ---");
             p.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
             p.sendMessage(ChatColor.AQUA + "Alias: " + mvworld.getColoredWorldString());
             p.sendMessage(ChatColor.AQUA + "World Scale: " + ChatColor.WHITE + mvworld.getScaling());

@@ -176,7 +176,7 @@ public class MVTeleport {
     public boolean safelyTeleport(Entity e, Location l) {
         if (this.bs.playerCanSpawnHereSafely(l)) {
             e.teleport(l);
-            //this.plugin.log(Level.WARNING, "The first location you gave me was safe.");
+            this.plugin.log(Level.WARNING, "The first location you gave me was safe.");
             return true;
         }
         if(e instanceof Minecart) {
@@ -198,7 +198,7 @@ public class MVTeleport {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
             }
             e.teleport(safeLocation);
-            //this.plugin.log(Level.WARNING, "Had to look for a bit, but I found a safe place for ya!");
+            this.plugin.log(Level.WARNING, "Had to look for a bit, but I found a safe place for ya!");
             return true;
         }
         if (e instanceof Player) {

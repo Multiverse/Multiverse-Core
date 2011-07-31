@@ -10,18 +10,45 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.FancyColorScheme;
+import com.onarandombox.utils.FancyHeader;
+import com.onarandombox.utils.FancyMessage;
+import com.onarandombox.utils.FancyText;
 
 public class InfoCommand extends MultiverseCommand {
+
+    private static final int CMDS_PER_PAGE = 9;
+    private List<String> monsterNames = new ArrayList<String>();
+    private List<String> animalNames = new ArrayList<String>();
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("World Information");
-        this.setCommandUsage("/mv info" + ChatColor.GOLD + " [WORLD]");
+        this.setCommandUsage("/mv info" + ChatColor.GOLD + "[PAGE] [WORLD]");
         this.setArgRange(0, 1);
         this.addKey("mvinfo");
         this.addKey("mvi");
         this.addKey("mv info");
         this.setPermission("multiverse.core.info", "Returns detailed information on the world.", PermissionDefault.OP);
+        this.generateNames();
+    }
+
+    private void generateNames() {
+        monsterNames.add("Wolf");
+        monsterNames.add("Creeper");
+        monsterNames.add("Skeleton");
+        monsterNames.add("Spider");
+        monsterNames.add("Slime");
+        monsterNames.add("Spider Jockey");
+        monsterNames.add("Ghast");
+        monsterNames.add("Zombie");
+        monsterNames.add("Zombie Pigman");
+
+        animalNames.add("Pig");
+        animalNames.add("Sheep");
+        animalNames.add("Cow");
+        animalNames.add("Chicken");
+        animalNames.add("Squid");
     }
 
     @Override
@@ -37,16 +64,14 @@ public class InfoCommand extends MultiverseCommand {
             worldName = args.get(0);
         }
         if (this.plugin.isMVWorld(worldName)) {
-            for (String s : buildEntireCommand(this.plugin.getMVWorld(worldName))) {
-                sender.sendMessage(s);
-            }
+            showPage(1, sender, this.buildEntireCommand(this.plugin.getMVWorld(worldName)));
         } else if (this.plugin.getServer().getWorld(worldName) != null) {
             sender.sendMessage("That world exists, but multiverse does not know about it!");
             sender.sendMessage("You can import it with" + ChatColor.AQUA + "/mv import " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
             sender.sendMessage("For available environments type " + ChatColor.GREEN + "/mv env");
         }
         // Leaving this in so we can have a laugh about it.
-        
+
         // else {
         // sender.sendMessage("That world does not exist!");
         // sender.sendMessage("You can create it with" + ChatColor.AQUA + "/mv create " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
@@ -54,68 +79,80 @@ public class InfoCommand extends MultiverseCommand {
         // }
     }
 
-    private List<String> buildEntireCommand(MVWorld world) {
-        List<String> page = new ArrayList<String>();
+    private List<FancyText> buildEntireCommand(MVWorld world) {
+        List<FancyText> message = new ArrayList<FancyText>();
         // World Name: 1
-        page.add("World: " + world.getName());
+        FancyColorScheme colors = new FancyColorScheme(ChatColor.AQUA, ChatColor.AQUA, ChatColor.GOLD, ChatColor.WHITE);
+        message.add(new FancyHeader("General Info", colors));
+        message.add(new FancyMessage("World Name: ", world.getName(), colors));
+        message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
+        message.add(new FancyMessage("World Scale: ", world.getScaling().toString(), colors));
+        message.add(new FancyHeader("PVP Settings", colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.getPvp().toString(), colors));
+        message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getPVP() + "", colors));
+        message.add(new FancyMessage("Fake PVP Enabled: ", world.getFakePVP() + "", colors));
+        // Next is a blank
+        message.add(new FancyMessage(" ", "", colors));
+        message.add(new FancyMessage(ChatColor.DARK_PURPLE + "X more pages", "", colors));
 
-        // World Scale: 1
-        page.add("World Scale: " + world.getScaling());
+        message.add(new FancyHeader("Monster Settings", colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.allowMonsterSpawning().toString(), colors));
+        message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowMonsters() + "", colors));
+        boolean warnings = false;
+        if (MultiverseCore.MobsDisabledInDefaultWorld) {
+            message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Monsters WILL NOT SPAWN IN THIS WORLD.", colors));
+            message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Check your server log for more details.", colors));
+        }
+        if (world.getMonsterList().size() > 0) {
+            if (world.allowMonsterSpawning()) {
+                message.add(new FancyMessage("Monsters That" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
+            } else {
+                message.add(new FancyMessage("Monsters That" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getMonsterList()), colors));
+            }
+        } else {
+            message.add(new FancyMessage("Monsters That CAN spawn: ", world.allowMonsterSpawning() ? "ALL" : "NONE", colors));
+        }
 
-        // PVP: 1
-        page.add("PVP (MV): " + world.getPvp());
-        page.add("PVP: " + world.getCBWorld().getPVP());
-        page.add("Fake PVP: " + world.getFakePVP());
-        page.add("Animals (MV): " + world.allowAnimalSpawning());
-        page.add("Animals: " + world.getCBWorld().getAllowAnimals());
-        page.add("Monsters (MV): " + world.allowMonsterSpawning());
-        page.add("Monsters: " + world.getCBWorld().getAllowMonsters());
-        page.add("Respawn to: " + world.getRespawnToWorld());
+        return message;
+    }
 
-        // This feature is not mission critical and I am spending too much time on it...
-        // Stopping work on it for now --FF 20110623
-        // // Animal Spawning: X
-        // sb.append("Animals can spawn: ");
-        // sb.append(world.animals?"Yes":"No");
-        // sb.append("\n");
-        // if (!world.animalList.isEmpty()) {
-        // sb.append("Except: \n");
-        // for (String s : world.animalList) {
-        // sb.append(" - " + s + "\n");
-        // }
-        // }
-        //
-        // // Monster Spawning
-        // sb.append("Monsters can spawn: ");
-        // sb.append(world.monsters?"Yes":"No");
-        // sb.append("\n");
-        // if (!world.monsterList.isEmpty()) {
-        // sb.append("Except: \n");
-        // for (String s : world.monsterList) {
-        // sb.append(" - " + s + "\n");
-        // }
-        // }
-        //
-        // // Whitelist
-        // if (!world.playerWhitelist.isEmpty()) {
-        // sb.append("Whitelisted Players: \n");
-        // for (String s : world.playerWhitelist) {
-        // if (!s.matches("[gG]:.+")) {
-        // sb.append(" - " + s + "\n");
-        // }
-        // }
-        // sb.append("Whitelisted Groups: \n");
-        // for (String s : world.playerWhitelist) {
-        // if (s.matches("[gG]:")) {
-        // sb.append(" - " + s.split("[g]:")[1] + "\n");
-        // }
-        // }
-        // }
-        return page;
+    private String toCommaSeperated(List<String> list) {
+        String result = list.get(0);
+
+        for (int i = 1; i < list.size() - 1; i++) {
+            result += ", " + list.get(i);
+        }
+        result += " and " + list.get(list.size() - 1);
+        return result;
     }
 
     protected ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
+    }
+
+    private void showPage(int page, CommandSender sender, List<FancyText> messages) {
+        int start = (sender instanceof Player) ? (page - 1) * CMDS_PER_PAGE : 0;
+        int end = (sender instanceof Player) ? start + CMDS_PER_PAGE : messages.size();
+        boolean altColor = false;
+        for (int i = start; i < end; i++) {
+            // For consistancy, print some extra lines if it's a player:
+            if (i < messages.size()) {
+
+                if (messages.get(i) instanceof FancyMessage) {
+                    FancyMessage text = (FancyMessage) messages.get(i);
+                    text.setAltColor(altColor);
+                    altColor = !altColor;
+                    sender.sendMessage(text.getFancyText());
+                } else {
+                    FancyText text = messages.get(i);
+                    sender.sendMessage(text.getFancyText());
+                    altColor = false;
+                }
+
+            } else if (sender instanceof Player) {
+                sender.sendMessage(" ");
+            }
+        }
     }
 
 }

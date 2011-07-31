@@ -75,6 +75,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");
     private static DebugLog debugLog;
+    public static boolean MobsDisabledInDefaultWorld = false;
 
     // Debug Mode
     private boolean debug;
@@ -229,6 +230,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      */
     private void registerCommands() {
         // Intro Commands
+        this.commandHandler.registerCommand(new HelpCommand(this));
         this.commandHandler.registerCommand(new VersionCommand(this));
         this.commandHandler.registerCommand(new ListCommand(this));
         this.commandHandler.registerCommand(new InfoCommand(this));
@@ -246,17 +248,17 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.commandHandler.registerCommand(new DeleteCommand(this));
         this.commandHandler.registerCommand(new ConfirmCommand(this));
         // Modification commands
+        this.commandHandler.registerCommand(new ModifyCommand(this));
         this.commandHandler.registerCommand(new PurgeCommand(this));
         this.commandHandler.registerCommand(new ModifyAddCommand(this));
         this.commandHandler.registerCommand(new ModifySetCommand(this));
         this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
         this.commandHandler.registerCommand(new ModifyClearCommand(this));
-        // This modify MUST go last.
-        this.commandHandler.registerCommand(new ModifyCommand(this));
+        
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new SleepCommand(this));
-        this.commandHandler.registerCommand(new HelpCommand(this));
+        
     }
 
     /**
@@ -750,6 +752,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
                     this.log(Level.SEVERE, "Monster spawning has been DISABLED.");
                     this.log(Level.SEVERE, "In order to let Multiverse fully control your worlds:");
                     this.log(Level.SEVERE, "Please set 'spawn-monsters=true' in your server.properties file!");
+                    MultiverseCore.MobsDisabledInDefaultWorld = true;
                 }
             }
         } catch (IOException e) {

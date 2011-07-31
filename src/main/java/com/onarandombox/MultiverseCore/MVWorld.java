@@ -142,10 +142,6 @@ public class MVWorld {
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
         }
-        // The following 3 lines will add some sample data to new worlds created.
-        // if (config.getIntList("worlds." + name + ".blockBlacklist", new ArrayList<Integer>()).size() == 0) {
-        // addSampleData();
-        // }
     }
 
     private void addToUpperLists(Permission permission) {

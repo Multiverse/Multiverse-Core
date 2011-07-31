@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,10 +26,6 @@ public class TeleportCommand extends MultiverseCommand {
         super(plugin);
         Permission self = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
         Permission other = new Permission("multiverse.core.tp.other", "Allows you to teleport others to other worlds.", PermissionDefault.OP);
-        Map<String, Boolean> children = new HashMap<String, Boolean>();
-        children.put(self.getName(), true);
-        children.put(other.getName(), true);
-        Permission tp = new Permission("multiverse.core.tp", "Allows teleportation to other worlds.", PermissionDefault.OP, children);
 
         this.setName("Teleport");
         this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
@@ -37,13 +34,13 @@ public class TeleportCommand extends MultiverseCommand {
         this.addKey("mv tp");
         this.playerTeleporter = new MVTeleport(this.plugin);
         // setPermission in some for is REQUIRED
-        this.addAdditonalPermission(self);
+        this.setPermission(self);
         this.addAdditonalPermission(other);
-        this.setPermission(tp);
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        this.plugin.log(Level.WARNING, "running MVTP");
         // Check if the command was sent from a Player.
         Player teleporter = null;
         Player teleportee = null;
@@ -119,5 +116,6 @@ public class TeleportCommand extends MultiverseCommand {
             String message = ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " did not teleport " + ChatColor.AQUA + player + ChatColor.WHITE + " to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
             this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, message, "Would you like to try anyway?", "", "", 15);
         }
+        this.plugin.log(Level.WARNING, "Done with MVTP");
     }
 }
