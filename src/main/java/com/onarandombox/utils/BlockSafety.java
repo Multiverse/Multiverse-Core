@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Vehicle;
 
 public class BlockSafety {
     /**
@@ -15,7 +17,7 @@ public class BlockSafety {
      * @param z
      * @return
      */
-    private boolean blockIsAboveAir(Location l) {
+    public boolean isBlockAboveAir(Location l) {
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         downOne.setY(downOne.getY() - 1);
         return (downOne.getBlock().getType() == Material.AIR);
@@ -54,8 +56,8 @@ public class BlockSafety {
             return false;
         }
 
-        if (blockIsAboveAir(actual)) {
-            return false;
+        if (isBlockAboveAir(actual)) {
+            return this.hasTwoBlocksofWaterBelow(actual);
         }
         return true;
     }
@@ -142,6 +144,45 @@ public class BlockSafety {
         System.out.print("               " + actual);
         System.out.print("Location Down: " + downOne.getBlock().getType());
         System.out.print("               " + downOne);
+    }
+    /**
+     * Checks recursively below location L for 2 blocks of water
+     * @param l
+     * @return
+     */
+    public boolean hasTwoBlocksofWaterBelow(Location l) {
+        if(l.getBlockY() < 0) {
+            return false;
+        }
+        Location oneBelow = l.clone();
+        oneBelow.subtract(0, 1, 0);
+        if(oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+            Location twoBelow = oneBelow.clone();
+            twoBelow.subtract(0, 1, 0);
+            return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
+        }
+        if(oneBelow.getBlock().getType() != Material.AIR) {
+            return false;
+        }
+        return hasTwoBlocksofWaterBelow(oneBelow);
+    }
+    
+    public boolean canSpawnCartSafely(Minecart cart) {
+        
+        if(this.isBlockAboveAir(cart.getLocation())) {
+            return true;
+        }
+        if(this.isEntitiyOnTrack(cart, LocationManipulation.getNextBlock(cart))) {
+           return true; 
+        }
+        return false;
+    }
+    
+    public boolean canSpawnVehicleSafely(Vehicle vehicle) {
+        if(this.isBlockAboveAir(vehicle.getLocation())) {
+            return true;
+        }
+        return false;
     }
 
 }

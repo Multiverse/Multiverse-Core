@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 public class LocationManipulation {
@@ -117,7 +118,7 @@ public class LocationManipulation {
     // X, Y, Z
     // -W/+E,0, -N/+S
     public static Vector getTranslatedVector(Vector v, String direction) {
-        if(direction == null) {
+        if (direction == null) {
             return v;
         }
         float speed = getSpeed(v);
@@ -141,5 +142,19 @@ public class LocationManipulation {
             return new Vector(-1 * halfSpeed, 0, -1 * halfSpeed);
         }
         return v;
+    }
+
+    /**
+     * Returns the next Location that an entity is traveling at
+     * 
+     * @param v
+     * @return
+     */
+    public static Location getNextBlock(Vehicle v) {
+        Vector vector = v.getVelocity();
+        Location location = v.getLocation();
+        int x = vector.getX() < 0 ? vector.getX() == 0 ? 0 : -1 : 1;
+        int z = vector.getZ() < 0 ? vector.getZ() == 0 ? 0 : -1 : 1;
+        return location.add(x, 0, z);
     }
 }

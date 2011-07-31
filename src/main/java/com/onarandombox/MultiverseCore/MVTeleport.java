@@ -4,7 +4,9 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 
 import com.onarandombox.utils.BlockSafety;
 
@@ -178,6 +180,18 @@ public class MVTeleport {
             e.teleport(l);
             // System.out.print("The first location you gave me was safe!");
             return true;
+        }
+        if(e instanceof Minecart) {
+            Minecart m = (Minecart)e;
+            if(!this.bs.canSpawnCartSafely(m)) {
+                return false;
+            }
+        }
+        else if(e instanceof Vehicle) {
+            Vehicle v = (Vehicle)e;
+            if(!this.bs.canSpawnVehicleSafely(v)) {
+                return false;
+            }
         }
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
 
-public class MultiverseCommand extends Command {
+public abstract class MultiverseCommand extends Command {
 
     protected MultiverseCore plugin;
     public MultiverseCommand(MultiverseCore plugin) {
