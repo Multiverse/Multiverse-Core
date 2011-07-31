@@ -18,7 +18,7 @@ public class ImportCommand extends MultiverseCommand {
         this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]");
         this.setArgRange(2, 3);
         this.addKey("mvimport");
-        this.addKey("mvi");
+        this.addKey("mvim");
         this.addKey("mv import");
         this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.OP);
     }

@@ -94,18 +94,17 @@ public class MVPermissions implements PermissionsInterface {
         Player player = (Player) sender;
 
         boolean opFallback = this.plugin.getConfig().getBoolean("opfallback", true);
-        this.plugin.log(Level.WARNING, "Checking to see if person has " + node);
         if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
-            this.plugin.log(Level.WARNING, "Allowed by P3/P2 ");
+            //this.plugin.log(Level.WARNING, "Allowed by P3/P2 ");
             return true;
         } else if (sender.hasPermission(node)) {
             // If Now check the bukkit permissions
-            this.plugin.log(Level.WARNING, "Allowed by BukkitPerms");
+            //this.plugin.log(Level.WARNING, "Allowed by BukkitPerms");
             return true;
         } else if (player.isOp() && opFallback) {
             // If Player is Op we always let them use it if they have the fallback enabled!
-            this.plugin.log(Level.WARNING, "Allowed by OP");
+            //this.plugin.log(Level.WARNING, "Allowed by OP");
             return true;
         }
         

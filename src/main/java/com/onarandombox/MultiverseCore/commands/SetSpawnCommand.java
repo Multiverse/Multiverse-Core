@@ -20,6 +20,8 @@ public class SetSpawnCommand extends MultiverseCommand {
         this.addKey("mvsetspawn");
         this.addKey("mvss");
         this.addKey("mv set spawn");
+        this.addKey("mv setspawn");
+        this.addKey("mvset spawn");
         this.setPermission("multiverse.core.spawn.set", "Sets the spawn for the current world.", PermissionDefault.OP);
     }
 

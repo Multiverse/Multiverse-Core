@@ -21,6 +21,10 @@ public class ModifyRemoveCommand extends MultiverseCommand {
         this.addKey("mvmremove");
         this.addKey("mv modify remove");
         this.addKey("mvmodify remove");
+        this.addKey("mvm delete");
+        this.addKey("mvmdelete");
+        this.addKey("mv modify delete");
+        this.addKey("mvmodify delete");
         this.setPermission("multiverse.core.modify.remove", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
     }
 

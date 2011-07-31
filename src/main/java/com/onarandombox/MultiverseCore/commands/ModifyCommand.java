@@ -33,6 +33,7 @@ public class ModifyCommand extends MultiverseCommand {
         this.setArgRange(2, 3);
         this.addKey("mvm");
         this.addKey("mvmodify");
+        this.addKey("mv modify");
         Map<String, Boolean> children = new HashMap<String, Boolean>();
         children.put("multiverse.core.modify.add", true);
         children.put("multiverse.core.modify.modify", true);

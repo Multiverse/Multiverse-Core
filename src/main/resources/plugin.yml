@@ -93,6 +93,9 @@ commands:
   mvsetspawn:
     description: Set the spawn area for a particular world
     usage: /<command> -- Sets the spawn area of the current world to your location.
+  mvset:
+    description: Set the spawn area for a particular world
+    usage: /<command> -- Sets the spawn area of the current world to your location.
   mvss:
     description: Set the spawn area for a particular world
     usage: /<command> -- Sets the spawn area of the current world to your location.

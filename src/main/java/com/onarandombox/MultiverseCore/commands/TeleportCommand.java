@@ -40,7 +40,6 @@ public class TeleportCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        this.plugin.log(Level.WARNING, "running MVTP");
         // Check if the command was sent from a Player.
         Player teleporter = null;
         Player teleportee = null;
@@ -116,6 +115,5 @@ public class TeleportCommand extends MultiverseCommand {
             String message = ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " did not teleport " + ChatColor.AQUA + player + ChatColor.WHITE + " to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
             this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, message, "Would you like to try anyway?", "", "", 15);
         }
-        this.plugin.log(Level.WARNING, "Done with MVTP");
     }
 }
