@@ -1,6 +1,11 @@
 package com.onarandombox.MultiverseCore;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -126,7 +131,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     public void onEnable() {
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
-
+        this.checkServerProps();
         // Setup all the Events the plugin needs to Monitor.
         this.initializeDestinationFactory();
         this.registerEvents();
@@ -730,7 +735,26 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     public void teleportPlayer(Player p, Location l) {
         p.teleport(l);
     }
-
-    public void displayHelp(CommandSender sender, List<String> args) {
+    
+    private void checkServerProps() {
+        File serverFolder = new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
+        File serverProperties = new File(serverFolder.getAbsolutePath() + File.separator + "server.properties");
+        try {
+            FileInputStream fileStream = new FileInputStream(serverProperties);
+            DataInputStream in = new DataInputStream(fileStream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String propLine;
+            while ((propLine = br.readLine()) != null) {
+                // Print the content on the console
+                if (propLine.matches(".*spawn-monsters.*") && !propLine.matches(".*spawn-monsters\\s*=\\s*true.*")) {
+                    this.log(Level.SEVERE, "Monster spawning has been DISABLED.");
+                    this.log(Level.SEVERE, "In order to let Multiverse fully control your worlds:");
+                    this.log(Level.SEVERE, "Please set 'spawn-monsters=true' in your server.properties file!");
+                }
+            }
+        } catch (IOException e) {
+            // This should never happen...
+            this.log(Level.SEVERE, e.getMessage());
+        }
     }
 }
