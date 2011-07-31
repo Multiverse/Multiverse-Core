@@ -16,8 +16,6 @@ public abstract class MultiverseCommand extends Command {
     }
 
     @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        
-    }
+    public abstract void runCommand(CommandSender sender, List<String> args);
 
 }

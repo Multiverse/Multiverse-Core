@@ -44,7 +44,9 @@ public class WorldDestination extends Destination {
         if (this.yaw >= 0) {
             // Only modify the yaw if its set. 
             spawnLoc.setYaw(this.yaw);
+            
         }
+        spawnLoc.add(.5, 0, .5);
         return spawnLoc;
     }
 

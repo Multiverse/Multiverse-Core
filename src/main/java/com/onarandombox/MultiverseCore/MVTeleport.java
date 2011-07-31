@@ -175,8 +175,6 @@ public class MVTeleport {
 
     public boolean safelyTeleport(Entity e, Location l) {
         if (this.bs.playerCanSpawnHereSafely(l)) {
-            l.setX(l.getBlockX() + .5);
-            l.setZ(l.getBlockZ() + .5);
             e.teleport(l);
             // System.out.print("The first location you gave me was safe!");
             return true;
