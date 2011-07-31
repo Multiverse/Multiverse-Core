@@ -80,23 +80,24 @@ public class LocationManipulation {
      * @return
      */
     public String getDirection(Location location) {
-        int r = (int) Math.abs((location.getYaw() - 90) % 360);
+        double r = (location.getYaw() % 360) + 180;
+        // Remember, these numbers are every 45 degrees with a 22.5 offset, to detect boundaries.
         String dir;
-        if (r < 23)
+        if (r < 22.5)
             dir = "N";
-        else if (r < 68)
+        else if (r < 67.5)
             dir = "NE";
-        else if (r < 113)
+        else if (r < 112.5)
             dir = "E";
-        else if (r < 158)
+        else if (r < 157.5)
             dir = "SE";
-        else if (r < 203)
+        else if (r < 202.5)
             dir = "S";
-        else if (r < 248)
+        else if (r < 247.5)
             dir = "SW";
-        else if (r < 293)
+        else if (r < 292.5)
             dir = "W";
-        else if (r < 338)
+        else if (r < 337.5)
             dir = "NW";
         else
             dir = "N";

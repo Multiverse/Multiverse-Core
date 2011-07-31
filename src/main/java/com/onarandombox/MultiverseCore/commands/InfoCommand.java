@@ -40,7 +40,18 @@ public class InfoCommand extends MultiverseCommand {
             for (String s : buildEntireCommand(this.plugin.getMVWorld(worldName))) {
                 sender.sendMessage(s);
             }
+        } else if (this.plugin.getServer().getWorld(worldName) != null) {
+            sender.sendMessage("That world exists, but multiverse does not know about it!");
+            sender.sendMessage("You can import it with" + ChatColor.AQUA + "/mv import " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
+            sender.sendMessage("For available environments type " + ChatColor.GREEN + "/mv env");
         }
+        // Leaving this in so we can have a laugh about it.
+        
+        // else {
+        // sender.sendMessage("That world does not exist!");
+        // sender.sendMessage("You can create it with" + ChatColor.AQUA + "/mv create " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
+        // sender.sendMessage("For available environments type " + ChatColor.GREEN + "/mv env");
+        // }
     }
 
     private List<String> buildEntireCommand(MVWorld world) {

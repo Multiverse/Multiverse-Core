@@ -163,3 +163,7 @@ commands:
     description: Prints out version invo.
     usage: |
             /<command>
+  mvco:
+    description: Prints out version invo.
+    usage: |
+            /<command>
