@@ -730,4 +730,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     public void teleportPlayer(Player p, Location l) {
         p.teleport(l);
     }
+
+    public void displayHelp(CommandSender sender, List<String> args) {
+    }
 }
