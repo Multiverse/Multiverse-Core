@@ -12,7 +12,11 @@ public class FancyHeader implements FancyText {
 
     @Override
     public String getFancyText() {
-        return colors.getHeader() + "--- " + text + " ---";
+        return colors.getHeader() + "--- " + text + colors.getHeader() + " ---";
+    }
+
+    public void appendText(String string) {
+        this.text += string;
     }
 
 }
