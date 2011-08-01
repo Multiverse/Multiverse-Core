@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.event.MVVersionRequestEvent;
 
 public class VersionCommand extends MultiverseCommand {
 
@@ -43,5 +44,6 @@ public class VersionCommand extends MultiverseCommand {
         this.plugin.log(Level.INFO, "fakepvp: " + this.plugin.getConfig().getString("fakepvp", "NOT SET"));
         this.plugin.log(Level.INFO, "fakepvp: " + this.plugin.getConfig().getString("fakepvp", "NOT SET"));
         this.plugin.log(Level.INFO, "Special Code: FRN001");
+        this.plugin.getServer().getPluginManager().callEvent(new MVVersionRequestEvent());
     }
 }

@@ -86,7 +86,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     private final String tag = "[Multiverse-Core]";
 
     // Multiverse Permissions Handler
-    public MVPermissions ph;
+    private MVPermissions ph;
 
     // Configurations
     private Configuration configMV = null;

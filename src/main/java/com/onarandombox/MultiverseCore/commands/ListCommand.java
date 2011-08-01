@@ -34,7 +34,7 @@ public class ListCommand extends MultiverseCommand {
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
         for (MVWorld world : this.plugin.getMVWorlds()) {
 
-            if (p != null && (!this.plugin.ph.canEnterWorld(p, world))) {
+            if (p != null && (!this.plugin.getPermissions().canEnterWorld(p, world))) {
                 continue;
             }
 

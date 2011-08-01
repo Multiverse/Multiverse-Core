@@ -28,7 +28,7 @@ public class MVPluginListener extends ServerListener {
          * Check to see if Permissions was just enabled
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-            this.plugin.ph.setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
+            this.plugin.getPermissions().setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
             this.plugin.log(Level.INFO, "- Attached to Permissions");
         }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
@@ -53,7 +53,7 @@ public class MVPluginListener extends ServerListener {
          */
         if (event.getPlugin().getDescription().getName().equals("Permissions")) {
             this.plugin.log(Level.INFO, "Permissions disabled");
-            this.plugin.ph.setPermissions(null);
+            this.plugin.getPermissions().setPermissions(null);
         }
         // TODO: Disable econ when it disables.
     }
