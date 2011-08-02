@@ -3,7 +3,6 @@ package com.onarandombox.MultiverseCore.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -90,9 +89,7 @@ public class HelpCommand extends MultiverseCommand {
 
     private List<Command> getFilteredCommands(List<Command> availableCommands, String filter) {
         List<Command> filtered = new ArrayList<Command>();
-        Pattern regex = Pattern.compile("regex", Pattern.CASE_INSENSITIVE);
-        
-        
+
         for (Command c : availableCommands) {
             if (stitchThisString(c.getKeys()).matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);

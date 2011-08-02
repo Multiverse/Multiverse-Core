@@ -65,9 +65,9 @@ public class ModifyRemoveCommand extends MultiverseCommand {
             return;
         }
         if (world.removeFromList(property, value)) {
-            sender.sendMessage(value + " was removed from " + property);
+            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE + " was " + ChatColor.RED + "removed from " + ChatColor.GREEN + property);
         } else {
-            sender.sendMessage(value + " could not be removed from " + property);
+            sender.sendMessage(ChatColor.RED + "There was an error removing " + ChatColor.GRAY + value + ChatColor.WHITE + " from " + ChatColor.GOLD + property);
         }
     }
 

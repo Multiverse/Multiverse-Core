@@ -63,7 +63,7 @@ public class ModifySetCommand extends MultiverseCommand {
         if ((property.equalsIgnoreCase("aliascolor") || property.equalsIgnoreCase("color")) && !world.isValidAliasColor(value)) {
             sender.sendMessage(value + " is not a valid color. Please see our Github Wiki for the complete color list.");
         } else if (world.setVariable(property, value)) {
-            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + "Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
+            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
         } else {
             sender.sendMessage(ChatColor.RED + "There was an error setting " + ChatColor.GRAY + property);
         }
