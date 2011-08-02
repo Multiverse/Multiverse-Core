@@ -170,3 +170,15 @@ commands:
     description: Prints out version invo.
     usage: |
             /<command>
+  mvh:
+    description: Prints out version invo.
+    usage: |
+            /<command>
+  mvsearch:
+    description: Prints out version invo.
+    usage: |
+            /<command>
+  mvhelp:
+    description: Prints out version invo.
+    usage: |
+            /<command>
