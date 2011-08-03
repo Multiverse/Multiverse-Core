@@ -91,7 +91,7 @@ public class HelpCommand extends MultiverseCommand {
         List<Command> filtered = new ArrayList<Command>();
 
         for (Command c : availableCommands) {
-            if (stitchThisString(c.getKeys()).matches("(?i).*" + filter + ".*")) {
+            if (stitchThisString(c.getKeyStrings()).matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
             } else if (c.getCommandName().matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
