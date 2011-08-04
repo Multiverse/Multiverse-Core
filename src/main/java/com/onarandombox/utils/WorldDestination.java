@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
-public class WorldDestination extends Destination {
+public class WorldDestination implements MVDestination {
     private boolean isValid;
     private MVWorld world;
     float yaw = -1;
@@ -97,6 +97,11 @@ public class WorldDestination extends Destination {
             return this.world.getCBWorld().getName() + ":"+this.direction;            
         }
         return this.world.getCBWorld().getName();
+    }
+
+    @Override
+    public String getRequiredPermission() {
+        return this.world.getName();
     }
 
 }

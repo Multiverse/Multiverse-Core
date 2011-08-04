@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class InvalidDestination extends Destination {
+public class InvalidDestination implements MVDestination {
 
     @Override
     public String getIdentifer() {
@@ -44,6 +44,11 @@ public class InvalidDestination extends Destination {
     @Override
     public String toString() {
         return "i:Invalid Destination";
+    }
+
+    @Override
+    public String getRequiredPermission() {
+        return null;
     }
 
 }

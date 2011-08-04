@@ -7,23 +7,23 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class DestinationFactory {
     private MultiverseCore plugin;
-    private Map<String, Class<? extends Destination>> destList;
+    private Map<String, Class<? extends MVDestination>> destList;
 
     public DestinationFactory(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.destList = new HashMap<String, Class<? extends Destination>>();
+        this.destList = new HashMap<String, Class<? extends MVDestination>>();
     }
 
-    public Destination getDestination(String dest) {
+    public MVDestination getDestination(String dest) {
         String idenChar = "";
         if(dest.split(":").length > 1) {
             idenChar = dest.substring(0, 1);
         }
         
         if (this.destList.containsKey(idenChar)) {
-            Class<? extends Destination> myClass = this.destList.get(idenChar);
+            Class<? extends MVDestination> myClass = this.destList.get(idenChar);
             try {
-                Destination mydest = myClass.newInstance();
+                MVDestination mydest = myClass.newInstance();
                 if(!mydest.isThisType((MultiverseCore) this.plugin, dest)) {
                     return new InvalidDestination();
                 }
@@ -36,7 +36,7 @@ public class DestinationFactory {
         return new InvalidDestination();
     }
 
-    public boolean registerDestinationType(Class<? extends Destination> c, String identifier) {
+    public boolean registerDestinationType(Class<? extends MVDestination> c, String identifier) {
         if (this.destList.containsKey(identifier)) {
             return false;
         }

@@ -25,7 +25,7 @@ public class DeleteCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         Class<?> paramTypes[] = { String.class };
         List<Object> objectArgs = new ArrayList<Object>(args);
-        //this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs, paramTypes, "World Deleted!", "World was not deleted!");
-        this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "deleteWorld", objectArgs, paramTypes, "Blah", "Blah", "Success", "Fail", 15);
+        this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs, paramTypes, "World Deleted!", "World was not deleted!");
+        //this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "deleteWorld", objectArgs, paramTypes, "Blah", "Blah", "Success", "Fail", 15);
     }
 }

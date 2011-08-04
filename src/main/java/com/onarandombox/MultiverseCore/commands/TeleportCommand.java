@@ -12,7 +12,7 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.Destination;
+import com.onarandombox.utils.MVDestination;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.InvalidDestination;
 
@@ -74,13 +74,13 @@ public class TeleportCommand extends MultiverseCommand {
         }
 
         DestinationFactory df = this.plugin.getDestinationFactory();// .parseDestination(worldName, (MultiverseCore) this.plugin);
-        Destination d = df.getDestination(worldName);
+        MVDestination d = df.getDestination(worldName);
         if (d != null && d instanceof InvalidDestination) {
             sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + worldName);
             return;
         }
 
-        if (teleporter != null && !this.plugin.getPermissions().canEnterLocation(teleporter, d.getLocation())) {
+        if (teleporter != null && !this.plugin.getPermissions().canEnterDestination(teleporter, d)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {

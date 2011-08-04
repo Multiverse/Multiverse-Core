@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+import com.onarandombox.utils.MVDestination;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 
 public class MVPermissions implements PermissionsInterface {
@@ -81,6 +82,20 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, "multiverse.access." + worldName, false);
     }
 
+    public Boolean canEnterDestination(Player p, MVDestination d) {
+        if (d == null || d.getLocation() == null) {
+            return false;
+        }
+        String worldName = d.getLocation().getWorld().getName();
+        if (!this.plugin.isMVWorld(worldName)) {
+            return false;
+        }
+        if(!canEnterLocation(p, d.getLocation())) {
+            return false;
+        }
+        return this.hasPermission(p, d.getRequiredPermission(), false);
+    }
+
     public void setPermissions(PermissionHandler handler) {
         this.permissions = handler;
     }
@@ -90,24 +105,29 @@ public class MVPermissions implements PermissionsInterface {
         if (!(sender instanceof Player)) {
             return true;
         }
+        
+        // NO one can access a null permission (mainly used for destinations):w
+        if(node == null) {
+            return false;
+        }
 
         Player player = (Player) sender;
 
         boolean opFallback = this.plugin.getConfig().getBoolean("opfallback", true);
         if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
-            //this.plugin.log(Level.WARNING, "Allowed by P3/P2 ");
+            // this.plugin.log(Level.WARNING, "Allowed by P3/P2 ");
             return true;
         } else if (sender.hasPermission(node)) {
             // If Now check the bukkit permissions
-            //this.plugin.log(Level.WARNING, "Allowed by BukkitPerms");
+            // this.plugin.log(Level.WARNING, "Allowed by BukkitPerms");
             return true;
         } else if (player.isOp() && opFallback) {
             // If Player is Op we always let them use it if they have the fallback enabled!
-            //this.plugin.log(Level.WARNING, "Allowed by OP");
+            // this.plugin.log(Level.WARNING, "Allowed by OP");
             return true;
         }
-        
+
         // If the Player doesn't have Permissions and isn't an Op then
         // we return true if OP is not required, otherwise we return false
         // This allows us to act as a default permission guidance

@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
-public class ExactDestination extends Destination {
+public class ExactDestination implements MVDestination {
     private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
     private boolean isValid;
     private Location location;
@@ -36,7 +36,7 @@ public class ExactDestination extends Destination {
         }
 
         // If it's not a MV world
-        if (!((MultiverseCore)plugin).isMVWorld(parsed.get(1))) {
+        if (!((MultiverseCore) plugin).isMVWorld(parsed.get(1))) {
             return false;
         }
 
@@ -92,11 +92,11 @@ public class ExactDestination extends Destination {
             return;
         }
 
-        if (!((MultiverseCore)plugin).isMVWorld(parsed.get(1))) {
+        if (!((MultiverseCore) plugin).isMVWorld(parsed.get(1))) {
             this.isValid = false;
             return;
         }
-        this.location = new Location(((MultiverseCore)plugin).getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
+        this.location = new Location(((MultiverseCore) plugin).getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
 
         if (!parsed.get(2).matches(this.coordRegex)) {
             this.isValid = false;
@@ -156,5 +156,10 @@ public class ExactDestination extends Destination {
             return "e:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY() + "," + location.getZ() + ":    " + location.getX() + ":" + location.getX();
         }
         return "i:Invalid Destination";
+    }
+
+    @Override
+    public String getRequiredPermission() {
+        return "multiverse.access." + this.location.getWorld().getName();
     }
 }
