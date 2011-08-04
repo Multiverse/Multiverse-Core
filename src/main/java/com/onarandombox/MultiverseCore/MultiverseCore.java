@@ -464,9 +464,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         try {
             File serverFolder = new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
             File worldFile = new File(serverFolder.getAbsolutePath() + File.separator + name);
-            System.out.print("File: " + worldFile.getAbsolutePath());
-            System.out.print("File: " + worldFile.isDirectory());
-            System.out.print("File: " + Arrays.toString(worldFile.listFiles()));
             if (name.equalsIgnoreCase("plugins")) {
                 this.log(Level.SEVERE, "Really? Are you high? This would delete your plugins folder. Luckily the MV2 devs are crazy smart or you're server would be ended...");
                 return false;
