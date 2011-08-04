@@ -254,11 +254,11 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.commandHandler.registerCommand(new ModifySetCommand(this));
         this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
         this.commandHandler.registerCommand(new ModifyClearCommand(this));
-        
+
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new SleepCommand(this));
-        
+
     }
 
     /**
@@ -424,6 +424,11 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
             this.log(Level.INFO, "World " + name + " was unloaded from memory.");
             this.unloadWorld(name, true);
             return true;
+        } else if(this.getServer().getWorld(name) != null) {
+            this.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's still loaded in memory.");
+            this.log(Level.WARNING, "To be on the safe side, you should import it then try unloading again...");
+        } else {
+            this.log(Level.INFO, "The world " + name + " was already unloaded/did not exist.");
         }
         return false;
     }
@@ -441,6 +446,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
             this.configWorlds.removeProperty("worlds." + name);
             this.configWorlds.save();
             return true;
+        } else {
+            this.log(Level.INFO, "World " + name + " was already removed from config.yml");
         }
         return false;
     }
@@ -453,15 +460,49 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      */
     public boolean deleteWorld(String name) {
         removeWorldFromConfig(name);
-        if (unloadWorld(name, false)) {
-            boolean deletedWorld = deleteFolder(new File(name));
+        unloadWorld(name, false);
+        try {
+            File serverFolder = new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
+            File worldFile = new File(serverFolder.getAbsolutePath() + File.separator + name);
+            System.out.print("File: " + worldFile.getAbsolutePath());
+            System.out.print("File: " + worldFile.isDirectory());
+            System.out.print("File: " + Arrays.toString(worldFile.listFiles()));
+            if (name.equalsIgnoreCase("plugins")) {
+                this.log(Level.SEVERE, "Really? Are you high? This would delete your plugins folder. Luckily the MV2 devs are crazy smart or you're server would be ended...");
+                return false;
+            } else if (name.toLowerCase().contains("plugins")) {
+                this.log(Level.SEVERE, "I'm sorry, did you mean to type: 'rm plugins" + File.separator + "Essential*'? I could do that for you if you'd like...");
+                return false;
+            } else if (name.contains("..")) {
+                this.log(Level.SEVERE, "Uh yea... No way i'm going to delete a parent directory for you. You can go do 'rm -rf *.*' on your own time...");
+                return false;
+            } else if (name.equals(".")) {
+                this.log(Level.SEVERE, "Why on earth would you want to use Multiverse-Core to delete your Bukkit Server! How many beers have you had tonight... Give the keys to a friend.");
+                return false;
+            } else if (!worldFile.isDirectory()) {
+                this.log(Level.SEVERE, "C'mon man... Really?!?! Multiverse-Core is a great way to get players from A to B, but not to manage your files. To delete this file type:");
+                this.log(Level.SEVERE, "stop");
+                this.log(Level.SEVERE, "rm " + worldFile.getAbsolutePath());
+                return false;
+            }
+            boolean deletedWorld = deleteFolder(worldFile);
             if (deletedWorld)
             {
                 this.log(Level.INFO, "World " + name + " was DELETED.");
+            } else {
+                this.log(Level.SEVERE, "World " + name + " was NOT deleted.");
+                this.log(Level.SEVERE, "Are you sure the folder " + name + " exists?");
+                this.log(Level.SEVERE, "Please check your file permissions on " + name);
             }
             return deletedWorld;
+        } catch (Exception e) {
+            this.log(Level.SEVERE, "Hrm, something didn't go as planned. Here's an exception for ya.");
+            this.log(Level.SEVERE, "You can go politely explain your situation in #multiverse on esper.net");
+            this.log(Level.SEVERE, "But from here, it looks like your folder is oddly named.");
+            this.log(Level.SEVERE, "This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
+            System.out.print(e);
+            return false;
         }
-        return false;
     }
 
     private boolean unloadWorld(String name, boolean safely) {
@@ -471,10 +512,12 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     private void removePlayersFromWorld(String name) {
         World w = this.getServer().getWorld(name);
-        World safeWorld = this.getServer().getWorlds().get(0);
-        List<Player> ps = w.getPlayers();
-        for (Player p : ps) {
-            p.teleport(safeWorld.getSpawnLocation());
+        if (w != null) {
+            World safeWorld = this.getServer().getWorlds().get(0);
+            List<Player> ps = w.getPlayers();
+            for (Player p : ps) {
+                p.teleport(safeWorld.getSpawnLocation());
+            }
         }
     }
 
@@ -737,7 +780,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     public void teleportPlayer(Player p, Location l) {
         p.teleport(l);
     }
-    
+
     private void checkServerProps() {
         File serverFolder = new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
         File serverProperties = new File(serverFolder.getAbsolutePath() + File.separator + "server.properties");
