@@ -91,8 +91,11 @@ public class MVPermissions implements PermissionsInterface {
             return false;
         }
         if(!canEnterLocation(p, d.getLocation())) {
+            System.out.print("Can't enter location");
             return false;
         }
+        System.out.print("Can't enter destination: " + this.hasPermission(p, d.getRequiredPermission(), false));
+        System.out.print("Can't enter destination: " + d.getRequiredPermission());
         return this.hasPermission(p, d.getRequiredPermission(), false);
     }
 
@@ -106,7 +109,7 @@ public class MVPermissions implements PermissionsInterface {
             return true;
         }
         
-        // NO one can access a null permission (mainly used for destinations):w
+        // NO one can access a null permission (mainly used for destinations):w     
         if(node == null) {
             return false;
         }

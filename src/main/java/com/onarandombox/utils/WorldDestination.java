@@ -101,7 +101,7 @@ public class WorldDestination implements MVDestination {
 
     @Override
     public String getRequiredPermission() {
-        return this.world.getName();
+        return "multiverse.access."+this.world.getName();
     }
 
 }
