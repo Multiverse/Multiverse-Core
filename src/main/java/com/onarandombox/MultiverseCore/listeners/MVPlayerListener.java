@@ -40,6 +40,7 @@ public class MVPlayerListener extends PlayerListener {
         }
         // Check whether the Server is set to prefix the chat with the World name. If not we do nothing, if so we need to check if the World has an Alias.
         if (this.plugin.getConfig().getBoolean("worldnameprefix", true)) {
+            this.plugin.getConfig().save();
             String world = event.getPlayer().getWorld().getName();
             String prefix = "";
             // If we're not a MV world, don't do anything

@@ -91,11 +91,8 @@ public class MVPermissions implements PermissionsInterface {
             return false;
         }
         if(!canEnterLocation(p, d.getLocation())) {
-            System.out.print("Can't enter location");
             return false;
         }
-        System.out.print("Can't enter destination: " + this.hasPermission(p, d.getRequiredPermission(), false));
-        System.out.print("Can't enter destination: " + d.getRequiredPermission());
         return this.hasPermission(p, d.getRequiredPermission(), false);
     }
 

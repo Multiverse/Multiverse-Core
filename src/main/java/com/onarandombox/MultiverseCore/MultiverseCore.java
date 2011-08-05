@@ -201,7 +201,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         // Call the defaultConfiguration class to create the config files if they don't already exist.
         new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator);
         new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator);
-
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
         this.configWorlds = new Configuration(new File(getDataFolder(), "worlds.yml"));
