@@ -74,6 +74,8 @@ public class MVWorld {
     private boolean allowAnimals; // Does this World allow Animals to Spawn?
     private boolean allowMonsters; // Does this World allow Monsters to Spawn?
 
+    private boolean keepSpawnInMemory; // Does the World have the spawn loaded all the time?
+
     private Boolean pvp; // Does this World allow PVP?
     private Boolean fakepvp; // Should this world have fakePVP on? (used for PVP zones)
 
@@ -130,6 +132,8 @@ public class MVWorld {
         this.setPrice(config.getDouble("worlds." + this.name + ".entryfee.amount", 0.0));
         this.setCurrency(config.getInt("worlds." + this.name + ".entryfee.currency", -1));
         this.getMobExceptions();
+
+        this.setSpawnInMemory(config.getBoolean("worlds." + this.name + ".keepspawninmemory", true));
 
         this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
         this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
@@ -338,14 +342,22 @@ public class MVWorld {
         if (name.equalsIgnoreCase("pvp")) {
             this.setPvp(value);
         } else if (name.equalsIgnoreCase("animals")) {
-
             this.setAnimals(value);
         } else if (name.equalsIgnoreCase("monsters")) {
             this.setMonsters(value);
+        } else if (name.equalsIgnoreCase("memory") || name.equalsIgnoreCase("spawnmemory")) {
+            this.setSpawnInMemory(value);
         } else {
-            return false;
+                return false;
         }
         return true;
+    }
+
+    private void setSpawnInMemory(boolean value) {
+        this.world.setKeepSpawnInMemory(value);
+        this.keepSpawnInMemory = value;
+        this.config.setProperty("worlds." + this.name + ".keepspawninmemory", value);
+        saveConfig();
     }
 
     private boolean setVariable(String name, double value) {
@@ -363,7 +375,7 @@ public class MVWorld {
 
     /**
      * This is the one people have access to. It'll handle the rest.
-     * 
+     *
      * @param name
      * @param value
      * @return
