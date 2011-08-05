@@ -93,6 +93,8 @@ public class MVWorld {
     private Permission permission;
     private Permission exempt;
 
+    private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
+
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
         this.plugin = instance;
@@ -133,7 +135,9 @@ public class MVWorld {
         this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
         this.translateTempSpawn(config);
 
-        config.save();
+        this.canSave = true;
+        saveConfig();
+
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.TRUE);
         this.exempt = new Permission("multiverse.exempt." + this.getName(), "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
         try {
@@ -244,7 +248,7 @@ public class MVWorld {
             return false;
         }
         this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.blockBlacklist);
-        this.config.save();
+        this.saveConfig();
         return true;
     }
 
@@ -265,7 +269,7 @@ public class MVWorld {
                 this.masterList.get(list).add(value);
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
             }
-            this.config.save();
+            saveConfig();
             return true;
         }
         return false;
@@ -289,7 +293,7 @@ public class MVWorld {
                 this.masterList.get(list).remove(value);
                 this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
             }
-            this.config.save();
+            saveConfig();
             return true;
         }
         return false;
@@ -314,7 +318,7 @@ public class MVWorld {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.add(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
-            this.config.save();
+            saveConfig();
         }
         return false;
 
@@ -324,7 +328,7 @@ public class MVWorld {
         if (list.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.remove(value);
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
-            this.config.save();
+            saveConfig();
         }
         return false;
 
@@ -438,7 +442,7 @@ public class MVWorld {
     public void setAlias(String alias) {
         this.alias = alias;
         this.config.setProperty("worlds." + this.name + ".alias.name", alias);
-        this.config.save();
+        saveConfig();
     }
 
     public Boolean allowAnimalSpawning() {
@@ -450,7 +454,7 @@ public class MVWorld {
         // If animals are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
         this.config.setProperty("worlds." + this.name + ".animals.spawn", animals);
-        this.config.save();
+        saveConfig();
         this.syncMobs();
     }
 
@@ -467,7 +471,7 @@ public class MVWorld {
         // If monsters are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
         this.config.setProperty("worlds." + this.name + ".monsters.spawn", monsters);
-        this.config.save();
+        saveConfig();
         this.syncMobs();
     }
 
@@ -488,7 +492,7 @@ public class MVWorld {
         }
         this.pvp = pvp;
         this.config.setProperty("worlds." + this.name + ".pvp", pvp);
-        this.config.save();
+        saveConfig();
 
     }
 
@@ -511,12 +515,12 @@ public class MVWorld {
         }
         this.scaling = scaling;
         this.config.setProperty("worlds." + this.name + ".scaling", scaling);
-        this.config.save();
+        saveConfig();
     }
 
     /**
      * Sets the chat color from a string.
-     * 
+     *
      * @param aliasColor
      */
     public void setAliasColor(String aliasColor) {
@@ -526,7 +530,7 @@ public class MVWorld {
         }
         this.aliasColor = color.getColor();
         this.config.setProperty("worlds." + this.name + ".alias.color", color.getText());
-        this.config.save();
+        saveConfig();
         return;
     }
 
@@ -542,12 +546,12 @@ public class MVWorld {
         if (property.equalsIgnoreCase("blockblacklist")) {
             this.blockBlacklist.clear();
             this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
-            this.config.save();
+            saveConfig();
             return true;
         } else if (this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
             this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
-            this.config.save();
+            saveConfig();
             return true;
         }
         return false;
@@ -564,7 +568,7 @@ public class MVWorld {
     public void setRespawnToWorld(String respawnToWorld) {
         this.respawnWorld = respawnToWorld;
         this.config.setProperty("worlds." + this.name + ".respawnworld", respawnToWorld);
-        this.config.save();
+        saveConfig();
     }
 
     public Permission getPermission() {
@@ -582,14 +586,14 @@ public class MVWorld {
     private boolean setCurrency(int currency) {
         this.currency = currency;
         config.getInt("worlds." + this.name + ".entryfee.currency", currency);
-        config.save();
+        saveConfig();
         return true;
     }
 
     private boolean setPrice(double price) {
         this.price = price;
         config.setProperty("worlds." + this.name + ".entryfee.amount", price);
-        config.save();
+        saveConfig();
         return true;
     }
 
@@ -599,5 +603,11 @@ public class MVWorld {
 
     public Permission getExempt() {
         return this.exempt;
+    }
+
+    private void saveConfig() {
+        if (this.canSave) {
+            this.config.save();
+        }
     }
 }
