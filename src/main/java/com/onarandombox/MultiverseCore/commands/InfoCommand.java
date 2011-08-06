@@ -138,12 +138,12 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowAnimals() + "", colors));
         if (world.getMonsterList().size() > 0) {
             if (world.allowMonsterSpawning()) {
-                message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
+                message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getAnimalList()), colors));
             } else {
-                message.add(new FancyMessage("Animals that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getMonsterList()), colors));
+                message.add(new FancyMessage("Animals that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getAnimalList()), colors));
             }
         } else {
-            message.add(new FancyMessage("Animals that CAN spawn: ", world.allowMonsterSpawning() ? "ALL" : "NONE", colors));
+            message.add(new FancyMessage("Animals that CAN spawn: ", world.allowAnimalSpawning() ? "ALL" : "NONE", colors));
         }
         worldInfo.add(message);
 

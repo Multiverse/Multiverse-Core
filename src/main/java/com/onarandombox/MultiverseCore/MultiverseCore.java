@@ -93,7 +93,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     private Configuration configWorlds = null;
 
     // Setup the block/player/entity listener.
-    private MVPlayerListener playerListener = new MVPlayerListener(this);;
+    private MVPlayerListener playerListener = new MVPlayerListener(this);
 
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
