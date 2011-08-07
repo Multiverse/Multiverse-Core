@@ -16,15 +16,15 @@ public class DestinationFactory {
 
     public MVDestination getDestination(String dest) {
         String idenChar = "";
-        if(dest.split(":").length > 1) {
-            idenChar = dest.substring(0, 1);
+        if (dest.split(":").length > 1) {
+            idenChar = dest.split(":")[0];
         }
-        
+
         if (this.destList.containsKey(idenChar)) {
             Class<? extends MVDestination> myClass = this.destList.get(idenChar);
             try {
                 MVDestination mydest = myClass.newInstance();
-                if(!mydest.isThisType((MultiverseCore) this.plugin, dest)) {
+                if (!mydest.isThisType((MultiverseCore) this.plugin, dest)) {
                     return new InvalidDestination();
                 }
                 mydest.setDestination(this.plugin, dest);

@@ -44,7 +44,7 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter = (Player) sender;
         }
 
-        String worldName;
+        String destinationName;
 
         if (args.size() == 2) {
             if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.core.tp.other", true)) {
@@ -56,10 +56,10 @@ public class TeleportCommand extends MultiverseCommand {
                 sender.sendMessage("Sorry, I couldn't find player: " + args.get(0));
                 return;
             }
-            worldName = args.get(1);
+            destinationName = args.get(1);
 
         } else {
-            worldName = args.get(0);
+            destinationName = args.get(0);
             if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.core.tp.self", true)) {
                 sender.sendMessage("You don't have permission to teleport yourself between worlds. (multiverse.core.tp.self)");
                 return;
@@ -74,9 +74,9 @@ public class TeleportCommand extends MultiverseCommand {
         }
 
         DestinationFactory df = this.plugin.getDestinationFactory();// .parseDestination(worldName, (MultiverseCore) this.plugin);
-        MVDestination d = df.getDestination(worldName);
+        MVDestination d = df.getDestination(destinationName);
         if (d != null && d instanceof InvalidDestination) {
-            sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + worldName);
+            sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + destinationName);
             return;
         }
 

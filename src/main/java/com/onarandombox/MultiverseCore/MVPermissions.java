@@ -106,9 +106,14 @@ public class MVPermissions implements PermissionsInterface {
             return true;
         }
         
-        // NO one can access a null permission (mainly used for destinations):w     
+        // NO one can access a null permission (mainly used for destinations):w
         if(node == null) {
             return false;
+        }
+        // Everyone can access an empty permission
+        // Currently used for the PlayerDestination
+        if(node.equals("")) {
+            return true;
         }
 
         Player player = (Player) sender;
