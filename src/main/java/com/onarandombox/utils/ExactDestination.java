@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -64,7 +65,7 @@ public class ExactDestination implements MVDestination {
     }
 
     @Override
-    public Location getLocation() {
+    public Location getLocation(Entity e) {
         return this.location;
     }
 

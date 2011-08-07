@@ -1,12 +1,13 @@
 package com.onarandombox.utils;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public interface MVDestination {
     public String getIdentifer();
     public boolean isThisType(JavaPlugin plugin, String dest);
-    public Location getLocation();
+    public Location getLocation(Entity e);
     public boolean isValid();
     public void setDestination(JavaPlugin plugin, String dest);
     public String getType();

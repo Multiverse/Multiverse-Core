@@ -1,6 +1,7 @@
 package com.onarandombox.utils;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MVWorld;
@@ -39,7 +40,7 @@ public class WorldDestination implements MVDestination {
     }
 
     @Override
-    public Location getLocation() {
+    public Location getLocation(Entity e) {
         Location spawnLoc = this.world.getCBWorld().getSpawnLocation();
         if (this.yaw >= 0) {
             // Only modify the yaw if its set. 

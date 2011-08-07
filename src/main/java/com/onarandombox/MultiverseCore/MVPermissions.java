@@ -83,14 +83,14 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     public Boolean canEnterDestination(Player p, MVDestination d) {
-        if (d == null || d.getLocation() == null) {
+        if (d == null || d.getLocation(p) == null) {
             return false;
         }
-        String worldName = d.getLocation().getWorld().getName();
+        String worldName = d.getLocation(p).getWorld().getName();
         if (!this.plugin.isMVWorld(worldName)) {
             return false;
         }
-        if(!canEnterLocation(p, d.getLocation())) {
+        if(!canEnterLocation(p, d.getLocation(p))) {
             return false;
         }
         return this.hasPermission(p, d.getRequiredPermission(), false);

@@ -87,7 +87,7 @@ public class TeleportCommand extends MultiverseCommand {
                 teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
             return;
-        } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromLocation(teleporter, d.getLocation())) {
+        } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromLocation(teleporter, d.getLocation(teleportee))) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + teleporter.getWorld().getName());
             } else {
@@ -95,7 +95,7 @@ public class TeleportCommand extends MultiverseCommand {
             }
             return;
         }
-        Location l = d.getLocation();
+        Location l = d.getLocation(teleportee);
         if (l == null) {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;

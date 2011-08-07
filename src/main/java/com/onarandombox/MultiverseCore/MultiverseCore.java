@@ -56,7 +56,7 @@ import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
-import com.onarandombox.MultiverseCore.configuration.DefaultConfiguration;
+import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -65,6 +65,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.ExactDestination;
+import com.onarandombox.utils.PlayerDestination;
 import com.onarandombox.utils.PurgeWorlds;
 import com.onarandombox.utils.UpdateChecker;
 import com.onarandombox.utils.WorldDestination;
@@ -171,6 +172,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.destFactory.registerDestinationType(WorldDestination.class, "");
         this.destFactory.registerDestinationType(WorldDestination.class, "w");
         this.destFactory.registerDestinationType(ExactDestination.class, "e");
+        this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
     }
 
     /**
@@ -199,8 +201,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     public void loadConfigs() {
 
         // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new DefaultConfiguration(getDataFolder(), "config.yml", this.migrator);
-        new DefaultConfiguration(getDataFolder(), "worlds.yml", this.migrator);
+        new DefaultConfig(getDataFolder(), "config.yml", this.migrator);
+        new DefaultConfig(getDataFolder(), "worlds.yml", this.migrator);
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
         this.configWorlds = new Configuration(new File(getDataFolder(), "worlds.yml"));
@@ -423,7 +425,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
             this.log(Level.INFO, "World " + name + " was unloaded from memory.");
             this.unloadWorld(name, true);
             return true;
-        } else if(this.getServer().getWorld(name) != null) {
+        } else if (this.getServer().getWorld(name) != null) {
             this.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's still loaded in memory.");
             this.log(Level.WARNING, "To be on the safe side, you should import it then try unloading again...");
         } else {

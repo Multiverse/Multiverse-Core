@@ -28,14 +28,20 @@ public class WhoCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         // If this command was sent from a Player then we need to check Permissions
         Player p = null;
+        // By default, show all from the console
+        boolean showAll = true;
         if (sender instanceof Player) {
             p = (Player) sender;
+            showAll = false;
         }
 
         List<MVWorld> worlds = new ArrayList<MVWorld>();
 
         if (args.size() > 0) {
-            if (this.plugin.isMVWorld(args.get(0))) {
+            if (args.get(0).equalsIgnoreCase("--all") || args.get(0).equalsIgnoreCase("-a")) {
+                showAll = true;
+                worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
+            } else if (this.plugin.isMVWorld(args.get(0))) {
                 worlds.add(this.plugin.getMVWorld(args.get(0)));
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
@@ -43,6 +49,14 @@ public class WhoCommand extends MultiverseCommand {
             }
         } else {
             worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
+        }
+
+        if (worlds.size() == 0) {
+            sender.sendMessage("Multiverse does not know about any of your worlds :(");
+        } else if (worlds.size() == 1) {
+            sender.sendMessage(ChatColor.AQUA + "--- " + "Players in" + ChatColor.YELLOW + worlds.get(0) + ChatColor.AQUA + " ---");
+        } else {
+            sender.sendMessage(ChatColor.AQUA + "--- There are players in ---");
         }
 
         for (MVWorld world : worlds) {
@@ -56,6 +70,10 @@ public class WhoCommand extends MultiverseCommand {
             List<Player> players = world.getCBWorld().getPlayers();
 
             String result = "";
+            if (players.size() <= 0 && !showAll) {
+                continue;
+            }
+
             if (players.size() <= 0) {
                 result = "Empty";
             } else {

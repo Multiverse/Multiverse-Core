@@ -2,6 +2,7 @@ package com.onarandombox.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class InvalidDestination implements MVDestination {
@@ -17,7 +18,7 @@ public class InvalidDestination implements MVDestination {
     }
 
     @Override
-    public Location getLocation() {
+    public Location getLocation(Entity e) {
         return null;
     }
 
