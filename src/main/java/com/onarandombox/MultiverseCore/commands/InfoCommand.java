@@ -101,12 +101,12 @@ public class InfoCommand extends MultiverseCommand {
 
         if (world.getRespawnToWorld() != null) {
             MVWorld respawn = this.plugin.getMVWorld(world.getRespawnToWorld());
-            if(respawn != null) {
-                message.add(new FancyMessage("Players will respawn in: ", respawn.getColoredWorldString(), colors));    
+            if (respawn != null) {
+                message.add(new FancyMessage("Players will respawn in: ", respawn.getColoredWorldString(), colors));
             } else {
                 message.add(new FancyMessage("Players will respawn in: ", ChatColor.RED + "!!INVALID!!", colors));
             }
-            
+
         }
 
         worldInfo.add(message);

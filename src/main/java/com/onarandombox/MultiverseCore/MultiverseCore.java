@@ -23,6 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -62,6 +63,7 @@ import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
+import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.ExactDestination;
@@ -98,6 +100,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
+    private MVWeatherListener weatherListener = new MVWeatherListener(this);
 
     public UpdateChecker updateCheck;
 
@@ -112,6 +115,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
+    
 
     @Override
     public void onLoad() {
@@ -193,6 +197,10 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.pluginListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLUGIN_DISABLE, this.pluginListener, Priority.Monitor, this);
+        
+        pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.THUNDER_CHANGE, this.weatherListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.LIGHTNING_STRIKE, this.weatherListener, Priority.Normal, this);
     }
 
     /**

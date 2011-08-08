@@ -96,6 +96,7 @@ public class MVWorld {
     private Permission exempt;
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
+    private boolean allowWeather;
 
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -126,6 +127,7 @@ public class MVWorld {
         this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", 1.0));
         this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawnworld", ""));
+        this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
 
         this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
@@ -150,6 +152,17 @@ public class MVWorld {
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
         }
+    }
+
+    private void setEnableWeather(boolean weather) {
+        this.allowWeather = weather;
+        // Disable any current weather
+        if (!weather) {
+            this.getCBWorld().setStorm(false);
+            this.getCBWorld().setThundering(false);
+        }
+        this.config.setProperty("worlds." + this.name + ".allowweather", weather);
+        saveConfig();
     }
 
     private void addToUpperLists(Permission permission) {
@@ -347,8 +360,10 @@ public class MVWorld {
             this.setMonsters(value);
         } else if (name.equalsIgnoreCase("memory") || name.equalsIgnoreCase("spawnmemory")) {
             this.setSpawnInMemory(value);
+        } else if (name.equalsIgnoreCase("weather") || name.equalsIgnoreCase("storm")) {
+            this.setEnableWeather(value);
         } else {
-                return false;
+            return false;
         }
         return true;
     }
@@ -375,7 +390,7 @@ public class MVWorld {
 
     /**
      * This is the one people have access to. It'll handle the rest.
-     *
+     * 
      * @param name
      * @param value
      * @return
@@ -532,7 +547,7 @@ public class MVWorld {
 
     /**
      * Sets the chat color from a string.
-     *
+     * 
      * @param aliasColor
      */
     public void setAliasColor(String aliasColor) {
@@ -621,5 +636,9 @@ public class MVWorld {
         if (this.canSave) {
             this.config.save();
         }
+    }
+
+    public boolean getWeatherEnabled() {
+        return this.allowWeather;
     }
 }
