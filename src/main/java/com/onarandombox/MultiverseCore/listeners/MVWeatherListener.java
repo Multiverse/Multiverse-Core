@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.listeners;
 
-import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.weather.WeatherListener;
@@ -32,15 +31,6 @@ public class MVWeatherListener extends WeatherListener {
         if (world != null) {
             // If it's going to start raining and we have weather disabled
             event.setCancelled((event.toThunderState() && !world.getWeatherEnabled()));
-        }
-    }
-    
-    @Override
-    public void onLightningStrike(LightningStrikeEvent event) {
-        MVWorld world = this.plugin.getMVWorld(event.getWorld().getName());
-        if (world != null) {
-            // If it's going to start raining and we have weather disabled
-            event.setCancelled((!world.getWeatherEnabled()));
         }
     }
 }

@@ -200,7 +200,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         
         pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.THUNDER_CHANGE, this.weatherListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.LIGHTNING_STRIKE, this.weatherListener, Priority.Normal, this);
     }
 
     /**
