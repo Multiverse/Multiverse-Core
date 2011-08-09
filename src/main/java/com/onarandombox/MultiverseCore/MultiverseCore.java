@@ -23,7 +23,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -115,7 +114,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
-    
 
     @Override
     public void onLoad() {
@@ -197,7 +195,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
         pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.pluginListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLUGIN_DISABLE, this.pluginListener, Priority.Monitor, this);
-        
+
         pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.THUNDER_CHANGE, this.weatherListener, Priority.Normal, this);
     }
@@ -466,9 +464,15 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
-    public boolean deleteWorld(String name) {
+    public Boolean deleteWorld(String name) {
+        
+        if (this.getServer().getWorld(name) != null) {
+            if(!unloadWorld(name, false)) {
+                // If the world was loaded, and we couldn't unload it, return false. DON"T DELTEE
+                return false;
+            }
+        }
         removeWorldFromConfig(name);
-        unloadWorld(name, false);
         try {
             File serverFolder = new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
             File worldFile = new File(serverFolder.getAbsolutePath() + File.separator + name);
