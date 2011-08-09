@@ -63,6 +63,7 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.utils.CannonDestination;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.ExactDestination;
@@ -175,6 +176,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.destFactory.registerDestinationType(WorldDestination.class, "w");
         this.destFactory.registerDestinationType(ExactDestination.class, "e");
         this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
+        this.destFactory.registerDestinationType(CannonDestination.class, "ca");
     }
 
     /**

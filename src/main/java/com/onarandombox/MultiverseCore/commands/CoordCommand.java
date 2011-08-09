@@ -48,7 +48,7 @@ public class CoordCommand extends MultiverseCommand {
             p.sendMessage(ChatColor.AQUA + "Alias: " + mvworld.getColoredWorldString());
             p.sendMessage(ChatColor.AQUA + "World Scale: " + ChatColor.WHITE + mvworld.getScaling());
             p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));
-            p.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + this.locMan.getDirection(p.getLocation()));
+            p.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + LocationManipulation.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.AQUA + "Block: " + ChatColor.WHITE + Material.getMaterial(world.getBlockTypeIdAt(p.getLocation())));
         } else {
             sender.sendMessage("This command needs to be used from a Player.");

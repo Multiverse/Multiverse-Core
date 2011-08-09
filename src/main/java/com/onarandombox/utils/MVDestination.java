@@ -3,6 +3,7 @@ package com.onarandombox.utils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 public interface MVDestination {
     public String getIdentifer();
@@ -14,4 +15,5 @@ public interface MVDestination {
     public String getName();
     public String toString();
     public String getRequiredPermission();
+    public Vector getVelocity();
 }

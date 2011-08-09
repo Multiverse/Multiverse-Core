@@ -3,6 +3,7 @@ package com.onarandombox.utils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -103,6 +104,9 @@ public class WorldDestination implements MVDestination {
     @Override
     public String getRequiredPermission() {
         return "multiverse.access."+this.world.getName();
+    }
+    public Vector getVelocity() {
+        return new Vector(0,0,0);
     }
 
 }

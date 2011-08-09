@@ -10,18 +10,23 @@ import org.bukkit.util.Vector;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
-public class ExactDestination implements MVDestination {
+public class CannonDestination implements MVDestination {
     private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
     private boolean isValid;
     private Location location;
+    private double speed;
+    
+    public Vector getVelocity() {
+        double x = Math.cos(location.getPitch()) * speed;
+        //double y = Math.sin(location.getPitch()) * speed;
+        double y = 0;
+        double z = Math.sin(location.getYaw()) * speed;
+        return new Vector(x,y,z); 
+    }
 
     @Override
     public String getIdentifer() {
-        return "e";
-    }
-    
-    public Vector getVelocity() {
-        return new Vector(0,0,0);
+        return "ca";
     }
 
     @Override
@@ -30,14 +35,13 @@ public class ExactDestination implements MVDestination {
             return false;
         }
         List<String> parsed = Arrays.asList(destination.split(":"));
-        // Need at least: e:world:x,y,z
-        // OR e:world:x,y,z:pitch:yaw
-        // so basically 3 or 5
-        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+        // NEED ca:world:x,y,z:pitch:yaw:speed
+        // so basically 6
+        if (parsed.size() != 6) {
             return false;
         }
-        // If it's not an Exact type
-        if (!parsed.get(0).equalsIgnoreCase("e")) {
+        // If it's not an Cannon type
+        if (!parsed.get(0).equalsIgnoreCase("ca")) {
             return false;
         }
 
@@ -45,18 +49,15 @@ public class ExactDestination implements MVDestination {
         if (!((MultiverseCore) plugin).isMVWorld(parsed.get(1))) {
             return false;
         }
-
+        // Verify X,Y,Z are numbers
         if (!parsed.get(2).matches(coordRegex)) {
             return false;
-        }
-        // This is 1 now, because we've removed 2
-        if (parsed.size() == 3) {
-            return true;
         }
 
         try {
             Float.parseFloat(parsed.get(3));
             Float.parseFloat(parsed.get(4));
+            Float.parseFloat(parsed.get(5));
         } catch (NumberFormatException e) {
             return false;
         }
@@ -79,14 +80,14 @@ public class ExactDestination implements MVDestination {
             return;
         }
         List<String> parsed = Arrays.asList(dest.split(":"));
+        System.out.print(parsed);
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
-        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+        if (parsed.size() != 6) {
             this.isValid = false;
             return;
         }
-
         if (!parsed.get(0).equalsIgnoreCase(this.getIdentifer())) {
             this.isValid = false;
             return;
@@ -96,6 +97,7 @@ public class ExactDestination implements MVDestination {
             this.isValid = false;
             return;
         }
+
         this.location = new Location(((MultiverseCore) plugin).getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
 
         if (!parsed.get(2).matches(this.coordRegex)) {
@@ -116,35 +118,35 @@ public class ExactDestination implements MVDestination {
         this.location.setY(coords[1]);
         this.location.setZ(coords[2]);
 
-        if (parsed.size() == 3) {
-            this.isValid = true;
-            return;
-        }
-
         try {
             this.location.setPitch(Float.parseFloat(parsed.get(3)));
             this.location.setYaw(Float.parseFloat(parsed.get(4)));
+            this.speed = Math.abs(Float.parseFloat(parsed.get(5)));
         } catch (NumberFormatException e) {
             this.isValid = false;
             return;
         }
+
         this.isValid = true;
 
     }
 
     @Override
     public String getType() {
-        return "Exact";
+        return "Cannon!";
     }
 
     @Override
     public String getName() {
-        return "Exact (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ")";
+        return "Cannon (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ() + ":" +
+                this.location.getPitch() + ":" + this.location.getYaw() + ":" + this.speed + ")";
+
     }
 
-    public void setDestination(Location location) {
+    public void setDestination(Location location, double speed) {
         if (location != null) {
             this.location = location;
+            this.speed = Math.abs(speed);
             this.isValid = true;
         }
         this.isValid = false;
@@ -153,7 +155,7 @@ public class ExactDestination implements MVDestination {
     @Override
     public String toString() {
         if (isValid) {
-            return "e:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY() + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw();
+            return "ca:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY() + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ":" + this.speed;
         }
         return "i:Invalid Destination";
     }

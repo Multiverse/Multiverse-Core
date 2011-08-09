@@ -79,35 +79,38 @@ public class LocationManipulation {
      * @param location
      * @return
      */
-    public String getDirection(Location location) {
+    public static String getDirection(Location location) {
         double r = (location.getYaw() % 360) + 180;
         // Remember, these numbers are every 45 degrees with a 22.5 offset, to detect boundaries.
         String dir;
         if (r < 22.5)
-            dir = "N";
+            dir = "n";
         else if (r < 67.5)
-            dir = "NE";
+            dir = "ne";
         else if (r < 112.5)
-            dir = "E";
+            dir = "e";
         else if (r < 157.5)
-            dir = "SE";
+            dir = "se";
         else if (r < 202.5)
-            dir = "S";
+            dir = "s";
         else if (r < 247.5)
-            dir = "SW";
+            dir = "sw";
         else if (r < 292.5)
-            dir = "W";
+            dir = "w";
         else if (r < 337.5)
-            dir = "NW";
+            dir = "nw";
         else
-            dir = "N";
+            dir = "n";
 
         return dir;
     }
 
     public static float getYaw(String orientation) {
-        if (orientationInts.containsKey(orientation)) {
-            return orientationInts.get(orientation);
+        if (orientation == null) {
+            return 0;
+        }
+        if (orientationInts.containsKey(orientation.toLowerCase())) {
+            return orientationInts.get(orientation.toLowerCase());
         }
         return 0;
     }

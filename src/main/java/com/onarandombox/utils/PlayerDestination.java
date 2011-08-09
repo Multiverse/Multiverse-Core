@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 public class PlayerDestination implements MVDestination {
     String player;
@@ -80,6 +81,9 @@ public class PlayerDestination implements MVDestination {
     @Override
     public String getRequiredPermission() {
         return "";
+    }
+    public Vector getVelocity() {
+        return new Vector(0,0,0);
     }
 
 }
