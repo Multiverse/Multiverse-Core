@@ -15,13 +15,14 @@ public class CannonDestination implements MVDestination {
     private boolean isValid;
     private Location location;
     private double speed;
-    
+
     public Vector getVelocity() {
-        double x = Math.cos(location.getPitch()) * speed;
-        //double y = Math.sin(location.getPitch()) * speed;
-        double y = 0;
-        double z = Math.sin(location.getYaw()) * speed;
-        return new Vector(x,y,z); 
+        double x = Math.sin(Math.toRadians(location.getYaw())) * speed * -1;
+        double y = Math.sin(Math.toRadians(location.getPitch())) * speed * -1;
+        double z = Math.cos(Math.toRadians(location.getYaw())) * speed;
+        x = Math.cos(Math.toRadians(location.getPitch())) * x;
+        z = Math.cos(Math.toRadians(location.getPitch())) * z;
+        return new Vector(x, y, z);
     }
 
     @Override
