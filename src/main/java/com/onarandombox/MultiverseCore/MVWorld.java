@@ -578,6 +578,7 @@ public class MVWorld {
         } else if (this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
             this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
+            this.syncMobs();
             saveConfig();
             return true;
         }
