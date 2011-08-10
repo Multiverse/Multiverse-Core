@@ -18,7 +18,7 @@ public class CannonDestination implements MVDestination {
 
     public Vector getVelocity() {
         double pitchRadians = Math.toRadians(location.getPitch());
-        double yawRadians = Math.toRadians(location.getPitch());
+        double yawRadians = Math.toRadians(location.getYaw());
         double x = Math.sin(yawRadians) * speed * -1;
         double y = Math.sin(pitchRadians) * speed * -1;
         double z = Math.cos(yawRadians) * speed;
