@@ -143,10 +143,15 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     public String getType() {
-        if (this.permissions != null) {
-            return "Permissions " + this.plugin.getServer().getPluginManager().getPlugin("Permissions").getDescription().getVersion();
+        String opsfallback = "";
+        if(this.plugin.getConfig().getBoolean("opfallback", true)) {
+            opsfallback = " WITH OPs.txt fallback";    
         }
-        return "Bukkit Permissions/OPs.txt";
+        if (this.permissions != null) {
+            return "Permissions " + this.plugin.getServer().getPluginManager().getPlugin("Permissions").getDescription().getVersion() + opsfallback;
+        }
+        
+        return "Bukkit Permissions" + opsfallback;
     }
 
     public boolean hasAnyPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {

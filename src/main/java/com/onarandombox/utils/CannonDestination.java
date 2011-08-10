@@ -17,11 +17,14 @@ public class CannonDestination implements MVDestination {
     private double speed;
 
     public Vector getVelocity() {
-        double x = Math.sin(Math.toRadians(location.getYaw())) * speed * -1;
-        double y = Math.sin(Math.toRadians(location.getPitch())) * speed * -1;
-        double z = Math.cos(Math.toRadians(location.getYaw())) * speed;
-        x = Math.cos(Math.toRadians(location.getPitch())) * x;
-        z = Math.cos(Math.toRadians(location.getPitch())) * z;
+        double pitchRadians = Math.toRadians(location.getPitch());
+        double yawRadians = Math.toRadians(location.getPitch());
+        double x = Math.sin(yawRadians) * speed * -1;
+        double y = Math.sin(pitchRadians) * speed * -1;
+        double z = Math.cos(yawRadians) * speed;
+        // Account for the angle they were pointed, and take away velocity
+        x = Math.cos(pitchRadians) * x;
+        z = Math.cos(pitchRadians) * z;
         return new Vector(x, y, z);
     }
 
@@ -81,7 +84,6 @@ public class CannonDestination implements MVDestination {
             return;
         }
         List<String> parsed = Arrays.asList(dest.split(":"));
-        System.out.print(parsed);
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5

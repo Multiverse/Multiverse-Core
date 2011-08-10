@@ -157,6 +157,12 @@ public class InfoCommand extends MultiverseCommand {
     }
 
     private String toCommaSeperated(List<String> list) {
+        if(list == null || list.size() == 0) {
+            return "";
+        }
+        if(list.size() == 1) {
+            return list.get(0);
+        }
         String result = list.get(0);
 
         for (int i = 1; i < list.size() - 1; i++) {
