@@ -118,6 +118,10 @@ public class MVPlayerListener extends PlayerListener {
                 return;
             }
         }
+        if(toWorld == null) {
+            // The toworld is not handled by MV, we don't care about payments
+            return;
+        }
         // Only check payments if it's a different world:
         if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
             // If the player does not have to pay, return now.
