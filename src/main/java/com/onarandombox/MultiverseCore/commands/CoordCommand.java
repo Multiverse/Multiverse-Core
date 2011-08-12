@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -34,20 +35,23 @@ public class CoordCommand extends MultiverseCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             World world = p.getWorld();
-            
-            if(!this.plugin.isMVWorld(world.getName())) {
+
+            if (!this.plugin.isMVWorld(world.getName())) {
                 this.plugin.showNotMVWorldMessage(sender, world.getName());
                 return;
             }
-            
+
             MVWorld mvworld = this.plugin.getMVWorld(world.getName());
             // TODO: Convert to fancy stuff
-            
+
             p.sendMessage(ChatColor.AQUA + "--- Location Information ---");
             p.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
             p.sendMessage(ChatColor.AQUA + "Alias: " + mvworld.getColoredWorldString());
             p.sendMessage(ChatColor.AQUA + "World Scale: " + ChatColor.WHITE + mvworld.getScaling());
-            p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()));
+            DecimalFormat df = new DecimalFormat();
+            df.setMinimumFractionDigits(0);
+            df.setMaximumFractionDigits(2);
+            p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()) + ChatColor.GOLD + "Pitch: " + df.format(p.getLocation().getPitch()));
             p.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + LocationManipulation.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.AQUA + "Block: " + ChatColor.WHITE + Material.getMaterial(world.getBlockTypeIdAt(p.getLocation())));
         } else {

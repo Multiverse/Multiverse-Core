@@ -1,8 +1,10 @@
 package com.onarandombox.utils;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
@@ -67,9 +69,12 @@ public class LocationManipulation {
      */
     public String strCoords(Location l) {
         String result = "";
-        result += "X: " + l.getBlockX() + " ";
-        result += "Y: " + l.getBlockY() + " ";
-        result += "Z: " + l.getBlockZ() + " ";
+        DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(0);
+        df.setMaximumFractionDigits(2);
+        result += ChatColor.WHITE + "X: " + ChatColor.AQUA + df.format(l.getX()) + " ";
+        result += ChatColor.WHITE + "Y: " + ChatColor.AQUA + df.format(l.getY()) + " ";
+        result += ChatColor.WHITE + "Z: " + ChatColor.AQUA + df.format(l.getZ()) + " ";
         return result;
     }
 

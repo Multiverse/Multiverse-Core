@@ -375,19 +375,6 @@ public class MVWorld {
         saveConfig();
     }
 
-    private boolean setVariable(String name, double value) {
-        if (name.equalsIgnoreCase("scaling") || name.equalsIgnoreCase("scale")) {
-            this.setScaling(value);
-            return true;
-        }
-        if (name.equalsIgnoreCase("price")) {
-            this.setPrice(value);
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * This is the one people have access to. It'll handle the rest.
      * 
@@ -423,15 +410,16 @@ public class MVWorld {
             } catch (Exception e) {
             }
         }
+        if (name.equalsIgnoreCase("scale") || name.equalsIgnoreCase("scaling")) {
+            try {
+                double doubValue = Double.parseDouble(value);
+                return this.setScaling(doubValue);
+            } catch (Exception e) {
+            }
+        }
         try {
             boolean boolValue = Boolean.parseBoolean(value);
             return this.setVariable(name, boolValue);
-        } catch (Exception e) {
-        }
-
-        try {
-            double doubValue = Double.parseDouble(value);
-            return this.setVariable(name, doubValue);
         } catch (Exception e) {
         }
 
@@ -535,7 +523,7 @@ public class MVWorld {
         return this.scaling;
     }
 
-    public void setScaling(Double scaling) {
+    public boolean setScaling(Double scaling) {
         if (scaling <= 0) {
             // Disallow negative or 0 scalings.
             scaling = 1.0;
@@ -543,6 +531,7 @@ public class MVWorld {
         this.scaling = scaling;
         this.config.setProperty("worlds." + this.name + ".scaling", scaling);
         saveConfig();
+        return true;
     }
 
     /**
@@ -641,5 +630,9 @@ public class MVWorld {
 
     public boolean getWeatherEnabled() {
         return this.allowWeather;
+    }
+    
+    public boolean getKeepSpawnInMemory() {
+        return this.keepSpawnInMemory;
     }
 }

@@ -112,6 +112,9 @@ public class InfoCommand extends MultiverseCommand {
         worldInfo.add(message);
         // Page 2
         message = new ArrayList<FancyText>();
+        message.add(new FancyHeader("More World Settings", colors));
+        message.add(new FancyMessage("Weather: ", world.getWeatherEnabled() + "", colors));
+        message.add(new FancyMessage("Keep spawn in memory: ", world.getKeepSpawnInMemory() + "", colors));
         message.add(new FancyHeader("PVP Settings", colors));
         message.add(new FancyMessage("Multiverse Setting: ", world.getPvp().toString(), colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getPVP() + "", colors));
