@@ -529,7 +529,7 @@ public class MVWorld {
             scaling = 1.0;
         }
         this.scaling = scaling;
-        this.config.setProperty("worlds." + this.name + ".scaling", scaling);
+        this.config.setProperty("worlds." + this.name + ".scale", scaling);
         saveConfig();
         return true;
     }
