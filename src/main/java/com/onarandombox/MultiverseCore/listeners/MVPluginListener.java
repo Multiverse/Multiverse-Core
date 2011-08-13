@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
+import org.getspout.spoutapi.SpoutManager;
 
 import com.fernferret.allpay.AllPay;
 import com.nijikokun.bukkit.Permissions.Permissions;
@@ -40,6 +41,10 @@ public class MVPluginListener extends ServerListener {
                 this.plugin.getServer().getPluginManager().disablePlugin(event.getPlugin());
                 this.plugin.log(Level.WARNING, "I just disabled the old version of Multiverse for you. You should remove the JAR now, your configs have been migrated.");
             }
+        }
+        if (event.getPlugin().getDescription().getName().equals("Spout")) {
+            this.plugin.setSpout(SpoutManager.getInstance());
+            this.plugin.log(Level.INFO, "Spout integration enabled.");
         }
     }
 

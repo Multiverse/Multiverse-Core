@@ -29,6 +29,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
+import org.getspout.spoutapi.SpoutManager;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
@@ -52,6 +53,7 @@ import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.commands.SleepCommand;
 import com.onarandombox.MultiverseCore.commands.SpawnCommand;
+import com.onarandombox.MultiverseCore.commands.SpoutCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
@@ -115,6 +117,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
+    private SpoutManager spoutManager;
 
     @Override
     public void onLoad() {
@@ -266,6 +269,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new SleepCommand(this));
+        this.commandHandler.registerCommand(new SpoutCommand(this));
 
     }
 
@@ -813,5 +817,13 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
             // This should never happen...
             this.log(Level.SEVERE, e.getMessage());
         }
+    }
+
+    public void setSpout(SpoutManager spoutManager) {
+        this.spoutManager = spoutManager;
+    }
+
+    public SpoutManager getSpout() {
+        return this.spoutManager;
     }
 }
