@@ -16,6 +16,10 @@
 			<id>OnARandomBox</id>
 			<url>http://repo.onarandombox.com/artifactory/repo</url>
 		</repository>
+		<repository>
+            <id>GetSpout</id>
+            <url>http://repo.getspout.org/</url>
+       </repository>
 	</repositories>
 
 	<build>
@@ -99,7 +103,13 @@
 			<scope>compile</scope>
 		</dependency>
 		<!-- Bukkit Dependency -->
-
+        <!-- Start of Spout -->
+        <dependency>
+            <groupId>org.getspout</groupId>
+            <artifactId>spoutapi</artifactId>
+            <version>dev-SNAPSHOT</version>
+        </dependency>
+        <!-- End of Spout -->
 		<!-- Start of Economy Dependencies -->
 		<dependency>
 			<groupId>cosine.boseconomy</groupId>
@@ -116,7 +126,15 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-
+		 
+        <dependency>
+        <groupId>com.iCo6</groupId>
+            <artifactId>iConomy</artifactId>
+            <version>6.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.iConomy</groupId>
 			<artifactId>iConomy</artifactId>
