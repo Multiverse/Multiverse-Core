@@ -73,7 +73,11 @@ public class InfoCommand extends MultiverseCommand {
         }
 
         if (this.plugin.isMVWorld(worldName)) {
-            showPage(pageNum, sender, this.buildEntireCommand(this.plugin.getMVWorld(worldName)));
+            Player p = null;
+            if(sender instanceof Player) {
+                p = (Player) sender;
+            }
+            showPage(pageNum, sender, this.buildEntireCommand(this.plugin.getMVWorld(worldName), p));
         } else if (this.plugin.getServer().getWorld(worldName) != null) {
             sender.sendMessage("That world exists, but multiverse does not know about it!");
             sender.sendMessage("You can import it with" + ChatColor.AQUA + "/mv import " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
@@ -81,7 +85,7 @@ public class InfoCommand extends MultiverseCommand {
         }
     }
 
-    private List<List<FancyText>> buildEntireCommand(MVWorld world) {
+    private List<List<FancyText>> buildEntireCommand(MVWorld world, Player p) {
         List<FancyText> message = new ArrayList<FancyText>();
         List<List<FancyText>> worldInfo = new ArrayList<List<FancyText>>();
         // Page 1
@@ -94,7 +98,7 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Spawn Location: ", "(" + spawn.getBlockX() + ", " + spawn.getBlockY() + ", " + spawn.getBlockZ() + ")", colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling().toString(), colors));
         if (world.getPrice() > 0) {
-            message.add(new FancyMessage("Price to enter this world: ", this.plugin.getBank().getFormattedAmount(world.getPrice(), world.getCurrency()), colors));
+            message.add(new FancyMessage("Price to enter this world: ", this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));
         } else {
             message.add(new FancyMessage("Price to enter this world: ", ChatColor.GREEN + "FREE!", colors));
         }

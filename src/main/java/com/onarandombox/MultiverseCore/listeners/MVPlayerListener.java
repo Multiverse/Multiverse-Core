@@ -129,7 +129,7 @@ public class MVPlayerListener extends PlayerListener {
                 return;
             }
             GenericBank bank = plugin.getBank();
-            if (!bank.hasEnough(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency(), "You need " + bank.getFormattedAmount(toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString())) {
+            if (!bank.hasEnough(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency(), "You need " + bank.getFormattedAmount(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString())) {
                 event.setCancelled(true);
             } else {
                 bank.pay(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency());

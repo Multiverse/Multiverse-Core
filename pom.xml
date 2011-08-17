@@ -158,6 +158,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+            <groupId>me.ashtheking.currency</groupId>
+            <artifactId>MultiCurrency</artifactId>
+            <version>0.09</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 		<!-- End of Economy Dependencies -->
 
 		<!-- Start of Permissions Dependencies -->
