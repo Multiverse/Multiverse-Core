@@ -72,7 +72,17 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter = (Player) sender;
             teleportee = (Player) sender;
         }
+        // Special case for cannons:
+        if (destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
+            String[] cannonSpeed = destinationName.split("-");
+            try {
+                double speed = Double.parseDouble(cannonSpeed[1]);
+                destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX() + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":" + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
+            } catch (Exception e) {
+                destinationName = "i:invalid";
+            }
 
+        }
         DestinationFactory df = this.plugin.getDestinationFactory();// .parseDestination(worldName, (MultiverseCore) this.plugin);
         MVDestination d = df.getDestination(destinationName);
         if (d != null && d instanceof InvalidDestination) {
