@@ -30,7 +30,7 @@ public class LocationManipulation {
      * @param location
      * @return
      */
-    public String locationToString(Location location) {
+    public static String locationToString(Location location) {
         StringBuilder l = new StringBuilder();
         l.append(location.getBlockX() + ":");
         l.append(location.getBlockY() + ":");
@@ -75,6 +75,19 @@ public class LocationManipulation {
         result += ChatColor.WHITE + "X: " + ChatColor.AQUA + df.format(l.getX()) + " ";
         result += ChatColor.WHITE + "Y: " + ChatColor.AQUA + df.format(l.getY()) + " ";
         result += ChatColor.WHITE + "Z: " + ChatColor.AQUA + df.format(l.getZ()) + " ";
+        return result;
+    }
+
+    public static String strCoordsRaw(Location l) {
+        String result = "";
+        DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(0);
+        df.setMaximumFractionDigits(2);
+        result += "X: " + df.format(l.getX()) + " ";
+        result += "Y: " + df.format(l.getY()) + " ";
+        result += "Z: " + df.format(l.getZ()) + " ";
+        result += "P: " + df.format(l.getPitch()) + " ";
+        result += "Y: " + df.format(l.getYaw()) + " ";
         return result;
     }
 

@@ -90,7 +90,7 @@ public class MVPermissions implements PermissionsInterface {
         if (!this.plugin.isMVWorld(worldName)) {
             return false;
         }
-        if(!canEnterLocation(p, d.getLocation(p))) {
+        if (!canEnterLocation(p, d.getLocation(p))) {
             return false;
         }
         return this.hasPermission(p, d.getRequiredPermission(), false);
@@ -105,31 +105,31 @@ public class MVPermissions implements PermissionsInterface {
         if (!(sender instanceof Player)) {
             return true;
         }
-        
+
         // NO one can access a null permission (mainly used for destinations):w
-        if(node == null) {
+        if (node == null) {
             return false;
         }
         // Everyone can access an empty permission
         // Currently used for the PlayerDestination
-        if(node.equals("")) {
+        if (node.equals("")) {
             return true;
         }
 
         Player player = (Player) sender;
-
+        this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]");
         boolean opFallback = this.plugin.getConfig().getBoolean("opfallback", true);
         if (this.permissions != null && this.permissions.has(player, node)) {
             // If Permissions is enabled we check against them.
-            // this.plugin.log(Level.WARNING, "Allowed by P3/P2 ");
+            this.plugin.log(Level.FINEST, "Allowed by Permissions or something that looked like it.");
             return true;
         } else if (sender.hasPermission(node)) {
             // If Now check the bukkit permissions
-            // this.plugin.log(Level.WARNING, "Allowed by BukkitPerms");
+            this.plugin.log(Level.FINEST, "Allowed by the built in Permissions.");
             return true;
         } else if (player.isOp() && opFallback) {
             // If Player is Op we always let them use it if they have the fallback enabled!
-            // this.plugin.log(Level.WARNING, "Allowed by OP");
+            this.plugin.log(Level.FINEST, "Allowed by OP (opfallback was on).");
             return true;
         }
 
@@ -138,19 +138,22 @@ public class MVPermissions implements PermissionsInterface {
         // This allows us to act as a default permission guidance
 
         // If they have the op fallback disabled, NO commands will work without a permissions plugin.
+        if (!isOpRequired && opFallback) {
+            this.plugin.log(Level.FINEST, "Allowed because opfallback was set to true.");
+        }
         return !isOpRequired && opFallback;
 
     }
 
     public String getType() {
         String opsfallback = "";
-        if(this.plugin.getConfig().getBoolean("opfallback", true)) {
-            opsfallback = " WITH OPs.txt fallback";    
+        if (this.plugin.getConfig().getBoolean("opfallback", true)) {
+            opsfallback = " WITH OPs.txt fallback";
         }
         if (this.permissions != null) {
             return "Permissions " + this.plugin.getServer().getPluginManager().getPlugin("Permissions").getDescription().getVersion() + opsfallback;
         }
-        
+
         return "Bukkit Permissions" + opsfallback;
     }
 

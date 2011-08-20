@@ -9,15 +9,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
 import com.onarandombox.utils.BlockSafety;
+import com.onarandombox.utils.LocationManipulation;
 
 public class MVTeleport {
 
     MultiverseCore plugin;
 
-    BlockSafety bs = new BlockSafety();
+    BlockSafety bs;
 
     public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
+        this.bs = new BlockSafety(this.plugin);
     }
 
     /**
@@ -47,17 +49,23 @@ public class MVTeleport {
         if (safe != null) {
             safe.setX(safe.getBlockX() + .5);
             safe.setZ(safe.getBlockZ() + .5);
+            this.plugin.log(Level.FINE, "Hey! I found one: " + LocationManipulation.strCoordsRaw(safe));
+        } else {
+            this.plugin.log(Level.FINE, "Uh oh! No safe place found!");
         }
         return safe;
     }
 
     private Location checkAboveAndBelowLocation(Location l, int tolerance, int radius) {
+
         // Tolerance must be an even number:
         if (tolerance % 2 != 0) {
             tolerance += 1;
         }
         // We want half of it, so we can go up and down
         tolerance /= 2;
+        this.plugin.log(Level.FINER, "Given Location of: " + LocationManipulation.strCoordsRaw(l));
+        this.plugin.log(Level.FINER, "Checking +-" + tolerance + " with a radius of " + radius);
 
         // For now this will just do a straight up block.
         Location locToCheck = l.clone();
@@ -176,40 +184,43 @@ public class MVTeleport {
     public boolean safelyTeleport(Entity e, Location l) {
         if (this.bs.playerCanSpawnHereSafely(l)) {
             e.teleport(l);
-            //this.plugin.log(Level.WARNING, "The first location you gave me was safe.");
+            plugin.log(Level.FINE, "The first location you gave me was safe.");
             return true;
         }
-        if(e instanceof Minecart) {
-            Minecart m = (Minecart)e;
-            if(!this.bs.canSpawnCartSafely(m)) {
+        if (e instanceof Minecart) {
+            Minecart m = (Minecart) e;
+            if (!this.bs.canSpawnCartSafely(m)) {
                 return false;
             }
         }
-        else if(e instanceof Vehicle) {
-            Vehicle v = (Vehicle)e;
-            if(!this.bs.canSpawnVehicleSafely(v)) {
+        else if (e instanceof Vehicle) {
+            Vehicle v = (Vehicle) e;
+            if (!this.bs.canSpawnVehicleSafely(v)) {
                 return false;
             }
         }
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {
             // Add offset to account for a vehicle on dry land!
-            if (!this.bs.isEntitiyOnTrack(e, safeLocation)) {
+            if (e instanceof Minecart && !this.bs.isEntitiyOnTrack(e, safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
+                this.plugin.log(Level.FINER, "Player was inside a minecart. Offsetting Y location.");
             }
             e.teleport(safeLocation);
-            //this.plugin.log(Level.WARNING, "Had to look for a bit, but I found a safe place for ya!");
+            this.plugin.log(Level.FINE, "Had to look for a bit, but I found a safe place for ya!");
             return true;
         }
         if (e instanceof Player) {
             Player p = (Player) e;
             p.sendMessage("No safe locations found!");
+            this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
             p.sendMessage("No safe locations found!");
+            this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
-        this.plugin.log(Level.WARNING, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
+        this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return false;
     }
 

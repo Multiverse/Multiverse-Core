@@ -1,5 +1,7 @@
 package com.onarandombox.utils;
 
+import java.util.logging.Level;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -7,7 +9,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+
 public class BlockSafety {
+    private MultiverseCore plugin;
+
+    public BlockSafety(MultiverseCore plugin) {
+        this.plugin = plugin;
+    }
+
     /**
      * This function checks whether the block at the given coordinates are above air or not.
      * 
@@ -45,18 +55,25 @@ public class BlockSafety {
         downOne.setY(downOne.getY() - 1);
 
         if (this.isSolidBlock(actual.getBlock().getType()) || this.isSolidBlock(upOne.getBlock().getType())) {
+            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
+            this.plugin.log(Level.FINER, "There's fire below! (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
         if (isBlockAboveAir(actual)) {
+            this.plugin.log(Level.FINER, "Is block above air [" + isBlockAboveAir(actual) + "]");
+            this.plugin.log(Level.FINER, "Has 2 blocks of water below [" + this.hasTwoBlocksofWaterBelow(actual) + "]");
             return this.hasTwoBlocksofWaterBelow(actual);
         }
         return true;
@@ -122,6 +139,12 @@ public class BlockSafety {
                 return false;
             case SIGN_POST:
                 return false;
+            case WOODEN_DOOR:
+                return false;
+            case STATIONARY_WATER:
+                return false;
+            case WATER:
+                return false;
         }
         return true;
     }
@@ -145,41 +168,43 @@ public class BlockSafety {
         System.out.print("Location Down: " + downOne.getBlock().getType());
         System.out.print("               " + downOne);
     }
+
     /**
      * Checks recursively below location L for 2 blocks of water
+     * 
      * @param l
      * @return
      */
     public boolean hasTwoBlocksofWaterBelow(Location l) {
-        if(l.getBlockY() < 0) {
+        if (l.getBlockY() < 0) {
             return false;
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if(oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+        if (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
             return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
         }
-        if(oneBelow.getBlock().getType() != Material.AIR) {
+        if (oneBelow.getBlock().getType() != Material.AIR) {
             return false;
         }
         return hasTwoBlocksofWaterBelow(oneBelow);
     }
-    
+
     public boolean canSpawnCartSafely(Minecart cart) {
-        
-        if(this.isBlockAboveAir(cart.getLocation())) {
+
+        if (this.isBlockAboveAir(cart.getLocation())) {
             return true;
         }
-        if(this.isEntitiyOnTrack(cart, LocationManipulation.getNextBlock(cart))) {
-           return true; 
+        if (this.isEntitiyOnTrack(cart, LocationManipulation.getNextBlock(cart))) {
+            return true;
         }
         return false;
     }
-    
+
     public boolean canSpawnVehicleSafely(Vehicle vehicle) {
-        if(this.isBlockAboveAir(vehicle.getLocation())) {
+        if (this.isBlockAboveAir(vehicle.getLocation())) {
             return true;
         }
         return false;

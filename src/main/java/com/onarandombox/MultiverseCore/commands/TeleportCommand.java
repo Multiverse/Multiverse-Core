@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -111,6 +112,8 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         }
         if (!this.playerTeleporter.safelyTeleport(teleportee, l)) {
+            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + l);
+            this.plugin.log(Level.FINE, "Queueing Command");
             Class<?> paramTypes[] = { Player.class, Location.class };
             List<Object> items = new ArrayList<Object>();
             items.add(teleportee);

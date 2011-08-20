@@ -35,6 +35,7 @@ import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
 import com.onarandombox.MultiverseCore.commands.CoordCommand;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
+import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.commands.HelpCommand;
@@ -103,6 +104,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     private MVWeatherListener weatherListener = new MVWeatherListener(this);
 
     public UpdateChecker updateCheck;
+
+    public static int GlobalDebug = 0;
 
     // HashMap to contain all the Worlds which this Plugin will manage.
     private HashMap<String, MVWorld> worlds = new HashMap<String, MVWorld>();
@@ -265,6 +268,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
+        this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new SleepCommand(this));
 
     }
@@ -467,9 +471,9 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @return True if success, false if failure.
      */
     public Boolean deleteWorld(String name) {
-        
+
         if (this.getServer().getWorld(name) != null) {
-            if(!unloadWorld(name, false)) {
+            if (!unloadWorld(name, false)) {
                 // If the world was loaded, and we couldn't unload it, return false. DON"T DELTEE
                 return false;
             }
@@ -622,8 +626,20 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @param msg
      */
     public void log(Level level, String msg) {
-        log.log(level, this.tag + " " + msg);
-        debugLog.log(level, this.tag + " " + msg);
+        // We're using Config as debug
+        if (level == Level.FINE && GlobalDebug >= 1) {
+            this.debugLog(Level.INFO, msg);
+            return;
+        } else if (level == Level.FINER && GlobalDebug >= 2) {
+            this.debugLog(Level.INFO, msg);
+            return;
+        } else if (level == Level.FINEST && GlobalDebug >= 3) {
+            this.debugLog(Level.INFO, msg);
+            return;
+        } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
+            log.log(level, this.tag + " " + msg);
+            debugLog.log(level, this.tag + " " + msg);
+        }
     }
 
     /**
@@ -633,10 +649,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @param msg
      */
     public void debugLog(Level level, String msg) {
-        if (this.debug) {
-            log.log(level, "[Debug] " + msg);
-        }
-        debugLog.log(level, "[Debug] " + msg);
+        log.log(level, "[MVCore-Debug] " + msg);
+        debugLog.log(level, "[MVCore-Debug] " + msg);
     }
 
     /**
