@@ -182,3 +182,7 @@ commands:
     description: Prints out version invo.
     usage: |
             /<command>
+  mvdebug:
+    description: Turns on debugging.
+    usage: |
+            /<command>

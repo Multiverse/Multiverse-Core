@@ -126,7 +126,15 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-
+		 
+        <dependency>
+        <groupId>com.iCo6</groupId>
+            <artifactId>iConomy</artifactId>
+            <version>6.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.iConomy</groupId>
 			<artifactId>iConomy</artifactId>
@@ -150,6 +158,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+            <groupId>me.ashtheking.currency</groupId>
+            <artifactId>MultiCurrency</artifactId>
+            <version>0.09</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 		<!-- End of Economy Dependencies -->
 
 		<!-- Start of Permissions Dependencies -->
