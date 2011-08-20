@@ -182,21 +182,29 @@ public class MVTeleport {
     }
 
     public boolean safelyTeleport(Entity e, Location l) {
-        if (this.bs.playerCanSpawnHereSafely(l)) {
-            e.teleport(l);
-            plugin.log(Level.FINE, "The first location you gave me was safe.");
+        Location safeLoc = this.getSafeLocation(e, l);
+        if(safeLoc != null) {
+            e.teleport(safeLoc);
             return true;
+        }
+        return false;
+    }
+    
+    public Location getSafeLocation(Entity e, Location l) {
+        if (this.bs.playerCanSpawnHereSafely(l)) {
+            plugin.log(Level.FINE, "The first location you gave me was safe.");
+            return l;
         }
         if (e instanceof Minecart) {
             Minecart m = (Minecart) e;
             if (!this.bs.canSpawnCartSafely(m)) {
-                return false;
+                return null;
             }
         }
         else if (e instanceof Vehicle) {
             Vehicle v = (Vehicle) e;
             if (!this.bs.canSpawnVehicleSafely(v)) {
-                return false;
+                return null;
             }
         }
         Location safeLocation = this.getSafeLocation(l);
@@ -206,9 +214,8 @@ public class MVTeleport {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
                 this.plugin.log(Level.FINER, "Player was inside a minecart. Offsetting Y location.");
             }
-            e.teleport(safeLocation);
             this.plugin.log(Level.FINE, "Had to look for a bit, but I found a safe place for ya!");
-            return true;
+            return safeLocation;
         }
         if (e instanceof Player) {
             Player p = (Player) e;
@@ -221,7 +228,7 @@ public class MVTeleport {
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
-        return false;
+        return null;
     }
 
 }
