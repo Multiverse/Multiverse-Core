@@ -6,12 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
-import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericPopup;
-import org.getspout.spoutapi.gui.InGameHUD;
-import org.getspout.spoutapi.gui.InGameScreen;
-import org.getspout.spoutapi.gui.ItemWidget;
 import org.getspout.spoutapi.gui.PopupScreen;
 import org.getspout.spoutapi.player.SpoutPlayer;
 

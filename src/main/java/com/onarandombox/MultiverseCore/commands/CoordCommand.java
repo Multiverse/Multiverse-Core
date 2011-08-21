@@ -16,8 +16,6 @@ import com.onarandombox.utils.LocationManipulation;
 
 public class CoordCommand extends MultiverseCommand {
 
-    private LocationManipulation locMan = new LocationManipulation();
-
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Coordinates");

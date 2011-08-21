@@ -13,9 +13,10 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.MVDestination;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.InvalidDestination;
+import com.onarandombox.utils.LocationManipulation;
+import com.onarandombox.utils.MVDestination;
 
 public class TeleportCommand extends MultiverseCommand {
     private MVTeleport playerTeleporter;
@@ -84,7 +85,7 @@ public class TeleportCommand extends MultiverseCommand {
             }
 
         }
-        DestinationFactory df = this.plugin.getDestinationFactory();// .parseDestination(worldName, (MultiverseCore) this.plugin);
+        DestinationFactory df = this.plugin.getDestinationFactory();
         MVDestination d = df.getDestination(destinationName);
         if (d != null && d instanceof InvalidDestination) {
             sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + destinationName);
@@ -106,18 +107,17 @@ public class TeleportCommand extends MultiverseCommand {
             }
             return;
         }
-        Location l = d.getLocation(teleportee);
-        if (l == null) {
+        if (d.getLocation(teleportee) == null) {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
         }
-        if (!this.playerTeleporter.safelyTeleport(teleportee, l)) {
-            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + l);
+        if (!this.playerTeleporter.safelyTeleport(teleportee, d)) {
+            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + LocationManipulation.strCoordsRaw(d.getLocation(teleportee)));
             this.plugin.log(Level.FINE, "Queueing Command");
             Class<?> paramTypes[] = { Player.class, Location.class };
             List<Object> items = new ArrayList<Object>();
             items.add(teleportee);
-            items.add(l);
+            items.add(d.getLocation(teleportee));
             String player = "you";
             if (!teleportee.equals(teleporter)) {
                 player = teleportee.getName();
