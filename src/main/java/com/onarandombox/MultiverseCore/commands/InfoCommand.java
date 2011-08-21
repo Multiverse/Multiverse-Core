@@ -15,6 +15,7 @@ import com.onarandombox.utils.FancyColorScheme;
 import com.onarandombox.utils.FancyHeader;
 import com.onarandombox.utils.FancyMessage;
 import com.onarandombox.utils.FancyText;
+import com.onarandombox.utils.LocationManipulation;
 
 public class InfoCommand extends MultiverseCommand {
 
@@ -94,8 +95,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
         message.add(new FancyMessage("Seed: ", world.getCBWorld().getSeed() + "", colors));
-        Location spawn = world.getCBWorld().getSpawnLocation();
-        message.add(new FancyMessage("Spawn Location: ", "(" + spawn.getBlockX() + ", " + spawn.getBlockY() + ", " + spawn.getBlockZ() + ")", colors));
+        Location spawn = world.getSpawnLocation();
+        message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling().toString(), colors));
         if (world.getPrice() > 0) {
             message.add(new FancyMessage("Price to enter this world: ", this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));

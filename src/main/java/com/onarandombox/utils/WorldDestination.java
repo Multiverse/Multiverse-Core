@@ -42,14 +42,20 @@ public class WorldDestination implements MVDestination {
 
     @Override
     public Location getLocation(Entity e) {
-        Location spawnLoc = this.world.getCBWorld().getSpawnLocation();
+        Location spawnLoc = getAcurateSpawnLocation(e, this.world);
         if (this.yaw >= 0) {
             // Only modify the yaw if its set. 
             spawnLoc.setYaw(this.yaw);
-            
         }
-        spawnLoc.add(.5, 0, .5);
         return spawnLoc;
+    }
+    
+    private Location getAcurateSpawnLocation(Entity e, MVWorld world) {
+        if(world != null) {
+            return world.getSpawnLocation();
+        } else {
+            return e.getWorld().getSpawnLocation().add(.5, 0, .5);    
+        }
     }
 
     @Override

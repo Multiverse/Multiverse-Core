@@ -535,6 +535,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
             World safeWorld = this.getServer().getWorlds().get(0);
             List<Player> ps = w.getPlayers();
             for (Player p : ps) {
+                
                 p.teleport(safeWorld.getSpawnLocation());
             }
         }

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class SpawnCommand extends MultiverseCommand {
@@ -41,7 +42,8 @@ public class SpawnCommand extends MultiverseCommand {
             Player target = this.plugin.getServer().getPlayer(args.get(0));
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");
-                target.teleport(target.getWorld().getSpawnLocation());
+                spawnAccurately(target);
+                
                 if (player != null) {
                     target.sendMessage("You were teleported by: " + ChatColor.YELLOW + player.getName());
                 } else {
@@ -57,10 +59,19 @@ public class SpawnCommand extends MultiverseCommand {
             }
             if (player != null) {
                 player.sendMessage("Teleporting to this world's spawn...");
-                player.teleport(player.getWorld().getSpawnLocation());
+                spawnAccurately(player);
             } else {
                 sender.sendMessage("From the console, you must provide a PLAYER.");
             }
+        }
+    }
+
+    private void spawnAccurately(Player player) {
+        MVWorld world = this.plugin.getMVWorld(player.getWorld().getName());
+        if(world != null) {
+            player.teleport(world.getSpawnLocation());
+        } else {
+            player.teleport(player.getWorld().getSpawnLocation());    
         }
     }
 }

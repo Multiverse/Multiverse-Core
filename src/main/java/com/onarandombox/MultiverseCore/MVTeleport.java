@@ -10,6 +10,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import com.onarandombox.utils.BlockSafety;
+import com.onarandombox.utils.InvalidDestination;
 import com.onarandombox.utils.LocationManipulation;
 import com.onarandombox.utils.MVDestination;
 
@@ -255,6 +256,10 @@ public class MVTeleport {
      * @return true for success, false for failure
      */
     public boolean safelyTeleport(Entity e, MVDestination d) {
+        if(d instanceof InvalidDestination) {
+            this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
+            return false;
+        }
         Location safeLoc = this.getSafeLocation(e, d);
         if (safeLoc != null) {
             e.teleport(safeLoc);
