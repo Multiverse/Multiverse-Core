@@ -39,6 +39,7 @@ import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
 import com.onarandombox.MultiverseCore.commands.HelpCommand;
 import com.onarandombox.MultiverseCore.commands.ImportCommand;
 import com.onarandombox.MultiverseCore.commands.InfoCommand;
@@ -52,7 +53,6 @@ import com.onarandombox.MultiverseCore.commands.PurgeCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
-import com.onarandombox.MultiverseCore.commands.SleepCommand;
 import com.onarandombox.MultiverseCore.commands.SpawnCommand;
 import com.onarandombox.MultiverseCore.commands.SpoutCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
@@ -268,6 +268,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
+        this.commandHandler.registerCommand(new GeneratorCommand(this));
     }
 
     /**

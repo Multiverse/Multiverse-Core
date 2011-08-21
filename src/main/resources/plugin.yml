@@ -186,3 +186,11 @@ commands:
     description: Turns on debugging.
     usage: |
             /<command>
+  mvgenerators:
+    description: Turns on debugging.
+    usage: |
+            /<command>
+  mvgens:
+    description: Turns on debugging.
+    usage: |
+            /<command>
