@@ -83,9 +83,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     private static DebugLog debugLog;
     public static boolean MobsDisabledInDefaultWorld = false;
 
-    // Debug Mode
-    private boolean debug;
-
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
 
@@ -236,7 +233,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         }
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
-        this.debug = this.configMV.getBoolean("debug", false);
+        GlobalDebug = this.configMV.getInt("debug", 0);
     }
 
     /**
@@ -268,13 +265,9 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.commandHandler.registerCommand(new ModifySetCommand(this));
         this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
         this.commandHandler.registerCommand(new ModifyClearCommand(this));
-
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
-        this.commandHandler.registerCommand(new SleepCommand(this));
-        
-
     }
 
     /**
