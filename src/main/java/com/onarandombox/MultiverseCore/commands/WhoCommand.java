@@ -78,7 +78,7 @@ public class WhoCommand extends MultiverseCommand {
                 result = "Empty";
             } else {
                 for (Player player : players) {
-                    result += player.getName() + " ";
+                    result += player.getDisplayName() + " ";
                 }
             }
 
