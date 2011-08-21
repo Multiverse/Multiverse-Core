@@ -74,15 +74,24 @@ public class MVPlayerListener extends PlayerListener {
         }
 
         // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
-        if (respawnWorld == null) {
-            return;
+        // NOW: We'll always handle it to get more accurate spawns
+        if (respawnWorld != null) {
+            world = respawnWorld.getCBWorld();
         }
-
-        Location respawnLocation = respawnWorld.getCBWorld().getSpawnLocation();
+        // World has been set to the appropriate world
+        Location respawnLocation = getMostAccurateRespawnLocation(world);
 
         MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+    }
+
+    private Location getMostAccurateRespawnLocation(World w) {
+        MVWorld mvw = this.plugin.getMVWorld(w.getName());
+        if (mvw != null) {
+            return mvw.getSpawnLocation();
+        }
+        return w.getSpawnLocation();
     }
 
     @Override
@@ -118,14 +127,14 @@ public class MVPlayerListener extends PlayerListener {
                 return;
             }
         }
-        if(toWorld == null) {
+        if (toWorld == null) {
             // The toworld is not handled by MV, we don't care about payments
             return;
         }
         // Only check payments if it's a different world:
         if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
             // If the player does not have to pay, return now.
-            if(toWorld.isExempt(event.getPlayer())) {
+            if (toWorld.isExempt(event.getPlayer())) {
                 return;
             }
             GenericBank bank = plugin.getBank();

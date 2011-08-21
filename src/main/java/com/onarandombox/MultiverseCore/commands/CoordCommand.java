@@ -50,7 +50,7 @@ public class CoordCommand extends MultiverseCommand {
             DecimalFormat df = new DecimalFormat();
             df.setMinimumFractionDigits(0);
             df.setMaximumFractionDigits(2);
-            p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + this.locMan.strCoords(p.getLocation()) + ChatColor.GOLD + "Pitch: " + df.format(p.getLocation().getPitch()));
+            p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + LocationManipulation.strCoords(p.getLocation()));
             p.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + LocationManipulation.getDirection(p.getLocation()));
             p.sendMessage(ChatColor.AQUA + "Block: " + ChatColor.WHITE + Material.getMaterial(world.getBlockTypeIdAt(p.getLocation())));
         } else {

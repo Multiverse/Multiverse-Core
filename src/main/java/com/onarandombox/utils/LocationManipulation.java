@@ -62,12 +62,11 @@ public class LocationManipulation {
     }
 
     /**
-     * Convert a Location to XYZ Coordinates.
-     * 
+     * Returns a colored string with the coords
      * @param l
      * @return
      */
-    public String strCoords(Location l) {
+    public static String strCoords(Location l) {
         String result = "";
         DecimalFormat df = new DecimalFormat();
         df.setMinimumFractionDigits(0);
@@ -75,9 +74,15 @@ public class LocationManipulation {
         result += ChatColor.WHITE + "X: " + ChatColor.AQUA + df.format(l.getX()) + " ";
         result += ChatColor.WHITE + "Y: " + ChatColor.AQUA + df.format(l.getY()) + " ";
         result += ChatColor.WHITE + "Z: " + ChatColor.AQUA + df.format(l.getZ()) + " ";
+        result += ChatColor.WHITE + "P: " + ChatColor.GOLD + df.format(l.getPitch()) + " ";
+        result += ChatColor.WHITE + "Y: " + ChatColor.GOLD + df.format(l.getYaw()) + " ";
         return result;
     }
-
+    /**
+     * Converts a location to a printable readable formatted string including pitch/yaw
+     * @param l
+     * @return
+     */
     public static String strCoordsRaw(Location l) {
         String result = "";
         DecimalFormat df = new DecimalFormat();
@@ -122,7 +127,11 @@ public class LocationManipulation {
 
         return dir;
     }
-
+    /**
+     * Returns the float yaw position for the given cardianl direction
+     * @param orientation
+     * @return
+     */
     public static float getYaw(String orientation) {
         if (orientation == null) {
             return 0;
@@ -132,13 +141,23 @@ public class LocationManipulation {
         }
         return 0;
     }
-
+    /**
+     * Returns a speed float from a given vector.
+     * @param v
+     * @return
+     */
     public static float getSpeed(Vector v) {
         return (float) Math.sqrt(v.getX() * v.getX() + v.getZ() * v.getZ());
     }
 
     // X, Y, Z
     // -W/+E,0, -N/+S
+    /**
+     * Returns a translated vector from the given direction
+     * @param v
+     * @param direction
+     * @return
+     */
     public static Vector getTranslatedVector(Vector v, String direction) {
         if (direction == null) {
             return v;

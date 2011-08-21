@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -97,6 +98,7 @@ public class MVWorld {
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private boolean allowWeather;
+    private Location spawnLocation;
 
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -140,7 +142,7 @@ public class MVWorld {
         this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
         this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
         this.translateTempSpawn(config);
-
+        this.readSpawnFromConfig(this.getCBWorld());
         this.canSave = true;
         saveConfig();
 
@@ -202,7 +204,7 @@ public class MVWorld {
 
                         coords[i] = Integer.parseInt(coordsString[i]);
                     }
-                    this.world.setSpawnLocation(coords[0], coords[1], coords[2]);
+                    this.setSpawn(new Location(this.getCBWorld(), coords[0], coords[2], coords[3]));
                 } catch (NumberFormatException e) {
                     this.plugin.log(Level.WARNING, "A MV1 spawn value was found, but it could not be migrated. Format Error. Sorry.");
                 }
@@ -631,8 +633,35 @@ public class MVWorld {
     public boolean getWeatherEnabled() {
         return this.allowWeather;
     }
-    
+
     public boolean getKeepSpawnInMemory() {
         return this.keepSpawnInMemory;
+    }
+
+    public boolean setSpawn(Location l) {
+        this.getCBWorld().setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+        config.setProperty("worlds." + this.name + ".spawn.x", l.getX());
+        config.setProperty("worlds." + this.name + ".spawn.y", l.getY());
+        config.setProperty("worlds." + this.name + ".spawn.z", l.getZ());
+        config.setProperty("worlds." + this.name + ".spawn.pitch", l.getPitch());
+        config.setProperty("worlds." + this.name + ".spawn.yaw", l.getYaw());
+        this.getCBWorld().setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+        this.spawnLocation = l.clone();
+        saveConfig();
+        return true;
+
+    }
+
+    private void readSpawnFromConfig(World w) {
+        double x = config.getDouble("worlds." + this.name + ".spawn.x", w.getSpawnLocation().getX());
+        double y = config.getDouble("worlds." + this.name + ".spawn.y", w.getSpawnLocation().getY());
+        double z = config.getDouble("worlds." + this.name + ".spawn.z", w.getSpawnLocation().getZ());
+        float pitch = (float) config.getDouble("worlds." + this.name + ".spawn.pitch", w.getSpawnLocation().getPitch());
+        float yaw = (float) config.getDouble("worlds." + this.name + ".spawn.yaw", w.getSpawnLocation().getYaw());
+        this.spawnLocation = new Location(w, x, y, z, yaw, pitch);
+    }
+
+    public Location getSpawnLocation() {
+        return this.spawnLocation;
     }
 }
