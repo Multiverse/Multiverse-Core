@@ -273,7 +273,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new SleepCommand(this));
-        this.commandHandler.registerCommand(new SpoutCommand(this));
+        
 
     }
 
@@ -836,6 +836,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     public void setSpout(SpoutManager spoutManager) {
         this.spoutManager = spoutManager;
+        this.commandHandler.registerCommand(new SpoutCommand(this));
     }
 
     public SpoutManager getSpout() {
