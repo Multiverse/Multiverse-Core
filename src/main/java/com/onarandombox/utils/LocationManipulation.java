@@ -13,14 +13,14 @@ import org.bukkit.util.Vector;
 public class LocationManipulation {
     private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
     static {
-        orientationInts.put("n", 180);
-        orientationInts.put("ne", 225);
-        orientationInts.put("e", 270);
-        orientationInts.put("se", 315);
-        orientationInts.put("s", 0);
-        orientationInts.put("sw", 45);
-        orientationInts.put("w", 90);
-        orientationInts.put("nw", 135);
+        orientationInts.put("n", 90);
+        orientationInts.put("ne", 135);
+        orientationInts.put("e", 180);
+        orientationInts.put("se", 225);
+        orientationInts.put("s", 270);
+        orientationInts.put("sw", 315);
+        orientationInts.put("w", 0);
+        orientationInts.put("nw", 45);
 
     }
 
