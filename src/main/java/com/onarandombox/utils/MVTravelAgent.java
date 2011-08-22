@@ -1,0 +1,86 @@
+package com.onarandombox.utils;
+
+import java.util.logging.Level;
+
+import org.bukkit.Location;
+import org.bukkit.TravelAgent;
+import org.bukkit.entity.Player;
+
+import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.CannonDestination;
+import com.onarandombox.utils.MVDestination;
+
+public class MVTravelAgent implements TravelAgent {
+    private MVDestination destination;
+    private MultiverseCore core;
+    private Player player;
+
+    public MVTravelAgent(MultiverseCore multiverseCore, MVDestination d, Player p) {
+        System.out.print("Init Called");
+        this.destination = d;
+        this.core = multiverseCore;
+        this.player = p;
+    }
+
+    @Override
+    public TravelAgent setSearchRadius(int radius) {
+        return this;
+    }
+
+    @Override
+    public int getSearchRadius() {
+        return 0;
+    }
+
+    @Override
+    public TravelAgent setCreationRadius(int radius) {
+        return this;
+    }
+
+    @Override
+    public int getCreationRadius() {
+        return 0;
+    }
+
+    @Override
+    public boolean getCanCreatePortal() {
+        return false;
+    }
+
+    @Override
+    public void setCanCreatePortal(boolean create) {
+    }
+
+    @Override
+    public Location findOrCreate(Location location) {
+        System.out.print("fondOrCreate Called");
+        return this.getSafeLocation();
+    }
+
+    @Override
+    public Location findPortal(Location location) {
+        System.out.print("findPortal Called");
+        return this.getSafeLocation();
+    }
+
+    @Override
+    public boolean createPortal(Location location) {
+        return false;
+    }
+
+    private Location getSafeLocation() {
+        // At this time, these can never use the velocity.
+        if (this.destination instanceof CannonDestination) {
+            this.core.log(Level.FINE, "Using Stock TP method. This cannon will have 0 velocity");
+        }
+        MVTeleport teleporter = new MVTeleport(this.core);
+        Location newLoc = teleporter.getSafeLocation(this.player, this.destination);
+        if (newLoc == null) {
+            return this.player.getLocation();
+        }
+        return newLoc;
+
+    }
+
+}
