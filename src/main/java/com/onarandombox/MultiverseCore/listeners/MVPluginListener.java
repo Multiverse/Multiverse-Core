@@ -43,7 +43,7 @@ public class MVPluginListener extends ServerListener {
             }
         }
         if (event.getPlugin().getDescription().getName().equals("Spout")) {
-            this.plugin.setSpout(SpoutManager.getInstance());
+            this.plugin.setSpout();
             this.plugin.log(Level.INFO, "Spout integration enabled.");
         }
     }

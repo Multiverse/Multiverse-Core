@@ -37,7 +37,6 @@ public class SpoutCommand extends MultiverseCommand {
         }
         SpoutPlayer p = (SpoutPlayer) sender;
         if (!p.isSpoutCraftEnabled()) {
-
             sender.sendMessage(ChatColor.RED + p.getName() + "You need to be using the Spoutcraft client to run this command!");
             return;
         }

@@ -86,7 +86,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
 
-    private final String tag = "[Multiverse-Core]";
+    private final static String tag = "[Multiverse-Core]";
 
     // Multiverse Permissions Handler
     private MVPermissions ph;
@@ -117,7 +117,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
-    private SpoutManager spoutManager;
+    private SpoutInterface spoutInterface = null;
 
     @Override
     public void onLoad() {
@@ -340,7 +340,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @param env Environment Type
      */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
-        this.debugLog(Level.CONFIG, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
+        staticLog(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
         if (seedString != null && seedString.length() > 0) {
             try {
@@ -625,19 +625,22 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @param msg
      */
     public void log(Level level, String msg) {
-        // We're using Config as debug
+        staticLog(level, msg);
+    }
+
+    public static void staticLog(Level level, String msg) {
         if (level == Level.FINE && GlobalDebug >= 1) {
-            this.debugLog(Level.INFO, msg);
+            staticDebugLog(Level.INFO, msg);
             return;
         } else if (level == Level.FINER && GlobalDebug >= 2) {
-            this.debugLog(Level.INFO, msg);
+            staticDebugLog(Level.INFO, msg);
             return;
         } else if (level == Level.FINEST && GlobalDebug >= 3) {
-            this.debugLog(Level.INFO, msg);
+            staticDebugLog(Level.INFO, msg);
             return;
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            log.log(level, this.tag + " " + msg);
-            debugLog.log(level, this.tag + " " + msg);
+            log.log(level, tag + " " + msg);
+            debugLog.log(level, tag + " " + msg);
         }
     }
 
@@ -647,7 +650,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * @param level
      * @param msg
      */
-    public void debugLog(Level level, String msg) {
+    public static void staticDebugLog(Level level, String msg) {
         log.log(level, "[MVCore-Debug] " + msg);
         debugLog.log(level, "[MVCore-Debug] " + msg);
     }
@@ -828,12 +831,13 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         }
     }
 
-    public void setSpout(SpoutManager spoutManager) {
-        this.spoutManager = spoutManager;
+    public void setSpout() {
+        this.spoutInterface = new SpoutInterface();
         this.commandHandler.registerCommand(new SpoutCommand(this));
     }
 
-    public SpoutManager getSpout() {
-        return this.spoutManager;
+    public SpoutInterface getSpout() {
+        return this.spoutInterface;
     }
+
 }

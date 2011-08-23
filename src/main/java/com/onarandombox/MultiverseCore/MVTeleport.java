@@ -22,7 +22,7 @@ public class MVTeleport {
 
     public MVTeleport(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.bs = new BlockSafety(this.plugin);
+        this.bs = new BlockSafety();
     }
 
     /**

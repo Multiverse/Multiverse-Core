@@ -12,10 +12,9 @@ import org.bukkit.entity.Vehicle;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class BlockSafety {
-    private MultiverseCore plugin;
 
-    public BlockSafety(MultiverseCore plugin) {
-        this.plugin = plugin;
+    public BlockSafety() {
+        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -37,6 +36,11 @@ public class BlockSafety {
         Location l = new Location(world, x, y, z);
         return !playerCanSpawnHereSafely(l);
     }
+    
+    public boolean playerCanSpawnHereSafely(World world, double x, double y, double z) {
+        Location l = new Location(world, x, y, z);
+        return playerCanSpawnHereSafely(l);
+    }
 
     /**
      * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air etc. This also ensures there is enough space for a player to spawn!
@@ -55,25 +59,25 @@ public class BlockSafety {
         downOne.setY(downOne.getY() - 1);
 
         if (this.isSolidBlock(actual.getBlock().getType()) || this.isSolidBlock(upOne.getBlock().getType())) {
-            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
-            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
-            this.plugin.log(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            this.plugin.log(Level.FINER, "There's fire below! (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "There's fire below! (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
         if (isBlockAboveAir(actual)) {
-            this.plugin.log(Level.FINER, "Is block above air [" + isBlockAboveAir(actual) + "]");
-            this.plugin.log(Level.FINER, "Has 2 blocks of water below [" + this.hasTwoBlocksofWaterBelow(actual) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Is block above air [" + isBlockAboveAir(actual) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Has 2 blocks of water below [" + this.hasTwoBlocksofWaterBelow(actual) + "]");
             return this.hasTwoBlocksofWaterBelow(actual);
         }
         return true;
