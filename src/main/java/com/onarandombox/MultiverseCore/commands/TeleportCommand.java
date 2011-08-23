@@ -13,6 +13,7 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.InvalidDestination;
 import com.onarandombox.utils.LocationManipulation;
@@ -87,6 +88,12 @@ public class TeleportCommand extends MultiverseCommand {
         }
         DestinationFactory df = this.plugin.getDestinationFactory();
         MVDestination d = df.getDestination(destinationName);
+        MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter);
+        this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
+        if(teleportEvent.isCancelled()) {
+            return;
+        }
+        
         if (d != null && d instanceof InvalidDestination) {
             sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + destinationName);
             return;

@@ -1,33 +1,74 @@
 package com.onarandombox.MultiverseCore.event;
 
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
 import com.onarandombox.utils.MVDestination;
-
-public class MVTeleportEvent extends Event {
+/**
+ * Event that gets called when a player use the /mvtp command
+ * @author fernferret
+ *
+ */
+public class MVTeleportEvent extends Event implements Cancellable {
     private static final long serialVersionUID = 854826818438649269L;
-    private Player player;
+    private Player teleportee;
+    private CommandSender teleporter;
     private MVDestination dest;
-    private String teleportString;
+    private boolean isCancelled;
 
-
-    public MVTeleportEvent(MVDestination dest, Player p, String teleportString) {
+    public MVTeleportEvent(MVDestination dest, Player teleportee, CommandSender teleporter) {
         super("MVTeleport");
-        this.player = p;
+        this.teleportee = teleportee;
+        this.teleporter = teleporter;
         this.dest = dest;
-        this.teleportString = teleportString;
     }
 
-    public Player getPlayer() {
-        return this.player;
+    /**
+     * Returns the player who will be teleported by this event.
+     * 
+     * @return The player who will be teleported by this event.
+     */
+    public Player getTeleportee() {
+        return this.teleportee;
     }
 
-    public String getDestString() {
-        return this.teleportString;
+    /**
+     * Returns the location the player was before the teleport.
+     * 
+     * @return The location the player was before the teleport.
+     */
+    public Location getFrom() {
+        return this.teleportee.getLocation();
     }
 
-    public Class<? extends MVDestination> getDestType() {
-        return this.dest.getClass();
+    /**
+     * Returns the player who requested the Teleport
+     * 
+     * @return
+     */
+    public CommandSender getTeleporter() {
+        return this.teleporter;
+    }
+
+    /**
+     * Returns the destination that the player will spawn at.
+     * 
+     * @return The destination the player will spawn at.
+     */
+    public MVDestination getDestination() {
+        return this.dest;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.isCancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.isCancelled = cancel;
     }
 }
