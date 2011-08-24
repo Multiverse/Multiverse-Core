@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
-import org.getspout.spoutapi.SpoutManager;
 
 import com.fernferret.allpay.AllPay;
 import com.nijikokun.bukkit.Permissions.Permissions;

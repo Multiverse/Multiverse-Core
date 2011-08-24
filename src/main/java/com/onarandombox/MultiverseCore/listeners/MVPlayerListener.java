@@ -15,13 +15,16 @@ import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.utils.WorldManager;
 
 public class MVPlayerListener extends PlayerListener {
     MultiverseCore plugin;
     MVTeleport mvteleporter;
+    WorldManager worldManager;
 
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
+        worldManager = plugin.getWorldManager();
     }
 
     // Taken out until we do persistance.
@@ -44,10 +47,10 @@ public class MVPlayerListener extends PlayerListener {
             String world = event.getPlayer().getWorld().getName();
             String prefix = "";
             // If we're not a MV world, don't do anything
-            if (!this.plugin.isMVWorld(world)) {
+            if (!this.worldManager.isMVWorld(world)) {
                 return;
             }
-            MVWorld mvworld = this.plugin.getMVWorld(world);
+            MVWorld mvworld = this.worldManager.getMVWorld(world);
             prefix = mvworld.getColoredWorldString();
             String format = event.getFormat();
             event.setFormat("[" + prefix + "]" + format);
@@ -61,16 +64,16 @@ public class MVPlayerListener extends PlayerListener {
         World world = event.getPlayer().getWorld();
 
         // If it's not a World MV manages we stop.
-        if (!this.plugin.isMVWorld(world.getName())) {
+        if (!this.worldManager.isMVWorld(world.getName())) {
             return;
         }
 
         // Get the MVWorld
-        MVWorld mvWorld = this.plugin.getMVWorld(world.getName());
+        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // Get the instance of the World the player should respawn at.
         MVWorld respawnWorld = null;
-        if (this.plugin.isMVWorld(mvWorld.getRespawnToWorld())) {
-            respawnWorld = this.plugin.getMVWorld(mvWorld.getRespawnToWorld());
+        if (this.worldManager.isMVWorld(mvWorld.getRespawnToWorld())) {
+            respawnWorld = this.worldManager.getMVWorld(mvWorld.getRespawnToWorld());
         }
 
         // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
@@ -87,7 +90,7 @@ public class MVPlayerListener extends PlayerListener {
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
-        MVWorld mvw = this.plugin.getMVWorld(w.getName());
+        MVWorld mvw = this.worldManager.getMVWorld(w.getName());
         if (mvw != null) {
             return mvw.getSpawnLocation();
         }
@@ -96,7 +99,7 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.plugin.getMVWorlds().size() == 0 && this.plugin.getPermissions().hasPermission(event.getPlayer(), "multiverse.core.import", true)) {
+        if (this.worldManager.getMVWorlds().size() == 0 && this.plugin.getPermissions().hasPermission(event.getPlayer(), "multiverse.core.import", true)) {
             event.getPlayer().sendMessage("You don't have any worlds imported into Multiverse!");
             event.getPlayer().sendMessage("You can import your current worlds with " + ChatColor.AQUA + "/mvimport");
             event.getPlayer().sendMessage("or you can create new ones with " + ChatColor.GOLD + "/mvcreate");
@@ -111,8 +114,8 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        MVWorld fromWorld = this.plugin.getMVWorld(event.getTo().getWorld().getName());
-        MVWorld toWorld = this.plugin.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (toWorld != null) {
             if (!this.plugin.getPermissions().canEnterWorld(event.getPlayer(), toWorld)) {
                 event.getPlayer().sendMessage("You don't have access to go here...");

@@ -30,7 +30,7 @@ public class DebugCommand extends MultiverseCommand {
             } else {
                 try {
                     int debugLevel = Integer.parseInt(args.get(0));
-                    if(debugLevel > 3 || debugLevel < 0) {
+                    if (debugLevel > 3 || debugLevel < 0) {
                         throw new NumberFormatException();
                     }
                     MultiverseCore.GlobalDebug = debugLevel;

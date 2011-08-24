@@ -12,8 +12,10 @@ import org.bukkit.permissions.PermissionDefault;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.PurgeWorlds;
+import com.onarandombox.utils.WorldManager;
 
 public class PurgeCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public PurgeCommand(MultiverseCore plugin) {
         super(plugin);
@@ -23,6 +25,7 @@ public class PurgeCommand extends MultiverseCommand {
         this.addKey("mvpurge");
         this.addKey("mv purge");
         this.setPermission("multiverse.core.purge", "Removed the specified type of mob from the specified world.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -46,8 +49,8 @@ public class PurgeCommand extends MultiverseCommand {
             deathName = args.get(1);
         }
 
-        if (!worldName.equalsIgnoreCase("all") && !this.plugin.isMVWorld(worldName)) {
-            ((MultiverseCore)this.plugin).showNotMVWorldMessage(sender, worldName);
+        if (!worldName.equalsIgnoreCase("all") && !this.worldManager.isMVWorld(worldName)) {
+            ((MultiverseCore) this.plugin).showNotMVWorldMessage(sender, worldName);
             sender.sendMessage("It cannot be purged.");
             return;
         }
@@ -55,12 +58,12 @@ public class PurgeCommand extends MultiverseCommand {
         List<MVWorld> worldsToRemoveEntitiesFrom = new ArrayList<MVWorld>();
         // Handle all case any user who names a world "all" should know better...
         if (worldName.equalsIgnoreCase("all")) {
-            worldsToRemoveEntitiesFrom.addAll(this.plugin.getMVWorlds());
+            worldsToRemoveEntitiesFrom.addAll(this.worldManager.getMVWorlds());
         } else {
-            worldsToRemoveEntitiesFrom.add(this.plugin.getMVWorld(worldName));
+            worldsToRemoveEntitiesFrom.add(this.worldManager.getMVWorld(worldName));
         }
 
-        PurgeWorlds purger = this.plugin.getWorldPurger();
+        PurgeWorlds purger = this.worldManager.getWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
         if (deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
             thingsToKill.add(deathName.toUpperCase());

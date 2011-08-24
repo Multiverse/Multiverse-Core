@@ -16,8 +16,10 @@ import com.onarandombox.utils.FancyHeader;
 import com.onarandombox.utils.FancyMessage;
 import com.onarandombox.utils.FancyText;
 import com.onarandombox.utils.LocationManipulation;
+import com.onarandombox.utils.WorldManager;
 
 public class InfoCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);
@@ -28,6 +30,7 @@ public class InfoCommand extends MultiverseCommand {
         this.addKey("mvi");
         this.addKey("mv info");
         this.setPermission("multiverse.core.info", "Returns detailed information on the world.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -46,7 +49,7 @@ public class InfoCommand extends MultiverseCommand {
             }
         }
         else if (args.size() == 1) {
-            if (this.plugin.getMVWorld(args.get(0)) != null) {
+            if (this.worldManager.getMVWorld(args.get(0)) != null) {
                 // then we have a world!
                 worldName = args.get(0);
             } else {
@@ -73,12 +76,12 @@ public class InfoCommand extends MultiverseCommand {
             }
         }
 
-        if (this.plugin.isMVWorld(worldName)) {
+        if (this.worldManager.isMVWorld(worldName)) {
             Player p = null;
-            if(sender instanceof Player) {
+            if (sender instanceof Player) {
                 p = (Player) sender;
             }
-            showPage(pageNum, sender, this.buildEntireCommand(this.plugin.getMVWorld(worldName), p));
+            showPage(pageNum, sender, this.buildEntireCommand(this.worldManager.getMVWorld(worldName), p));
         } else if (this.plugin.getServer().getWorld(worldName) != null) {
             sender.sendMessage("That world exists, but multiverse does not know about it!");
             sender.sendMessage("You can import it with" + ChatColor.AQUA + "/mv import " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
@@ -105,7 +108,7 @@ public class InfoCommand extends MultiverseCommand {
         }
 
         if (world.getRespawnToWorld() != null) {
-            MVWorld respawn = this.plugin.getMVWorld(world.getRespawnToWorld());
+            MVWorld respawn = this.worldManager.getMVWorld(world.getRespawnToWorld());
             if (respawn != null) {
                 message.add(new FancyMessage("Players will respawn in: ", respawn.getColoredWorldString(), colors));
             } else {
@@ -165,10 +168,10 @@ public class InfoCommand extends MultiverseCommand {
     }
 
     private String toCommaSeperated(List<String> list) {
-        if(list == null || list.size() == 0) {
+        if (list == null || list.size() == 0) {
             return "";
         }
-        if(list.size() == 1) {
+        if (list.size() == 1) {
             return list.get(0);
         }
         String result = list.get(0);

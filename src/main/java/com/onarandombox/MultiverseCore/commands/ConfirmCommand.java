@@ -18,7 +18,7 @@ public class ConfirmCommand extends MultiverseCommand {
         this.addKey("mvconfirm");
         this.addKey("mv confirm");
         this.setPermission("multiverse.core.confirm", "If you have not been prompted to use this, it will not do anything.", PermissionDefault.OP);
-        
+
     }
 
     @Override

@@ -13,8 +13,10 @@ import org.bukkit.permissions.PermissionDefault;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.LocationManipulation;
+import com.onarandombox.utils.WorldManager;
 
 public class CoordCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);
@@ -25,6 +27,7 @@ public class CoordCommand extends MultiverseCommand {
         this.addKey("mvcoord");
         this.addKey("mvco");
         this.setPermission("multiverse.core.coord", "Returns detailed information on the Players where abouts.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -34,12 +37,12 @@ public class CoordCommand extends MultiverseCommand {
             Player p = (Player) sender;
             World world = p.getWorld();
 
-            if (!this.plugin.isMVWorld(world.getName())) {
+            if (!this.worldManager.isMVWorld(world.getName())) {
                 this.plugin.showNotMVWorldMessage(sender, world.getName());
                 return;
             }
 
-            MVWorld mvworld = this.plugin.getMVWorld(world.getName());
+            MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
 
             p.sendMessage(ChatColor.AQUA + "--- Location Information ---");
             p.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());

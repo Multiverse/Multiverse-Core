@@ -9,11 +9,13 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 
 // This will contain all the properties that support the ADD/REMOVE
 // Anything not in here will only support the SET action
 
 public class ModifyAddCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public ModifyAddCommand(MultiverseCore plugin) {
         super(plugin);
@@ -25,6 +27,7 @@ public class ModifyAddCommand extends MultiverseCommand {
         this.addKey("mv modify add");
         this.addKey("mvmodify add");
         this.setPermission("multiverse.core.modify.add", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -48,9 +51,9 @@ public class ModifyAddCommand extends MultiverseCommand {
         String property = args.get(1);
 
         if (args.size() == 2) {
-            world = this.plugin.getMVWorld(p.getWorld().getName());
+            world = this.worldManager.getMVWorld(p.getWorld().getName());
         } else {
-            world = this.plugin.getMVWorld(args.get(2));
+            world = this.worldManager.getMVWorld(args.get(2));
         }
 
         if (world == null) {

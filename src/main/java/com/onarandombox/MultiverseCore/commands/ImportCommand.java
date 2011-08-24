@@ -9,8 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 
 public class ImportCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
@@ -21,12 +23,13 @@ public class ImportCommand extends MultiverseCommand {
         this.addKey("mvim");
         this.addKey("mv import");
         this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
-        if (this.plugin.isMVWorld(worldName) && new File(worldName).exists()) {
+        if (this.worldManager.isMVWorld(worldName) && new File(worldName).exists()) {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
             return;
         }
@@ -46,7 +49,7 @@ public class ImportCommand extends MultiverseCommand {
 
         if (new File(worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
-            this.plugin.addWorld(worldName, environment, null, generator);
+            this.worldManager.addWorld(worldName, environment, null, generator);
             sender.sendMessage(ChatColor.GREEN + "Complete!");
             return;
         } else if (env == null) {

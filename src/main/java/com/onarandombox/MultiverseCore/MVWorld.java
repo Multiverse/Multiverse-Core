@@ -330,7 +330,7 @@ public class MVWorld {
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
-        this.plugin.getWorldPurger().purgeWorld(null, this);
+        this.plugin.getWorldManager().getWorldPurger().purgeWorld(null, this);
     }
 
     private boolean addToList(String list, Integer value) {

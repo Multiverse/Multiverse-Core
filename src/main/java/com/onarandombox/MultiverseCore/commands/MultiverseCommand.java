@@ -10,6 +10,7 @@ import com.pneumaticraft.commandhandler.Command;
 public abstract class MultiverseCommand extends Command {
 
     protected MultiverseCore plugin;
+
     public MultiverseCommand(MultiverseCore plugin) {
         super(plugin);
         this.plugin = plugin;

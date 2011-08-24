@@ -40,7 +40,7 @@ public class SpoutCommand extends MultiverseCommand {
             sender.sendMessage(ChatColor.RED + p.getName() + "You need to be using the Spoutcraft client to run this command!");
             return;
         }
-        PopupScreen pop  = new GenericPopup();
+        PopupScreen pop = new GenericPopup();
         GenericButton button = new GenericButton("Fish");
         button.setX(50);
         button.setY(50);

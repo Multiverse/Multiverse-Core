@@ -26,18 +26,18 @@ public class ReloadCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         sender.sendMessage(ChatColor.GOLD + "Reloading all Multiverse Plugin configs...");
         this.plugin.loadConfigs();
-        this.plugin.loadWorlds(true);
-        
+        this.plugin.getWorldManager().loadWorlds(true);
+
         // Create the event
         List<String> configsLoaded = new ArrayList<String>();
         configsLoaded.add("Multiverse-Core - config.yml");
         configsLoaded.add("Multiverse-Core - worlds.yml");
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
         this.plugin.getServer().getPluginManager().callEvent(configReload);
-        for(String s : configReload.getAllConfigsLoaded()) {
+        for (String s : configReload.getAllConfigsLoaded()) {
             sender.sendMessage(s);
         }
-        
+
         sender.sendMessage(ChatColor.GREEN + "Reload Complete!");
     }
 

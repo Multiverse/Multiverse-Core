@@ -9,8 +9,10 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 
 public class ModifySetCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);
@@ -22,6 +24,7 @@ public class ModifySetCommand extends MultiverseCommand {
         this.addKey("mv modify set");
         this.addKey("mvmodify set");
         this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -45,9 +48,9 @@ public class ModifySetCommand extends MultiverseCommand {
         String property = args.get(0);
 
         if (args.size() == 2) {
-            world = this.plugin.getMVWorld(p.getWorld().getName());
+            world = this.worldManager.getMVWorld(p.getWorld().getName());
         } else {
-            world = this.plugin.getMVWorld(args.get(2));
+            world = this.worldManager.getMVWorld(args.get(2));
         }
 
         if (world == null) {

@@ -21,15 +21,18 @@ import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 
 //import org.bukkit.event.entity.ExplosionPrimedEvent;
 
 public class MVEntityListener extends EntityListener {
 
-    MultiverseCore plugin;
+    private MultiverseCore plugin;
+    private WorldManager worldManager;
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
+        this.worldManager = plugin.getWorldManager();
     }
 
     /**
@@ -56,11 +59,11 @@ public class MVEntityListener extends EntityListener {
             Player player = (Player) defender;
             World w = player.getWorld();
 
-            if (!this.plugin.isMVWorld(w.getName())) {
+            if (!this.worldManager.isMVWorld(w.getName())) {
                 // if the world is not handled, we don't care
                 return;
             }
-            MVWorld world = this.plugin.getMVWorld(w.getName());
+            MVWorld world = this.worldManager.getMVWorld(w.getName());
 
             if (attacker != null && attacker instanceof Player) {
                 Player pattacker = (Player) attacker;
@@ -102,12 +105,12 @@ public class MVEntityListener extends EntityListener {
             return;
 
         // Check if it's a world which we are meant to be managing.
-        if (!(this.plugin.isMVWorld(world.getName())))
+        if (!(this.worldManager.isMVWorld(world.getName())))
             return;
 
         CreatureType creature = event.getCreatureType();
 
-        MVWorld mvworld = this.plugin.getMVWorld(world.getName());
+        MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
 
         /**
          * Animal Handling

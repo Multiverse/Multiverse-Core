@@ -10,8 +10,11 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 
 public class WhoCommand extends MultiverseCommand {
+
+    private WorldManager worldManager;
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
@@ -22,6 +25,7 @@ public class WhoCommand extends MultiverseCommand {
         this.addKey("mvw");
         this.addKey("mvwho");
         this.setPermission("multiverse.core.list.who", "States who is in what world.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -40,15 +44,15 @@ public class WhoCommand extends MultiverseCommand {
         if (args.size() > 0) {
             if (args.get(0).equalsIgnoreCase("--all") || args.get(0).equalsIgnoreCase("-a")) {
                 showAll = true;
-                worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
-            } else if (this.plugin.isMVWorld(args.get(0))) {
-                worlds.add(this.plugin.getMVWorld(args.get(0)));
+                worlds = new ArrayList<MVWorld>(this.worldManager.getMVWorlds());
+            } else if (this.worldManager.isMVWorld(args.get(0))) {
+                worlds.add(this.worldManager.getMVWorld(args.get(0)));
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
                 return;
             }
         } else {
-            worlds = new ArrayList<MVWorld>(this.plugin.getMVWorlds());
+            worlds = new ArrayList<MVWorld>(this.worldManager.getMVWorlds());
         }
 
         if (worlds.size() == 0) {
@@ -60,7 +64,7 @@ public class WhoCommand extends MultiverseCommand {
         }
 
         for (MVWorld world : worlds) {
-            if (!(this.plugin.isMVWorld(world.getName()))) {
+            if (!(this.worldManager.isMVWorld(world.getName()))) {
                 continue;
             }
 

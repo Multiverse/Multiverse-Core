@@ -97,8 +97,8 @@ public class HelpCommand extends MultiverseCommand {
                 filtered.add(c);
             } else if (c.getCommandDesc().matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
-            }else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
-                filtered.add(c);    
+            } else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
+                filtered.add(c);
             }
         }
         return filtered;

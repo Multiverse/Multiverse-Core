@@ -41,7 +41,7 @@ public class VersionCommand extends MultiverseCommand {
 
         logAndAddToPasteBinBuffer("Multiverse-Core Version: " + this.plugin.getDescription().getVersion());
         logAndAddToPasteBinBuffer("Bukkit Version: " + this.plugin.getServer().getVersion());
-        logAndAddToPasteBinBuffer("Loaded Worlds: " + this.plugin.getMVWorlds().size());
+        logAndAddToPasteBinBuffer("Loaded Worlds: " + this.plugin.getWorldManager().getMVWorlds().size());
         logAndAddToPasteBinBuffer("Multiverse Plugins Loaded: " + this.plugin.getPluginCount());
         logAndAddToPasteBinBuffer("Economy being used: " + this.plugin.getBank().getEconUsed());
         logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getPermissions().getType());
@@ -53,11 +53,11 @@ public class VersionCommand extends MultiverseCommand {
         logAndAddToPasteBinBuffer("disableautoheal: " + this.plugin.getConfig().getString("disableautoheal", "NOT SET"));
         logAndAddToPasteBinBuffer("fakepvp: " + this.plugin.getConfig().getString("fakepvp", "NOT SET"));
         logAndAddToPasteBinBuffer("Special Code: FRN001");
-        
+
         MVVersionRequestEvent versionEvent = new MVVersionRequestEvent(pasteBinBuffer);
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
         pasteBinBuffer = versionEvent.getPasteBinBuffer();
-        
+
         if (args.size() == 1 && args.get(0).equalsIgnoreCase("-p")) {
             String pasteBinUrl = postToPasteBin();
             sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteBinUrl);

@@ -8,7 +8,6 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
-
 public class EnvironmentCommand extends MultiverseCommand {
 
     public EnvironmentCommand(MultiverseCore plugin) {
@@ -22,7 +21,6 @@ public class EnvironmentCommand extends MultiverseCommand {
         this.addKey("mv environments");
         this.setPermission("multiverse.core.list.environments", "Lists valid known environments.", PermissionDefault.OP);
     }
-
 
     public static void showEnvironments(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");

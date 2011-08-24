@@ -9,9 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
 public class CreateCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -27,6 +29,7 @@ public class CreateCommand extends MultiverseCommand {
         this.addCommandExample("/mv create " + ChatColor.GOLD + "starwars" + ChatColor.AQUA + " skylands");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "gargamel" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -s gargamel");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "moonworld" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g BukkitFullOfMoon");
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -40,7 +43,7 @@ public class CreateCommand extends MultiverseCommand {
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
 
-        if (new File(worldName).exists() || this.plugin.isMVWorld(worldName)) {
+        if (new File(worldName).exists() || this.worldManager.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
@@ -53,7 +56,7 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
         sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
-        if (this.plugin.addWorld(worldName, environment, seed, generator)) {
+        if (this.worldManager.addWorld(worldName, environment, seed, generator)) {
             sender.sendMessage(ChatColor.GREEN + "Complete!");
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");

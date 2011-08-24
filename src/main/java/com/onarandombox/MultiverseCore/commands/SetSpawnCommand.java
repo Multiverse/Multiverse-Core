@@ -33,16 +33,15 @@ public class SetSpawnCommand extends MultiverseCommand {
             Player p = (Player) sender;
             Location l = p.getLocation();
             World w = p.getWorld();
-            MVWorld foundWorld = this.plugin.getMVWorld(w.getName());
-            if(foundWorld != null) {
+            MVWorld foundWorld = this.plugin.getWorldManager().getMVWorld(w.getName());
+            if (foundWorld != null) {
                 foundWorld.setSpawn(p.getLocation());
                 sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));
             } else {
                 w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
                 sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully.");
             }
-            
-            
+
         } else {
             sender.sendMessage("You cannot use this command from the console.");
         }

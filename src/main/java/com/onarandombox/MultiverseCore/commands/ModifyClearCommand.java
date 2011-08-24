@@ -9,8 +9,10 @@ import org.bukkit.permissions.PermissionDefault;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 
 public class ModifyClearCommand extends MultiverseCommand {
+    private WorldManager worldManager;
 
     public ModifyClearCommand(MultiverseCore plugin) {
         super(plugin);
@@ -22,6 +24,7 @@ public class ModifyClearCommand extends MultiverseCommand {
         this.addKey("mv modify clear");
         this.addKey("mvmodify clear");
         this.setPermission("multiverse.core.modify.clear", "Removes all values from a property. This will work on properties that contain lists.", PermissionDefault.OP);
+        this.worldManager = this.plugin.getWorldManager();
     }
 
     @Override
@@ -43,9 +46,9 @@ public class ModifyClearCommand extends MultiverseCommand {
         String property = args.get(0);
 
         if (args.size() == 1) {
-            world = this.plugin.getMVWorld(p.getWorld().getName());
+            world = this.worldManager.getMVWorld(p.getWorld().getName());
         } else {
-            world = this.plugin.getMVWorld(args.get(1));
+            world = this.worldManager.getMVWorld(args.get(1));
         }
 
         if (world == null) {

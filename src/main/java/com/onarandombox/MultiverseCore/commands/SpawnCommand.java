@@ -24,7 +24,7 @@ public class SpawnCommand extends MultiverseCommand {
         this.addKey("mvs");
         this.setPermission("multiverse.core.spawn.self", "Teleports you to the Spawn Point of the world you are in.", PermissionDefault.OP);
         this.addAdditonalPermission(otherPerm);
-        
+
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SpawnCommand extends MultiverseCommand {
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");
                 spawnAccurately(target);
-                
+
                 if (player != null) {
                     target.sendMessage("You were teleported by: " + ChatColor.YELLOW + player.getName());
                 } else {
@@ -67,11 +67,11 @@ public class SpawnCommand extends MultiverseCommand {
     }
 
     private void spawnAccurately(Player player) {
-        MVWorld world = this.plugin.getMVWorld(player.getWorld().getName());
-        if(world != null) {
+        MVWorld world = this.plugin.getWorldManager().getMVWorld(player.getWorld().getName());
+        if (world != null) {
             player.teleport(world.getSpawnLocation());
         } else {
-            player.teleport(player.getWorld().getSpawnLocation());    
+            player.teleport(player.getWorld().getSpawnLocation());
         }
     }
 }

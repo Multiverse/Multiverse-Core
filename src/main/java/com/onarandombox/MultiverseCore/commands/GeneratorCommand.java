@@ -31,15 +31,15 @@ public class GeneratorCommand extends MultiverseCommand {
         Plugin[] plugins = this.plugin.getServer().getPluginManager().getPlugins();
         List<String> generators = new ArrayList<String>();
         for (Plugin p : plugins) {
-            if(p.isEnabled() && p.getDefaultWorldGenerator("world", "") != null) {
+            if (p.isEnabled() && p.getDefaultWorldGenerator("world", "") != null) {
                 generators.add(p.getDescription().getName());
             }
         }
         sender.sendMessage(ChatColor.AQUA + "--- Loaded Generator Plugins ---");
         String loadedGens = "";
         boolean altColor = false;
-        for(String s : generators) {
-            if(altColor) {
+        for (String s : generators) {
+            if (altColor) {
                 altColor = false;
                 loadedGens += ChatColor.YELLOW + s + "";
             } else {
@@ -47,7 +47,7 @@ public class GeneratorCommand extends MultiverseCommand {
                 loadedGens += ChatColor.WHITE + s + "";
             }
         }
-        if(loadedGens.length() == 0) {
+        if (loadedGens.length() == 0) {
             loadedGens = ChatColor.RED + "No Generator Plugins found.";
         }
         sender.sendMessage(loadedGens);

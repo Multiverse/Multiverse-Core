@@ -12,11 +12,13 @@ import org.bukkit.permissions.PermissionDefault;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.utils.MVDestination;
+import com.onarandombox.utils.WorldManager;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 
 public class MVPermissions implements PermissionsInterface {
 
     private MultiverseCore plugin;
+    private WorldManager worldMgr;
     private PermissionHandler permissions = null;
 
     /**
@@ -26,6 +28,7 @@ public class MVPermissions implements PermissionsInterface {
      */
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
+        this.worldMgr = plugin.getWorldManager();
         // We have to see if permissions was loaded before MV was
         if (this.plugin.getServer().getPluginManager().getPlugin("Permissions") != null) {
             this.setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
@@ -56,10 +59,10 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     public boolean canTravelFromLocation(Player teleporter, Location location) {
-        if (!this.plugin.isMVWorld(location.getWorld().getName())) {
+        if (!this.worldMgr.isMVWorld(location.getWorld().getName())) {
             return false;
         }
-        return canTravelFromWorld(teleporter, this.plugin.getMVWorld(location.getWorld().getName()));
+        return canTravelFromWorld(teleporter, this.worldMgr.getMVWorld(location.getWorld().getName()));
     }
 
     /**
@@ -78,7 +81,7 @@ public class MVPermissions implements PermissionsInterface {
             return false;
         }
         String worldName = l.getWorld().getName();
-        if (!this.plugin.isMVWorld(worldName)) {
+        if (!this.plugin.getWorldManager().isMVWorld(worldName)) {
             return false;
         }
         return this.hasPermission(p, "multiverse.access." + worldName, false);
@@ -89,7 +92,7 @@ public class MVPermissions implements PermissionsInterface {
             return false;
         }
         String worldName = d.getLocation(p).getWorld().getName();
-        if (!this.plugin.isMVWorld(worldName)) {
+        if (!this.worldMgr.isMVWorld(worldName)) {
             return false;
         }
         if (!canEnterLocation(p, d.getLocation(p))) {
