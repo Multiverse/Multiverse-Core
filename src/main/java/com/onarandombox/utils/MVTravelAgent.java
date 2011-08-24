@@ -17,7 +17,6 @@ public class MVTravelAgent implements TravelAgent {
     private Player player;
 
     public MVTravelAgent(MultiverseCore multiverseCore, MVDestination d, Player p) {
-        System.out.print("Init Called");
         this.destination = d;
         this.core = multiverseCore;
         this.player = p;
@@ -54,13 +53,11 @@ public class MVTravelAgent implements TravelAgent {
 
     @Override
     public Location findOrCreate(Location location) {
-        System.out.print("fondOrCreate Called");
         return this.getSafeLocation();
     }
 
     @Override
     public Location findPortal(Location location) {
-        System.out.print("findPortal Called");
         return this.getSafeLocation();
     }
 
