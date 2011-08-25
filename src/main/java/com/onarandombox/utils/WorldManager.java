@@ -329,5 +329,14 @@ public class WorldManager {
     public PurgeWorlds getWorldPurger() {
         return this.worldPurger;
     }
+    
+    public Configuration loadWorldConfig(File file) {
+        this.configWorlds = new Configuration(file);
+        return this.configWorlds;
+    }
+    
+    public void propigateConfigFile() {
+        this.configWorlds.load();
+    }
 
 }

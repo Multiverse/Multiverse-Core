@@ -88,8 +88,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     // Configurations
     private Configuration configMV = null;
-    @Deprecated
-    private Configuration configWorlds = null;
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
@@ -102,14 +100,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     public static int GlobalDebug = 0;
 
-    // HashMap to contain all the Worlds which this Plugin will manage.
-    @Deprecated
-    private HashMap<String, MVWorld> worlds = new HashMap<String, MVWorld>();
-
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
-    @Deprecated
-    private PurgeWorlds worldPurger;
     private GenericBank bank = null;
     private AllPay banker = new AllPay(this, tag + " ");
     protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
@@ -149,8 +141,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
-        // Setup the world purger
-        this.worldPurger = new PurgeWorlds(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
 
@@ -214,7 +204,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         new DefaultConfig(getDataFolder(), "worlds.yml", this.migrator);
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
-        this.configWorlds = new Configuration(new File(getDataFolder(), "worlds.yml"));
+        
+        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         // Now attempt to Load the configurations.
         try {
@@ -225,7 +216,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         }
 
         try {
-            this.configWorlds.load();
+            this.worldManager.propigateConfigFile();
             log(Level.INFO, "- World Config -- Loaded");
         } catch (Exception e) {
             log(Level.INFO, "- Failed to load worlds.yml");
@@ -354,7 +345,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     @Deprecated
     public PurgeWorlds getWorldPurger() {
-        return this.worldPurger;
+        return this.worldManager.getWorldPurger();
     }
 
     /**
@@ -466,7 +457,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     // TODO: Find out where to put these next 3 methods! I just stuck them here for now --FF
     @Deprecated
     public Collection<MVWorld> getMVWorlds() {
-        return this.worlds.values();
+        return this.worldManager.getMVWorlds();
     }
 
     @Deprecated
