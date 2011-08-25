@@ -181,12 +181,13 @@ public class MVPermissions implements PermissionsInterface {
         return true;
     }
 
-    public void addPermission(String string, PermissionDefault defaultValue) {
+    public Permission addPermission(String string, PermissionDefault defaultValue) {
         if (this.plugin.getServer().getPluginManager().getPermission(string) == null) {
             Permission permission = new Permission(string, defaultValue);
             this.plugin.getServer().getPluginManager().addPermission(permission);
             this.addToParentPerms(string);
         }
+        return this.plugin.getServer().getPluginManager().getPermission(string);
     }
 
     private void addToParentPerms(String permString) {
