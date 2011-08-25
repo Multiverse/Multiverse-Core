@@ -89,6 +89,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     // Configurations
     private Configuration configMV = null;
 
+    private WorldManager worldManager = new WorldManager(this);
+    
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
 
@@ -108,7 +110,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     protected int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    private WorldManager worldManager;
+    
 
     @Override
     public void onLoad() {
@@ -145,7 +147,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.registerCommands();
 
         this.playerSessions = new HashMap<String, MVPlayerSession>();
-        this.worldManager = new WorldManager(this);
+        
 
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());

@@ -24,6 +24,7 @@ public class WorldManager {
     private Configuration configWorlds = null;
 
     public WorldManager(MultiverseCore core) {
+        
         this.plugin = core;
         this.worlds = new HashMap<String, MVWorld>();
         this.worldPurger = new PurgeWorlds(this.plugin);
