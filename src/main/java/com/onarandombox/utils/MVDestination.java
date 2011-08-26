@@ -16,4 +16,5 @@ public interface MVDestination {
     public String toString();
     public String getRequiredPermission();
     public Vector getVelocity();
+    public boolean useSafeTeleporter();
 }

@@ -115,4 +115,9 @@ public class WorldDestination implements MVDestination {
         return new Vector(0,0,0);
     }
 
+    @Override
+    public boolean useSafeTeleporter() {
+        return true;
+    }
+
 }

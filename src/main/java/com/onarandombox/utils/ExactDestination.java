@@ -162,4 +162,10 @@ public class ExactDestination implements MVDestination {
     public String getRequiredPermission() {
         return "multiverse.access." + this.location.getWorld().getName();
     }
+
+    @Override
+    public boolean useSafeTeleporter() {
+        // This is an EXACT destination, don't safely teleport here.
+        return false;
+    }
 }

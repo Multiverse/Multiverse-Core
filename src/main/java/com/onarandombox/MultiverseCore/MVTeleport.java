@@ -260,7 +260,12 @@ public class MVTeleport {
             this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
             return false;
         }
-        Location safeLoc = this.getSafeLocation(e, d);
+        
+        Location safeLoc = d.getLocation(e);
+        if(d.useSafeTeleporter()) {
+            safeLoc = this.getSafeLocation(e, d);
+        }
+        
         if (safeLoc != null) {
             e.teleport(safeLoc);
             if (!d.getVelocity().equals(new Vector(0, 0, 0))) {

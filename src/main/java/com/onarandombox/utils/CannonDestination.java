@@ -167,4 +167,9 @@ public class CannonDestination implements MVDestination {
     public String getRequiredPermission() {
         return "multiverse.access." + this.location.getWorld().getName();
     }
+
+    @Override
+    public boolean useSafeTeleporter() {
+        return true;
+    }
 }

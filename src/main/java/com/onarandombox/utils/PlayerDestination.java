@@ -86,4 +86,9 @@ public class PlayerDestination implements MVDestination {
         return new Vector(0,0,0);
     }
 
+    @Override
+    public boolean useSafeTeleporter() {
+        return true;
+    }
+
 }
