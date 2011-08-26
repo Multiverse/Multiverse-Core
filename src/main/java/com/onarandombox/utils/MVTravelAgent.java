@@ -72,7 +72,10 @@ public class MVTravelAgent implements TravelAgent {
             this.core.log(Level.FINE, "Using Stock TP method. This cannon will have 0 velocity");
         }
         MVTeleport teleporter = new MVTeleport(this.core);
-        Location newLoc = teleporter.getSafeLocation(this.player, this.destination);
+        Location newLoc = this.destination.getLocation(this.player);
+        if (this.destination.useSafeTeleporter()) {
+            newLoc = teleporter.getSafeLocation(this.player, this.destination);
+        }
         if (newLoc == null) {
             return this.player.getLocation();
         }
