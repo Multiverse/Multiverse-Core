@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -111,7 +112,15 @@ public class MVEntityListener extends EntityListener {
         CreatureType creature = event.getCreatureType();
 
         MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
-
+        
+        /**
+         * Handle people with non-standard animals: ie a patched craftbukkit.
+         */
+        if(creature == null) {
+            this.plugin.log(Level.FINER, "Found a null typed creature.");
+            return;
+        }
+        
         /**
          * Animal Handling
          */
