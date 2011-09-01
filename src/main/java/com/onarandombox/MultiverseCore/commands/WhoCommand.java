@@ -58,7 +58,7 @@ public class WhoCommand extends MultiverseCommand {
         if (worlds.size() == 0) {
             sender.sendMessage("Multiverse does not know about any of your worlds :(");
         } else if (worlds.size() == 1) {
-            sender.sendMessage(ChatColor.AQUA + "--- " + "Players in" + ChatColor.YELLOW + worlds.get(0) + ChatColor.AQUA + " ---");
+            sender.sendMessage(ChatColor.AQUA + "--- Players in" + worlds.get(0).getColoredWorldString() + ChatColor.AQUA + " ---");
         } else {
             sender.sendMessage(ChatColor.AQUA + "--- There are players in ---");
         }
