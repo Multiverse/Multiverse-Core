@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
+import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -59,12 +61,15 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        // TODO: Reimplement bed respawning, needs to be a way to persist the bed location or something otherwise it's not very effective.
-
         World world = event.getPlayer().getWorld();
 
         // If it's not a World MV manages we stop.
         if (!this.worldManager.isMVWorld(world.getName())) {
+            return;
+        }
+        
+        if(event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
+            this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }
 

@@ -30,6 +30,10 @@ disableautoheal: false
 # Players will be notified when they punch/shoot and it's not allowed.
 fakepvp: false
 
+# When this is enabled, users will spawn at their last bed slept at. If the bed is destroyed or obstructed,
+# they will spawn according to your mvm respawn rules, and then whatever the server does.
+bedrespawn: true
+
 # This just signifies the version number so we can see what version of config you have.
 # NEVER TOUCH THIS VALUE
 version: 2.1
