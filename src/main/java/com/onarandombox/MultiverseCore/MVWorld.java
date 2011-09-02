@@ -201,10 +201,9 @@ public class MVWorld {
                 int[] coords = new int[3];
                 try {
                     for (int i = 0; i < 3; i++) {
-
                         coords[i] = Integer.parseInt(coordsString[i]);
                     }
-                    this.setSpawn(new Location(this.getCBWorld(), coords[0], coords[2], coords[3]));
+                    this.setSpawn(new Location(this.getCBWorld(), coords[0], coords[1], coords[2]));
                 } catch (NumberFormatException e) {
                     this.plugin.log(Level.WARNING, "A MV1 spawn value was found, but it could not be migrated. Format Error. Sorry.");
                 }
