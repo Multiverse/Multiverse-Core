@@ -2,9 +2,11 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -67,8 +69,10 @@ public class MVPlayerListener extends PlayerListener {
         if (!this.worldManager.isMVWorld(world.getName())) {
             return;
         }
-        
+
         if(event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
+            // Handle the Players GameMode setting for the new world.
+            this.handleGameMode(event.getPlayer(), event.getRespawnLocation().getWorld());
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }
@@ -92,6 +96,9 @@ public class MVPlayerListener extends PlayerListener {
         MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+
+        // Handle the Players GameMode setting for the new world.
+        this.handleGameMode(event.getPlayer(), respawnEvent.getPlayersRespawnLocation().getWorld());
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
@@ -110,6 +117,8 @@ public class MVPlayerListener extends PlayerListener {
             event.getPlayer().sendMessage("or you can create new ones with " + ChatColor.GOLD + "/mvcreate");
             event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
         }
+        // Handle the Players GameMode setting for the new world.
+        this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
     }
 
     @Override
@@ -141,6 +150,9 @@ public class MVPlayerListener extends PlayerListener {
         }
         // Only check payments if it's a different world:
         if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+            // Handle the Players GameMode setting for the new world.
+            this.handleGameMode(event.getPlayer(), toWorld);
+
             // If the player does not have to pay, return now.
             if (toWorld.isExempt(event.getPlayer())) {
                 return;
@@ -150,6 +162,42 @@ public class MVPlayerListener extends PlayerListener {
                 event.setCancelled(true);
             } else {
                 bank.pay(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency());
+            }
+        }
+    }
+
+    // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
+    private void handleGameMode(Player player, World world) {
+        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        if (mvWorld != null) {
+            this.handleGameMode(player, mvWorld);
+        }
+    }
+
+    private void handleGameMode(Player player, MVWorld world) {
+        // We perform this task one tick later to MAKE SURE that the player actually reaches the
+        // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+    }
+
+    /**
+     * The following private class is used to handle player game mode changes within a scheduler.
+     */
+    private class HandleGameMode implements Runnable {
+
+        private Player player;
+        private MVWorld world;
+
+        private HandleGameMode(Player player, MVWorld world) {
+            this.player = player;
+            this.world = world;
+        }
+
+        @Override
+        public void run() {
+            // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
+            if (player.getWorld().getName().equals(world.getCBWorld().getName())) {
+                player.setGameMode(world.getGameMode());
             }
         }
     }

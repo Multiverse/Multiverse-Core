@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -80,6 +81,8 @@ public class MVWorld {
     private Boolean pvp; // Does this World allow PVP?
     private Boolean fakepvp; // Should this world have fakePVP on? (used for PVP zones)
 
+    private GameMode gameMode = GameMode.SURVIVAL;
+
     private String respawnWorld; // Contains the name of the World to respawn the player to
 
     private List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
@@ -136,6 +139,8 @@ public class MVWorld {
         this.setPrice(config.getDouble("worlds." + this.name + ".entryfee.amount", 0.0));
         this.setCurrency(config.getInt("worlds." + this.name + ".entryfee.currency", -1));
         this.getMobExceptions();
+
+        this.setGameMode(config.getString("worlds." + this.name + ".gamemode", GameMode.SURVIVAL.toString()));
 
         this.setSpawnInMemory(config.getBoolean("worlds." + this.name + ".keepspawninmemory", true));
 
@@ -418,6 +423,15 @@ public class MVWorld {
             } catch (Exception e) {
             }
         }
+
+        if (name.equalsIgnoreCase("gamemode") && name.equalsIgnoreCase("mode")) {
+            try {
+                GameMode mode = GameMode.valueOf(value);
+                return this.setGameMode(mode);
+            } catch (Exception e) {
+            }
+        }
+
         try {
             boolean boolValue = Boolean.parseBoolean(value);
             return this.setVariable(name, boolValue);
@@ -627,6 +641,26 @@ public class MVWorld {
         if (this.canSave) {
             this.config.save();
         }
+    }
+
+    private boolean setGameMode(String strMode) {
+        GameMode mode = GameMode.SURVIVAL;
+        try {
+            mode = GameMode.valueOf(strMode);
+        } catch (Exception e) {
+        }
+        return this.setGameMode(mode);
+    }
+
+    private boolean setGameMode(GameMode mode) {
+        this.gameMode = mode;
+        config.setProperty("worlds." + this.name + ".gamemode", this.gameMode.toString());
+        saveConfig();
+        return true;
+    }
+
+    public GameMode getGameMode() {
+        return this.gameMode;
     }
 
     public boolean getWeatherEnabled() {
