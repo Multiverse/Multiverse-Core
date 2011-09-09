@@ -603,7 +603,7 @@ public class MVWorld {
 
     private boolean setCurrency(int currency) {
         this.currency = currency;
-        config.getInt("worlds." + this.name + ".entryfee.currency", currency);
+        config.setProperty("worlds." + this.name + ".entryfee.currency", currency);
         saveConfig();
         return true;
     }
