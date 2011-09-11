@@ -14,7 +14,7 @@ public class DebugCommand extends MultiverseCommand {
     public DebugCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Turn Debug on/off?");
-        this.setCommandUsage("/mv who" + ChatColor.GOLD + " [1|2|3|off]");
+        this.setCommandUsage("/mv debug" + ChatColor.GOLD + " [1|2|3|off]");
         this.setArgRange(0, 1);
         this.addKey("mv debug");
         this.addKey("mv d");
