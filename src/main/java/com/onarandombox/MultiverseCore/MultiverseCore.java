@@ -90,7 +90,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     private Configuration configMV = null;
 
     private WorldManager worldManager = new WorldManager(this);
-    
+
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
 
@@ -105,12 +105,13 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
     private GenericBank bank = null;
-    private AllPay banker = new AllPay(this, tag + " ");
+    private AllPay banker;
     protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    
+    private double allpayversion = 3;
+    private double chversion = 1;
 
     @Override
     public void onLoad() {
@@ -130,6 +131,12 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     }
 
     public void onEnable() {
+        // Perform initial checks for AllPay
+        if (!this.validateAllpay() || !this.validateCH()) {
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        this.banker = new AllPay(this, tag + " ");
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
         this.checkServerProps();
@@ -147,7 +154,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.registerCommands();
 
         this.playerSessions = new HashMap<String, MVPlayerSession>();
-        
 
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
@@ -162,6 +168,50 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
+    }
+
+    private boolean validateAllpay() {
+        try {
+            this.banker = new AllPay(this, "Verify");
+            if (this.banker.getVersion() >= allpayversion) {
+                return true;
+            } else {
+                log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
+                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of AllPay!");
+                log.info(tag + " The Following Plugins MAY out of date!");
+                log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher and another plugin has loaded v" + this.banker.getVersion() + "!");
+                log.info(tag + AllPay.pluginsThatUseUs.toString());
+                return false;
+            }
+        } catch (Throwable t) {
+        }
+        log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
+        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of AllPay!");
+        log.info(tag + " Check the logs for [AllPay] - Version ... for PLUGIN NAME to find the culprit! Then Yell at that dev!");
+        log.info(tag + " Or update that plugin :P");
+        log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher!");
+        return false;
+    }
+    
+    private boolean validateCH() {
+        try {
+            this.commandHandler = new CommandHandler(this, null);
+            if (this.commandHandler.getVersion() >= chversion) {
+                return true;
+            } else {
+                log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
+                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of CommandHandler (an internal library)!");
+                log.info(tag + " Please contact this plugin author!!!!!!!");
+                log.info(tag + " This plugin needs CommandHandler v" + chversion + " or higher and another plugin has loaded v" + this.commandHandler.getVersion() + "!");
+                return false;
+            }
+        } catch (Throwable t) {
+        }
+        log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
+        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of CommandHandler (an internal library)!");
+        log.info(tag + " Please contact this plugin author!!!!!!!");
+        log.info(tag + " This plugin needs CommandHandler v" + chversion  + " or higher!");
+        return false;
     }
 
     private void initializeDestinationFactory() {
@@ -206,7 +256,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         new DefaultConfig(getDataFolder(), "worlds.yml", this.migrator);
         // Now grab the Configuration Files.
         this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
-        
+
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         // Now attempt to Load the configurations.
@@ -292,7 +342,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      */
     @Deprecated
     public boolean removeWorldFromConfig(String name) {
-       return this.worldManager.removeWorldFromConfig(name);
+        return this.worldManager.removeWorldFromConfig(name);
     }
 
     /**
