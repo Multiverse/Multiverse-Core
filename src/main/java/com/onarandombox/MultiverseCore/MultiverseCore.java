@@ -110,7 +110,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     protected int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    private int allpayversion = 3;
+    private double allpayversion = 3;
+    private double chversion = 1;
 
     @Override
     public void onLoad() {
@@ -131,7 +132,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     public void onEnable() {
         // Perform initial checks for AllPay
-        if (!this.validateAllpay()) {
+        if (!this.validateAllpay() || !this.validateCH()) {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -189,6 +190,27 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         log.info(tag + " Check the logs for [AllPay] - Version ... for PLUGIN NAME to find the culprit! Then Yell at that dev!");
         log.info(tag + " Or update that plugin :P");
         log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher!");
+        return false;
+    }
+    
+    private boolean validateCH() {
+        try {
+            this.commandHandler = new CommandHandler(this, null);
+            if (this.commandHandler.getVersion() >= chversion) {
+                return true;
+            } else {
+                log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
+                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of CommandHandler (an internal library)!");
+                log.info(tag + " Please contact this plugin author!!!!!!!");
+                log.info(tag + " This plugin needs CommandHandler v" + chversion + " or higher and another plugin has loaded v" + this.commandHandler.getVersion() + "!");
+                return false;
+            }
+        } catch (Throwable t) {
+        }
+        log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
+        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of CommandHandler (an internal library)!");
+        log.info(tag + " Please contact this plugin author!!!!!!!");
+        log.info(tag + " This plugin needs CommandHandler v" + chversion  + " or higher!");
         return false;
     }
 
