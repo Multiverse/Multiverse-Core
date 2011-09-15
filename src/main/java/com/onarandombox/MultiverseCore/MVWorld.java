@@ -424,11 +424,12 @@ public class MVWorld {
             }
         }
 
-        if (name.equalsIgnoreCase("gamemode") && name.equalsIgnoreCase("mode")) {
+        if (name.equalsIgnoreCase("gamemode") || name.equalsIgnoreCase("mode")) {
             try {
-                GameMode mode = GameMode.valueOf(value);
+                GameMode mode = GameMode.valueOf(value.toUpperCase());
                 return this.setGameMode(mode);
             } catch (Exception e) {
+                System.out.print("BLASKNKENFW");
             }
         }
 
@@ -653,9 +654,15 @@ public class MVWorld {
     }
 
     private boolean setGameMode(GameMode mode) {
+        
         this.gameMode = mode;
         config.setProperty("worlds." + this.name + ".gamemode", this.gameMode.toString());
         saveConfig();
+        
+        for(Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
+            this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.gameMode.toString());
+            this.plugin.getPlayerListener().handleGameMode(p, this);
+        }
         return true;
     }
 

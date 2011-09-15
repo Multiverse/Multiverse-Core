@@ -614,4 +614,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         return this.worldManager;
     }
 
+    public MVPlayerListener getPlayerListener() {
+        return this.playerListener;
+    }
+
 }
