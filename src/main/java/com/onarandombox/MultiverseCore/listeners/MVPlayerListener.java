@@ -70,7 +70,7 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
 
-        if(event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
+        if (event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
             // Handle the Players GameMode setting for the new world.
             if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
                 this.handleGameMode(event.getPlayer(), event.getRespawnLocation().getWorld());
@@ -157,7 +157,9 @@ public class MVPlayerListener extends PlayerListener {
         // Only check payments if it's a different world:
         if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
             // Handle the Players GameMode setting for the new world.
-            this.handleGameMode(event.getPlayer(), toWorld);
+            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+                this.handleGameMode(event.getPlayer(), toWorld);
+            }
 
             // If the player does not have to pay, return now.
             if (toWorld.isExempt(event.getPlayer())) {
