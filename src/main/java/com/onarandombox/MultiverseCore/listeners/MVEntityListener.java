@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.List;
@@ -112,7 +119,7 @@ public class MVEntityListener extends EntityListener {
         CreatureType creature = event.getCreatureType();
 
         MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
-        
+
         /**
          * Handle people with non-standard animals: ie a patched craftbukkit.
          */
@@ -120,7 +127,7 @@ public class MVEntityListener extends EntityListener {
             this.plugin.log(Level.FINER, "Found a null typed creature.");
             return;
         }
-        
+
         /**
          * Animal Handling
          */

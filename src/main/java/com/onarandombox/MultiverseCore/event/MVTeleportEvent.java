@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore.event;
 
 import org.bukkit.Location;
@@ -28,7 +35,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
 
     /**
      * Returns the player who will be teleported by this event.
-     * 
+     *
      * @return The player who will be teleported by this event.
      */
     public Player getTeleportee() {
@@ -37,7 +44,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
 
     /**
      * Returns the location the player was before the teleport.
-     * 
+     *
      * @return The location the player was before the teleport.
      */
     public Location getFrom() {
@@ -46,7 +53,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
 
     /**
      * Returns the player who requested the Teleport
-     * 
+     *
      * @return
      */
     public CommandSender getTeleporter() {
@@ -55,7 +62,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
 
     /**
      * Returns the destination that the player will spawn at.
-     * 
+     *
      * @return The destination the player will spawn at.
      */
     public MVDestination getDestination() {

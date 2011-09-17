@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore;
 
 import java.util.List;
@@ -23,7 +30,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Constructor FTW
-     * 
+     *
      * @param plugin Pass along the Core Plugin.
      */
     public MVPermissions(MultiverseCore plugin) {
@@ -38,7 +45,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Check if a Player can teleport to the Destination world from there current world.
-     * 
+     *
      * @param p
      * @param w
      * @return
@@ -67,7 +74,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * Check if the Player has the permissions to enter this world.
-     * 
+     *
      * @param p
      * @param w
      * @return
@@ -234,7 +241,7 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
-     * 
+     *
      * @param seperated
      * @return
      */

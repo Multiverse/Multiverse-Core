@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.utils;
 
 import java.util.logging.Level;
@@ -19,7 +26,7 @@ public class BlockSafety {
 
     /**
      * This function checks whether the block at the given coordinates are above air or not.
-     * 
+     *
      * @param world
      * @param x
      * @param y
@@ -36,7 +43,7 @@ public class BlockSafety {
         Location l = new Location(world, x, y, z);
         return !playerCanSpawnHereSafely(l);
     }
-    
+
     public boolean playerCanSpawnHereSafely(World world, double x, double y, double z) {
         Location l = new Location(world, x, y, z);
         return playerCanSpawnHereSafely(l);
@@ -44,7 +51,7 @@ public class BlockSafety {
 
     /**
      * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air etc. This also ensures there is enough space for a player to spawn!
-     * 
+     *
      * @param world
      * @param x
      * @param y
@@ -85,7 +92,7 @@ public class BlockSafety {
 
     /**
      * If someone has a better way of this... Please either tell us, or submit a pull request!
-     * 
+     *
      * @param type
      * @return
      */
@@ -175,7 +182,7 @@ public class BlockSafety {
 
     /**
      * Checks recursively below location L for 2 blocks of water
-     * 
+     *
      * @param l
      * @return
      */
