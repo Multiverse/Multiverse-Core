@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -97,7 +98,7 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("General Info", colors));
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
-        message.add(new FancyMessage("Seed: ", world.getCBWorld().getSeed() + "", colors));
+        message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
         message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling().toString(), colors));
@@ -123,7 +124,6 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("More World Settings", colors));
         message.add(new FancyMessage("Weather: ", world.getWeatherEnabled() + "", colors));
         message.add(new FancyMessage("Keep spawn in memory: ", world.getKeepSpawnInMemory() + "", colors));
-        message.add(new FancyMessage("Game Mode:", world.getGameMode().toString(), colors));
         message.add(new FancyHeader("PVP Settings", colors));
         message.add(new FancyMessage("Multiverse Setting: ", world.getPvp().toString(), colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getPVP() + "", colors));

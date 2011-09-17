@@ -130,7 +130,7 @@ public class MVWorld {
         this.setAlias(config.getString("worlds." + this.name + ".alias.name", ""));
         this.setAliasColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
         this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
-        this.setScaling(config.getDouble("worlds." + this.name + ".scale", 1.0));
+        this.setScaling(config.getDouble("worlds." + this.name + ".scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawnworld", ""));
         this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
 
@@ -159,6 +159,13 @@ public class MVWorld {
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
         }
+    }
+
+    private double getDefaultScale(Environment environment) {
+        if(environment == Environment.NETHER) {
+            return 8.0;
+        }
+        return 1.0;
     }
 
     private void setEnableWeather(boolean weather) {
