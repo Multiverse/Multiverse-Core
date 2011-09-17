@@ -22,7 +22,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
@@ -265,7 +264,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         }
 
         try {
-            this.worldManager.propigateConfigFile();
+            this.worldManager.propagateConfigFile();
             log(Level.INFO, "- World Config -- Loaded");
         } catch (Exception e) {
             log(Level.INFO, "- Failed to load worlds.yml");

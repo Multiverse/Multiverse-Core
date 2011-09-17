@@ -17,6 +17,11 @@ import org.bukkit.util.config.Configuration;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
+/**
+ * Public facing API to add/remove Multiverse worlds.
+ *
+ * @author fernferret, Rigby90
+ */
 public class WorldManager {
     private MultiverseCore plugin;
     private PurgeWorlds worldPurger;
@@ -24,7 +29,7 @@ public class WorldManager {
     private Configuration configWorlds = null;
 
     public WorldManager(MultiverseCore core) {
-        
+
         this.plugin = core;
         this.worlds = new HashMap<String, MVWorld>();
         this.worldPurger = new PurgeWorlds(this.plugin);
@@ -34,9 +39,13 @@ public class WorldManager {
      * Add a new World to the Multiverse Setup.
      * <p/>
      * Isn't there a prettier way to do this??!!?!?!
-     * 
+     *
      * @param name World Name
      * @param env Environment Type
+     * @param seedString The seed in the form of a string. If the seed is a Long, it will be interpreted as such.
+     * @param generator The Custom generator plugin to use.
+     *
+     * @return True if the world is added, false if not.
      */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
@@ -65,9 +74,7 @@ public class WorldManager {
                 this.plugin.log(Level.WARNING, "Could not find plugin: " + generatorName);
             } else {
                 this.plugin.log(Level.WARNING, "Found plugin: " + generatorName + ", but did not find generatorID: " + generatorID);
-
             }
-
             return false;
         }
 
@@ -101,11 +108,25 @@ public class WorldManager {
         return true;
     }
 
+    /**
+     * Verifies that a given Plugin generator string exists.
+     *
+     * @param generator The name of the generator plugin. This should be something like CleanRoomGenerator.
+     * @return True if the plugin exists and is enabled, false if not.
+     */
     private boolean pluginExists(String generator) {
         Plugin plugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
-        return plugin != null;
+        return plugin != null && plugin.isEnabled();
     }
 
+    /**
+     * Test if a given chunk generator is valid.
+     *
+     * @param generator The generator name.
+     * @param generatorID The generator id.
+     * @param worldName The worldName to use as the default.
+     * @return A {@link ChunkGenerator} or null
+     */
     private ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
         if (generator == null) {
             return null;
@@ -122,7 +143,7 @@ public class WorldManager {
 
     /**
      * Remove the world from the Multiverse list and from the config
-     * 
+     *
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -138,10 +159,10 @@ public class WorldManager {
         }
         return false;
     }
-    
+
     /**
      * Remove the world from the Multiverse list
-     * 
+     *
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -160,10 +181,10 @@ public class WorldManager {
         }
         return false;
     }
-    
+
     /**
      * Remove the world from the Multiverse list, from the config and deletes the folder
-     * 
+     *
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
@@ -217,11 +238,23 @@ public class WorldManager {
         }
     }
 
+    /**
+     * Unload a world from Multiverse
+     *
+     * @param name Name of the world to unload
+     * @param safely Perform this safely. Set to True to save world files before unloading.
+     * @return True if the world was unloaded, false if not.
+     */
     private boolean unloadWorld(String name, boolean safely) {
         this.removePlayersFromWorld(name);
         return this.plugin.getServer().unloadWorld(name, safely);
     }
 
+    /**
+     * Removes all players from the specified world.
+     *
+     * @param name World to remove players from.
+     */
     private void removePlayersFromWorld(String name) {
         World w = this.plugin.getServer().getWorld(name);
         if (w != null) {
@@ -234,10 +267,21 @@ public class WorldManager {
         }
     }
 
+    /**
+     * Returns a list of all the worlds Multiverse knows about.
+     *
+     * @return A list of {@link MVWorld}.
+     */
     public Collection<MVWorld> getMVWorlds() {
         return this.worlds.values();
     }
 
+    /**
+     * Returns a {@link MVWorld} if it exists, and null if it does not. This will search name AND alias.
+     *
+     * @param name The name or alias of the world to get.
+     * @return A {@link MVWorld} or null.
+     */
     public MVWorld getMVWorld(String name) {
         if (this.worlds.containsKey(name)) {
             return this.worlds.get(name);
@@ -245,6 +289,12 @@ public class WorldManager {
         return this.getMVWorldByAlias(name);
     }
 
+    /**
+     * Returns a {@link MVWorld} if it exists, and null if it does not. This will search ONLY alias.
+     *
+     * @param alias The alias of the world to get.
+     * @return A {@link MVWorld} or null.
+     */
     private MVWorld getMVWorldByAlias(String alias) {
         for (MVWorld w : this.worlds.values()) {
             if (w.getAlias().equalsIgnoreCase(alias)) {
@@ -254,19 +304,25 @@ public class WorldManager {
         return null;
     }
 
+    /**
+     * Checks to see if the given name is a valid {@link MVWorld}
+     *
+     * @param name The name or alias of the world to check.
+     * @return True if the world exists, false if not.
+     */
     public boolean isMVWorld(String name) {
         return (this.worlds.containsKey(name) || isMVWorldAlias(name));
     }
 
     /**
      * This method ONLY checks the alias of each world.
-     * 
-     * @param name
-     * @return
+     *
+     * @param alias The alias of the world to check.
+     * @return True if the world exists, false if not.
      */
-    private boolean isMVWorldAlias(String name) {
+    private boolean isMVWorldAlias(String alias) {
         for (MVWorld w : this.worlds.values()) {
-            if (w.getAlias().equalsIgnoreCase(name)) {
+            if (w.getAlias().equalsIgnoreCase(alias)) {
                 return true;
             }
         }
@@ -274,6 +330,8 @@ public class WorldManager {
     }
     /**
      * Load the Worlds & Settings from the configuration file.
+     *
+     * @param forceLoad If set to true, this will perform a total reset and not just load new worlds.
      */
     public void loadWorlds(boolean forceLoad) {
         // Basic Counter to count how many Worlds we are loading.
@@ -314,9 +372,9 @@ public class WorldManager {
                 String environment = this.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
                 String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", "");
 
-                String generatorstring = this.configWorlds.getString("worlds." + worldKey + ".generator");
+                String generatorString = this.configWorlds.getString("worlds." + worldKey + ".generator");
 
-                addWorld(worldKey, this.plugin.getEnvFromString(environment), seedString, generatorstring);
+                addWorld(worldKey, this.plugin.getEnvFromString(environment), seedString, generatorString);
 
                 // Increment the world count
                 count++;
@@ -327,16 +385,30 @@ public class WorldManager {
         this.plugin.log(Level.INFO, count + " - World(s) loaded.");
     }
 
+    /**
+     * Return the World Purger.
+     *
+     * @return A valid {@link PurgeWorlds}.
+     */
     public PurgeWorlds getWorldPurger() {
         return this.worldPurger;
     }
-    
+
+    /**
+     * Load the config from a file.
+     *
+     * @param file The file to load.
+     * @return A loaded configuration.
+     */
     public Configuration loadWorldConfig(File file) {
         this.configWorlds = new Configuration(file);
         return this.configWorlds;
     }
-    
-    public void propigateConfigFile() {
+
+    /**
+     * Reload the Config File
+     */
+    public void propagateConfigFile() {
         this.configWorlds.load();
     }
 
