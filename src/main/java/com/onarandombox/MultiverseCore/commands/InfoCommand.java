@@ -3,7 +3,8 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.*;
-import com.sun.xml.internal.ws.util.StringUtils;
+// Will use when we can compile with JDK 6
+//import com.sun.xml.internal.ws.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -92,7 +93,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("General Info", colors));
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
-        message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
+        message.add(new FancyMessage("Game Mode: ", world.getGameMode().toString(), colors));
+        //message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
         message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling().toString(), colors));
