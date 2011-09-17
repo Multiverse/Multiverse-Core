@@ -2,6 +2,7 @@ package com.onarandombox.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -103,14 +104,17 @@ public class PurgeWorlds {
      */
     private boolean killMonster(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
-        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast) {
+        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast){
+            this.plugin.log(Level.FINER, "Looking at a monster: " + e);
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
                 if (!negate) {
+                    this.plugin.log(Level.FINEST, "Removing a monster: " + e);
                     e.remove();
                     return true;
                 }
             } else {
                 if (negate) {
+                    this.plugin.log(Level.FINEST, "Removing a monster: " + e);
                     e.remove();
                     return true;
                 }
