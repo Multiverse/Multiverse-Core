@@ -15,7 +15,7 @@ public class WorldDestination implements MVDestination {
     String direction = "";
 
     @Override
-    public String getIdentifer() {
+    public String getIdentifier() {
         return "w";
     }
 
@@ -44,17 +44,17 @@ public class WorldDestination implements MVDestination {
     public Location getLocation(Entity e) {
         Location spawnLoc = getAcurateSpawnLocation(e, this.world);
         if (this.yaw >= 0) {
-            // Only modify the yaw if its set. 
+            // Only modify the yaw if its set.
             spawnLoc.setYaw(this.yaw);
         }
         return spawnLoc;
     }
-    
+
     private Location getAcurateSpawnLocation(Entity e, MVWorld world) {
         if(world != null) {
             return world.getSpawnLocation();
         } else {
-            return e.getWorld().getSpawnLocation().add(.5, 0, .5);    
+            return e.getWorld().getSpawnLocation().add(.5, 0, .5);
         }
     }
 
@@ -64,8 +64,8 @@ public class WorldDestination implements MVDestination {
     }
 
     @Override
-    public void setDestination(JavaPlugin plugin, String dest) {
-        String[] items = dest.split(":");
+    public void setDestination(JavaPlugin plugin, String destination) {
+        String[] items = destination.split(":");
         if (items.length > 3) {
             isValid = false;
             return;
@@ -102,7 +102,7 @@ public class WorldDestination implements MVDestination {
     @Override
     public String toString() {
         if(direction.length() > 0 && yaw >= 0) {
-            return this.world.getCBWorld().getName() + ":"+this.direction;            
+            return this.world.getCBWorld().getName() + ":"+this.direction;
         }
         return this.world.getCBWorld().getName();
     }

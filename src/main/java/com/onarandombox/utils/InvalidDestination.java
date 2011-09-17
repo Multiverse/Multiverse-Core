@@ -9,12 +9,12 @@ import org.bukkit.util.Vector;
 public class InvalidDestination implements MVDestination {
 
     @Override
-    public String getIdentifer() {
+    public String getIdentifier() {
         return "i";
     }
 
     @Override
-    public boolean isThisType(JavaPlugin plugin, String dest) {
+    public boolean isThisType(JavaPlugin plugin, String destination) {
         return false;
     }
 
@@ -29,7 +29,7 @@ public class InvalidDestination implements MVDestination {
     }
 
     @Override
-    public void setDestination(JavaPlugin plugin, String dest) {
+    public void setDestination(JavaPlugin plugin, String destination) {
         // Nothing needed, it's invalid.
     }
 

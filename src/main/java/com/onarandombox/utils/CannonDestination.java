@@ -29,7 +29,7 @@ public class CannonDestination implements MVDestination {
     }
 
     @Override
-    public String getIdentifer() {
+    public String getIdentifier() {
         return "ca";
     }
 
@@ -79,11 +79,11 @@ public class CannonDestination implements MVDestination {
     }
 
     @Override
-    public void setDestination(JavaPlugin plugin, String dest) {
+    public void setDestination(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
             return;
         }
-        List<String> parsed = Arrays.asList(dest.split(":"));
+        List<String> parsed = Arrays.asList(destination.split(":"));
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
@@ -91,7 +91,7 @@ public class CannonDestination implements MVDestination {
             this.isValid = false;
             return;
         }
-        if (!parsed.get(0).equalsIgnoreCase(this.getIdentifer())) {
+        if (!parsed.get(0).equalsIgnoreCase(this.getIdentifier())) {
             this.isValid = false;
             return;
         }

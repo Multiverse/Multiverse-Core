@@ -12,13 +12,13 @@ public class PlayerDestination implements MVDestination {
     private JavaPlugin plugin;
 
     @Override
-    public String getIdentifer() {
+    public String getIdentifier() {
         return "pl";
     }
 
     @Override
-    public boolean isThisType(JavaPlugin plugin, String dest) {
-        String[] items = dest.split(":");
+    public boolean isThisType(JavaPlugin plugin, String destination) {
+        String[] items = destination.split(":");
         if (items.length != 2) {
             return false;
         }
@@ -50,8 +50,8 @@ public class PlayerDestination implements MVDestination {
     }
 
     @Override
-    public void setDestination(JavaPlugin plugin, String dest) {
-        String[] items = dest.split(":");
+    public void setDestination(JavaPlugin plugin, String destination) {
+        String[] items = destination.split(":");
         if (items.length != 2) {
             this.isValid = false;
         }
