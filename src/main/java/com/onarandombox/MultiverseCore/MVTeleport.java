@@ -27,7 +27,7 @@ public class MVTeleport {
 
     /**
      * This method will be specific to beds, and check on top of the bed then around it.
-     * 
+     *
      * @return
      */
     public Location getSafeBedDestination(Location bedLocation) {
@@ -103,7 +103,7 @@ public class MVTeleport {
 
     /**
      * For my crappy algorithm, radius MUST be odd
-     * 
+     *
      * @param l
      * @param radius
      * @return
@@ -186,7 +186,7 @@ public class MVTeleport {
 
     /**
      * Deprectated. use safelyTeleport(Entity e, Destination d)
-     * 
+     *
      * @param e
      * @param l
      * @return
@@ -202,7 +202,7 @@ public class MVTeleport {
     }
 
     /**
-     * 
+     *
      * @param e
      * @param l
      * @return
@@ -250,7 +250,7 @@ public class MVTeleport {
     }
 
     /**
-     * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if it's not, will adjust the final destination accordingly. 
+     * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if it's not, will adjust the final destination accordingly.
      * @param e Entity to teleport
      * @param d Destination to teleport them to
      * @return true for success, false for failure
@@ -260,25 +260,26 @@ public class MVTeleport {
             this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
             return false;
         }
-        
+
         Location safeLoc = d.getLocation(e);
         if(d.useSafeTeleporter()) {
             safeLoc = this.getSafeLocation(e, d);
         }
-        
+
         if (safeLoc != null) {
-            e.teleport(safeLoc);
-            if (!d.getVelocity().equals(new Vector(0, 0, 0))) {
-                e.setVelocity(d.getVelocity());
-            }
+            if(e.teleport(safeLoc)) {
+                if (!d.getVelocity().equals(new Vector(0, 0, 0))) {
+                    e.setVelocity(d.getVelocity());
+                }
             return true;
+            }
         }
         return false;
     }
 
     /**
      * Returns a safe location for the entity to spawn at.
-     * 
+     *
      * @param e The entity to spawn
      * @param d The MVDestination to take the entity to.
      * @return A new location to spawn the entity at.

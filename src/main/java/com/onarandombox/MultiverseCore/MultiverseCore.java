@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.onarandombox.MultiverseCore.listeners.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -21,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
@@ -56,10 +58,6 @@ import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
-import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
-import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
-import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
-import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.utils.CannonDestination;
 import com.onarandombox.utils.DebugLog;
 import com.onarandombox.utils.DestinationFactory;
@@ -119,7 +117,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
-
     }
 
     public Configuration getConfig() {
@@ -192,7 +189,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher!");
         return false;
     }
-    
+
     private boolean validateCH() {
         try {
             this.commandHandler = new CommandHandler(this, null);
@@ -366,7 +363,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * Grab the players session if one exists, otherwise create a session then return it.
-     * 
+     *
      * @param player
      * @return
      */
@@ -381,7 +378,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * Grab and return the Teleport class.
-     * 
+     *
      * @return
      */
     public MVTeleport getTeleporter() {
@@ -416,7 +413,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information from the Servers Log Output.
-     * 
+     *
      * @param level
      * @param msg
      */
@@ -442,7 +439,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the standard Server Console.
-     * 
+     *
      * @param level
      * @param msg
      */
@@ -453,7 +450,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * Parse the Authors Array into a readable String with ',' and 'and'.
-     * 
+     *
      * @return
      */
     private String getAuthors() {
@@ -484,7 +481,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * This code should get moved somewhere more appropriate, but for now, it's here.
-     * 
+     *
      * @param env
      * @return
      */
@@ -535,7 +532,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * Returns the number of plugins that have specifically hooked into core.
-     * 
+     *
      * @return
      */
     public int getPluginCount() {
@@ -570,7 +567,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
     /**
      * This is a convenience method to allow the QueuedCommand system to call it. You should NEVER call this directly.
-     * 
+     *
      * @param p Player
      * @param l The potentially unsafe location.
      */
