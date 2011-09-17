@@ -654,14 +654,16 @@ public class MVWorld {
     }
 
     private boolean setGameMode(GameMode mode) {
-        
+
         this.gameMode = mode;
         config.setProperty("worlds." + this.name + ".gamemode", this.gameMode.toString());
         saveConfig();
-        
-        for(Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
-            this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.gameMode.toString());
-            this.plugin.getPlayerListener().handleGameMode(p, this);
+
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
+                this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.gameMode.toString());
+                this.plugin.getPlayerListener().handleGameMode(p, this);
+            }
         }
         return true;
     }

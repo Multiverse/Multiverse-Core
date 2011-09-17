@@ -70,9 +70,11 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
 
-        if(event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
+        if (event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
             // Handle the Players GameMode setting for the new world.
-            this.handleGameMode(event.getPlayer(), event.getRespawnLocation().getWorld());
+            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+                this.handleGameMode(event.getPlayer(), event.getRespawnLocation().getWorld());
+            }
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }
@@ -98,7 +100,9 @@ public class MVPlayerListener extends PlayerListener {
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
 
         // Handle the Players GameMode setting for the new world.
-        this.handleGameMode(event.getPlayer(), respawnEvent.getPlayersRespawnLocation().getWorld());
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            this.handleGameMode(event.getPlayer(), respawnEvent.getPlayersRespawnLocation().getWorld());
+        }
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
@@ -118,7 +122,9 @@ public class MVPlayerListener extends PlayerListener {
             event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
         }
         // Handle the Players GameMode setting for the new world.
-        this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        }
     }
 
     @Override
@@ -151,7 +157,9 @@ public class MVPlayerListener extends PlayerListener {
         // Only check payments if it's a different world:
         if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
             // Handle the Players GameMode setting for the new world.
-            this.handleGameMode(event.getPlayer(), toWorld);
+            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+                this.handleGameMode(event.getPlayer(), toWorld);
+            }
 
             // If the player does not have to pay, return now.
             if (toWorld.isExempt(event.getPlayer())) {
