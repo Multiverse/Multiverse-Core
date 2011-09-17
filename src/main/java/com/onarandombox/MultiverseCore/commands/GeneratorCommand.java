@@ -1,15 +1,14 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class GeneratorCommand extends MultiverseCommand {
 

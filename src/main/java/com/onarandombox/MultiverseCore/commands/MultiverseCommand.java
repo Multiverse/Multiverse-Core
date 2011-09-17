@@ -1,11 +1,10 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public abstract class MultiverseCommand extends Command {
 

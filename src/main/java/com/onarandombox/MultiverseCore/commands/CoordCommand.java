@@ -1,8 +1,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.text.DecimalFormat;
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.LocationManipulation;
+import com.onarandombox.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -10,10 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.LocationManipulation;
-import com.onarandombox.utils.WorldManager;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class CoordCommand extends MultiverseCommand {
     private WorldManager worldManager;

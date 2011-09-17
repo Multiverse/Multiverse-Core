@@ -1,11 +1,10 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.List;
 
 public class ConfirmCommand extends MultiverseCommand {
 

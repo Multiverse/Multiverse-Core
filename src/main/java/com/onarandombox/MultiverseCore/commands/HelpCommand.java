@@ -1,16 +1,15 @@
 // This file is no longer licensed under that silly CC license. I have blanked it out and will start implementaiton of my own in a few days. For now there is no help.
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.Command;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HelpCommand extends MultiverseCommand {
     private static final int CMDS_PER_PAGE = 7;

@@ -1,15 +1,14 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.WorldManager;
+import java.util.List;
 
 // This will contain all the properties that support the ADD/REMOVE
 // Anything not in here will only support the SET action

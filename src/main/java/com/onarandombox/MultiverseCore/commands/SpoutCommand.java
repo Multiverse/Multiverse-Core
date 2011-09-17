@@ -1,7 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,7 +10,7 @@ import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.PopupScreen;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.List;
 
 public class SpoutCommand extends MultiverseCommand {
 

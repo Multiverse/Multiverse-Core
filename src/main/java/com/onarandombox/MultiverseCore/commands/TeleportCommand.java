@@ -1,16 +1,5 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
@@ -18,14 +7,23 @@ import com.onarandombox.utils.DestinationFactory;
 import com.onarandombox.utils.InvalidDestination;
 import com.onarandombox.utils.LocationManipulation;
 import com.onarandombox.utils.MVDestination;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class TeleportCommand extends MultiverseCommand {
     private MVTeleport playerTeleporter;
 
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
-        Permission self = new Permission("multiverse.core.tp.self", "Allows you to teleport yourself to other worlds.", PermissionDefault.OP);
-        Permission other = new Permission("multiverse.core.tp.other", "Allows you to teleport others to other worlds.", PermissionDefault.OP);
+        Permission menu = new Permission("multiverse.teleport", "Allows you to display the teleport menu.", PermissionDefault.OP);
 
         this.setName("Teleport");
         this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
@@ -33,9 +31,7 @@ public class TeleportCommand extends MultiverseCommand {
         this.addKey("mvtp");
         this.addKey("mv tp");
         this.playerTeleporter = new MVTeleport(this.plugin);
-        // setPermission in some for is REQUIRED
-        this.setPermission(self);
-        this.addAdditonalPermission(other);
+        this.setPermission(menu);
     }
 
     @Override
@@ -50,10 +46,6 @@ public class TeleportCommand extends MultiverseCommand {
         String destinationName;
 
         if (args.size() == 2) {
-            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.core.tp.other", true)) {
-                sender.sendMessage("You don't have permission to teleport another player. (multiverse.core.tp.other)");
-                return;
-            }
             teleportee = this.plugin.getServer().getPlayer(args.get(0));
             if (teleportee == null) {
                 sender.sendMessage("Sorry, I couldn't find player: " + args.get(0));
@@ -63,13 +55,8 @@ public class TeleportCommand extends MultiverseCommand {
 
         } else {
             destinationName = args.get(0);
-            if (teleporter != null && !this.plugin.getPermissions().hasPermission(sender, "multiverse.core.tp.self", true)) {
-                sender.sendMessage("You don't have permission to teleport yourself between worlds. (multiverse.core.tp.self)");
-                return;
-            }
-
             if (!(sender instanceof Player)) {
-                sender.sendMessage("From the console, you must specifiy a player to teleport");
+                sender.sendMessage("From the console, you must specify a player to teleport");
                 return;
             }
             teleporter = (Player) sender;
@@ -88,14 +75,22 @@ public class TeleportCommand extends MultiverseCommand {
         }
         DestinationFactory df = this.plugin.getDestinationFactory();
         MVDestination d = df.getDestination(destinationName);
+
+
+
         MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
         if (teleportEvent.isCancelled()) {
+            this.plugin.log(Level.FINE, "Someone else cancelled the MVTeleport Event!!!");
             return;
         }
 
         if (d != null && d instanceof InvalidDestination) {
             sender.sendMessage("Multiverse does not know how to take you to: " + ChatColor.RED + destinationName);
+            return;
+        }
+
+        if(!this.checkSendPermissions(teleporter,teleportee,d)) {
             return;
         }
 
@@ -134,5 +129,22 @@ public class TeleportCommand extends MultiverseCommand {
         } else {
             teleportee.setVelocity(d.getVelocity());
         }
+    }
+
+    private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {
+        if(teleporter.equals(teleportee)) {
+            if(!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.teleport.self."+destination.getIdentifier(),true)) {
+                teleporter.sendMessage("You don't have permission to teleport yourself to a " + ChatColor.GREEN + destination.getType() + " Destination.");
+                teleporter.sendMessage(ChatColor.RED + "   (multiverse.teleport.self."+destination.getIdentifier()+")");
+                return false;
+            }
+        } else {
+            if(!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.teleport.other."+destination.getIdentifier(),true)) {
+                teleporter.sendMessage("You don't have permission to teleport another player to a " + ChatColor.GREEN + destination.getType() + " Destination.");
+                teleporter.sendMessage(ChatColor.RED + "   (multiverse.teleport.other."+destination.getIdentifier()+")");
+                return false;
+            }
+        }
+        return true;
     }
 }

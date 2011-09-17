@@ -1,15 +1,14 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 enum AddProperties {
     blockblacklist, playerwhitelist, playerblacklist, worldblacklist, animals, monsters

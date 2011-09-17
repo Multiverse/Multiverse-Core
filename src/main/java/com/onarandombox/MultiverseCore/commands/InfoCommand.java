@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.*;
 import com.sun.xml.internal.ws.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,14 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.FancyColorScheme;
-import com.onarandombox.utils.FancyHeader;
-import com.onarandombox.utils.FancyMessage;
-import com.onarandombox.utils.FancyText;
-import com.onarandombox.utils.LocationManipulation;
-import com.onarandombox.utils.WorldManager;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InfoCommand extends MultiverseCommand {
     private WorldManager worldManager;
