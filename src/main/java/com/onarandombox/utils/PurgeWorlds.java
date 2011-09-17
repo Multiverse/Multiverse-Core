@@ -66,7 +66,6 @@ public class PurgeWorlds {
             // Check against Animals
             if (this.killCreature(mvworld, e, thingsToKill, negateAnimals)) {
                 entitiesKilled++;
-                continue;
             }
 
         }

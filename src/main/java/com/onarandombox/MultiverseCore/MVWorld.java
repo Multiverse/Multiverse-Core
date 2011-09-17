@@ -383,7 +383,7 @@ public class MVWorld {
 
     /**
      * This is the one people have access to. It'll handle the rest.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -429,7 +429,6 @@ public class MVWorld {
                 GameMode mode = GameMode.valueOf(value.toUpperCase());
                 return this.setGameMode(mode);
             } catch (Exception e) {
-                System.out.print("BLASKNKENFW");
             }
         }
 
@@ -552,7 +551,7 @@ public class MVWorld {
 
     /**
      * Sets the chat color from a string.
-     * 
+     *
      * @param aliasColor
      */
     public void setAliasColor(String aliasColor) {
