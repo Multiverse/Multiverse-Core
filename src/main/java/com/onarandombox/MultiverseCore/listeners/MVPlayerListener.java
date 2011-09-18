@@ -139,7 +139,7 @@ public class MVPlayerListener extends PlayerListener {
         if(event.isCancelled()) {
             return;
         }
-        MVWorld fromWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
     }
@@ -149,7 +149,7 @@ public class MVPlayerListener extends PlayerListener {
         if(event.isCancelled()) {
             return;
         }
-        MVWorld fromWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
     }
