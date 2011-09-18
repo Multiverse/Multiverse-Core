@@ -136,8 +136,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
         this.checkServerProps();
-        // Setup all the Events the plugin needs to Monitor.
-        this.initializeDestinationFactory();
+
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
@@ -148,6 +147,9 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.commandHandler = new CommandHandler(this, this.ph);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
+
+        // Initialize the Destination factor AFTER the commands
+        this.initializeDestinationFactory();
 
         this.playerSessions = new HashMap<String, MVPlayerSession>();
 

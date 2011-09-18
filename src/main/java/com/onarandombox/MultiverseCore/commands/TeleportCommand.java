@@ -30,7 +30,7 @@ public class TeleportCommand extends MultiverseCommand {
 
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
-        Permission menu = new Permission("multiverse.teleport", "Allows you to display the teleport menu.", PermissionDefault.OP);
+        Permission menu = new Permission("multiverse.teleport.*", "Allows you to display the teleport menu.", PermissionDefault.OP);
 
         this.setName("Teleport");
         this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");

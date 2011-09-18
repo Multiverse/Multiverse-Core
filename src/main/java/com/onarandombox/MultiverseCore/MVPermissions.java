@@ -177,6 +177,7 @@ public class MVPermissions implements PermissionsInterface {
         return "Bukkit Permissions" + opsfallback;
     }
 
+    @Override
     public boolean hasAnyPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
             if (this.hasPermission(sender, node, isOpRequired)) {

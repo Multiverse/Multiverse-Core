@@ -13,18 +13,25 @@ import java.util.List;
 import java.util.Map;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 public class DestinationFactory {
     private MultiverseCore plugin;
     private Map<String, Class<? extends MVDestination>> destList;
-    private List<Permission> teleportPermissions;
+    private Command teleportCommand;
 
     public DestinationFactory(MultiverseCore plugin) {
         this.plugin = plugin;
         this.destList = new HashMap<String, Class<? extends MVDestination>>();
-        this.teleportPermissions = new ArrayList<Permission>();
+        List<Command> cmds = this.plugin.getCommandHandler().getAllCommands();
+        for(Command c : cmds) {
+            if(c instanceof TeleportCommand) {
+                this.teleportCommand = c;
+            }
+        }
     }
 
     public MVDestination getDestination(String destination) {
@@ -62,19 +69,17 @@ public class DestinationFactory {
         Permission other = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.other."+identifier);
         PermissionTools pt = new PermissionTools(this.plugin);
         if(self == null) {
-            this.plugin.getServer().getPluginManager().addPermission(new Permission("multiverse.teleport.self."+identifier,"Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP));
+            self = new Permission("multiverse.teleport.self."+identifier,"Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
+            this.plugin.getServer().getPluginManager().addPermission(self);
             pt.addToParentPerms("multiverse.teleport.self."+identifier);
         }
         if(other == null) {
-            this.plugin.getServer().getPluginManager().addPermission(new Permission("multiverse.teleport.other."+identifier,"Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP));
+            other = new Permission("multiverse.teleport.other."+identifier,"Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
+            this.plugin.getServer().getPluginManager().addPermission(other);
             pt.addToParentPerms("multiverse.teleport.other."+identifier);
         }
-        this.teleportPermissions.add(self);
-        this.teleportPermissions.add(other);
+        this.teleportCommand.addAdditonalPermission(self);
+        this.teleportCommand.addAdditonalPermission(other);
         return true;
-    }
-
-    public List<Permission> getTeleportPermissions() {
-        return this.teleportPermissions;
     }
 }
