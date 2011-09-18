@@ -59,13 +59,14 @@ public class MVPlayerSession {
      *
      * @param msg
      */
-    public void message(String msg) {
-        Long time = (new Date()).getTime();
-        if ((time - this.messageLast) > this.config.getInt("messagecooldown", 2000)) {
-            this.player.sendMessage(msg);
-            this.messageLast = time;
-        }
-    }
+    // See new class MVMessaging
+//    public void message(String msg) {
+//        Long time = (new Date()).getTime();
+//        if ((time - this.messageLast) > this.config.getInt("messagecooldown", 2000)) {
+//            this.player.sendMessage(msg);
+//            this.messageLast = time;
+//        }
+//    }
 
     // Commented out bed code, i'll get rid of it soon.
     // --FF
