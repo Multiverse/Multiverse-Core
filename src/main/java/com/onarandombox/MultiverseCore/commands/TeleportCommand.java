@@ -137,7 +137,10 @@ public class TeleportCommand extends MultiverseCommand {
     }
 
     private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {
-        if(teleporter.equals(teleportee)) {
+        if (teleporter == null) {
+            return true;    
+        }
+        if (teleporter.equals(teleportee)) {
             if(!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.teleport.self."+destination.getIdentifier(),true)) {
                 teleporter.sendMessage("You don't have permission to teleport yourself to a " + ChatColor.GREEN + destination.getType() + " Destination.");
                 teleporter.sendMessage(ChatColor.RED + "   (multiverse.teleport.self."+destination.getIdentifier()+")");
