@@ -65,7 +65,11 @@ public class MVPermissions implements PermissionsInterface {
         return returnValue;
     }
 
-    public boolean canTravelFromLocation(Player teleporter, Location location) {
+    public boolean canTravelFromLocation(CommandSender sender, Location location) {
+        if(!(sender instanceof Player)) {
+            return true;
+        }
+        Player teleporter = (Player) sender;
         if (!this.worldMgr.isMVWorld(location.getWorld().getName())) {
             return false;
         }
@@ -94,7 +98,11 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, "multiverse.access." + worldName, false);
     }
 
-    public Boolean canEnterDestination(Player p, MVDestination d) {
+    public Boolean canEnterDestination(CommandSender sender, MVDestination d) {
+        if(!(sender instanceof Player)) {
+            return true;
+        }
+        Player p = (Player) sender;
         if (d == null || d.getLocation(p) == null) {
             return false;
         }

@@ -44,7 +44,7 @@ public class TeleportCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         // Check if the command was sent from a Player.
-        Player teleporter = null;
+        CommandSender teleporter = sender;
         Player teleportee = null;
         if (sender instanceof Player) {
             teleporter = (Player) sender;
@@ -66,7 +66,6 @@ public class TeleportCommand extends MultiverseCommand {
                 sender.sendMessage("From the console, you must specify a player to teleport");
                 return;
             }
-            teleporter = (Player) sender;
             teleportee = (Player) sender;
         }
         // Special case for cannons:
@@ -110,9 +109,9 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromLocation(teleporter, d.getLocation(teleportee))) {
             if (teleportee.equals(teleporter)) {
-                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + teleporter.getWorld().getName());
+                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + ((Player)teleporter).getWorld().getName());
             } else {
-                teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + teleporter.getWorld().getName() + " can get to " + ChatColor.RED + "THERE from where they are...");
+                teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + ((Player)teleporter).getWorld().getName() + " can get to " + ChatColor.RED + "THERE from where they are...");
             }
             return;
         }
@@ -137,9 +136,6 @@ public class TeleportCommand extends MultiverseCommand {
     }
 
     private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {
-        if (teleporter == null) {
-            return true;    
-        }
         if (teleporter.equals(teleportee)) {
             if(!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.teleport.self."+destination.getIdentifier(),true)) {
                 teleporter.sendMessage("You don't have permission to teleport yourself to a " + ChatColor.GREEN + destination.getType() + " Destination.");
