@@ -14,12 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MVTeleport;
@@ -141,44 +136,71 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        if(event.isCancelled()) {
+            return;
+        }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
+    }
+
+    @Override
+    public void onPlayerPortal(PlayerPortalEvent event) {
+        if(event.isCancelled()) {
+            return;
+        }
+        MVWorld fromWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
+    }
+
+    /**
+     * Checks to see if player can go to a world given their current status.
+     *
+     * The return is a little backwards, and will return a value safe for event.setCancelled.
+     *
+     * @param fromWorld
+     * @param toWorld
+     * @param player
+     * @return True if they can't go to the world, False if they can.
+     */
+    private boolean checkWorldPermissions(MVWorld fromWorld, MVWorld toWorld, Player player) {
+
         if (toWorld != null) {
-            if (!this.plugin.getPermissions().canEnterWorld(event.getPlayer(), toWorld)) {
-                event.getPlayer().sendMessage("You don't have access to go here...");
-                event.setCancelled(true);
-                return;
+            if (!this.plugin.getPermissions().canEnterWorld(player, toWorld)) {
+                player.sendMessage("You don't have access to go here...");
+                return true;
             }
         }
         if (fromWorld != null) {
             if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
-                event.getPlayer().sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
-                event.setCancelled(true);
-                return;
+                player.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
+                return true;
             }
         }
         if (toWorld == null) {
             // The toworld is not handled by MV, we don't care about payments
-            return;
+            return false;
         }
         // Only check payments if it's a different world:
-        if (!event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+        if (!toWorld.equals(fromWorld)) {
             // Handle the Players GameMode setting for the new world.
             if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-                this.handleGameMode(event.getPlayer(), toWorld);
+                this.handleGameMode(player, toWorld);
             }
 
             // If the player does not have to pay, return now.
-            if (toWorld.isExempt(event.getPlayer())) {
-                return;
+            if (toWorld.isExempt(player)) {
+                return false;
             }
             GenericBank bank = plugin.getBank();
-            if (!bank.hasEnough(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency(), "You need " + bank.getFormattedAmount(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString())) {
-                event.setCancelled(true);
+            if (!bank.hasEnough(player, toWorld.getPrice(), toWorld.getCurrency(), "You need " + bank.getFormattedAmount(player, toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString())) {
+                return true;
             } else {
-                bank.pay(event.getPlayer(), toWorld.getPrice(), toWorld.getCurrency());
+                bank.pay(player, toWorld.getPrice(), toWorld.getCurrency());
             }
         }
+        return false;
     }
 
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
