@@ -175,7 +175,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
                 return true;
             } else {
                 log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of AllPay!");
+                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of AllPay!");
                 log.info(tag + " The Following Plugins MAY out of date!");
                 log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher and another plugin has loaded v" + this.banker.getVersion() + "!");
                 log.info(tag + AllPay.pluginsThatUseUs.toString());
@@ -184,7 +184,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         } catch (Throwable t) {
         }
         log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of AllPay!");
+        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of AllPay!");
         log.info(tag + " Check the logs for [AllPay] - Version ... for PLUGIN NAME to find the culprit! Then Yell at that dev!");
         log.info(tag + " Or update that plugin :P");
         log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher!");
@@ -198,7 +198,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
                 return true;
             } else {
                 log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of CommandHandler (an internal library)!");
+                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of CommandHandler (an internal library)!");
                 log.info(tag + " Please contact this plugin author!!!!!!!");
                 log.info(tag + " This plugin needs CommandHandler v" + chversion + " or higher and another plugin has loaded v" + this.commandHandler.getVersion() + "!");
                 return false;
@@ -206,7 +206,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         } catch (Throwable t) {
         }
         log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatable version of CommandHandler (an internal library)!");
+        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of CommandHandler (an internal library)!");
         log.info(tag + " Please contact this plugin author!!!!!!!");
         log.info(tag + " This plugin needs CommandHandler v" + chversion  + " or higher!");
         return false;

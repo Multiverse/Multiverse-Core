@@ -8,14 +8,13 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import com.onarandombox.utils.DestinationFactory;
-import com.onarandombox.utils.InvalidDestination;
-import com.onarandombox.utils.LocationManipulation;
-import com.onarandombox.utils.MVDestination;
+import com.onarandombox.utils.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -109,12 +108,35 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromLocation(teleporter, d.getLocation(teleportee))) {
             if (teleportee.equals(teleporter)) {
-                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + ((Player)teleporter).getWorld().getName());
+                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + ((Player) teleporter).getWorld().getName());
             } else {
                 teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + ((Player)teleporter).getWorld().getName() + " can get to " + ChatColor.RED + "THERE from where they are...");
             }
             return;
         }
+
+        // Special check to verify if players are tryint to teleport to the same
+        // WORLDDestination as the world they're in, that they ALSO have multiverse.core.spawn.self
+
+        if(d instanceof WorldDestination) {
+            World w = d.getLocation(teleportee).getWorld();
+            if(teleportee.getWorld().equals(w)) {
+                if(teleporter.equals(teleportee)) {
+                    if(!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.core.spawn.self", true)){
+                        teleporter.sendMessage("Sorry you don't have permission to go to the world spawn!");
+                        teleporter.sendMessage(ChatColor.RED + "  (multiverse.core.spawn.self)");
+                        return;
+                    }
+                } else {
+                    if(!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.core.spawn.other", true)){
+                        teleporter.sendMessage("Sorry you don't have permission to send " + teleportee.getDisplayName() + "to the world spawn!");
+                        teleporter.sendMessage(ChatColor.RED + "  (multiverse.core.spawn.other)");
+                        return;
+                    }
+                }
+            }
+        }
+
         if (d.getLocation(teleportee) == null) {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
