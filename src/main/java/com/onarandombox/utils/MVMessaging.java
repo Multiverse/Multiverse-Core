@@ -60,7 +60,35 @@ public class MVMessaging {
         return false;
     }
 
+    public boolean sendMessages(CommandSender sender, String[] messages, boolean ignoreCooldown) {
+        if(!(sender instanceof Player) || ignoreCooldown) {
+
+            this.sendMessages(sender, messages);
+            return true;
+        }
+        if(!this.sentList.containsKey(sender.getName())) {
+            this.sendMessages(sender, messages);
+            this.sentList.put(sender.getName(), new Date());
+            return true;
+        } else {
+            if(this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))){
+                this.sendMessages(sender, messages);
+                this.sentList.put(sender.getName(), new Date());
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean sendMessage(CommandSender sender, String message) {
         return this.sendMessage(sender, message, true);
+    }
+
+    public boolean sendMessages(CommandSender sender, String[] messages) {
+        boolean success = true;
+        for(String s : messages) {
+            success = (!(!this.sendMessage(sender, s, true) && success));
+        }
+        return success;
     }
 }
