@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore;
 
 import java.util.Date;
@@ -35,7 +42,7 @@ public class MVPlayerSession {
 
     /**
      * Grab whether the cooldown on Portal use has expired or not.
-     * 
+     *
      * @return
      */
     public boolean getTeleportable() {
@@ -49,20 +56,21 @@ public class MVPlayerSession {
 
     /**
      * Send a Message to the Player as long as enough time has passed since the last message.
-     * 
+     *
      * @param msg
      */
-    public void message(String msg) {
-        Long time = (new Date()).getTime();
-        if ((time - this.messageLast) > this.config.getInt("messagecooldown", 2000)) {
-            this.player.sendMessage(msg);
-            this.messageLast = time;
-        }
-    }
-    
+    // See new class MVMessaging
+//    public void message(String msg) {
+//        Long time = (new Date()).getTime();
+//        if ((time - this.messageLast) > this.config.getInt("messagecooldown", 2000)) {
+//            this.player.sendMessage(msg);
+//            this.messageLast = time;
+//        }
+//    }
+
     // Commented out bed code, i'll get rid of it soon.
     // --FF
-    
+
     // public void setRespawnLocation(Location location) {
     // this.bedSpawn = location;
     // }

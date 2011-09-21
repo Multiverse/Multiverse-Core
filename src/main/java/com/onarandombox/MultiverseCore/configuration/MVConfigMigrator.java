@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore.configuration;
 
 import java.io.File;
@@ -24,7 +31,7 @@ public abstract class MVConfigMigrator {
         }
         newConfig.setProperty("worlds." + key + newProperty, list);
     }
-    
+
     protected final File detectMultiverseFolders(File folder, LoggablePlugin mvPlugin) {
         File oldFolder = null;
         mvPlugin.log(Level.INFO, "Starting Multiverse Configuration Migrator(MVCM)!");

@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore;
 
 import java.io.BufferedReader;
@@ -14,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.onarandombox.MultiverseCore.listeners.*;
+import com.onarandombox.utils.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -57,15 +65,6 @@ import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
-import com.onarandombox.utils.CannonDestination;
-import com.onarandombox.utils.DebugLog;
-import com.onarandombox.utils.DestinationFactory;
-import com.onarandombox.utils.ExactDestination;
-import com.onarandombox.utils.PlayerDestination;
-import com.onarandombox.utils.PurgeWorlds;
-import com.onarandombox.utils.UpdateChecker;
-import com.onarandombox.utils.WorldDestination;
-import com.onarandombox.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
 public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
@@ -109,6 +108,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     private SpoutInterface spoutInterface = null;
     private double allpayversion = 3;
     private double chversion = 1;
+    private MVMessaging messaging;
 
     @Override
     public void onLoad() {
@@ -230,6 +230,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener, Priority.Normal, this); // To remove Player Sessions
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this); // To prepend the world name
+        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.playerListener, Priority.Monitor, this); // To switch gamemode
 
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow fake PVP
@@ -272,6 +273,13 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
         GlobalDebug = this.configMV.getInt("debug", 0);
+        GlobalDebug = this.configMV.getInt("debug", 0);
+        this.messaging = new MVMessaging(this);
+        this.messaging.setCooldown(this.configMV.getInt("messagecooldown", 5000));
+    }
+
+    public MVMessaging getMessaging(){
+        return this.messaging;
     }
 
     /**
@@ -401,7 +409,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (this.isEnabled() == false) {
+        if (!this.isEnabled()) {
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }

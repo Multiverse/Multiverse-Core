@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore;
 
 import java.util.logging.Level;
@@ -237,12 +244,12 @@ public class MVTeleport {
         }
         if (e instanceof Player) {
             Player p = (Player) e;
-            p.sendMessage("No safe locations found!");
+            this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
-            p.sendMessage("No safe locations found!");
+            this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
@@ -314,12 +321,12 @@ public class MVTeleport {
         }
         if (e instanceof Player) {
             Player p = (Player) e;
-            p.sendMessage("No safe locations found!");
+            this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
-            p.sendMessage("No safe locations found!");
+            this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");

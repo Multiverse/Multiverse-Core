@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.utils;
 
 import java.text.DecimalFormat;
@@ -26,7 +33,7 @@ public class LocationManipulation {
 
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
-     * 
+     *
      * @param location
      * @return
      */
@@ -42,7 +49,7 @@ public class LocationManipulation {
 
     /**
      * Convert a String to a Location.
-     * 
+     *
      * @param world
      * @param xStr
      * @param yStr
@@ -98,7 +105,7 @@ public class LocationManipulation {
 
     /**
      * Return the NESW Direction a Location is facing.
-     * 
+     *
      * @param location
      * @return
      */
@@ -187,7 +194,7 @@ public class LocationManipulation {
 
     /**
      * Returns the next Location that an entity is traveling at
-     * 
+     *
      * @param v
      * @return
      */
