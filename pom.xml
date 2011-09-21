@@ -34,13 +34,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <distributionManagement>
-        <site>
-            <id>jd.onarandombox.com</id>
-            <url>file:///home/javadocs/public_html/</url>
-        </site>
-    </distributionManagement>
-
     <ciManagement>
         <system>jenkins</system>
         <url>http://ci.onarandombox.com</url>
@@ -121,6 +114,7 @@
                 <artifactId>doxygen-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
+                    <executable>/usr/local/bin/doxygen</executable>
                     <configurationFile>${doxygen.configuration}</configurationFile>
                     <projectName>${project.name}</projectName>
                     <destDir>target/doxygen</destDir>
