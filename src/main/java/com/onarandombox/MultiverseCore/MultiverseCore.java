@@ -219,6 +219,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.destFactory.registerDestinationType(ExactDestination.class, "e");
         this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
         this.destFactory.registerDestinationType(CannonDestination.class, "ca");
+        this.destFactory.registerDestinationType(BedDestination.class, "b");
     }
 
     /**
