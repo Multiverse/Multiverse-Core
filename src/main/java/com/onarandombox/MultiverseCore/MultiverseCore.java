@@ -7,21 +7,18 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.onarandombox.MultiverseCore.listeners.*;
+import com.fernferret.allpay.AllPay;
+import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.commands.*;
+import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
+import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
+import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
+import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
+import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
+import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.utils.*;
+import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -34,38 +31,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-import com.fernferret.allpay.AllPay;
-import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commands.CoordCommand;
-import com.onarandombox.MultiverseCore.commands.CreateCommand;
-import com.onarandombox.MultiverseCore.commands.DebugCommand;
-import com.onarandombox.MultiverseCore.commands.DeleteCommand;
-import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
-import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
-import com.onarandombox.MultiverseCore.commands.HelpCommand;
-import com.onarandombox.MultiverseCore.commands.ImportCommand;
-import com.onarandombox.MultiverseCore.commands.InfoCommand;
-import com.onarandombox.MultiverseCore.commands.ListCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyAddCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyClearCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyRemoveCommand;
-import com.onarandombox.MultiverseCore.commands.ModifySetCommand;
-import com.onarandombox.MultiverseCore.commands.PurgeCommand;
-import com.onarandombox.MultiverseCore.commands.ReloadCommand;
-import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
-import com.onarandombox.MultiverseCore.commands.SpawnCommand;
-import com.onarandombox.MultiverseCore.commands.SpoutCommand;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.VersionCommand;
-import com.onarandombox.MultiverseCore.commands.WhoCommand;
-import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
-import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
-import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
-import com.pneumaticraft.commandhandler.CommandHandler;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
 
@@ -208,7 +180,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
         log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of CommandHandler (an internal library)!");
         log.info(tag + " Please contact this plugin author!!!!!!!");
-        log.info(tag + " This plugin needs CommandHandler v" + chversion  + " or higher!");
+        log.info(tag + " This plugin needs CommandHandler v" + chversion + " or higher!");
         return false;
     }
 
@@ -222,9 +194,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.destFactory.registerDestinationType(BedDestination.class, "b");
     }
 
-    /**
-     * Function to Register all the Events needed.
-     */
+    /** Function to Register all the Events needed. */
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         // pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
@@ -246,9 +216,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         pm.registerEvent(Event.Type.THUNDER_CHANGE, this.weatherListener, Priority.Normal, this);
     }
 
-    /**
-     * Load the Configuration files OR create the default config files.
-     */
+    /** Load the Configuration files OR create the default config files. */
     public void loadConfigs() {
 
         // Call the defaultConfiguration class to create the config files if they don't already exist.
@@ -281,13 +249,11 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.messaging.setCooldown(this.configMV.getInt("messagecooldown", 5000));
     }
 
-    public MVMessaging getMessaging(){
+    public MVMessaging getMessaging() {
         return this.messaging;
     }
 
-    /**
-     * Register Multiverse-Core commands to Command Manager.
-     */
+    /** Register Multiverse-Core commands to Command Manager. */
     private void registerCommands() {
         // Intro Commands
         this.commandHandler.registerCommand(new HelpCommand(this));
@@ -320,49 +286,40 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         this.commandHandler.registerCommand(new GeneratorCommand(this));
     }
 
-    /**
-     * Deprecated, please use WorldManager.loadWorlds(Boolean forceLoad) now.
-     */
+    /** Deprecated, please use WorldManager.loadWorlds(Boolean forceLoad) now. */
     @Deprecated
     public void loadWorlds(boolean forceLoad) {
         this.worldManager.loadWorlds(true);
     }
 
     /**
-     * Deprecated, please use WorldManager.addWorld(String name, Environment env, String seedString, String generator) now.
+     * Deprecated, please use WorldManager.addWorld(String name, Environment env, String seedString, String generator)
+     * now.
      */
     @Deprecated
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         return this.worldManager.addWorld(name, env, seedString, generator);
     }
 
-    /**
-     * Deprecated, please use WorldManager.removeWorldFromList(String name) now.
-     */
+    /** Deprecated, please use WorldManager.removeWorldFromList(String name) now. */
     @Deprecated
     public boolean removeWorldFromList(String name) {
         return this.worldManager.removeWorldFromList(name);
     }
 
-    /**
-     * Deprecated, please use WorldManager.removeWorldFromConfig(String name) now.
-     */
+    /** Deprecated, please use WorldManager.removeWorldFromConfig(String name) now. */
     @Deprecated
     public boolean removeWorldFromConfig(String name) {
         return this.worldManager.removeWorldFromConfig(name);
     }
 
-    /**
-     * Deprecated please use WorldManager.deleteWorld(String name) now.
-     */
+    /** Deprecated please use WorldManager.deleteWorld(String name) now. */
     @Deprecated
     public Boolean deleteWorld(String name) {
         return this.worldManager.deleteWorld(name);
     }
 
-    /**
-     * What happens when the plugin gets disabled...
-     */
+    /** What happens when the plugin gets disabled... */
     public void onDisable() {
         debugLog.close();
         this.ph.setPermissions(null);
@@ -375,6 +332,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * Grab the players session if one exists, otherwise create a session then return it.
      *
      * @param player
+     *
      * @return
      */
     public MVPlayerSession getPlayerSession(Player player) {
@@ -395,9 +353,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         return new MVTeleport(this);
     }
 
-    /**
-     * Grab the Permissions Handler for MultiVerse
-     */
+    /** Grab the Permissions Handler for MultiVerse */
     public MVPermissions getPermissions() {
         return this.ph;
     }
@@ -407,9 +363,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         return this.worldManager.getWorldPurger();
     }
 
-    /**
-     * onCommand
-     */
+    /** onCommand */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!this.isEnabled()) {
@@ -422,7 +376,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     }
 
     /**
-     * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information from the Servers Log Output.
+     * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information
+     * from the Servers Log Output.
      *
      * @param level
      * @param msg
@@ -448,7 +403,8 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     }
 
     /**
-     * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the standard Server Console.
+     * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the
+     * standard Server Console.
      *
      * @param level
      * @param msg
@@ -493,6 +449,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
      * This code should get moved somewhere more appropriate, but for now, it's here.
      *
      * @param env
+     *
      * @return
      */
     public Environment getEnvFromString(String env) {
@@ -507,6 +464,7 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
             env = "NORMAL";
 
         try {
+            // If the value wasn't found, maybe it's new, try checking the enum directly.
             return Environment.valueOf(env);
         } catch (IllegalArgumentException e) {
             return null;
@@ -549,16 +507,12 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         return this.pluginCount;
     }
 
-    /**
-     * Increments the number of plugins that have specifically hooked into core.
-     */
+    /** Increments the number of plugins that have specifically hooked into core. */
     public void incrementPluginCount() {
         this.pluginCount += 1;
     }
 
-    /**
-     * Decrements the number of plugins that have specifically hooked into core.
-     */
+    /** Decrements the number of plugins that have specifically hooked into core. */
     public void decrementPluginCount() {
         this.pluginCount -= 1;
     }

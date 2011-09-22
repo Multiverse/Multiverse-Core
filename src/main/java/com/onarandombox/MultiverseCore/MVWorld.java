@@ -7,11 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,6 +16,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.config.Configuration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 
 enum EnglishChatColor {
     AQUA("AQUA", ChatColor.AQUA),
@@ -99,9 +99,8 @@ public class MVWorld {
     private Double scaling; // How stretched/compressed distances are
     private Double price; // How much does it cost to enter this world
     private int currency = -1; // What is the currency
-    /**
-     * The generator as a string. This is used only for reporting. ex: BukkitFullOfMoon:GenID
-     */
+    private boolean hunger = true;
+    /** The generator as a string. This is used only for reporting. ex: BukkitFullOfMoon:GenID */
     private String generator;
     private Permission permission;
     private Permission exempt;
@@ -145,6 +144,7 @@ public class MVWorld {
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
         this.setPrice(config.getDouble("worlds." + this.name + ".entryfee.amount", 0.0));
         this.setCurrency(config.getInt("worlds." + this.name + ".entryfee.currency", -1));
+        this.setHunger(config.getBoolean("worlds." + this.name + ".hunger", true));
         this.getMobExceptions();
 
         this.setGameMode(config.getString("worlds." + this.name + ".gamemode", GameMode.SURVIVAL.toString()));
@@ -169,7 +169,7 @@ public class MVWorld {
     }
 
     private double getDefaultScale(Environment environment) {
-        if(environment == Environment.NETHER) {
+        if (environment == Environment.NETHER) {
             return 8.0;
         }
         return 1.0;
@@ -400,6 +400,7 @@ public class MVWorld {
      *
      * @param name
      * @param value
+     *
      * @return
      */
     public boolean setVariable(String name, String value) {
@@ -691,6 +692,17 @@ public class MVWorld {
 
     public boolean getKeepSpawnInMemory() {
         return this.keepSpawnInMemory;
+    }
+
+    private boolean setHunger(boolean hunger) {
+        this.hunger = hunger;
+        config.setProperty("worlds." + this.name + ".hunger", this.hunger);
+        saveConfig();
+        return true;
+    }
+
+    public boolean getHunger() {
+        return this.hunger;
     }
 
     public boolean setSpawn(Location l) {
