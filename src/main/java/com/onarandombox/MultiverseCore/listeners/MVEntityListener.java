@@ -19,12 +19,8 @@ import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 import com.onarandombox.MultiverseCore.MVWorld;
@@ -41,6 +37,18 @@ public class MVEntityListener extends EntityListener {
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldManager = plugin.getWorldManager();
+    }
+
+    @Override
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if(event.getEntity() instanceof Player) {
+            Player p = (Player) event.getEntity();
+            MVWorld w = this.plugin.getWorldManager().getMVWorld(p.getWorld().getName());
+            if(w != null && !w.getHunger()) {
+                // If the world has hunger set to false, do not let the level change
+                event.setFoodLevel(20);
+            }
+        }
     }
 
     /**

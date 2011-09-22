@@ -7,8 +7,12 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.logging.Level;
-
+import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.utils.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,12 +20,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
-import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.MVTeleport;
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
-import com.onarandombox.utils.WorldManager;
+import java.util.logging.Level;
 
 public class MVPlayerListener extends PlayerListener {
     MultiverseCore plugin;
@@ -32,15 +31,6 @@ public class MVPlayerListener extends PlayerListener {
         this.plugin = plugin;
         worldManager = plugin.getWorldManager();
     }
-
-    // Taken out until we do persistance.
-    // @Override
-    // public void onPlayerBedLeave(PlayerBedLeaveEvent event) {
-    // Location bedLoc = event.getBed().getLocation();
-    // bedLoc = this.plugin.getTeleporter().getSafeBedDestination(bedLoc);
-    // this.plugin.getPlayerSession(event.getPlayer()).setRespawnLocation(bedLoc);
-    // event.getPlayer().sendMessage("You should come back here when you type '/mv sleep'!");
-    // }
 
     @Override
     public void onPlayerChat(PlayerChatEvent event) {
@@ -136,17 +126,25 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
+        if (toWorld != null && !toWorld.getHunger() && fromWorld != null && fromWorld.getHunger() && !event.isCancelled()) {
+            // If to has hunger, and from doesn't, save the hunger
+            this.plugin.getPlayerSession(event.getPlayer()).setCachedHunger();
+        }
+        else if (toWorld != null && toWorld.getHunger() && fromWorld != null && !fromWorld.getHunger() && !event.isCancelled()) {
+            // If from has hunger, and to doesn't, restore the hunger
+            event.getPlayer().setFoodLevel(this.plugin.getPlayerSession(event.getPlayer()).getCachedHunger());
+        }
     }
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
@@ -156,12 +154,13 @@ public class MVPlayerListener extends PlayerListener {
 
     /**
      * Checks to see if player can go to a world given their current status.
-     *
+     * <p/>
      * The return is a little backwards, and will return a value safe for event.setCancelled.
      *
      * @param fromWorld
      * @param toWorld
      * @param player
+     *
      * @return True if they can't go to the world, False if they can.
      */
     private boolean checkWorldPermissions(MVWorld fromWorld, MVWorld toWorld, Player player) {
@@ -217,9 +216,7 @@ public class MVPlayerListener extends PlayerListener {
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
     }
 
-    /**
-     * The following private class is used to handle player game mode changes within a scheduler.
-     */
+    /** The following private class is used to handle player game mode changes within a scheduler. */
     private class HandleGameMode implements Runnable {
 
         private Player player;

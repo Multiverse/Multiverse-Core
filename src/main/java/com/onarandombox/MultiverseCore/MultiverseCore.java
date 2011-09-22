@@ -353,7 +353,11 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
         return new MVTeleport(this);
     }
 
-    /** Grab the Permissions Handler for MultiVerse */
+    /**
+     * Grab the Permissions Handler for Multiverse
+     *
+     * @return A valid {@link MVPermissions}.
+     */
     public MVPermissions getPermissions() {
         return this.ph;
     }
