@@ -45,8 +45,10 @@ public class MVEntityListener extends EntityListener {
             Player p = (Player) event.getEntity();
             MVWorld w = this.plugin.getWorldManager().getMVWorld(p.getWorld().getName());
             if(w != null && !w.getHunger()) {
-                // If the world has hunger set to false, do not let the level change
-                event.setFoodLevel(20);
+                // If the world has hunger set to false, do not let the level go down
+                if(event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
