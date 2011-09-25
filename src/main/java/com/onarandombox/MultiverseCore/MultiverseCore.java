@@ -324,7 +324,6 @@ public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
     /** What happens when the plugin gets disabled... */
     public void onDisable() {
         debugLog.close();
-        this.ph.setPermissions(null);
         this.banker = null;
         this.bank = null;
         log(Level.INFO, "- Disabled");

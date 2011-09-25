@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.AllPay;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -28,13 +27,6 @@ public class MVPluginListener extends ServerListener {
     /** Keep an eye out for Plugins which we can utilize. */
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
-        /**
-         * Check to see if Permissions was just enabled
-         */
-        if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-            this.plugin.getPermissions().setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
-            this.plugin.log(Level.INFO, "- Attached to Permissions");
-        }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
         if (Arrays.asList(AllPay.validEconPlugins).contains(event.getPlugin().getDescription().getName())) {
             this.plugin.setBank(this.plugin.getBanker().loadEconPlugin());
@@ -54,13 +46,6 @@ public class MVPluginListener extends ServerListener {
     /** We'll check if any of the plugins we rely on decide to Disable themselves. */
     @Override
     public void onPluginDisable(PluginDisableEvent event) {
-        /**
-         * Check to see if Permissions just disabled.
-         */
-        if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-            this.plugin.log(Level.INFO, "Permissions disabled");
-            this.plugin.getPermissions().setPermissions(null);
-        }
         // TODO: Disable econ when it disables.
     }
 
