@@ -7,10 +7,10 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.util.Date;
-
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
+
+import java.util.Date;
 
 public class MVPlayerSession {
 
@@ -28,9 +28,7 @@ public class MVPlayerSession {
         // this.bedSpawn = null;
     }
 
-    /**
-     * Update the Teleport time.
-     */
+    /** Update the Teleport time. */
     public void teleport() {
         this.teleportLast = (new Date()).getTime();
     }
@@ -52,6 +50,7 @@ public class MVPlayerSession {
     public void setCachedHunger() {
         this.cachedHunger = this.player.getFoodLevel();
     }
+
     public int getCachedHunger() {
         return this.cachedHunger;
     }

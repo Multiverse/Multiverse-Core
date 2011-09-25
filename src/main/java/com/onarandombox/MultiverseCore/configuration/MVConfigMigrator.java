@@ -7,19 +7,19 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
+import com.onarandombox.MultiverseCore.LoggablePlugin;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.config.Configuration;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.Configuration;
-
-import com.onarandombox.MultiverseCore.LoggablePlugin;
-
 public abstract class MVConfigMigrator {
     public List<String> createdDefaults = new ArrayList<String>();
+
     public abstract boolean migrate(String name, File folder);
 
     protected final void migrateListItem(Configuration newConfig, Configuration oldConfig, String key, String oldProperty, String newProperty) {

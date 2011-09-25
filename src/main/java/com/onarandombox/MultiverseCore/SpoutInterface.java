@@ -11,6 +11,7 @@ import org.getspout.spoutapi.SpoutManager;
 
 public class SpoutInterface {
     private SpoutManager spoutManager;
+
     public SpoutInterface() {
         this.spoutManager = SpoutManager.getInstance();
     }

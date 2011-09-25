@@ -7,17 +7,17 @@
 
 package com.onarandombox.MultiverseCore.event;
 
+import com.onarandombox.utils.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
-import com.onarandombox.utils.MVDestination;
 /**
  * Event that gets called when a player use the /mvtp command
- * @author fernferret
  *
+ * @author fernferret
  */
 public class MVTeleportEvent extends Event implements Cancellable {
     private static final long serialVersionUID = 854826818438649269L;

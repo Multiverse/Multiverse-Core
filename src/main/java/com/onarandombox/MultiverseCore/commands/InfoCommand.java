@@ -10,8 +10,6 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.utils.*;
-// Will use when we can compile with JDK 6
-//import com.sun.xml.internal.ws.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -20,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
+
+// Will use when we can compile with JDK 6
+//import com.sun.xml.internal.ws.util.StringUtils;
 
 public class InfoCommand extends MultiverseCommand {
     private WorldManager worldManager;
@@ -50,8 +51,7 @@ public class InfoCommand extends MultiverseCommand {
                 sender.sendMessage("You must enter a" + ChatColor.LIGHT_PURPLE + " world" + ChatColor.WHITE + " from the console!");
                 return;
             }
-        }
-        else if (args.size() == 1) {
+        } else if (args.size() == 1) {
             if (this.worldManager.getMVWorld(args.get(0)) != null) {
                 // then we have a world!
                 worldName = args.get(0);
@@ -69,8 +69,7 @@ public class InfoCommand extends MultiverseCommand {
                     return;
                 }
             }
-        }
-        else if (args.size() == 2) {
+        } else if (args.size() == 2) {
             worldName = args.get(0);
             try {
                 pageNum = Integer.parseInt(args.get(1)) - 1;

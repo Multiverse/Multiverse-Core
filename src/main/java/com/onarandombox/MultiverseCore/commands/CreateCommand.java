@@ -67,6 +67,5 @@ public class CreateCommand extends MultiverseCommand {
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
         }
-        return;
     }
 }

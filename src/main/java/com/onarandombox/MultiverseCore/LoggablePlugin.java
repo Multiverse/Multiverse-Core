@@ -7,9 +7,9 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.util.logging.Level;
-
 import org.bukkit.Server;
+
+import java.util.logging.Level;
 
 public interface LoggablePlugin {
     public void log(Level level, String msg);

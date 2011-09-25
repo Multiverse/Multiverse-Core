@@ -7,9 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-/**
- * The API for a Multiverse Handled World.
- */
+/** The API for a Multiverse Handled World. */
 public interface MultiverseWorld {
 
 }

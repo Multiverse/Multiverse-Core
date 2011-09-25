@@ -7,12 +7,11 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.weather.WeatherListener;
-
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class MVWeatherListener extends WeatherListener {
     private MultiverseCore plugin;

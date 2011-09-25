@@ -7,13 +7,12 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import org.bukkit.util.config.Configuration;
+
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
-
-import org.bukkit.util.config.Configuration;
-
-import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class MVCoreConfigMigrator extends MVConfigMigrator {
     private MultiverseCore core;

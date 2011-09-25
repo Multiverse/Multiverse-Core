@@ -7,25 +7,18 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.List;
-import java.util.logging.Level;
-
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Slime;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.WorldManager;
+import java.util.List;
+import java.util.logging.Level;
 
 //import org.bukkit.event.entity.ExplosionPrimedEvent;
 
@@ -41,12 +34,12 @@ public class MVEntityListener extends EntityListener {
 
     @Override
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
-        if(event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof Player) {
             Player p = (Player) event.getEntity();
             MVWorld w = this.plugin.getWorldManager().getMVWorld(p.getWorld().getName());
-            if(w != null && !w.getHunger()) {
+            if (w != null && !w.getHunger()) {
                 // If the world has hunger set to false, do not let the level go down
-                if(event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
+                if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
                     event.setCancelled(true);
                 }
             }
@@ -54,7 +47,9 @@ public class MVEntityListener extends EntityListener {
     }
 
     /**
-     * Event - When a Entity is Damaged, we first sort out whether it is of importance to us, such as EntityVSEntity or EntityVSProjectile. Then we grab the attacked and defender and check if its a player. Then deal with the PVP Aspect.
+     * Event - When a Entity is Damaged, we first sort out whether it is of importance to us, such as EntityVSEntity or
+     * EntityVSProjectile. Then we grab the attacked and defender and check if its a player. Then deal with the PVP
+     * Aspect.
      */
     @Override
     public void onEntityDamage(EntityDamageEvent event) {
@@ -107,9 +102,7 @@ public class MVEntityListener extends EntityListener {
         }
     }
 
-    /**
-     * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
-     */
+    /** Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit. */
     @Override
     public void onCreatureSpawn(CreatureSpawnEvent event) {
 
@@ -133,7 +126,7 @@ public class MVEntityListener extends EntityListener {
         /**
          * Handle people with non-standard animals: ie a patched craftbukkit.
          */
-        if(creature == null) {
+        if (creature == null) {
             this.plugin.log(Level.FINER, "Found a null typed creature.");
             return;
         }

@@ -7,16 +7,15 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-
+import com.fernferret.allpay.AllPay;
+import com.nijikokun.bukkit.Permissions.Permissions;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
 
-import com.fernferret.allpay.AllPay;
-import com.nijikokun.bukkit.Permissions.Permissions;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.Arrays;
+import java.util.logging.Level;
 
 public class MVPluginListener extends ServerListener {
 
@@ -26,9 +25,7 @@ public class MVPluginListener extends ServerListener {
         this.plugin = plugin;
     }
 
-    /**
-     * Keep an eye out for Plugins which we can utilize.
-     */
+    /** Keep an eye out for Plugins which we can utilize. */
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
         /**
@@ -54,9 +51,7 @@ public class MVPluginListener extends ServerListener {
         }
     }
 
-    /**
-     * We'll check if any of the plugins we rely on decide to Disable themselves.
-     */
+    /** We'll check if any of the plugins we rely on decide to Disable themselves. */
     @Override
     public void onPluginDisable(PluginDisableEvent event) {
         /**

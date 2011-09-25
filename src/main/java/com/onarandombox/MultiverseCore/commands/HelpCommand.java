@@ -43,8 +43,7 @@ public class HelpCommand extends MultiverseCommand {
 
         String filter = "";
 
-        if (args.size() == 0)
-        {
+        if (args.size() == 0) {
             filter = "";
             page = 1;
         } else if (args.size() == 1) {

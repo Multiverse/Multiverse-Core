@@ -7,8 +7,10 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.util.logging.Level;
-
+import com.onarandombox.utils.BlockSafety;
+import com.onarandombox.utils.InvalidDestination;
+import com.onarandombox.utils.LocationManipulation;
+import com.onarandombox.utils.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
@@ -16,10 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
-import com.onarandombox.utils.BlockSafety;
-import com.onarandombox.utils.InvalidDestination;
-import com.onarandombox.utils.LocationManipulation;
-import com.onarandombox.utils.MVDestination;
+import java.util.logging.Level;
 
 public class MVTeleport {
 
@@ -113,6 +112,7 @@ public class MVTeleport {
      *
      * @param l
      * @param radius
+     *
      * @return
      */
     private Location checkAroundLocation(Location l, int diameter) {
@@ -196,6 +196,7 @@ public class MVTeleport {
      *
      * @param e
      * @param l
+     *
      * @return
      */
     @Deprecated
@@ -209,9 +210,9 @@ public class MVTeleport {
     }
 
     /**
-     *
      * @param e
      * @param l
+     *
      * @return
      */
     @Deprecated
@@ -225,8 +226,7 @@ public class MVTeleport {
             if (!this.bs.canSpawnCartSafely(m)) {
                 return null;
             }
-        }
-        else if (e instanceof Vehicle) {
+        } else if (e instanceof Vehicle) {
             Vehicle v = (Vehicle) e;
             if (!this.bs.canSpawnVehicleSafely(v)) {
                 return null;
@@ -246,8 +246,7 @@ public class MVTeleport {
             Player p = (Player) e;
             this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
-        }
-        else if (e.getPassenger() instanceof Player) {
+        } else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
             this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
@@ -257,28 +256,31 @@ public class MVTeleport {
     }
 
     /**
-     * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if it's not, will adjust the final destination accordingly.
+     * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if
+     * it's not, will adjust the final destination accordingly.
+     *
      * @param e Entity to teleport
      * @param d Destination to teleport them to
+     *
      * @return true for success, false for failure
      */
     public boolean safelyTeleport(Entity e, MVDestination d) {
-        if(d instanceof InvalidDestination) {
+        if (d instanceof InvalidDestination) {
             this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
             return false;
         }
 
         Location safeLoc = d.getLocation(e);
-        if(d.useSafeTeleporter()) {
+        if (d.useSafeTeleporter()) {
             safeLoc = this.getSafeLocation(e, d);
         }
 
         if (safeLoc != null) {
-            if(e.teleport(safeLoc)) {
+            if (e.teleport(safeLoc)) {
                 if (!d.getVelocity().equals(new Vector(0, 0, 0))) {
                     e.setVelocity(d.getVelocity());
                 }
-            return true;
+                return true;
             }
         }
         return false;
@@ -289,6 +291,7 @@ public class MVTeleport {
      *
      * @param e The entity to spawn
      * @param d The MVDestination to take the entity to.
+     *
      * @return A new location to spawn the entity at.
      */
     public Location getSafeLocation(Entity e, MVDestination d) {
@@ -302,8 +305,7 @@ public class MVTeleport {
             if (!this.bs.canSpawnCartSafely(m)) {
                 return null;
             }
-        }
-        else if (e instanceof Vehicle) {
+        } else if (e instanceof Vehicle) {
             Vehicle v = (Vehicle) e;
             if (!this.bs.canSpawnVehicleSafely(v)) {
                 return null;
@@ -323,8 +325,7 @@ public class MVTeleport {
             Player p = (Player) e;
             this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
-        }
-        else if (e.getPassenger() instanceof Player) {
+        } else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
             this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());

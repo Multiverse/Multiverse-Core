@@ -7,20 +7,19 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.util.List;
-import java.util.logging.Level;
-
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
+import com.onarandombox.utils.MVDestination;
+import com.onarandombox.utils.WorldManager;
+import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
-import com.onarandombox.utils.MVDestination;
-import com.onarandombox.utils.WorldManager;
-import com.pneumaticraft.commandhandler.PermissionsInterface;
+import java.util.List;
+import java.util.logging.Level;
 
 public class MVPermissions implements PermissionsInterface {
 
@@ -48,6 +47,7 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param p
      * @param w
+     *
      * @return
      */
     public Boolean canTravelFromWorld(Player p, MVWorld w) {
@@ -66,7 +66,7 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     public boolean canTravelFromLocation(CommandSender sender, Location location) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             return true;
         }
         Player teleporter = (Player) sender;
@@ -81,6 +81,7 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param p
      * @param w
+     *
      * @return
      */
     public Boolean canEnterWorld(Player p, MVWorld w) {
@@ -99,7 +100,7 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     public Boolean canEnterDestination(CommandSender sender, MVDestination d) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             return true;
         }
         Player p = (Player) sender;
@@ -252,6 +253,7 @@ public class MVPermissions implements PermissionsInterface {
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
      *
      * @param seperated
+     *
      * @return
      */
     private String getParentPerm(String[] seperated) {

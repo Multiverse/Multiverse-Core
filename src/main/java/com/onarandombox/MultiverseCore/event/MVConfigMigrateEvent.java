@@ -7,9 +7,9 @@
 
 package com.onarandombox.MultiverseCore.event;
 
-import java.util.List;
-
 import org.bukkit.event.Event;
+
+import java.util.List;
 
 public class MVConfigMigrateEvent extends Event {
     private static final long serialVersionUID = 3647950355746345397L;
