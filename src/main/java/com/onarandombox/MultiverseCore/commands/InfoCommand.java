@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.FancyText;
 import com.onarandombox.utils.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

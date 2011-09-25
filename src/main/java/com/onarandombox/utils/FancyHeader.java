@@ -7,6 +7,8 @@
 
 package com.onarandombox.utils;
 
+import com.onarandombox.MultiverseCore.api.FancyText;
+
 public class FancyHeader implements FancyText {
 
     private FancyColorScheme colors;

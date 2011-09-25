@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import com.onarandombox.utils.*;
 import org.bukkit.ChatColor;

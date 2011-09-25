@@ -7,10 +7,10 @@
 
 package com.onarandombox.MultiverseCore;
 
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.utils.BlockSafety;
 import com.onarandombox.utils.InvalidDestination;
 import com.onarandombox.utils.LocationManipulation;
-import com.onarandombox.utils.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;

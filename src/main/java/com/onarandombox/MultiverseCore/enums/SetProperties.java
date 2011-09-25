@@ -5,8 +5,13 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.utils;
+package com.onarandombox.MultiverseCore.enums;
 
-public interface FancyText {
-    public String getFancyText();
+/**
+ * Multiverse 2
+ *
+ * @author fernferret
+ */ // Color == Aliascolor
+public enum SetProperties {
+    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn, currency, curr, price, scale, spawnmemory, memory, weather, storm, gamemode, mode, hunger
 }

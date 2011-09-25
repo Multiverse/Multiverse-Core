@@ -10,6 +10,7 @@ package com.onarandombox.utils;
 import java.util.Arrays;
 import java.util.List;
 
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;

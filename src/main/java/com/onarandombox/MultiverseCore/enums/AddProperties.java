@@ -5,14 +5,13 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.enums;
 
-import org.bukkit.Server;
-
-import java.util.logging.Level;
-
-public interface LoggablePlugin {
-    public void log(Level level, String msg);
-
-    public Server getServer();
+/**
+ * Multiverse 2
+ *
+ * @author fernferret
+ */
+public enum AddProperties {
+    blockblacklist, playerwhitelist, playerblacklist, worldblacklist, animals, monsters
 }

@@ -9,14 +9,13 @@ package com.onarandombox.utils;
 
 import java.util.logging.Level;
 
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.TravelAgent;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.CannonDestination;
-import com.onarandombox.utils.MVDestination;
 
 public class MVTravelAgent implements TravelAgent {
     private MVDestination destination;

@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
-import com.onarandombox.MultiverseCore.LoggablePlugin;
+import com.onarandombox.MultiverseCore.api.LoggablePlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
 

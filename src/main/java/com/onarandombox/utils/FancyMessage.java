@@ -7,6 +7,8 @@
 
 package com.onarandombox.utils;
 
+import com.onarandombox.MultiverseCore.api.FancyText;
+
 public class FancyMessage implements FancyText {
     private String title;
     private String message;

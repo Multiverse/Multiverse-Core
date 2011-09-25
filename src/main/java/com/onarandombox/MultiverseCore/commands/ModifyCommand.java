@@ -8,6 +8,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.enums.Action;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
+import com.onarandombox.MultiverseCore.enums.SetProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -16,19 +19,6 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-enum AddProperties {
-    blockblacklist, playerwhitelist, playerblacklist, worldblacklist, animals, monsters
-}
-
-enum Action {
-    Set, Add, Remove, Clear
-}
-
-// Color == Aliascolor
-enum SetProperties {
-    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn, currency, curr, price, scale, spawnmemory, memory, weather, storm, gamemode, mode, hunger
-}
 
 public class ModifyCommand extends MultiverseCommand {
 

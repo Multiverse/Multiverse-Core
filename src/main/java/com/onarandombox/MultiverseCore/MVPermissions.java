@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
-import com.onarandombox.utils.MVDestination;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.utils.WorldManager;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.Location;

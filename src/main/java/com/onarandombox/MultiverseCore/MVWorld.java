@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore;
 
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.utils.EnglishChatColor;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -22,52 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
-enum EnglishChatColor {
-    AQUA("AQUA", ChatColor.AQUA),
-    BLACK("BLACK", ChatColor.BLACK),
-    BLUE("BLUE", ChatColor.BLUE),
-    DARKAQUA("DARKAQUA", ChatColor.DARK_AQUA),
-    DARKBLUE("DARKBLUE", ChatColor.DARK_BLUE),
-    DARKGRAY("DARKGRAY", ChatColor.DARK_GRAY),
-    DARKGREEN("DARKGREEN", ChatColor.DARK_GREEN),
-    DARKPURPLE("DARKPURPLE", ChatColor.DARK_PURPLE),
-    DARKRED("DARKRED", ChatColor.DARK_RED),
-    GOLD("GOLD", ChatColor.GOLD),
-    GRAY("GRAY", ChatColor.GRAY),
-    GREEN("GREEN", ChatColor.GREEN),
-    LIGHTPURPLE("LIGHTPURPLE", ChatColor.LIGHT_PURPLE),
-    RED("RED", ChatColor.RED),
-    YELLOW("YELLOW", ChatColor.YELLOW),
-    WHITE("WHITE", ChatColor.WHITE);
-    private ChatColor color;
-    private String text;
 
-    EnglishChatColor(String name, ChatColor color) {
-        this.color = color;
-        this.text = name;
-    }
-
-    public String getText() {
-        return this.text;
-    }
-
-    public ChatColor getColor() {
-        return this.color;
-    }
-
-    public static EnglishChatColor fromString(String text) {
-        if (text != null) {
-            for (EnglishChatColor c : EnglishChatColor.values()) {
-                if (text.equalsIgnoreCase(c.text)) {
-                    return c;
-                }
-            }
-        }
-        return EnglishChatColor.WHITE;
-    }
-}
-
-public class MVWorld {
+public class MVWorld implements MultiverseWorld {
 
     private MultiverseCore plugin; // Hold the Plugin Instance.
     private Configuration config; // Hold the Configuration File.
@@ -86,13 +44,12 @@ public class MVWorld {
     private boolean keepSpawnInMemory; // Does the World have the spawn loaded all the time?
 
     private Boolean pvp; // Does this World allow PVP?
-    private Boolean fakepvp; // Should this world have fakePVP on? (used for PVP zones)
+    private Boolean fakePVP; // Should this world have fakePVP on? (used for PVP zones)
 
     private GameMode gameMode = GameMode.SURVIVAL;
 
     private String respawnWorld; // Contains the name of the World to respawn the player to
 
-    private List<Integer> blockBlacklist; // Contain a list of Blocks which we won't allow on this World.
 
     private HashMap<String, List<String>> masterList;
 
@@ -100,8 +57,6 @@ public class MVWorld {
     private Double price; // How much does it cost to enter this world
     private int currency = -1; // What is the currency
     private boolean hunger = true;
-    /** The generator as a string. This is used only for reporting. ex: BukkitFullOfMoon:GenID */
-    private String generator;
     private Permission permission;
     private Permission exempt;
 
@@ -116,7 +71,6 @@ public class MVWorld {
         // Set local values that CANNOT be changed by user
         this.world = world;
         this.name = world.getName();
-        this.generator = generatorString;
         this.seed = seed;
         this.environment = world.getEnvironment();
 
@@ -125,7 +79,7 @@ public class MVWorld {
 
         // Write these files to the config (once it's saved)
         if (generatorString != null) {
-            config.setProperty("worlds." + this.name + ".generator", this.generator);
+            config.setProperty("worlds." + this.name + ".generator", generatorString);
         }
         if (seed != null) {
             config.setProperty("worlds." + this.name + ".seed", this.seed);
@@ -135,7 +89,8 @@ public class MVWorld {
         // Set local values that CAN be changed by the user
         this.setAlias(config.getString("worlds." + this.name + ".alias.name", ""));
         this.setAliasColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
-        this.setPvp(config.getBoolean("worlds." + this.name + ".pvp", true));
+        this.setFakePVPMode(config.getBoolean("worlds." + this.name + ".fakepvp", false));
+        this.setPVPMode(config.getBoolean("worlds." + this.name + ".pvp", true));
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawnworld", ""));
         this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
@@ -152,7 +107,6 @@ public class MVWorld {
         this.setSpawnInMemory(config.getBoolean("worlds." + this.name + ".keepspawninmemory", true));
 
         this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
-        this.getBlockBlacklist().addAll(config.getIntList("worlds." + this.name + ".blockblacklist", new ArrayList<Integer>()));
         this.translateTempSpawn(config);
         this.readSpawnFromConfig(this.getCBWorld());
         this.canSave = true;
@@ -165,6 +119,7 @@ public class MVWorld {
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
+            this.plugin.log(Level.SEVERE, "Error when adding Exemption/Access permissions for " + this.name);
         }
     }
 
@@ -235,16 +190,6 @@ public class MVWorld {
     }
 
     public String getColoredWorldString() {
-        ChatColor color = this.getAliasColor();
-        if (color == null) {
-            if (this.environment == Environment.NETHER) {
-                color = ChatColor.RED;
-            } else if (this.environment == Environment.NORMAL) {
-                color = ChatColor.GREEN;
-            } else if (this.environment == Environment.SKYLANDS) {
-                color = ChatColor.AQUA;
-            }
-        }
         return this.getAliasColor() + this.getAlias() + ChatColor.WHITE;
     }
 
@@ -269,42 +214,34 @@ public class MVWorld {
 
     private void initLists() {
         this.masterList = new HashMap<String, List<String>>();
-        this.blockBlacklist = new ArrayList<Integer>();
-        // Only int list, we don't need to add it to the masterlist
         this.masterList.put("worldblacklist", new ArrayList<String>());
         this.masterList.put("animals", new ArrayList<String>());
         this.masterList.put("monsters", new ArrayList<String>());
     }
 
+    @Override
     public boolean clearVariable(String property) {
-        if (property.equalsIgnoreCase("blockblacklist")) {
-            this.blockBlacklist.clear();
-        } else if (this.masterList.keySet().contains(property)) {
+        if (this.masterList.keySet().contains(property)) {
             this.masterList.get(property).clear();
         } else {
             return false;
         }
-        this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.blockBlacklist);
+        this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), new ArrayList<String>());
         this.saveConfig();
         return true;
     }
 
-    public boolean addToList(String list, String value) {
-        if (list.equalsIgnoreCase("blockblacklist")) {
-            try {
-                int intVal = Integer.parseInt(value);
-                return addToList(list, intVal);
-            } catch (Exception e) {
-            }
-        } else if (this.masterList.keySet().contains(list)) {
+    @Override
+    public boolean addToVariable(String property, String value) {
+        if (this.masterList.keySet().contains(property)) {
 
-            if (list.equalsIgnoreCase("animals") || list.equalsIgnoreCase("monsters")) {
-                this.masterList.get(list).add(value.toUpperCase());
-                this.config.setProperty("worlds." + this.name + "." + list.toLowerCase() + ".exceptions", this.masterList.get(list));
+            if (property.equalsIgnoreCase("animals") || property.equalsIgnoreCase("monsters")) {
+                this.masterList.get(property).add(value.toUpperCase());
+                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase() + ".exceptions", this.masterList.get(property));
                 this.syncMobs();
             } else {
-                this.masterList.get(list).add(value);
-                this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
+                this.masterList.get(property).add(value);
+                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
             }
             saveConfig();
             return true;
@@ -312,28 +249,34 @@ public class MVWorld {
         return false;
     }
 
-    public boolean removeFromList(String list, String value) {
-        if (list.equalsIgnoreCase("blockblacklist")) {
-            try {
-                int intVal = Integer.parseInt(value);
-                return removeFromList(list, intVal);
-            } catch (Exception e) {
-            }
-        }
-        if (this.masterList.keySet().contains(list)) {
+    @Override
+    public boolean removeFromVariable(String property, String value) {
+        if (this.masterList.keySet().contains(property)) {
 
-            if (list.equalsIgnoreCase("animals") || list.equalsIgnoreCase("monsters")) {
-                this.masterList.get(list).remove(value.toUpperCase());
-                this.config.setProperty("worlds." + this.name + "." + list.toLowerCase() + ".exceptions", this.masterList.get(list));
+            if (property.equalsIgnoreCase("animals") || property.equalsIgnoreCase("monsters")) {
+                this.masterList.get(property).remove(value.toUpperCase());
+                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase() + ".exceptions", this.masterList.get(property));
                 this.syncMobs();
             } else {
-                this.masterList.get(list).remove(value);
-                this.config.setProperty("worlds." + this.name + "." + list.toLowerCase(), this.masterList.get(list));
+                this.masterList.get(property).remove(value);
+                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
             }
             saveConfig();
             return true;
         }
         return false;
+    }
+
+    /** Deprecated, use {@link #addToVariable(String, String)} now. */
+    @Deprecated
+    public boolean addToList(String list, String value) {
+        return this.addToVariable(list, value);
+    }
+
+    // Deprecated, use {@link #removeFromVariable(String, String)} now.
+    @Deprecated
+    public boolean removeFromList(String list, String value) {
+        return this.removeFromVariable(list, value);
     }
 
     private void syncMobs() {
@@ -351,29 +294,9 @@ public class MVWorld {
         this.plugin.getWorldManager().getWorldPurger().purgeWorld(null, this);
     }
 
-    private boolean addToList(String list, Integer value) {
-        if (list.equalsIgnoreCase("blockblacklist")) {
-            this.blockBlacklist.add(value);
-            this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
-            saveConfig();
-        }
-        return false;
-
-    }
-
-    private boolean removeFromList(String list, Integer value) {
-        if (list.equalsIgnoreCase("blockblacklist")) {
-            this.blockBlacklist.remove(value);
-            this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
-            saveConfig();
-        }
-        return false;
-
-    }
-
     private boolean setVariable(String name, boolean value) {
         if (name.equalsIgnoreCase("pvp")) {
-            this.setPvp(value);
+            this.setPVPMode(value);
         } else if (name.equalsIgnoreCase("animals")) {
             this.setAnimals(value);
         } else if (name.equalsIgnoreCase("monsters")) {
@@ -395,14 +318,7 @@ public class MVWorld {
         saveConfig();
     }
 
-    /**
-     * This is the one people have access to. It'll handle the rest.
-     *
-     * @param name
-     * @param value
-     *
-     * @return
-     */
+    @Override
     public boolean setVariable(String name, String value) {
         if (name.equalsIgnoreCase("alias")) {
             this.setAlias(value);
@@ -422,6 +338,7 @@ public class MVWorld {
                 this.setCurrency(intValue);
                 return true;
             } catch (Exception e) {
+                return false;
             }
         }
         if (name.equalsIgnoreCase("price")) {
@@ -429,6 +346,7 @@ public class MVWorld {
                 double doubValue = Double.parseDouble(value);
                 return this.setPrice(doubValue);
             } catch (Exception e) {
+                return false;
             }
         }
         if (name.equalsIgnoreCase("scale") || name.equalsIgnoreCase("scaling")) {
@@ -436,6 +354,7 @@ public class MVWorld {
                 double doubValue = Double.parseDouble(value);
                 return this.setScaling(doubValue);
             } catch (Exception e) {
+                return false;
             }
         }
 
@@ -444,6 +363,7 @@ public class MVWorld {
                 GameMode mode = GameMode.valueOf(value.toUpperCase());
                 return this.setGameMode(mode);
             } catch (Exception e) {
+                return false;
             }
         }
 
@@ -451,9 +371,8 @@ public class MVWorld {
             boolean boolValue = Boolean.parseBoolean(value);
             return this.setVariable(name, boolValue);
         } catch (Exception e) {
+            return false;
         }
-
-        return false;
     }
 
     public Environment getEnvironment() {
@@ -528,9 +447,9 @@ public class MVWorld {
         return this.pvp;
     }
 
-    public void setPvp(Boolean pvp) {
-        this.fakepvp = this.plugin.getConfig().getBoolean("fakepvp", false);
-        if (this.fakepvp) {
+    @Override
+    public void setPVPMode(Boolean pvp) {
+        if (this.fakePVP) {
             this.world.setPVP(true);
         } else {
             this.world.setPVP(pvp);
@@ -538,11 +457,15 @@ public class MVWorld {
         this.pvp = pvp;
         this.config.setProperty("worlds." + this.name + ".pvp", pvp);
         saveConfig();
-
     }
 
-    public List<Integer> getBlockBlacklist() {
-        return this.blockBlacklist;
+    @Override
+    public void setFakePVPMode(Boolean fakePVPMode) {
+        this.fakePVP = fakePVPMode;
+        this.config.setProperty("worlds." + this.name + ".fakepvp", this.fakePVP);
+        // Now that we've set PVP mode, make sure to go through the normal setting too!
+        // This method will perform the save for us to eliminate one write.
+        this.setPVPMode(this.pvp);
     }
 
     public List<String> getWorldBlacklist() {
@@ -564,11 +487,6 @@ public class MVWorld {
         return true;
     }
 
-    /**
-     * Sets the chat color from a string.
-     *
-     * @param aliasColor
-     */
     public void setAliasColor(String aliasColor) {
         EnglishChatColor color = EnglishChatColor.fromString(aliasColor);
         if (color == null) {
@@ -589,12 +507,7 @@ public class MVWorld {
     }
 
     public boolean clearList(String property) {
-        if (property.equalsIgnoreCase("blockblacklist")) {
-            this.blockBlacklist.clear();
-            this.config.setProperty("worlds." + this.name + ".blockblacklist", this.blockBlacklist);
-            saveConfig();
-            return true;
-        } else if (this.masterList.containsKey(property)) {
+        if (this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
             this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
             this.syncMobs();
@@ -605,7 +518,7 @@ public class MVWorld {
     }
 
     public boolean getFakePVP() {
-        return this.fakepvp;
+        return this.fakePVP;
     }
 
     public String getRespawnToWorld() {

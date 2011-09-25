@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.api.LoggablePlugin;
 import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;

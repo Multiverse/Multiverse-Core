@@ -7,12 +7,12 @@
 
 package com.onarandombox.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
