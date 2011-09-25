@@ -7,8 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.utils.WorldManager;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
@@ -25,7 +23,6 @@ public class MVPermissions implements PermissionsInterface {
 
     private MultiverseCore plugin;
     private WorldManager worldMgr;
-    private PermissionHandler permissions = null;
 
     /**
      * Constructor FTW
@@ -35,11 +32,6 @@ public class MVPermissions implements PermissionsInterface {
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldMgr = plugin.getWorldManager();
-        // We have to see if permissions was loaded before MV was
-        if (this.plugin.getServer().getPluginManager().getPlugin("Permissions") != null) {
-            this.setPermissions(((Permissions) this.plugin.getServer().getPluginManager().getPlugin("Permissions")).getHandler());
-            this.plugin.log(Level.INFO, "- Attached to Permissions");
-        }
     }
 
     /**
@@ -117,16 +109,10 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, d.getRequiredPermission(), false);
     }
 
-    public void setPermissions(PermissionHandler handler) {
-        this.permissions = handler;
-    }
-
     public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
-
         if (!(sender instanceof Player)) {
             return true;
         }
-
         // NO one can access a null permission (mainly used for destinations):w
         if (node == null) {
             return false;
@@ -136,46 +122,13 @@ public class MVPermissions implements PermissionsInterface {
         if (node.equals("")) {
             return true;
         }
-
         Player player = (Player) sender;
         this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]");
-        boolean opFallback = this.plugin.getConfig().getBoolean("opfallback", true);
-        if (this.permissions != null && this.permissions.has(player, node)) {
-            // If Permissions is enabled we check against them.
-            this.plugin.log(Level.FINEST, "Allowed by Permissions or something that looked like it.");
-            return true;
-        } else if (sender.hasPermission(node)) {
-            // If Now check the bukkit permissions
-            this.plugin.log(Level.FINEST, "Allowed by the built in Permissions.");
-            return true;
-        } else if (player.isOp() && opFallback) {
-            // If Player is Op we always let them use it if they have the fallback enabled!
-            this.plugin.log(Level.FINEST, "Allowed by OP (opfallback was on).");
-            return true;
-        }
-
-        // If the Player doesn't have Permissions and isn't an Op then
-        // we return true if OP is not required, otherwise we return false
-        // This allows us to act as a default permission guidance
-
-        // If they have the op fallback disabled, NO commands will work without a permissions plugin.
-        if (!isOpRequired && opFallback) {
-            this.plugin.log(Level.FINEST, "Allowed because opfallback was set to true.");
-        }
-        return !isOpRequired && opFallback;
-
+        return sender.hasPermission(node);
     }
 
     public String getType() {
-        String opsfallback = "";
-        if (this.plugin.getConfig().getBoolean("opfallback", true)) {
-            opsfallback = " WITH OPs.txt fallback";
-        }
-        if (this.permissions != null) {
-            return "Permissions " + this.plugin.getServer().getPluginManager().getPlugin("Permissions").getDescription().getVersion() + opsfallback;
-        }
-
-        return "Bukkit Permissions" + opsfallback;
+        return "Bukkit Permissions (SuperPerms)";
     }
 
     @Override

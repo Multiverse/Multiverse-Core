@@ -197,20 +197,12 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of Economy Dependencies -->
-
-        <!-- Start of Permissions Dependencies -->
-        <dependency>
-            <groupId>com.nijikokun.bukkit</groupId>
-            <artifactId>Permissions</artifactId>
-            <version>3.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+        <!-- Start of JUnit Dependencies -->
         <dependency>
             <groupId>org.junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
         </dependency>
-        <!-- End of Permissions Dependencies -->
+        <!-- End of JUnit Dependencies -->
     </dependencies>
 </project>

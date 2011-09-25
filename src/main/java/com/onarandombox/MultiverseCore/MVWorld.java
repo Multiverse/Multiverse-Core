@@ -459,7 +459,6 @@ public class MVWorld implements MultiverseWorld {
         saveConfig();
     }
 
-    @Override
     public void setFakePVPMode(Boolean fakePVPMode) {
         this.fakePVP = fakePVPMode;
         this.config.setProperty("worlds." + this.name + ".fakepvp", this.fakePVP);
