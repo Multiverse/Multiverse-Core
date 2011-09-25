@@ -143,14 +143,4 @@ public interface MultiverseWorld {
      * @param pvpMode True to enable PVP damage, false to disable it.
      */
     public void setPVPMode(Boolean pvpMode);
-
-    /**
-     * In order to allow players to have PVP zones, allow them to use the old style. I actually can't remember why this
-     * method is needed.
-     * <p/>
-     * May get deprecated soon.
-     *
-     * @param fakePVPMode True to enable canceling of PVP event, false to disable it (default).
-     */
-    public void setFakePVPMode(Boolean fakePVPMode);
 }
