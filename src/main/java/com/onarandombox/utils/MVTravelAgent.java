@@ -10,6 +10,7 @@ package com.onarandombox.utils;
 import java.util.logging.Level;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.destination.CannonDestination;
 import org.bukkit.Location;
 import org.bukkit.TravelAgent;
 import org.bukkit.entity.Player;

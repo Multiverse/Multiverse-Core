@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.utils;
+package com.onarandombox.MultiverseCore.destination;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.Map;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.onarandombox.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;

@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.utils;
+package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import org.bukkit.Location;

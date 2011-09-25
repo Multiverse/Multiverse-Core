@@ -8,8 +8,8 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.utils.BlockSafety;
-import com.onarandombox.utils.InvalidDestination;
 import com.onarandombox.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

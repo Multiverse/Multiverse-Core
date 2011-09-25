@@ -5,68 +5,82 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.utils;
+package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-public class InvalidDestination implements MVDestination {
+/**
+ * Multiverse 2
+ *
+ * @author fernferret
+ */
+public class BedDestination implements MVDestination {
+
+    private boolean isValid;
+    private Location knownBedLoc;
 
     @Override
     public String getIdentifier() {
-        return "i";
+        return "b";
     }
 
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
-        return false;
+        String[] split = destination.split(":");
+        this.isValid = split.length >= 1 && split.length <= 2 && split[0].equals(this.getIdentifier());
+        return this.isValid;
     }
 
     @Override
-    public Location getLocation(Entity e) {
+    public Location getLocation(Entity entity) {
+        if(entity instanceof Player) {
+            this.knownBedLoc = ((Player)entity).getBedSpawnLocation();
+            return this.knownBedLoc;
+        }
         return null;
     }
 
     @Override
-    public boolean isValid() {
-        return false;
+    public Vector getVelocity() {
+        return new Vector();
     }
 
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
-        // Nothing needed, it's invalid.
+        // Not needed.
+    }
+
+    @Override
+    public boolean isValid() {
+        return this.isValid;
     }
 
     @Override
     public String getType() {
-        return ChatColor.RED + "Invalid Destination";
+        return "Bed";
     }
 
     @Override
     public String getName() {
-        return ChatColor.RED + "Invalid Destination";
-    }
-
-    @Override
-    public String toString() {
-        return "i:Invalid Destination";
+        return "Bed";
     }
 
     @Override
     public String getRequiredPermission() {
-        return null;
-    }
-    public Vector getVelocity() {
-        return new Vector(0,0,0);
+        if(knownBedLoc != null){
+            return "multiverse.access."+knownBedLoc.getWorld().getName();
+        }
+        return "";
     }
 
     @Override
     public boolean useSafeTeleporter() {
+        // Bukkit should have already checked this.
         return false;
     }
-
 }

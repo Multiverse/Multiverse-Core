@@ -5,9 +5,10 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.utils;
+package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;

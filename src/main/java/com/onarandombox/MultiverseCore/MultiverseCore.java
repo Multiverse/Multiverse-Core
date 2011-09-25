@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
+import com.onarandombox.MultiverseCore.destination.*;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
