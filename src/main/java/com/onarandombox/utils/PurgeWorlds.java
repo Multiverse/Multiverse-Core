@@ -45,7 +45,7 @@ public class PurgeWorlds {
      * @param sender
      * @param world
      */
-    public void purgeWorld(@org.jetbrains.annotations.Nullable CommandSender sender, MVWorld world) {
+    public void purgeWorld(CommandSender sender, MVWorld world) {
         if (world == null) {
             return;
         }
