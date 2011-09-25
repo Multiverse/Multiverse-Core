@@ -9,7 +9,11 @@ package com.onarandombox.MultiverseCore.api;
 
 import org.bukkit.World;
 
-/** The API for a Multiverse Handled World. */
+/**
+ * The API for a Multiverse Handled World.
+ * <p/>
+ * Currently INCOMPLETE
+ */
 public interface MultiverseWorld {
 
     /**
@@ -20,9 +24,9 @@ public interface MultiverseWorld {
     public World getCBWorld();
 
     /**
-     * Adds the property to the given value. The property must be a {@link com.onarandombox.MultiverseCore.commands.SetProperties}.
+     * Adds the property to the given value. The property must be a {@link com.onarandombox.MultiverseCore.enums.SetProperties}.
      *
-     * @param property The name of a {@link com.onarandombox.MultiverseCore.commands.SetProperties} to set.
+     * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.SetProperties} to set.
      * @param value    A value in string representation, it will be parsed to the correct type.
      *
      * @return True if the value was set, false if not.
@@ -30,18 +34,18 @@ public interface MultiverseWorld {
     public boolean setVariable(String property, String value);
 
     /**
-     * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.commands.AddProperties}.
+     * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
      *
-     * @param property The name of a {@link com.onarandombox.MultiverseCore.commands.AddProperties} to clear.
+     * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to clear.
      *
      * @return True if it was cleared, false if not.
      */
     public boolean clearVariable(String property);
 
     /**
-     * Adds a value to the given property. The property must be a {@link com.onarandombox.MultiverseCore.commands.AddProperties}.
+     * Adds a value to the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
      *
-     * @param property The name of a {@link com.onarandombox.MultiverseCore.commands.AddProperties} to add a value to.
+     * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to add a value to.
      * @param value    A value in string representation, it will be parsed to the correct type.
      *
      * @return True if the value was added, false if not.
@@ -49,9 +53,9 @@ public interface MultiverseWorld {
     public boolean addToVariable(String property, String value);
 
     /**
-     * Removes a value from the given property. The property must be a {@link com.onarandombox.MultiverseCore.commands.AddProperties}.
+     * Removes a value from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
      *
-     * @param property The name of a {@link com.onarandombox.MultiverseCore.commands.AddProperties} to remove a value
+     * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to remove a value
      *                 from.
      * @param value    A value in string representation, it will be parsed to the correct type.
      *
