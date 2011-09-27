@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.LoggablePlugin;
+import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
@@ -41,7 +42,29 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MultiverseCore extends JavaPlugin implements LoggablePlugin {
+public class MultiverseCore extends JavaPlugin implements MVPlugin {
+
+    private static int Protocol = 1;
+
+    @Override
+    public String dumpVersionInfo(String buffer) {
+        // I'm kinda cheating on this one, since we call the init event.
+        return buffer;
+    }
+
+    @Override
+    public MultiverseCore getCore() {
+        return this;
+    }
+
+    @Override
+    public void setCore(MultiverseCore core) {
+
+    }
+
+    public int getProtocolVersion() {
+        return MultiverseCore.Protocol;
+    }
 
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");

@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.AllPay;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVPlugin;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
