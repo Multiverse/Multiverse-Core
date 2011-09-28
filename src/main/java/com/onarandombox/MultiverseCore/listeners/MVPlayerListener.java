@@ -145,7 +145,7 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
