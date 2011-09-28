@@ -173,6 +173,9 @@ public class MVPlayerListener extends PlayerListener {
             }
         }
         if (fromWorld != null) {
+            if (toWorld == null) {
+                return true;
+            }
             if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
                 player.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
                 return true;
