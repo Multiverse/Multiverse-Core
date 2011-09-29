@@ -380,7 +380,7 @@ public class MVWorld {
             this.setMonsters(value);
         } else if (name.equalsIgnoreCase("memory") || name.equalsIgnoreCase("spawnmemory")) {
             this.setSpawnInMemory(value);
-        } else if (name.equalsIgnoreCase("hunger")) {
+        } else if ((name.equalsIgnoreCase("hunger")) || (name.equalsIgnoreCase("food"))){
             this.setHunger(value);
         }else if (name.equalsIgnoreCase("weather") || name.equalsIgnoreCase("storm")) {
             this.setEnableWeather(value);

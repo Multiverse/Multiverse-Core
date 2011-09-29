@@ -20,7 +20,6 @@ public class MVPlayerSession {
     private Long messageLast = 0L; // Timestamp for the Players last Alert Message.
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
-    private int cachedHunger = 20;
 
     public MVPlayerSession(Player player, Configuration config, MultiverseCore multiVerseCore) {
         this.player = player;
@@ -47,12 +46,5 @@ public class MVPlayerSession {
         } else {
             return false;
         }
-    }
-
-    public void setCachedHunger() {
-        this.cachedHunger = this.player.getFoodLevel();
-    }
-    public int getCachedHunger() {
-        return this.cachedHunger;
     }
 }

@@ -136,15 +136,6 @@ public class MVPlayerListener extends PlayerListener {
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
-        // Dunno If I like these... @fernferret
-//        if (toWorld != null && !toWorld.getHunger() && fromWorld != null && fromWorld.getHunger() && !event.isCancelled()) {
-//            // If to has hunger, and from doesn't, save the hunger
-//            this.plugin.getPlayerSession(event.getPlayer()).setCachedHunger();
-//        }
-//        else if (toWorld != null && toWorld.getHunger() && fromWorld != null && !fromWorld.getHunger() && !event.isCancelled()) {
-//            // If from has hunger, and to doesn't, restore the hunger
-//            event.getPlayer().setFoodLevel(this.plugin.getPlayerSession(event.getPlayer()).getCachedHunger());
-//        }
     }
 
     @Override
