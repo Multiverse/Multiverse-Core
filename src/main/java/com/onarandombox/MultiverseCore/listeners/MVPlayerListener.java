@@ -129,6 +129,10 @@ public class MVPlayerListener extends PlayerListener {
         if (event.isCancelled()) {
             return;
         }
+        // Handle the Players GameMode setting for the new world.
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            this.handleGameMode(event.getPlayer(), event.getTo().getWorld());
+        }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
@@ -145,8 +149,13 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
+
         if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
+        }
+        // Handle the Players GameMode setting for the new world.
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            this.handleGameMode(event.getPlayer(), event.getTo().getWorld());
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
@@ -171,27 +180,19 @@ public class MVPlayerListener extends PlayerListener {
                 player.sendMessage("You don't have access to go here...");
                 return true;
             }
+        } else {
+            // The toworld is not handled by MV, we don't care about payments
+            return false;
         }
         if (fromWorld != null) {
-            if (toWorld == null) {
-                return true;
-            }
             if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
                 player.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
                 return true;
             }
         }
-        if (toWorld == null) {
-            // The toworld is not handled by MV, we don't care about payments
-            return false;
-        }
+
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
-            // Handle the Players GameMode setting for the new world.
-            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-                this.handleGameMode(player, toWorld);
-            }
-
             // If the player does not have to pay, return now.
             if (toWorld.isExempt(player)) {
                 return false;
