@@ -63,10 +63,6 @@ public class MVPlayerListener extends PlayerListener {
         }
 
         if (event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
-            // Handle the Players GameMode setting for the new world.
-            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-                this.handleGameMode(event.getPlayer(), event.getRespawnLocation().getWorld());
-            }
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }
@@ -90,11 +86,6 @@ public class MVPlayerListener extends PlayerListener {
         MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
-
-        // Handle the Players GameMode setting for the new world.
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-            this.handleGameMode(event.getPlayer(), respawnEvent.getPlayersRespawnLocation().getWorld());
-        }
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
@@ -120,6 +111,14 @@ public class MVPlayerListener extends PlayerListener {
     }
 
     @Override
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+        // Handle the Players GameMode setting for the new world.
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        }
+    }
+
+    @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
         this.plugin.removePlayerSession(event.getPlayer());
     }
@@ -128,10 +127,6 @@ public class MVPlayerListener extends PlayerListener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (event.isCancelled()) {
             return;
-        }
-        // Handle the Players GameMode setting for the new world.
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-            this.handleGameMode(event.getPlayer(), event.getTo().getWorld());
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
@@ -143,10 +138,6 @@ public class MVPlayerListener extends PlayerListener {
 
         if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
-        }
-        // Handle the Players GameMode setting for the new world.
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-            this.handleGameMode(event.getPlayer(), event.getTo().getWorld());
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());

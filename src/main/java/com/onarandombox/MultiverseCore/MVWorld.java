@@ -743,7 +743,7 @@ public class MVWorld {
 
     public boolean setDifficulty(String difficulty) {
         try {
-            World.Difficulty worlddiff = World.Difficulty.valueOf(difficulty);
+            World.Difficulty worlddiff = World.Difficulty.valueOf(difficulty.toUpperCase());
             this.getCBWorld().setDifficulty(worlddiff);
             return true;
         } catch (Exception e) {
