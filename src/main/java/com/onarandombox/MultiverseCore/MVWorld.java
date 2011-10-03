@@ -406,6 +406,9 @@ public class MVWorld {
      * @return
      */
     public boolean setVariable(String name, String value) {
+        if (name.equalsIgnoreCase("diff") || name.equalsIgnoreCase("difficulty")) {
+            return this.setDifficulty(value);
+        }
         if (name.equalsIgnoreCase("alias")) {
             this.setAlias(value);
             return true;
@@ -732,5 +735,29 @@ public class MVWorld {
 
     public Location getSpawnLocation() {
         return this.spawnLocation;
+    }
+
+    public World.Difficulty getDifficulty() {
+        return this.getCBWorld().getDifficulty();
+    }
+
+    public boolean setDifficulty(String difficulty) {
+        try {
+            World.Difficulty worlddiff = World.Difficulty.valueOf(difficulty);
+            this.getCBWorld().setDifficulty(worlddiff);
+            return true;
+        } catch (Exception e) {
+            try {
+                int diff = Integer.parseInt(difficulty);
+                if(diff >= 0 && diff <= 3) {
+                    World.Difficulty worlddiff = World.Difficulty.getDifficulty(diff);
+                    this.getCBWorld().setDifficulty(worlddiff);
+                    return true;
+                }
+            } catch (Exception e2) {
+            }
+            return false;
+        }
+
     }
 }
