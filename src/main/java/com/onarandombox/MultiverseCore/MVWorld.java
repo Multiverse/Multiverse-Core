@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -737,20 +738,20 @@ public class MVWorld {
         return this.spawnLocation;
     }
 
-    public World.Difficulty getDifficulty() {
+    public Difficulty getDifficulty() {
         return this.getCBWorld().getDifficulty();
     }
 
     public boolean setDifficulty(String difficulty) {
         try {
-            World.Difficulty worlddiff = World.Difficulty.valueOf(difficulty.toUpperCase());
+            Difficulty worlddiff = Difficulty.valueOf(difficulty.toUpperCase());
             this.getCBWorld().setDifficulty(worlddiff);
             return true;
         } catch (Exception e) {
             try {
                 int diff = Integer.parseInt(difficulty);
                 if(diff >= 0 && diff <= 3) {
-                    World.Difficulty worlddiff = World.Difficulty.getDifficulty(diff);
+                    Difficulty worlddiff = Difficulty.getByValue(diff);
                     this.getCBWorld().setDifficulty(worlddiff);
                     return true;
                 }
