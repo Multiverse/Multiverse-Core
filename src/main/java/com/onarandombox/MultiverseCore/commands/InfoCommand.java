@@ -125,6 +125,7 @@ public class InfoCommand extends MultiverseCommand {
         // Page 2
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("More World Settings", colors));
+        message.add(new FancyMessage("Difficulty: ", world.getDifficulty().toString(), colors));
         message.add(new FancyMessage("Weather: ", world.getWeatherEnabled() + "", colors));
         message.add(new FancyMessage("Players will get hungry: ", world.getHunger() + "", colors));
         message.add(new FancyMessage("Keep spawn in memory: ", world.getKeepSpawnInMemory() + "", colors));
