@@ -749,13 +749,15 @@ public class MVWorld {
                 int diff = Integer.parseInt(difficulty);
                 if (diff >= 0 && diff <= 3) {
                     worlddiff = Difficulty.getByValue(diff);
+                } else {
+                    return false;
                 }
             } catch (Exception e2) {
                 return false;
             }
         }
         this.getCBWorld().setDifficulty(worlddiff);
-        config.setProperty("worlds." + this.name + ".difficulty", worlddiff);
+        config.setProperty("worlds." + this.name + ".difficulty", worlddiff.getValue());
         saveConfig();
         return true;
     }
