@@ -7,11 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -105,6 +101,7 @@ public class MVWorld {
     private String generator;
     private Permission permission;
     private Permission exempt;
+    private Difficulty difficulty;
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private boolean allowWeather;
@@ -140,6 +137,7 @@ public class MVWorld {
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawnworld", ""));
         this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
+        this.setDifficulty(config.getString("worlds." + this.name + ".difficulty", "EASY"));
 
         this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
@@ -381,9 +379,9 @@ public class MVWorld {
             this.setMonsters(value);
         } else if (name.equalsIgnoreCase("memory") || name.equalsIgnoreCase("spawnmemory")) {
             this.setSpawnInMemory(value);
-        } else if ((name.equalsIgnoreCase("hunger")) || (name.equalsIgnoreCase("food"))){
+        } else if ((name.equalsIgnoreCase("hunger")) || (name.equalsIgnoreCase("food"))) {
             this.setHunger(value);
-        }else if (name.equalsIgnoreCase("weather") || name.equalsIgnoreCase("storm")) {
+        } else if (name.equalsIgnoreCase("weather") || name.equalsIgnoreCase("storm")) {
             this.setEnableWeather(value);
         } else {
             return false;
@@ -743,22 +741,22 @@ public class MVWorld {
     }
 
     public boolean setDifficulty(String difficulty) {
+        Difficulty worlddiff = null;
         try {
-            Difficulty worlddiff = Difficulty.valueOf(difficulty.toUpperCase());
-            this.getCBWorld().setDifficulty(worlddiff);
-            return true;
+            worlddiff = Difficulty.valueOf(difficulty.toUpperCase());
         } catch (Exception e) {
             try {
                 int diff = Integer.parseInt(difficulty);
-                if(diff >= 0 && diff <= 3) {
-                    Difficulty worlddiff = Difficulty.getByValue(diff);
-                    this.getCBWorld().setDifficulty(worlddiff);
-                    return true;
+                if (diff >= 0 && diff <= 3) {
+                    worlddiff = Difficulty.getByValue(diff);
                 }
             } catch (Exception e2) {
+                return false;
             }
-            return false;
         }
-
+        this.getCBWorld().setDifficulty(worlddiff);
+        config.setProperty("worlds." + this.name + ".difficulty", worlddiff);
+        saveConfig();
+        return true;
     }
 }
