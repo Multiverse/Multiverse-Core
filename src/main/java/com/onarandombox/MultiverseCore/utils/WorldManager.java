@@ -171,6 +171,31 @@ public class WorldManager implements MVWorldManager {
         }
         return false;
     }
+    
+    public boolean loadWorld(String name) {
+    	// Check if the World is already loaded
+    	if (this.worlds.containsKey(name)) {
+            return true;
+        }
+    	
+        // Grab all the Worlds from the Config.
+        List<String> worldKeys = this.configWorlds.getKeys("worlds");
+
+        // Check that the list is not null and that the config contains the world
+        if ((worldKeys != null) && (worldKeys.contains(name))) {
+            // Grab the initial values from the config file.
+            String environment = this.configWorlds.getString("worlds." + name + ".environment", "NORMAL"); // Grab the Environment as a String.
+            String seedString = this.configWorlds.getString("worlds." + name + ".seed", "");
+            String generatorString = this.configWorlds.getString("worlds." + name + ".generator");
+            
+            addWorld(name, this.plugin.getEnvFromString(environment), seedString, generatorString);
+            
+            return true;
+        }
+        else {
+        	return false;
+        }
+    }
 
     public Boolean deleteWorld(String name) {
 
