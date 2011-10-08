@@ -51,6 +51,15 @@ public interface MVWorldManager {
     public boolean unloadWorld(String name);
 
     /**
+     * Loads the world. Only use this if the world has been unloaded with {@link removeWorldFromList(String)}.
+     * 
+     * @param name The name of the world to load
+     * 
+     * @return True if success, false if failure.
+     */
+    public boolean loadWorld(String name);
+    
+    /**
      * Test if a given chunk generator is valid.
      *
      * @param generator   The generator name.
