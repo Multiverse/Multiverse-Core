@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
@@ -42,7 +43,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MultiverseCore extends JavaPlugin implements MVPlugin {
+public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     public static boolean outdatedPluginFound = false;
     private static int Protocol = 1;
@@ -64,6 +65,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
 
     }
 
+    @Override
     public int getProtocolVersion() {
         return MultiverseCore.Protocol;
     }
@@ -356,13 +358,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
         log(Level.INFO, "- Disabled");
     }
 
-    /**
-     * Grab the players session if one exists, otherwise create a session then return it.
-     *
-     * @param player
-     *
-     * @return
-     */
+    @Override
     public MVPlayerSession getPlayerSession(Player player) {
         if (this.playerSessions.containsKey(player.getName())) {
             return this.playerSessions.get(player.getName());
