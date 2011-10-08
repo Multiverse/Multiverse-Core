@@ -63,10 +63,6 @@ public class MVPlayerListener extends PlayerListener {
         }
 
         if (event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
-            // Handle the Players GameMode setting for the new world.
-            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-                this.handleGameMode(event.getPlayer(), event.getRespawnLocation().getWorld());
-            }
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }
@@ -90,11 +86,6 @@ public class MVPlayerListener extends PlayerListener {
         MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
-
-        // Handle the Players GameMode setting for the new world.
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-            this.handleGameMode(event.getPlayer(), respawnEvent.getPlayersRespawnLocation().getWorld());
-        }
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
@@ -120,6 +111,14 @@ public class MVPlayerListener extends PlayerListener {
     }
 
     @Override
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+        // Handle the Players GameMode setting for the new world.
+        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+            this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        }
+    }
+
+    @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
         this.plugin.removePlayerSession(event.getPlayer());
     }
@@ -132,20 +131,12 @@ public class MVPlayerListener extends PlayerListener {
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
-        // Dunno If I like these... @fernferret
-//        if (toWorld != null && !toWorld.getHunger() && fromWorld != null && fromWorld.getHunger() && !event.isCancelled()) {
-//            // If to has hunger, and from doesn't, save the hunger
-//            this.plugin.getPlayerSession(event.getPlayer()).setCachedHunger();
-//        }
-//        else if (toWorld != null && toWorld.getHunger() && fromWorld != null && !fromWorld.getHunger() && !event.isCancelled()) {
-//            // If from has hunger, and to doesn't, restore the hunger
-//            event.getPlayer().setFoodLevel(this.plugin.getPlayerSession(event.getPlayer()).getCachedHunger());
-//        }
     }
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
-        if (event.isCancelled()) {
+
+        if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
         }
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
@@ -171,6 +162,9 @@ public class MVPlayerListener extends PlayerListener {
                 player.sendMessage("You don't have access to go here...");
                 return true;
             }
+        } else {
+            // The toworld is not handled by MV, we don't care about payments
+            return false;
         }
         if (fromWorld != null) {
             if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
@@ -178,17 +172,9 @@ public class MVPlayerListener extends PlayerListener {
                 return true;
             }
         }
-        if (toWorld == null) {
-            // The toworld is not handled by MV, we don't care about payments
-            return false;
-        }
+
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
-            // Handle the Players GameMode setting for the new world.
-            if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
-                this.handleGameMode(player, toWorld);
-            }
-
             // If the player does not have to pay, return now.
             if (toWorld.isExempt(player)) {
                 return false;

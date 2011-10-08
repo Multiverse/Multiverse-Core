@@ -9,10 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.utils.EnglishChatColor;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -59,6 +56,7 @@ public class MVWorld implements MultiverseWorld {
     private boolean hunger = true;
     private Permission permission;
     private Permission exempt;
+    private Difficulty difficulty;
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private boolean allowWeather;
@@ -94,6 +92,7 @@ public class MVWorld implements MultiverseWorld {
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawnworld", ""));
         this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
+        this.setDifficulty(config.getString("worlds." + this.name + ".difficulty", "EASY"));
 
         this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
         this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
@@ -303,6 +302,8 @@ public class MVWorld implements MultiverseWorld {
             this.setMonsters(value);
         } else if (name.equalsIgnoreCase("memory") || name.equalsIgnoreCase("spawnmemory")) {
             this.setSpawnInMemory(value);
+        } else if ((name.equalsIgnoreCase("hunger")) || (name.equalsIgnoreCase("food"))) {
+            this.setHunger(value);
         } else if (name.equalsIgnoreCase("weather") || name.equalsIgnoreCase("storm")) {
             this.setEnableWeather(value);
         } else {
@@ -320,6 +321,9 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setVariable(String name, String value) {
+        if (name.equalsIgnoreCase("diff") || name.equalsIgnoreCase("difficulty")) {
+            return this.setDifficulty(value);
+        }
         if (name.equalsIgnoreCase("alias")) {
             this.setAlias(value);
             return true;
@@ -642,5 +646,31 @@ public class MVWorld implements MultiverseWorld {
 
     public Location getSpawnLocation() {
         return this.spawnLocation;
+    }
+
+    public Difficulty getDifficulty() {
+        return this.getCBWorld().getDifficulty();
+    }
+
+    public boolean setDifficulty(String difficulty) {
+        Difficulty worlddiff = null;
+        try {
+            worlddiff = Difficulty.valueOf(difficulty.toUpperCase());
+        } catch (Exception e) {
+            try {
+                int diff = Integer.parseInt(difficulty);
+                if (diff >= 0 && diff <= 3) {
+                    worlddiff = Difficulty.getByValue(diff);
+                } else {
+                    return false;
+                }
+            } catch (Exception e2) {
+                return false;
+            }
+        }
+        this.getCBWorld().setDifficulty(worlddiff);
+        config.setProperty("worlds." + this.name + ".difficulty", worlddiff.getValue());
+        saveConfig();
+        return true;
     }
 }
