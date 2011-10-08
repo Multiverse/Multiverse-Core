@@ -45,11 +45,10 @@ public interface MVWorldManager {
      * Unload a world from Multiverse
      *
      * @param name   Name of the world to unload
-     * @param safely Perform this safely. Set to True to save world files before unloading.
      *
      * @return True if the world was unloaded, false if not.
      */
-    public boolean unloadWorld(String name, boolean safely);
+    public boolean unloadWorld(String name);
 
     /**
      * Test if a given chunk generator is valid.

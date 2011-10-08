@@ -7,12 +7,8 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -22,8 +18,11 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -109,6 +108,7 @@ public class WorldManager implements MVWorldManager {
      * Verifies that a given Plugin generator string exists.
      *
      * @param generator The name of the generator plugin. This should be something like CleanRoomGenerator.
+     *
      * @return True if the plugin exists and is enabled, false if not.
      */
     private boolean pluginExists(String generator) {
@@ -135,11 +135,12 @@ public class WorldManager implements MVWorldManager {
      * Remove the world from the Multiverse list and from the config
      *
      * @param name The name of the world to remove
+     *
      * @return True if success, false if failure.
      */
     public boolean removeWorldFromConfig(String name) {
         if (this.configWorlds.getProperty("worlds." + name) != null) {
-            removeWorldFromList(name);
+            unloadWorld(name);
             this.plugin.log(Level.INFO, "World " + name + " was removed from config.yml");
             this.configWorlds.removeProperty("worlds." + name);
             this.configWorlds.save();
@@ -150,18 +151,12 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /**
-     * Remove the world from the Multiverse list
-     *
-     * @param name The name of the world to remove
-     * @return True if success, false if failure.
-     */
-    public boolean removeWorldFromList(String name) {
+    public boolean unloadWorld(String name) {
 
         if (this.worlds.containsKey(name)) {
             this.worlds.remove(name);
             this.plugin.log(Level.INFO, "World " + name + " was unloaded from memory.");
-            this.unloadWorld(name, true);
+            this.unloadWorldFromBukkit(name, true);
             return true;
         } else if (this.plugin.getServer().getWorld(name) != null) {
             this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's still loaded in memory.");
@@ -175,7 +170,7 @@ public class WorldManager implements MVWorldManager {
     public Boolean deleteWorld(String name) {
 
         if (this.plugin.getServer().getWorld(name) != null) {
-            if (!unloadWorld(name, false)) {
+            if (!unloadWorldFromBukkit(name, false)) {
                 // If the world was loaded, and we couldn't unload it, return false. DON"T DELTEE
                 return false;
             }
@@ -203,8 +198,7 @@ public class WorldManager implements MVWorldManager {
                 return false;
             }
             boolean deletedWorld = FileUtils.deleteFolder(worldFile);
-            if (deletedWorld)
-            {
+            if (deletedWorld) {
                 this.plugin.log(Level.INFO, "World " + name + " was DELETED.");
             } else {
                 this.plugin.log(Level.SEVERE, "World " + name + " was NOT deleted.");
@@ -222,7 +216,15 @@ public class WorldManager implements MVWorldManager {
         }
     }
 
-    public boolean unloadWorld(String name, boolean safely) {
+    /**
+     * Unload a world from Bukkit
+     *
+     * @param name   Name of the world to unload
+     * @param safely Perform this safely. Set to True to save world files before unloading.
+     *
+     * @return True if the world was unloaded, false if not.
+     */
+    private boolean unloadWorldFromBukkit(String name, boolean safely) {
         this.removePlayersFromWorld(name);
         return this.plugin.getServer().unloadWorld(name, safely);
     }
@@ -257,6 +259,7 @@ public class WorldManager implements MVWorldManager {
      * Returns a {@link MVWorld} if it exists, and null if it does not. This will search name AND alias.
      *
      * @param name The name or alias of the world to get.
+     *
      * @return A {@link MVWorld} or null.
      */
     public MVWorld getMVWorld(String name) {
@@ -270,6 +273,7 @@ public class WorldManager implements MVWorldManager {
      * Returns a {@link MVWorld} if it exists, and null if it does not. This will search ONLY alias.
      *
      * @param alias The alias of the world to get.
+     *
      * @return A {@link MVWorld} or null.
      */
     private MVWorld getMVWorldByAlias(String alias) {
@@ -285,6 +289,7 @@ public class WorldManager implements MVWorldManager {
      * Checks to see if the given name is a valid {@link MVWorld}
      *
      * @param name The name or alias of the world to check.
+     *
      * @return True if the world exists, false if not.
      */
     public boolean isMVWorld(String name) {
@@ -295,6 +300,7 @@ public class WorldManager implements MVWorldManager {
      * This method ONLY checks the alias of each world.
      *
      * @param alias The alias of the world to check.
+     *
      * @return True if the world exists, false if not.
      */
     private boolean isMVWorldAlias(String alias) {
@@ -305,6 +311,7 @@ public class WorldManager implements MVWorldManager {
         }
         return false;
     }
+
     /**
      * Load the Worlds & Settings from the configuration file.
      *
@@ -375,6 +382,7 @@ public class WorldManager implements MVWorldManager {
      * Load the config from a file.
      *
      * @param file The file to load.
+     *
      * @return A loaded configuration.
      */
     public Configuration loadWorldConfig(File file) {
@@ -382,9 +390,7 @@ public class WorldManager implements MVWorldManager {
         return this.configWorlds;
     }
 
-    /**
-     * Reload the Config File
-     */
+    /** Reload the Config File */
     public void propagateConfigFile() {
         this.configWorlds.load();
     }

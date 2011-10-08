@@ -28,7 +28,7 @@ public class UnloadCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        if (this.plugin.getMVWorldManager().removeWorldFromList(args.get(0))) {
+        if (this.plugin.getMVWorldManager().unloadWorld(args.get(0))) {
             sender.sendMessage("World Unloaded!");
         } else {
             sender.sendMessage("Error trying to unload world!");

@@ -329,10 +329,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.worldManager.addWorld(name, env, seedString, generator);
     }
 
-    /** Deprecated, please use WorldManager.removeWorldFromList(String name) now. */
+    /** Deprecated, please use WorldManager.unloadWorld(String name) now. */
     @Deprecated
     public boolean removeWorldFromList(String name) {
-        return this.worldManager.removeWorldFromList(name);
+        return this.worldManager.unloadWorld(name);
     }
 
     /** Deprecated, please use WorldManager.removeWorldFromConfig(String name) now. */
