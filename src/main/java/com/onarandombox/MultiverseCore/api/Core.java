@@ -8,10 +8,8 @@
 package com.onarandombox.MultiverseCore.api;
 
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.utils.MVMessaging;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.destination.DestinationFactory;
+import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
@@ -19,7 +17,7 @@ import org.bukkit.util.config.Configuration;
 /**
  * Multiverse 2 Core API
  * <p/>
- * This api contains a bunch of useful things you can get out of Multiverse in general!
+ * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
 public interface Core {
     /**
@@ -84,4 +82,19 @@ public interface Core {
      * @return A non-null {@link CommandHandler}.
      */
     public CommandHandler getCommandHandler();
+
+    /**
+     * Gets the factory class responsible for loading many different destinations
+     * on demand.
+     *
+     * @return A valid {@link DestinationFactory}.
+     */
+    public DestinationFactory getDestFactory();
+
+    /**
+     * Gets the primary class responsible for managing Multiverse Worlds.
+     *
+     * @return {@link WorldManager}.
+     */
+    public WorldManager getMVWorldManager();
 }

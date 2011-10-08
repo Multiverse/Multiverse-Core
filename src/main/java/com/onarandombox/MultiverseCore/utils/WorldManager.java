@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -29,7 +30,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
  *
  * @author fernferret, Rigby90
  */
-public class WorldManager {
+public class WorldManager implements MVWorldManager {
     private MultiverseCore plugin;
     private PurgeWorlds worldPurger;
     private HashMap<String, MVWorld> worlds;
@@ -42,18 +43,7 @@ public class WorldManager {
         this.worldPurger = new PurgeWorlds(this.plugin);
     }
 
-    /**
-     * Add a new World to the Multiverse Setup.
-     * <p/>
-     * Isn't there a prettier way to do this??!!?!?!
-     *
-     * @param name World Name
-     * @param env Environment Type
-     * @param seedString The seed in the form of a string. If the seed is a Long, it will be interpreted as such.
-     * @param generator The Custom generator plugin to use.
-     *
-     * @return True if the world is added, false if not.
-     */
+
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
@@ -126,15 +116,8 @@ public class WorldManager {
         return plugin != null && plugin.isEnabled();
     }
 
-    /**
-     * Test if a given chunk generator is valid.
-     *
-     * @param generator The generator name.
-     * @param generatorID The generator id.
-     * @param worldName The worldName to use as the default.
-     * @return A {@link ChunkGenerator} or null
-     */
-    private ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
+
+    public ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
         if (generator == null) {
             return null;
         }
@@ -189,12 +172,6 @@ public class WorldManager {
         return false;
     }
 
-    /**
-     * Remove the world from the Multiverse list, from the config and deletes the folder
-     *
-     * @param name The name of the world to remove
-     * @return True if success, false if failure.
-     */
     public Boolean deleteWorld(String name) {
 
         if (this.plugin.getServer().getWorld(name) != null) {
@@ -245,14 +222,7 @@ public class WorldManager {
         }
     }
 
-    /**
-     * Unload a world from Multiverse
-     *
-     * @param name Name of the world to unload
-     * @param safely Perform this safely. Set to True to save world files before unloading.
-     * @return True if the world was unloaded, false if not.
-     */
-    private boolean unloadWorld(String name, boolean safely) {
+    public boolean unloadWorld(String name, boolean safely) {
         this.removePlayersFromWorld(name);
         return this.plugin.getServer().unloadWorld(name, safely);
     }

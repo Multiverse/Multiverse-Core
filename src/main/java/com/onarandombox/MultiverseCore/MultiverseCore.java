@@ -44,10 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-
-    public static boolean outdatedPluginFound = false;
-    private static int Protocol = 1;
-
+    private final static int Protocol = 2;
 
     @Override
     public String dumpVersionInfo(String buffer) {
@@ -564,7 +561,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     @Deprecated
     public com.onarandombox.utils.DestinationFactory getDestinationFactory() {
-        return new com.onarandombox.utils.DestinationFactory (this);
+        return new com.onarandombox.utils.DestinationFactory(this);
     }
 
     /**
