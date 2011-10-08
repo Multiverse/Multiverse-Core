@@ -38,8 +38,8 @@ public class BedDestination implements MVDestination {
 
     @Override
     public Location getLocation(Entity entity) {
-        if(entity instanceof Player) {
-            this.knownBedLoc = ((Player)entity).getBedSpawnLocation();
+        if (entity instanceof Player) {
+            this.knownBedLoc = ((Player) entity).getBedSpawnLocation();
             return this.knownBedLoc;
         }
         return null;
@@ -72,8 +72,8 @@ public class BedDestination implements MVDestination {
 
     @Override
     public String getRequiredPermission() {
-        if(knownBedLoc != null){
-            return "multiverse.access."+knownBedLoc.getWorld().getName();
+        if (knownBedLoc != null) {
+            return "multiverse.access." + knownBedLoc.getWorld().getName();
         }
         return "";
     }
@@ -82,5 +82,9 @@ public class BedDestination implements MVDestination {
     public boolean useSafeTeleporter() {
         // Bukkit should have already checked this.
         return false;
+    }
+    @Override
+    public String toString() {
+        return "b:playerbed";
     }
 }

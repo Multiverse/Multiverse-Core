@@ -317,6 +317,7 @@ public class WorldManager implements MVWorldManager {
      *
      * @return True if the world exists, false if not.
      */
+    @Override
     public boolean isMVWorld(String name) {
         return (this.worlds.containsKey(name) || isMVWorldAlias(name));
     }
