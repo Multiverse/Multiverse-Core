@@ -132,7 +132,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         this.banker = new AllPay(this, tag + " ");
         // Output a little snippet to show it's enabled.
-        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " Enabled - By " + getAuthors());
+        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + Protocol + ") Enabled - By " + getAuthors());
         this.checkServerProps();
 
         this.registerEvents();

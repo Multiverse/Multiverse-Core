@@ -13,5 +13,5 @@ package com.onarandombox.MultiverseCore.enums;
  * @author fernferret
  */ // Color == Aliascolor
 public enum SetProperties {
-    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn, currency, curr, price, scale, spawnmemory, memory, weather, storm, gamemode, mode, hunger
+    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn, currency, curr, price, scale, spawnmemory, memory, weather, storm, gamemode, mode, hunger, difficulty, diff
 }
