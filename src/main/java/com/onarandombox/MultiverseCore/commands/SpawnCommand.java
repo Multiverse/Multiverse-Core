@@ -73,7 +73,7 @@ public class SpawnCommand extends MultiverseCommand {
     }
 
     private void spawnAccurately(Player player) {
-        MVWorld world = this.plugin.getWorldManager().getMVWorld(player.getWorld().getName());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(player.getWorld().getName());
         if (world != null) {
             player.teleport(world.getSpawnLocation());
         } else {

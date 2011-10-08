@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
+import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -16,8 +17,8 @@ import org.bukkit.permissions.PermissionDefault;
  * WILL BE DELETED ON 11/1/11
  */
 @Deprecated
-public class MVPermissions {
-    public Permission addPermission(String string, PermissionDefault def) {
-        return new Permission("update.all.multiverse.plugins");
+public class MVPermissions extends com.onarandombox.MultiverseCore.utils.MVPermissions{
+    public MVPermissions(MultiverseCore plugin) {
+        super(plugin);
     }
 }

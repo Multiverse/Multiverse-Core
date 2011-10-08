@@ -34,14 +34,14 @@ public class WorldDestination implements MVDestination {
         if (items.length > 3) {
             return false;
         }
-        if (items.length == 1 && ((MultiverseCore) plugin).getWorldManager().isMVWorld(items[0])) {
+        if (items.length == 1 && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[0])) {
             // This case is: world
             return true;
         }
-        if (items.length == 2 && ((MultiverseCore) plugin).getWorldManager().isMVWorld(items[0])) {
+        if (items.length == 2 && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[0])) {
             // This case is: world:n
             return true;
-        } else if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).getWorldManager().isMVWorld(items[1])) {
+        } else if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[1])) {
             // This case is: w:world
             // and w:world:ne
             return true;
@@ -79,18 +79,18 @@ public class WorldDestination implements MVDestination {
             isValid = false;
             return;
         }
-        if (items.length == 1 && ((MultiverseCore) plugin).getWorldManager().isMVWorld(items[0])) {
+        if (items.length == 1 && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[0])) {
             isValid = true;
-            this.world = ((MultiverseCore) plugin).getWorldManager().getMVWorld(items[0]);
+            this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[0]);
             return;
         }
-        if (items.length == 2 && ((MultiverseCore) plugin).getWorldManager().isMVWorld(items[0])) {
-            this.world = ((MultiverseCore) plugin).getWorldManager().getMVWorld(items[0]);
+        if (items.length == 2 && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[0])) {
+            this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[0]);
             this.yaw = LocationManipulation.getYaw(items[1]);
             return;
         }
-        if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).getWorldManager().isMVWorld(items[1])) {
-            this.world = ((MultiverseCore) plugin).getWorldManager().getMVWorld(items[1]);
+        if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[1])) {
+            this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[1]);
             isValid = true;
             if (items.length == 3) {
                 this.yaw = LocationManipulation.getYaw(items[2]);

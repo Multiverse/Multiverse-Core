@@ -20,9 +20,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.utils.*;
-import com.onarandombox.MultiverseCore.utils.DebugLog;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -48,6 +46,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
 
     public static boolean outdatedPluginFound = false;
     private static int Protocol = 1;
+
 
     @Override
     public String dumpVersionInfo(String buffer) {
@@ -393,8 +392,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
 
     @Deprecated
     public com.onarandombox.MultiverseCore.MVPermissions getPermissions() {
-        return new com.onarandombox.MultiverseCore.MVPermissions();
+        return new com.onarandombox.MultiverseCore.MVPermissions(this);
     }
+
     @Deprecated
     public PurgeWorlds getWorldPurger() {
         return this.worldManager.getWorldPurger();
@@ -562,8 +562,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
         this.bank = bank;
     }
 
-    public DestinationFactory getDestinationFactory() {
+    public DestinationFactory getDestFactory() {
         return this.destFactory;
+    }
+
+    @Deprecated
+    public com.onarandombox.utils.DestinationFactory getDestinationFactory() {
+        return new com.onarandombox.utils.DestinationFactory (this);
     }
 
     /**
@@ -608,8 +613,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
         return this.spoutInterface;
     }
 
-    public WorldManager getWorldManager() {
+    public WorldManager getMVWorldManager() {
         return this.worldManager;
+    }
+
+    @Deprecated
+    public com.onarandombox.utils.WorldManager getWorldManager() {
+        return new com.onarandombox.utils.WorldManager(this);
     }
 
     public MVPlayerListener getPlayerListener() {

@@ -35,7 +35,7 @@ public class InfoCommand extends MultiverseCommand {
         this.addKey("mvi");
         this.addKey("mv info");
         this.setPermission("multiverse.core.info", "Returns detailed information on the world.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

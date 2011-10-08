@@ -33,8 +33,8 @@ public class MVPluginListener extends ServerListener {
             this.plugin.log(Level.SEVERE, "Please grab the latest version from:");
             this.plugin.log(Level.SEVERE, "http://bukkit.onarandombox.com/?dir="+event.getPlugin().getDescription().getName().toLowerCase());
             this.plugin.log(Level.SEVERE, "I'm going to disable " + event.getPlugin().getDescription().getName() + " now.");
+            this.plugin.log(Level.SEVERE, "IF YOU DO NOT UPDATE, YOUR SERVER WILL **NOT** FUNCTION PROPERLY!!!");
             this.plugin.getServer().getPluginManager().disablePlugin(event.getPlugin());
-
         }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
         if (Arrays.asList(AllPay.validEconPlugins).contains(event.getPlugin().getDescription().getName())) {

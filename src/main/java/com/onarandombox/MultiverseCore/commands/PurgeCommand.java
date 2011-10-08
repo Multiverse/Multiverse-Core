@@ -31,7 +31,7 @@ public class PurgeCommand extends MultiverseCommand {
         this.addKey("mvpurge");
         this.addKey("mv purge");
         this.setPermission("multiverse.core.purge", "Removed the specified type of mob from the specified world.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

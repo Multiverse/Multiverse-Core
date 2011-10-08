@@ -5,9 +5,9 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.utils;
 
-import com.pneumaticraft.commandhandler.Command;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 /**
  * Dummy class to make old MV Plugins not explode.
@@ -15,5 +15,8 @@ import com.pneumaticraft.commandhandler.Command;
  * WILL BE DELETED ON 11/1/11
  */
 @Deprecated
-public interface LoggablePlugin extends com.onarandombox.MultiverseCore.api.LoggablePlugin {
+public class WorldManager extends com.onarandombox.MultiverseCore.utils.WorldManager {
+    public WorldManager(MultiverseCore core) {
+        super(core);
+    }
 }

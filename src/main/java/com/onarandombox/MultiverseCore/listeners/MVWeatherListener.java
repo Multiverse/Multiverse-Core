@@ -23,7 +23,7 @@ public class MVWeatherListener extends WeatherListener {
     @Override
     public void onWeatherChange(WeatherChangeEvent event) {
 
-        MVWorld world = this.plugin.getWorldManager().getMVWorld(event.getWorld().getName());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
             event.setCancelled((event.toWeatherState() && !world.getWeatherEnabled()));
@@ -33,7 +33,7 @@ public class MVWeatherListener extends WeatherListener {
     @Override
     public void onThunderChange(ThunderChangeEvent event) {
 
-        MVWorld world = this.plugin.getWorldManager().getMVWorld(event.getWorld().getName());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
             event.setCancelled((event.toThunderState() && !world.getWeatherEnabled()));

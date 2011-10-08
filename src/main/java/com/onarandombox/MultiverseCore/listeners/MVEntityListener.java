@@ -29,14 +29,14 @@ public class MVEntityListener extends EntityListener {
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.worldManager = plugin.getWorldManager();
+        this.worldManager = plugin.getMVWorldManager();
     }
 
     @Override
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player) {
             Player p = (Player) event.getEntity();
-            MVWorld w = this.plugin.getWorldManager().getMVWorld(p.getWorld().getName());
+            MVWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
             if (w != null && !w.getHunger()) {
                 // If the world has hunger set to false, do not let the level go down
                 if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {

@@ -50,7 +50,7 @@ public class VersionCommand extends MultiverseCommand {
 
         logAndAddToPasteBinBuffer("Multiverse-Core Version: " + this.plugin.getDescription().getVersion());
         logAndAddToPasteBinBuffer("Bukkit Version: " + this.plugin.getServer().getVersion());
-        logAndAddToPasteBinBuffer("Loaded Worlds: " + this.plugin.getWorldManager().getMVWorlds().size());
+        logAndAddToPasteBinBuffer("Loaded Worlds: " + this.plugin.getMVWorldManager().getMVWorlds().size());
         logAndAddToPasteBinBuffer("Multiverse Plugins Loaded: " + this.plugin.getPluginCount());
         logAndAddToPasteBinBuffer("Economy being used: " + this.plugin.getBank().getEconUsed());
         logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getMVPerms().getType());

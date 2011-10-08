@@ -13,5 +13,5 @@ package com.onarandombox.MultiverseCore;
  * WILL BE DELETED ON 11/1/11
  */
 @Deprecated
-public interface MVPlugin {
+public interface MVPlugin extends com.onarandombox.MultiverseCore.api.MVPlugin {
 }

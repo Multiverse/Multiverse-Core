@@ -29,7 +29,7 @@ public class MVPlayerListener extends PlayerListener {
 
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
-        worldManager = plugin.getWorldManager();
+        worldManager = plugin.getMVWorldManager();
     }
 
     @Override

@@ -33,7 +33,7 @@ public class CoordCommand extends MultiverseCommand {
         this.addKey("mvcoord");
         this.addKey("mvco");
         this.setPermission("multiverse.core.coord", "Returns detailed information on the Players where abouts.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

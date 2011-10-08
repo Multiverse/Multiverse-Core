@@ -35,7 +35,7 @@ public class CreateCommand extends MultiverseCommand {
         this.addCommandExample("/mv create " + ChatColor.GOLD + "starwars" + ChatColor.AQUA + " skylands");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "gargamel" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -s gargamel");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "moonworld" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g BukkitFullOfMoon");
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

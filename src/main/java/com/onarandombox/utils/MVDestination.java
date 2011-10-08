@@ -5,15 +5,14 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore;
-
-import com.pneumaticraft.commandhandler.Command;
+package com.onarandombox.utils;
 
 /**
  * Dummy class to make old MV Plugins not explode.
  * If this loads, the user WILL get a severe telling them to update said plugin!
  * WILL BE DELETED ON 11/1/11
  */
+
 @Deprecated
-public interface LoggablePlugin extends com.onarandombox.MultiverseCore.api.LoggablePlugin {
+public interface MVDestination extends com.onarandombox.MultiverseCore.api.MVDestination {
 }

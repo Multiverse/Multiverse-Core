@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.utils;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -33,7 +32,7 @@ public class MVPermissions implements PermissionsInterface {
      */
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.worldMgr = plugin.getWorldManager();
+        this.worldMgr = plugin.getMVWorldManager();
     }
 
     /**
@@ -87,7 +86,7 @@ public class MVPermissions implements PermissionsInterface {
             return false;
         }
         String worldName = l.getWorld().getName();
-        if (!this.plugin.getWorldManager().isMVWorld(worldName)) {
+        if (!this.plugin.getMVWorldManager().isMVWorld(worldName)) {
             return false;
         }
         return this.hasPermission(p, "multiverse.access." + worldName, false);

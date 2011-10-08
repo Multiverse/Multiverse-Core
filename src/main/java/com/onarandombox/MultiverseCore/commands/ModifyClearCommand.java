@@ -31,7 +31,7 @@ public class ModifyClearCommand extends MultiverseCommand {
         this.addKey("mv modify clear");
         this.addKey("mvmodify clear");
         this.setPermission("multiverse.core.modify.clear", "Removes all values from a property. This will work on properties that contain lists.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

@@ -31,7 +31,7 @@ public class WhoCommand extends MultiverseCommand {
         this.addKey("mvw");
         this.addKey("mvwho");
         this.setPermission("multiverse.core.list.who", "States who is in what world.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

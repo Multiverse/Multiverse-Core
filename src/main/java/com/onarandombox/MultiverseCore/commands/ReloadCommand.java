@@ -32,7 +32,7 @@ public class ReloadCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         sender.sendMessage(ChatColor.GOLD + "Reloading all Multiverse Plugin configs...");
         this.plugin.loadConfigs();
-        this.plugin.getWorldManager().loadWorlds(true);
+        this.plugin.getMVWorldManager().loadWorlds(true);
 
         // Create the event
         List<String> configsLoaded = new ArrayList<String>();

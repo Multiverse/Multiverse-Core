@@ -29,7 +29,7 @@ public class ImportCommand extends MultiverseCommand {
         this.addKey("mvim");
         this.addKey("mv import");
         this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getWorldManager();
+        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

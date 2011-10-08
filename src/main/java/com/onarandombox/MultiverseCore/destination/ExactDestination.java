@@ -50,7 +50,7 @@ public class ExactDestination implements MVDestination {
         }
 
         // If it's not a MV world
-        if (!((MultiverseCore) plugin).getWorldManager().isMVWorld(parsed.get(1))) {
+        if (!((MultiverseCore) plugin).getMVWorldManager().isMVWorld(parsed.get(1))) {
             return false;
         }
 
@@ -100,11 +100,11 @@ public class ExactDestination implements MVDestination {
             return;
         }
 
-        if (!((MultiverseCore) plugin).getWorldManager().isMVWorld(parsed.get(1))) {
+        if (!((MultiverseCore) plugin).getMVWorldManager().isMVWorld(parsed.get(1))) {
             this.isValid = false;
             return;
         }
-        this.location = new Location(((MultiverseCore) plugin).getWorldManager().getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
+        this.location = new Location(((MultiverseCore) plugin).getMVWorldManager().getMVWorld(parsed.get(1)).getCBWorld(), 0, 0, 0);
 
         if (!parsed.get(2).matches(this.coordRegex)) {
             this.isValid = false;

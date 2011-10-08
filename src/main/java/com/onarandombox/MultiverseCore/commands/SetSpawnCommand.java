@@ -39,7 +39,7 @@ public class SetSpawnCommand extends MultiverseCommand {
             Player p = (Player) sender;
             Location l = p.getLocation();
             World w = p.getWorld();
-            MVWorld foundWorld = this.plugin.getWorldManager().getMVWorld(w.getName());
+            MVWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
             if (foundWorld != null) {
                 foundWorld.setSpawn(p.getLocation());
                 sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));

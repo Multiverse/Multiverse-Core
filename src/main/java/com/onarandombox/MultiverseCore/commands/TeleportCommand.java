@@ -81,7 +81,7 @@ public class TeleportCommand extends MultiverseCommand {
             }
 
         }
-        DestinationFactory df = this.plugin.getDestinationFactory();
+        DestinationFactory df = this.plugin.getDestFactory();
         MVDestination d = df.getDestination(destinationName);
 
 
