@@ -140,12 +140,12 @@ public class WorldManager implements MVWorldManager {
     public boolean removeWorldFromConfig(String name) {
         if (this.configWorlds.getProperty("worlds." + name) != null) {
             removeWorldFromList(name);
-            this.plugin.log(Level.INFO, "World " + name + " was removed from config.yml");
+            this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
             this.configWorlds.removeProperty("worlds." + name);
             this.configWorlds.save();
             return true;
         } else {
-            this.plugin.log(Level.INFO, "World " + name + " was already removed from config.yml");
+            this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
         }
         return false;
     }
@@ -160,7 +160,7 @@ public class WorldManager implements MVWorldManager {
 
         if (this.worlds.containsKey(name)) {
             this.worlds.remove(name);
-            this.plugin.log(Level.INFO, "World " + name + " was unloaded from memory.");
+            this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
             this.unloadWorld(name, true);
             return true;
         } else if (this.plugin.getServer().getWorld(name) != null) {
