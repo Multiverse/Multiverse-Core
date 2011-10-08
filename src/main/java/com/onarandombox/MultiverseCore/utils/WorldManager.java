@@ -140,12 +140,12 @@ public class WorldManager implements MVWorldManager {
     public boolean removeWorldFromConfig(String name) {
         if (this.configWorlds.getProperty("worlds." + name) != null) {
             removeWorldFromList(name);
-            this.plugin.log(Level.INFO, "World " + name + " was removed from config.yml");
+            this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
             this.configWorlds.removeProperty("worlds." + name);
             this.configWorlds.save();
             return true;
         } else {
-            this.plugin.log(Level.INFO, "World " + name + " was already removed from config.yml");
+            this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
         }
         return false;
     }
@@ -160,7 +160,7 @@ public class WorldManager implements MVWorldManager {
 
         if (this.worlds.containsKey(name)) {
             this.worlds.remove(name);
-            this.plugin.log(Level.INFO, "World " + name + " was unloaded from memory.");
+            this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
             this.unloadWorld(name, true);
             return true;
         } else if (this.plugin.getServer().getWorld(name) != null) {
@@ -170,6 +170,31 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.INFO, "The world " + name + " was already unloaded/did not exist.");
         }
         return false;
+    }
+    
+    public boolean loadWorld(String name) {
+    	// Check if the World is already loaded
+    	if (this.worlds.containsKey(name)) {
+            return true;
+        }
+    	
+        // Grab all the Worlds from the Config.
+        List<String> worldKeys = this.configWorlds.getKeys("worlds");
+
+        // Check that the list is not null and that the config contains the world
+        if ((worldKeys != null) && (worldKeys.contains(name))) {
+            // Grab the initial values from the config file.
+            String environment = this.configWorlds.getString("worlds." + name + ".environment", "NORMAL"); // Grab the Environment as a String.
+            String seedString = this.configWorlds.getString("worlds." + name + ".seed", "");
+            String generatorString = this.configWorlds.getString("worlds." + name + ".generator");
+            
+            addWorld(name, this.plugin.getEnvFromString(environment), seedString, generatorString);
+            
+            return true;
+        }
+        else {
+        	return false;
+        }
     }
 
     public Boolean deleteWorld(String name) {
