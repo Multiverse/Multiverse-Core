@@ -40,8 +40,8 @@ public class MVWorld implements MultiverseWorld {
 
     private boolean keepSpawnInMemory; // Does the World have the spawn loaded all the time?
 
-    private Boolean pvp; // Does this World allow PVP?
-    private Boolean fakePVP; // Should this world have fakePVP on? (used for PVP zones)
+    private boolean pvp; // Does this World allow PVP?
+    private boolean fakePVP; // Should this world have fakePVP on? (used for PVP zones)
 
     private GameMode gameMode = GameMode.SURVIVAL;
 
@@ -412,7 +412,7 @@ public class MVWorld implements MultiverseWorld {
         saveConfig();
     }
 
-    public Boolean allowAnimalSpawning() {
+    public boolean allowAnimalSpawning() {
         return this.allowAnimals;
     }
 
@@ -429,7 +429,7 @@ public class MVWorld implements MultiverseWorld {
         return this.masterList.get("animals");
     }
 
-    public Boolean allowMonsterSpawning() {
+    public boolean allowMonsterSpawning() {
         return this.allowMonsters;
     }
 
@@ -451,7 +451,7 @@ public class MVWorld implements MultiverseWorld {
     }
 
     @Override
-    public void setPVPMode(Boolean pvp) {
+    public void setPVPMode(boolean pvp) {
         if (this.fakePVP) {
             this.world.setPVP(true);
         } else {

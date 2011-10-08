@@ -128,19 +128,19 @@ public interface MultiverseWorld {
      *
      * @return True if ANY animal can, false if no animals can spawn.
      */
-    public Boolean allowAnimalSpawning();
+    public boolean allowAnimalSpawning();
 
     /**
      * Gets whether or not monsters are allowed to spawn in this world.
      *
      * @return True if ANY monster can, false if no monsters can spawn.
      */
-    public Boolean allowMonsterSpawning();
+    public boolean allowMonsterSpawning();
 
     /**
      * Turn pvp on or off. This setting is used to set the world's PVP mode, and thus relies on fakePVP
      *
      * @param pvpMode True to enable PVP damage, false to disable it.
      */
-    public void setPVPMode(Boolean pvpMode);
+    public void setPVPMode(boolean pvpMode);
 }

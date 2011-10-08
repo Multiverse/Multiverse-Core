@@ -137,7 +137,7 @@ public class InfoCommand extends MultiverseCommand {
         // Page 3
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("Monster Settings", colors));
-        message.add(new FancyMessage("Multiverse Setting: ", world.allowMonsterSpawning().toString(), colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.allowMonsterSpawning() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowMonsters() + "", colors));
         if (MultiverseCore.MobsDisabledInDefaultWorld) {
             message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Monsters WILL NOT SPAWN IN THIS WORLD.", colors));
@@ -157,7 +157,7 @@ public class InfoCommand extends MultiverseCommand {
         // Page 4
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("Animal Settings", colors));
-        message.add(new FancyMessage("Multiverse Setting: ", world.allowAnimalSpawning().toString(), colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.allowAnimalSpawning() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowAnimals() + "", colors));
         if (world.getMonsterList().size() > 0) {
             if (world.allowMonsterSpawning()) {
