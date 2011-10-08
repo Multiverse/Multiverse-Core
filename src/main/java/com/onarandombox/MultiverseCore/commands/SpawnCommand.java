@@ -41,7 +41,7 @@ public class SpawnCommand extends MultiverseCommand {
         }
         // If a persons name was passed in, you must be A. the console, or B have permissions
         if (args.size() == 1) {
-            if (player != null && !this.plugin.getPermissions().hasPermission(player, "multiverse.core.spawn.other", true)) {
+            if (player != null && !this.plugin.getMVPerms().hasPermission(player, "multiverse.core.spawn.other", true)) {
                 sender.sendMessage("You don't have permission to teleport another player to spawn. (multiverse.core.spawn.other)");
                 return;
             }
@@ -59,7 +59,7 @@ public class SpawnCommand extends MultiverseCommand {
                 sender.sendMessage(args.get(0) + " is not logged on right now!");
             }
         } else {
-            if (player != null && !this.plugin.getPermissions().hasPermission(player, "multiverse.core.spawn.self", true)) {
+            if (player != null && !this.plugin.getMVPerms().hasPermission(player, "multiverse.core.spawn.self", true)) {
                 sender.sendMessage("You don't have permission to teleport yourself to spawn. (multiverse.core.spawn.self)");
                 return;
             }

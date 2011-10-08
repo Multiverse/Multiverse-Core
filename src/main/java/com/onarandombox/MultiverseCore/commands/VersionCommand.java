@@ -53,7 +53,7 @@ public class VersionCommand extends MultiverseCommand {
         logAndAddToPasteBinBuffer("Loaded Worlds: " + this.plugin.getWorldManager().getMVWorlds().size());
         logAndAddToPasteBinBuffer("Multiverse Plugins Loaded: " + this.plugin.getPluginCount());
         logAndAddToPasteBinBuffer("Economy being used: " + this.plugin.getBank().getEconUsed());
-        logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getPermissions().getType());
+        logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getMVPerms().getType());
         logAndAddToPasteBinBuffer("Dumping Config Values: (version " + this.plugin.getConfig().getString("version", "NOT SET") + ")");
         logAndAddToPasteBinBuffer("messagecooldown: " + this.plugin.getConfig().getString("messagecooldown", "NOT SET"));
         logAndAddToPasteBinBuffer("teleportcooldown: " + this.plugin.getConfig().getString("teleportcooldown", "NOT SET"));

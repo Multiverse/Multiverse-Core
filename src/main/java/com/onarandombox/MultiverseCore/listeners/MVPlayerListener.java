@@ -98,7 +98,7 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.worldManager.getMVWorlds().size() == 0 && this.plugin.getPermissions().hasPermission(event.getPlayer(), "multiverse.core.import", true)) {
+        if (this.worldManager.getMVWorlds().size() == 0 && this.plugin.getMVPerms().hasPermission(event.getPlayer(), "multiverse.core.import", true)) {
             event.getPlayer().sendMessage("You don't have any worlds imported into Multiverse!");
             event.getPlayer().sendMessage("You can import your current worlds with " + ChatColor.AQUA + "/mvimport");
             event.getPlayer().sendMessage("or you can create new ones with " + ChatColor.GOLD + "/mvcreate");
@@ -158,7 +158,7 @@ public class MVPlayerListener extends PlayerListener {
     private boolean checkWorldPermissions(MVWorld fromWorld, MVWorld toWorld, Player player) {
 
         if (toWorld != null) {
-            if (!this.plugin.getPermissions().canEnterWorld(player, toWorld)) {
+            if (!this.plugin.getMVPerms().canEnterWorld(player, toWorld)) {
                 player.sendMessage("You don't have access to go here...");
                 return true;
             }

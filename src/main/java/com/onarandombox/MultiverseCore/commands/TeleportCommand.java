@@ -101,14 +101,14 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         }
 
-        if (teleporter != null && !this.plugin.getPermissions().canEnterDestination(teleporter, d)) {
+        if (teleporter != null && !this.plugin.getMVPerms().canEnterDestination(teleporter, d)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {
                 teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
             return;
-        } else if (teleporter != null && !this.plugin.getPermissions().canTravelFromLocation(teleporter, d.getLocation(teleportee))) {
+        } else if (teleporter != null && !this.plugin.getMVPerms().canTravelFromLocation(teleporter, d.getLocation(teleportee))) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + ((Player) teleporter).getWorld().getName());
             } else {
@@ -124,13 +124,13 @@ public class TeleportCommand extends MultiverseCommand {
             World w = d.getLocation(teleportee).getWorld();
             if (teleportee.getWorld().equals(w)) {
                 if (teleporter.equals(teleportee)) {
-                    if (!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.core.spawn.self", true)) {
+                    if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.core.spawn.self", true)) {
                         teleporter.sendMessage("Sorry you don't have permission to go to the world spawn!");
                         teleporter.sendMessage(ChatColor.RED + "  (multiverse.core.spawn.self)");
                         return;
                     }
                 } else {
-                    if (!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.core.spawn.other", true)) {
+                    if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.core.spawn.other", true)) {
                         teleporter.sendMessage("Sorry you don't have permission to send " + teleportee.getDisplayName() + "to the world spawn!");
                         teleporter.sendMessage(ChatColor.RED + "  (multiverse.core.spawn.other)");
                         return;
@@ -162,12 +162,12 @@ public class TeleportCommand extends MultiverseCommand {
     private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {
         MVMessaging message = this.plugin.getMessaging();
         if (teleporter.equals(teleportee)) {
-            if (!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.teleport.self." + destination.getIdentifier(), true)) {
+            if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.teleport.self." + destination.getIdentifier(), true)) {
                 message.sendMessages(teleporter, new String[]{"You don't have permission to teleport yourself to a " + ChatColor.GREEN + destination.getType() + " Destination.", ChatColor.RED + "   (multiverse.teleport.self." + destination.getIdentifier() + ")"});
                 return false;
             }
         } else {
-            if (!this.plugin.getPermissions().hasPermission(teleporter, "multiverse.teleport.other." + destination.getIdentifier(), true)) {
+            if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.teleport.other." + destination.getIdentifier(), true)) {
                 message.sendMessages(teleporter, new String[]{"You don't have permission to teleport another player to a " + ChatColor.GREEN + destination.getType() + " Destination.", ChatColor.RED + "   (multiverse.teleport.other." + destination.getIdentifier() + ")"});
                 return false;
             }

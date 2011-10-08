@@ -560,7 +560,7 @@ public class MVWorld implements MultiverseWorld {
     }
 
     public boolean isExempt(Player p) {
-        return (this.plugin.getPermissions().hasPermission(p, this.exempt.getName(), true));
+        return (this.plugin.getMVPerms().hasPermission(p, this.exempt.getName(), true));
     }
 
     public Permission getExempt() {

@@ -28,6 +28,14 @@ public class MVPluginListener extends ServerListener {
     /** Keep an eye out for Plugins which we can utilize. */
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
+        if(event.getPlugin() instanceof com.onarandombox.MultiverseCore.MVPlugin) {
+            this.plugin.log(Level.SEVERE, "Your version of '" + event.getPlugin() + "' is OUT OF DATE.");
+            this.plugin.log(Level.SEVERE, "Please grab the latest version from:");
+            this.plugin.log(Level.SEVERE, "http://bukkit.onarandombox.com/?dir="+event.getPlugin().getDescription().getName().toLowerCase());
+            this.plugin.log(Level.SEVERE, "I'm going to disable " + event.getPlugin().getDescription().getName() + " now.");
+            this.plugin.getServer().getPluginManager().disablePlugin(event.getPlugin());
+
+        }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
         if (Arrays.asList(AllPay.validEconPlugins).contains(event.getPlugin().getDescription().getName())) {
             this.plugin.setBank(this.plugin.getBanker().loadEconPlugin());

@@ -17,10 +17,6 @@
             <id>OnARandomBox</id>
             <url>http://repo.onarandombox.com/artifactory/repo</url>
         </repository>
-        <repository>
-            <id>GetSpout</id>
-            <url>http://repo.getspout.org/</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>

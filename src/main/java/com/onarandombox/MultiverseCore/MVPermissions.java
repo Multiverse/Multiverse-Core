@@ -7,11 +7,17 @@
 
 package com.onarandombox.MultiverseCore;
 
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+
 /**
  * Dummy class to make old MV Plugins not explode.
  * If this loads, the user WILL get a severe telling them to update said plugin!
  * WILL BE DELETED ON 11/1/11
  */
 @Deprecated
-public interface MVPlugin {
+public class MVPermissions {
+    public Permission addPermission(String string, PermissionDefault def) {
+        return new Permission("update.all.multiverse.plugins");
+    }
 }

@@ -20,6 +20,9 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.utils.*;
+import com.onarandombox.MultiverseCore.utils.DebugLog;
+import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,6 +46,7 @@ import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin {
 
+    public static boolean outdatedPluginFound = false;
     private static int Protocol = 1;
 
     @Override
@@ -383,10 +387,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
      *
      * @return A valid {@link MVPermissions}.
      */
-    public MVPermissions getPermissions() {
+    public MVPermissions getMVPerms() {
         return this.ph;
     }
 
+    @Deprecated
+    public com.onarandombox.MultiverseCore.MVPermissions getPermissions() {
+        return new com.onarandombox.MultiverseCore.MVPermissions();
+    }
     @Deprecated
     public PurgeWorlds getWorldPurger() {
         return this.worldManager.getWorldPurger();
