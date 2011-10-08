@@ -9,8 +9,8 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.utils.PurgeWorlds;
-import com.onarandombox.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

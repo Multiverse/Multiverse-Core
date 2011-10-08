@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.utils;
+package com.onarandombox.MultiverseCore.utils;
 
 import java.util.logging.Level;
 

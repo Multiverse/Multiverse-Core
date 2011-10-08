@@ -12,7 +12,7 @@ import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
-import com.onarandombox.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

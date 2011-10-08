@@ -14,7 +14,7 @@ import java.util.Map;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.utils.PermissionTools;
+import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;

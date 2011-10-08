@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;

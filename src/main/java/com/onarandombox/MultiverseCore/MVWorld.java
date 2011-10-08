@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.utils.EnglishChatColor;
+import com.onarandombox.MultiverseCore.utils.EnglishChatColor;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
