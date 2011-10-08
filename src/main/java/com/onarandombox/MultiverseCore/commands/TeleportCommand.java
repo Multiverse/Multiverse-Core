@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class TeleportCommand extends MultiverseCommand {
-    private MVTeleport playerTeleporter;
+    private SafeTTeleporter playerTeleporter;
 
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
@@ -39,7 +39,7 @@ public class TeleportCommand extends MultiverseCommand {
         this.setArgRange(1, 2);
         this.addKey("mvtp");
         this.addKey("mv tp");
-        this.playerTeleporter = new MVTeleport(this.plugin);
+        this.playerTeleporter = new SafeTTeleporter(this.plugin);
         this.setPermission(menu);
     }
 
@@ -88,7 +88,7 @@ public class TeleportCommand extends MultiverseCommand {
         MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
         if (teleportEvent.isCancelled()) {
-            this.plugin.log(Level.FINE, "Someone else cancelled the MVTeleport Event!!!");
+            this.plugin.log(Level.FINE, "Someone else cancelled the SafeTTeleporter Event!!!");
             return;
         }
 

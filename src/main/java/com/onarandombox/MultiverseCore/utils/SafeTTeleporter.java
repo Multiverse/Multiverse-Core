@@ -5,8 +5,9 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.utils;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.BlockSafety;
@@ -20,13 +21,13 @@ import org.bukkit.util.Vector;
 
 import java.util.logging.Level;
 
-public class MVTeleport {
+public class SafeTTeleporter {
 
     MultiverseCore plugin;
 
     BlockSafety bs;
 
-    public MVTeleport(MultiverseCore plugin) {
+    public SafeTTeleporter(MultiverseCore plugin) {
         this.plugin = plugin;
         this.bs = new BlockSafety();
     }

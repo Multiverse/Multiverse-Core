@@ -374,8 +374,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin {
      *
      * @return
      */
-    public MVTeleport getTeleporter() {
-        return new MVTeleport(this);
+    public SafeTTeleporter getTeleporter() {
+        return new SafeTTeleporter(this);
     }
 
     /**

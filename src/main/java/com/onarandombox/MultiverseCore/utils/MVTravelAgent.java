@@ -15,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.TravelAgent;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiverseCore.MVTeleport;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class MVTravelAgent implements TravelAgent {
@@ -78,7 +77,7 @@ public class MVTravelAgent implements TravelAgent {
         if (this.destination instanceof CannonDestination) {
             this.core.log(Level.FINE, "Using Stock TP method. This cannon will have 0 velocity");
         }
-        MVTeleport teleporter = new MVTeleport(this.core);
+        SafeTTeleporter teleporter = new SafeTTeleporter(this.core);
         Location newLoc = this.destination.getLocation(this.player);
         if (this.destination.useSafeTeleporter()) {
             newLoc = teleporter.getSafeLocation(this.player, this.destination);

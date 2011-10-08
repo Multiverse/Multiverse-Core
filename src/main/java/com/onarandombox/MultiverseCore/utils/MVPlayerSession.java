@@ -5,8 +5,9 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.utils;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 

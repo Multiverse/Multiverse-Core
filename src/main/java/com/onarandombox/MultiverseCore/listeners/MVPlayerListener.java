@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.MVTeleport;
+import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
@@ -24,7 +24,7 @@ import java.util.logging.Level;
 
 public class MVPlayerListener extends PlayerListener {
     MultiverseCore plugin;
-    MVTeleport mvteleporter;
+    SafeTTeleporter mvteleporter;
     WorldManager worldManager;
 
     public MVPlayerListener(MultiverseCore plugin) {

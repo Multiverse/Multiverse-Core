@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore;
+package com.onarandombox.MultiverseCore.utils;
 
 import org.getspout.spoutapi.SpoutManager;
 

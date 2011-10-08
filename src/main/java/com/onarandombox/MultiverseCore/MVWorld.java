@@ -56,7 +56,6 @@ public class MVWorld implements MultiverseWorld {
     private boolean hunger = true;
     private Permission permission;
     private Permission exempt;
-    private Difficulty difficulty;
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private boolean allowWeather;
