@@ -143,4 +143,19 @@ public interface MultiverseWorld {
      * @param pvpMode True to enable PVP damage, false to disable it.
      */
     public void setPVPMode(boolean pvpMode);
+
+    /**
+     * Gets whether or not this world will display in chat, mvw and mvl regardless if a user has the
+     * access permissions to go to this world.
+     *
+     * @return True if the world will be hidden, false if not.
+     */
+    public boolean isWorldHidden();
+
+    /**
+     * Sets whether or not this world will display in chat, mvw and mvl regardless if a user has the
+     * access permissions to go to this world.
+     * @param hidden Set
+     */
+    public void setHidden(boolean hidden);
 }

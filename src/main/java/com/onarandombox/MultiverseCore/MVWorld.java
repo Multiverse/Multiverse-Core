@@ -117,7 +117,7 @@ public class MVWorld implements MultiverseWorld {
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
-            this.plugin.log(Level.SEVERE, "Error when adding Exemption/Access permissions for " + this.name);
+            this.plugin.log(Level.FINER, "Permissions nodes were already added for " + this.name);
         }
     }
 
