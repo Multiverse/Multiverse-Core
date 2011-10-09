@@ -63,7 +63,14 @@ public interface MVWorldManager {
      * @return True if success, false if failure.
      */
     public boolean loadWorld(String name);
-
+    
+    /**
+     * Removes all players from the specified world.
+     *
+     * @param name World to remove players from.
+     */
+    public void removePlayersFromWorld(String name);
+    
     /**
      * Test if a given chunk generator is valid.
      *

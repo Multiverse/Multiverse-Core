@@ -254,12 +254,7 @@ public class WorldManager implements MVWorldManager {
         return this.plugin.getServer().unloadWorld(name, safely);
     }
 
-    /**
-     * Removes all players from the specified world.
-     *
-     * @param name World to remove players from.
-     */
-    private void removePlayersFromWorld(String name) {
+    public void removePlayersFromWorld(String name) {
         World w = this.plugin.getServer().getWorld(name);
         if (w != null) {
             World safeWorld = this.plugin.getServer().getWorlds().get(0);
