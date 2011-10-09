@@ -641,7 +641,7 @@ public class MVWorld implements MultiverseWorld {
         return this.keepSpawnInMemory;
     }
 
-    private void setHunger(boolean hunger) {
+    public void setHunger(boolean hunger) {
         this.hunger = hunger;
         config.setProperty("worlds." + this.name + ".hunger", this.hunger);
         saveConfig();

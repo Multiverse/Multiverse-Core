@@ -234,5 +234,10 @@ public interface MultiverseWorld {
      */
     public void setHunger(boolean hungerEnabled);
 
-    public void
+    /**
+     * Gets whether or not the hunger level of players will go down in a world.
+     *
+     * @return True if it will go down, false if it will remain steady.
+     */
+    public boolean getHunger();
 }

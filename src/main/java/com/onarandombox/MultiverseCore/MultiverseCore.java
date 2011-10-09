@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private final static int Protocol = 4;
+    private final static int Protocol = 5;
 
     @Override
     public String dumpVersionInfo(String buffer) {
