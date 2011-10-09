@@ -8,8 +8,10 @@
 package com.onarandombox.MultiverseCore.api;
 
 import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.permissions.Permission;
 
 /**
  * The API for a Multiverse Handled World.
@@ -240,4 +242,83 @@ public interface MultiverseWorld {
      * @return True if it will go down, false if it will remain steady.
      */
     public boolean getHunger();
+
+    /**
+     * Sets the game mode of this world
+     *
+     * @param gameMode A valid game mode string (either
+     *                 an int ex. 0 or a string ex. creative).
+     *
+     * @return True if the game mode was successfully changed, false if not.
+     */
+    public boolean setGameMode(String gameMode);
+
+    /**
+     * Gets the GameMode of this world.
+     *
+     * @return The GameMode of this world.
+     */
+    public GameMode getGameMode();
+
+    /**
+     * Gets the permission required to enter this world.
+     *
+     * @return The permission required to be exempt from charges to/from this world.
+     */
+    public Permission getAccessPermission();
+
+    /**
+     * Gets the permission required to be exempt when entering.
+     *
+     * @return The permission required to be exempt when entering.
+     */
+    public Permission getExemptPermission();
+
+    /**
+     * Sets the price for entry to this world.
+     * You can think of this like an amount.
+     * The type can be set with {@link #setCurrency(int)}
+     *
+     * @param price The Amount of money/item to enter the world.
+     */
+    public void setPrice(double price);
+
+    /**
+     * Gets the amount of currency it requires to enter this world.
+     *
+     * @return The amount it costs to enter this world.
+     */
+    public double getPrice();
+
+    /**
+     * Sets the type of item that will be required given the price is not 0.
+     * Use -1 to use an AllPay economy, or any valid itemid
+     *
+     * @param item The Type of currency that will be used when users enter this world.
+     */
+    public void setCurrency(int item);
+
+    /**
+     * Gets the Type of currency that will be used when users enter this world.
+     *
+     * @return The Type of currency that will be used when users enter this world.
+     */
+    public int getCurrency();
+
+    /**
+     * Sets the world players will respawn in if they die in this one.
+     * Returns true upon success, false upon failure.
+     *
+     * @param respawnWorld The name of a world that exists on the server.
+     *
+     * @return True if respawnWorld existed, false if not.
+     */
+    public boolean setRespawnToWorld(String respawnWorld);
+
+    /**
+     * Gets the world players will respawn in if they die in this one.
+     *
+     * @return A world that exists on the server.
+     */
+    public World getRespawnToWorld();
 }

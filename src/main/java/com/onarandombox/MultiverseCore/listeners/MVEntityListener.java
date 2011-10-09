@@ -34,6 +34,9 @@ public class MVEntityListener extends EntityListener {
 
     @Override
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         if (event.getEntity() instanceof Player) {
             Player p = (Player) event.getEntity();
             MVWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
@@ -78,13 +81,12 @@ public class MVEntityListener extends EntityListener {
             }
             MVWorld world = this.worldManager.getMVWorld(w.getName());
 
-            if (attacker != null && attacker instanceof Player) {
+            if (attacker instanceof Player) {
                 Player pattacker = (Player) attacker;
 
                 if (!world.getPvp() && this.plugin.getConfig().getBoolean("fakepvp", false)) {
                     pattacker.sendMessage(ChatColor.RED + "PVP is disabled in this World.");
                     event.setCancelled(true);
-                    return;
                 }
             }
         }
@@ -98,7 +100,6 @@ public class MVEntityListener extends EntityListener {
         RegainReason reason = event.getRegainReason();
         if (reason == RegainReason.REGEN && this.plugin.getConfig().getBoolean("disableautoheal", false)) {
             event.setCancelled(true);
-            return;
         }
     }
 
@@ -134,7 +135,7 @@ public class MVEntityListener extends EntityListener {
         /**
          * Animal Handling
          */
-        if (event.getEntity() instanceof Animals) {
+        if (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid) {
             event.setCancelled(this.shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.allowAnimalSpawning(), creature.toString().toUpperCase()));
         }
         /**

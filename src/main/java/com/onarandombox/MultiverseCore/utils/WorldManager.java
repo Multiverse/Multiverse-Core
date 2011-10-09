@@ -352,13 +352,13 @@ public class WorldManager implements MVWorldManager {
             for (MVWorld w : this.worlds.values()) {
                 // Remove this world from the master list
                 if (allAccess != null) {
-                    allAccess.getChildren().remove(w.getPermission().getName());
+                    allAccess.getChildren().remove(w.getAccessPermission().getName());
                 }
                 if (allExempt != null) {
-                    allExempt.getChildren().remove(w.getPermission().getName());
+                    allExempt.getChildren().remove(w.getAccessPermission().getName());
                 }
-                this.plugin.getServer().getPluginManager().removePermission(w.getPermission().getName());
-                this.plugin.getServer().getPluginManager().removePermission(w.getExempt().getName());
+                this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
+                this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
             }
             // Recalc the all permission
             this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
