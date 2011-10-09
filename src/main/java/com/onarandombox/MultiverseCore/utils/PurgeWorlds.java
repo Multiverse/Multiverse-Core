@@ -51,7 +51,7 @@ public class PurgeWorlds {
         }
         ArrayList<String> allMobs = new ArrayList<String>(world.getAnimalList());
         allMobs.addAll(world.getMonsterList());
-        purgeWorld(sender, world, allMobs, !world.allowAnimalSpawning(), !world.allowMonsterSpawning());
+        purgeWorld(sender, world, allMobs, !world.canAnimalsSpawn(), !world.canMonstersSpawn());
     }
 
     public void purgeWorld(CommandSender sender, MVWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {

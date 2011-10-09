@@ -59,8 +59,8 @@ public class MVEntityListener extends EntityListener {
         if (event.isCancelled()) {
             return;
         }
-        Entity attacker = null;
-        Entity defender = null;
+        Entity attacker;
+        Entity defender;
         if (event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent sub = (EntityDamageByEntityEvent) event;
             attacker = sub.getDamager();
@@ -82,10 +82,8 @@ public class MVEntityListener extends EntityListener {
             MVWorld world = this.worldManager.getMVWorld(w.getName());
 
             if (attacker instanceof Player) {
-                Player pattacker = (Player) attacker;
-
-                if (!world.getPvp() && this.plugin.getConfig().getBoolean("fakepvp", false)) {
-                    pattacker.sendMessage(ChatColor.RED + "PVP is disabled in this World.");
+                if (!world.isPVPEnabled() && this.plugin.getConfig().getBoolean("fakepvp", false)) {
+                    ((Player) attacker).sendMessage(ChatColor.RED + "PVP is disabled in this World.");
                     event.setCancelled(true);
                 }
             }
@@ -136,13 +134,13 @@ public class MVEntityListener extends EntityListener {
          * Animal Handling
          */
         if (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid) {
-            event.setCancelled(this.shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.allowAnimalSpawning(), creature.toString().toUpperCase()));
+            event.setCancelled(this.shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.canAnimalsSpawn(), creature.toString().toUpperCase()));
         }
         /**
          * Monster Handling
          */
         if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime) {
-            event.setCancelled(this.shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.allowMonsterSpawning(), creature.toString().toUpperCase()));
+            event.setCancelled(this.shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.canMonstersSpawn(), creature.toString().toUpperCase()));
         }
     }
 
@@ -156,13 +154,13 @@ public class MVEntityListener extends EntityListener {
         } else if (creatureList.contains(creature) && allowCreatureSpawning) {
             // 3. There ARE exceptions and animals ARE allowed. Kill it.
             return true;
-        } else if (!creatureList.contains(creature.toString().toUpperCase()) && allowCreatureSpawning) {
+        } else if (!creatureList.contains(creature.toUpperCase()) && allowCreatureSpawning) {
             // 4. There ARE exceptions and animals ARE NOT allowed. SAVE it.
             return false;
-        } else if (creatureList.contains(creature.toString().toUpperCase()) && !allowCreatureSpawning) {
+        } else if (creatureList.contains(creature.toUpperCase()) && !allowCreatureSpawning) {
             // 5. No animals are allowed to be spawned, BUT this one can stay...
             return false;
-        } else if (!creatureList.contains(creature.toString().toUpperCase()) && !allowCreatureSpawning) {
+        } else if (!creatureList.contains(creature.toUpperCase()) && !allowCreatureSpawning) {
             // 6. Animals are NOT allowed to spawn, and this creature is not in the save list... KILL IT
             return true;
         }

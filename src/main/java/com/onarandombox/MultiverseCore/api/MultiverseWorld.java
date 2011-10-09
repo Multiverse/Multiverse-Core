@@ -7,11 +7,10 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.permissions.Permission;
+
+import java.util.List;
 
 /**
  * The API for a Multiverse Handled World.
@@ -121,6 +120,22 @@ public interface MultiverseWorld {
     public void setAlias(String alias);
 
     /**
+     * Sets the color that this world's name/alias will display as.
+     *
+     * @param color A valid color name.
+     *
+     * @return True if the color was set, false if not.
+     */
+    public boolean setColor(String color);
+
+    /**
+     * Gets the color that this world's name/alias will display as.
+     *
+     * @return The color of this world.
+     */
+    public ChatColor getColor();
+
+    /**
      * Returns a very nicely colored string (using Alias and Color if they are set).
      *
      * @return A nicely colored string.
@@ -132,14 +147,14 @@ public interface MultiverseWorld {
      *
      * @return True if ANY animal can, false if no animals can spawn.
      */
-    public boolean allowAnimalSpawning();
+    public boolean canAnimalsSpawn();
 
     /**
      * Gets whether or not monsters are allowed to spawn in this world.
      *
      * @return True if ANY monster can, false if no monsters can spawn.
      */
-    public boolean allowMonsterSpawning();
+    public boolean canMonstersSpawn();
 
     /**
      * Turn pvp on or off. This setting is used to set the world's PVP mode, and thus relies on fakePVP
@@ -147,6 +162,13 @@ public interface MultiverseWorld {
      * @param pvpMode True to enable PVP damage, false to disable it.
      */
     public void setPVPMode(boolean pvpMode);
+
+    /**
+     * Gets whether or not PVP is enabled in this world in some form (fake or not).
+     *
+     * @return True if players can take damage from other players.
+     */
+    public boolean isPVPEnabled();
 
     /**
      * Gets whether or not this world will display in chat, mvw and mvl regardless if a user has the
@@ -321,4 +343,60 @@ public interface MultiverseWorld {
      * @return A world that exists on the server.
      */
     public World getRespawnToWorld();
+
+    /**
+     * Sets the scale of this world. Really only has an effect if you use
+     * Multiverse-NetherPortals.
+     *
+     * @param scaling A scaling value, cannot be negative or 0.
+     */
+    public void setScaling(double scaling);
+
+    /**
+     * Gets the scaling value of this world.Really only has an effect if you use
+     * Multiverse-NetherPortals.
+     *
+     * @return This world's non-negative, non-zero scale.
+     */
+    public double getScaling();
+
+    /**
+     * Gets a list of all the worlds that players CANNOT travel to from this world,
+     * regardless of their access permissions.
+     *
+     * @return A List of world names.
+     */
+    public List<String> getWorldBlacklist();
+
+    /**
+     * Returns a list of animals. This list always negates the {@link #canAnimalsSpawn()} result.
+     *
+     * @return A list of animals that will spawn if {@link #canAnimalsSpawn()} is false.
+     */
+    public List<String> getAnimalList();
+
+    /**
+     * Sets whether or not animals can spawn.
+     * If there are values in {@link #getAnimalList()} and this is false,
+     * those animals become the exceptions, and will spawn
+     *
+     * @param allowAnimalSpawn True to allow spawning of monsters, false to prevent.
+     */
+    public void setAllowAnimalSpawn(boolean allowAnimalSpawn);
+
+    /**
+     * Returns a list of monsters. This list always negates the {@link #canMonstersSpawn()} ()} result.
+     *
+     * @return A list of monsters that will spawn if {@link #canMonstersSpawn()} is false.
+     */
+    public List<String> getMonsterList();
+
+    /**
+     * Sets whether or not monsters can spawn.
+     * If there are values in {@link #getMonsterList()} and this is false,
+     * those monsters become the exceptions, and will spawn
+     *
+     * @param allowMonsterSpawn True to allow spawning of monsters, false to prevent.
+     */
+    public void setAllowMonsterSpawn(boolean allowMonsterSpawn);
 }

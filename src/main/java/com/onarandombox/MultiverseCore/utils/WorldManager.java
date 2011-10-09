@@ -168,8 +168,8 @@ public class WorldManager implements MVWorldManager {
     }
 
     public boolean loadWorld(String name) {
-    	// Check if the World is already loaded
-    	if (this.worlds.containsKey(name)) {
+        // Check if the World is already loaded
+        if (this.worlds.containsKey(name)) {
             return true;
         }
 
@@ -186,9 +186,8 @@ public class WorldManager implements MVWorldManager {
             addWorld(name, this.plugin.getEnvFromString(environment), seedString, generatorString);
 
             return true;
-        }
-        else {
-        	return false;
+        } else {
+            return false;
         }
     }
 
@@ -289,6 +288,14 @@ public class WorldManager implements MVWorldManager {
         return this.getMVWorldByAlias(name);
     }
 
+    @Override
+    public MVWorld getMVWorld(World world) {
+        if (world != null) {
+            return this.getMVWorld(world.getName());
+        }
+        return null;
+    }
+
     /**
      * Returns a {@link MVWorld} if it exists, and null if it does not. This will search ONLY alias.
      *
@@ -315,6 +322,18 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean isMVWorld(String name) {
         return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+    }
+
+    /**
+     * Checks to see if the given world is a valid {@link com.onarandombox.MultiverseCore.MVWorld}
+     *
+     * @param world The Bukkit world to check.
+     *
+     * @return True if the world has been loaded into MV2, false if not.
+     */
+    @Override
+    public boolean isMVWorld(World world) {
+        return world != null && this.isMVWorld(world.getName());
     }
 
     /**

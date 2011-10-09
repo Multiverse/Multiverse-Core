@@ -61,7 +61,7 @@ public class MVWorld implements MultiverseWorld {
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private boolean allowWeather;
     private Location spawnLocation;
-    private boolean isHidden;
+    private boolean isHidden = false;
 
     public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -87,7 +87,7 @@ public class MVWorld implements MultiverseWorld {
 
         // Set local values that CAN be changed by the user
         this.setAlias(config.getString("worlds." + this.name + ".alias.name", ""));
-        this.setAliasColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
+        this.setColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
         this.setFakePVPMode(config.getBoolean("worlds." + this.name + ".fakepvp", false));
         this.setPVPMode(config.getBoolean("worlds." + this.name + ".pvp", true));
         this.setScaling(config.getDouble("worlds." + this.name + ".scale", this.getDefaultScale(this.environment)));
@@ -95,8 +95,8 @@ public class MVWorld implements MultiverseWorld {
         this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
         this.setDifficulty(config.getString("worlds." + this.name + ".difficulty", "1"));
 
-        this.setAnimals(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
-        this.setMonsters(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
+        this.setAllowAnimalSpawn(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
+        this.setAllowMonsterSpawn(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
         this.setPrice(config.getDouble("worlds." + this.name + ".entryfee.amount", 0.0));
         this.setCurrency(config.getInt("worlds." + this.name + ".entryfee.currency", -1));
         this.setHunger(config.getBoolean("worlds." + this.name + ".hunger", true));
@@ -191,7 +191,7 @@ public class MVWorld implements MultiverseWorld {
     }
 
     public String getColoredWorldString() {
-        return this.getAliasColor() + this.getAlias() + ChatColor.WHITE;
+        return this.getColor() + this.getAlias() + ChatColor.WHITE;
     }
 
     private void getMobExceptions() {
@@ -299,9 +299,9 @@ public class MVWorld implements MultiverseWorld {
         if (name.equalsIgnoreCase("pvp")) {
             this.setPVPMode(value);
         } else if (name.equalsIgnoreCase("animals")) {
-            this.setAnimals(value);
+            this.setAllowAnimalSpawn(value);
         } else if (name.equalsIgnoreCase("monsters")) {
-            this.setMonsters(value);
+            this.setAllowMonsterSpawn(value);
         } else if (name.equalsIgnoreCase("memory") || name.equalsIgnoreCase("spawnmemory")) {
             this.setKeepSpawnInMemory(value);
         } else if ((name.equalsIgnoreCase("hunger")) || (name.equalsIgnoreCase("food"))) {
@@ -338,7 +338,7 @@ public class MVWorld implements MultiverseWorld {
             return true;
         }
         if (name.equalsIgnoreCase("aliascolor") || name.equalsIgnoreCase("color")) {
-            this.setAliasColor(value);
+            this.setColor(value);
             return true;
         }
         if (name.equalsIgnoreCase("currency") || name.equalsIgnoreCase("curr")) {
@@ -358,7 +358,8 @@ public class MVWorld implements MultiverseWorld {
         }
         if (name.equalsIgnoreCase("scale") || name.equalsIgnoreCase("scaling")) {
             try {
-                return this.setScaling(Double.parseDouble(value));
+                this.setScaling(Double.parseDouble(value));
+                return true;
             } catch (Exception e) {
                 return false;
             }
@@ -379,6 +380,7 @@ public class MVWorld implements MultiverseWorld {
         }
     }
 
+    @Override
     public Environment getEnvironment() {
         return this.environment;
     }
@@ -420,11 +422,12 @@ public class MVWorld implements MultiverseWorld {
     }
 
     @Override
-    public boolean allowAnimalSpawning() {
+    public boolean canAnimalsSpawn() {
         return this.allowAnimals;
     }
 
-    private void setAnimals(Boolean animals) {
+    @Override
+    public void setAllowAnimalSpawn(boolean animals) {
         this.allowAnimals = animals;
         // If animals are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
@@ -433,15 +436,18 @@ public class MVWorld implements MultiverseWorld {
         this.syncMobs();
     }
 
+    @Override
     public List<String> getAnimalList() {
         return this.masterList.get("animals");
     }
 
-    public boolean allowMonsterSpawning() {
+    @Override
+    public boolean canMonstersSpawn() {
         return this.allowMonsters;
     }
 
-    private void setMonsters(Boolean monsters) {
+    @Override
+    public void setAllowMonsterSpawn(boolean monsters) {
         this.allowMonsters = monsters;
         // If monsters are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
@@ -450,11 +456,13 @@ public class MVWorld implements MultiverseWorld {
         this.syncMobs();
     }
 
+    @Override
     public List<String> getMonsterList() {
         return this.masterList.get("monsters");
     }
 
-    public Boolean getPvp() {
+    @Override
+    public boolean isPVPEnabled() {
         return this.pvp;
     }
 
@@ -506,11 +514,13 @@ public class MVWorld implements MultiverseWorld {
         return this.masterList.get("worldblacklist");
     }
 
-    public Double getScaling() {
+    @Override
+    public double getScaling() {
         return this.scaling;
     }
 
-    public boolean setScaling(Double scaling) {
+    @Override
+    public void setScaling(double scaling) {
         if (scaling <= 0) {
             // Disallow negative or 0 scalings.
             scaling = 1.0;
@@ -518,25 +528,26 @@ public class MVWorld implements MultiverseWorld {
         this.scaling = scaling;
         this.config.setProperty("worlds." + this.name + ".scale", scaling);
         saveConfig();
-        return true;
     }
 
-    public void setAliasColor(String aliasColor) {
+    @Override
+    public boolean setColor(String aliasColor) {
         EnglishChatColor color = EnglishChatColor.fromString(aliasColor);
         if (color == null) {
-            color = EnglishChatColor.WHITE;
+            return false;
         }
         this.aliasColor = color.getColor();
         this.config.setProperty("worlds." + this.name + ".alias.color", color.getText());
         saveConfig();
-        return;
+        return true;
     }
 
     public boolean isValidAliasColor(String aliasColor) {
         return (EnglishChatColor.fromString(aliasColor) != null);
     }
 
-    public ChatColor getAliasColor() {
+    @Override
+    public ChatColor getColor() {
         return this.aliasColor;
     }
 
@@ -571,6 +582,7 @@ public class MVWorld implements MultiverseWorld {
         return false;
     }
 
+    @Override
     public Permission getAccessPermission() {
         return this.permission;
     }
@@ -703,6 +715,7 @@ public class MVWorld implements MultiverseWorld {
         this.spawnLocation = new Location(w, x, y, z, yaw, pitch);
     }
 
+    @Override
     public Location getSpawnLocation() {
         return this.spawnLocation;
     }

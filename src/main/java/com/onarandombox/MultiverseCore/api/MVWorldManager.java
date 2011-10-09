@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -63,14 +64,14 @@ public interface MVWorldManager {
      * @return True if success, false if failure.
      */
     public boolean loadWorld(String name);
-    
+
     /**
      * Removes all players from the specified world.
      *
      * @param name World to remove players from.
      */
     public void removePlayersFromWorld(String name);
-    
+
     /**
      * Test if a given chunk generator is valid.
      *
@@ -101,6 +102,15 @@ public interface MVWorldManager {
     public MVWorld getMVWorld(String name);
 
     /**
+     * Returns a {@link MVWorld} if it exists, and null if it does not.
+     *
+     * @param world The Bukkit world to check.
+     *
+     * @return A {@link MVWorld} or null.
+     */
+    public MVWorld getMVWorld(World world);
+
+    /**
      * Checks to see if the given name is a valid {@link MVWorld}
      *
      * @param name The name or alias of the world to check.
@@ -108,6 +118,15 @@ public interface MVWorldManager {
      * @return True if the world exists, false if not.
      */
     public boolean isMVWorld(String name);
+
+    /**
+     * Checks to see if the given world is a valid {@link MVWorld}
+     *
+     * @param world The Bukkit world to check.
+     *
+     * @return True if the world has been loaded into MV2, false if not.
+     */
+    public boolean isMVWorld(World world);
 
     /**
      * Load the Worlds & Settings from the configuration file.

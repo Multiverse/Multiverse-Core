@@ -104,7 +104,7 @@ public class InfoCommand extends MultiverseCommand {
         //message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
         message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
-        message.add(new FancyMessage("World Scale: ", world.getScaling().toString(), colors));
+        message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
         if (world.getPrice() > 0) {
             message.add(new FancyMessage("Price to enter this world: ", this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));
         } else {
@@ -130,43 +130,43 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Players will get hungry: ", world.getHunger() + "", colors));
         message.add(new FancyMessage("Keep spawn in memory: ", world.isKeepingSpawnInMemory() + "", colors));
         message.add(new FancyHeader("PVP Settings", colors));
-        message.add(new FancyMessage("Multiverse Setting: ", world.getPvp().toString(), colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.isPVPEnabled() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getPVP() + "", colors));
         message.add(new FancyMessage("Fake PVP Enabled: ", world.getFakePVP() + "", colors));
         worldInfo.add(message);
         // Page 3
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("Monster Settings", colors));
-        message.add(new FancyMessage("Multiverse Setting: ", world.allowMonsterSpawning() + "", colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.canMonstersSpawn() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowMonsters() + "", colors));
         if (MultiverseCore.MobsDisabledInDefaultWorld) {
             message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Monsters WILL NOT SPAWN IN THIS WORLD.", colors));
             message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Check your server log for more details.", colors));
         }
         if (world.getMonsterList().size() > 0) {
-            if (world.allowMonsterSpawning()) {
+            if (world.canMonstersSpawn()) {
                 message.add(new FancyMessage("Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
             } else {
                 message.add(new FancyMessage("Monsters that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getMonsterList()), colors));
             }
         } else {
-            message.add(new FancyMessage("Monsters that CAN spawn: ", world.allowMonsterSpawning() ? "ALL" : "NONE", colors));
+            message.add(new FancyMessage("Monsters that CAN spawn: ", world.canMonstersSpawn() ? "ALL" : "NONE", colors));
         }
         worldInfo.add(message);
 
         // Page 4
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("Animal Settings", colors));
-        message.add(new FancyMessage("Multiverse Setting: ", world.allowAnimalSpawning() + "", colors));
+        message.add(new FancyMessage("Multiverse Setting: ", world.canAnimalsSpawn() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowAnimals() + "", colors));
         if (world.getMonsterList().size() > 0) {
-            if (world.allowMonsterSpawning()) {
+            if (world.canMonstersSpawn()) {
                 message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getAnimalList()), colors));
             } else {
                 message.add(new FancyMessage("Animals that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getAnimalList()), colors));
             }
         } else {
-            message.add(new FancyMessage("Animals that CAN spawn: ", world.allowAnimalSpawning() ? "ALL" : "NONE", colors));
+            message.add(new FancyMessage("Animals that CAN spawn: ", world.canAnimalsSpawn() ? "ALL" : "NONE", colors));
         }
         worldInfo.add(message);
 
