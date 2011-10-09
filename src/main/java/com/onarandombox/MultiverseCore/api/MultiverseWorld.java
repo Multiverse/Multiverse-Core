@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import org.bukkit.Difficulty;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 /**
@@ -150,12 +152,87 @@ public interface MultiverseWorld {
      *
      * @return True if the world will be hidden, false if not.
      */
-    public boolean isWorldHidden();
+    public boolean isHidden();
 
     /**
      * Sets whether or not this world will display in chat, mvw and mvl regardless if a user has the
      * access permissions to go to this world.
+     *
      * @param hidden Set
      */
     public void setHidden(boolean hidden);
+
+    /**
+     * Sets whether or not there will be weather events in a given world.
+     * If set to false, Multiverse will disable the weather in the world immediately.
+     *
+     * @param enableWeather True if weather events should occur in a world, false if not.
+     */
+    public void setEnableWeather(boolean enableWeather);
+
+    /**
+     * Gets whether weather is enabled in this world.
+     *
+     * @return True if weather events will occur, false if not.
+     */
+    public boolean isWeatherEnabled();
+
+    /**
+     * If true, tells Craftbukkit to keep a worlds spawn chunks loaded in memory (default: true)
+     * If not, CraftBukkit will attempt to free memory when players have not used that world.
+     * This will not happen immediately.
+     *
+     * @param keepSpawnInMemory If true, CraftBukkit will keep the spawn chunks loaded in memory.
+     */
+    public void setKeepSpawnInMemory(boolean keepSpawnInMemory);
+
+    /**
+     * Gets whether or not CraftBukkit is keeping the chunks for this world in memory.
+     *
+     * @return True if CraftBukkit is keeping spawn chunks in memory.
+     */
+    public boolean isKeepingSpawnInMemory();
+
+    /**
+     * Sets the difficulty of this world and returns true if success.
+     * Valid string values are either an integer of difficulty(0-3) or
+     * the name that resides in the Bukkit enum, ex. PEACEFUL
+     *
+     * @param difficulty The difficulty to set the world to as a string.
+     *
+     * @return True if success, false if the provided string
+     *         could not be translated to a difficulty.
+     */
+    public boolean setDifficulty(String difficulty);
+
+    /**
+     * Gets the difficulty of this world.
+     *
+     * @return The difficulty of this world.
+     */
+    public Difficulty getDifficulty();
+
+    /**
+     * Sets the spawn location for a world.
+     *
+     * @param spawnLocation The spawn location for a world.
+     */
+    public void setSpawnLocation(Location spawnLocation);
+
+    /**
+     * Gets the spawn location of this world.
+     *
+     * @return The spawn location of this world.
+     */
+    public Location getSpawnLocation();
+
+    /**
+     * Sets whether or not the hunger level of players will go down in a world.
+     *
+     * @param hungerEnabled True if hunger will go down, false to keep it at
+     *                      the level they entered a world with.
+     */
+    public void setHunger(boolean hungerEnabled);
+
+    public void
 }

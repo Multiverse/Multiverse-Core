@@ -41,7 +41,7 @@ public class SetSpawnCommand extends MultiverseCommand {
             World w = p.getWorld();
             MVWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
             if (foundWorld != null) {
-                foundWorld.setSpawn(p.getLocation());
+                foundWorld.setSpawnLocation(p.getLocation());
                 sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));
             } else {
                 w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());

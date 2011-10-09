@@ -26,7 +26,7 @@ public class MVWeatherListener extends WeatherListener {
         MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
-            event.setCancelled((event.toWeatherState() && !world.getWeatherEnabled()));
+            event.setCancelled((event.toWeatherState() && !world.isWeatherEnabled()));
         }
     }
 
@@ -36,7 +36,7 @@ public class MVWeatherListener extends WeatherListener {
         MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
-            event.setCancelled((event.toThunderState() && !world.getWeatherEnabled()));
+            event.setCancelled((event.toThunderState() && !world.isWeatherEnabled()));
         }
     }
 }

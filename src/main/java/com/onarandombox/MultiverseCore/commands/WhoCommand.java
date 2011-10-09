@@ -48,11 +48,14 @@ public class WhoCommand extends MultiverseCommand {
         List<MVWorld> worlds = new ArrayList<MVWorld>();
 
         if (args.size() > 0) {
+            MVWorld world = this.worldManager.getMVWorld(args.get(0));
             if (args.get(0).equalsIgnoreCase("--all") || args.get(0).equalsIgnoreCase("-a")) {
                 showAll = true;
                 worlds = new ArrayList<MVWorld>(this.worldManager.getMVWorlds());
-            } else if (this.worldManager.isMVWorld(args.get(0))) {
-                worlds.add(this.worldManager.getMVWorld(args.get(0)));
+            } else if (world != null) {
+                if (!world.isHidden()) {
+                    worlds.add(world);
+                }
             } else {
                 sender.sendMessage(ChatColor.RED + "World does not exist");
                 return;

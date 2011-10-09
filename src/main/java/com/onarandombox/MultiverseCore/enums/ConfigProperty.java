@@ -9,11 +9,7 @@ package com.onarandombox.MultiverseCore.enums;
 
 /**
  * Multiverse 2
- *
- * @author fernferret
- */ // Color == Aliascolor
-public enum SetProperties {
-    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn,
-    currency, curr, price, scale, spawnmemory, memory, weather, storm,
-    gamemode, mode, hunger, difficulty, diff, hidden
+ */
+public enum ConfigProperty {
+    messagecooldown, teleportcooldown, worldnameprefix, useworldaccess, disableautoheal, fakepvp, bedrespawn
 }

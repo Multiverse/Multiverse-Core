@@ -9,21 +9,17 @@ messagecooldown: 5000
 # In Milliseconds - Default is '5000' which is 5 Seconds.
 teleportcooldown: 5000
 
-# If this is set to true, we will prefix the chat with 
+# If this is set to true, we will prefix the chat with
 # a colorful world alias if it's present. If not, we simply
 # show the world's name in white. If this is false Multiverse
 # won't touch your chat
 worldnameprefix: true
 
-# If Multiverse does not find permissions should it automatically fall back to
-# people defined in ops.txt? Remember, if you use ops based permissions
-# the awesome Multiverse devs get to decide which commands require op!
-# (Which is why we highly recommend a permissions plugin! You shouldn't trust us this much...)
-opfallback: true
-
+# If value is set to false, Multiverse will NOT enforce permissions
+useworldaccess: false
 
 # If you have a world(s) that has monsters = false, and you want to disable the built
-# in autohealing, set this to true. This will have NO EFFECT if monsters = true for a given world. 
+# in autohealing, set this to true. This will have NO EFFECT if monsters = true for a given world.
 disableautoheal: false
 
 # This will use the old style of PVP prevention so you can have zones of PVP
@@ -36,4 +32,4 @@ bedrespawn: true
 
 # This just signifies the version number so we can see what version of config you have.
 # NEVER TOUCH THIS VALUE
-version: 2.1
+version: 2.2
