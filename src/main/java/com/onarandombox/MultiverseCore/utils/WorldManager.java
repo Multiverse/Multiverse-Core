@@ -47,16 +47,17 @@ public class WorldManager implements MVWorldManager {
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
+        WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
             try {
                 seed = Long.parseLong(seedString);
             } catch (NumberFormatException numberformatexception) {
                 seed = (long) seedString.hashCode();
             }
+            c.seed(seed);
         }
 
-        WorldCreator c = new WorldCreator(name);
-        c.seed(seed);
+
         // TODO: Use the fancy kind with the commandSender
         c.generator(generator);
         c.environment(env);

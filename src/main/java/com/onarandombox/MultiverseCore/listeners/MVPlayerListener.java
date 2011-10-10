@@ -8,10 +8,10 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -176,7 +176,7 @@ public class MVPlayerListener extends PlayerListener {
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
             // If the player does not have to pay, return now.
-            if (toWorld.isExempt(player)) {
+            if (this.plugin.getMVPerms().hasPermission(player, toWorld.getExemptPermission().getName(), true)) {
                 return false;
             }
             GenericBank bank = plugin.getBank();

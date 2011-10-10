@@ -568,6 +568,9 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public World getRespawnToWorld() {
+        if (this.respawnWorld == null) {
+            return null;
+        }
         return (this.plugin.getServer().getWorld(this.respawnWorld));
     }
 
