@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** A factory class that will create destinations from specific strings. */
 public class DestinationFactory {
     private MultiverseCore plugin;
     private Map<String, Class<? extends MVDestination>> destList;
@@ -35,6 +36,14 @@ public class DestinationFactory {
         }
     }
 
+    /**
+     * Gets a new destination from a string.
+     * Returns a new InvalidDestination if the string could not be parsed.
+     *
+     * @param destination The destination in string format.
+     *
+     * @return A non-null MVDestination
+     */
     public MVDestination getDestination(String destination) {
         String idenChar = "";
         if (destination.split(":").length > 1) {

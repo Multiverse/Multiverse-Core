@@ -22,12 +22,15 @@ public class ConfigCommand extends MultiverseCommand {
     public ConfigCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Configuration");
-        this.setCommandUsage("/mv config");
+        this.setCommandUsage("/mv config " + ChatColor.GREEN + "{PROPERTY} {VALUE}");
         this.setArgRange(2, 2);
         this.addKey("mv config");
         this.addKey("mvconfig");
         this.addKey("mv conf");
         this.addKey("mvconf");
+        this.addCommandExample("/mv config " + ChatColor.GREEN + "debug" + ChatColor.AQUA + " 3");
+        this.addCommandExample("/mv config " + ChatColor.GREEN + "enforceaccess" + ChatColor.AQUA + " false");
+        this.addCommandExample("/mv config " + ChatColor.GREEN + "bedrespawn" + ChatColor.AQUA + " true");
         this.setPermission("multiverse.core.config", "Allows you to set Global MV Variables.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

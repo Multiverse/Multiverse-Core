@@ -324,6 +324,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
+        this.commandHandler.registerCommand(new CheckCommand(this));
     }
 
     /** Deprecated, please use WorldManager.loadWorlds(Boolean forceLoad) now. */

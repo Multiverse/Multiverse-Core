@@ -117,6 +117,8 @@ public class WorldDestination implements MVDestination {
 
     @Override
     public String getRequiredPermission() {
+        // TODO: Potenitally replace spaces wiht tabs for friendlier yaml.
+        // this.world.getName().replace(" ","_");
         return "multiverse.access." + this.world.getName();
     }
 

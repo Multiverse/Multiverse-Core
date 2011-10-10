@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import sun.security.util.Debug;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -38,12 +39,12 @@ public class MVPermissions implements PermissionsInterface {
     /**
      * Check if a Player can teleport to the Destination world from there current world.
      *
-     * @param p
+     * @param p The player to check.
      * @param w
      *
      * @return
      */
-    public Boolean canTravelFromWorld(Player p, MultiverseWorld w) {
+    public boolean canTravelFromWorld(Player p, MultiverseWorld w) {
         List<String> blackList = w.getWorldBlacklist();
 
         boolean returnValue = true;
@@ -77,11 +78,11 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @return
      */
-    public Boolean canEnterWorld(Player p, MultiverseWorld w) {
+    public boolean canEnterWorld(Player p, MultiverseWorld w) {
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
 
-    public Boolean canEnterLocation(Player p, Location l) {
+    public boolean canEnterLocation(Player p, Location l) {
         if (l == null) {
             return false;
         }
@@ -92,7 +93,17 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, "multiverse.access." + worldName, false);
     }
 
-    public Boolean canEnterDestination(CommandSender sender, MVDestination d) {
+    /**
+     * Check to see if a sender can enter a destination.
+     * The reason this is not a player, is it can be used to simply check permissions
+     * The console should, for exmaple, always see all worlds
+     *
+     * @param sender The CommandSender to check.
+     * @param d      The destination they are requesting.
+     *
+     * @return True if that sender can go to that destination
+     */
+    public boolean canEnterDestination(CommandSender sender, MVDestination d) {
         if (!(sender instanceof Player)) {
             return true;
         }
