@@ -271,7 +271,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
         GlobalDebug = this.configMV.getInt("debug", 0);
-        GlobalDebug = this.configMV.getInt("debug", 0);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.configMV.getInt("messagecooldown", 5000));
     }
@@ -308,6 +307,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new ModifySetCommand(this));
         this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
         this.commandHandler.registerCommand(new ModifyClearCommand(this));
+        this.commandHandler.registerCommand(new ConfigCommand(this));
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
