@@ -21,6 +21,7 @@ import java.util.Map;
  * @author fernferret
  */
 public class MVMessaging {
+    @SuppressWarnings("unused") //maybe used in the future?
     private MultiverseCore plugin;
     private Map<String, Date> sentList;
     private int cooldown = 0;

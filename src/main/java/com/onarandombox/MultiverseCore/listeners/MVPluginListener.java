@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.AllPay;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVPlugin;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
@@ -26,6 +25,7 @@ public class MVPluginListener extends ServerListener {
     }
 
     /** Keep an eye out for Plugins which we can utilize. */
+    @SuppressWarnings("deprecation") //we need to use the deprecated MVPlugin here, it's not our fault and we know that it's deprecated
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
         if(event.getPlugin() instanceof com.onarandombox.MultiverseCore.MVPlugin) {
