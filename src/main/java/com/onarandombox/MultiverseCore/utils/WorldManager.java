@@ -268,6 +268,7 @@ public class WorldManager implements MVWorldManager {
      *
      * @return A {@link MVWorld} or null.
      */
+    @Override
     public MultiverseWorld getMVWorld(String name) {
         if (this.worlds.containsKey(name)) {
             return this.worlds.get(name);
