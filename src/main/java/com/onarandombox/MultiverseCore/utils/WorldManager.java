@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
@@ -33,13 +34,13 @@ import java.util.logging.Level;
 public class WorldManager implements MVWorldManager {
     private MultiverseCore plugin;
     private PurgeWorlds worldPurger;
-    private HashMap<String, MVWorld> worlds;
+    private HashMap<String, MultiverseWorld> worlds;
     private Configuration configWorlds = null;
 
     public WorldManager(MultiverseCore core) {
 
         this.plugin = core;
-        this.worlds = new HashMap<String, MVWorld>();
+        this.worlds = new HashMap<String, MultiverseWorld>();
         this.worldPurger = new PurgeWorlds(this.plugin);
     }
 
@@ -84,7 +85,7 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        MVWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, seed, generator);
+        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, seed, generator);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
         return true;
@@ -256,7 +257,7 @@ public class WorldManager implements MVWorldManager {
      *
      * @return A list of {@link MVWorld}.
      */
-    public Collection<MVWorld> getMVWorlds() {
+    public Collection<MultiverseWorld> getMVWorlds() {
         return this.worlds.values();
     }
 
@@ -267,7 +268,7 @@ public class WorldManager implements MVWorldManager {
      *
      * @return A {@link MVWorld} or null.
      */
-    public MVWorld getMVWorld(String name) {
+    public MultiverseWorld getMVWorld(String name) {
         if (this.worlds.containsKey(name)) {
             return this.worlds.get(name);
         }
@@ -275,7 +276,7 @@ public class WorldManager implements MVWorldManager {
     }
 
     @Override
-    public MVWorld getMVWorld(World world) {
+    public MultiverseWorld getMVWorld(World world) {
         if (world != null) {
             return this.getMVWorld(world.getName());
         }
@@ -289,8 +290,8 @@ public class WorldManager implements MVWorldManager {
      *
      * @return A {@link MVWorld} or null.
      */
-    private MVWorld getMVWorldByAlias(String alias) {
-        for (MVWorld w : this.worlds.values()) {
+    private MultiverseWorld getMVWorldByAlias(String alias) {
+        for (MultiverseWorld w : this.worlds.values()) {
             if (w.getAlias().equalsIgnoreCase(alias)) {
                 return w;
             }
@@ -330,7 +331,7 @@ public class WorldManager implements MVWorldManager {
      * @return True if the world exists, false if not.
      */
     private boolean isMVWorldAlias(String alias) {
-        for (MVWorld w : this.worlds.values()) {
+        for (MultiverseWorld w : this.worlds.values()) {
             if (w.getAlias().equalsIgnoreCase(alias)) {
                 return true;
             }
@@ -354,7 +355,7 @@ public class WorldManager implements MVWorldManager {
             // Remove all world permissions.
             Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
             Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
-            for (MVWorld w : this.worlds.values()) {
+            for (MultiverseWorld w : this.worlds.values()) {
                 // Remove this world from the master list
                 if (allAccess != null) {
                     allAccess.getChildren().remove(w.getAccessPermission().getName());

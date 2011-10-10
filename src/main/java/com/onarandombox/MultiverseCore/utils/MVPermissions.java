@@ -7,9 +7,9 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -43,7 +43,7 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @return
      */
-    public Boolean canTravelFromWorld(Player p, MVWorld w) {
+    public Boolean canTravelFromWorld(Player p, MultiverseWorld w) {
         List<String> blackList = w.getWorldBlacklist();
 
         boolean returnValue = true;
@@ -77,7 +77,7 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @return
      */
-    public Boolean canEnterWorld(Player p, MVWorld w) {
+    public Boolean canEnterWorld(Player p, MultiverseWorld w) {
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
 

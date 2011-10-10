@@ -7,9 +7,9 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.FancyText;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -92,7 +92,7 @@ public class InfoCommand extends MultiverseCommand {
         }
     }
 
-    private List<List<FancyText>> buildEntireCommand(MVWorld world, Player p) {
+    private List<List<FancyText>> buildEntireCommand(MultiverseWorld world, Player p) {
         List<FancyText> message = new ArrayList<FancyText>();
         List<List<FancyText>> worldInfo = new ArrayList<List<FancyText>>();
         // Page 1
@@ -112,7 +112,7 @@ public class InfoCommand extends MultiverseCommand {
         }
 
         if (world.getRespawnToWorld() != null) {
-            MVWorld respawn = this.worldManager.getMVWorld(world.getRespawnToWorld());
+            MultiverseWorld respawn = this.worldManager.getMVWorld(world.getRespawnToWorld());
             if (respawn != null) {
                 message.add(new FancyMessage("Players will respawn in: ", respawn.getColoredWorldString(), colors));
             } else {

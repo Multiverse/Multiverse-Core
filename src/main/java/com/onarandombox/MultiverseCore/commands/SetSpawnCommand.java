@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -39,7 +39,7 @@ public class SetSpawnCommand extends MultiverseCommand {
             Player p = (Player) sender;
             Location l = p.getLocation();
             World w = p.getWorld();
-            MVWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
+            MultiverseWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
             if (foundWorld != null) {
                 foundWorld.setSpawnLocation(p.getLocation());
                 sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));

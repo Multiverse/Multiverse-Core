@@ -164,6 +164,13 @@ public interface MultiverseWorld {
     public void setPVPMode(boolean pvpMode);
 
     /**
+     * Turn pvp on or off. This setting is used to set the world's PVP mode, and thus relies on fakePVP
+     *
+     * @return True if this world has fakepvp on
+     */
+    public boolean getFakePVP();
+
+    /**
      * Gets whether or not PVP is enabled in this world in some form (fake or not).
      *
      * @return True if players can take damage from other players.
@@ -399,4 +406,13 @@ public interface MultiverseWorld {
      * @param allowMonsterSpawn True to allow spawning of monsters, false to prevent.
      */
     public void setAllowMonsterSpawn(boolean allowMonsterSpawn);
+
+    /**
+     * TODO: Write these docs.
+     *
+     * @param property
+     *
+     * @return
+     */
+    public boolean clearList(String property);
 }

@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.Action;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
@@ -49,7 +49,7 @@ public class ModifyClearCommand extends MultiverseCommand {
             return;
         }
 
-        MVWorld world;
+        MultiverseWorld world;
         String property = args.get(0);
 
         if (args.size() == 1) {

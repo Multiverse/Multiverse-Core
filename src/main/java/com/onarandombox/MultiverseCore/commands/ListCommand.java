@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
@@ -38,7 +38,7 @@ public class ListCommand extends MultiverseCommand {
         }
 
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
-        for (MVWorld world : this.plugin.getMVWorldManager().getMVWorlds()) {
+        for (MultiverseWorld world : this.plugin.getMVWorldManager().getMVWorlds()) {
 
             if (world.isHidden()) {
                 continue;

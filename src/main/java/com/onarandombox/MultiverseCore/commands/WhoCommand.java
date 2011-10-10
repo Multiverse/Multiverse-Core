@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -45,13 +45,13 @@ public class WhoCommand extends MultiverseCommand {
             showAll = false;
         }
 
-        List<MVWorld> worlds = new ArrayList<MVWorld>();
+        List<MultiverseWorld> worlds = new ArrayList<MultiverseWorld>();
 
         if (args.size() > 0) {
-            MVWorld world = this.worldManager.getMVWorld(args.get(0));
+            MultiverseWorld world = this.worldManager.getMVWorld(args.get(0));
             if (args.get(0).equalsIgnoreCase("--all") || args.get(0).equalsIgnoreCase("-a")) {
                 showAll = true;
-                worlds = new ArrayList<MVWorld>(this.worldManager.getMVWorlds());
+                worlds = new ArrayList<MultiverseWorld>(this.worldManager.getMVWorlds());
             } else if (world != null) {
                 if (!world.isHidden()) {
                     worlds.add(world);
@@ -61,7 +61,7 @@ public class WhoCommand extends MultiverseCommand {
                 return;
             }
         } else {
-            worlds = new ArrayList<MVWorld>(this.worldManager.getMVWorlds());
+            worlds = new ArrayList<MultiverseWorld>(this.worldManager.getMVWorlds());
         }
 
         if (worlds.size() == 0) {
@@ -72,7 +72,7 @@ public class WhoCommand extends MultiverseCommand {
             sender.sendMessage(ChatColor.AQUA + "--- There are players in ---");
         }
 
-        for (MVWorld world : worlds) {
+        for (MultiverseWorld world : worlds) {
             if (!(this.worldManager.isMVWorld(world.getName()))) {
                 continue;
             }

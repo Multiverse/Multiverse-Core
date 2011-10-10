@@ -502,22 +502,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
     }
 
-    // TODO: Find out where to put these next 3 methods! I just stuck them here for now --FF
-    @Deprecated
-    public Collection<MVWorld> getMVWorlds() {
-        return this.worldManager.getMVWorlds();
-    }
-
-    @Deprecated
-    public MVWorld getMVWorld(String name) {
-        return this.worldManager.getMVWorld(name);
-    }
-
-    @Deprecated
-    public boolean isMVWorld(String name) {
-        return this.worldManager.isMVWorld(name);
-    }
-
     public void showNotMVWorldMessage(CommandSender sender, String worldName) {
         sender.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
         sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");

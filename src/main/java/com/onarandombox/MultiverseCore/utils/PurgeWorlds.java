@@ -7,17 +7,15 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 
-
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class PurgeWorlds {
 
@@ -27,14 +25,12 @@ public class PurgeWorlds {
         this.plugin = plugin;
     }
 
-    /**
-     * Synchronizes the given world with it's settings
-     */
-    public void purgeWorlds(CommandSender sender, List<MVWorld> worlds) {
+    /** Synchronizes the given world with it's settings */
+    public void purgeWorlds(CommandSender sender, List<MultiverseWorld> worlds) {
         if (worlds == null || worlds.isEmpty()) {
             return;
         }
-        for (MVWorld world : worlds) {
+        for (MultiverseWorld world : worlds) {
             this.purgeWorld(sender, world);
         }
     }
@@ -45,7 +41,7 @@ public class PurgeWorlds {
      * @param sender
      * @param world
      */
-    public void purgeWorld(CommandSender sender, MVWorld world) {
+    public void purgeWorld(CommandSender sender, MultiverseWorld world) {
         if (world == null) {
             return;
         }
@@ -54,7 +50,7 @@ public class PurgeWorlds {
         purgeWorld(sender, world, allMobs, !world.canAnimalsSpawn(), !world.canMonstersSpawn());
     }
 
-    public void purgeWorld(CommandSender sender, MVWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
+    public void purgeWorld(CommandSender sender, MultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
         if (mvworld == null) {
             return;
         }
@@ -81,7 +77,7 @@ public class PurgeWorlds {
         }
     }
 
-    private boolean killCreature(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
+    private boolean killCreature(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
         if (e instanceof Squid || e instanceof Animals) {
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("ANIMALS")) {
@@ -106,11 +102,12 @@ public class PurgeWorlds {
      * @param e
      * @param creaturesToKill
      * @param negate
+     *
      * @return
      */
-    private boolean killMonster(MVWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
+    private boolean killMonster(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
-        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast){
+        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast) {
             this.plugin.log(Level.FINER, "Looking at a monster: " + e);
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
                 if (!negate) {

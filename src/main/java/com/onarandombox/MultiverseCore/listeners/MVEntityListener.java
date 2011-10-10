@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -39,7 +39,7 @@ public class MVEntityListener extends EntityListener {
         }
         if (event.getEntity() instanceof Player) {
             Player p = (Player) event.getEntity();
-            MVWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
+            MultiverseWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
             if (w != null && !w.getHunger()) {
                 // If the world has hunger set to false, do not let the level go down
                 if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
@@ -79,7 +79,7 @@ public class MVEntityListener extends EntityListener {
                 // if the world is not handled, we don't care
                 return;
             }
-            MVWorld world = this.worldManager.getMVWorld(w.getName());
+            MultiverseWorld world = this.worldManager.getMVWorld(w.getName());
 
             if (attacker instanceof Player) {
                 if (!world.isPVPEnabled() && this.plugin.getConfig().getBoolean("fakepvp", false)) {
@@ -120,7 +120,7 @@ public class MVEntityListener extends EntityListener {
 
         CreatureType creature = event.getCreatureType();
 
-        MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
+        MultiverseWorld mvworld = this.worldManager.getMVWorld(world.getName());
 
         /**
          * Handle people with non-standard animals: ie a patched craftbukkit.

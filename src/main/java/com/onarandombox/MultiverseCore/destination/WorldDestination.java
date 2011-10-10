@@ -7,19 +7,18 @@
 
 package com.onarandombox.MultiverseCore.destination;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-
 public class WorldDestination implements MVDestination {
     private boolean isValid;
-    private MVWorld world;
+    private MultiverseWorld world;
     float yaw = -1;
     String direction = "";
 
@@ -59,8 +58,8 @@ public class WorldDestination implements MVDestination {
         return spawnLoc;
     }
 
-    private Location getAcurateSpawnLocation(Entity e, MVWorld world) {
-        if(world != null) {
+    private Location getAcurateSpawnLocation(Entity e, MultiverseWorld world) {
+        if (world != null) {
             return world.getSpawnLocation();
         } else {
             return e.getWorld().getSpawnLocation().add(.5, 0, .5);
@@ -110,18 +109,19 @@ public class WorldDestination implements MVDestination {
 
     @Override
     public String toString() {
-        if(direction.length() > 0 && yaw >= 0) {
-            return this.world.getCBWorld().getName() + ":"+this.direction;
+        if (direction.length() > 0 && yaw >= 0) {
+            return this.world.getCBWorld().getName() + ":" + this.direction;
         }
         return this.world.getCBWorld().getName();
     }
 
     @Override
     public String getRequiredPermission() {
-        return "multiverse.access."+this.world.getName();
+        return "multiverse.access." + this.world.getName();
     }
+
     public Vector getVelocity() {
-        return new Vector(0,0,0);
+        return new Vector(0, 0, 0);
     }
 
     @Override

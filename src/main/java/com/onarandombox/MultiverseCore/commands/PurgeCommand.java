@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
@@ -61,7 +61,7 @@ public class PurgeCommand extends MultiverseCommand {
             return;
         }
 
-        List<MVWorld> worldsToRemoveEntitiesFrom = new ArrayList<MVWorld>();
+        List<MultiverseWorld> worldsToRemoveEntitiesFrom = new ArrayList<MultiverseWorld>();
         // Handle all case any user who names a world "all" should know better...
         if (worldName.equalsIgnoreCase("all")) {
             worldsToRemoveEntitiesFrom.addAll(this.worldManager.getMVWorlds());
@@ -76,7 +76,7 @@ public class PurgeCommand extends MultiverseCommand {
         } else {
             Collections.addAll(thingsToKill, deathName.toUpperCase().split(","));
         }
-        for (MVWorld w : worldsToRemoveEntitiesFrom) {
+        for (MultiverseWorld w : worldsToRemoveEntitiesFrom) {
             purger.purgeWorld(sender, w, thingsToKill, false, false);
         }
 

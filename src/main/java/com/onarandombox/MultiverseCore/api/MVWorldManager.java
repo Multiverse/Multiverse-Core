@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -86,32 +85,32 @@ public interface MVWorldManager {
     /**
      * Returns a list of all the worlds Multiverse knows about.
      *
-     * @return A list of {@link MVWorld}.
+     * @return A list of {@link MultiverseWorld}.
      */
-    public Collection<MVWorld> getMVWorlds();
+    public Collection<MultiverseWorld> getMVWorlds();
 
 
     /**
-     * Returns a {@link MVWorld} if it exists, and null if it does not.
+     * Returns a {@link MultiverseWorld} if it exists, and null if it does not.
      * This will search name AND alias.
      *
      * @param name The name or alias of the world to get.
      *
-     * @return A {@link MVWorld} or null.
+     * @return A {@link MultiverseWorld} or null.
      */
-    public MVWorld getMVWorld(String name);
+    public MultiverseWorld getMVWorld(String name);
 
     /**
-     * Returns a {@link MVWorld} if it exists, and null if it does not.
+     * Returns a {@link MultiverseWorld} if it exists, and null if it does not.
      *
      * @param world The Bukkit world to check.
      *
-     * @return A {@link MVWorld} or null.
+     * @return A {@link MultiverseWorld} or null.
      */
-    public MVWorld getMVWorld(World world);
+    public MultiverseWorld getMVWorld(World world);
 
     /**
-     * Checks to see if the given name is a valid {@link MVWorld}
+     * Checks to see if the given name is a valid {@link MultiverseWorld}
      *
      * @param name The name or alias of the world to check.
      *
@@ -120,7 +119,7 @@ public interface MVWorldManager {
     public boolean isMVWorld(String name);
 
     /**
-     * Checks to see if the given world is a valid {@link MVWorld}
+     * Checks to see if the given world is a valid {@link MultiverseWorld}
      *
      * @param world The Bukkit world to check.
      *

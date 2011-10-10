@@ -8,8 +8,8 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.GenericBank;
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
@@ -46,7 +46,7 @@ public class MVPlayerListener extends PlayerListener {
             if (!this.worldManager.isMVWorld(world)) {
                 return;
             }
-            MVWorld mvworld = this.worldManager.getMVWorld(world);
+            MultiverseWorld mvworld = this.worldManager.getMVWorld(world);
             prefix = mvworld.getColoredWorldString();
             String format = event.getFormat();
             event.setFormat("[" + prefix + "]" + format);
@@ -67,10 +67,10 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
 
-        // Get the MVWorld
-        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        // Get the MultiverseWorld
+        MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // Get the instance of the World the player should respawn at.
-        MVWorld respawnWorld = null;
+        MultiverseWorld respawnWorld = null;
         if (this.worldManager.isMVWorld(mvWorld.getRespawnToWorld())) {
             respawnWorld = this.worldManager.getMVWorld(mvWorld.getRespawnToWorld());
         }
@@ -89,7 +89,7 @@ public class MVPlayerListener extends PlayerListener {
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
-        MVWorld mvw = this.worldManager.getMVWorld(w.getName());
+        MultiverseWorld mvw = this.worldManager.getMVWorld(w.getName());
         if (mvw != null) {
             return mvw.getSpawnLocation();
         }
@@ -128,8 +128,8 @@ public class MVPlayerListener extends PlayerListener {
         if (event.isCancelled()) {
             return;
         }
-        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
-        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
+        MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
     }
 
@@ -139,8 +139,8 @@ public class MVPlayerListener extends PlayerListener {
         if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
         }
-        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
-        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
+        MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
     }
 
@@ -155,7 +155,7 @@ public class MVPlayerListener extends PlayerListener {
      *
      * @return True if they can't go to the world, False if they can.
      */
-    private boolean checkWorldPermissions(MVWorld fromWorld, MVWorld toWorld, Player player) {
+    private boolean checkWorldPermissions(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player player) {
 
         if (toWorld != null) {
             if (!this.plugin.getMVPerms().canEnterWorld(player, toWorld)) {
@@ -191,13 +191,13 @@ public class MVPlayerListener extends PlayerListener {
 
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameMode(Player player, World world) {
-        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameMode(player, mvWorld);
         }
     }
 
-    public void handleGameMode(Player player, MVWorld world) {
+    public void handleGameMode(Player player, MultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
@@ -207,9 +207,9 @@ public class MVPlayerListener extends PlayerListener {
     private class HandleGameMode implements Runnable {
 
         private Player player;
-        private MVWorld world;
+        private MultiverseWorld world;
 
-        private HandleGameMode(Player player, MVWorld world) {
+        private HandleGameMode(Player player, MultiverseWorld world) {
             this.player = player;
             this.world = world;
         }

@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
@@ -48,7 +48,7 @@ public class CoordCommand extends MultiverseCommand {
                 return;
             }
 
-            MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
+            MultiverseWorld mvworld = this.worldManager.getMVWorld(world.getName());
 
             p.sendMessage(ChatColor.AQUA + "--- Location Information ---");
             p.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
