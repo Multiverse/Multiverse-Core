@@ -51,8 +51,8 @@ public class MVWorld implements MultiverseWorld {
 
     private Map<String, List<String>> masterList;
 
-    private Double scaling; // How stretched/compressed distances are
-    private Double price; // How much does it cost to enter this world
+    private double scaling; // How stretched/compressed distances are
+    private double price; // How much does it cost to enter this world
     private int currency = -1; // What is the currency
     private boolean hunger = true;
     private Permission permission;

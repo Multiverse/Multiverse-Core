@@ -136,6 +136,15 @@ public interface MultiverseWorld {
     public ChatColor getColor();
 
     /**
+     * Tells you if someone entered a valid color.
+     *
+     * @param color A string that may translate to a color.
+     *
+     * @return True if it is a color, false if not.
+     */
+    public boolean isValidAliasColor(String color);
+
+    /**
      * Returns a very nicely colored string (using Alias and Color if they are set).
      *
      * @return A nicely colored string.
