@@ -313,7 +313,7 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
-     * Checks to see if the given world is a valid {@link com.onarandombox.MultiverseCore.MVWorld}
+     * Checks to see if the given world is a valid {@link MultiverseWorld}
      *
      * @param world The Bukkit world to check.
      *
