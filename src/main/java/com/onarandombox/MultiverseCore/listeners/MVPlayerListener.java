@@ -130,8 +130,19 @@ public class MVPlayerListener extends PlayerListener {
         }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+            // The player is Teleporting to the same world.
+            this.plugin.log(Level.FINER, "Player '" + event.getPlayer().getName() + "' is teleporting to the same world.");
+            return;
+        }
         if (MultiverseCore.EnforceAccess) {
             event.setCancelled(!playerCanGoFromTo(fromWorld, toWorld, event.getPlayer()));
+            if (event.isCancelled()) {
+                this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
+                        "' because they don't have: multiverse.access." + event.getTo().getWorld().getName());
+            }
+        } else {
+            this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' because enforceaccess is off.");
         }
     }
 
@@ -143,8 +154,19 @@ public class MVPlayerListener extends PlayerListener {
         }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+            // The player is Portaling to the same world.
+            this.plugin.log(Level.FINER, "Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
+            return;
+        }
         if (MultiverseCore.EnforceAccess) {
             event.setCancelled(!playerCanGoFromTo(fromWorld, toWorld, event.getPlayer()));
+            if (event.isCancelled()) {
+                this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
+                        "' because they don't have: multiverse.access." + event.getTo().getWorld().getName());
+            }
+        } else {
+            this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' because enforceaccess is off.");
         }
     }
 
