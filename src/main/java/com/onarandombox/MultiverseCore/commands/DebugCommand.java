@@ -25,6 +25,7 @@ public class DebugCommand extends MultiverseCommand {
         this.addKey("mv debug");
         this.addKey("mv d");
         this.addKey("mvdebug");
+        this.addCommandExample("/mv debug " + ChatColor.GOLD + "2");
         this.setPermission("multiverse.core.debug", "Spams the console a bunch.", PermissionDefault.OP);
     }
 

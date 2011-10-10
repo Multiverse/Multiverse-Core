@@ -155,31 +155,31 @@ commands:
     usage: |
             /<command> [world]
   mvenv:
-    description: Tells the user all possible world types.
+    description: Tells the user all possible environment types.
     usage: |
             /<command>
   mvv:
-    description: Prints out version invo.
+    description: Prints out version info.
     usage: |
             /<command>
   mvversion:
-    description: Prints out version invo.
+    description: Prints out version info.
     usage: |
             /<command>
   mvco:
-    description: Prints out version invo.
+    description: Displays the player's coordinates.
     usage: |
             /<command>
   mvh:
-    description: Prints out version invo.
+    description: Displays the Multiverse Help.
     usage: |
             /<command>
   mvsearch:
-    description: Prints out version invo.
+    description: Displays the Multiverse Help.
     usage: |
             /<command>
   mvhelp:
-    description: Prints out version invo.
+    description: Displays the Multiverse Help.
     usage: |
             /<command>
   mvdebug:
@@ -187,10 +187,14 @@ commands:
     usage: |
             /<command>
   mvgenerators:
-    description: Turns on debugging.
+    description: Displays all found world generators.
     usage: |
             /<command>
   mvgens:
-    description: Turns on debugging.
+    description: Displays all found world generators.
+    usage: |
+            /<command>
+  mvload:
+    description: Loads a world into Multiverse.
     usage: |
             /<command>

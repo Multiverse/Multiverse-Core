@@ -28,6 +28,9 @@ public class ImportCommand extends MultiverseCommand {
         this.addKey("mvimport");
         this.addKey("mvim");
         this.addKey("mv import");
+        this.addCommandExample("/mv import " + ChatColor.GOLD + "gargamel" + ChatColor.GREEN + " normal");
+        this.addCommandExample("/mv import " + ChatColor.GOLD + "hell_world" + ChatColor.GREEN + " nether");
+        this.addCommandExample("/mv import " + ChatColor.GOLD + "CleanRoom" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " CleanRoomGenerator");
         this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

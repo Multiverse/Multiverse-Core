@@ -30,6 +30,9 @@ public class ModifyClearCommand extends MultiverseCommand {
         this.addKey("mvmclear");
         this.addKey("mv modify clear");
         this.addKey("mvmodify clear");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "clear " + ChatColor.RED + "animals");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "clear " + ChatColor.RED + "monsters");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "clear " + ChatColor.RED + "worldblacklist");
         this.setPermission("multiverse.core.modify.clear", "Removes all values from a property. This will work on properties that contain lists.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

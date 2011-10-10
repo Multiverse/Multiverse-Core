@@ -13,5 +13,5 @@ package com.onarandombox.MultiverseCore.enums;
  * @author fernferret
  */
 public enum AddProperties {
-    blockblacklist, playerwhitelist, playerblacklist, worldblacklist, animals, monsters
+    worldblacklist, animals, monsters
 }

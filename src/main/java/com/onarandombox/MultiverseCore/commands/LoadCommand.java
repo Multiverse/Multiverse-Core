@@ -23,6 +23,7 @@ public class LoadCommand extends MultiverseCommand {
         this.setArgRange(1, 1);
         this.addKey("mvload");
         this.addKey("mv load");
+        this.addCommandExample("/mv load " + ChatColor.GREEN + "MyUnloadedWorld");
         this.setPermission("multiverse.core.load", "Loads a world into Multiverse.", PermissionDefault.OP);
     }
 

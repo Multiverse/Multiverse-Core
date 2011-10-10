@@ -30,11 +30,16 @@ public class SetSpawnCommand extends MultiverseCommand {
         this.addKey("mv set spawn");
         this.addKey("mv setspawn");
         this.addKey("mvset spawn");
+        this.addCommandExample("/mv set spawn");
         this.setPermission("multiverse.core.spawn.set", "Sets the spawn for the current world.", PermissionDefault.OP);
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        setWorldSpawn(sender);
+    }
+
+    protected void setWorldSpawn(CommandSender sender) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             Location l = p.getLocation();
@@ -45,7 +50,7 @@ public class SetSpawnCommand extends MultiverseCommand {
                 sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));
             } else {
                 w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
-                sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully.");
+                sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully (Pitch/Yaws).");
             }
 
         } else {

@@ -25,17 +25,43 @@ public class ModifySetCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Modify a World (Set a value)");
         this.setCommandUsage("/mv modify" + ChatColor.GREEN + " set {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
-        this.setArgRange(2, 3);
+        this.setArgRange(1, 3);
         this.addKey("mvm set");
         this.addKey("mvmset");
         this.addKey("mv modify set");
         this.addKey("mvmodify set");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "mode " + ChatColor.RED + "creative");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "animals " + ChatColor.RED + "false");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "monsters " + ChatColor.RED + "false");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "alias " + ChatColor.RED + "MyWorld");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "color " + ChatColor.RED + "green");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "curr " + ChatColor.RED + "3");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "price " + ChatColor.RED + "5");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "scale " + ChatColor.RED + "1.2");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "memory " + ChatColor.RED + "true");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "diff " + ChatColor.RED + "hard");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "hunger " + ChatColor.RED + "false");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "hidden " + ChatColor.RED + "true");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "pvp " + ChatColor.RED + "false");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "spawn");
         this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        // Special case for spawn:
+        if (args.size() == 1) {
+            if (args.get(0).equalsIgnoreCase("spawn")) {
+                SetSpawnCommand c = new SetSpawnCommand(this.plugin);
+                c.setWorldSpawn(sender);
+
+            } else {
+                sender.sendMessage("Spawn is the only param with no" + ChatColor.GREEN + " VALUE");
+                sender.sendMessage("Type " + ChatColor.GREEN + "/mv modify ?" + ChatColor.WHITE + " For help.");
+            }
+            return;
+        }
         // We NEED a world from the command line
         Player p = null;
         if (sender instanceof Player) {

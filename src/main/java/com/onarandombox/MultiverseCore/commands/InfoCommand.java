@@ -34,6 +34,8 @@ public class InfoCommand extends MultiverseCommand {
         this.addKey("mvinfo");
         this.addKey("mvi");
         this.addKey("mv info");
+        this.addCommandExample("/mv info " + ChatColor.GOLD + "1");
+        this.addCommandExample("/mv info " + ChatColor.GOLD + "3");
         this.setPermission("multiverse.core.info", "Returns detailed information on the world.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

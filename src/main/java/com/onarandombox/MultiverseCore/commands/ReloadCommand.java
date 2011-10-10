@@ -25,6 +25,7 @@ public class ReloadCommand extends MultiverseCommand {
         this.setArgRange(0, 0);
         this.addKey("mvreload");
         this.addKey("mv reload");
+        this.addCommandExample("/mv reload");
         this.setPermission("multiverse.core.reload", "Reloads worlds.yml and config.yml.", PermissionDefault.OP);
     }
 
@@ -34,11 +35,12 @@ public class ReloadCommand extends MultiverseCommand {
         this.plugin.loadConfigs();
         this.plugin.getMVWorldManager().loadWorlds(true);
 
-        // Create the event
         List<String> configsLoaded = new ArrayList<String>();
         configsLoaded.add("Multiverse-Core - config.yml");
         configsLoaded.add("Multiverse-Core - worlds.yml");
+        // Create the event
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
+        // Fire it off
         this.plugin.getServer().getPluginManager().callEvent(configReload);
         for (String s : configReload.getAllConfigsLoaded()) {
             sender.sendMessage(s);

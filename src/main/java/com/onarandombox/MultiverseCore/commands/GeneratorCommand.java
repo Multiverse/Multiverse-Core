@@ -28,6 +28,7 @@ public class GeneratorCommand extends MultiverseCommand {
         this.addKey("mvgenerators");
         this.addKey("mv gens");
         this.addKey("mvgens");
+        this.addCommandExample("/mv generators");
         this.setPermission("multiverse.core.generator", "Returns a list of Loaded Generator Plugins.", PermissionDefault.OP);
     }
 

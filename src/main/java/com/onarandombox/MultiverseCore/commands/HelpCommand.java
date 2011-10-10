@@ -32,6 +32,7 @@ public class HelpCommand extends MultiverseCommand {
         this.addKey("mv help");
         this.addKey("mvsearch");
         this.addKey("mv search");
+        this.addCommandExample("/mv help ?");
         this.setPermission("multiverse.help", "Displays a nice help menu.", PermissionDefault.TRUE);
     }
 

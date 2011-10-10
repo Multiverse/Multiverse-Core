@@ -33,6 +33,9 @@ public class ModifyAddCommand extends MultiverseCommand {
         this.addKey("mvmadd");
         this.addKey("mv modify add");
         this.addKey("mvmodify add");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "add " + ChatColor.GREEN + "sheep " + ChatColor.RED + "animals");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "add " + ChatColor.GREEN + "creeper " + ChatColor.RED + "monsters");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "add " + ChatColor.GREEN + "MyWorld " + ChatColor.RED + "worldblacklist");
         this.setPermission("multiverse.core.modify.add", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

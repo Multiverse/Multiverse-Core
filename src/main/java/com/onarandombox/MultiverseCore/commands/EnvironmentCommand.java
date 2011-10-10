@@ -25,6 +25,7 @@ public class EnvironmentCommand extends MultiverseCommand {
         this.addKey("mv env");
         this.addKey("mv environment");
         this.addKey("mv environments");
+        this.addCommandExample("/mv env");
         this.setPermission("multiverse.core.list.environments", "Lists valid known environments.", PermissionDefault.OP);
     }
 

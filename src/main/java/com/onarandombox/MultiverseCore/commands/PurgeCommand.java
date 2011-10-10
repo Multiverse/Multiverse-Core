@@ -30,6 +30,12 @@ public class PurgeCommand extends MultiverseCommand {
         this.setArgRange(1, 2);
         this.addKey("mvpurge");
         this.addKey("mv purge");
+        this.addCommandExample("/mv purge " + ChatColor.GREEN + "all");
+        this.addCommandExample("/mv purge " + ChatColor.GOLD + "all " + ChatColor.GREEN + "all");
+        this.addCommandExample("/mv purge " + ChatColor.GREEN + "monsters");
+        this.addCommandExample("/mv purge " + ChatColor.GOLD + "all " + ChatColor.GREEN + "animals");
+        this.addCommandExample("/mv purge " + ChatColor.GOLD + "MyWorld " + ChatColor.GREEN + "squid");
+        this.addCommandExample("/mv purge " + ChatColor.GOLD + "MyWorld_nether " + ChatColor.GREEN + "ghast");
         this.setPermission("multiverse.core.purge", "Removed the specified type of mob from the specified world.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
