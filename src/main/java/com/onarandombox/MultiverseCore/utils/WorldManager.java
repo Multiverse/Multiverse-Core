@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
@@ -54,44 +55,28 @@ public class WorldManager implements MVWorldManager {
             }
         }
 
-        String generatorID = null;
-        String generatorName = null;
-        if (generator != null) {
-            String[] split = generator.split(":", 2);
-            String id = (split.length > 1) ? split[1] : null;
-            generatorName = split[0];
-            generatorID = id;
-        }
-
-        ChunkGenerator customGenerator = getChunkGenerator(generatorName, generatorID, name);
-
-        if (customGenerator == null && generator != null && (generator.length() > 0)) {
-            if (!pluginExists(generatorName)) {
-                this.plugin.log(Level.WARNING, "Could not find plugin: " + generatorName);
-            } else {
-                this.plugin.log(Level.WARNING, "Found plugin: " + generatorName + ", but did not find generatorID: " + generatorID);
-            }
-            return false;
-        }
+        WorldCreator c = new WorldCreator(name);
+        c.seed(seed);
+        // TODO: Use the fancy kind with the commandSender
+        c.generator(generator);
+        c.environment(env);
 
         World world = null;
         if (seed != null) {
-            if (customGenerator != null) {
-                world = this.plugin.getServer().createWorld(name, env, seed, customGenerator);
+            if (generator != null) {
                 this.plugin.log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env + " with seed: " + seed + " & Custom Generator: " + generator);
             } else {
-                world = this.plugin.getServer().createWorld(name, env, seed);
                 this.plugin.log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env + " with seed: " + seed);
             }
         } else {
-            if (customGenerator != null) {
-                world = this.plugin.getServer().createWorld(name, env, customGenerator);
+            if (generator != null) {
                 this.plugin.log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env + " & Custom Generator: " + generator);
             } else {
-                world = this.plugin.getServer().createWorld(name, env);
                 this.plugin.log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env);
             }
         }
+
+        world = c.createWorld();
 
         if (world == null) {
             this.plugin.log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
