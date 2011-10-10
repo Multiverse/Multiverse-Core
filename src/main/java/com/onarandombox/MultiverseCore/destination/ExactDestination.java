@@ -7,16 +7,15 @@
 
 package com.onarandombox.MultiverseCore.destination;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.Arrays;
+import java.util.List;
 
 public class ExactDestination implements MVDestination {
     private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
@@ -29,7 +28,7 @@ public class ExactDestination implements MVDestination {
     }
 
     public Vector getVelocity() {
-        return new Vector(0,0,0);
+        return new Vector(0, 0, 0);
     }
 
     @Override

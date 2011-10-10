@@ -90,8 +90,9 @@ public class PlayerDestination implements MVDestination {
     public String getRequiredPermission() {
         return "";
     }
+
     public Vector getVelocity() {
-        return new Vector(0,0,0);
+        return new Vector(0, 0, 0);
     }
 
     @Override

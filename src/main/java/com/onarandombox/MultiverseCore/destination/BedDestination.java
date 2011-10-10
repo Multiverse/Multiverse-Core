@@ -83,6 +83,7 @@ public class BedDestination implements MVDestination {
         // Bukkit should have already checked this.
         return false;
     }
+
     @Override
     public String toString() {
         return "b:playerbed";

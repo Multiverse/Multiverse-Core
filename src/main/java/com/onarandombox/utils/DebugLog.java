@@ -14,7 +14,7 @@ package com.onarandombox.utils;
  */
 
 @Deprecated
-public class DebugLog extends com.onarandombox.MultiverseCore.utils.DebugLog{
+public class DebugLog extends com.onarandombox.MultiverseCore.utils.DebugLog {
     public DebugLog(String logger, String file) {
         super(logger, file);
     }

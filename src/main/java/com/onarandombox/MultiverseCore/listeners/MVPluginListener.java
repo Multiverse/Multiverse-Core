@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.fernferret.allpay.AllPay;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVPlugin;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
@@ -28,10 +27,10 @@ public class MVPluginListener extends ServerListener {
     /** Keep an eye out for Plugins which we can utilize. */
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
-        if(event.getPlugin() instanceof com.onarandombox.MultiverseCore.MVPlugin) {
+        if (event.getPlugin() instanceof com.onarandombox.MultiverseCore.MVPlugin) {
             this.plugin.log(Level.SEVERE, "Your version of '" + event.getPlugin() + "' is OUT OF DATE.");
             this.plugin.log(Level.SEVERE, "Please grab the latest version from:");
-            this.plugin.log(Level.SEVERE, "http://bukkit.onarandombox.com/?dir="+event.getPlugin().getDescription().getName().toLowerCase());
+            this.plugin.log(Level.SEVERE, "http://bukkit.onarandombox.com/?dir=" + event.getPlugin().getDescription().getName().toLowerCase());
             this.plugin.log(Level.SEVERE, "I'm going to disable " + event.getPlugin().getDescription().getName() + " now.");
             this.plugin.log(Level.SEVERE, "IF YOU DO NOT UPDATE, YOUR SERVER WILL **NOT** FUNCTION PROPERLY!!!");
             this.plugin.getServer().getPluginManager().disablePlugin(event.getPlugin());

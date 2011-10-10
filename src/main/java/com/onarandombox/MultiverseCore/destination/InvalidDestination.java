@@ -60,8 +60,9 @@ public class InvalidDestination implements MVDestination {
     public String getRequiredPermission() {
         return null;
     }
+
     public Vector getVelocity() {
-        return new Vector(0,0,0);
+        return new Vector(0, 0, 0);
     }
 
     @Override

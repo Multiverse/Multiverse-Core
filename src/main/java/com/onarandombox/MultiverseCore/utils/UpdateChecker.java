@@ -88,6 +88,7 @@ public class UpdateChecker {
      * Convert the given Version String to a Normalised Version String so we can compare it.
      *
      * @param version
+     *
      * @return
      */
     public static String normalisedVersion(String version) {

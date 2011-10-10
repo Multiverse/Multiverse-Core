@@ -7,8 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import java.util.logging.Level;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,7 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import java.util.logging.Level;
 
 public class BlockSafety {
 
@@ -31,6 +30,7 @@ public class BlockSafety {
      * @param x
      * @param y
      * @param z
+     *
      * @return
      */
     public boolean isBlockAboveAir(Location l) {
@@ -50,12 +50,14 @@ public class BlockSafety {
     }
 
     /**
-     * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air etc. This also ensures there is enough space for a player to spawn!
+     * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air
+     * etc. This also ensures there is enough space for a player to spawn!
      *
      * @param world
      * @param x
      * @param y
      * @param z
+     *
      * @return
      */
     public boolean playerCanSpawnHereSafely(Location l) {
@@ -94,6 +96,7 @@ public class BlockSafety {
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      *
      * @param type
+     *
      * @return
      */
     private boolean isSolidBlock(Material type) {
@@ -184,6 +187,7 @@ public class BlockSafety {
      * Checks recursively below location L for 2 blocks of water
      *
      * @param l
+     *
      * @return
      */
     public boolean hasTwoBlocksofWaterBelow(Location l) {

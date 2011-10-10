@@ -16,6 +16,7 @@ public class PermissionTools {
     public PermissionTools(MultiverseCore plugin) {
         this.plugin = plugin;
     }
+
     public void addToParentPerms(String permString) {
         String permStringChopped = permString.replace(".*", "");
 
@@ -62,6 +63,7 @@ public class PermissionTools {
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
      *
      * @param separatedPermissionString The array of a dot separated perm string.
+     *
      * @return The dot separated parent permission string.
      */
     private String getParentPerm(String[] separatedPermissionString) {

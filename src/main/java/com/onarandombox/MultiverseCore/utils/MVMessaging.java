@@ -36,22 +36,24 @@ public class MVMessaging {
 
     /**
      * Sends a message to the specified sender if the cooldown has passed.
-     * @param sender The person/console to send the message to.
-     * @param message The message to send.
+     *
+     * @param sender         The person/console to send the message to.
+     * @param message        The message to send.
      * @param ignoreCooldown If true this message will always be sent. Useful for things like menus
+     *
      * @return true if the message was sent, false if not.
      */
     public boolean sendMessage(CommandSender sender, String message, boolean ignoreCooldown) {
-        if(!(sender instanceof Player) || ignoreCooldown) {
+        if (!(sender instanceof Player) || ignoreCooldown) {
             sender.sendMessage(message);
             return true;
         }
-        if(!this.sentList.containsKey(sender.getName())) {
+        if (!this.sentList.containsKey(sender.getName())) {
             sender.sendMessage(message);
             this.sentList.put(sender.getName(), new Date());
             return true;
         } else {
-            if(this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))){
+            if (this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))) {
                 sender.sendMessage(message);
                 this.sentList.put(sender.getName(), new Date());
                 return true;
@@ -61,17 +63,17 @@ public class MVMessaging {
     }
 
     public boolean sendMessages(CommandSender sender, String[] messages, boolean ignoreCooldown) {
-        if(!(sender instanceof Player) || ignoreCooldown) {
+        if (!(sender instanceof Player) || ignoreCooldown) {
 
             this.sendMessages(sender, messages);
             return true;
         }
-        if(!this.sentList.containsKey(sender.getName())) {
+        if (!this.sentList.containsKey(sender.getName())) {
             this.sendMessages(sender, messages);
             this.sentList.put(sender.getName(), new Date());
             return true;
         } else {
-            if(this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))){
+            if (this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))) {
                 this.sendMessages(sender, messages);
                 this.sentList.put(sender.getName(), new Date());
                 return true;
@@ -86,7 +88,7 @@ public class MVMessaging {
 
     public boolean sendMessages(CommandSender sender, String[] messages) {
         boolean success = true;
-        for(String s : messages) {
+        for (String s : messages) {
             success = (!(!this.sendMessage(sender, s, true) && success));
         }
         return success;

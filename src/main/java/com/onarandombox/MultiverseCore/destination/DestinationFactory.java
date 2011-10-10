@@ -7,10 +7,6 @@
 
 package com.onarandombox.MultiverseCore.destination;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
@@ -18,6 +14,10 @@ import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DestinationFactory {
     private MultiverseCore plugin;
@@ -28,8 +28,8 @@ public class DestinationFactory {
         this.plugin = plugin;
         this.destList = new HashMap<String, Class<? extends MVDestination>>();
         List<Command> cmds = this.plugin.getCommandHandler().getAllCommands();
-        for(Command c : cmds) {
-            if(c instanceof TeleportCommand) {
+        for (Command c : cmds) {
+            if (c instanceof TeleportCommand) {
                 this.teleportCommand = c;
             }
         }
@@ -63,21 +63,21 @@ public class DestinationFactory {
         }
         this.destList.put(identifier, c);
         // Special case for world defaults:
-        if(identifier.equals("")) {
+        if (identifier.equals("")) {
             identifier = "w";
         }
-        Permission self = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.self."+identifier);
-        Permission other = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.other."+identifier);
+        Permission self = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.self." + identifier);
+        Permission other = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.other." + identifier);
         PermissionTools pt = new PermissionTools(this.plugin);
-        if(self == null) {
-            self = new Permission("multiverse.teleport.self."+identifier,"Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
+        if (self == null) {
+            self = new Permission("multiverse.teleport.self." + identifier, "Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
             this.plugin.getServer().getPluginManager().addPermission(self);
-            pt.addToParentPerms("multiverse.teleport.self."+identifier);
+            pt.addToParentPerms("multiverse.teleport.self." + identifier);
         }
-        if(other == null) {
-            other = new Permission("multiverse.teleport.other."+identifier,"Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
+        if (other == null) {
+            other = new Permission("multiverse.teleport.other." + identifier, "Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
             this.plugin.getServer().getPluginManager().addPermission(other);
-            pt.addToParentPerms("multiverse.teleport.other."+identifier);
+            pt.addToParentPerms("multiverse.teleport.other." + identifier);
         }
         this.teleportCommand.addAdditonalPermission(self);
         this.teleportCommand.addAdditonalPermission(other);

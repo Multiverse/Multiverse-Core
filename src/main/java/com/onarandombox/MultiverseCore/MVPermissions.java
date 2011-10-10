@@ -7,17 +7,13 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.pneumaticraft.commandhandler.Command;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-
 /**
  * Dummy class to make old MV Plugins not explode.
  * If this loads, the user WILL get a severe telling them to update said plugin!
  * WILL BE DELETED ON 11/1/11
  */
 @Deprecated
-public class MVPermissions extends com.onarandombox.MultiverseCore.utils.MVPermissions{
+public class MVPermissions extends com.onarandombox.MultiverseCore.utils.MVPermissions {
     public MVPermissions(MultiverseCore plugin) {
         super(plugin);
     }

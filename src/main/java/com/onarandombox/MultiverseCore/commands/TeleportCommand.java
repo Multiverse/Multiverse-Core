@@ -7,14 +7,15 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import com.onarandombox.MultiverseCore.utils.*;
+import com.onarandombox.MultiverseCore.utils.LocationManipulation;
+import com.onarandombox.MultiverseCore.utils.MVMessaging;
+import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;

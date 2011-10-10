@@ -7,18 +7,19 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 public class LocationManipulation {
     private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
+
     static {
         orientationInts.put("n", 180);
         orientationInts.put("ne", 225);
@@ -35,6 +36,7 @@ public class LocationManipulation {
      * Convert a Location into a Colon separated string to allow us to store it in text.
      *
      * @param location
+     *
      * @return
      */
     public static String locationToString(Location location) {
@@ -56,6 +58,7 @@ public class LocationManipulation {
      * @param zStr
      * @param yawStr
      * @param pitchStr
+     *
      * @return
      */
     public Location stringToLocation(World world, String xStr, String yStr, String zStr, String yawStr, String pitchStr) {
@@ -70,7 +73,9 @@ public class LocationManipulation {
 
     /**
      * Returns a colored string with the coords
+     *
      * @param l
+     *
      * @return
      */
     public static String strCoords(Location l) {
@@ -85,9 +90,12 @@ public class LocationManipulation {
         result += ChatColor.WHITE + "Y: " + ChatColor.GOLD + df.format(l.getYaw()) + " ";
         return result;
     }
+
     /**
      * Converts a location to a printable readable formatted string including pitch/yaw
+     *
      * @param l
+     *
      * @return
      */
     public static String strCoordsRaw(Location l) {
@@ -107,6 +115,7 @@ public class LocationManipulation {
      * Return the NESW Direction a Location is facing.
      *
      * @param location
+     *
      * @return
      */
     public static String getDirection(Location location) {
@@ -134,9 +143,12 @@ public class LocationManipulation {
 
         return dir;
     }
+
     /**
      * Returns the float yaw position for the given cardianl direction
+     *
      * @param orientation
+     *
      * @return
      */
     public static float getYaw(String orientation) {
@@ -148,9 +160,12 @@ public class LocationManipulation {
         }
         return 0;
     }
+
     /**
      * Returns a speed float from a given vector.
+     *
      * @param v
+     *
      * @return
      */
     public static float getSpeed(Vector v) {
@@ -159,10 +174,13 @@ public class LocationManipulation {
 
     // X, Y, Z
     // -W/+E,0, -N/+S
+
     /**
      * Returns a translated vector from the given direction
+     *
      * @param v
      * @param direction
+     *
      * @return
      */
     public static Vector getTranslatedVector(Vector v, String direction) {
@@ -196,6 +214,7 @@ public class LocationManipulation {
      * Returns the next Location that an entity is traveling at
      *
      * @param v
+     *
      * @return
      */
     public static Location getNextBlock(Vehicle v) {
