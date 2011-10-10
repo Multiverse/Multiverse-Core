@@ -98,6 +98,7 @@ public class WorldManager implements MVWorldManager {
      *
      * @return True if the plugin exists and is enabled, false if not.
      */
+    @SuppressWarnings("unused")
     private boolean pluginExists(String generator) {
         Plugin plugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
         return plugin != null && plugin.isEnabled();

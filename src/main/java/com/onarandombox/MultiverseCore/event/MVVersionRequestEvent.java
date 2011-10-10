@@ -11,6 +11,11 @@ import org.bukkit.event.Event;
 
 public class MVVersionRequestEvent extends Event {
 
+    /**
+     * Auto-generated ID
+     */
+    private static final long serialVersionUID = 8069053313280257642L;
+    
     private String pasteBinBuffer;
 
     public MVVersionRequestEvent(String pasteBinBuffer) {

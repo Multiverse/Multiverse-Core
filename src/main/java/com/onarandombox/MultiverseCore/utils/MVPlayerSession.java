@@ -15,10 +15,11 @@ import java.util.Date;
 
 public class MVPlayerSession {
 
+    @SuppressWarnings("unused") //maybe used in the future?
     private Player player; // Player holder, may be unnecessary.
 
     private Long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
-    private Long messageLast = 0L; // Timestamp for the Players last Alert Message.
+    //private Long messageLast = 0L; // Timestamp for the Players last Alert Message. We don't need this until now so we comment it out.
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
 

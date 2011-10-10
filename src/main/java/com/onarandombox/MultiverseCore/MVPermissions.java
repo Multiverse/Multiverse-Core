@@ -7,10 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.pneumaticraft.commandhandler.Command;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-
 /**
  * Dummy class to make old MV Plugins not explode.
  * If this loads, the user WILL get a severe telling them to update said plugin!

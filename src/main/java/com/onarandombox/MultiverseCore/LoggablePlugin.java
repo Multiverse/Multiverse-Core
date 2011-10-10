@@ -7,8 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.pneumaticraft.commandhandler.Command;
-
 /**
  * Dummy class to make old MV Plugins not explode.
  * If this loads, the user WILL get a severe telling them to update said plugin!
