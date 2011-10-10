@@ -105,7 +105,7 @@ public class MVPlayerListener extends PlayerListener {
             event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
         }
         // Handle the Players GameMode setting for the new world.
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+        if (MultiverseCore.EnforceGameModes) {
             this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
         }
     }
@@ -113,7 +113,7 @@ public class MVPlayerListener extends PlayerListener {
     @Override
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         // Handle the Players GameMode setting for the new world.
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+        if (MultiverseCore.EnforceGameModes) {
             this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
         }
     }
@@ -130,7 +130,9 @@ public class MVPlayerListener extends PlayerListener {
         }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
-        event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
+        if (MultiverseCore.EnforceAccess) {
+            event.setCancelled(!playerCanGoFromTo(fromWorld, toWorld, event.getPlayer()));
+        }
     }
 
     @Override
@@ -141,7 +143,9 @@ public class MVPlayerListener extends PlayerListener {
         }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
-        event.setCancelled(checkWorldPermissions(fromWorld, toWorld, event.getPlayer()));
+        if (MultiverseCore.EnforceAccess) {
+            event.setCancelled(!playerCanGoFromTo(fromWorld, toWorld, event.getPlayer()));
+        }
     }
 
     /**
@@ -155,21 +159,22 @@ public class MVPlayerListener extends PlayerListener {
      *
      * @return True if they can't go to the world, False if they can.
      */
-    private boolean checkWorldPermissions(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player player) {
+    private boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player player) {
 
         if (toWorld != null) {
             if (!this.plugin.getMVPerms().canEnterWorld(player, toWorld)) {
                 player.sendMessage("You don't have access to go here...");
-                return true;
+                return false;
             }
         } else {
-            // The toworld is not handled by MV, we don't care about payments
-            return false;
+            //TODO: Determine if this value is false because a world didn't exist
+            // or if it was because a world wasn't imported.
+            return true;
         }
         if (fromWorld != null) {
             if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
                 player.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
-                return true;
+                return false;
             }
         }
 
@@ -177,16 +182,16 @@ public class MVPlayerListener extends PlayerListener {
         if (!toWorld.equals(fromWorld)) {
             // If the player does not have to pay, return now.
             if (this.plugin.getMVPerms().hasPermission(player, toWorld.getExemptPermission().getName(), true)) {
-                return false;
+                return true;
             }
             GenericBank bank = plugin.getBank();
             if (!bank.hasEnough(player, toWorld.getPrice(), toWorld.getCurrency(), "You need " + bank.getFormattedAmount(player, toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString())) {
-                return true;
+                return false;
             } else {
                 bank.pay(player, toWorld.getPrice(), toWorld.getCurrency());
             }
         }
-        return false;
+        return true;
     }
 
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.

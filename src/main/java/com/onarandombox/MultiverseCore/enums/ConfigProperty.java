@@ -10,5 +10,5 @@ package com.onarandombox.MultiverseCore.enums;
 /** Multiverse 2 */
 public enum ConfigProperty {
     messagecooldown, teleportcooldown, worldnameprefix, useworldaccess,
-    disableautoheal, fakepvp, bedrespawn, finalsayaccess
+    disableautoheal, fakepvp, bedrespawn, finalsayaccess, debug
 }

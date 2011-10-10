@@ -15,12 +15,13 @@ teleportcooldown: 5000
 # won't touch your chat
 worldnameprefix: true
 
-# If value is set to false, Multiverse will NOT enforce permissions
-useworldaccess: false
+# If value is set to false, Multiverse will NOT enforce
+# world access permissions
+enforceaccess: false
 
-# Should multiverse have the final say in world access? If set to false, Multiverse will only check access
-# for itself and any MVPlugin.
-finalsayaccess: true
+# If value is set to false, Multiverse will NOT enforce
+# world access permissions
+enforcegamemodes: true
 
 # If you have a world(s) that has monsters = false, and you want to disable the built
 # in autohealing, set this to true. This will have NO EFFECT if monsters = true for a given world.
@@ -36,4 +37,4 @@ bedrespawn: true
 
 # This just signifies the version number so we can see what version of config you have.
 # NEVER TOUCH THIS VALUE
-version: 2.2
+version: 2.3

@@ -35,6 +35,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +45,11 @@ import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private final static int Protocol = 5;
+    // Global Multiverse config variable, states whether or not
+    // Multiverse should stop other plugins from teleporting players
+    // to worlds.
+    public static boolean EnforceAccess;
+    public static boolean EnforceGameModes;
 
     @Override
     public String dumpVersionInfo(String buffer) {
@@ -271,8 +277,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
         GlobalDebug = this.configMV.getInt("debug", 0);
+        // Lets cache this value due to the fact that it will be accessed many times.
+        EnforceAccess = this.configMV.getBoolean("enforceaccess", false);
+        EnforceGameModes = this.configMV.getBoolean("enforcegamemodes", true);
+        this.configMV.setProperty("enforceaccess", EnforceAccess);
+        this.configMV.setProperty("enforcegamemodes", EnforceAccess);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.configMV.getInt("messagecooldown", 5000));
+        this.configMV.save();
     }
 
     public MVMessaging getMessaging() {

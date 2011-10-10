@@ -661,7 +661,7 @@ public class MVWorld implements MultiverseWorld {
         config.setProperty("worlds." + this.name + ".gamemode", this.gameMode.toString());
         saveConfig();
 
-        if (this.plugin.getConfig().getBoolean("enforcegamemodes", true)) {
+        if (MultiverseCore.EnforceGameModes) {
             for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
                 this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.gameMode.toString());
                 this.plugin.getPlayerListener().handleGameMode(p, this);

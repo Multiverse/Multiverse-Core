@@ -34,7 +34,7 @@ public class ConfigCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown")) {
+        if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
             try {
                 this.plugin.getConfig().setProperty(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
                 this.plugin.loadConfigs();
