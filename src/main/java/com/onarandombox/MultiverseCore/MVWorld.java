@@ -80,14 +80,18 @@ public class MVWorld implements MultiverseWorld {
         // Initialize our lists
         this.initLists();
         worldSection = config.getConfigurationSection("worlds." + this.name);
+        if (worldSection == null) {
+            config.createSection("worlds." + this.name);
+            worldSection = config.getConfigurationSection("worlds." + this.name);
+        }
         // Write these files to the config (once it's saved)
         if (generatorString != null) {
             worldSection.set("generator", generatorString);
         }
         if (seed != null) {
-            worldSection.set("worlds." + this.name + "seed", this.seed);
+            worldSection.set("seed", this.seed);
         }
-        worldSection.set("worlds." + this.name + "environment", this.environment.toString());
+        worldSection.set("environment", this.environment.toString());
 
 
         // Set local values that CAN be changed by the user
@@ -363,8 +367,7 @@ public class MVWorld implements MultiverseWorld {
         }
         if (name.equalsIgnoreCase("scale") || name.equalsIgnoreCase("scaling")) {
             try {
-                this.setScaling(Double.parseDouble(value));
-                return true;
+                return this.setScaling(Double.parseDouble(value));
             } catch (Exception e) {
                 return false;
             }
@@ -525,14 +528,17 @@ public class MVWorld implements MultiverseWorld {
     }
 
     @Override
-    public void setScaling(double scaling) {
+    public boolean setScaling(double scaling) {
+        boolean success = true;
         if (scaling <= 0) {
             // Disallow negative or 0 scalings.
             scaling = 1.0;
+            success = false;
         }
         this.scaling = scaling;
         this.worldSection.set("scale", scaling);
         saveConfig();
+        return success;
     }
 
     @Override
@@ -548,6 +554,7 @@ public class MVWorld implements MultiverseWorld {
     }
 
     public boolean isValidAliasColor(String aliasColor) {
+        System.out.print("Checking color... " + aliasColor);
         return (EnglishChatColor.fromString(aliasColor) != null);
     }
 

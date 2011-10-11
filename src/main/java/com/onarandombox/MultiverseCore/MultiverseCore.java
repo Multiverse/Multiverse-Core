@@ -268,7 +268,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
         BedRespawn = this.multiverseConfig.getBoolean("bedrespawn", true);
         this.multiverseConfig.set("enforceaccess", EnforceAccess);
-        this.multiverseConfig.set("enforcegamemodes", EnforceAccess);
+        this.multiverseConfig.set("enforcegamemodes", EnforceGameModes);
+        this.multiverseConfig.set("bedrespawn", BedRespawn);
+        this.multiverseConfig.set("worldnameprefix", PrefixChat);
+        this.multiverseConfig.set("debug", GlobalDebug);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
         try {

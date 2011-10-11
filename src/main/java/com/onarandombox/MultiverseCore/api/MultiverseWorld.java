@@ -366,7 +366,7 @@ public interface MultiverseWorld {
      *
      * @param scaling A scaling value, cannot be negative or 0.
      */
-    public void setScaling(double scaling);
+    public boolean setScaling(double scaling);
 
     /**
      * Gets the scaling value of this world.Really only has an effect if you use

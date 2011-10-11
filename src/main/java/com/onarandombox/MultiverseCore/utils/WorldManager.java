@@ -357,6 +357,14 @@ public class WorldManager implements MVWorldManager {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
         // Grab all the Worlds from the Config.
+        if (this.configWorlds.getConfigurationSection("worlds") == null) {
+            this.configWorlds.createSection("worlds");
+            try {
+                this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+            } catch (IOException e) {
+                this.plugin.log(Level.SEVERE, "Failed to save worlds.yml. Please check your file permissions.");
+            }
+        }
         Set<String> worldKeys = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
 
         // Force the worlds to be loaded, ie don't just load new worlds.

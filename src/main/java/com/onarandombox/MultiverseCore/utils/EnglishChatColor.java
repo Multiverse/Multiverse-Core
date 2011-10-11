@@ -55,6 +55,6 @@ public enum EnglishChatColor {
                 }
             }
         }
-        return EnglishChatColor.WHITE;
+        return null;
     }
 }
