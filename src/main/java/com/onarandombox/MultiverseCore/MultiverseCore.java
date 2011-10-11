@@ -28,7 +28,9 @@ import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -50,6 +52,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // to worlds.
     public static boolean EnforceAccess;
     public static boolean EnforceGameModes;
+
 
     @Override
     public String dumpVersionInfo(String buffer) {
@@ -87,6 +90,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Configurations
     private Configuration configMV = null;
+    private FileConfiguration multiverseConfig = null;
 
     private WorldManager worldManager = new WorldManager(this);
 
@@ -123,6 +127,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     public Configuration getMVConfig() {
         return this.configMV;
+    }
+
+    public FileConfiguration getMVConfiguration() {
+        return this.multiverseConfig;
     }
 
     public GenericBank getBank() {
@@ -164,7 +172,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // this function will be called every time a plugin registers a new envtype with MV
         // Setup & Load our Configuration files.
         loadConfigs();
-        if (this.configMV != null) {
+        if (this.multiverseConfig != null) {
             this.worldManager.loadWorlds(true);
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
@@ -256,7 +264,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         new DefaultConfig(getDataFolder(), "config.yml", this.migrator);
         new DefaultConfig(getDataFolder(), "worlds.yml", this.migrator);
         // Now grab the Configuration Files.
-        this.configMV = new Configuration(new File(getDataFolder(), "config.yml"));
+        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
 
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 

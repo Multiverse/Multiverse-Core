@@ -11,6 +11,7 @@ import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
@@ -22,10 +23,19 @@ import org.bukkit.util.config.Configuration;
 public interface Core {
     /**
      * Gets the Multiverse config file.
+     * Now Deprecated, use {@link #getMVConfiguration()}
      *
      * @return The Multiverse config file.
      */
+    @Deprecated
     public Configuration getMVConfig();
+
+    /**
+     * Gets the Multiverse config file.
+     *
+     * @return The Multiverse config file.
+     */
+    public FileConfiguration getMVConfiguration();
 
     /**
      * Gets the Banking system that Multiverse-Core has hooked into.
