@@ -38,8 +38,8 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
         // Check whether the Server is set to prefix the chat with the World name. If not we do nothing, if so we need to check if the World has an Alias.
-        if (this.plugin.getConfig().getBoolean("worldnameprefix", true)) {
-            this.plugin.getConfig().save();
+        if (this.plugin.getMVConfig().getBoolean("worldnameprefix", true)) {
+            this.plugin.getMVConfig().save();
             String world = event.getPlayer().getWorld().getName();
             String prefix = "";
             // If we're not a MV world, don't do anything
@@ -62,7 +62,7 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
 
-        if (event.isBedSpawn() && this.plugin.getConfig().getBoolean("bedrespawn", true)) {
+        if (event.isBedSpawn() && this.plugin.getMVConfig().getBoolean("bedrespawn", true)) {
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }

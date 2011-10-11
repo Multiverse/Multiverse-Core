@@ -28,6 +28,7 @@ import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -35,7 +36,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,7 +121,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
     }
 
-    public Configuration getConfig() {
+    public Configuration getMVConfig() {
         return this.configMV;
     }
 

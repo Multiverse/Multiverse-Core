@@ -82,7 +82,7 @@ public class MVEntityListener extends EntityListener {
             MultiverseWorld world = this.worldManager.getMVWorld(w.getName());
 
             if (attacker instanceof Player) {
-                if (!world.isPVPEnabled() && this.plugin.getConfig().getBoolean("fakepvp", false)) {
+                if (!world.isPVPEnabled() && this.plugin.getMVConfig().getBoolean("fakepvp", false)) {
                     ((Player) attacker).sendMessage(ChatColor.RED + "PVP is disabled in this World.");
                     event.setCancelled(true);
                 }
@@ -96,7 +96,7 @@ public class MVEntityListener extends EntityListener {
             return;
         }
         RegainReason reason = event.getRegainReason();
-        if (reason == RegainReason.REGEN && this.plugin.getConfig().getBoolean("disableautoheal", false)) {
+        if (reason == RegainReason.REGEN && this.plugin.getMVConfig().getBoolean("disableautoheal", false)) {
             event.setCancelled(true);
         }
     }

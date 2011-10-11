@@ -39,7 +39,7 @@ public class ConfigCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
             try {
-                this.plugin.getConfig().setProperty(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
+                this.plugin.getMVConfig().setProperty(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
                 this.plugin.loadConfigs();
             } catch (NumberFormatException e) {
                 sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be an integer!");
@@ -47,7 +47,7 @@ public class ConfigCommand extends MultiverseCommand {
         } else {
             if (ConfigProperty.valueOf(args.get(0).toLowerCase()) != null) {
                 try {
-                    this.plugin.getConfig().setProperty(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(0)));
+                    this.plugin.getMVConfig().setProperty(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(0)));
                     this.plugin.loadConfigs();
                 } catch (Exception e) {
                     sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be true or false!");

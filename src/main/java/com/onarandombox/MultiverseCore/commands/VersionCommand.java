@@ -54,13 +54,13 @@ public class VersionCommand extends MultiverseCommand {
         logAndAddToPasteBinBuffer("Multiverse Plugins Loaded: " + this.plugin.getPluginCount());
         logAndAddToPasteBinBuffer("Economy being used: " + this.plugin.getBank().getEconUsed());
         logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getMVPerms().getType());
-        logAndAddToPasteBinBuffer("Dumping Config Values: (version " + this.plugin.getConfig().getString("version", "NOT SET") + ")");
-        logAndAddToPasteBinBuffer("messagecooldown: " + this.plugin.getConfig().getString("messagecooldown", "NOT SET"));
-        logAndAddToPasteBinBuffer("teleportcooldown: " + this.plugin.getConfig().getString("teleportcooldown", "NOT SET"));
-        logAndAddToPasteBinBuffer("worldnameprefix: " + this.plugin.getConfig().getString("worldnameprefix", "NOT SET"));
-        logAndAddToPasteBinBuffer("opfallback: " + this.plugin.getConfig().getString("opfallback", "NOT SET"));
-        logAndAddToPasteBinBuffer("disableautoheal: " + this.plugin.getConfig().getString("disableautoheal", "NOT SET"));
-        logAndAddToPasteBinBuffer("fakepvp: " + this.plugin.getConfig().getString("fakepvp", "NOT SET"));
+        logAndAddToPasteBinBuffer("Dumping Config Values: (version " + this.plugin.getMVConfig().getString("version", "NOT SET") + ")");
+        logAndAddToPasteBinBuffer("messagecooldown: " + this.plugin.getMVConfig().getString("messagecooldown", "NOT SET"));
+        logAndAddToPasteBinBuffer("teleportcooldown: " + this.plugin.getMVConfig().getString("teleportcooldown", "NOT SET"));
+        logAndAddToPasteBinBuffer("worldnameprefix: " + this.plugin.getMVConfig().getString("worldnameprefix", "NOT SET"));
+        logAndAddToPasteBinBuffer("opfallback: " + this.plugin.getMVConfig().getString("opfallback", "NOT SET"));
+        logAndAddToPasteBinBuffer("disableautoheal: " + this.plugin.getMVConfig().getString("disableautoheal", "NOT SET"));
+        logAndAddToPasteBinBuffer("fakepvp: " + this.plugin.getMVConfig().getString("fakepvp", "NOT SET"));
         logAndAddToPasteBinBuffer("Special Code: FRN001");
 
         MVVersionRequestEvent versionEvent = new MVVersionRequestEvent(pasteBinBuffer);

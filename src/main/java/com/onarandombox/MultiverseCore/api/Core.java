@@ -25,7 +25,7 @@ public interface Core {
      *
      * @return The Multiverse config file.
      */
-    public Configuration getConfig();
+    public Configuration getMVConfig();
 
     /**
      * Gets the Banking system that Multiverse-Core has hooked into.
