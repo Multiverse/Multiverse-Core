@@ -12,7 +12,6 @@ import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.commands.*;
-import com.onarandombox.MultiverseCore.configuration.DefaultConfig;
 import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
 import com.onarandombox.MultiverseCore.destination.*;
@@ -28,7 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -36,7 +35,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -52,6 +50,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // to worlds.
     public static boolean EnforceAccess;
     public static boolean EnforceGameModes;
+    public static boolean PrefixChat;
+    public static boolean BedRespawn;
 
 
     @Override
@@ -89,7 +89,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private MVPermissions ph;
 
     // Configurations
-    private Configuration configMV = null;
     private FileConfiguration multiverseConfig = null;
 
     private WorldManager worldManager = new WorldManager(this);
@@ -123,10 +122,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
-    }
-
-    public Configuration getMVConfig() {
-        return this.configMV;
     }
 
     public FileConfiguration getMVConfiguration() {
@@ -259,40 +254,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /** Load the Configuration files OR create the default config files. */
     public void loadConfigs() {
-
-        // Call the defaultConfiguration class to create the config files if they don't already exist.
-        new DefaultConfig(getDataFolder(), "config.yml", this.migrator);
-        new DefaultConfig(getDataFolder(), "worlds.yml", this.migrator);
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-
+        Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
+        this.multiverseConfig.setDefaults(coreDefaults);
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
-        // Now attempt to Load the configurations.
-        try {
-            this.configMV.load();
-            log(Level.INFO, "- Multiverse Config -- Loaded");
-        } catch (Exception e) {
-            log(Level.INFO, "- Failed to load config.yml");
-        }
-
-        try {
-            this.worldManager.propagateConfigFile();
-            log(Level.INFO, "- World Config -- Loaded");
-        } catch (Exception e) {
-            log(Level.INFO, "- Failed to load worlds.yml");
-        }
-
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
-        GlobalDebug = this.configMV.getInt("debug", 0);
+        GlobalDebug = this.multiverseConfig.getInt("debug", 0);
         // Lets cache this value due to the fact that it will be accessed many times.
-        EnforceAccess = this.configMV.getBoolean("enforceaccess", false);
-        EnforceGameModes = this.configMV.getBoolean("enforcegamemodes", true);
-        this.configMV.setProperty("enforceaccess", EnforceAccess);
-        this.configMV.setProperty("enforcegamemodes", EnforceAccess);
+        EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
+        EnforceGameModes = this.multiverseConfig.getBoolean("enforcegamemodes", true);
+        PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
+        BedRespawn = this.multiverseConfig.getBoolean("bedrespawn", true);
+        this.multiverseConfig.set("enforceaccess", EnforceAccess);
+        this.multiverseConfig.set("enforcegamemodes", EnforceAccess);
         this.messaging = new MVMessaging(this);
-        this.messaging.setCooldown(this.configMV.getInt("messagecooldown", 5000));
-        this.configMV.save();
+        this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
+        try {
+            this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
+        } catch (IOException e) {
+            this.log(Level.SEVERE, "Could not save Multiverse config. Please check your file permissions.");
+        }
     }
 
     public MVMessaging getMessaging() {
@@ -381,7 +364,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (this.playerSessions.containsKey(player.getName())) {
             return this.playerSessions.get(player.getName());
         } else {
-            this.playerSessions.put(player.getName(), new MVPlayerSession(player, this.configMV, this));
+            this.playerSessions.put(player.getName(), new MVPlayerSession(player, this.multiverseConfig, this));
             return this.playerSessions.get(player.getName());
         }
     }

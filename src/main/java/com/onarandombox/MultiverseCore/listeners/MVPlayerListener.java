@@ -37,9 +37,9 @@ public class MVPlayerListener extends PlayerListener {
         if (event.isCancelled()) {
             return;
         }
-        // Check whether the Server is set to prefix the chat with the World name. If not we do nothing, if so we need to check if the World has an Alias.
-        if (this.plugin.getMVConfig().getBoolean("worldnameprefix", true)) {
-            this.plugin.getMVConfig().save();
+        // Check whether the Server is set to prefix the chat with the World name.
+        // If not we do nothing, if so we need to check if the World has an Alias.
+        if (MultiverseCore.PrefixChat) {
             String world = event.getPlayer().getWorld().getName();
             String prefix = "";
             // If we're not a MV world, don't do anything
@@ -62,7 +62,7 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
 
-        if (event.isBedSpawn() && this.plugin.getMVConfig().getBoolean("bedrespawn", true)) {
+        if (MultiverseCore.BedRespawn) {
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }

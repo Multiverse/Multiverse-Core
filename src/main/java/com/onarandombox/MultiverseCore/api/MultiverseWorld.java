@@ -424,4 +424,18 @@ public interface MultiverseWorld {
      * @return
      */
     public boolean clearList(String property);
+
+    /**
+     * Sets whether or not a world will autoheal players if the difficulty is on peaceful.
+     *
+     * @param heal True if the world will heal.
+     */
+    public void setAutoHeal(boolean heal);
+
+    /**
+     * Gets whether or not a world will autoheal players if the difficulty is on peaceful.
+     *
+     * @return True if the world should heal (default), false if not.
+     */
+    public boolean getAutoHeal();
 }

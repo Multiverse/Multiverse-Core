@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
@@ -82,7 +83,7 @@ public class MVEntityListener extends EntityListener {
             MultiverseWorld world = this.worldManager.getMVWorld(w.getName());
 
             if (attacker instanceof Player) {
-                if (!world.isPVPEnabled() && this.plugin.getMVConfig().getBoolean("fakepvp", false)) {
+                if (!world.isPVPEnabled() && world.getFakePVP()) {
                     ((Player) attacker).sendMessage(ChatColor.RED + "PVP is disabled in this World.");
                     event.setCancelled(true);
                 }
@@ -96,7 +97,8 @@ public class MVEntityListener extends EntityListener {
             return;
         }
         RegainReason reason = event.getRegainReason();
-        if (reason == RegainReason.REGEN && this.plugin.getMVConfig().getBoolean("disableautoheal", false)) {
+        MultiverseWorld world = this.worldManager.getMVWorld(event.getEntity().getLocation().getWorld());
+        if (world != null && reason == RegainReason.REGEN && !world.getAutoHeal()) {
             event.setCancelled(true);
         }
     }

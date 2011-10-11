@@ -21,14 +21,6 @@ import org.bukkit.util.config.Configuration;
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
 public interface Core {
-    /**
-     * Gets the Multiverse config file.
-     * Now Deprecated, use {@link #getMVConfiguration()}
-     *
-     * @return The Multiverse config file.
-     */
-    @Deprecated
-    public Configuration getMVConfig();
 
     /**
      * Gets the Multiverse config file.

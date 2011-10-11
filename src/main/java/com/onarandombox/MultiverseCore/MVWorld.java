@@ -11,11 +11,14 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.EnglishChatColor;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.util.config.Configuration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +29,8 @@ import java.util.logging.Level;
 public class MVWorld implements MultiverseWorld {
 
     private MultiverseCore plugin; // Hold the Plugin Instance.
-    private Configuration config; // Hold the Configuration File.
+    private FileConfiguration config; // Hold the Configuration File.
+    private ConfigurationSection worldSection; // Holds the section of the config file for this world.
 
     private World world; // The World Instance.
     private Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
@@ -63,7 +67,7 @@ public class MVWorld implements MultiverseWorld {
     private Location spawnLocation;
     private boolean isHidden = false;
 
-    public MVWorld(World world, Configuration config, MultiverseCore instance, Long seed, String generatorString) {
+    public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
         this.plugin = instance;
 
@@ -75,40 +79,41 @@ public class MVWorld implements MultiverseWorld {
 
         // Initialize our lists
         this.initLists();
-
+        worldSection = config.getConfigurationSection("worlds." + this.name);
         // Write these files to the config (once it's saved)
         if (generatorString != null) {
-            config.setProperty("worlds." + this.name + ".generator", generatorString);
+            worldSection.set("generator", generatorString);
         }
         if (seed != null) {
-            config.setProperty("worlds." + this.name + ".seed", this.seed);
+            worldSection.set("worlds." + this.name + "seed", this.seed);
         }
-        config.setProperty("worlds." + this.name + ".environment", this.environment.toString());
+        worldSection.set("worlds." + this.name + "environment", this.environment.toString());
+
 
         // Set local values that CAN be changed by the user
-        this.setAlias(config.getString("worlds." + this.name + ".alias.name", ""));
-        this.setColor(config.getString("worlds." + this.name + ".alias.color", ChatColor.WHITE.toString()));
-        this.setFakePVPMode(config.getBoolean("worlds." + this.name + ".fakepvp", false));
-        this.setPVPMode(config.getBoolean("worlds." + this.name + ".pvp", true));
-        this.setScaling(config.getDouble("worlds." + this.name + ".scale", this.getDefaultScale(this.environment)));
-        this.setRespawnToWorld(config.getString("worlds." + this.name + ".respawnworld", ""));
-        this.setEnableWeather(config.getBoolean("worlds." + this.name + ".allowweather", true));
-        this.setDifficulty(config.getString("worlds." + this.name + ".difficulty", "1"));
+        this.setAlias(worldSection.getString("alias.name", ""));
+        this.setColor(worldSection.getString("alias.color", ChatColor.WHITE.toString()));
+        this.setFakePVPMode(worldSection.getBoolean("fakepvp", false));
+        this.setPVPMode(worldSection.getBoolean("pvp", true));
+        this.setScaling(worldSection.getDouble("scale", this.getDefaultScale(this.environment)));
+        this.setRespawnToWorld(worldSection.getString("respawnworld", ""));
+        this.setEnableWeather(worldSection.getBoolean("allowweather", true));
+        this.setDifficulty(worldSection.getString("difficulty", "1"));
 
-        this.setAllowAnimalSpawn(config.getBoolean("worlds." + this.name + ".animals.spawn", true));
-        this.setAllowMonsterSpawn(config.getBoolean("worlds." + this.name + ".monsters.spawn", true));
-        this.setPrice(config.getDouble("worlds." + this.name + ".entryfee.amount", 0.0));
-        this.setCurrency(config.getInt("worlds." + this.name + ".entryfee.currency", -1));
-        this.setHunger(config.getBoolean("worlds." + this.name + ".hunger", true));
-        this.setHidden(config.getBoolean("worlds." + this.name + ".hidden", false));
+        this.setAllowAnimalSpawn(worldSection.getBoolean("animals.spawn", true));
+        this.setAllowMonsterSpawn(worldSection.getBoolean("monsters.spawn", true));
+        this.setPrice(worldSection.getDouble("entryfee.amount", 0.0));
+        this.setCurrency(worldSection.getInt("entryfee.currency", -1));
+        this.setHunger(worldSection.getBoolean("hunger", true));
+        this.setHidden(worldSection.getBoolean("hidden", false));
         this.getMobExceptions();
 
-        this.setGameMode(config.getString("worlds." + this.name + ".gamemode", GameMode.SURVIVAL.toString()));
+        this.setGameMode(worldSection.getString("gamemode", GameMode.SURVIVAL.toString()));
 
-        this.setKeepSpawnInMemory(config.getBoolean("worlds." + this.name + ".keepspawninmemory", true));
+        this.setKeepSpawnInMemory(worldSection.getBoolean("keepspawninmemory", true));
 
-        this.getWorldBlacklist().addAll(config.getStringList("worlds." + this.name + ".worldblacklist", new ArrayList<String>()));
-        this.translateTempSpawn(config);
+        this.getWorldBlacklist().addAll(worldSection.getList("worldblacklist", new ArrayList<String>()));
+        this.translateTempSpawn(worldSection);
         this.readSpawnFromConfig(this.getCBWorld());
         this.canSave = true;
         saveConfig();
@@ -138,7 +143,7 @@ public class MVWorld implements MultiverseWorld {
             this.getCBWorld().setStorm(false);
             this.getCBWorld().setThundering(false);
         }
-        this.config.setProperty("worlds." + this.name + ".allowweather", weather);
+        this.worldSection.set("allowweather", weather);
         saveConfig();
     }
 
@@ -168,8 +173,8 @@ public class MVWorld implements MultiverseWorld {
         this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allWorlds);
     }
 
-    private void translateTempSpawn(Configuration config) {
-        String tempspawn = config.getString("worlds." + this.name + ".tempspawn", "");
+    private void translateTempSpawn(ConfigurationSection section) {
+        String tempspawn = section.getString("tempspawn", "");
         if (tempspawn.length() > 0) {
             String[] coordsString = tempspawn.split(":");
             if (coordsString.length >= 3) {
@@ -186,7 +191,7 @@ public class MVWorld implements MultiverseWorld {
                 this.plugin.log(Level.WARNING, "A MV1 spawn value was found, but it could not be migrated. Format Error. Sorry.");
             }
 
-            this.config.removeProperty("worlds." + this.name + ".tempspawn");
+            this.worldSection.set("tempspawn", null);
         }
     }
 
@@ -196,13 +201,13 @@ public class MVWorld implements MultiverseWorld {
 
     private void getMobExceptions() {
         List<String> temp;
-        temp = this.config.getStringList("worlds." + this.name + ".animals.exceptions", new ArrayList<String>());
+        temp = this.worldSection.getList("animals.exceptions", new ArrayList<String>());
         // Add Animals to the exclusion list
 
         for (String s : temp) {
             this.masterList.get("animals").add(s.toUpperCase());
         }
-        temp = this.config.getStringList("worlds." + this.name + ".monsters.exceptions", new ArrayList<String>());
+        temp = this.worldSection.getList("monsters.exceptions", new ArrayList<String>());
         // Add Monsters to the exclusion list
         for (String s : temp) {
             this.masterList.get("monsters").add(s.toUpperCase());
@@ -227,7 +232,7 @@ public class MVWorld implements MultiverseWorld {
         } else {
             return false;
         }
-        this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), new ArrayList<String>());
+        this.worldSection.set(property.toLowerCase(), new ArrayList<String>());
         this.saveConfig();
         return true;
     }
@@ -238,11 +243,11 @@ public class MVWorld implements MultiverseWorld {
 
             if (property.equalsIgnoreCase("animals") || property.equalsIgnoreCase("monsters")) {
                 this.masterList.get(property).add(value.toUpperCase());
-                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase() + ".exceptions", this.masterList.get(property));
+                this.worldSection.set(property.toLowerCase() + ".exceptions", this.masterList.get(property));
                 this.syncMobs();
             } else {
                 this.masterList.get(property).add(value);
-                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
+                this.worldSection.set(property.toLowerCase(), this.masterList.get(property));
             }
             saveConfig();
             return true;
@@ -256,11 +261,11 @@ public class MVWorld implements MultiverseWorld {
 
             if (property.equalsIgnoreCase("animals") || property.equalsIgnoreCase("monsters")) {
                 this.masterList.get(property).remove(value.toUpperCase());
-                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase() + ".exceptions", this.masterList.get(property));
+                this.worldSection.set("" + property.toLowerCase() + ".exceptions", this.masterList.get(property));
                 this.syncMobs();
             } else {
                 this.masterList.get(property).remove(value);
-                this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
+                this.worldSection.set("" + property.toLowerCase(), this.masterList.get(property));
             }
             saveConfig();
             return true;
@@ -320,7 +325,7 @@ public class MVWorld implements MultiverseWorld {
     public void setKeepSpawnInMemory(boolean value) {
         this.world.setKeepSpawnInMemory(value);
         this.keepSpawnInMemory = value;
-        this.config.setProperty("worlds." + this.name + ".keepspawninmemory", value);
+        this.worldSection.set("keepspawninmemory", value);
         saveConfig();
     }
 
@@ -417,7 +422,7 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public void setAlias(String alias) {
         this.alias = alias;
-        this.config.setProperty("worlds." + this.name + ".alias.name", alias);
+        this.worldSection.set("alias.name", alias);
         saveConfig();
     }
 
@@ -431,7 +436,7 @@ public class MVWorld implements MultiverseWorld {
         this.allowAnimals = animals;
         // If animals are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
-        this.config.setProperty("worlds." + this.name + ".animals.spawn", animals);
+        this.worldSection.set("animals.spawn", animals);
         saveConfig();
         this.syncMobs();
     }
@@ -451,7 +456,7 @@ public class MVWorld implements MultiverseWorld {
         this.allowMonsters = monsters;
         // If monsters are a boolean, then we can turn them on or off on the server
         // If there are ANY exceptions, there will be something spawning, so turn them on
-        this.config.setProperty("worlds." + this.name + ".monsters.spawn", monsters);
+        this.worldSection.set("monsters.spawn", monsters);
         saveConfig();
         this.syncMobs();
     }
@@ -474,7 +479,7 @@ public class MVWorld implements MultiverseWorld {
             this.world.setPVP(pvp);
         }
         this.pvp = pvp;
-        this.config.setProperty("worlds." + this.name + ".pvp", pvp);
+        this.worldSection.set("pvp", pvp);
         saveConfig();
     }
 
@@ -498,13 +503,13 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public void setHidden(boolean hidden) {
         this.isHidden = hidden;
-        this.config.setProperty("worlds." + this.name + ".hidden", hidden);
+        this.worldSection.set("hidden", hidden);
         saveConfig();
     }
 
     public void setFakePVPMode(Boolean fakePVPMode) {
         this.fakePVP = fakePVPMode;
-        this.config.setProperty("worlds." + this.name + ".fakepvp", this.fakePVP);
+        this.worldSection.set("fakepvp", this.fakePVP);
         // Now that we've set PVP mode, make sure to go through the normal setting too!
         // This method will perform the save for us to eliminate one write.
         this.setPVPMode(this.pvp);
@@ -526,7 +531,7 @@ public class MVWorld implements MultiverseWorld {
             scaling = 1.0;
         }
         this.scaling = scaling;
-        this.config.setProperty("worlds." + this.name + ".scale", scaling);
+        this.worldSection.set("scale", scaling);
         saveConfig();
     }
 
@@ -537,7 +542,7 @@ public class MVWorld implements MultiverseWorld {
             return false;
         }
         this.aliasColor = color.getColor();
-        this.config.setProperty("worlds." + this.name + ".alias.color", color.getText());
+        this.worldSection.set("alias.color", color.getText());
         saveConfig();
         return true;
     }
@@ -554,7 +559,7 @@ public class MVWorld implements MultiverseWorld {
     public boolean clearList(String property) {
         if (this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
-            this.config.setProperty("worlds." + this.name + "." + property.toLowerCase(), this.masterList.get(property));
+            this.worldSection.set(property.toLowerCase(), this.masterList.get(property));
             this.syncMobs();
             saveConfig();
             return true;
@@ -578,7 +583,7 @@ public class MVWorld implements MultiverseWorld {
     public boolean setRespawnToWorld(String respawnToWorld) {
         if (this.plugin.getServer().getWorld(respawnToWorld) != null) {
             this.respawnWorld = respawnToWorld;
-            this.config.setProperty("worlds." + this.name + ".respawnworld", respawnToWorld);
+            this.worldSection.set("respawnworld", respawnToWorld);
             saveConfig();
             return true;
         }
@@ -603,14 +608,14 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public void setCurrency(int currency) {
         this.currency = currency;
-        config.setProperty("worlds." + this.name + ".entryfee.currency", currency);
+        this.worldSection.set("entryfee.currency", currency);
         saveConfig();
     }
 
     @Override
     public void setPrice(double price) {
         this.price = price;
-        config.setProperty("worlds." + this.name + ".entryfee.amount", price);
+        this.worldSection.set("entryfee.amount", price);
         saveConfig();
     }
 
@@ -627,7 +632,11 @@ public class MVWorld implements MultiverseWorld {
 
     private void saveConfig() {
         if (this.canSave) {
-            this.config.save();
+            try {
+                this.config.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+            } catch (IOException e) {
+                this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your filesystem permissions.");
+            }
         }
     }
 
@@ -649,7 +658,7 @@ public class MVWorld implements MultiverseWorld {
             return false;
         }
         this.setGameMode(mode);
-        config.setProperty("worlds." + this.name + ".gamemode", mode.getValue());
+        this.worldSection.set("gamemode", mode.getValue());
         saveConfig();
         return true;
 
@@ -658,7 +667,7 @@ public class MVWorld implements MultiverseWorld {
     private boolean setGameMode(GameMode mode) {
 
         this.gameMode = mode;
-        config.setProperty("worlds." + this.name + ".gamemode", this.gameMode.toString());
+        this.worldSection.set("gamemode", this.gameMode.toString());
         saveConfig();
 
         if (MultiverseCore.EnforceGameModes) {
@@ -687,7 +696,7 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public void setHunger(boolean hunger) {
         this.hunger = hunger;
-        config.setProperty("worlds." + this.name + ".hunger", this.hunger);
+        this.worldSection.set("hunger", this.hunger);
         saveConfig();
     }
 
@@ -699,22 +708,22 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public void setSpawnLocation(Location l) {
         this.getCBWorld().setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
-        config.setProperty("worlds." + this.name + ".spawn.x", l.getX());
-        config.setProperty("worlds." + this.name + ".spawn.y", l.getY());
-        config.setProperty("worlds." + this.name + ".spawn.z", l.getZ());
-        config.setProperty("worlds." + this.name + ".spawn.pitch", l.getPitch());
-        config.setProperty("worlds." + this.name + ".spawn.yaw", l.getYaw());
+        this.worldSection.set("spawn.x", l.getX());
+        this.worldSection.set("spawn.y", l.getY());
+        this.worldSection.set("spawn.z", l.getZ());
+        this.worldSection.set("spawn.pitch", l.getPitch());
+        this.worldSection.set("spawn.yaw", l.getYaw());
         this.getCBWorld().setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
         this.spawnLocation = l.clone();
         saveConfig();
     }
 
     private void readSpawnFromConfig(World w) {
-        double x = config.getDouble("worlds." + this.name + ".spawn.x", w.getSpawnLocation().getX());
-        double y = config.getDouble("worlds." + this.name + ".spawn.y", w.getSpawnLocation().getY());
-        double z = config.getDouble("worlds." + this.name + ".spawn.z", w.getSpawnLocation().getZ());
-        float pitch = (float) config.getDouble("worlds." + this.name + ".spawn.pitch", w.getSpawnLocation().getPitch());
-        float yaw = (float) config.getDouble("worlds." + this.name + ".spawn.yaw", w.getSpawnLocation().getYaw());
+        double x = config.getDouble("spawn.x", w.getSpawnLocation().getX());
+        double y = config.getDouble("spawn.y", w.getSpawnLocation().getY());
+        double z = config.getDouble("spawn.z", w.getSpawnLocation().getZ());
+        float pitch = (float) config.getDouble("spawn.pitch", w.getSpawnLocation().getPitch());
+        float yaw = (float) config.getDouble("spawn.yaw", w.getSpawnLocation().getYaw());
         this.spawnLocation = new Location(w, x, y, z, yaw, pitch);
     }
 
@@ -746,8 +755,20 @@ public class MVWorld implements MultiverseWorld {
             return false;
         }
         this.getCBWorld().setDifficulty(worlddiff);
-        config.setProperty("worlds." + this.name + ".difficulty", worlddiff.getValue());
+        this.worldSection.set("difficulty", worlddiff.getValue());
         saveConfig();
         return true;
+    }
+
+    // TODO: Implment this, I'm going to bed tonight.
+    @Override
+    public boolean getAutoHeal() {
+        return true;
+    }
+
+    // TODO: Implment this, I'm going to bed tonight.
+    @Override
+    public void setAutoHeal(boolean heal) {
+
     }
 }

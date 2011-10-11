@@ -14,16 +14,19 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.Configuration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -35,7 +38,7 @@ public class WorldManager implements MVWorldManager {
     private MultiverseCore plugin;
     private PurgeWorlds worldPurger;
     private HashMap<String, MultiverseWorld> worlds;
-    private Configuration configWorlds = null;
+    private FileConfiguration configWorlds = null;
 
     public WorldManager(MultiverseCore core) {
 
@@ -126,11 +129,16 @@ public class WorldManager implements MVWorldManager {
      * @return True if success, false if failure.
      */
     public boolean removeWorldFromConfig(String name) {
-        if (this.configWorlds.getProperty("worlds." + name) != null) {
+        if (this.configWorlds.get("worlds." + name) != null) {
             unloadWorld(name);
             this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
-            this.configWorlds.removeProperty("worlds." + name);
-            this.configWorlds.save();
+            this.configWorlds.set("worlds." + name, null);
+            try {
+                this.configWorlds.save(new File(this.plugin.getDataFolder(), "config.yml"));
+            } catch (IOException e) {
+                this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your settings.");
+            }
+
             return true;
         } else {
             this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
@@ -161,7 +169,7 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Grab all the Worlds from the Config.
-        List<String> worldKeys = this.configWorlds.getKeys("worlds");
+        Set<String> worldKeys = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
 
         // Check that the list is not null and that the config contains the world
         if ((worldKeys != null) && (worldKeys.contains(name))) {
@@ -349,7 +357,7 @@ public class WorldManager implements MVWorldManager {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
         // Grab all the Worlds from the Config.
-        List<String> worldKeys = this.configWorlds.getKeys("worlds");
+        Set<String> worldKeys = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
 
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
@@ -413,14 +421,8 @@ public class WorldManager implements MVWorldManager {
      *
      * @return A loaded configuration.
      */
-    public Configuration loadWorldConfig(File file) {
-        this.configWorlds = new Configuration(file);
+    public FileConfiguration loadWorldConfig(File file) {
+        this.configWorlds = YamlConfiguration.loadConfiguration(file);
         return this.configWorlds;
     }
-
-    /** Reload the Config File */
-    public void propagateConfigFile() {
-        this.configWorlds.load();
-    }
-
 }
