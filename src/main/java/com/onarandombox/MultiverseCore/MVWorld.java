@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.EnglishChatColor;
+import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.configuration.ConfigurationSection;
@@ -347,8 +347,7 @@ public class MVWorld implements MultiverseWorld {
             return true;
         }
         if (name.equalsIgnoreCase("aliascolor") || name.equalsIgnoreCase("color")) {
-            this.setColor(value);
-            return true;
+            return this.setColor(value);
         }
         if (name.equalsIgnoreCase("currency") || name.equalsIgnoreCase("curr")) {
             try {
@@ -361,6 +360,7 @@ public class MVWorld implements MultiverseWorld {
         if (name.equalsIgnoreCase("price")) {
             try {
                 this.setPrice(Double.parseDouble(value));
+                return true;
             } catch (Exception e) {
                 return false;
             }
@@ -533,6 +533,7 @@ public class MVWorld implements MultiverseWorld {
         if (scaling <= 0) {
             // Disallow negative or 0 scalings.
             scaling = 1.0;
+            this.plugin.log(Level.WARNING, "Someone tried to set a scale <= 0, defaulting to 1.");
             success = false;
         }
         this.scaling = scaling;
@@ -554,7 +555,6 @@ public class MVWorld implements MultiverseWorld {
     }
 
     public boolean isValidAliasColor(String aliasColor) {
-        System.out.print("Checking color... " + aliasColor);
         return (EnglishChatColor.fromString(aliasColor) != null);
     }
 

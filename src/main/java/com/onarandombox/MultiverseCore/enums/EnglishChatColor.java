@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.utils;
+package com.onarandombox.MultiverseCore.enums;
 
 import org.bukkit.ChatColor;
 
@@ -45,6 +45,14 @@ public enum EnglishChatColor {
 
     public ChatColor getColor() {
         return this.color;
+    }
+
+    public static String getAllColors() {
+        String buffer = "";
+        for (EnglishChatColor c : EnglishChatColor.values()) {
+            buffer += c.getColor() + c.getText() + " ";
+        }
+        return buffer;
     }
 
     public static EnglishChatColor fromString(String text) {
