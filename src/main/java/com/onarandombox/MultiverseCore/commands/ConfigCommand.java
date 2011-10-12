@@ -45,7 +45,17 @@ public class ConfigCommand extends MultiverseCommand {
                 return;
             }
         } else {
-            if (ConfigProperty.valueOf(args.get(0).toLowerCase()) != null) {
+            ConfigProperty property = null;
+            try {
+                property = ConfigProperty.valueOf(args.get(0).toLowerCase());
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " you can't set " + ChatColor.AQUA + args.get(0));
+                sender.sendMessage(ChatColor.GREEN + "Valid values are:");
+                sender.sendMessage(ConfigProperty.getAllValues());
+                return;
+            }
+
+            if (property != null) {
                 try {
                     this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(0)));
                 } catch (Exception e) {
