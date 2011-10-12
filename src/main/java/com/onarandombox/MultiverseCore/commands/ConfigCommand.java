@@ -40,20 +40,26 @@ public class ConfigCommand extends MultiverseCommand {
         if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
             try {
                 this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
-                this.plugin.loadConfigs();
             } catch (NumberFormatException e) {
                 sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be an integer!");
+                return;
             }
         } else {
             if (ConfigProperty.valueOf(args.get(0).toLowerCase()) != null) {
                 try {
                     this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(0)));
-                    this.plugin.loadConfigs();
                 } catch (Exception e) {
                     sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be true or false!");
+                    return;
                 }
 
             }
+        }
+        if (this.plugin.saveMVConfigs()) {
+            sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
+            this.plugin.loadConfigs();
+        } else {
+            sender.sendMessage(ChatColor.RED + "FAIL!" + ChatColor.WHITE + " Check your console for details!");
         }
     }
 }

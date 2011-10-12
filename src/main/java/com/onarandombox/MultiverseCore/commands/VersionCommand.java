@@ -55,13 +55,14 @@ public class VersionCommand extends MultiverseCommand {
         logAndAddToPasteBinBuffer("Economy being used: " + this.plugin.getBank().getEconUsed());
         logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getMVPerms().getType());
         logAndAddToPasteBinBuffer("Dumping Config Values: (version " + this.plugin.getMVConfiguration().getString("version", "NOT SET") + ")");
-        logAndAddToPasteBinBuffer("messagecooldown: " + this.plugin.getMVConfiguration().getString("messagecooldown", "NOT SET"));
-        logAndAddToPasteBinBuffer("teleportcooldown: " + this.plugin.getMVConfiguration().getString("teleportcooldown", "NOT SET"));
-        logAndAddToPasteBinBuffer("worldnameprefix: " + this.plugin.getMVConfiguration().getString("worldnameprefix", "NOT SET"));
-        logAndAddToPasteBinBuffer("opfallback: " + this.plugin.getMVConfiguration().getString("opfallback", "NOT SET"));
-        logAndAddToPasteBinBuffer("disableautoheal: " + this.plugin.getMVConfiguration().getString("disableautoheal", "NOT SET"));
-        logAndAddToPasteBinBuffer("fakepvp: " + this.plugin.getMVConfiguration().getString("fakepvp", "NOT SET"));
-        logAndAddToPasteBinBuffer("Special Code: FRN001");
+        logAndAddToPasteBinBuffer("messagecooldown: " + "Not yet IMPLEMENTED");
+        logAndAddToPasteBinBuffer("teleportcooldown: " + "Not yet IMPLEMENTED");
+        logAndAddToPasteBinBuffer("worldnameprefix: " + MultiverseCore.PrefixChat);
+        logAndAddToPasteBinBuffer("enforceaccess: " + MultiverseCore.EnforceAccess);
+        logAndAddToPasteBinBuffer("enforcegamemodes: " + MultiverseCore.EnforceGameModes);
+        logAndAddToPasteBinBuffer("bedrespawn: " + MultiverseCore.BedRespawn);
+        logAndAddToPasteBinBuffer("debug: " + MultiverseCore.GlobalDebug);
+        logAndAddToPasteBinBuffer("Special Code: FRN002");
 
         MVVersionRequestEvent versionEvent = new MVVersionRequestEvent(pasteBinBuffer);
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);

@@ -274,11 +274,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.multiverseConfig.set("debug", GlobalDebug);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
-        try {
-            this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
-        } catch (IOException e) {
-            this.log(Level.SEVERE, "Could not save Multiverse config. Please check your file permissions.");
-        }
+        this.saveMVConfigs();
     }
 
     public MVMessaging getMessaging() {
@@ -610,4 +606,25 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.playerListener;
     }
 
+    public boolean loadMVConfigs() {
+        return false;
+    }
+
+    public boolean saveMVConfigs() {
+        boolean retVal = true;
+        try {
+            this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
+        } catch (IOException e) {
+            retVal = false;
+            this.log(Level.SEVERE, "Could not save Multiverse config.yml config. Please check your file permissions.");
+        }
+
+        try {
+            this.multiverseConfig.save(new File(getDataFolder(), "worlds.yml"));
+        } catch (IOException e) {
+            retVal = false;
+            this.log(Level.SEVERE, "Could not save Multiverse worlds.yml config. Please check your file permissions.");
+        }
+        return retVal;
+    }
 }
