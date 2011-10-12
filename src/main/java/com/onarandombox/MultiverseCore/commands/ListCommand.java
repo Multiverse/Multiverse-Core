@@ -40,7 +40,6 @@ public class ListCommand extends MultiverseCommand {
         String output = ChatColor.LIGHT_PURPLE + "Worlds which you can view:\n";
         for (MultiverseWorld world : this.plugin.getMVWorldManager().getMVWorlds()) {
 
-
             if (p != null && (!this.plugin.getMVPerms().canEnterWorld(p, world))) {
                 continue;
             }
@@ -57,14 +56,14 @@ public class ListCommand extends MultiverseCommand {
             String outputCache = world.getColoredWorldString() + ChatColor.WHITE + " - " + color + world.getEnvironment() + " \n";
             if (world.isHidden()) {
                 // TODO: Add an actual permission for this.
-                if (p != null && !p.isOp()) {
-                    continue;
+                if (p == null || p.isOp()) {
+                    // Prefix hidden worlds with an "[H]"
+                    outputCache = ChatColor.GRAY + "[H]" + outputCache;
+                    output += outputCache;
                 }
-                // Prefix hidden worlds with an "[H]"
-                outputCache = ChatColor.GRAY + "[H]" + outputCache;
+            } else {
+                output += outputCache;
             }
-            output += outputCache;
-
         }
         String[] response = output.split("\n");
         for (String msg : response) {

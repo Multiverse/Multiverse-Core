@@ -47,6 +47,9 @@ public class MVPlayerListener extends PlayerListener {
                 return;
             }
             MultiverseWorld mvworld = this.worldManager.getMVWorld(world);
+            if(mvworld.isHidden()) {
+                return;
+            }
             prefix = mvworld.getColoredWorldString();
             String format = event.getFormat();
             event.setFormat("[" + prefix + "]" + format);

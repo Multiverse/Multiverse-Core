@@ -200,6 +200,9 @@ public class MVWorld implements MultiverseWorld {
     }
 
     public String getColoredWorldString() {
+        if (this.getColor() == null) {
+            return this.getAlias() + ChatColor.WHITE;
+        }
         return this.getColor() + this.getAlias() + ChatColor.WHITE;
     }
 
