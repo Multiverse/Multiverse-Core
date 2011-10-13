@@ -49,11 +49,15 @@ public class SafeTTeleporter {
         return null;
     }
 
-    private Location getSafeLocation(Location l) {
+    public Location getSafeLocation(Location l) {
+        return this.getSafeLocation(l, 6, 9);
+    }
+
+    public Location getSafeLocation(Location l, int tolerance, int radius) {
 
         // Check around the player first in a configurable radius:
         // TODO: Make this configurable
-        Location safe = checkAboveAndBelowLocation(l, 6, 9);
+        Location safe = checkAboveAndBelowLocation(l, tolerance, radius);
         if (safe != null) {
             safe.setX(safe.getBlockX() + .5);
             safe.setZ(safe.getBlockZ() + .5);

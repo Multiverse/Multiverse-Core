@@ -133,12 +133,8 @@ public class WorldManager implements MVWorldManager {
             unloadWorld(name);
             this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
             this.configWorlds.set("worlds." + name, null);
-            try {
-                this.configWorlds.save(new File(this.plugin.getDataFolder(), "config.yml"));
-            } catch (IOException e) {
-                this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your settings.");
-            }
 
+            this.saveWorldsConfig();
             return true;
         } else {
             this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
@@ -432,5 +428,13 @@ public class WorldManager implements MVWorldManager {
     public FileConfiguration loadWorldConfig(File file) {
         this.configWorlds = YamlConfiguration.loadConfiguration(file);
         return this.configWorlds;
+    }
+
+    public void saveWorldsConfig() {
+        try {
+            this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+        } catch (IOException e) {
+            this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your settings.");
+        }
     }
 }

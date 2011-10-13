@@ -615,12 +615,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.log(Level.SEVERE, "Could not save Multiverse config.yml config. Please check your file permissions.");
         }
 
-        try {
-            this.multiverseConfig.save(new File(getDataFolder(), "worlds.yml"));
-        } catch (IOException e) {
-            retVal = false;
-            this.log(Level.SEVERE, "Could not save Multiverse worlds.yml config. Please check your file permissions.");
-        }
+        this.worldManager.saveWorldsConfig();
         return retVal;
     }
 }
