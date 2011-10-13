@@ -258,20 +258,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
         Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
         this.multiverseConfig.setDefaults(coreDefaults);
+        this.multiverseConfig.options().copyDefaults(true);
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
         GlobalDebug = this.multiverseConfig.getInt("debug", 0);
-        // Lets cache this value due to the fact that it will be accessed many times.
+        // Lets cache these values due to the fact that they will be accessed many times.
         EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
         EnforceGameModes = this.multiverseConfig.getBoolean("enforcegamemodes", true);
         PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
         BedRespawn = this.multiverseConfig.getBoolean("bedrespawn", true);
-        this.multiverseConfig.set("enforceaccess", EnforceAccess);
-        this.multiverseConfig.set("enforcegamemodes", EnforceGameModes);
-        this.multiverseConfig.set("bedrespawn", BedRespawn);
-        this.multiverseConfig.set("worldnameprefix", PrefixChat);
-        this.multiverseConfig.set("debug", GlobalDebug);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
         this.saveMVConfigs();

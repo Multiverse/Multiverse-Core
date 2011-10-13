@@ -28,6 +28,7 @@ public class ConfigCommand extends MultiverseCommand {
         this.addKey("mvconfig");
         this.addKey("mv conf");
         this.addKey("mvconf");
+        this.addCommandExample("All values: " + ConfigProperty.getAllValues());
         this.addCommandExample("/mv config " + ChatColor.GREEN + "debug" + ChatColor.AQUA + " 3");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "enforceaccess" + ChatColor.AQUA + " false");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "bedrespawn" + ChatColor.AQUA + " true");

@@ -1,42 +1,11 @@
-# !!!This only applies to worlds being handled by Multiverse!!!
-# If you don't see it using /mvlist this setting WILL HAVE NO EFFECT
+# This is the MV2 Config. If you mess it up, copy the values out
+# Delete it, and it will be regenerated. Then use the ingame interface
+# to add your values back.
+# A config with explanations can be found here:
+# https://github.com/Multiverse/Multiverse-Core/wiki/config.yml
 
-# How long to leave in between sending a message to the player. (NOT YET IMPLEMENTED)
-# In Milliseconds - Default is '5000' which is 5 Seconds.
-messagecooldown: 5000
-
-# How fast are people allowed to use /MVTP (NOT YET IMPLEMENTED)
-# In Milliseconds - Default is '5000' which is 5 Seconds.
-teleportcooldown: 5000
-
-# If this is set to true, we will prefix the chat with
-# a colorful world alias if it's present. If not, we simply
-# show the world's name in white. If this is false Multiverse
-# won't touch your chat
 worldnameprefix: true
-
-# If value is set to false, Multiverse will NOT enforce
-# world access permissions
-enforceaccess: false
-
-# If value is set to false, Multiverse will NOT enforce
-# world access permissions
+enforceaccess: true
 enforcegamemodes: true
-
-# If you have a world(s) that has monsters = false, and you want to disable the built
-# in autohealing, set this to true. This will have NO EFFECT if monsters = true for a given world.
-# MOVED TO PER-WORLD SETTING!!!
-# disableautoheal: false
-
-# This will use the old style of PVP prevention so you can have zones of PVP
-# Players will be notified when they punch/shoot and it's not allowed.
-# MOVED TO PER-WORLD SETTING!!!
-# fakepvp: false
-
-# When this is enabled, users will spawn at their last bed slept at. If the bed is destroyed or obstructed,
-# they will spawn according to your mvm respawn rules, and then whatever the server does.
 bedrespawn: true
-
-# This just signifies the version number so we can see what version of config you have.
-# NEVER TOUCH THIS VALUE
-version: 2.3
+version: 2.4
