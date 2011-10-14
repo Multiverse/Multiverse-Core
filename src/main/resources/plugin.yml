@@ -1,6 +1,6 @@
 name: Multiverse-Core
 main: com.onarandombox.MultiverseCore.MultiverseCore
-authors: ['Rigby', 'fernferret']
+authors: ['Rigby', 'fernferret', 'lithium3141', 'main--']
 version: maven-version-number
 commands:
   mv:
