@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.WorldManager;

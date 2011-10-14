@@ -553,8 +553,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @param p Player
      * @param l The potentially unsafe location.
      */
-    public void teleportPlayer(Player p, Location l) {
-        p.teleport(l);
+    public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
+        // This command is the override, and MUST NOT TELEPORT SAFELY
+        this.getTeleporter().safelyTeleport(teleporter, p, l, false);
     }
 
     private void checkServerProps() {

@@ -20,17 +20,18 @@ import org.bukkit.event.Event;
  * @author fernferret
  */
 public class MVTeleportEvent extends Event implements Cancellable {
-    private static final long serialVersionUID = 854826818438649269L;
     private Player teleportee;
     private CommandSender teleporter;
     private MVDestination dest;
+    private boolean useSafeTeleport;
     private boolean isCancelled;
 
-    public MVTeleportEvent(MVDestination dest, Player teleportee, CommandSender teleporter) {
+    public MVTeleportEvent(MVDestination dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
         super("SafeTTeleporter");
         this.teleportee = teleportee;
         this.teleporter = teleporter;
         this.dest = dest;
+        this.useSafeTeleport = safeTeleport;
     }
 
     /**

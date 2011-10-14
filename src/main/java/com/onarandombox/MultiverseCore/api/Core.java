@@ -13,7 +13,6 @@ import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
 
 /**
  * Multiverse 2 Core API

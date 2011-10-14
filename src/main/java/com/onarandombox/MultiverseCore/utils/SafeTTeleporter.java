@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -36,14 +37,11 @@ public class SafeTTeleporter {
      * @return
      */
     public Location getSafeBedDestination(Location bedLocation) {
-        // System.out.print(bedLocation);
         Location idealLocation = bedLocation;
         idealLocation.setY(idealLocation.getY() + 1);
         idealLocation.setX(idealLocation.getX() + .5);
         idealLocation.setZ(idealLocation.getZ() + .5);
-        // System.out.print(idealLocation);
         if (this.bs.playerCanSpawnHereSafely(idealLocation)) {
-            // System.out.print(idealLocation);
             return bedLocation;
         }
         return null;
@@ -198,27 +196,53 @@ public class SafeTTeleporter {
      * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if
      * it's not, will adjust the final destination accordingly.
      *
-     * @param e Entity to teleport
-     * @param d Destination to teleport them to
+     * @param temeporter Person who performed the teleport command.
+     * @param teleportee Entity to teleport
+     * @param d          Destination to teleport them to
      *
      * @return true for success, false for failure
      */
-    public boolean safelyTeleport(Entity e, MVDestination d) {
+    public boolean safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d) {
         if (d instanceof InvalidDestination) {
             this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
             return false;
         }
 
-        Location safeLoc = d.getLocation(e);
+        Location safeLoc = d.getLocation(teleportee);
         if (d.useSafeTeleporter()) {
-            safeLoc = this.getSafeLocation(e, d);
+            safeLoc = this.getSafeLocation(teleportee, d);
         }
 
         if (safeLoc != null) {
-            if (e.teleport(safeLoc)) {
+            if (teleportee.teleport(safeLoc)) {
                 if (!d.getVelocity().equals(new Vector(0, 0, 0))) {
-                    e.setVelocity(d.getVelocity());
+                    teleportee.setVelocity(d.getVelocity());
                 }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Safely teleport the entity to the Location. This may perform checks to
+     * see if the place is safe, and if
+     * it's not, will adjust the final destination accordingly.
+     *
+     * @param temeporter Person who issued the teleport command.
+     * @param teleportee Entity to teleport.
+     * @param location   Location to teleport them to.
+     * @param safely     Should the destination be checked for safety before teleport?
+     *
+     * @return true for success, false for failure.
+     */
+    public boolean safelyTeleport(CommandSender teleporter, Entity teleportee, Location location, boolean safely) {
+        if (safely) {
+            location = this.getSafeLocation(location);
+        }
+
+        if (location != null) {
+            if (teleportee.teleport(location)) {
                 return true;
             }
         }

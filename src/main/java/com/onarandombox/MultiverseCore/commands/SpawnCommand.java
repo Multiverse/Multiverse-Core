@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -74,10 +75,12 @@ public class SpawnCommand extends MultiverseCommand {
 
     private void spawnAccurately(Player player) {
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(player.getWorld().getName());
+        Location spawnLocation;
         if (world != null) {
-            player.teleport(world.getSpawnLocation());
+            spawnLocation = world.getSpawnLocation();
         } else {
-            player.teleport(player.getWorld().getSpawnLocation());
+            spawnLocation = player.getWorld().getSpawnLocation();
         }
+        this.plugin.getTeleporter().safelyTeleport(player, player, spawnLocation, false);
     }
 }

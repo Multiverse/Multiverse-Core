@@ -655,7 +655,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setGameMode(String gameMode) {
-        GameMode mode = null;
+        GameMode mode;
         try {
             mode = GameMode.valueOf(gameMode.toUpperCase());
         } catch (Exception e) {
@@ -768,7 +768,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setDifficulty(String difficulty) {
-        Difficulty worlddiff = null;
+        Difficulty worlddiff;
         try {
             worlddiff = Difficulty.valueOf(difficulty.toUpperCase());
         } catch (Exception e) {

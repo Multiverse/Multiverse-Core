@@ -249,9 +249,10 @@ public class WorldManager implements MVWorldManager {
         if (w != null) {
             World safeWorld = this.plugin.getServer().getWorlds().get(0);
             List<Player> ps = w.getPlayers();
+            SafeTTeleporter teleporter = this.plugin.getTeleporter();
             for (Player p : ps) {
-
-                p.teleport(safeWorld.getSpawnLocation());
+                // We're removing players forcefully from a world, they'd BETTER spawn safely.
+                teleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);
             }
         }
     }

@@ -58,7 +58,7 @@ public class ConfigCommand extends MultiverseCommand {
 
             if (property != null) {
                 try {
-                    this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(0)));
+                    this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(1)));
                 } catch (Exception e) {
                     sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be true or false!");
                     return;

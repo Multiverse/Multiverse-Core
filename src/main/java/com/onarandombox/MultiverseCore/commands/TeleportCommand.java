@@ -86,10 +86,10 @@ public class TeleportCommand extends MultiverseCommand {
         MVDestination d = df.getDestination(destinationName);
 
 
-        MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter);
+        MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter, true);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
         if (teleportEvent.isCancelled()) {
-            this.plugin.log(Level.FINE, "Someone else cancelled the SafeTTeleporter Event!!!");
+            this.plugin.log(Level.FINE, "Someone else cancelled the MVTeleport Event!!!");
             return;
         }
 
@@ -144,11 +144,12 @@ public class TeleportCommand extends MultiverseCommand {
             teleporter.sendMessage("Sorry Boss, I tried everything, but just couldn't teleport ya there!");
             return;
         }
-        if (!this.playerTeleporter.safelyTeleport(teleportee, d)) {
+        if (!this.playerTeleporter.safelyTeleport(teleporter, teleportee, d)) {
             this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + LocationManipulation.strCoordsRaw(d.getLocation(teleportee)));
             this.plugin.log(Level.FINE, "Queueing Command");
-            Class<?> paramTypes[] = {Player.class, Location.class};
+            Class<?> paramTypes[] = {CommandSender.class, Player.class, Location.class};
             List<Object> items = new ArrayList<Object>();
+            items.add(teleporter);
             items.add(teleportee);
             items.add(d.getLocation(teleportee));
             String player = "you";
@@ -157,6 +158,9 @@ public class TeleportCommand extends MultiverseCommand {
             }
             String message = ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " did not teleport " + ChatColor.AQUA + player + ChatColor.WHITE + " to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
             this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, message, "Would you like to try anyway?", "", "", 15);
+        } else {
+            // Player was teleported successfully (or the tp event was fired I should say);
+
         }
     }
 
