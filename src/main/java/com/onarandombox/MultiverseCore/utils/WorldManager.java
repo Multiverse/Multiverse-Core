@@ -438,4 +438,8 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your settings.");
         }
     }
+
+    public MultiverseWorld getSpawnWorld() {
+        return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+    }
 }

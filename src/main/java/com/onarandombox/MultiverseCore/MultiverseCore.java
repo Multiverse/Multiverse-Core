@@ -33,6 +33,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,6 +53,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
     public static boolean BedRespawn;
+    private File testConfigDirectory;
+    private PluginDescriptionFile testDescriptionFile;
 
 
     @Override
@@ -122,6 +125,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
+    }
+
+    @Override
+    public File getDataFolder() {
+        if (this.testConfigDirectory != null) {
+            return this.testConfigDirectory;
+        }
+        return super.getDataFolder();
+    }
+
+    @Override
+    public PluginDescriptionFile getDescription() {
+        if (this.testDescriptionFile != null) {
+            return this.testDescriptionFile;
+        }
+        return super.getDescription();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+
+    public void setTestMode(File configDir, PluginDescriptionFile descriptionFile) {
+        this.testConfigDirectory = configDir;
+        this.testDescriptionFile = descriptionFile;
     }
 
     public FileConfiguration getMVConfiguration() {
@@ -230,6 +255,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /** Function to Register all the Events needed. */
     private void registerEvents() {
+        System.out.print(getServer().getName());
         PluginManager pm = getServer().getPluginManager();
         // pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener, Priority.Highest, this); // Cancel Teleports if needed.
@@ -451,6 +477,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private String getAuthors() {
         String authors = "";
         ArrayList<String> auths = this.getDescription().getAuthors();
+        if(auths.size() == 0) {
+            return "";
+        }
 
         if (auths.size() == 1) {
             return auths.get(0);
