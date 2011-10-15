@@ -41,15 +41,24 @@ public class TestWorldImport {
         }
 
         public boolean matches(Object creator) {
+            System.out.println("Checking world creators.");
             if (!((WorldCreator) creator).name().equals(this.worldCreator.name())) {
+                System.out.println("Checking Names...");
                 return false;
             } else if (!((WorldCreator) creator).environment().equals(this.worldCreator.environment())) {
-                return false;
-            } else if (((WorldCreator) creator).seed() != this.worldCreator.seed()) {
-                return false;
-            } else if (!((WorldCreator) creator).generator().equals(this.worldCreator.generator())) {
+                System.out.println("Checking Environments...");
                 return false;
             }
+            // Don't check the seed by default, as it's randomized.
+// else if (((WorldCreator) creator).seed() != this.worldCreator.seed()) {
+//                System.out.print("Checking Seeds...");
+//                return false;
+//            }
+//            else if (!((WorldCreator) creator).generator().equals(this.worldCreator.generator())) {
+//                System.out.print("Checking Gens...");
+//                return false;
+//            }
+            System.out.println("Creators matched!!!");
             return true;
         }
     }
@@ -73,10 +82,13 @@ public class TestWorldImport {
         }
 
         public boolean matches(Object creator) {
-            if(super.l == null || creator == null) {
+            System.out.println("Checking above...");
+            if (super.l == null || creator == null) {
                 return false;
             }
-            return ((Location) creator).getBlockY() > super.l.getBlockY();
+            boolean equal = ((Location) creator).getBlockY() > super.l.getBlockY();
+            System.out.println("Checking equals/\\..." + equal);
+            return equal;
         }
     }
 
@@ -87,10 +99,12 @@ public class TestWorldImport {
         }
 
         public boolean matches(Object creator) {
-            if(super.l == null || creator == null) {
+            if (super.l == null || creator == null) {
                 return false;
             }
-            return ((Location) creator).getBlockY() < super.l.getBlockY();
+            boolean equal = ((Location) creator).getBlockY() <= super.l.getBlockY();
+            System.out.println("Checking equals\\/..." + equal);
+            return equal;
         }
     }
 
@@ -114,10 +128,10 @@ public class TestWorldImport {
         when(this.mockWorld.getEnvironment()).thenReturn(World.Environment.NORMAL);
         when(this.mockWorld.getSpawnLocation()).thenReturn(new Location(this.mockWorld, 0, 0, 0));
         // Build a small platform that a player can stand on:
-        LocationMatcherAbove matchWorldAbove = new LocationMatcherAbove(new Location(this.mockWorld, 0,0,0));
-        LocationMatcherBelow matchWorldBelow = new LocationMatcherBelow(new Location(this.mockWorld, 0,0,0));
-        when(this.mockWorld.getBlockAt(Matchers.argThat(matchWorldAbove))).thenReturn(new MockBlock(new Location(this.mockWorld, 0,0,0), Material.AIR));
-        when(this.mockWorld.getBlockAt(Matchers.argThat(matchWorldBelow))).thenReturn(new MockBlock(new Location(this.mockWorld, 0,0,0), Material.STONE));
+        LocationMatcherAbove matchWorldAbove = new LocationMatcherAbove(new Location(this.mockWorld, 0, 0, 0));
+        LocationMatcherBelow matchWorldBelow = new LocationMatcherBelow(new Location(this.mockWorld, 0, 0, 0));
+        when(this.mockWorld.getBlockAt(Matchers.argThat(matchWorldAbove))).thenReturn(new MockBlock(new Location(this.mockWorld, 0, 0, 0), Material.AIR));
+        when(this.mockWorld.getBlockAt(Matchers.argThat(matchWorldBelow))).thenReturn(new MockBlock(new Location(this.mockWorld, 0, 0, 0), Material.STONE));
 
         this.mockNetherWorld = mock(World.class);
         when(this.mockNetherWorld.getName()).thenReturn("world_nether");
