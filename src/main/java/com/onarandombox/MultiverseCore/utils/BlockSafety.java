@@ -25,13 +25,6 @@ public class BlockSafety {
 
     /**
      * This function checks whether the block at the given coordinates are above air or not.
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     *
-     * @return
      */
     public boolean isBlockAboveAir(Location l) {
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
@@ -53,21 +46,18 @@ public class BlockSafety {
      * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air
      * etc. This also ensures there is enough space for a player to spawn!
      *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     *
      * @return
      */
     public boolean playerCanSpawnHereSafely(Location l) {
+        World world = l.getWorld();
         Location actual = l.clone();
         Location upOne = l.clone();
         Location downOne = l.clone();
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
 
-        if (this.isSolidBlock(actual.getBlock().getType()) || this.isSolidBlock(upOne.getBlock().getType())) {
+        if (this.isSolidBlock(world.getBlockAt(actual).getType()) ||
+                this.isSolidBlock(upOne.getBlock().getType())) {
             MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;

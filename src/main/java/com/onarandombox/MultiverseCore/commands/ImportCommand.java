@@ -56,11 +56,12 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 
-        if (new File(worldName).exists() && env != null) {
+
+
+        if (new File(this.plugin.getServerFolder(), worldName).exists() && env != null) {
             sender.sendMessage(ChatColor.AQUA + "Starting world import...");
             this.worldManager.addWorld(worldName, environment, null, generator);
             sender.sendMessage(ChatColor.GREEN + "Complete!");
-            return;
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world type did not exist.");

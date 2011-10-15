@@ -367,6 +367,11 @@ public class WorldManager implements MVWorldManager {
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
             // Remove all world permissions.
+            System.out.println(this.plugin);
+            System.out.println("Server2: " + this.plugin.getServer());
+            System.out.println(this.plugin.getServer().getPluginManager());
+            System.out.println(this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*"));
+
             Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
             Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
             for (MultiverseWorld w : this.worlds.values()) {

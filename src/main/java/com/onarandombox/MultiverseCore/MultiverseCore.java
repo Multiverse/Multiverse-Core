@@ -56,6 +56,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private File testConfigDirectory;
     private PluginDescriptionFile testDescriptionFile;
 
+    @Override
+    public String toString() {
+        return "The Multiverse-Core Plugin";
+    }
 
     @Override
     public String dumpVersionInfo(String buffer) {
@@ -94,7 +98,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Configurations
     private FileConfiguration multiverseConfig = null;
 
-    private WorldManager worldManager = new WorldManager(this);
+    private WorldManager worldManager;
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
@@ -158,6 +162,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     public void onEnable() {
+        System.out.println("Enabling... Found server... " + this.getServer());
+        this.worldManager = new WorldManager(this);
         // Perform initial checks for AllPay
         if (!this.validateAllpay() || !this.validateCH()) {
             this.getServer().getPluginManager().disablePlugin(this);
@@ -477,7 +483,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private String getAuthors() {
         String authors = "";
         ArrayList<String> auths = this.getDescription().getAuthors();
-        if(auths.size() == 0) {
+        if (auths.size() == 0) {
             return "";
         }
 
@@ -585,6 +591,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
         // This command is the override, and MUST NOT TELEPORT SAFELY
         this.getTeleporter().safelyTeleport(teleporter, p, l, false);
+    }
+
+
+    public File getServerFolder() {
+        return new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
     }
 
     private void checkServerProps() {
