@@ -197,11 +197,9 @@ public class WorldManager implements MVWorldManager {
      */
     public Boolean deleteWorld(String name) {
 
-        if (this.plugin.getServer().getWorld(name) != null) {
-            if (!unloadWorldFromBukkit(name, false)) {
-                // If the world was loaded, and we couldn't unload it, return false. DON"T DELTEE
-                return false;
-            }
+        if (this.plugin.getServer().getWorld(name) == null) {
+            // We can only delete loaded worlds
+            return false;
         }
         removeWorldFromConfig(name);
         try {
@@ -225,6 +223,7 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.log(Level.SEVERE, "rm " + worldFile.getAbsolutePath());
                 return false;
             }
+            plugin.log(Level.FINER, "deleteWorld(): worldFile: " + worldFile.getAbsolutePath());
             boolean deletedWorld = FileUtils.deleteFolder(worldFile);
             if (deletedWorld) {
                 this.plugin.log(Level.INFO, "World " + name + " was DELETED.");
