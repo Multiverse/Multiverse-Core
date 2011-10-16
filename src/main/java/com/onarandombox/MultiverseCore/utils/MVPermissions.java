@@ -135,7 +135,11 @@ public class MVPermissions implements PermissionsInterface {
         }
         Player player = (Player) sender;
         this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]");
-        return sender.hasPermission(node);
+        boolean hasPermission = sender.hasPermission(node);
+        if(hasPermission) {
+            this.plugin.log(Level.FINER, "Player [" + player.getName() + "] HAS PERMISSION [" + node + "]!");
+        }
+        return hasPermission;
     }
 
     public String getType() {
