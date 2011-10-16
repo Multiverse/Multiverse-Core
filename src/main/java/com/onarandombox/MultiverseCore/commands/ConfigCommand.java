@@ -23,12 +23,13 @@ public class ConfigCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Configuration");
         this.setCommandUsage("/mv config " + ChatColor.GREEN + "{PROPERTY} {VALUE}");
-        this.setArgRange(2, 2);
+        this.setArgRange(1, 2);
         this.addKey("mv config");
         this.addKey("mvconfig");
         this.addKey("mv conf");
         this.addKey("mvconf");
         this.addCommandExample("All values: " + ConfigProperty.getAllValues());
+        this.addCommandExample("/mv config show");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "debug" + ChatColor.AQUA + " 3");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "enforceaccess" + ChatColor.AQUA + " false");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "bedrespawn" + ChatColor.AQUA + " true");
@@ -38,6 +39,22 @@ public class ConfigCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        if (args.size() <= 1) {
+            String[] allProps = ConfigProperty.getAllValues().split(" ");
+            String currentvals = "";
+            for (String prop : allProps) {
+                currentvals += ChatColor.GREEN;
+                currentvals += prop;
+                currentvals += ChatColor.WHITE;
+                currentvals += " = ";
+                currentvals += ChatColor.GOLD;
+                currentvals += this.plugin.getMVConfiguration().get(prop, "NOT SET");
+                currentvals += ChatColor.WHITE;
+                currentvals += ", ";
+            }
+            sender.sendMessage(currentvals.substring(0, currentvals.length() - 2));
+            return;
+        }
         if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
             try {
                 this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
