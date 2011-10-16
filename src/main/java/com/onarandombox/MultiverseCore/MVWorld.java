@@ -96,12 +96,11 @@ public class MVWorld implements MultiverseWorld {
         }
         worldSection.set("environment", this.environment.toString());
 
-
         // Set local values that CAN be changed by the user
         this.setAlias(worldSection.getString("alias.name", ""));
         this.setColor(worldSection.getString("alias.color", ChatColor.WHITE.toString()));
-        this.setFakePVPMode(worldSection.getBoolean("fakepvp", false));
         this.setPVPMode(worldSection.getBoolean("pvp", true));
+        this.setFakePVPMode(worldSection.getBoolean("fakepvp", false));
         this.setScaling(worldSection.getDouble("scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(worldSection.getString("respawnworld", ""));
         this.setEnableWeather(worldSection.getBoolean("allowweather", true));
@@ -123,7 +122,7 @@ public class MVWorld implements MultiverseWorld {
         this.translateTempSpawn(worldSection);
         this.readSpawnFromConfig(this.getCBWorld());
         this.canSave = true;
-        saveConfig();
+        this.saveConfig();
 
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.OP);
         this.exempt = new Permission("multiverse.exempt." + this.getName(), "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
