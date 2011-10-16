@@ -178,9 +178,9 @@ public class MVPlayerListener extends PlayerListener {
      * <p/>
      * The return is a little backwards, and will return a value safe for event.setCancelled.
      *
-     * @param fromWorld
-     * @param toWorld
-     * @param player
+     * @param fromWorld The MultiverseWorld they are in.
+     * @param toWorld The MultiverseWorld they want to go to.
+     * @param player The player that wants to travel.
      *
      * @return True if they can't go to the world, False if they can.
      */

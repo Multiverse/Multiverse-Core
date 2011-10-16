@@ -31,22 +31,6 @@ public class SafeTTeleporter {
         this.bs = new BlockSafety();
     }
 
-    /**
-     * This method will be specific to beds, and check on top of the bed then around it.
-     *
-     * @return
-     */
-    public Location getSafeBedDestination(Location bedLocation) {
-        Location idealLocation = bedLocation;
-        idealLocation.setY(idealLocation.getY() + 1);
-        idealLocation.setX(idealLocation.getX() + .5);
-        idealLocation.setZ(idealLocation.getZ() + .5);
-        if (this.bs.playerCanSpawnHereSafely(idealLocation)) {
-            return bedLocation;
-        }
-        return null;
-    }
-
     public Location getSafeLocation(Location l) {
         return this.getSafeLocation(l, 6, 9);
     }
@@ -112,7 +96,7 @@ public class SafeTTeleporter {
      * For my crappy algorithm, radius MUST be odd
      *
      * @param l
-     * @param radius
+     * @param diameter
      *
      * @return
      */
@@ -196,7 +180,7 @@ public class SafeTTeleporter {
      * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if
      * it's not, will adjust the final destination accordingly.
      *
-     * @param temeporter Person who performed the teleport command.
+     * @param teleporter Person who performed the teleport command.
      * @param teleportee Entity to teleport
      * @param d          Destination to teleport them to
      *
@@ -229,7 +213,7 @@ public class SafeTTeleporter {
      * see if the place is safe, and if
      * it's not, will adjust the final destination accordingly.
      *
-     * @param temeporter Person who issued the teleport command.
+     * @param teleporter Person who issued the teleport command.
      * @param teleportee Entity to teleport.
      * @param location   Location to teleport them to.
      * @param safely     Should the destination be checked for safety before teleport?
