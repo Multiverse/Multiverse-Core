@@ -104,7 +104,7 @@ public class MVWorld implements MultiverseWorld {
         this.setScaling(worldSection.getDouble("scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(worldSection.getString("respawnworld", ""));
         this.setEnableWeather(worldSection.getBoolean("allowweather", true));
-        this.setDifficulty(worldSection.getString("difficulty", "1"));
+        this.setDifficulty(worldSection.get("difficulty", "EASY"));
 
         this.setAllowAnimalSpawn(worldSection.getBoolean("animals.spawn", true));
         this.setAllowMonsterSpawn(worldSection.getBoolean("monsters.spawn", true));
@@ -114,7 +114,7 @@ public class MVWorld implements MultiverseWorld {
         this.setHidden(worldSection.getBoolean("hidden", false));
         this.getMobExceptions();
 
-        this.setGameMode(worldSection.getString("gamemode", GameMode.SURVIVAL.toString()));
+        this.setGameMode(worldSection.get("gamemode", GameMode.SURVIVAL.toString()));
 
         this.setKeepSpawnInMemory(worldSection.getBoolean("keepspawninmemory", true));
 
@@ -670,10 +670,28 @@ public class MVWorld implements MultiverseWorld {
             return false;
         }
         this.setGameMode(mode);
-        this.worldSection.set("gamemode", mode.getValue());
+        this.worldSection.set("gamemode", mode.toString());
         saveConfig();
         return true;
 
+    }
+
+    /**
+     * FernFerret messed up and now config values could be in either string or Int
+     *
+     * @param mode The gamemode as an object.
+     *
+     * @return True if the mode was set, false if not.
+     */
+    private boolean setGameMode(Object mode) {
+        if (mode instanceof Integer) {
+            return this.setGameMode(GameMode.getByValue((Integer) mode));
+        }
+        try {
+            return this.setGameMode((String) mode);
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     private boolean setGameMode(GameMode mode) {
@@ -765,6 +783,24 @@ public class MVWorld implements MultiverseWorld {
         return this.getCBWorld().getDifficulty();
     }
 
+    /**
+     * FernFerret messed up and now config values could be in either string or Int
+     *
+     * @param mode The gamemode as an object.
+     *
+     * @return True if the mode was set, false if not.
+     */
+    private boolean setDifficulty(Object mode) {
+        if (mode instanceof Integer) {
+            return this.setDifficulty(Difficulty.getByValue((Integer) mode));
+        }
+        try {
+            return this.setDifficulty((String) mode);
+        } catch (ClassCastException e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean setDifficulty(String difficulty) {
         Difficulty worlddiff;
@@ -782,8 +818,14 @@ public class MVWorld implements MultiverseWorld {
         if (worlddiff == null) {
             return false;
         }
-        this.getCBWorld().setDifficulty(worlddiff);
-        this.worldSection.set("difficulty", worlddiff.getValue());
+        this.setDifficulty(worlddiff);
+        saveConfig();
+        return true;
+    }
+
+    private boolean setDifficulty(Difficulty diff) {
+        this.getCBWorld().setDifficulty(diff);
+        this.worldSection.set("difficulty", diff.toString());
         saveConfig();
         return true;
     }
