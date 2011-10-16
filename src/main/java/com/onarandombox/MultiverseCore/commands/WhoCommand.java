@@ -77,7 +77,7 @@ public class WhoCommand extends MultiverseCommand {
                 continue;
             }
 
-            if (p != null && (!this.plugin.getMVPerms().canEnterWorld(p, world))) {
+            if (MultiverseCore.EnforceAccess && p != null && (!this.plugin.getMVPerms().canEnterWorld(p, world))) {
                 continue;
             }
             List<Player> players = world.getCBWorld().getPlayers();
