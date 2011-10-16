@@ -46,10 +46,8 @@ public class WorldManager implements MVWorldManager {
         this.worlds = new HashMap<String, MultiverseWorld>();
         this.worldPurger = new PurgeWorlds(this.plugin);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc} */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
@@ -82,8 +80,14 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.log(Level.INFO, "Loading World & Settings - '" + name + "' - " + env);
             }
         }
-
-        world = c.createWorld();
+        try {
+            world = c.createWorld();
+        } catch (Exception e) {
+            this.plugin.log(Level.SEVERE, "The world '" + name + "' could NOT be loaded because it contains errors!");
+            this.plugin.log(Level.SEVERE, "Try using Chukster to repair your world! '" + name + "'");
+            this.plugin.log(Level.SEVERE, "http://forums.bukkit.org/threads/admin-chunkster.8186/");
+            return false;
+        }
 
         if (world == null) {
             this.plugin.log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
@@ -108,9 +112,7 @@ public class WorldManager implements MVWorldManager {
         return plugin != null && plugin.isEnabled();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
         if (generator == null) {
             return null;
@@ -146,9 +148,7 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public boolean unloadWorld(String name) {
 
         if (this.worlds.containsKey(name)) {
@@ -165,9 +165,7 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public boolean loadWorld(String name) {
         // Check if the World is already loaded
         if (this.worlds.containsKey(name)) {
@@ -192,9 +190,7 @@ public class WorldManager implements MVWorldManager {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public Boolean deleteWorld(String name) {
 
         if (this.plugin.getServer().getWorld(name) == null) {
@@ -256,9 +252,7 @@ public class WorldManager implements MVWorldManager {
         return this.plugin.getServer().unloadWorld(name, safely);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void removePlayersFromWorld(String name) {
         World w = this.plugin.getServer().getWorld(name);
         if (w != null) {
@@ -271,17 +265,13 @@ public class WorldManager implements MVWorldManager {
             }
         }
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc} */
     public Collection<MultiverseWorld> getMVWorlds() {
         return this.worlds.values();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public MultiverseWorld getMVWorld(String name) {
         if (this.worlds.containsKey(name)) {
@@ -290,9 +280,7 @@ public class WorldManager implements MVWorldManager {
         return this.getMVWorldByAlias(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public MultiverseWorld getMVWorld(World world) {
         if (world != null) {
@@ -317,17 +305,13 @@ public class WorldManager implements MVWorldManager {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean isMVWorld(String name) {
         return (this.worlds.containsKey(name) || isMVWorldAlias(name));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean isMVWorld(World world) {
         return world != null && this.isMVWorld(world.getName());
@@ -349,9 +333,7 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void loadWorlds(boolean forceLoad) {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
@@ -412,9 +394,7 @@ public class WorldManager implements MVWorldManager {
         this.plugin.log(Level.INFO, count + " - World(s) loaded.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public PurgeWorlds getWorldPurger() {
         return this.worldPurger;
     }
