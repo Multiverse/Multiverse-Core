@@ -256,7 +256,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void loadConfigs() {
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
+        Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream(File.separator + "defaults" + File.separator + "config.yml"));
         this.multiverseConfig.setDefaults(coreDefaults);
         this.multiverseConfig.options().copyDefaults(true);
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
