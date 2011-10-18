@@ -271,6 +271,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
         this.saveMVConfigs();
+        // Reload the configs because they're null in memory if they were default.
+        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
     }
 
     public MVMessaging getMessaging() {
