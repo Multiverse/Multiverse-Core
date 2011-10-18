@@ -177,6 +177,6 @@ public class CannonDestination implements MVDestination {
 
     @Override
     public boolean useSafeTeleporter() {
-        return true;
+        return false;
     }
 }
