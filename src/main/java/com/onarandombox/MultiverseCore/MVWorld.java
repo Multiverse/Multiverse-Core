@@ -749,19 +749,20 @@ public class MVWorld implements MultiverseWorld {
     }
 
     private void readSpawnFromConfig(World w) {
-        double x = config.getDouble("spawn.x", w.getSpawnLocation().getX());
-        double y = config.getDouble("spawn.y", w.getSpawnLocation().getY());
-        double z = config.getDouble("spawn.z", w.getSpawnLocation().getZ());
+        double x = worldSection.getDouble("spawn.x", w.getSpawnLocation().getX());
+        double y = worldSection.getDouble("spawn.y", w.getSpawnLocation().getY());
+        double z = worldSection.getDouble("spawn.z", w.getSpawnLocation().getZ());
         this.plugin.log(Level.FINE, "Read spawn from config as: " + x + ", " + y + ", " + z);
-        float pitch = (float) config.getDouble("spawn.pitch", w.getSpawnLocation().getPitch());
-        float yaw = (float) config.getDouble("spawn.yaw", w.getSpawnLocation().getYaw());
-        this.spawnLocation = new Location(w, x, y, z, yaw, pitch);
+        float pitch = (float) worldSection.getDouble("spawn.pitch", w.getSpawnLocation().getPitch());
+        float yaw = (float) worldSection.getDouble("spawn.yaw", w.getSpawnLocation().getYaw());
+
+        this.setSpawnLocation(new Location(w, x, y, z, yaw, pitch));
         SafeTTeleporter teleporter = this.plugin.getTeleporter();
         BlockSafety bs = new BlockSafety();
         if (!bs.playerCanSpawnHereSafely(this.spawnLocation)) {
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
             Location newSpawn = teleporter.getSafeLocation(this.spawnLocation, 128, 128);
-            // I think we could also do this, as I think this is what notch does.
+            // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
             if (newSpawn != null) {
@@ -771,6 +772,7 @@ public class MVWorld implements MultiverseWorld {
                 this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
             }
         }
+        this.plugin.log(Level.FINEST, "Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(this.getSpawnLocation()));
     }
 
     @Override
