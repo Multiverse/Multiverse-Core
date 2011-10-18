@@ -259,6 +259,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
         this.multiverseConfig.setDefaults(coreDefaults);
         this.multiverseConfig.options().copyDefaults(true);
+        this.saveMVConfig();
+        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
@@ -271,8 +273,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
         this.saveMVConfigs();
-        // Reload the configs because they're null in memory if they were default.
-        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
     }
 
     public MVMessaging getMessaging() {
@@ -609,16 +609,21 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return false;
     }
 
-    public boolean saveMVConfigs() {
-        boolean retVal = true;
+    public boolean saveMVConfig() {
         try {
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
+            return true;
         } catch (IOException e) {
-            retVal = false;
             this.log(Level.SEVERE, "Could not save Multiverse config.yml config. Please check your file permissions.");
+            return false;
         }
+    }
 
-        this.worldManager.saveWorldsConfig();
-        return retVal;
+    public boolean saveWorldConfig() {
+        return this.worldManager.saveWorldsConfig();
+    }
+
+    public boolean saveMVConfigs() {
+        return this.saveMVConfig() && this.saveWorldConfig();
     }
 }

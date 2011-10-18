@@ -411,11 +411,13 @@ public class WorldManager implements MVWorldManager {
         return this.configWorlds;
     }
 
-    public void saveWorldsConfig() {
+    public boolean saveWorldsConfig() {
         try {
             this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+            return true;
         } catch (IOException e) {
             this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your settings.");
+            return false;
         }
     }
 }
