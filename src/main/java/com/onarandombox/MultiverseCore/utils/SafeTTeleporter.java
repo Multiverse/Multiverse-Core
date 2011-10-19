@@ -11,6 +11,9 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
@@ -279,6 +282,46 @@ public class SafeTTeleporter {
         }
         this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return null;
+    }
+
+
+    public static Location findPortalBlockNextTo(Location l) {
+        Block b = l.getWorld().getBlockAt(l);
+        Location foundLocation = null;
+
+        if (b.getRelative(BlockFace.NORTH).getType() == Material.PORTAL) {
+            foundLocation = getCloserBlock(l, b.getRelative(BlockFace.NORTH).getLocation(), foundLocation);
+        }
+        if (b.getRelative(BlockFace.SOUTH).getType() == Material.PORTAL) {
+            foundLocation = getCloserBlock(l, b.getRelative(BlockFace.SOUTH).getLocation(), foundLocation);
+        }
+        if (b.getRelative(BlockFace.EAST).getType() == Material.PORTAL) {
+            foundLocation = getCloserBlock(l, b.getRelative(BlockFace.EAST).getLocation(), foundLocation);
+        }
+        if (b.getRelative(BlockFace.WEST).getType() == Material.PORTAL) {
+            foundLocation = getCloserBlock(l, b.getRelative(BlockFace.WEST).getLocation(), foundLocation);
+        }
+        return foundLocation;
+    }
+
+    private static Location getCloserBlock(Location source, Location blockA, Location blockB) {
+        // If B wasn't given, return a.
+        if (blockB == null) {
+            return blockA;
+        }
+        // Center our calculations
+        blockA.add(.5,0,.5);
+        blockB.add(.5,0,.5);
+
+        // Retrieve the distance to the normalized blocks
+        double testA = source.distance(blockA);
+        double testB = source.distance(blockB);
+
+        // Compare and return
+        if(testA <= testB) {
+            return blockA;
+        }
+        return blockB;
     }
 
 }
