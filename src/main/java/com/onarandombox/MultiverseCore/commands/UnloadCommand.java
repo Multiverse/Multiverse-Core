@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -29,9 +30,9 @@ public class UnloadCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         if (this.plugin.getMVWorldManager().unloadWorld(args.get(0))) {
-            sender.sendMessage("World Unloaded!");
+            Command.broadcastCommandMessage(sender, "Unloaded world '" + args.get(0) + "'!");
         } else {
-            sender.sendMessage("Error trying to unload world!");
+            sender.sendMessage("Error trying to unload world '" + args.get(0) + "'!");
         }
     }
 }
