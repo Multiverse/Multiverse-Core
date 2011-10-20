@@ -86,7 +86,7 @@ public class TestWorldImport {
             if (super.l == null || creator == null) {
                 return false;
             }
-            boolean equal = ((Location) creator).getBlockY() > super.l.getBlockY();
+            boolean equal = ((Location) creator).getBlockY() >= super.l.getBlockY();
             System.out.println("Checking equals/\\..." + equal);
             return equal;
         }
@@ -102,7 +102,7 @@ public class TestWorldImport {
             if (super.l == null || creator == null) {
                 return false;
             }
-            boolean equal = ((Location) creator).getBlockY() <= super.l.getBlockY();
+            boolean equal = ((Location) creator).getBlockY() < super.l.getBlockY();
             System.out.println("Checking equals\\/..." + equal);
             return equal;
         }
@@ -268,7 +268,10 @@ public class TestWorldImport {
         String[] normalArgs = new String[]{"import", "world", "normal"};
         String[] netherArgs = new String[]{"import", "world_nether", "nether"};
 
-        // Ensure we have a fresh copy of MV, 0 worlds.
+        // Send the debug command.
+        String[] debugArgs = new String[]{"debug", "3"};
+        plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
+
         Assert.assertEquals(0, this.core.getMVWorldManager().getMVWorlds().size());
 
         // Import the first world.
@@ -278,5 +281,35 @@ public class TestWorldImport {
 
         // We should now have one world imported!
         Assert.assertEquals(1, this.core.getMVWorldManager().getMVWorlds().size());
+    }
+
+    @Test
+    public void testEnableDebugMode() {
+        // Start actual testing.
+        // Pull a core instance from the server.
+        Plugin plugin = this.mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null
+        Assert.assertNotNull(plugin);
+
+        // Make sure Core is enabled
+        Assert.assertTrue(plugin.isEnabled());
+
+        // Make a fake server folder to fool MV into thinking a world folder exists.
+        File serverDirectory = new File(this.core.getServerFolder(), "world");
+        serverDirectory.mkdirs();
+
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
+
+        // Assert debug mode is off
+        Assert.assertEquals(0, MultiverseCore.GlobalDebug);
+
+        // Send the debug command.
+        String[] debugArgs = new String[]{"debug", "3"};
+        plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
+
+        Assert.assertEquals(3, MultiverseCore.GlobalDebug);
     }
 }

@@ -58,14 +58,13 @@ public class BlockSafety {
 
         if (this.isSolidBlock(world.getBlockAt(actual).getType()) ||
                 this.isSolidBlock(upOne.getBlock().getType())) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here (Actual)? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here (upOne)? (" + upOne.getBlock().getType() + ")[" + this.isSolidBlock(upOne.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Error Here? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here (downOne)? (" + downOne.getBlock().getType() + ")[" + this.isSolidBlock(downOne.getBlock().getType()) + "]");
             return false;
         }
 
