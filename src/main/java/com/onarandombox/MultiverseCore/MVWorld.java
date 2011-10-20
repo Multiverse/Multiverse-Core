@@ -96,16 +96,15 @@ public class MVWorld implements MultiverseWorld {
         }
         worldSection.set("environment", this.environment.toString());
 
-
         // Set local values that CAN be changed by the user
         this.setAlias(worldSection.getString("alias.name", ""));
         this.setColor(worldSection.getString("alias.color", ChatColor.WHITE.toString()));
-        this.setFakePVPMode(worldSection.getBoolean("fakepvp", false));
         this.setPVPMode(worldSection.getBoolean("pvp", true));
+        this.setFakePVPMode(worldSection.getBoolean("fakepvp", false));
         this.setScaling(worldSection.getDouble("scale", this.getDefaultScale(this.environment)));
         this.setRespawnToWorld(worldSection.getString("respawnworld", ""));
         this.setEnableWeather(worldSection.getBoolean("allowweather", true));
-        this.setDifficulty(worldSection.getString("difficulty", "1"));
+        this.setDifficulty(worldSection.get("difficulty", "EASY"));
 
         this.setAllowAnimalSpawn(worldSection.getBoolean("animals.spawn", true));
         this.setAllowMonsterSpawn(worldSection.getBoolean("monsters.spawn", true));
@@ -115,7 +114,7 @@ public class MVWorld implements MultiverseWorld {
         this.setHidden(worldSection.getBoolean("hidden", false));
         this.getMobExceptions();
 
-        this.setGameMode(worldSection.getString("gamemode", GameMode.SURVIVAL.toString()));
+        this.setGameMode(worldSection.get("gamemode", GameMode.SURVIVAL.toString()));
 
         this.setKeepSpawnInMemory(worldSection.getBoolean("keepspawninmemory", true));
 
@@ -123,7 +122,7 @@ public class MVWorld implements MultiverseWorld {
         this.translateTempSpawn(worldSection);
         this.readSpawnFromConfig(this.getCBWorld());
         this.canSave = true;
-        saveConfig();
+        this.saveConfig();
 
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.OP);
         this.exempt = new Permission("multiverse.exempt." + this.getName(), "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
@@ -671,10 +670,28 @@ public class MVWorld implements MultiverseWorld {
             return false;
         }
         this.setGameMode(mode);
-        this.worldSection.set("gamemode", mode.getValue());
+        this.worldSection.set("gamemode", mode.toString());
         saveConfig();
         return true;
 
+    }
+
+    /**
+     * FernFerret messed up and now config values could be in either string or Int
+     *
+     * @param mode The gamemode as an object.
+     *
+     * @return True if the mode was set, false if not.
+     */
+    private boolean setGameMode(Object mode) {
+        if (mode instanceof Integer) {
+            return this.setGameMode(GameMode.getByValue((Integer) mode));
+        }
+        try {
+            return this.setGameMode((String) mode);
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     private boolean setGameMode(GameMode mode) {
@@ -732,19 +749,20 @@ public class MVWorld implements MultiverseWorld {
     }
 
     private void readSpawnFromConfig(World w) {
-        double x = config.getDouble("spawn.x", w.getSpawnLocation().getX());
-        double y = config.getDouble("spawn.y", w.getSpawnLocation().getY());
-        double z = config.getDouble("spawn.z", w.getSpawnLocation().getZ());
+        double x = worldSection.getDouble("spawn.x", w.getSpawnLocation().getX());
+        double y = worldSection.getDouble("spawn.y", w.getSpawnLocation().getY());
+        double z = worldSection.getDouble("spawn.z", w.getSpawnLocation().getZ());
         this.plugin.log(Level.FINE, "Read spawn from config as: " + x + ", " + y + ", " + z);
-        float pitch = (float) config.getDouble("spawn.pitch", w.getSpawnLocation().getPitch());
-        float yaw = (float) config.getDouble("spawn.yaw", w.getSpawnLocation().getYaw());
-        this.spawnLocation = new Location(w, x, y, z, yaw, pitch);
+        float pitch = (float) worldSection.getDouble("spawn.pitch", w.getSpawnLocation().getPitch());
+        float yaw = (float) worldSection.getDouble("spawn.yaw", w.getSpawnLocation().getYaw());
+
+        this.setSpawnLocation(new Location(w, x, y, z, yaw, pitch));
         SafeTTeleporter teleporter = this.plugin.getTeleporter();
         BlockSafety bs = new BlockSafety();
         if (!bs.playerCanSpawnHereSafely(this.spawnLocation)) {
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
             Location newSpawn = teleporter.getSafeLocation(this.spawnLocation, 128, 128);
-            // I think we could also do this, as I think this is what notch does.
+            // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
             if (newSpawn != null) {
@@ -754,6 +772,7 @@ public class MVWorld implements MultiverseWorld {
                 this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
             }
         }
+        this.plugin.log(Level.FINEST, "Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(this.getSpawnLocation()));
     }
 
     @Override
@@ -764,6 +783,24 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public Difficulty getDifficulty() {
         return this.getCBWorld().getDifficulty();
+    }
+
+    /**
+     * FernFerret messed up and now config values could be in either string or Int
+     *
+     * @param mode The gamemode as an object.
+     *
+     * @return True if the mode was set, false if not.
+     */
+    private boolean setDifficulty(Object mode) {
+        if (mode instanceof Integer) {
+            return this.setDifficulty(Difficulty.getByValue((Integer) mode));
+        }
+        try {
+            return this.setDifficulty((String) mode);
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     @Override
@@ -783,8 +820,14 @@ public class MVWorld implements MultiverseWorld {
         if (worlddiff == null) {
             return false;
         }
-        this.getCBWorld().setDifficulty(worlddiff);
-        this.worldSection.set("difficulty", worlddiff.getValue());
+        this.setDifficulty(worlddiff);
+        saveConfig();
+        return true;
+    }
+
+    private boolean setDifficulty(Difficulty diff) {
+        this.getCBWorld().setDifficulty(diff);
+        this.worldSection.set("difficulty", diff.toString());
         saveConfig();
         return true;
     }

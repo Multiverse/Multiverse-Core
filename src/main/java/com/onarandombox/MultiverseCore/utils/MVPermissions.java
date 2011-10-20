@@ -78,6 +78,10 @@ public class MVPermissions implements PermissionsInterface {
      * @return
      */
     public boolean canEnterWorld(Player p, MultiverseWorld w) {
+        // If we're not enforcing access, anyone can enter.
+        if (!MultiverseCore.EnforceAccess) {
+            return true;
+        }
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
 
@@ -120,6 +124,15 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, d.getRequiredPermission(), false);
     }
 
+    /**
+     * Check to see if a player has a permission.
+     *
+     * @param sender       Who is requesting the permission.
+     * @param node         The permission node in string format; multiverse.core.list.worlds for example.
+     * @param isOpRequired @Deprecated. This is not used for anything anymore.
+     *
+     * @return True if they have that permission or any parent.
+     */
     public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
         if (!(sender instanceof Player)) {
             return true;
@@ -133,10 +146,72 @@ public class MVPermissions implements PermissionsInterface {
         if (node.equals("")) {
             return true;
         }
+        boolean hasPermission = checkActualPermission(sender, node);
+
+        // I consider this a workaround. At the moment, when we add a node AND recalc the permissions, until the perms
+        // plugin reloads, when MV asks the API if a player has a perm, it reports that they do NOT.
+        // For the moment, we're going to check all of this node's parents to see if the user has those. It stops
+        // when if finds a true or there are no more parents. --FF
+        if (!hasPermission) {
+            hasPermission = this.hasAnyParentPermission(sender, node);
+        }
+
+        return hasPermission;
+    }
+
+    // TODO: Better player checks, most likely not needed, but safer.
+    private boolean checkActualPermission(CommandSender sender, String node) {
         Player player = (Player) sender;
         this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]");
-        return sender.hasPermission(node);
+        boolean hasPermission = sender.hasPermission(node);
+        if (hasPermission) {
+            this.plugin.log(Level.FINER, "Player [" + player.getName() + "] HAS PERMISSION [" + node + "]!");
+        }
+        return hasPermission;
     }
+
+    /**
+     * Checks to see if the sender has any parent perms.
+     * Stops when it finds one or when there are no more parents.
+     * This method is recursive.
+     *
+     * @param sender Who is asking for the permission.
+     * @param node   The permission node to check (possibly already a parent).
+     *
+     * @return True if they have any parent perm, false if none.
+     */
+    private boolean hasAnyParentPermission(CommandSender sender, String node) {
+        String parentPerm = this.pullOneLevelOff(node);
+        // Base case
+        if (parentPerm == null) {
+            return false;
+        }
+        // If they have a parent, they're good
+        if (this.checkActualPermission(sender, parentPerm + ".*")) {
+            return true;
+        }
+        return hasAnyParentPermission(sender, parentPerm);
+    }
+
+    /**
+     * Pulls one level off of a yaml style node.
+     * Given multiverse.core.list.worlds will return multiverse.core.list
+     *
+     * @param node The root node to check.
+     *
+     * @return The parent of the node
+     */
+    private String pullOneLevelOff(String node) {
+        if (node == null) {
+            return null;
+        }
+        int index = node.lastIndexOf(".");
+        if (index > 0) {
+            return node.substring(0, index);
+        }
+        return null;
+    }
+
 
     public String getType() {
         return "Bukkit Permissions (SuperPerms)";

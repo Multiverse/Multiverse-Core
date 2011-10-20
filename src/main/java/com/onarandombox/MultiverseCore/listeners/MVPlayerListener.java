@@ -11,12 +11,10 @@ import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
@@ -151,10 +149,14 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
-
+        // If the player was actually outside of the portal, adjust the from location
+        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
+            event.setFrom(SafeTTeleporter.findPortalBlockNextTo(event.getFrom()));
+        }
         if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
         }
+
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
@@ -178,9 +180,9 @@ public class MVPlayerListener extends PlayerListener {
      * <p/>
      * The return is a little backwards, and will return a value safe for event.setCancelled.
      *
-     * @param fromWorld
-     * @param toWorld
-     * @param player
+     * @param fromWorld The MultiverseWorld they are in.
+     * @param toWorld   The MultiverseWorld they want to go to.
+     * @param player    The player that wants to travel.
      *
      * @return True if they can't go to the world, False if they can.
      */

@@ -9,7 +9,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
-        <doxygen.configuration>doxygen</doxygen.configuration>
     </properties>
 
     <repositories>
@@ -104,18 +103,11 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- Doxygen JavaDoc Plugin -->
+            <!-- Maven Source Plugin -->
             <plugin>
-                <groupId>net.sf.doodleproject</groupId>
-                <artifactId>doxygen-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <executable>/usr/local/bin/doxygen</executable>
-                    <configurationFile>${doxygen.configuration}</configurationFile>
-                    <projectName>${project.name}</projectName>
-                    <destDir>target/doxygen</destDir>
-                    <inputDirectory>src/main/java</inputDirectory>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
             </plugin>
         </plugins>
     </build>

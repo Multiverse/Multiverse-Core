@@ -45,7 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private final static int Protocol = 6;
+    private final static int Protocol = 7;
     // Global Multiverse config variable, states whether or not
     // Multiverse should stop other plugins from teleporting players
     // to worlds.
@@ -269,7 +269,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener, Priority.Normal, this); // To remove Player Sessions
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this); // To prepend the world name
-        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.playerListener, Priority.Monitor, this); // To switch gamemode
+        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.playerListener, Priority.Lowest, this); // To switch gamemode
         pm.registerEvent(Event.Type.PLAYER_CHANGED_WORLD, this.playerListener, Priority.Monitor, this); // To switch gamemode
 
         pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
@@ -291,6 +291,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
         this.multiverseConfig.setDefaults(coreDefaults);
         this.multiverseConfig.options().copyDefaults(true);
+        this.saveMVConfig();
+        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         // Setup the Debug option, we'll default to false because this option will not be in the default config.
@@ -647,16 +649,21 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return false;
     }
 
-    public boolean saveMVConfigs() {
-        boolean retVal = true;
+    public boolean saveMVConfig() {
         try {
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
+            return true;
         } catch (IOException e) {
-            retVal = false;
             this.log(Level.SEVERE, "Could not save Multiverse config.yml config. Please check your file permissions.");
+            return false;
         }
+    }
 
-        this.worldManager.saveWorldsConfig();
-        return retVal;
+    public boolean saveWorldConfig() {
+        return this.worldManager.saveWorldsConfig();
+    }
+
+    public boolean saveMVConfigs() {
+        return this.saveMVConfig() && this.saveWorldConfig();
     }
 }
