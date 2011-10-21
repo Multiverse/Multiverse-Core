@@ -21,9 +21,7 @@ import org.powermock.api.mockito.PowerMockito;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Multiverse 2
@@ -34,7 +32,7 @@ public class TestInstanceCreator {
     MultiverseCore core;
     private CommandSender commandSender;
 
-    public Server setupServerInstance() {
+    public Server setupDefaultServerInstance() {
 
         MockWorldFactory worldFactory = new MockWorldFactory();
         MVCoreFactory coreFactory = new MVCoreFactory();
@@ -51,20 +49,37 @@ public class TestInstanceCreator {
         // Initialize the Mock Worlds
         World mockWorld = worldFactory.makeNewMockWorld("world", World.Environment.NORMAL);
         World mockNetherWorld = worldFactory.makeNewMockWorld("world_nether", World.Environment.NETHER);
+        World mockSkyWorld = worldFactory.makeNewMockWorld("world_skylands", World.Environment.SKYLANDS);
+
         List<World> worldList = new ArrayList<World>();
         worldList.add(mockWorld);
         worldList.add(mockNetherWorld);
-
+        worldList.add(mockSkyWorld);
 
         // Initialize the Mock server.
         Server mockServer = serverFactory.getMockServer();
+
+        // Give the server some worlds
         when(mockServer.getWorld("world")).thenReturn(mockWorld);
         when(mockServer.getWorld("world_nether")).thenReturn(mockNetherWorld);
+        when(mockServer.getWorld("world_skylands")).thenReturn(mockNetherWorld);
         when(mockServer.getWorlds()).thenReturn(worldList);
         when(mockServer.getPluginManager()).thenReturn(mockPluginManager);
-        // TODO: This needs to get moved somewhere specific.
+
+        // Initialize some worldCreatorMatchers (so we can see when a specific creator is called)
         WorldCreatorMatcher matchWorld = new WorldCreatorMatcher(new WorldCreator("world"));
+        WorldCreator netherCreator = new WorldCreator("world_nether");
+        netherCreator.environment(World.Environment.NETHER);
+        WorldCreatorMatcher matchNetherWorld = new WorldCreatorMatcher(netherCreator);
+
+        WorldCreator skyCreator = new WorldCreator("world_skylands");
+        skyCreator.environment(World.Environment.SKYLANDS);
+        WorldCreatorMatcher matchSkyWorld = new WorldCreatorMatcher(skyCreator);
+
+        // If a specific creator is called, return the appropreate world.
         when(mockServer.createWorld(Matchers.argThat(matchWorld))).thenReturn(mockWorld);
+        when(mockServer.createWorld(Matchers.argThat(matchNetherWorld))).thenReturn(mockNetherWorld);
+        when(mockServer.createWorld(Matchers.argThat(matchSkyWorld))).thenReturn(mockSkyWorld);
 
         // Override some methods that bukkit normally provides us with for Core
         doReturn(mockServer).when(core).getServer();
@@ -79,6 +94,7 @@ public class TestInstanceCreator {
         core.onEnable();
         return mockServer;
     }
+
     public MultiverseCore getCore() {
         return this.core;
     }

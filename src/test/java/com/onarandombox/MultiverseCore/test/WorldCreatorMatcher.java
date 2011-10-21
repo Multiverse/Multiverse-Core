@@ -19,13 +19,20 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
     private WorldCreator worldCreator;
 
     public WorldCreatorMatcher(WorldCreator creator) {
+        System.out.println("Creating NEW world matcher.(" + creator.name() + ")");
         this.worldCreator = creator;
     }
 
+
     public boolean matches(Object creator) {
         System.out.println("Checking world creators.");
+        if (creator == null) {
+            System.out.println("The given creator was null, but I was checking: " + this.worldCreator.name());
+            return false;
+        }
+        System.out.println("Checking Names...(" + ((WorldCreator) creator).name() + ") vs (" + this.worldCreator.name() + ")");
+        System.out.println("Checking Envs...(" + ((WorldCreator) creator).environment() + ") vs (" + this.worldCreator.environment() + ")");
         if (!((WorldCreator) creator).name().equals(this.worldCreator.name())) {
-            System.out.println("Checking Names...");
             return false;
         } else if (!((WorldCreator) creator).environment().equals(this.worldCreator.environment())) {
             System.out.println("Checking Environments...");

@@ -81,9 +81,10 @@ public class MockWorldFactory {
         return mockWorld;
     }
 
-    public void makeNewMockWorld(String world, World.Environment env, long seed, ChunkGenerator generator) {
+    public World makeNewMockWorld(String world, World.Environment env, long seed, ChunkGenerator generator) {
         World w = this.makeNewMockWorld(world, env);
         when(w.getGenerator()).thenReturn(generator);
         when(w.getSeed()).thenReturn(seed);
+        return w;
     }
 }

@@ -3,38 +3,29 @@ package com.onarandombox.MultiverseCore.test;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.utils.FileUtils;
 import junit.framework.Assert;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class})
 public class TestWorldImport {
-
-
-
-
 
     @After
     public void tearDown() throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
@@ -61,7 +52,7 @@ public class TestWorldImport {
     @Test
     public void testWorldImportWithNoFolder() {
         TestInstanceCreator creator = new TestInstanceCreator();
-        Server mockServer = creator.setupServerInstance();
+        Server mockServer = creator.setupDefaultServerInstance();
         CommandSender mockCommandSender = creator.getCommandSender();
 
         // Start actual testing.
@@ -93,15 +84,17 @@ public class TestWorldImport {
     @Test
     public void testWorldImport() {
         TestInstanceCreator creator = new TestInstanceCreator();
-        Server mockServer = creator.setupServerInstance();
+        Server mockServer = creator.setupDefaultServerInstance();
         CommandSender mockCommandSender = creator.getCommandSender();
         // Start actual testing.
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
 
         // Make a fake server folder to fool MV into thinking a world folder exists.
-        File serverDirectory = new File(creator.getCore().getServerFolder(), "world");
-        serverDirectory.mkdirs();
+        File worldDirectory = new File(creator.getCore().getServerFolder(), "world");
+        worldDirectory.mkdirs();
+        File worldNetherDirectory = new File(creator.getCore().getServerFolder(), "world_nether");
+        worldNetherDirectory.mkdirs();
 
 
         // Make sure Core is not null
@@ -129,5 +122,13 @@ public class TestWorldImport {
 
         // We should now have one world imported!
         Assert.assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Import the second world.
+        plugin.onCommand(mockCommandSender, mockCommand, "", netherArgs);
+//        verify(mockCommandSender).sendMessage(ChatColor.AQUA + "Starting world import...");
+//        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
+
+        // We should now have 2 worlds imported!
+        Assert.assertEquals(2, creator.getCore().getMVWorldManager().getMVWorlds().size());
     }
 }
