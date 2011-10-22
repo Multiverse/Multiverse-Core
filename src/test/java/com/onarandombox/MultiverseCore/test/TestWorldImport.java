@@ -3,11 +3,10 @@ package com.onarandombox.MultiverseCore.test;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.test.utils.MVCoreFactory;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
+import com.onarandombox.MultiverseCore.test.utils.WorldCreatorMatcher;
 import com.onarandombox.MultiverseCore.utils.FileUtils;
 import junit.framework.Assert;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -135,5 +134,49 @@ public class TestWorldImport {
         // Verify that the commandSender has been called 3 times.
         verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.AQUA + "Starting world import...");
         verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Complete!");
+    }
+
+    @Test
+    void testWorldImportWithSeed() {
+        TestInstanceCreator creator = new TestInstanceCreator();
+        Server mockServer = creator.setupDefaultServerInstance();
+        CommandSender mockCommandSender = creator.getCommandSender();
+        // Start actual testing.
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null
+        Assert.assertNotNull(plugin);
+
+        // Make sure Core is enabled
+        Assert.assertTrue(plugin.isEnabled());
+
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
+
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        Assert.assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Init a new WorldCreatorMatcher to match our seeded world
+        WorldCreator seedCreator = new WorldCreator("world");
+        seedCreator.environment(World.Environment.NORMAL);
+        WorldCreatorMatcher seedMatcher = new WorldCreatorMatcher(seedCreator);
+
+        // For this case, we're testing a seeded import, so we care about the world seed
+        seedMatcher.careAboutSeeds(true);
+
+
+
+        // Import the first world.
+        String[] normalArgs = new String[]{"import", "world", "normal", "-s", "gargamel"};
+        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+
+        // We should now have one world imported!
+        Assert.assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Verify that the commandSender has been called 1 time.
+        verify(mockCommandSender, VerificationModeFactory.times(1)).sendMessage(ChatColor.AQUA + "Starting world import...");
+        verify(mockCommandSender, VerificationModeFactory.times(1)).sendMessage(ChatColor.GREEN + "Complete!");
     }
 }

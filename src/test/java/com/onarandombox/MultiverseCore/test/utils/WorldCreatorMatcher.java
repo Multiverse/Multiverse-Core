@@ -10,19 +10,23 @@ package com.onarandombox.MultiverseCore.test.utils;
 import org.bukkit.WorldCreator;
 import org.mockito.ArgumentMatcher;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
     private WorldCreator worldCreator;
+    private boolean careAboutSeeds = false;
+    private boolean careAboutGenerators = false;
 
     public WorldCreatorMatcher(WorldCreator creator) {
         System.out.println("Creating NEW world matcher.(" + creator.name() + ")");
         this.worldCreator = creator;
     }
 
+    public void careAboutSeeds(boolean doICare) {
+        this.careAboutSeeds = doICare;
+    }
+
+    public void careAboutGenerators(boolean doICare) {
+        this.careAboutGenerators = doICare;
+    }
 
     public boolean matches(Object creator) {
         System.out.println("Checking world creators.");
@@ -37,16 +41,13 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
         } else if (!((WorldCreator) creator).environment().equals(this.worldCreator.environment())) {
             System.out.println("Checking Environments...");
             return false;
+        } else if (careAboutSeeds && ((WorldCreator) creator).seed() != this.worldCreator.seed()) {
+            System.out.print("Checking Seeds...");
+            return false;
+        } else if (careAboutGenerators && !((WorldCreator) creator).generator().equals(this.worldCreator.generator())) {
+            System.out.print("Checking Gens...");
+            return false;
         }
-        // Don't check the seed by default, as it's randomized.
-// else if (((WorldCreator) creator).seed() != this.worldCreator.seed()) {
-//                System.out.print("Checking Seeds...");
-//                return false;
-//            }
-//            else if (!((WorldCreator) creator).generator().equals(this.worldCreator.generator())) {
-//                System.out.print("Checking Gens...");
-//                return false;
-//            }
         System.out.println("Creators matched!!!");
         return true;
     }

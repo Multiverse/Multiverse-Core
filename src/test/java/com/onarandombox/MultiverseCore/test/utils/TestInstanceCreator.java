@@ -47,7 +47,7 @@ public class TestInstanceCreator {
         when(mockPluginManager.getPlugins()).thenReturn(plugins);
         when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
 
-        // Make some fake folders to fool the fake server into thinking these worlds exist
+        // Make some fake folders to fool the fake MV into thinking these worlds exist
         new File(core.getServerFolder(), "world").mkdirs();
         new File(core.getServerFolder(), "world_nether").mkdirs();
         new File(core.getServerFolder(), "world_skylands").mkdirs();
