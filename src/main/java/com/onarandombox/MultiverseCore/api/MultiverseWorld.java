@@ -178,6 +178,7 @@ public interface MultiverseWorld {
      *
      * @return True if this world has fakepvp on
      */
+    @Deprecated
     public boolean getFakePVP();
 
     /**
