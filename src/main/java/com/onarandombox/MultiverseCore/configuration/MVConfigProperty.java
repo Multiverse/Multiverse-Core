@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
-public interface MVConfigProperty {
+public interface MVConfigProperty<T> {
     /**
      * Gets the name of this property.
      *
@@ -15,4 +15,35 @@ public interface MVConfigProperty {
      */
     public String getName();
 
+    /**
+     * Gets the value of this property.
+     *
+     * @return The value of this property.
+     */
+    public T getValue();
+
+    /**
+     * Gets the string representation of this value.
+     *
+     * @return The value of this property as a string.
+     */
+    public String toString();
+
+    /**
+     * Sets the value of this property
+     *
+     * @param value The T representation of this value.
+     */
+    public boolean setValue(T value);
+
+    /**
+     * This parseValue should be used with strings.
+     *
+     * @param value The string representation of the value to set.
+     *
+     * @return True if the value was set, false if not.
+     */
+    public boolean parseValue(String value);
+
+    public String getConfigNode();
 }

@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.Action;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -94,18 +95,21 @@ public class ModifySetCommand extends MultiverseCommand {
             return;
         }
 
-        if (!ModifyCommand.validateAction(Action.Set, property)) {
-            sender.sendMessage("Sorry, you can't SET " + property);
-            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/l54PH");
-            return;
-        }
         if ((property.equalsIgnoreCase("aliascolor") || property.equalsIgnoreCase("color")) && !world.isValidAliasColor(value)) {
             sender.sendMessage(value + " is not a valid color. Please pick one of the following:");
             sender.sendMessage(EnglishChatColor.getAllColors());
-        } else if (world.setVariable(property, value)) {
-            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
-        } else {
-            sender.sendMessage(ChatColor.RED + "There was an error setting " + ChatColor.GRAY + property);
+            return;
+        }
+        try {
+            if (world.setVariable(property, value)) {
+                sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
+            } else {
+                sender.sendMessage(ChatColor.RED + "There was an error setting " + ChatColor.GRAY + property);
+            }
+        } catch (PropertyDoesNotExistException e) {
+            sender.sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + property + ChatColor.RED + "'");
+            // TODO: Display the list
+            sender.sendMessage(ChatColor.GOLD + "For a full list of thingys, see our wiki.");
         }
     }
 }

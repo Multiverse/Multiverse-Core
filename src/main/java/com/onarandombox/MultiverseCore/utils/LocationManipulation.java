@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -223,5 +224,44 @@ public class LocationManipulation {
         int x = vector.getX() < 0 ? vector.getX() == 0 ? 0 : -1 : 1;
         int z = vector.getZ() < 0 ? vector.getZ() == 0 ? 0 : -1 : 1;
         return location.add(x, 0, z);
+    }
+
+    public static Location getLocationFromString(String value) {
+        //format:
+        //world:x,y,z:pitch:yaw
+        if (value == null) {
+            return null;
+        }
+
+        // Split the whole string, format is:
+        // {'world', 'x,y,z'[, 'pitch', 'yaw']}
+        String[] split = value.split(":");
+        if (split.length < 2 || split.length > 4) {
+            return null;
+        }
+        // Split the xyz string, format is:
+        // {'x', 'y', 'z'}
+        String[] xyzsplit = split[1].split(",");
+        if (xyzsplit.length != 3) {
+            return null;
+        }
+
+        // Verify the world is valid
+        World w = Bukkit.getWorld(split[0]);
+        if (w == null) {
+            return null;
+        }
+
+        try {
+            if (split.length == 2) {
+                return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]));
+            }
+            if (split.length == 3) {
+                return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]),(float) 0.0);
+            }
+            return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]), (float) Double.parseDouble(split[3]));
+        } catch(NumberFormatException e) {
+            return null;
+        }
     }
 }

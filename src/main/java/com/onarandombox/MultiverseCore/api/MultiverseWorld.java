@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.*;
 import org.bukkit.permissions.Permission;
 
@@ -34,7 +35,7 @@ public interface MultiverseWorld {
      *
      * @return True if the value was set, false if not.
      */
-    public boolean setVariable(String property, String value);
+    public boolean setVariable(String property, String value) throws PropertyDoesNotExistException;
 
     /**
      * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
