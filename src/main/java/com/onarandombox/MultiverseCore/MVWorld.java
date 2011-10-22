@@ -39,41 +39,16 @@ public class MVWorld implements MultiverseWorld {
 
     private World world; // The World Instance.
     private Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
-    private Long seed;
-
+    private Long seed; // The world seed
     private String name; // The Worlds Name, EG its folder name.
-    private String alias = ""; // Short Alias for the World, this will be used in Chat Prefixes.
-    private ChatColor aliasColor; // Color for this world
-
-    private boolean allowAnimals; // Does this World allow Animals to Spawn?
-    private boolean allowMonsters; // Does this World allow Monsters to Spawn?
-
-    private boolean keepSpawnInMemory; // Does the World have the spawn loaded all the time?
-
-    private boolean pvp; // Does this World allow PVP?
-    private boolean fakePVP; // Should this world have fakePVP on? (used for PVP zones)
-
-    private GameMode gameMode = GameMode.SURVIVAL;
-
-    private String respawnWorld; // Contains the name of the World to respawn the player to
-
 
     private Map<String, List<String>> masterList;
     private Map<String, MVConfigProperty> propertyList;
 
-    private double scaling; // How stretched/compressed distances are
-    private double price; // How much does it cost to enter this world
-    private int currency = -1; // What is the currency
-    private boolean hunger = true;
     private Permission permission;
     private Permission exempt;
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
-    private boolean allowWeather;
-    private Location spawnLocation;
-    //private boolean isHidden = false;
-    private boolean autoheal = true;
-    private boolean adjustSpawn = true;
 
     public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -183,7 +158,7 @@ public class MVWorld implements MultiverseWorld {
         // TODO: Move this to a per world gamemode
         if (MultiverseCore.EnforceGameModes) {
             for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
-                this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.gameMode.toString());
+                this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.propertyList.get("mode").getValue().toString());
                 this.plugin.getPlayerListener().handleGameMode(p, this);
             }
         }
@@ -613,16 +588,16 @@ public class MVWorld implements MultiverseWorld {
         this.plugin.log(Level.FINEST, "Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(this.getSpawnLocation()));
         SafeTTeleporter teleporter = this.plugin.getTeleporter();
         BlockSafety bs = new BlockSafety();
-        if (!bs.playerCanSpawnHereSafely(this.spawnLocation)) {
-            if (!this.adjustSpawn) {
+        if (!bs.playerCanSpawnHereSafely(spawnLocation)) {
+            if (!((BooleanConfigProperty) this.propertyList.get("adjustspawn")).getValue()) {
                 this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe!!");
                 this.plugin.log(Level.WARNING, "NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
                 this.plugin.log(Level.WARNING, "To turn on spawn adjustment for this world simply type:");
                 this.plugin.log(Level.WARNING, "/mvm set adjustspawn true " + this.getAlias());
-                return this.spawnLocation;
+                return spawnLocation;
             }
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
-            Location newSpawn = teleporter.getSafeLocation(this.spawnLocation, 128, 128);
+            Location newSpawn = teleporter.getSafeLocation(spawnLocation, 128, 128);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
@@ -633,12 +608,12 @@ public class MVWorld implements MultiverseWorld {
                 this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
             }
         }
-        return this.spawnLocation;
+        return spawnLocation;
     }
 
     @Override
     public Location getSpawnLocation() {
-        return this.spawnLocation;
+        return ((LocationConfigProperty)this.propertyList.get("spawn")).getValue();
     }
 
     @Override
