@@ -9,15 +9,15 @@ package com.onarandombox.MultiverseCore.test;
 
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.test.utils.MVCoreFactory;
+import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.FileUtils;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

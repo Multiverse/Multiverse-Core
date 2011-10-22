@@ -1,6 +1,8 @@
 package com.onarandombox.MultiverseCore.test;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.test.utils.MVCoreFactory;
+import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.FileUtils;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
@@ -15,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -55,6 +58,11 @@ public class TestWorldImport {
         Server mockServer = creator.setupDefaultServerInstance();
         CommandSender mockCommandSender = creator.getCommandSender();
 
+        // Make sure the world directory do NOT exist
+        if (new File(MVCoreFactory.serverDirectory, "world").exists()) {
+            new File(MVCoreFactory.serverDirectory, "world").delete();
+        }
+
         // Start actual testing.
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
@@ -90,13 +98,6 @@ public class TestWorldImport {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
 
-        // Make a fake server folder to fool MV into thinking a world folder exists.
-        File worldDirectory = new File(creator.getCore().getServerFolder(), "world");
-        worldDirectory.mkdirs();
-        File worldNetherDirectory = new File(creator.getCore().getServerFolder(), "world_nether");
-        worldNetherDirectory.mkdirs();
-
-
         // Make sure Core is not null
         Assert.assertNotNull(plugin);
 
@@ -106,29 +107,33 @@ public class TestWorldImport {
         // Initialize a fake command
         Command mockCommand = mock(Command.class);
         when(mockCommand.getName()).thenReturn("mv");
-        String[] normalArgs = new String[]{"import", "world", "normal"};
-        String[] netherArgs = new String[]{"import", "world_nether", "nether"};
 
-        // Send the debug command.
-        String[] debugArgs = new String[]{"debug", "3"};
-        plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
-
+        // Ensure that there are no worlds imported. This is a fresh setup.
         Assert.assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the first world.
+        String[] normalArgs = new String[]{"import", "world", "normal"};
         plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
-        verify(mockCommandSender).sendMessage(ChatColor.AQUA + "Starting world import...");
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
         // We should now have one world imported!
         Assert.assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the second world.
+        String[] netherArgs = new String[]{"import", "world_nether", "nether"};
         plugin.onCommand(mockCommandSender, mockCommand, "", netherArgs);
-//        verify(mockCommandSender).sendMessage(ChatColor.AQUA + "Starting world import...");
-//        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
         // We should now have 2 worlds imported!
         Assert.assertEquals(2, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Import the third world.
+        String[] skyArgs = new String[]{"import", "world_skylands", "skylands"};
+        plugin.onCommand(mockCommandSender, mockCommand, "", skyArgs);
+
+        // We should now have 2 worlds imported!
+        Assert.assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Verify that the commandSender has been called 3 times.
+        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.AQUA + "Starting world import...");
+        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Complete!");
     }
 }

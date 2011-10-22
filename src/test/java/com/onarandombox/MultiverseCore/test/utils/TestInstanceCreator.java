@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.test;
+package com.onarandombox.MultiverseCore.test.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mockito.Matchers;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,11 @@ public class TestInstanceCreator {
         PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
         when(mockPluginManager.getPlugins()).thenReturn(plugins);
         when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
+
+        // Make some fake folders to fool the fake server into thinking these worlds exist
+        new File(core.getServerFolder(), "world").mkdirs();
+        new File(core.getServerFolder(), "world_nether").mkdirs();
+        new File(core.getServerFolder(), "world_skylands").mkdirs();
 
         // Initialize the Mock Worlds
         World mockWorld = worldFactory.makeNewMockWorld("world", World.Environment.NORMAL);
