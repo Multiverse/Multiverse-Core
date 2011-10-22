@@ -44,6 +44,8 @@ public class ModifySetCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "hunger " + ChatColor.RED + "false");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "hidden " + ChatColor.RED + "true");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "pvp " + ChatColor.RED + "false");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "heal " + ChatColor.RED + "true");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "adjustspawn " + ChatColor.RED + "false");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "spawn");
         this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();

@@ -426,16 +426,30 @@ public interface MultiverseWorld {
     public boolean clearList(String property);
 
     /**
-     * Sets whether or not a world will autoheal players if the difficulty is on peaceful.
+     * Sets whether or not a world will auto-heal players if the difficulty is on peaceful.
      *
      * @param heal True if the world will heal.
      */
     public void setAutoHeal(boolean heal);
 
     /**
-     * Gets whether or not a world will autoheal players if the difficulty is on peaceful.
+     * Gets whether or not a world will auto-heal players if the difficulty is on peaceful.
      *
      * @return True if the world should heal (default), false if not.
      */
     public boolean getAutoHeal();
+
+    /**
+     * Sets whether or not Multiverse should auto-adjust the spawn for this world.
+     *
+     * @param adjust True if multiverse should adjust the spawn, false if not.
+     */
+    public void setAdjustSpawn(boolean adjust);
+
+    /**
+     * Gets whether or not Multiverse should auto-adjust the spawn for this world.
+     *
+     * @return True if Multiverse should adjust the spawn, false if not.
+     */
+    public boolean getAdjustSpawn();
 }

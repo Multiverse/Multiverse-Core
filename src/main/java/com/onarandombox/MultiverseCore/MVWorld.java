@@ -69,6 +69,8 @@ public class MVWorld implements MultiverseWorld {
     private boolean allowWeather;
     private Location spawnLocation;
     private boolean isHidden = false;
+    private boolean autoheal = true;
+    private boolean adjustSpawn = true;
 
     public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString) {
         this.config = config;
@@ -322,6 +324,10 @@ public class MVWorld implements MultiverseWorld {
             this.setHunger(value);
         } else if (name.equalsIgnoreCase("weather") || name.equalsIgnoreCase("storm")) {
             this.setEnableWeather(value);
+        } else if (name.equalsIgnoreCase("heal") || name.equalsIgnoreCase("autoheal")) {
+            this.setAutoHeal(value);
+        } else if (name.equalsIgnoreCase("adjustspawn")) {
+            this.setAdjustSpawn(value);
         } else if (name.equalsIgnoreCase("hidden")) {
             this.setHidden(value);
         } else {
@@ -757,22 +763,30 @@ public class MVWorld implements MultiverseWorld {
         float yaw = (float) worldSection.getDouble("spawn.yaw", w.getSpawnLocation().getYaw());
 
         this.setSpawnLocation(new Location(w, x, y, z, yaw, pitch));
+        this.plugin.log(Level.FINEST, "Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(this.getSpawnLocation()));
         SafeTTeleporter teleporter = this.plugin.getTeleporter();
         BlockSafety bs = new BlockSafety();
         if (!bs.playerCanSpawnHereSafely(this.spawnLocation)) {
+            if (!this.adjustSpawn) {
+                this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe!!");
+                this.plugin.log(Level.WARNING, "NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
+                this.plugin.log(Level.WARNING, "To turn on spawn adjustment for this world simply type:");
+                this.plugin.log(Level.WARNING, "/mvm set adjustspawn true " + this.getAlias());
+                return;
+            }
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
             Location newSpawn = teleporter.getSafeLocation(this.spawnLocation, 128, 128);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
             if (newSpawn != null) {
-                this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(newSpawn));
+                this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(newSpawn));
                 this.setSpawnLocation(newSpawn);
             } else {
                 this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
             }
         }
-        this.plugin.log(Level.FINEST, "Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(this.getSpawnLocation()));
+
     }
 
     @Override
@@ -832,15 +846,27 @@ public class MVWorld implements MultiverseWorld {
         return true;
     }
 
-    // TODO: Implment this, I'm going to bed tonight.
     @Override
     public boolean getAutoHeal() {
-        return true;
+        return this.autoheal;
     }
 
-    // TODO: Implment this, I'm going to bed tonight.
     @Override
     public void setAutoHeal(boolean heal) {
+        this.autoheal = heal;
+        this.worldSection.set("autoheal", this.autoheal);
+        saveConfig();
+    }
 
+    @Override
+    public void setAdjustSpawn(boolean adjust) {
+        this.adjustSpawn = adjust;
+        this.worldSection.set("adjustspawn", this.adjustSpawn);
+        saveConfig();
+    }
+
+    @Override
+    public boolean getAdjustSpawn() {
+        return this.adjustSpawn;
     }
 }

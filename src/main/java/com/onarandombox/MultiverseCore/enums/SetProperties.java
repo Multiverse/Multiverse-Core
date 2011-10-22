@@ -15,5 +15,6 @@ package com.onarandombox.MultiverseCore.enums;
 public enum SetProperties {
     alias, animals, monsters, pvp, scaling, aliascolor, color, respawn,
     currency, curr, price, scale, spawnmemory, memory, weather, storm,
-    gamemode, mode, hunger, difficulty, diff, hidden, spawn
+    gamemode, mode, hunger, difficulty, diff, hidden, spawn, autoheal,
+    heal, adjustspawn
 }
