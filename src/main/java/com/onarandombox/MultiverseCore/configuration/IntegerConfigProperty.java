@@ -14,18 +14,21 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
     private Integer value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public IntegerConfigProperty(ConfigurationSection section, String name, Integer defaultValue) {
+    public IntegerConfigProperty(ConfigurationSection section, String name, Integer defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.setValue(this.section.getInt(this.configNode, defaultValue));
     }
 
-    public IntegerConfigProperty(ConfigurationSection section, String name, Integer defaultValue, String configNode) {
+    public IntegerConfigProperty(ConfigurationSection section, String name, Integer defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.setValue(this.section.getInt(this.configNode, defaultValue));
     }
 
@@ -67,5 +70,10 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 }

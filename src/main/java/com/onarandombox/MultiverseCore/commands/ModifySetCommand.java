@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.enums.Action;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
@@ -56,6 +55,10 @@ public class ModifySetCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         // Special case for spawn:
         if (args.size() == 1) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("You must be a player to set the" + ChatColor.GREEN + " spawn");
+                return;
+            }
             if (args.get(0).equalsIgnoreCase("spawn")) {
                 SetSpawnCommand c = new SetSpawnCommand(this.plugin);
                 c.setWorldSpawn(sender);
@@ -101,10 +104,10 @@ public class ModifySetCommand extends MultiverseCommand {
             return;
         }
         try {
-            if (world.setVariable(property, value)) {
+            if (world.setProperty(property, value)) {
                 sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
             } else {
-                sender.sendMessage(ChatColor.RED + "There was an error setting " + ChatColor.GRAY + property);
+                sender.sendMessage(world.getProperty(property).getHelp());
             }
         } catch (PropertyDoesNotExistException e) {
             sender.sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + property + ChatColor.RED + "'");

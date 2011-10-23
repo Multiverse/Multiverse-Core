@@ -16,18 +16,21 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
     private GameMode value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public GameModeConfigProperty(ConfigurationSection section, String name, GameMode defaultValue) {
+    public GameModeConfigProperty(ConfigurationSection section, String name, GameMode defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
-    public GameModeConfigProperty(ConfigurationSection section, String name, GameMode defaultValue, String configNode) {
+    public GameModeConfigProperty(ConfigurationSection section, String name, GameMode defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
@@ -72,5 +75,10 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 }

@@ -79,24 +79,31 @@ public class MVWorld implements MultiverseWorld {
         // Start NEW config awesomeness.
         ConfigPropertyFactory fac = new ConfigPropertyFactory(this.worldSection);
         this.propertyList = new HashMap<String, MVConfigProperty>();
-        this.propertyList.put("hidden", fac.getNewProperty("hidden", false));
+        // The format of these are either:
+        // getNewProperty(name, defaultValue, helpText)
+        // or
+        // getNewProperty(name, defaultValue, yamlConfigNode, helpText)
+        //
+        // If the first type is used, name is used as the yamlConfigNode
+        this.propertyList.put("hidden", fac.getNewProperty("hidden", false, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("alias", fac.getNewProperty("alias", "", "alias.name"));
-        this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color"));
-        this.propertyList.put("pvp", fac.getNewProperty("pvp", true));
-        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment)));
-        this.propertyList.put("respawn", fac.getNewProperty("respawn", "", "respawnworld"));
-        this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather"));
-        this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY));
-        this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn"));
-        this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn"));
-        this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency"));
-        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price"));
-        this.propertyList.put("hunger", fac.getNewProperty("hunger", true));
-        this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true));
-        this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true));
-        this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL));
-        this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory"));
-        this.propertyList.put("spawn", fac.getNewProperty("spawn", this.readSpawnFromConfig(this.getCBWorld())));
+        this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color", "Sorry, 'color' must either one of: " + EnglishChatColor.getAllColors()));
+        this.propertyList.put("pvp", fac.getNewProperty("pvp", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment), "There is no help available for this variable. Go bug Rigby90 about it."));
+        this.propertyList.put("respawn", fac.getNewProperty("respawn", "", "respawnworld", "You must set this to the " + ChatColor.GOLD + " NAME" + ChatColor.RED + " not alias of a world."));
+        this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather", "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY, "Difficulty must be set as one of the following: " + ChatColor.GOLD));
+        this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn", "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ". (see "));
+        this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn", "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency", "Currency must be an integer between -1 and the highest Minecraft item ID."));
+        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price", "Price must be a double formatted number like: 1.3"));
+        this.propertyList.put("hunger", fac.getNewProperty("hunger", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL, "There is no help available for this variable. Go bug Rigby90 about it."));
+        this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory", "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(), "There is no help available for this variable. Go bug Rigby90 about it."));
+        ((LocationConfigProperty) this.propertyList.get("spawn")).setValue(this.readSpawnFromConfig(this.getCBWorld()));
 
         // Set aliases
         this.propertyList.put("curr", this.propertyList.get("currency"));
@@ -202,7 +209,7 @@ public class MVWorld implements MultiverseWorld {
 
     public String getColoredWorldString() {
         EnglishChatColor worldColor = ((ColorConfigProperty) this.propertyList.get("color")).getValue();
-        String alias = ((StringConfigProperty) this.propertyList.get("string")).getValue();
+        String alias = ((StringConfigProperty) this.propertyList.get("alias")).getValue();
         if (worldColor.getColor() == null) {
             return alias + ChatColor.WHITE;
         }
@@ -307,7 +314,7 @@ public class MVWorld implements MultiverseWorld {
 
     // TODO: Provide better feedback
     @Override
-    public boolean setVariable(String name, String value) throws PropertyDoesNotExistException {
+    public boolean setProperty(String name, String value) throws PropertyDoesNotExistException {
         if (this.propertyList.containsKey(name)) {
             if (this.propertyList.get(name).parseValue(value)) {
                 this.saveConfig();
@@ -318,9 +325,18 @@ public class MVWorld implements MultiverseWorld {
         throw new PropertyDoesNotExistException(name);
     }
 
-    public String getVariable(String name) throws PropertyDoesNotExistException {
+    @Override
+    public String getPropertyValue(String name) throws PropertyDoesNotExistException {
         if (this.propertyList.containsKey(name)) {
             return this.propertyList.get(name).toString();
+        }
+        throw new PropertyDoesNotExistException(name);
+    }
+
+    @Override
+    public MVConfigProperty getProperty(String name) throws PropertyDoesNotExistException {
+        if (this.propertyList.containsKey(name)) {
+            return this.propertyList.get(name);
         }
         throw new PropertyDoesNotExistException(name);
     }
@@ -613,7 +629,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public Location getSpawnLocation() {
-        return ((LocationConfigProperty)this.propertyList.get("spawn")).getValue();
+        return ((LocationConfigProperty) this.propertyList.get("spawn")).getValue();
     }
 
     @Override

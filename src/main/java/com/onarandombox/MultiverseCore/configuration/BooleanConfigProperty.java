@@ -14,18 +14,21 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
     private Boolean value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue) {
+    public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.setValue(this.section.getBoolean(this.configNode, defaultValue));
     }
 
-    public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String configNode) {
+    public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.setValue(this.section.getBoolean(this.configNode, defaultValue));
     }
 
@@ -69,5 +72,10 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 }

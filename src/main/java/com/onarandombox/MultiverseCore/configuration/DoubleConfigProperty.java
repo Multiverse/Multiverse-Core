@@ -14,18 +14,21 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
     private Double value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public DoubleConfigProperty(ConfigurationSection section, String name, Double defaultValue) {
+    public DoubleConfigProperty(ConfigurationSection section, String name, Double defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.setValue(this.section.getDouble(this.configNode, defaultValue));
     }
 
-    public DoubleConfigProperty(ConfigurationSection section, String name, Double defaultValue, String configNode) {
+    public DoubleConfigProperty(ConfigurationSection section, String name, Double defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.setValue(this.section.getDouble(this.configNode, defaultValue));
     }
 
@@ -67,5 +70,10 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 }

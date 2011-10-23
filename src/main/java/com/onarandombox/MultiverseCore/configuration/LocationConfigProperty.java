@@ -16,18 +16,21 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
     private Location value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue) {
+    public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.setValue(this.getLocationFromConfig(this.configNode, defaultValue));
     }
 
-    public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String configNode) {
+    public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.setValue(this.getLocationFromConfig(this.configNode, defaultValue));
     }
 
@@ -55,6 +58,11 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
     @Override
     public String toString() {
         return LocationManipulation.strCoordsRaw(this.value);
+    }
+
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 
     @Override

@@ -22,74 +22,74 @@ public class ConfigPropertyFactory {
     }
 
     // Booleans
-    public BooleanConfigProperty getNewProperty(String name, boolean defaultValue) {
-        return new BooleanConfigProperty(this.section, name, defaultValue);
+    public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String help) {
+        return new BooleanConfigProperty(this.section, name, defaultValue, help);
     }
 
-    public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String node) {
-        return new BooleanConfigProperty(this.section, name, defaultValue, node);
+    public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String node, String help) {
+        return new BooleanConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 
     // Integers
-    public IntegerConfigProperty getNewProperty(String name, int defaultValue) {
-        return new IntegerConfigProperty(this.section, name, defaultValue);
+    public IntegerConfigProperty getNewProperty(String name, int defaultValue, String help) {
+        return new IntegerConfigProperty(this.section, name, defaultValue, help) ;
     }
 
-    public IntegerConfigProperty getNewProperty(String name, int defaultValue, String node) {
-        return new IntegerConfigProperty(this.section, name, defaultValue, node);
+    public IntegerConfigProperty getNewProperty(String name, int defaultValue, String node, String help) {
+        return new IntegerConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 
     // Doubles
-    public DoubleConfigProperty getNewProperty(String name, double defaultValue) {
-        return new DoubleConfigProperty(this.section, name, defaultValue);
+    public DoubleConfigProperty getNewProperty(String name, double defaultValue, String help) {
+        return new DoubleConfigProperty(this.section, name, defaultValue, help) ;
     }
 
-    public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node) {
-        return new DoubleConfigProperty(this.section, name, defaultValue, node);
+    public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node, String help) {
+        return new DoubleConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 
     // Strings
-    public StringConfigProperty getNewProperty(String name, String defaultValue) {
-        return new StringConfigProperty(this.section, name, defaultValue);
+    public StringConfigProperty getNewProperty(String name, String defaultValue, String help) {
+        return new StringConfigProperty(this.section, name, defaultValue, help) ;
     }
 
-    public StringConfigProperty getNewProperty(String name, String defaultValue, String node) {
-        return new StringConfigProperty(this.section, name, defaultValue, node);
+    public StringConfigProperty getNewProperty(String name, String defaultValue, String node, String help) {
+        return new StringConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 
     // Colors
-    public ColorConfigProperty getNewProperty(String name, EnglishChatColor defaultValue) {
-        return new ColorConfigProperty(this.section, name, defaultValue);
+    public ColorConfigProperty getNewProperty(String name, EnglishChatColor defaultValue, String help) {
+        return new ColorConfigProperty(this.section, name, defaultValue, help) ;
     }
 
-    public ColorConfigProperty getNewProperty(String name, EnglishChatColor defaultValue, String node) {
-        return new ColorConfigProperty(this.section, name, defaultValue, node);
+    public ColorConfigProperty getNewProperty(String name, EnglishChatColor defaultValue, String node, String help) {
+        return new ColorConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 
     // Difficulty
-    public DifficultyConfigProperty getNewProperty(String name, Difficulty defaultValue) {
-        return new DifficultyConfigProperty(this.section, name, defaultValue);
+    public DifficultyConfigProperty getNewProperty(String name, Difficulty defaultValue, String help) {
+        return new DifficultyConfigProperty(this.section, name, defaultValue, help) ;
     }
 
-    public DifficultyConfigProperty getNewProperty(String name, Difficulty defaultValue, String node) {
-        return new DifficultyConfigProperty(this.section, name, defaultValue, node);
-    }
-
-    // GameMode
-    public GameModeConfigProperty getNewProperty(String name, GameMode defaultValue) {
-        return new GameModeConfigProperty(this.section, name, defaultValue);
-    }
-
-    public GameModeConfigProperty getNewProperty(String name, GameMode defaultValue, String node) {
-        return new GameModeConfigProperty(this.section, name, defaultValue, node);
+    public DifficultyConfigProperty getNewProperty(String name, Difficulty defaultValue, String node, String help) {
+        return new DifficultyConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 
     // GameMode
-    public LocationConfigProperty getNewProperty(String name, Location defaultValue) {
-        return new LocationConfigProperty(this.section, name, defaultValue);
+    public GameModeConfigProperty getNewProperty(String name, GameMode defaultValue, String help) {
+        return new GameModeConfigProperty(this.section, name, defaultValue, help) ;
     }
 
-    public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node) {
-        return new LocationConfigProperty(this.section, name, defaultValue, node);
+    public GameModeConfigProperty getNewProperty(String name, GameMode defaultValue, String node, String help) {
+        return new GameModeConfigProperty(this.section, name, defaultValue, node, help) ;
+    }
+
+    // GameMode
+    public LocationConfigProperty getNewProperty(String name, Location defaultValue, String help) {
+        return new LocationConfigProperty(this.section, name, defaultValue, help) ;
+    }
+
+    public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node, String help) {
+        return new LocationConfigProperty(this.section, name, defaultValue, node, help) ;
     }
 }

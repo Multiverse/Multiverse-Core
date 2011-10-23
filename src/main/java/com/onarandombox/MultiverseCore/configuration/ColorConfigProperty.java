@@ -15,18 +15,21 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
     private EnglishChatColor value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public ColorConfigProperty(ConfigurationSection section, String name, EnglishChatColor defaultValue) {
+    public ColorConfigProperty(ConfigurationSection section, String name, EnglishChatColor defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
-    public ColorConfigProperty(ConfigurationSection section, String name, EnglishChatColor defaultValue, String configNode) {
+    public ColorConfigProperty(ConfigurationSection section, String name, EnglishChatColor defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
@@ -68,5 +71,10 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 }

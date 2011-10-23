@@ -14,18 +14,21 @@ public class StringConfigProperty implements MVConfigProperty<String> {
     private String value;
     private String configNode;
     private ConfigurationSection section;
+    private String help;
 
-    public StringConfigProperty(ConfigurationSection section, String name, String defaultValue) {
+    public StringConfigProperty(ConfigurationSection section, String name, String defaultValue, String help) {
         this.name = name;
         this.configNode = name;
         this.section = section;
+        this.help = help;
         this.parseValue(this.section.getString(this.configNode, defaultValue));
     }
 
-    public StringConfigProperty(ConfigurationSection section, String name, String defaultValue, String configNode) {
+    public StringConfigProperty(ConfigurationSection section, String name, String defaultValue, String configNode, String help) {
         this.name = name;
         this.configNode = configNode;
         this.section = section;
+        this.help = help;
         this.parseValue(this.section.getString(this.configNode, defaultValue));
     }
 
@@ -56,6 +59,16 @@ public class StringConfigProperty implements MVConfigProperty<String> {
     @Override
     public String toString() {
         return value;
+    }
+
+    /**
+     * Gets the help string for this
+     *
+     * @return The value of this property as a string.
+     */
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 
     @Override

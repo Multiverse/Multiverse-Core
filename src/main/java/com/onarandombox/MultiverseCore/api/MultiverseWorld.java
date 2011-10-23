@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.*;
 import org.bukkit.permissions.Permission;
@@ -28,14 +29,41 @@ public interface MultiverseWorld {
     public World getCBWorld();
 
     /**
-     * Adds the property to the given value. The property must be a {@link com.onarandombox.MultiverseCore.enums.SetProperties}.
+     * Adds the property to the given value.
+     * It will throw a PropertyDoesNotExistException if the property is not found.
      *
-     * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.SetProperties} to set.
+     * @param property The name of a world property to set.
      * @param value    A value in string representation, it will be parsed to the correct type.
      *
      * @return True if the value was set, false if not.
+     *
+     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
-    public boolean setVariable(String property, String value) throws PropertyDoesNotExistException;
+    public boolean setProperty(String property, String value) throws PropertyDoesNotExistException;
+
+    /**
+     * Gets the actual MVConfigProperty from this world.
+     * It will throw a PropertyDoesNotExistException if the property is not found.
+     *
+     * @param property The name of a world property to get.
+     *
+     * @return A valid MVWorldProperty.
+     *
+     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
+     */
+    public MVConfigProperty getProperty(String property) throws PropertyDoesNotExistException;
+
+    /**
+     * Gets the string representation of a property.
+     * It will throw a PropertyDoesNotExistException if the property is not found.
+     *
+     * @param property The name of a world property to get.
+     *
+     * @return A valid MVWorldProperty.
+     *
+     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
+     */
+    public String getPropertyValue(String property) throws PropertyDoesNotExistException;
 
     /**
      * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.

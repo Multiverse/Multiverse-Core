@@ -138,7 +138,6 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("PVP Settings", colors));
         message.add(new FancyMessage("Multiverse Setting: ", world.isPVPEnabled() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getPVP() + "", colors));
-        message.add(new FancyMessage("Fake PVP Enabled: ", world.getFakePVP() + "", colors));
         worldInfo.add(message);
         // Page 3
         message = new ArrayList<FancyText>();

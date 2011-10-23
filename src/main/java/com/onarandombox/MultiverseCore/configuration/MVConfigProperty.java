@@ -30,6 +30,13 @@ public interface MVConfigProperty<T> {
     public String toString();
 
     /**
+     * Gets the help string for this
+     *
+     * @return The value of this property as a string.
+     */
+    public String getHelp();
+
+    /**
      * Sets the value of this property
      *
      * @param value The T representation of this value.
