@@ -86,22 +86,22 @@ public class MVWorld implements MultiverseWorld {
         //
         // If the first type is used, name is used as the yamlConfigNode
         this.propertyList.put("hidden", fac.getNewProperty("hidden", false, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("alias", fac.getNewProperty("alias", "", "alias.name"));
+        this.propertyList.put("alias", fac.getNewProperty("alias", "", "alias.name", "Alias must be a valid string."));
         this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color", "Sorry, 'color' must either one of: " + EnglishChatColor.getAllColors()));
-        this.propertyList.put("pvp", fac.getNewProperty("pvp", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment), "There is no help available for this variable. Go bug Rigby90 about it."));
+        this.propertyList.put("pvp", fac.getNewProperty("pvp", true, "Sorry, 'pvp' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment), "Scale must be a positive double value. ex: " + ChatColor.GOLD + "2.3"));
         this.propertyList.put("respawn", fac.getNewProperty("respawn", "", "respawnworld", "You must set this to the " + ChatColor.GOLD + " NAME" + ChatColor.RED + " not alias of a world."));
-        this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather", "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY, "Difficulty must be set as one of the following: " + ChatColor.GOLD));
-        this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn", "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ". (see "));
+        this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather", "Sorry, 'weather' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY, "Difficulty must be set as one of the following: " + ChatColor.GREEN + "peaceful " + ChatColor.AQUA + "easy " + ChatColor.GOLD + "normal " + ChatColor.RED + "hard"));
+        this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn", "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn", "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency", "Currency must be an integer between -1 and the highest Minecraft item ID."));
-        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price", "Price must be a double formatted number like: 1.3"));
-        this.propertyList.put("hunger", fac.getNewProperty("hunger", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL, "There is no help available for this variable. Go bug Rigby90 about it."));
-        this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory", "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price", "Price must be a double value. ex: " + ChatColor.GOLD + "1.2" + ChatColor.WHITE+". Set to a negative value to give players money for entering this world."));
+        this.propertyList.put("hunger", fac.getNewProperty("hunger", true, "Sorry, 'hunger' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true, "Sorry, 'autoheal' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true, "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL, "GameMode must be set as one of the following: " + ChatColor.RED + "survival " + ChatColor.GREEN + "creative "));
+        this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory", "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(), "There is no help available for this variable. Go bug Rigby90 about it."));
         ((LocationConfigProperty) this.propertyList.get("spawn")).setValue(this.readSpawnFromConfig(this.getCBWorld()));
 
