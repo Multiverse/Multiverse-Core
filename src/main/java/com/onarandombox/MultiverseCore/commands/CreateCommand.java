@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -61,11 +62,13 @@ public class CreateCommand extends MultiverseCommand {
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
-        sender.sendMessage(ChatColor.AQUA + "Starting world creation...");
+
+        Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
+
         if (this.worldManager.addWorld(worldName, environment, seed, generator)) {
-            sender.sendMessage(ChatColor.GREEN + "Complete!");
+            Command.broadcastCommandMessage(sender, "Complete!");
         } else {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
+            Command.broadcastCommandMessage(sender, "FAILED.");
         }
     }
 }
