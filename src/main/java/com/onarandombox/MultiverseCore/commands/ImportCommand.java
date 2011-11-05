@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -57,9 +58,9 @@ public class ImportCommand extends MultiverseCommand {
         }
 
         if (new File(worldName).exists() && env != null) {
-            sender.sendMessage(ChatColor.AQUA + "Starting world import...");
+            Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
             this.worldManager.addWorld(worldName, environment, null, generator);
-            sender.sendMessage(ChatColor.GREEN + "Complete!");
+            Command.broadcastCommandMessage(sender, "Complete!");
             return;
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");

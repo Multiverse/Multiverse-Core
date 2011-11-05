@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -30,9 +31,9 @@ public class LoadCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         if (this.plugin.getMVWorldManager().loadWorld(args.get(0))) {
-            sender.sendMessage("World Loaded!");
+            Command.broadcastCommandMessage(sender, "Loaded world '" + args.get(0) + "'!");
         } else {
-            sender.sendMessage("Error trying to load world!");
+            sender.sendMessage("Error trying to load world '" + args.get(0) + "'!");
         }
     }
 }
