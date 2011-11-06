@@ -34,3 +34,7 @@
 
 # Fern's utils
 uploadtoserver.sh
+
+# Testing files:
+debug.log
+

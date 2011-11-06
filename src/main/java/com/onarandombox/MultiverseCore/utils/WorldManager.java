@@ -351,6 +351,11 @@ public class WorldManager implements MVWorldManager {
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
             // Remove all world permissions.
+            System.out.println(this.plugin);
+            System.out.println("Server2: " + this.plugin.getServer());
+            System.out.println(this.plugin.getServer().getPluginManager());
+            System.out.println(this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*"));
+
             Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
             Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
             for (MultiverseWorld w : this.worlds.values()) {
@@ -419,5 +424,9 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your settings.");
             return false;
         }
+    }
+
+    public MultiverseWorld getSpawnWorld() {
+        return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
     }
 }

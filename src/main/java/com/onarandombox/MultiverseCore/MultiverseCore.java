@@ -33,6 +33,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,7 +53,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
     public static boolean BedRespawn;
+    private File testConfigDirectory;
+    private PluginDescriptionFile testDescriptionFile;
 
+    @Override
+    public String toString() {
+        return "The Multiverse-Core Plugin";
+    }
 
     @Override
     public String dumpVersionInfo(String buffer) {
@@ -91,7 +98,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Configurations
     private FileConfiguration multiverseConfig = null;
 
-    private WorldManager worldManager = new WorldManager(this);
+    private WorldManager worldManager;
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
@@ -124,6 +131,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
     }
 
+    @Override
+    public File getDataFolder() {
+        if (this.testConfigDirectory != null) {
+            return this.testConfigDirectory;
+        }
+        return super.getDataFolder();
+    }
+
+    @Override
+    public PluginDescriptionFile getDescription() {
+        if (this.testDescriptionFile != null) {
+            return this.testDescriptionFile;
+        }
+        return super.getDescription();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+
+    public void setTestMode(File configDir, PluginDescriptionFile descriptionFile) {
+        this.testConfigDirectory = configDir;
+        this.testDescriptionFile = descriptionFile;
+    }
+
     public FileConfiguration getMVConfiguration() {
         return this.multiverseConfig;
     }
@@ -133,6 +162,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     public void onEnable() {
+        System.out.println("Enabling... Found server... " + this.getServer());
+        this.worldManager = new WorldManager(this);
         // Perform initial checks for AllPay
         if (!this.validateAllpay() || !this.validateCH()) {
             this.getServer().getPluginManager().disablePlugin(this);
@@ -230,6 +261,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /** Function to Register all the Events needed. */
     private void registerEvents() {
+        System.out.print(getServer().getName());
         PluginManager pm = getServer().getPluginManager();
         // pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener, Priority.Highest, this); // Cancel Teleports if needed.
@@ -453,6 +485,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private String getAuthors() {
         String authors = "";
         ArrayList<String> auths = this.getDescription().getAuthors();
+        if (auths.size() == 0) {
+            return "";
+        }
 
         if (auths.size() == 1) {
             return auths.get(0);
@@ -558,6 +593,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
         // This command is the override, and MUST NOT TELEPORT SAFELY
         this.getTeleporter().safelyTeleport(teleporter, p, l, false);
+    }
+
+
+    public File getServerFolder() {
+        return new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
     }
 
     private void checkServerProps() {
