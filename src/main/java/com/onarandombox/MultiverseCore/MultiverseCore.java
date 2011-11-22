@@ -163,7 +163,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     public void onEnable() {
         System.out.println("Enabling... Found server... " + this.getServer());
-        this.worldManager = new WorldManager(this);
         // Perform initial checks for AllPay
         if (!this.validateAllpay() || !this.validateCH()) {
             this.getServer().getPluginManager().disablePlugin(this);
