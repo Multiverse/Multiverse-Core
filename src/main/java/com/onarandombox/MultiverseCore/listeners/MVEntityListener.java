@@ -75,7 +75,7 @@ public class MVEntityListener extends EntityListener {
             Player player = (Player) defender;
             World w = player.getWorld();
 
-            if (!this.worldManager.isMVWorld(w.getName())) {
+            if (w == null || !this.worldManager.isMVWorld(w.getName())) {
                 // if the world is not handled, we don't care
                 return;
             }
