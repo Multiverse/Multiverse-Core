@@ -55,7 +55,7 @@ public class TestInstanceCreator {
         // Initialize the Mock Worlds
         World mockWorld = worldFactory.makeNewMockWorld("world", World.Environment.NORMAL);
         World mockNetherWorld = worldFactory.makeNewMockWorld("world_nether", World.Environment.NETHER);
-        World mockSkyWorld = worldFactory.makeNewMockWorld("world_skylands", World.Environment.SKYLANDS);
+        World mockSkyWorld = worldFactory.makeNewMockWorld("world_skylands", World.Environment.THE_END);
 
         List<World> worldList = new ArrayList<World>();
         worldList.add(mockWorld);
@@ -79,7 +79,7 @@ public class TestInstanceCreator {
         WorldCreatorMatcher matchNetherWorld = new WorldCreatorMatcher(netherCreator);
 
         WorldCreator skyCreator = new WorldCreator("world_skylands");
-        skyCreator.environment(World.Environment.SKYLANDS);
+        skyCreator.environment(World.Environment.THE_END);
         WorldCreatorMatcher matchSkyWorld = new WorldCreatorMatcher(skyCreator);
 
         // If a specific creator is called, return the appropreate world.

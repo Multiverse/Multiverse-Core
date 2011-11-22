@@ -96,7 +96,7 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn", "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn", "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency", "Currency must be an integer between -1 and the highest Minecraft item ID."));
-        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price", "Price must be a double value. ex: " + ChatColor.GOLD + "1.2" + ChatColor.WHITE+". Set to a negative value to give players money for entering this world."));
+        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price", "Price must be a double value. ex: " + ChatColor.GOLD + "1.2" + ChatColor.WHITE + ". Set to a negative value to give players money for entering this world."));
         this.propertyList.put("hunger", fac.getNewProperty("hunger", true, "Sorry, 'hunger' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true, "Sorry, 'autoheal' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true, "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
@@ -213,7 +213,10 @@ public class MVWorld implements MultiverseWorld {
         if (worldColor.getColor() == null) {
             return alias + ChatColor.WHITE;
         }
-        return worldColor + alias + ChatColor.WHITE;
+        if (alias.length() == 0) {
+            alias = this.getName();
+        }
+        return worldColor.getColor() + alias + ChatColor.WHITE;
     }
 
     // TODO: Migrate this method.

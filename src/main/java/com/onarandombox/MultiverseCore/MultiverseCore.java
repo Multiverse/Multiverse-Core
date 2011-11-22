@@ -523,8 +523,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
             env = "NETHER";
 
-        if (env.equalsIgnoreCase("SKYLANDS") || env.equalsIgnoreCase("SKYLAND") || env.equalsIgnoreCase("STARWARS"))
-            env = "SKYLANDS";
+        if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS"))
+            env = "THE_END";
 
         if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD"))
             env = "NORMAL";
@@ -579,15 +579,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.destFactory;
     }
 
-    @Deprecated
-    public com.onarandombox.utils.DestinationFactory getDestinationFactory() {
-        return new com.onarandombox.utils.DestinationFactory(this);
-    }
-
     /**
      * This is a convenience method to allow the QueuedCommand system to call it. You should NEVER call this directly.
      *
-     * @param p Player
+     * @param teleporter The Person requesting that the teleport should happen.
+     * @param p Player The Person being teleported.
      * @param l The potentially unsafe location.
      */
     public void teleportPlayer(CommandSender teleporter, Player p, Location l) {

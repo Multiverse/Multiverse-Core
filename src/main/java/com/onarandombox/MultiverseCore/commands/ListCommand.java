@@ -50,7 +50,7 @@ public class ListCommand extends MultiverseCommand {
                 color = ChatColor.RED;
             } else if (env == Environment.NORMAL) {
                 color = ChatColor.GREEN;
-            } else if (env == Environment.SKYLANDS) {
+            } else if (env == Environment.THE_END) {
                 color = ChatColor.AQUA;
             }
             String outputCache = world.getColoredWorldString() + ChatColor.WHITE + " - " + color + world.getEnvironment() + " \n";
