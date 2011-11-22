@@ -347,39 +347,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new CheckCommand(this));
     }
 
-    /** Deprecated, please use WorldManager.loadWorlds(Boolean forceLoad) now. */
-    @Deprecated
-    public void loadWorlds(boolean forceLoad) {
-        this.worldManager.loadWorlds(true);
-    }
-
-    /**
-     * Deprecated, please use WorldManager.addWorld(String name, Environment env, String seedString, String generator)
-     * now.
-     */
-    @Deprecated
-    public boolean addWorld(String name, Environment env, String seedString, String generator) {
-        return this.worldManager.addWorld(name, env, seedString, generator);
-    }
-
-    /** Deprecated, please use WorldManager.unloadWorld(String name) now. */
-    @Deprecated
-    public boolean removeWorldFromList(String name) {
-        return this.worldManager.unloadWorld(name);
-    }
-
-    /** Deprecated, please use WorldManager.removeWorldFromConfig(String name) now. */
-    @Deprecated
-    public boolean removeWorldFromConfig(String name) {
-        return this.worldManager.removeWorldFromConfig(name);
-    }
-
-    /** Deprecated please use WorldManager.deleteWorld(String name) now. */
-    @Deprecated
-    public Boolean deleteWorld(String name) {
-        return this.worldManager.deleteWorld(name);
-    }
-
     /** What happens when the plugin gets disabled... */
     public void onDisable() {
         debugLog.close();
@@ -414,16 +381,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public MVPermissions getMVPerms() {
         return this.ph;
-    }
-
-    @Deprecated
-    public com.onarandombox.MultiverseCore.MVPermissions getPermissions() {
-        return new com.onarandombox.MultiverseCore.MVPermissions(this);
-    }
-
-    @Deprecated
-    public PurgeWorlds getWorldPurger() {
-        return this.worldManager.getWorldPurger();
     }
 
     /** onCommand */
