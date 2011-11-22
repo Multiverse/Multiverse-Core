@@ -49,47 +49,6 @@ public class MVEntityListener extends EntityListener {
         }
     }
 
-    /**
-     * Event - When a Entity is Damaged, we first sort out whether it is of importance to us, such as EntityVSEntity or
-     * EntityVSProjectile. Then we grab the attacked and defender and check if its a player. Then deal with the PVP
-     * Aspect.
-     */
-    @Override
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        Entity attacker;
-        Entity defender;
-        if (event instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent sub = (EntityDamageByEntityEvent) event;
-            attacker = sub.getDamager();
-            defender = sub.getEntity();
-        } else {
-            return;
-        }
-        if (attacker == null || defender == null) {
-            return;
-        }
-        if (defender instanceof Player) {
-            Player player = (Player) defender;
-            World w = player.getWorld();
-
-            if (w == null || !this.worldManager.isMVWorld(w.getName())) {
-                // if the world is not handled, we don't care
-                return;
-            }
-            MultiverseWorld world = this.worldManager.getMVWorld(w.getName());
-
-            if (attacker instanceof Player) {
-                if (!world.isPVPEnabled() && world.getFakePVP()) {
-                    ((Player) attacker).sendMessage(ChatColor.RED + "PVP is disabled in this World.");
-                    event.setCancelled(true);
-                }
-            }
-        }
-    }
-
     @Override
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
         if (event.isCancelled()) {

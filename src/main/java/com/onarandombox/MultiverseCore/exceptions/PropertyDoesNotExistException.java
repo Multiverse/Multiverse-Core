@@ -5,16 +5,10 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.enums;
+package com.onarandombox.MultiverseCore.exceptions;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */ // Color == Aliascolor
-public enum SetProperties {
-    alias, animals, monsters, pvp, scaling, aliascolor, color, respawn,
-    currency, curr, price, scale, spawnmemory, memory, weather, storm,
-    gamemode, mode, hunger, difficulty, diff, hidden, spawn, autoheal,
-    heal, adjustspawn
+public class PropertyDoesNotExistException extends Exception {
+    public PropertyDoesNotExistException(String name) {
+        super(name);
+    }
 }

@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.enums.Action;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
-import com.onarandombox.MultiverseCore.enums.SetProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -40,14 +39,7 @@ public class ModifyCommand extends MultiverseCommand {
     }
 
     protected static boolean validateAction(Action action, String property) {
-        if (action == Action.Set) {
-            try {
-                SetProperties.valueOf(property);
-                return true;
-            } catch (IllegalArgumentException e) {
-                return false;
-            }
-        } else {
+        if (action != Action.Set) {
             try {
                 AddProperties.valueOf(property);
                 return true;
@@ -55,6 +47,7 @@ public class ModifyCommand extends MultiverseCommand {
                 return false;
             }
         }
+        return false;
     }
 
     @Override

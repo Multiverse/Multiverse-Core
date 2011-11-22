@@ -33,7 +33,7 @@ public class EnvironmentCommand extends MultiverseCommand {
         sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");
         sender.sendMessage(ChatColor.GREEN + "NORMAL");
         sender.sendMessage(ChatColor.RED + "NETHER");
-        sender.sendMessage(ChatColor.AQUA + "SKYLANDS");
+        sender.sendMessage(ChatColor.AQUA + "END");
     }
 
     @Override

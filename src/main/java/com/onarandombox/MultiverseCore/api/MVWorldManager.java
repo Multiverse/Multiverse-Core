@@ -141,4 +141,12 @@ public interface MVWorldManager {
      * @return A valid {@link PurgeWorlds}.
      */
     public PurgeWorlds getWorldPurger();
+
+    /**
+     * Gets the world players will spawn in on first join.
+     * Currently this always returns worlds.get(0) from Bukkit.
+     *
+     * @return A Multiverse world that players will spawn in or null if no MV world has been set.
+     */
+    public MultiverseWorld getSpawnWorld();
 }
