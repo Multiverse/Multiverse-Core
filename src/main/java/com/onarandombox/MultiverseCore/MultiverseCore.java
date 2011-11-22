@@ -98,7 +98,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Configurations
     private FileConfiguration multiverseConfig = null;
 
-    private WorldManager worldManager;
+    private WorldManager worldManager = new WorldManager(this);
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
@@ -630,11 +630,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     public WorldManager getMVWorldManager() {
         return this.worldManager;
-    }
-
-    @Deprecated
-    public com.onarandombox.utils.WorldManager getWorldManager() {
-        return new com.onarandombox.utils.WorldManager(this);
     }
 
     public MVPlayerListener getPlayerListener() {
