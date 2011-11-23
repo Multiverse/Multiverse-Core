@@ -23,10 +23,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -37,14 +34,17 @@ import java.util.logging.Level;
 public class WorldManager implements MVWorldManager {
     private MultiverseCore plugin;
     private PurgeWorlds worldPurger;
-    private HashMap<String, MultiverseWorld> worlds;
+    private Map<String, MultiverseWorld> worlds;
+    private List<String> unloadedWorlds;
     private FileConfiguration configWorlds = null;
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
         this.worlds = new HashMap<String, MultiverseWorld>();
+        this.unloadedWorlds = new ArrayList<String>();
         this.worldPurger = new PurgeWorlds(this.plugin);
     }
+
 
     /** {@inheritDoc} */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
@@ -96,6 +96,9 @@ public class WorldManager implements MVWorldManager {
         MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, seed, generator);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
+        if (this.unloadedWorlds.contains(name)) {
+            this.unloadedWorlds.remove(name);
+        }
         return true;
     }
 
@@ -154,12 +157,14 @@ public class WorldManager implements MVWorldManager {
             this.worlds.remove(name);
             this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
             this.unloadWorldFromBukkit(name, true);
+            this.unloadedWorlds.add(name);
             return true;
         } else if (this.plugin.getServer().getWorld(name) != null) {
-            this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's still loaded in memory.");
-            this.plugin.log(Level.WARNING, "To be on the safe side, you should import it then try unloading again...");
+            this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
+            this.plugin.log(Level.WARNING, "To unload it using multiverse, use:");
+            this.plugin.log(Level.WARNING, "/mv import " + name + " " + this.plugin.getServer().getWorld(name).getEnvironment().toString());
         } else {
-            this.plugin.log(Level.INFO, "The world " + name + " was already unloaded/did not exist.");
+            this.plugin.log(Level.INFO, "Multiverse does not know about " + name + ".");
         }
         return false;
     }
@@ -168,6 +173,10 @@ public class WorldManager implements MVWorldManager {
     public boolean loadWorld(String name) {
         // Check if the World is already loaded
         if (this.worlds.containsKey(name)) {
+            // Ensure it's not unloaded, since it IS loaded.
+            if (this.unloadedWorlds.contains(name)) {
+                this.unloadedWorlds.remove(name);
+            }
             return true;
         }
 
@@ -182,7 +191,9 @@ public class WorldManager implements MVWorldManager {
             String generatorString = this.configWorlds.getString("worlds." + name + ".generator");
 
             addWorld(name, this.plugin.getEnvFromString(environment), seedString, generatorString);
-
+            if (this.unloadedWorlds.contains(name)) {
+                this.unloadedWorlds.remove(name);
+            }
             return true;
         } else {
             return false;
@@ -228,7 +239,7 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.log(Level.SEVERE, "Please check your file permissions on " + name);
             }
             return deletedWorld;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             this.plugin.log(Level.SEVERE, "Hrm, something didn't go as planned. Here's an exception for ya.");
             this.plugin.log(Level.SEVERE, "You can go politely explain your situation in #multiverse on esper.net");
             this.plugin.log(Level.SEVERE, "But from here, it looks like your folder is oddly named.");
@@ -377,6 +388,14 @@ public class WorldManager implements MVWorldManager {
                 if (this.worlds.containsKey(worldKey)) {
                     continue;
                 }
+
+                // If autoload was set to false, don't load this one.
+                if (!this.configWorlds.getBoolean("worlds." + worldKey + ".autoload", true)) {
+                    if (!this.unloadedWorlds.contains(worldKey)) {
+                        this.unloadedWorlds.add(worldKey);
+                    }
+                    continue;
+                }
                 // Grab the initial values from the config file.
                 String environment = this.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
                 String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", "");
@@ -426,5 +445,10 @@ public class WorldManager implements MVWorldManager {
 
     public MultiverseWorld getSpawnWorld() {
         return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+    }
+
+    @Override
+    public List<String> getUnloadedWorlds() {
+        return this.unloadedWorlds;
     }
 }

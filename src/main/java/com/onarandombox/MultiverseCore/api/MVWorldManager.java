@@ -13,6 +13,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Multiverse 2 World Manager API
@@ -149,4 +150,6 @@ public interface MVWorldManager {
      * @return A Multiverse world that players will spawn in or null if no MV world has been set.
      */
     public MultiverseWorld getSpawnWorld();
+
+    public List<String> getUnloadedWorlds();
 }

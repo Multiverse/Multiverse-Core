@@ -65,6 +65,11 @@ public class ListCommand extends MultiverseCommand {
                 output += outputCache;
             }
         }
+        for (String name : this.plugin.getMVWorldManager().getUnloadedWorlds()) {
+            if (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + name, true)) {
+                output += ChatColor.GRAY + name + " - UNLOADED\n";
+            }
+        }
         String[] response = output.split("\n");
         for (String msg : response) {
             sender.sendMessage(msg);

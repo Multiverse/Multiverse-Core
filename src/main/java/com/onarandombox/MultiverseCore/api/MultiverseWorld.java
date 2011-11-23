@@ -482,4 +482,22 @@ public interface MultiverseWorld {
      * @return True if Multiverse should adjust the spawn, false if not.
      */
     public boolean getAdjustSpawn();
+
+    /**
+     * Sets whether or not Multiverse should auto-load this world.
+     *
+     * True is default.
+     *
+     * @param autoLoad True if multiverse should autoload this world the spawn, false if not.
+     */
+    public void setAutoLoad(boolean autoLoad);
+
+    /**
+     * Gets whether or not Multiverse should auto-load this world.
+     *
+     * @return True if Multiverse should auto-load this world.
+     */
+    public boolean getAutoLoad();
+
+
 }

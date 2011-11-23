@@ -260,7 +260,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /** Function to Register all the Events needed. */
     private void registerEvents() {
-        System.out.print(getServer().getName());
         PluginManager pm = getServer().getPluginManager();
         // pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener, Priority.Highest, this); // Cancel Teleports if needed.
