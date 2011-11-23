@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore.enums;
 
 /** Multiverse 2 */
 public enum ConfigProperty {
-    messagecooldown, teleportcooldown, worldnameprefix, bedrespawn, enforcegamemodes, enforceaccess, debug;
+    messagecooldown, teleportcooldown, worldnameprefix, enforcegamemodes, enforceaccess, debug;
 
 
     public static String getAllValues() {

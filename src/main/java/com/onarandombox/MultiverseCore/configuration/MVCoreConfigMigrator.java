@@ -74,7 +74,6 @@ public class MVCoreConfigMigrator extends MVConfigMigrator {
         newConfig.setProperty("opfallback", true);
         newConfig.setProperty("disableautoheal", false);
         newConfig.setProperty("fakepvp", false);
-        newConfig.setProperty("bedrespawn", true);
         newConfig.setProperty("version", 2.2);
         newConfig.save();
         return true;

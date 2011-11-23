@@ -105,6 +105,7 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory", "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(), "There is no help available for this variable. Go bug Rigby90 about it."));
         this.propertyList.put("autoload", fac.getNewProperty("autoload", true, "Set this to false ONLY if you don't want this world to load itself on server restart."));
+        this.propertyList.put("bedrespawn", fac.getNewProperty("bedrespawn", true, "If a player dies in this world, shoudld they go to their bed?"));
         ((LocationConfigProperty) this.getKnownProperty("spawn")).setValue(this.readSpawnFromConfig(this.getCBWorld()));
 
         // Set aliases
@@ -695,13 +696,24 @@ public class MVWorld implements MultiverseWorld {
     }
 
     @Override
-    public void setAutoLoad(boolean adjust) {
-        ((BooleanConfigProperty) this.getKnownProperty("autoload")).setValue(adjust);
+    public void setAutoLoad(boolean autoLoad) {
+        ((BooleanConfigProperty) this.getKnownProperty("autoload")).setValue(autoLoad);
         saveConfig();
     }
 
     @Override
     public boolean getAutoLoad() {
         return ((BooleanConfigProperty) this.getKnownProperty("autoload")).getValue();
+    }
+
+    @Override
+    public void setBedRespawn(boolean respawn) {
+        ((BooleanConfigProperty) this.getKnownProperty("bedrespawn")).setValue(respawn);
+        saveConfig();
+    }
+
+    @Override
+    public boolean getBedRespawn() {
+        return ((BooleanConfigProperty) this.getKnownProperty("bedrespawn")).getValue();
     }
 }

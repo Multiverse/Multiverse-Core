@@ -52,7 +52,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean EnforceAccess;
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
-    public static boolean BedRespawn;
     private File testConfigDirectory;
     private PluginDescriptionFile testDescriptionFile;
 
@@ -299,7 +298,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
         EnforceGameModes = this.multiverseConfig.getBoolean("enforcegamemodes", true);
         PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
-        BedRespawn = this.multiverseConfig.getBoolean("bedrespawn", true);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
         this.saveMVConfigs();

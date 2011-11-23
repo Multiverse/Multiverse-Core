@@ -485,7 +485,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets whether or not Multiverse should auto-load this world.
-     *
+     * <p/>
      * True is default.
      *
      * @param autoLoad True if multiverse should autoload this world the spawn, false if not.
@@ -498,6 +498,24 @@ public interface MultiverseWorld {
      * @return True if Multiverse should auto-load this world.
      */
     public boolean getAutoLoad();
+
+    /**
+     * Sets whether or not a player who dies in this world will respawn in their
+     * bed or follow the normal respawn pattern.
+     * <p/>
+     * True is default.
+     *
+     * @param autoLoad True if players dying in this world respawn at their bed.
+     */
+    public void setBedRespawn(boolean autoLoad);
+
+    /**
+     * Gets whether or not a player who dies in this world will respawn in their
+     * bed or follow the normal respawn pattern.
+     *
+     * @return True if players dying in this world should respawn at their bed.
+     */
+    public boolean getBedRespawn();
 
 
 }

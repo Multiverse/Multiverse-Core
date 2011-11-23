@@ -32,7 +32,6 @@ public class ConfigCommand extends MultiverseCommand {
         this.addCommandExample("/mv config show");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "debug" + ChatColor.AQUA + " 3");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "enforceaccess" + ChatColor.AQUA + " false");
-        this.addCommandExample("/mv config " + ChatColor.GREEN + "bedrespawn" + ChatColor.AQUA + " true");
         this.setPermission("multiverse.core.config", "Allows you to set Global MV Variables.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

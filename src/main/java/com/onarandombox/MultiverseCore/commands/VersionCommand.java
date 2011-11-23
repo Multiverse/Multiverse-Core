@@ -60,7 +60,6 @@ public class VersionCommand extends MultiverseCommand {
         logAndAddToPasteBinBuffer("worldnameprefix: " + MultiverseCore.PrefixChat);
         logAndAddToPasteBinBuffer("enforceaccess: " + MultiverseCore.EnforceAccess);
         logAndAddToPasteBinBuffer("enforcegamemodes: " + MultiverseCore.EnforceGameModes);
-        logAndAddToPasteBinBuffer("bedrespawn: " + MultiverseCore.BedRespawn);
         logAndAddToPasteBinBuffer("debug: " + MultiverseCore.GlobalDebug);
         logAndAddToPasteBinBuffer("Special Code: FRN002");
 

@@ -11,7 +11,6 @@ import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.*;
@@ -57,19 +56,17 @@ public class MVPlayerListener extends PlayerListener {
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         World world = event.getPlayer().getWorld();
-
+        MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
-        if (!this.worldManager.isMVWorld(world.getName())) {
+        if (mvWorld == null) {
             return;
         }
 
-        if (MultiverseCore.BedRespawn) {
+        if (mvWorld.getBedRespawn()) {
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }
 
-        // Get the MultiverseWorld
-        MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // Get the instance of the World the player should respawn at.
         MultiverseWorld respawnWorld = null;
         if (this.worldManager.isMVWorld(mvWorld.getRespawnToWorld())) {
