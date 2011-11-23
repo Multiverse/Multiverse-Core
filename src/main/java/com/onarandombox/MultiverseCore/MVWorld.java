@@ -326,6 +326,8 @@ public class MVWorld implements MultiverseWorld {
                 return true;
             }
             return false;
+        } else if (this.propertyAliases.containsKey(name)) {
+            return this.setProperty(this.propertyAliases.get(name), value);
         }
         throw new PropertyDoesNotExistException(name);
     }
