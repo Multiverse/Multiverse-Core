@@ -49,6 +49,7 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
             return false;
         }
         this.value = value;
+        System.out.println(this.value.getText());
         this.section.set(configNode, this.value.getText());
         return true;
     }
@@ -59,7 +60,7 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
         if (color == null) {
             return false;
         }
-        this.value = color;
+        this.setValue(color);
         return true;
     }
 
