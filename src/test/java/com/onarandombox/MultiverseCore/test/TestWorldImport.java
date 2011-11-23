@@ -53,6 +53,7 @@ public class TestWorldImport {
     }
 
     @Test
+    @Ignore
     public void testWorldImportWithNoFolder() {
         TestInstanceCreator creator = new TestInstanceCreator();
         Server mockServer = creator.setupDefaultServerInstance();

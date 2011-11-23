@@ -41,7 +41,6 @@ public class WorldManager implements MVWorldManager {
     private FileConfiguration configWorlds = null;
 
     public WorldManager(MultiverseCore core) {
-
         this.plugin = core;
         this.worlds = new HashMap<String, MultiverseWorld>();
         this.worldPurger = new PurgeWorlds(this.plugin);

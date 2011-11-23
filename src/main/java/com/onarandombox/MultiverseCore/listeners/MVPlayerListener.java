@@ -223,6 +223,7 @@ public class MVPlayerListener extends PlayerListener {
 
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameMode(Player player, World world) {
+        this.plugin.log(Level.FINE, "Handeling gamemode for player: " + player.getName());
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameMode(player, mvWorld);
@@ -250,6 +251,9 @@ public class MVPlayerListener extends PlayerListener {
         public void run() {
             // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
             if (player.getWorld().getName().equals(world.getCBWorld().getName())) {
+                MultiverseCore.staticLog(Level.FINE, "Handeling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
+                MultiverseCore.staticLog(Level.FINE, "PWorld: " + player.getWorld());
+                MultiverseCore.staticLog(Level.FINE, "AWorld: " + world);
                 player.setGameMode(world.getGameMode());
             }
         }
