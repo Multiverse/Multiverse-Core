@@ -60,6 +60,9 @@ public class PurgeWorlds {
         }
         int entitiesKilled = 0;
         for (Entity e : world.getEntities()) {
+            
+            this.plugin.log(Level.FINEST, "Entitie list: " + e.toString());
+            System.out.println("Entitie list: " + e.toString()));
 
             // Check against Monsters
             if (killMonster(mvworld, e, thingsToKill, negateMonsters)) {
