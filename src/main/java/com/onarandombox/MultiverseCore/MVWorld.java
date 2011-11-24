@@ -214,7 +214,14 @@ public class MVWorld implements MultiverseWorld {
     public String getColoredWorldString() {
         EnglishChatColor worldColor = ((ColorConfigProperty) this.getKnownProperty("color")).getValue();
         String alias = ((StringConfigProperty) this.getKnownProperty("alias")).getValue();
-        if (worldColor == null || worldColor.getColor() == null) {
+        if (worldColor == null) {
+            try {
+                this.setProperty("color", "WHITE");
+            } catch(PropertyDoesNotExistException e) {
+                // Do nothing - fixing the config file just failed, but we can recover anyway
+            }
+            return alias + ChatColor.WHITE;
+        } else if (worldColor.getColor() == null) {
             return alias + ChatColor.WHITE;
         }
         if (alias.length() == 0) {
