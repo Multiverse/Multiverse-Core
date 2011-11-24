@@ -61,8 +61,7 @@ public class PurgeWorlds {
         int entitiesKilled = 0;
         for (Entity e : world.getEntities()) {
             
-            this.plugin.log(Level.FINEST, "Entitie list: " + e.toString());
-            System.out.println("Entitie list: " + e.toString()));
+            this.plugin.log(Level.FINEST, "Entity list (aval for purge) from WORLD < " + mvworld.getName() + " >: " + e.toString());
 
             // Check against Monsters
             if (killMonster(mvworld, e, thingsToKill, negateMonsters)) {
@@ -108,9 +107,20 @@ public class PurgeWorlds {
      *
      * @return
      */
+     
+     /**
+      * // Separate handeling of EnderDragons if below doesn't work... ie EnderDragon's don't have a toString()
+      * if (e instanceof EnderDragon) {
+      *     this.plugin.log(Level.FINER, "Looking at an enderdragon: " + e);
+      *     String entityName = 'ENDERDRAGON'; // Assumes that creaturesToKill contains the ENDERDRAGON keyword
+      * }
+      * else{
+      *     String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
+      * } // The above is very hacky and probably should not be used.  
+      */ 
     private boolean killMonster(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
-        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast) {
+        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast || e instanceof EnderDragon) {
             this.plugin.log(Level.FINER, "Looking at a monster: " + e);
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
                 if (!negate) {
