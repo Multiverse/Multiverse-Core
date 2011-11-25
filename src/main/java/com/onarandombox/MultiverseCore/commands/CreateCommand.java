@@ -46,11 +46,12 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
         String worldName = args.get(0);
+        File worldFile = new File(this.plugin.getServerFolder(), worldName);
         String env = args.get(1);
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
 
-        if (new File(worldName).exists() || this.worldManager.isMVWorld(worldName)) {
+        if (worldFile.exists() || this.worldManager.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;

@@ -20,7 +20,6 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.utils.*;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,7 +32,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,8 +50,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean EnforceAccess;
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
-    private File testConfigDirectory;
-    private PluginDescriptionFile testDescriptionFile;
 
     @Override
     public String toString() {
@@ -122,34 +118,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private double chversion = 1;
     private MVMessaging messaging;
 
+    private File serverFolder = new File(System.getProperty("user.dir"));
+
     @Override
     public void onLoad() {
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
-    }
-
-    @Override
-    public File getDataFolder() {
-        if (this.testConfigDirectory != null) {
-            return this.testConfigDirectory;
-        }
-        return super.getDataFolder();
-    }
-
-    @Override
-    public PluginDescriptionFile getDescription() {
-        if (this.testDescriptionFile != null) {
-            return this.testDescriptionFile;
-        }
-        return super.getDescription();    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-
-    public void setTestMode(File configDir, PluginDescriptionFile descriptionFile) {
-        this.testConfigDirectory = configDir;
-        this.testDescriptionFile = descriptionFile;
     }
 
     public FileConfiguration getMVConfiguration() {
@@ -544,14 +520,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.getTeleporter().safelyTeleport(teleporter, p, l, false);
     }
 
-
     public File getServerFolder() {
-        return new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
+        return serverFolder;
+    }
+
+    public void setServerFolder(File newServerFolder) {
+        if (!newServerFolder.isDirectory())
+            throw new IllegalArgumentException("That's not a folder!");
+
+        this.serverFolder = newServerFolder;
     }
 
     private void checkServerProps() {
-        File serverFolder = new File(this.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
-        File serverProperties = new File(serverFolder.getAbsolutePath() + File.separator + "server.properties");
+        File serverProperties = new File(serverFolder, "server.properties");
         try {
             FileInputStream fileStream = new FileInputStream(serverProperties);
             DataInputStream in = new DataInputStream(fileStream);

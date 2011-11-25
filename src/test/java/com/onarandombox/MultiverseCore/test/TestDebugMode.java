@@ -7,70 +7,59 @@
 
 package com.onarandombox.MultiverseCore.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.test.utils.MVCoreFactory;
-import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
-import com.onarandombox.MultiverseCore.utils.FileUtils;
+import java.io.File;
+
 import junit.framework.Assert;
-import org.bukkit.Bukkit;
+
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.File;
-import java.lang.reflect.Field;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MultiverseCore.class})
+@PrepareForTest({ MultiverseCore.class })
 public class TestDebugMode {
-    @After
-    public void tearDown() throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException {
-        Field serverField = Bukkit.class.getDeclaredField("server");
-        serverField.setAccessible(true);
-        serverField.set(Class.forName("org.bukkit.Bukkit"), null);
-        if (MVCoreFactory.serverDirectory.exists()) {
-            MVCoreFactory.serverDirectory.delete();
-            FileUtils.deleteFolder(MVCoreFactory.serverDirectory);
-        }
-    }
+    TestInstanceCreator creator;
+    Server mockServer;
+    CommandSender mockCommandSender;
 
     @Before
     public void setUp() throws Exception {
-        if (!MVCoreFactory.serverDirectory.exists()) {
-            MVCoreFactory.serverDirectory.mkdirs();
-        }
-        if (!MVCoreFactory.pluginDirectory.exists()) {
-            MVCoreFactory.pluginDirectory.mkdirs();
-        }
+        creator = new TestInstanceCreator();
+        assertTrue(creator.setUp());
+        mockServer = creator.getServer();
+        mockCommandSender = creator.getCommandSender();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        creator.tearDown();
     }
 
     @Test
-    @Ignore
     public void testEnableDebugMode() {
-        TestInstanceCreator creator = new TestInstanceCreator();
-        Server mockServer = creator.setupDefaultServerInstance();
-        CommandSender mockCommandSender = creator.getCommandSender();
-        // Start actual testing.
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
 
         // Make sure Core is not null
-        Assert.assertNotNull(plugin);
+        assertNotNull(plugin);
 
         // Make sure Core is enabled
-        Assert.assertTrue(plugin.isEnabled());
+        assertTrue(plugin.isEnabled());
 
         // Make a fake server folder to fool MV into thinking a world folder exists.
         File serverDirectory = new File(creator.getCore().getServerFolder(), "world");
@@ -84,7 +73,7 @@ public class TestDebugMode {
         Assert.assertEquals(0, MultiverseCore.GlobalDebug);
 
         // Send the debug command.
-        String[] debugArgs = new String[]{"debug", "3"};
+        String[] debugArgs = new String[] { "debug", "3" };
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
 
         Assert.assertEquals(3, MultiverseCore.GlobalDebug);

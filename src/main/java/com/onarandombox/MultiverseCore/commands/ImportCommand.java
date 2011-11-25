@@ -39,7 +39,8 @@ public class ImportCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
-        if (this.worldManager.isMVWorld(worldName) && new File(worldName).exists()) {
+        File worldFile = new File(this.plugin.getServerFolder(), worldName);
+        if (this.worldManager.isMVWorld(worldName) && worldFile.exists()) {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
             return;
         }
@@ -57,7 +58,7 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 
-        if (new File(worldName).exists() && env != null) {
+        if (worldFile.exists() && env != null) {
             Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
             this.worldManager.addWorld(worldName, environment, null, generator);
             Command.broadcastCommandMessage(sender, "Complete!");

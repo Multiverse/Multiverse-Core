@@ -7,102 +7,179 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import junit.framework.Assert;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mockito.Matchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.FileUtils;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 
-import static org.mockito.Mockito.*;
-
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class TestInstanceCreator {
     MultiverseCore core;
+    Server mockServer;
     private CommandSender commandSender;
 
-    public Server setupDefaultServerInstance() {
+    public static final File pluginDirectory = new File("bin/test/server/plugins/coretest");
+    public static final File serverDirectory = new File("bin/test/server");
 
-        MockWorldFactory worldFactory = new MockWorldFactory();
-        MVCoreFactory coreFactory = new MVCoreFactory();
-        MockServerFactory serverFactory = new MockServerFactory();
-        core = coreFactory.getNewCore();
-        // Add Core to the list of loaded plugins
-        JavaPlugin[] plugins = new JavaPlugin[]{core};
+    public boolean setUp() {
+        try {
+            pluginDirectory.mkdirs();
+            Assert.assertTrue(pluginDirectory.exists());
 
-        // Mock the Plugin Manager
-        PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
-        when(mockPluginManager.getPlugins()).thenReturn(plugins);
-        when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
+            core = PowerMockito.spy(new MultiverseCore());
 
-        // Make some fake folders to fool the fake MV into thinking these worlds exist
-        new File(core.getServerFolder(), "world").mkdirs();
-        new File(core.getServerFolder(), "world_nether").mkdirs();
-        new File(core.getServerFolder(), "world_skylands").mkdirs();
+            // Let's let all MV files go to bin/test
+            doReturn(pluginDirectory).when(core).getDataFolder();
 
-        // Initialize the Mock Worlds
-        World mockWorld = worldFactory.makeNewMockWorld("world", World.Environment.NORMAL);
-        World mockNetherWorld = worldFactory.makeNewMockWorld("world_nether", World.Environment.NETHER);
-        World mockSkyWorld = worldFactory.makeNewMockWorld("world_skylands", World.Environment.THE_END);
+            // Return a fake PDF file.
+            PluginDescriptionFile pdf = new PluginDescriptionFile("Multiverse-Core", "2.1-Test",
+                    "com.onarandombox.MultiverseCore.MultiverseCore");
+            doReturn(pdf).when(core).getDescription();
+            doReturn(true).when(core).isEnabled();
+            core.setServerFolder(serverDirectory);
 
-        List<World> worldList = new ArrayList<World>();
-        worldList.add(mockWorld);
-        worldList.add(mockNetherWorld);
-        worldList.add(mockSkyWorld);
+            // Add Core to the list of loaded plugins
+            JavaPlugin[] plugins = new JavaPlugin[] { core };
 
-        // Initialize the Mock server.
-        Server mockServer = serverFactory.getMockServer();
+            // Mock the Plugin Manager
+            PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
+            when(mockPluginManager.getPlugins()).thenReturn(plugins);
+            when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
+            when(mockPluginManager.getPermission(anyString())).thenReturn(null);
 
-        // Give the server some worlds
-        when(mockServer.getWorld("world")).thenReturn(mockWorld);
-        when(mockServer.getWorld("world_nether")).thenReturn(mockNetherWorld);
-        when(mockServer.getWorld("world_skylands")).thenReturn(mockNetherWorld);
-        when(mockServer.getWorlds()).thenReturn(worldList);
-        when(mockServer.getPluginManager()).thenReturn(mockPluginManager);
+            // Make some fake folders to fool the fake MV into thinking these worlds exist
+            File worldNormalFile = new File(core.getServerFolder(), "world");
+            Util.log("Creating world-folder: " + worldNormalFile.getAbsolutePath());
+            worldNormalFile.mkdirs();
+            File worldNetherFile = new File(core.getServerFolder(), "world_nether");
+            Util.log("Creating world-folder: " + worldNetherFile.getAbsolutePath());
+            worldNetherFile.mkdirs();
+            File worldSkylandsFile = new File(core.getServerFolder(), "world_skylands");
+            Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
+            worldSkylandsFile.mkdirs();
 
-        // Initialize some worldCreatorMatchers (so we can see when a specific creator is called)
-        WorldCreatorMatcher matchWorld = new WorldCreatorMatcher(new WorldCreator("world"));
-        WorldCreator netherCreator = new WorldCreator("world_nether");
-        netherCreator.environment(World.Environment.NETHER);
-        WorldCreatorMatcher matchNetherWorld = new WorldCreatorMatcher(netherCreator);
+            // Initialize the Mock server.
+            mockServer = mock(Server.class);
+            when(mockServer.getName()).thenReturn("TestBukkit");
+            Logger.getLogger("Minecraft").setParent(Util.logger);
+            when(mockServer.getLogger()).thenReturn(Util.logger);
 
-        WorldCreator skyCreator = new WorldCreator("world_skylands");
-        skyCreator.environment(World.Environment.THE_END);
-        WorldCreatorMatcher matchSkyWorld = new WorldCreatorMatcher(skyCreator);
+            // Give the server some worlds
+            when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
+                public World answer(InvocationOnMock invocation) throws Throwable {
+                    String arg;
+                    try {
+                        arg = (String) invocation.getArguments()[0];
+                    } catch (Exception e) {
+                        return null;
+                    }
+                    return MockWorldFactory.getWorld(arg);
+                }
+            });
 
-        // If a specific creator is called, return the appropreate world.
-        when(mockServer.createWorld(Matchers.argThat(matchWorld))).thenReturn(mockWorld);
-        when(mockServer.createWorld(Matchers.argThat(matchNetherWorld))).thenReturn(mockNetherWorld);
-        when(mockServer.createWorld(Matchers.argThat(matchSkyWorld))).thenReturn(mockSkyWorld);
+            when(mockServer.getWorlds()).thenAnswer(new Answer<List<World>>() {
+                public List<World> answer(InvocationOnMock invocation) throws Throwable {
+                    return MockWorldFactory.getWorlds();
+                }
+            });
 
-        // Override some methods that bukkit normally provides us with for Core
-        doReturn(mockServer).when(core).getServer();
+            when(mockServer.getPluginManager()).thenReturn(mockPluginManager);
 
-        // Init our command sender
-        commandSender = spy(new TestCommandSender(mockServer));
-        Bukkit.setServer(mockServer);
-        // Load Multiverse Core
-        core.onLoad();
+            when(mockServer.createWorld(Matchers.isA(WorldCreator.class))).thenAnswer(
+                    new Answer<World>() {
+                        public World answer(InvocationOnMock invocation) throws Throwable {
+                            WorldCreator arg;
+                            try {
+                                arg = (WorldCreator) invocation.getArguments()[0];
+                            } catch (Exception e) {
+                                return null;
+                            }
+                            return MockWorldFactory.makeNewMockWorld(arg.name(), arg.environment());
+                        }
+                    });
 
-        // Enable it.
-        core.onEnable();
-        return mockServer;
+            // Set server
+            Field serverfield = JavaPlugin.class.getDeclaredField("server");
+            serverfield.setAccessible(true);
+            serverfield.set(core, mockServer);
+
+            // Set worldManager
+            WorldManager wm = PowerMockito.spy(new WorldManager(core));
+            Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
+            worldmanagerfield.setAccessible(true);
+            worldmanagerfield.set(core, wm);
+
+            // Init our command sender
+            commandSender = spy(new TestCommandSender(mockServer));
+            Bukkit.setServer(mockServer);
+
+            // Load Multiverse Core
+            core.onLoad();
+
+            // Enable it.
+            core.onEnable();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean tearDown() {
+        List<MultiverseWorld> worlds = new ArrayList<MultiverseWorld>(core.getMVWorldManager()
+                .getMVWorlds());
+        for (MultiverseWorld world : worlds) {
+            core.getMVWorldManager().deleteWorld(world.getName());
+        }
+
+        try {
+            Field serverField = Bukkit.class.getDeclaredField("server");
+            serverField.setAccessible(true);
+            serverField.set(Class.forName("org.bukkit.Bukkit"), null);
+        } catch (Exception e) {
+            Util.log(Level.SEVERE,
+                    "Error while trying to unregister the server from Bukkit. Has Bukkit changed?");
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+            return false;
+        }
+
+        FileUtils.deleteFolder(serverDirectory);
+        return true;
     }
 
     public MultiverseCore getCore() {
         return this.core;
+    }
+
+    public Server getServer() {
+        return this.mockServer;
     }
 
     public CommandSender getCommandSender() {

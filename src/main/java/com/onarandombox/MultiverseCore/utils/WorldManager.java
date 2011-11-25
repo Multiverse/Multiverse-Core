@@ -209,8 +209,8 @@ public class WorldManager implements MVWorldManager {
         }
         removeWorldFromConfig(name);
         try {
-            File serverFolder = new File(this.plugin.getDataFolder().getAbsolutePath()).getParentFile().getParentFile();
-            File worldFile = new File(serverFolder.getAbsolutePath() + File.separator + name);
+            File serverFolder = this.plugin.getServerFolder();
+            File worldFile = new File(serverFolder, name);
             if (name.equalsIgnoreCase("plugins")) {
                 this.plugin.log(Level.SEVERE, "Really? Are you high? This would delete your plugins folder. Luckily the MV2 devs are crazy smart or you're server would be ended...");
                 return false;
