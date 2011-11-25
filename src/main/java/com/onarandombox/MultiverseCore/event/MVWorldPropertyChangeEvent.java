@@ -24,8 +24,7 @@ import org.bukkit.event.Event;
 public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
     private MultiverseWorld world;
     private CommandSender changer;
-    private MVConfigProperty property;
-    private boolean isCancelled;
+    private boolean isCancelled = false;
     private String value;
     private String name;
 
@@ -43,11 +42,11 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
     }
 
     public String getNewValue() {
-        return this.property.getName();
+        return this.value;
     }
 
-    public String setNewValue() {
-        return this.property.getName();
+    public void setNewValue(String value) {
+        this.value = value;
     }
 
     /**
@@ -57,10 +56,6 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
      */
     public MultiverseWorld getWorld() {
         return this.world;
-    }
-
-    public void setMVConfigProperty(MVConfigProperty property) {
-        this.property = property;
     }
 
     /**

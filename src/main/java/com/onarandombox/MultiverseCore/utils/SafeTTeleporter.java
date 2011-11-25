@@ -288,7 +288,9 @@ public class SafeTTeleporter {
     public static Location findPortalBlockNextTo(Location l) {
         Block b = l.getWorld().getBlockAt(l);
         Location foundLocation = null;
-
+        if (b.getType() == Material.PORTAL) {
+            return l;
+        }
         if (b.getRelative(BlockFace.NORTH).getType() == Material.PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.NORTH).getLocation(), foundLocation);
         }

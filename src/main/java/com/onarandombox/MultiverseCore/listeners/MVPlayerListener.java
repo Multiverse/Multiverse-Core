@@ -146,14 +146,14 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
-        // If the player was actually outside of the portal, adjust the from location
-        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
-            event.setFrom(SafeTTeleporter.findPortalBlockNextTo(event.getFrom()));
-        }
         if (event.isCancelled() || event.getTo() == null || event.getFrom() == null) {
             return;
         }
 
+        // If the player was actually outside of the portal, adjust the from location
+        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
+            event.setFrom(SafeTTeleporter.findPortalBlockNextTo(event.getFrom()));
+        }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
