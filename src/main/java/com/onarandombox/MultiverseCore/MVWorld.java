@@ -10,12 +10,14 @@ package com.onarandombox.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.*;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
+import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.utils.BlockSafety;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -215,11 +217,7 @@ public class MVWorld implements MultiverseWorld {
         EnglishChatColor worldColor = ((ColorConfigProperty) this.getKnownProperty("color")).getValue();
         String alias = ((StringConfigProperty) this.getKnownProperty("alias")).getValue();
         if (worldColor == null) {
-            try {
-                this.setProperty("color", "WHITE");
-            } catch(PropertyDoesNotExistException e) {
-                // Do nothing - fixing the config file just failed, but we can recover anyway
-            }
+            this.setKnownProperty("color", "WHITE", null);
             return alias + ChatColor.WHITE;
         } else if (worldColor.getColor() == null) {
             return alias + ChatColor.WHITE;
@@ -328,15 +326,9 @@ public class MVWorld implements MultiverseWorld {
 
     // TODO: Provide better feedback
     @Override
-    public boolean setProperty(String name, String value) throws PropertyDoesNotExistException {
-        if (this.propertyList.containsKey(name)) {
-            if (this.getKnownProperty(name).parseValue(value)) {
-                this.saveConfig();
-                return true;
-            }
-            return false;
-        } else if (this.propertyAliases.containsKey(name)) {
-            return this.setProperty(this.propertyAliases.get(name), value);
+    public boolean setProperty(String name, String value, CommandSender sender) throws PropertyDoesNotExistException {
+        if (this.setKnownProperty(this.propertyAliases.get(name), value, sender)) {
+            return true;
         }
         throw new PropertyDoesNotExistException(name);
     }
@@ -373,6 +365,41 @@ public class MVWorld implements MultiverseWorld {
             return this.propertyList.get(this.propertyAliases.get(name));
         }
         return null;
+    }
+
+    /**
+     * This method should only be used from inside this class when it is KNOWN that the property exists.
+     *
+     * @param name   The known name of a property.
+     * @param value  The value that is trying to be set.
+     * @param sender The person sending the command, MAY BE NULL.
+     *
+     * @return True if the property was saved, false if not.
+     */
+    private boolean setKnownProperty(String name, String value, CommandSender sender) {
+        MVConfigProperty property;
+        if (this.propertyList.containsKey(name)) {
+            property = this.getKnownProperty(name);
+        } else if (this.propertyAliases.containsKey(name)) {
+            return this.setKnownProperty(this.propertyAliases.get(name), value, sender);
+        } else {
+            return false;
+        }
+        // Only allow people to cancel events when they're not the initializations.
+        if (this.canSave) {
+            MVWorldPropertyChangeEvent propertyChangeEvent = new MVWorldPropertyChangeEvent(this, sender, name, value);
+            this.plugin.getServer().getPluginManager().callEvent(propertyChangeEvent);
+            if (propertyChangeEvent.isCancelled()) {
+                this.plugin.log(Level.FINE, "Someone else cancelled the WorldPropertyChanged Event!!!");
+                return false;
+            }
+            value = propertyChangeEvent.getNewValue();
+        }
+        if (property.parseValue(value)) {
+            this.saveConfig();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -417,8 +444,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setAlias(String alias) {
-        ((StringConfigProperty) this.getKnownProperty("alias")).setValue(alias);
-        this.saveConfig();
+        this.setKnownProperty("alias", alias, null);
     }
 
     @Override
@@ -428,8 +454,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setAllowAnimalSpawn(boolean animals) {
-        ((BooleanConfigProperty) this.getKnownProperty("animals")).setValue(animals);
-        this.saveConfig();
+        this.setKnownProperty("animals", animals + "", null);
     }
 
     @Override
@@ -444,8 +469,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setAllowMonsterSpawn(boolean monsters) {
-        ((BooleanConfigProperty) this.getKnownProperty("monsters")).setValue(monsters);
-        this.saveConfig();
+        this.setKnownProperty("monsters", monsters + "", null);
     }
 
     @Override
@@ -460,8 +484,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setPVPMode(boolean pvp) {
-        ((BooleanConfigProperty) this.getKnownProperty("pvp")).setValue(pvp);
-        this.saveConfig();
+        this.setKnownProperty("pvp", pvp + "", null);
     }
 
     @Override
@@ -471,8 +494,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setHidden(boolean hidden) {
-        ((BooleanConfigProperty) this.getKnownProperty("hidden")).setValue(hidden);
-        this.saveConfig();
+        this.setKnownProperty("hidden", hidden + "", null);
     }
 
     public List<String> getWorldBlacklist() {
@@ -486,18 +508,12 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setScaling(double scaling) {
-        ((DoubleConfigProperty) this.getKnownProperty("scale")).setValue(scaling);
-        saveConfig();
-        return true;
+        return this.setKnownProperty("scale", scaling + "", null);
     }
 
     @Override
     public boolean setColor(String aliasColor) {
-        boolean success = this.getKnownProperty("color").parseValue(aliasColor);
-        if (success) {
-            saveConfig();
-        }
-        return success;
+        return this.setKnownProperty("color", aliasColor, null);
     }
 
     public boolean isValidAliasColor(String aliasColor) {
@@ -532,7 +548,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setRespawnToWorld(String respawnToWorld) {
-        return ((StringConfigProperty) this.getKnownProperty("respawn")).setValue(respawnToWorld);
+        return this.setKnownProperty("respawn", respawnToWorld, null);
     }
 
     @Override
@@ -547,8 +563,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setCurrency(int currency) {
-        ((IntegerConfigProperty) this.getKnownProperty("curr")).setValue(currency);
-        this.saveConfig();
+        this.setKnownProperty("curr", currency + "", null);
     }
 
     @Override
@@ -558,8 +573,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setPrice(double price) {
-        ((DoubleConfigProperty) this.getKnownProperty("price")).setValue(price);
-        this.saveConfig();
+        this.setKnownProperty("price", price + "", null);
     }
 
     @Override
@@ -580,11 +594,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setGameMode(String gameMode) {
-        if (this.getKnownProperty("mode").parseValue(gameMode)) {
-            saveConfig();
-            return true;
-        }
-        return false;
+        return this.setKnownProperty("mode", gameMode + "", null);
     }
 
     @Override
@@ -594,8 +604,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setEnableWeather(boolean weather) {
-        ((BooleanConfigProperty) this.getKnownProperty("weather")).setValue(weather);
-        this.saveConfig();
+        this.setKnownProperty("weather", weather + "", null);
     }
 
     @Override
@@ -610,8 +619,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setHunger(boolean hunger) {
-        ((BooleanConfigProperty) this.getKnownProperty("weather")).setValue(hunger);
-        this.saveConfig();
+        this.setKnownProperty("hunger", hunger + "", null);
     }
 
     @Override
@@ -647,7 +655,7 @@ public class MVWorld implements MultiverseWorld {
                 return spawnLocation;
             }
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
-            Location newSpawn = teleporter.getSafeLocation(spawnLocation, 128, 128);
+            Location newSpawn = teleporter.getSafeLocation(spawnLocation, 16, 16);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
@@ -673,11 +681,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean setDifficulty(String difficulty) {
-        if (this.getKnownProperty("diff").parseValue(difficulty)) {
-            saveConfig();
-            return true;
-        }
-        return false;
+        return this.setKnownProperty("diff", difficulty, null);
     }
 
     @Override
@@ -687,14 +691,12 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setAutoHeal(boolean heal) {
-        ((BooleanConfigProperty) this.getKnownProperty("autoheal")).setValue(heal);
-        saveConfig();
+        this.setKnownProperty("autoheal", heal + "", null);
     }
 
     @Override
     public void setAdjustSpawn(boolean adjust) {
-        ((BooleanConfigProperty) this.getKnownProperty("adjustspawn")).setValue(adjust);
-        saveConfig();
+        this.setKnownProperty("adjustspawn", adjust + "", null);
     }
 
     @Override
@@ -704,8 +706,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setAutoLoad(boolean autoLoad) {
-        ((BooleanConfigProperty) this.getKnownProperty("autoload")).setValue(autoLoad);
-        saveConfig();
+        this.setKnownProperty("autoload", autoLoad + "", null);
     }
 
     @Override
@@ -715,8 +716,7 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setBedRespawn(boolean respawn) {
-        ((BooleanConfigProperty) this.getKnownProperty("bedrespawn")).setValue(respawn);
-        saveConfig();
+        this.setKnownProperty("bedrespawn", respawn + "", null);
     }
 
     @Override

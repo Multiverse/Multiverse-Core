@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.api;
 import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
 import java.util.List;
@@ -34,12 +35,13 @@ public interface MultiverseWorld {
      *
      * @param property The name of a world property to set.
      * @param value    A value in string representation, it will be parsed to the correct type.
+     * @param sender   The sender who wants this value to be set.
      *
      * @return True if the value was set, false if not.
      *
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
-    public boolean setProperty(String property, String value) throws PropertyDoesNotExistException;
+    public boolean setProperty(String property, String value, CommandSender sender) throws PropertyDoesNotExistException;
 
     /**
      * Gets the actual MVConfigProperty from this world.
