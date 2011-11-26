@@ -223,6 +223,9 @@ public class WorldManager implements MVWorldManager {
             } else if (name.equals(".")) {
                 this.plugin.log(Level.SEVERE, "Why on earth would you want to use Multiverse-Core to delete your Bukkit Server! How many beers have you had tonight... Give the keys to a friend.");
                 return false;
+            } else if (name.equals("~")) {
+                this.plugin.log(Level.SEVERE, "Look, I know you want to run away from home but packing the place with C4 and detonating the charge is just not the way to do it.");
+                return false;
             } else if (!worldFile.isDirectory()) {
                 this.plugin.log(Level.SEVERE, "C'mon man... Really?!?! Multiverse-Core is a great way to get players from A to B, but not to manage your files. To delete this file type:");
                 this.plugin.log(Level.SEVERE, "stop");
