@@ -7,6 +7,9 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -15,17 +18,16 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Set;
-
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class TestCommandSender implements CommandSender {
 
     private Server server;
     private boolean isOp;
+
+    static {
+        Logger.getLogger("CommandSender").setParent(Util.logger);
+    }
+
+    private static final Logger logger = Logger.getLogger("CommandSender");
 
     public TestCommandSender(Server server) {
         this.server = server;
@@ -38,7 +40,7 @@ public class TestCommandSender implements CommandSender {
      */
     @Override
     public void sendMessage(String message) {
-        System.out.println(ChatColor.stripColor(message));
+        logger.info(ChatColor.stripColor(message));
     }
 
     /**
