@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.Location;
@@ -23,7 +24,7 @@ import java.util.logging.Level;
 public class MVPermissions implements PermissionsInterface {
 
     private MultiverseCore plugin;
-    private WorldManager worldMgr;
+    private MVWorldManager worldMgr;
 
     /**
      * Constructor FTW
@@ -40,7 +41,6 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param p The player to check.
      * @param w
-     *
      * @return
      */
     public boolean canTravelFromWorld(Player p, MultiverseWorld w) {
@@ -74,7 +74,6 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param p
      * @param w
-     *
      * @return
      */
     public boolean canEnterWorld(Player p, MultiverseWorld w) {
@@ -103,7 +102,6 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param sender The CommandSender to check.
      * @param d      The destination they are requesting.
-     *
      * @return True if that sender can go to that destination
      */
     public boolean canEnterDestination(CommandSender sender, MVDestination d) {
@@ -130,7 +128,6 @@ public class MVPermissions implements PermissionsInterface {
      * @param sender       Who is requesting the permission.
      * @param node         The permission node in string format; multiverse.core.list.worlds for example.
      * @param isOpRequired @Deprecated. This is not used for anything anymore.
-     *
      * @return True if they have that permission or any parent.
      */
     public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
@@ -177,7 +174,6 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param sender Who is asking for the permission.
      * @param node   The permission node to check (possibly already a parent).
-     *
      * @return True if they have any parent perm, false if none.
      */
     private boolean hasAnyParentPermission(CommandSender sender, String node) {
@@ -198,7 +194,6 @@ public class MVPermissions implements PermissionsInterface {
      * Given multiverse.core.list.worlds will return multiverse.core.list
      *
      * @param node The root node to check.
-     *
      * @return The parent of the node
      */
     private String pullOneLevelOff(String node) {
@@ -292,7 +287,6 @@ public class MVPermissions implements PermissionsInterface {
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
      *
      * @param seperated
-     *
      * @return
      */
     private String getParentPerm(String[] seperated) {

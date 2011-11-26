@@ -9,8 +9,12 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.FancyText;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.*;
+import com.onarandombox.MultiverseCore.utils.FancyColorScheme;
+import com.onarandombox.MultiverseCore.utils.FancyHeader;
+import com.onarandombox.MultiverseCore.utils.FancyMessage;
+import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -24,7 +28,7 @@ import java.util.List;
 //import com.sun.xml.internal.ws.util.StringUtils;
 
 public class InfoCommand extends MultiverseCommand {
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);

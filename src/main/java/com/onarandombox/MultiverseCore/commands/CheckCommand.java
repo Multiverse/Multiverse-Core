@@ -11,7 +11,6 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 
 public class CheckCommand extends MultiverseCommand {
-    private WorldManager worldManager;
 
     public CheckCommand(MultiverseCore plugin) {
         super(plugin);
@@ -33,7 +31,6 @@ public class CheckCommand extends MultiverseCommand {
         this.addCommandExample("/mv check " + ChatColor.GREEN + "Rigby90 " + ChatColor.LIGHT_PURPLE + "p:MyPortal");
         this.addCommandExample("/mv check " + ChatColor.GREEN + "lithium3141 " + ChatColor.LIGHT_PURPLE + "ow:WarpName");
         this.setPermission("multiverse.core.debug", "Checks to see if a player can go to a destination. Prints debug if false.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

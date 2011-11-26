@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
@@ -20,7 +21,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 
 public class ModifySetCommand extends MultiverseCommand {
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);

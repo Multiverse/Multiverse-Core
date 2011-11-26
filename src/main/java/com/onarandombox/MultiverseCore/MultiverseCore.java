@@ -11,6 +11,8 @@ import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.destination.*;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -37,6 +39,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +95,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Configurations
     private FileConfiguration multiverseConfig = null;
 
-    private WorldManager worldManager = new WorldManager(this);
+    private MVWorldManager worldManager = new WorldManager(this);
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
@@ -234,7 +237,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.destFactory.registerDestinationType(BedDestination.class, "b");
     }
 
-    /** Function to Register all the Events needed. */
+    /**
+     * Function to Register all the Events needed.
+     */
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         // pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Highest, this); // Low so it acts above any other.
@@ -258,7 +263,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvent(Event.Type.THUNDER_CHANGE, this.weatherListener, Priority.Normal, this);
     }
 
-    /** Load the Configuration files OR create the default config files. */
+    /**
+     * Load the Configuration files OR create the default config files.
+     */
     public void loadConfigs() {
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
@@ -284,7 +291,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.messaging;
     }
 
-    /** Register Multiverse-Core commands to Command Manager. */
+    /**
+     * Register Multiverse-Core commands to Command Manager.
+     */
     private void registerCommands() {
         // Intro Commands
         this.commandHandler.registerCommand(new HelpCommand(this));
@@ -304,6 +313,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new LoadCommand(this));
         this.commandHandler.registerCommand(new RemoveCommand(this));
         this.commandHandler.registerCommand(new DeleteCommand(this));
+        this.commandHandler.registerCommand(new RegenCommand(this));
         this.commandHandler.registerCommand(new ConfirmCommand(this));
         // Modification commands
         this.commandHandler.registerCommand(new ModifyCommand(this));
@@ -320,7 +330,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new CheckCommand(this));
     }
 
-    /** What happens when the plugin gets disabled... */
+    /**
+     * What happens when the plugin gets disabled...
+     */
     public void onDisable() {
         debugLog.close();
         this.banker = null;
@@ -356,7 +368,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.ph;
     }
 
-    /** onCommand */
+    /**
+     * onCommand
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!this.isEnabled()) {
@@ -445,7 +459,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * This code should get moved somewhere more appropriate, but for now, it's here.
      *
      * @param env
-     *
      * @return
      */
     public Environment getEnvFromString(String env) {
@@ -487,12 +500,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.pluginCount;
     }
 
-    /** Increments the number of plugins that have specifically hooked into core. */
+    /**
+     * Increments the number of plugins that have specifically hooked into core.
+     */
     public void incrementPluginCount() {
         this.pluginCount += 1;
     }
 
-    /** Decrements the number of plugins that have specifically hooked into core. */
+    /**
+     * Decrements the number of plugins that have specifically hooked into core.
+     */
     public void decrementPluginCount() {
         this.pluginCount -= 1;
     }
@@ -563,7 +580,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.spoutInterface;
     }
 
-    public WorldManager getMVWorldManager() {
+    public MVWorldManager getMVWorldManager() {
         return this.worldManager;
     }
 
@@ -597,10 +614,40 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * NOT deprecated for the time as queued commands use this.
      *
      * @param name World to delete
-     *
      * @return True if success, false if fail.
      */
     public Boolean deleteWorld(String name) {
         return this.worldManager.deleteWorld(name);
+    }
+
+    /**
+     * Used by queued commands to delete a world on a delay.
+     *
+     * @param name World to delete
+     * @return True if success, false if fail.
+     */
+    public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
+        MultiverseWorld world = this.worldManager.getMVWorld(name);
+        if(world == null) {
+            return false;
+        }
+        if (useNewSeed) {
+            System.out.println("Using a new seed");
+            // Set the worldseed.
+            if(randomSeed) {
+                System.out.println("Using a random seed");
+                Random random = new Random();
+                Long newseed = random.nextLong();
+                seed = newseed.toString();
+            } else {
+                System.out.println("Using " + seed);
+            }
+            ((WorldManager)this.worldManager).getConfigWorlds().set("worlds." + name + "seed", seed);
+        }
+        if (this.worldManager.deleteWorld(name, false)) {
+            this.worldManager.loadWorlds(false);
+            return true;
+        }
+        return false;
     }
 }

@@ -60,6 +60,7 @@ public class MVWorld implements MultiverseWorld {
         // Set local values that CANNOT be changed by user
         this.world = world;
         this.name = world.getName();
+        System.out.println("MVWorld recieved seed: " + seed);
         this.seed = seed;
         this.environment = world.getEnvironment();
 

@@ -47,6 +47,10 @@ public class WorldManager implements MVWorldManager {
         this.worldPurger = new PurgeWorlds(this.plugin);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void getDefaultWorldGenerators() {
         this.defaultGens = new HashMap<String, String>();
         File[] files = this.plugin.getServerFolder().listFiles(new FilenameFilter() {
@@ -69,6 +73,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
@@ -117,7 +122,7 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, seed, generator);
+        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, this.plugin.getServer().getWorld(name).getSeed(), generator);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
         if (this.unloadedWorlds.contains(name)) {
@@ -140,6 +145,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
         if (generator == null) {
             return null;
@@ -155,11 +161,9 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
-     * Remove the world from the Multiverse list and from the config
-     *
-     * @param name The name of the world to remove
-     * @return True if success, false if failure.
+     * {@inheritDoc}
      */
+    @Override
     public boolean removeWorldFromConfig(String name) {
         if (!unloadWorld(name)) {
             return false;
@@ -183,6 +187,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean unloadWorld(String name) {
         if (this.worlds.containsKey(name)) {
             if (this.unloadWorldFromBukkit(name, true)) {
@@ -206,6 +211,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean loadWorld(String name) {
         // Check if the World is already loaded
         if (this.worlds.containsKey(name)) {
@@ -239,14 +245,21 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
-    public Boolean deleteWorld(String name) {
+    @Override
+    public Boolean deleteWorld(String name, boolean removeFromConfig) {
         World world = this.plugin.getServer().getWorld(name);
         if (world == null) {
             // We can only delete loaded worlds
             return false;
         }
-        if (!removeWorldFromConfig(name)) {
-            return false;
+        if (removeFromConfig) {
+            if (!removeWorldFromConfig(name)) {
+                return false;
+            }
+        } else {
+            if (!this.unloadWorld(name)) {
+                return false;
+            }
         }
 
         try {
@@ -266,9 +279,17 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.SEVERE, "You can go politely explain your situation in #multiverse on esper.net");
             this.plugin.log(Level.SEVERE, "But from here, it looks like your folder is oddly named.");
             this.plugin.log(Level.SEVERE, "This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
-            e.printStackTrace();
+            this.plugin.log(Level.SEVERE, e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean deleteWorld(String name) {
+        return this.deleteWorld(name, true);
     }
 
     /**
@@ -286,6 +307,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removePlayersFromWorld(String name) {
         World w = this.plugin.getServer().getWorld(name);
         if (w != null) {
@@ -302,6 +324,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Collection<MultiverseWorld> getMVWorlds() {
         return this.worlds.values();
     }
@@ -374,13 +397,16 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void loadDefaultWorlds() {
         this.ensureConfigIsPrepared();
         List<World> worlds = this.plugin.getServer().getWorlds();
         Set<String> worldStrings = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
         for (World w : worlds) {
             String name = w.getName();
-            System.out.println(defaultGens);
             if (!worldStrings.contains(name)) {
                 if (this.defaultGens.containsKey(name)) {
                     this.addWorld(name, w.getEnvironment(), w.getSeed() + "", this.defaultGens.get(name));
@@ -406,6 +432,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void loadWorlds(boolean forceLoad) {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
@@ -453,7 +480,12 @@ public class WorldManager implements MVWorldManager {
                 }
                 // Grab the initial values from the config file.
                 String environment = this.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
-                String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", "");
+                String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", null);
+                if(seedString == null) {
+                    seedString = this.configWorlds.getLong("worlds." + worldKey + ".seed") + "";
+                }
+
+                System.out.println("SEEEEEEEED: " + seedString);
 
                 String generatorString = this.configWorlds.getString("worlds." + worldKey + ".generator");
                 if (environment.equalsIgnoreCase("skylands")) {
@@ -474,6 +506,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public PurgeWorlds getWorldPurger() {
         return this.worldPurger;
     }
@@ -484,11 +517,16 @@ public class WorldManager implements MVWorldManager {
      * @param file The file to load.
      * @return A loaded configuration.
      */
+    @Override
     public FileConfiguration loadWorldConfig(File file) {
         this.configWorlds = YamlConfiguration.loadConfiguration(file);
         return this.configWorlds;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean saveWorldsConfig() {
         try {
             this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
@@ -499,12 +537,23 @@ public class WorldManager implements MVWorldManager {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MultiverseWorld getSpawnWorld() {
         return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getUnloadedWorlds() {
         return this.unloadedWorlds;
+    }
+
+    public FileConfiguration getConfigWorlds() {
+        return this.configWorlds;
     }
 }

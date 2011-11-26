@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.Action;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
@@ -19,7 +20,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 
 public class ModifyClearCommand extends MultiverseCommand {
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public ModifyClearCommand(MultiverseCore plugin) {
         super(plugin);

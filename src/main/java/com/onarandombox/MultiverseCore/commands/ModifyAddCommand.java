@@ -8,9 +8,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.Action;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.util.List;
 // Anything not in here will only support the SET action
 
 public class ModifyAddCommand extends MultiverseCommand {
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public ModifyAddCommand(MultiverseCore plugin) {
         super(plugin);

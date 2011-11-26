@@ -97,5 +97,5 @@ public interface Core {
      *
      * @return {@link WorldManager}.
      */
-    public WorldManager getMVWorldManager();
+    public MVWorldManager getMVWorldManager();
 }

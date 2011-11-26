@@ -8,9 +8,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PurgeCommand extends MultiverseCommand {
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public PurgeCommand(MultiverseCore plugin) {
         super(plugin);

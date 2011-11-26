@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -20,7 +20,7 @@ import java.io.FilenameFilter;
 import java.util.List;
 
 public class ImportCommand extends MultiverseCommand {
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);

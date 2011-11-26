@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class WhoCommand extends MultiverseCommand {
 
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);

@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.World;
@@ -27,7 +28,7 @@ import java.util.logging.Level;
 public class MVEntityListener extends EntityListener {
 
     private MultiverseCore plugin;
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;

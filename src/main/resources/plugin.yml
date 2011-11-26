@@ -197,4 +197,8 @@ commands:
   mvload:
     description: Loads a world into Multiverse.
     usage: |
-            /<command>
+            /<command> {WORLD}
+  mvregen:
+    description: Regenerates a world Multiverse already knows about.
+    usage: |
+            /<command> {WORLD}
