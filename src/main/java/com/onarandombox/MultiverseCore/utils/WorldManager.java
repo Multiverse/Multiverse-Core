@@ -22,6 +22,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ public class WorldManager implements MVWorldManager {
     private Map<String, MultiverseWorld> worlds;
     private List<String> unloadedWorlds;
     private FileConfiguration configWorlds = null;
+    private Map<String, String> defaultGens;
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
@@ -45,6 +47,22 @@ public class WorldManager implements MVWorldManager {
         this.worldPurger = new PurgeWorlds(this.plugin);
     }
 
+    public void getDefaultWorldGenerators() {
+        this.defaultGens = new HashMap<String, String>();
+        File[] files = this.plugin.getServerFolder().listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String s) {
+                return s.equalsIgnoreCase("bukkit.yml");
+            }
+        });
+        if (files.length == 1) {
+            FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(files[0]);
+            Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
+            for (String key : keys) {
+                defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
+            }
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -64,7 +82,9 @@ public class WorldManager implements MVWorldManager {
 
 
         // TODO: Use the fancy kind with the commandSender
-        c.generator(generator);
+        if (generator != null && generator.length() != 0) {
+            c.generator(generator);
+        }
         c.environment(env);
 
         World world = null;
@@ -352,13 +372,25 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void loadWorlds(boolean forceLoad) {
-        // Basic Counter to count how many Worlds we are loading.
-        int count = 0;
-        // Grab all the Worlds from the Config.
+    public void loadDefaultWorlds() {
+        this.ensureConfigIsPrepared();
+        List<World> worlds = this.plugin.getServer().getWorlds();
+        Set<String> worldStrings = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
+        for (World w : worlds) {
+            String name = w.getName();
+            System.out.println(defaultGens);
+            if (!worldStrings.contains(name)) {
+                if (this.defaultGens.containsKey(name)) {
+                    this.addWorld(name, w.getEnvironment(), w.getSeed() + "", this.defaultGens.get(name));
+                } else {
+                    this.addWorld(name, w.getEnvironment(), w.getSeed() + "", null);
+                }
+
+            }
+        }
+    }
+
+    private void ensureConfigIsPrepared() {
         if (this.configWorlds.getConfigurationSection("worlds") == null) {
             this.configWorlds.createSection("worlds");
             try {
@@ -367,6 +399,16 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.log(Level.SEVERE, "Failed to save worlds.yml. Please check your file permissions.");
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void loadWorlds(boolean forceLoad) {
+        // Basic Counter to count how many Worlds we are loading.
+        int count = 0;
+        this.ensureConfigIsPrepared();
+        // Grab all the Worlds from the Config.
         Set<String> worldKeys = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
 
         // Force the worlds to be loaded, ie don't just load new worlds.

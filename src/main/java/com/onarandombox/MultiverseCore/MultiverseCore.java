@@ -145,6 +145,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + Protocol + ") Enabled - By " + getAuthors());
         this.checkServerProps();
+        // Load the defaultWorldGenerators
+        this.worldManager.getDefaultWorldGenerators();
 
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
@@ -171,6 +173,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup & Load our Configuration files.
         loadConfigs();
         if (this.multiverseConfig != null) {
+            this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");

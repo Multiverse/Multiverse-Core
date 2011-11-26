@@ -56,7 +56,7 @@ public class TestInstanceCreator {
             doReturn(pluginDirectory).when(core).getDataFolder();
 
             // Return a fake PDF file.
-            PluginDescriptionFile pdf = new PluginDescriptionFile("Multiverse-Core", "2.1-Test",
+            PluginDescriptionFile pdf = new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
                     "com.onarandombox.MultiverseCore.MultiverseCore");
             doReturn(pdf).when(core).getDescription();
             doReturn(true).when(core).isEnabled();

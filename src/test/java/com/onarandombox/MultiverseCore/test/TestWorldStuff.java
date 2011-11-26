@@ -151,15 +151,16 @@ public class TestWorldStuff {
         Command mockCommand = mock(Command.class);
         when(mockCommand.getName()).thenReturn("mv");
 
-        // Ensure that there are no worlds imported. This is a fresh setup.
-        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        // Ensure that there are 3 imported. This is a fresh setup.
+        // As of 11/26/11, MV autodetects all default worlds.
+        assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Create the world
         String[] normalArgs = new String[] { "create", "newworld", "normal" };
         plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
 
         // We should now have one world!
-        assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        assertEquals(4, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify
         verify(mockCommandSender).sendMessage("Starting creation of world 'newworld'...");
