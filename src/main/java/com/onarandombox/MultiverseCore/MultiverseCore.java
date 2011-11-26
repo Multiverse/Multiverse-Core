@@ -67,7 +67,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     @Override
     public void setCore(MultiverseCore core) {
-
+        // This method is required by the interface (so core is effectively a plugin of itself) and therefore
+        // this is never used.
     }
 
     @Override
@@ -587,5 +588,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     public boolean saveMVConfigs() {
         return this.saveMVConfig() && this.saveWorldConfig();
+    }
+
+    /**
+     * NOT deprecated for the time as queued commands use this.
+     *
+     * @param name World to delete
+     *
+     * @return True if success, false if fail.
+     */
+    public Boolean deleteWorld(String name) {
+        return this.worldManager.deleteWorld(name);
     }
 }

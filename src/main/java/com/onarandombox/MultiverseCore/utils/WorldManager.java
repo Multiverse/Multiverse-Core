@@ -143,6 +143,10 @@ public class WorldManager implements MVWorldManager {
             this.configWorlds.set("worlds." + name, null);
 
             this.saveWorldsConfig();
+            // Remove it from the list of unloaded worlds.
+            if (this.unloadedWorlds.contains(name)) {
+                this.unloadedWorlds.remove(name);
+            }
             return true;
         } else {
             this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
@@ -202,33 +206,15 @@ public class WorldManager implements MVWorldManager {
 
     /** {@inheritDoc} */
     public Boolean deleteWorld(String name) {
-
-        if (this.plugin.getServer().getWorld(name) == null) {
+        World world = this.plugin.getServer().getWorld(name);
+        if (world == null) {
             // We can only delete loaded worlds
             return false;
         }
         removeWorldFromConfig(name);
+
         try {
-            File serverFolder = this.plugin.getServerFolder();
-            File worldFile = new File(serverFolder, name);
-            if (name.equalsIgnoreCase("plugins")) {
-                this.plugin.log(Level.SEVERE, "Really? Are you high? This would delete your plugins folder. Luckily the MV2 devs are crazy smart or you're server would be ended...");
-                return false;
-            } else if (name.toLowerCase().contains("plugins")) {
-                this.plugin.log(Level.SEVERE, "I'm sorry, did you mean to type: 'rm plugins" + File.separator + "Essential*'? I could do that for you if you'd like...");
-                return false;
-            } else if (name.contains("..")) {
-                this.plugin.log(Level.SEVERE, "Uh yea... No way i'm going to delete a parent directory for you. You can go do 'rm -rf *.*' on your own time...");
-                return false;
-            } else if (name.equals(".")) {
-                this.plugin.log(Level.SEVERE, "Why on earth would you want to use Multiverse-Core to delete your Bukkit Server! How many beers have you had tonight... Give the keys to a friend.");
-                return false;
-            } else if (!worldFile.isDirectory()) {
-                this.plugin.log(Level.SEVERE, "C'mon man... Really?!?! Multiverse-Core is a great way to get players from A to B, but not to manage your files. To delete this file type:");
-                this.plugin.log(Level.SEVERE, "stop");
-                this.plugin.log(Level.SEVERE, "rm " + worldFile.getAbsolutePath());
-                return false;
-            }
+            File worldFile = world.getWorldFolder();
             plugin.log(Level.FINER, "deleteWorld(): worldFile: " + worldFile.getAbsolutePath());
             boolean deletedWorld = FileUtils.deleteFolder(worldFile);
             if (deletedWorld) {
