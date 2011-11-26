@@ -36,6 +36,7 @@ public class RegenCommand extends MultiverseCommand {
         Boolean useseed = (!(args.size() == 1));
         Boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s"));
         String seed = (args.size() == 3) ? args.get(2) : "";
+
         Class<?> paramTypes[] = {String.class, Boolean.class, Boolean.class, String.class};
         List<Object> objectArgs = new ArrayList<Object>();
         objectArgs.add(args.get(0));

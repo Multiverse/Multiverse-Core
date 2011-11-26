@@ -36,15 +36,12 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private final static int Protocol = 7;
+    private final static int Protocol = 8;
     // Global Multiverse config variable, states whether or not
     // Multiverse should stop other plugins from teleporting players
     // to worlds.
@@ -116,7 +113,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
     private double allpayversion = 3;
-    private double chversion = 3;
+    private double chversion = 4;
     private MVMessaging messaging;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
@@ -628,24 +625,29 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
         MultiverseWorld world = this.worldManager.getMVWorld(name);
-        if(world == null) {
+        if (world == null) {
             return false;
         }
+
+        List<Player> ps = world.getCBWorld().getPlayers();
+
         if (useNewSeed) {
-            System.out.println("Using a new seed");
             // Set the worldseed.
-            if(randomSeed) {
-                System.out.println("Using a random seed");
+            if (randomSeed) {
                 Random random = new Random();
                 Long newseed = random.nextLong();
                 seed = newseed.toString();
-            } else {
-                System.out.println("Using " + seed);
             }
-            ((WorldManager)this.worldManager).getConfigWorlds().set("worlds." + name + "seed", seed);
+            ((WorldManager) this.worldManager).getConfigWorlds().set("worlds." + name + ".seed", seed);
         }
         if (this.worldManager.deleteWorld(name, false)) {
             this.worldManager.loadWorlds(false);
+            SafeTTeleporter teleporter = this.getTeleporter();
+            Location newSpawn = this.getServer().getWorld(name).getSpawnLocation();
+            // Send all players that were in the old world, BACK to it!
+            for (Player p : ps) {
+                teleporter.safelyTeleport(null, p, newSpawn, true);
+            }
             return true;
         }
         return false;

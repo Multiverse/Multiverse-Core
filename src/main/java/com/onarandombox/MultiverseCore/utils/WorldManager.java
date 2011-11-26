@@ -485,8 +485,6 @@ public class WorldManager implements MVWorldManager {
                     seedString = this.configWorlds.getLong("worlds." + worldKey + ".seed") + "";
                 }
 
-                System.out.println("SEEEEEEEED: " + seedString);
-
                 String generatorString = this.configWorlds.getString("worlds." + worldKey + ".generator");
                 if (environment.equalsIgnoreCase("skylands")) {
                     this.plugin.log(Level.WARNING, "Found SKYLANDS world. Not importing automatically, as it won't work atm :(");
