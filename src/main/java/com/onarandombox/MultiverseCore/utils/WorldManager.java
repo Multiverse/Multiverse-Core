@@ -57,9 +57,11 @@ public class WorldManager implements MVWorldManager {
         });
         if (files.length == 1) {
             FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(files[0]);
-            Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
-            for (String key : keys) {
-                defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
+            if (bukkitConfig.isConfigurationSection("worlds")) {
+                Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
+                for (String key : keys) {
+                    defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
+                }
             }
         }
     }
