@@ -88,7 +88,7 @@ public class ImportCommand extends MultiverseCommand {
         }
         // Since we made an exception for the list, we have to make sure they have at least 2 params:
         if(args.size() == 1) {
-
+            this.showHelp(sender);
             return;
         }
         File worldFile = new File(this.plugin.getServerFolder(), worldName);
