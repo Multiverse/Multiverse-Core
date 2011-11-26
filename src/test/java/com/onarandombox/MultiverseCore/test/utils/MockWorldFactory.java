@@ -7,6 +7,14 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,17 +22,14 @@ import org.bukkit.generator.ChunkGenerator;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class MockWorldFactory {
 
-    class LocationMatcher extends ArgumentMatcher<Location> {
+    private static final Map<String, World> createdWorlds = new HashMap<String, World>();
+
+    private MockWorldFactory() {
+    }
+
+    private static class LocationMatcher extends ArgumentMatcher<Location> {
         private Location l;
 
         public LocationMatcher(Location location) {
@@ -36,24 +41,24 @@ public class MockWorldFactory {
         }
     }
 
-    class LocationMatcherAbove extends LocationMatcher {
+    private static class LocationMatcherAbove extends LocationMatcher {
 
         public LocationMatcherAbove(Location location) {
             super(location);
         }
 
         public boolean matches(Object creator) {
-            System.out.println("Checking above...");
+            Util.log("Checking above...");
             if (super.l == null || creator == null) {
                 return false;
             }
             boolean equal = ((Location) creator).getBlockY() >= super.l.getBlockY();
-            System.out.println("Checking equals/\\..." + equal);
+            Util.log("Checking equals/\\..." + equal);
             return equal;
         }
     }
 
-    class LocationMatcherBelow extends LocationMatcher {
+    private static class LocationMatcherBelow extends LocationMatcher {
 
         public LocationMatcherBelow(Location location) {
             super(location);
@@ -64,12 +69,16 @@ public class MockWorldFactory {
                 return false;
             }
             boolean equal = ((Location) creator).getBlockY() < super.l.getBlockY();
-            System.out.println("Checking equals\\/..." + equal);
+            Util.log("Checking equals\\/..." + equal);
             return equal;
         }
     }
 
-    public World makeNewMockWorld(String world, World.Environment env) {
+    private static void registerWorld(World world) {
+        createdWorlds.put(world.getName(), world);
+    }
+
+    private static World basics(String world, World.Environment env) {
         World mockWorld = mock(World.class);
         when(mockWorld.getName()).thenReturn(world);
         when(mockWorld.getEnvironment()).thenReturn(env);
@@ -81,10 +90,26 @@ public class MockWorldFactory {
         return mockWorld;
     }
 
-    public World makeNewMockWorld(String world, World.Environment env, long seed, ChunkGenerator generator) {
-        World w = this.makeNewMockWorld(world, env);
-        when(w.getGenerator()).thenReturn(generator);
-        when(w.getSeed()).thenReturn(seed);
+    public static World makeNewMockWorld(String world, World.Environment env) {
+        World w = basics(world, env);
+        registerWorld(w);
         return w;
+    }
+
+    public static World makeNewMockWorld(String world, World.Environment env, long seed,
+            ChunkGenerator generator) {
+        World mockWorld = basics(world, env);
+        when(mockWorld.getGenerator()).thenReturn(generator);
+        when(mockWorld.getSeed()).thenReturn(seed);
+        registerWorld(mockWorld);
+        return mockWorld;
+    }
+
+    public static World getWorld(String name) {
+        return createdWorlds.get(name);
+    }
+
+    public static List<World> getWorlds() {
+        return new ArrayList<World>(createdWorlds.values());
     }
 }

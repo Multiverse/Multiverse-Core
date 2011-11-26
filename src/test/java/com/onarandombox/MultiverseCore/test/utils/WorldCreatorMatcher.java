@@ -16,7 +16,7 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
     private boolean careAboutGenerators = false;
 
     public WorldCreatorMatcher(WorldCreator creator) {
-        System.out.println("Creating NEW world matcher.(" + creator.name() + ")");
+        Util.log("Creating NEW world matcher.(" + creator.name() + ")");
         this.worldCreator = creator;
     }
 
@@ -29,17 +29,17 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
     }
 
     public boolean matches(Object creator) {
-        System.out.println("Checking world creators.");
+        Util.log("Checking world creators.");
         if (creator == null) {
-            System.out.println("The given creator was null, but I was checking: " + this.worldCreator.name());
+            Util.log("The given creator was null, but I was checking: " + this.worldCreator.name());
             return false;
         }
-        System.out.println("Checking Names...(" + ((WorldCreator) creator).name() + ") vs (" + this.worldCreator.name() + ")");
-        System.out.println("Checking Envs...(" + ((WorldCreator) creator).environment() + ") vs (" + this.worldCreator.environment() + ")");
+        Util.log("Checking Names...(" + ((WorldCreator) creator).name() + ") vs (" + this.worldCreator.name() + ")");
+        Util.log("Checking Envs...(" + ((WorldCreator) creator).environment() + ") vs (" + this.worldCreator.environment() + ")");
         if (!((WorldCreator) creator).name().equals(this.worldCreator.name())) {
             return false;
         } else if (!((WorldCreator) creator).environment().equals(this.worldCreator.environment())) {
-            System.out.println("Checking Environments...");
+            Util.log("Checking Environments...");
             return false;
         } else if (careAboutSeeds && ((WorldCreator) creator).seed() != this.worldCreator.seed()) {
             System.out.print("Checking Seeds...");
@@ -48,7 +48,7 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
             System.out.print("Checking Gens...");
             return false;
         }
-        System.out.println("Creators matched!!!");
+        Util.log("Creators matched!!!");
         return true;
     }
 }
