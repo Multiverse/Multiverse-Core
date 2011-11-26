@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.event;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -17,7 +16,7 @@ import org.bukkit.event.Event;
  * This event is fired *before* the property is actually changed.
  * <p/>
  * If it is cancled, no change will happen.
- *
+ * <p/>
  * If you want to get the values of the world before the change, query the world.
  * If you want to get the value being changed, use getProperty()
  */

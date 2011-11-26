@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
-import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.configuration.ConfigurationSection;
 

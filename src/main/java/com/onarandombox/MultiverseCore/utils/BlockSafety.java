@@ -23,9 +23,7 @@ public class BlockSafety {
         // TODO Auto-generated constructor stub
     }
 
-    /**
-     * This function checks whether the block at the given coordinates are above air or not.
-     */
+    /** This function checks whether the block at the given coordinates are above air or not. */
     public boolean isBlockAboveAir(Location l) {
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         downOne.setY(downOne.getY() - 1);

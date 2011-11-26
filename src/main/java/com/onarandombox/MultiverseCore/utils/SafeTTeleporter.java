@@ -312,15 +312,15 @@ public class SafeTTeleporter {
             return blockA;
         }
         // Center our calculations
-        blockA.add(.5,0,.5);
-        blockB.add(.5,0,.5);
+        blockA.add(.5, 0, .5);
+        blockB.add(.5, 0, .5);
 
         // Retrieve the distance to the normalized blocks
         double testA = source.distance(blockA);
         double testB = source.distance(blockB);
 
         // Compare and return
-        if(testA <= testB) {
+        if (testA <= testB) {
             return blockA;
         }
         return blockB;

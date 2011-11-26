@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
-import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 

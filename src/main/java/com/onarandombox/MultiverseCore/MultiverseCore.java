@@ -12,15 +12,12 @@ import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.commands.*;
-import com.onarandombox.MultiverseCore.configuration.MVConfigMigrator;
-import com.onarandombox.MultiverseCore.configuration.MVCoreConfigMigrator;
 import com.onarandombox.MultiverseCore.destination.*;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.utils.*;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -114,7 +111,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private HashMap<String, MVPlayerSession> playerSessions;
     private GenericBank bank = null;
     private AllPay banker;
-    protected MVConfigMigrator migrator = new MVCoreConfigMigrator(this);
     protected int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
@@ -536,8 +532,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * This is a convenience method to allow the QueuedCommand system to call it. You should NEVER call this directly.
      *
      * @param teleporter The Person requesting that the teleport should happen.
-     * @param p Player The Person being teleported.
-     * @param l The potentially unsafe location.
+     * @param p          Player The Person being teleported.
+     * @param l          The potentially unsafe location.
      */
     public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
         // This command is the override, and MUST NOT TELEPORT SAFELY

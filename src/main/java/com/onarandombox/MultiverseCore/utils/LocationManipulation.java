@@ -257,10 +257,10 @@ public class LocationManipulation {
                 return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]));
             }
             if (split.length == 3) {
-                return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]),(float) 0.0);
+                return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]), (float) 0.0);
             }
             return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]), (float) Double.parseDouble(split[3]));
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return null;
         }
     }
