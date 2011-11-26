@@ -63,7 +63,7 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
 
-        if (mvWorld.getBedRespawn()) {
+        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
             return;
         }

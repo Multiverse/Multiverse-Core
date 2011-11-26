@@ -354,7 +354,6 @@ public class MVWorld implements MultiverseWorld {
      * This method should only be used from inside this class when it is KNOWN that the property exists.
      *
      * @param name The known name of a property
-     *
      * @return The property object.
      */
     private MVConfigProperty getKnownProperty(String name) {
@@ -373,7 +372,6 @@ public class MVWorld implements MultiverseWorld {
      * @param name   The known name of a property.
      * @param value  The value that is trying to be set.
      * @param sender The person sending the command, MAY BE NULL.
-     *
      * @return True if the property was saved, false if not.
      */
     private boolean setKnownProperty(String name, String value, CommandSender sender) {
