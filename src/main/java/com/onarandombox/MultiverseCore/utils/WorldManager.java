@@ -266,7 +266,7 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.SEVERE, "You can go politely explain your situation in #multiverse on esper.net");
             this.plugin.log(Level.SEVERE, "But from here, it looks like your folder is oddly named.");
             this.plugin.log(Level.SEVERE, "This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
-            System.out.print(e);
+            e.printStackTrace();
             return false;
         }
     }

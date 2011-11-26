@@ -122,6 +122,8 @@ public class TestInstanceCreator {
                         }
                     });
 
+            when(mockServer.unloadWorld(anyString(), anyBoolean())).thenReturn(true);
+
             // Set server
             Field serverfield = JavaPlugin.class.getDeclaredField("server");
             serverfield.setAccessible(true);
@@ -171,6 +173,8 @@ public class TestInstanceCreator {
         }
 
         FileUtils.deleteFolder(serverDirectory);
+        MockWorldFactory.clearWorlds();
+
         return true;
     }
 
