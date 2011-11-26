@@ -23,6 +23,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.omg.CosNaming._BindingIteratorImplBase;
 
 import java.io.File;
 import java.io.IOException;
@@ -627,44 +628,43 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public void setSpawnLocation(Location l) {
+        this.getCBWorld().setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
         ((LocationConfigProperty) this.getKnownProperty("spawn")).setValue(l);
         this.saveConfig();
     }
 
     private Location readSpawnFromConfig(World w) {
         Location spawnLocation = w.getSpawnLocation();
-        double x = worldSection.getDouble("spawn.x", spawnLocation.getX());
-        double y = worldSection.getDouble("spawn.y", spawnLocation.getY());
-        double z = worldSection.getDouble("spawn.z", spawnLocation.getZ());
-        float pitch = (float) worldSection.getDouble("spawn.pitch", spawnLocation.getPitch());
-        float yaw = (float) worldSection.getDouble("spawn.yaw", spawnLocation.getYaw());
-        this.plugin.log(Level.FINE, "Read spawn from config as: " + x + ", " + y + ", " + z);
+        Location configLocation = this.getSpawnLocation();
 
-        this.setSpawnLocation(new Location(w, x, y, z, yaw, pitch));
-        this.plugin.log(Level.FINEST, "Spawn for '" + this.getName() + "' Located at: " + LocationManipulation.locationToString(this.getSpawnLocation()));
+        // Set the worldspawn to our configspawn
+        w.setSpawnLocation(configLocation.getBlockX(), configLocation.getBlockY(), configLocation.getBlockZ());
         SafeTTeleporter teleporter = this.plugin.getTeleporter();
         BlockSafety bs = new BlockSafety();
-        if (!bs.playerCanSpawnHereSafely(spawnLocation)) {
+        // Verify that location was safe
+        if (!bs.playerCanSpawnHereSafely(configLocation)) {
             if (!((BooleanConfigProperty) this.getKnownProperty("adjustspawn")).getValue()) {
                 this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe!!");
                 this.plugin.log(Level.WARNING, "NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
                 this.plugin.log(Level.WARNING, "To turn on spawn adjustment for this world simply type:");
                 this.plugin.log(Level.WARNING, "/mvm set adjustspawn true " + this.getAlias());
-                return spawnLocation;
+                return configLocation;
             }
+            // If it's not, find a better one.
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
             Location newSpawn = teleporter.getSafeLocation(spawnLocation, 16, 16);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
             if (newSpawn != null) {
-                this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(newSpawn));
                 this.setSpawnLocation(newSpawn);
+                configLocation = this.getSpawnLocation();
+                this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(configLocation));
             } else {
                 this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
             }
         }
-        return spawnLocation;
+        return configLocation;
     }
 
     @Override
