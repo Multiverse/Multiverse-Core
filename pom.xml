@@ -47,28 +47,6 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            <!-- Build Helper - Additional Source Folders -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-wsdl-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/lib/allpay/src</source>
-                                <source>${project.basedir}/lib/commandhandler/src</source>
-                                <source>${project.basedir}/lib/commandhandler/lib/ShellParser/src</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>maven-replacer-plugin</artifactId>
@@ -122,6 +100,24 @@
             <scope>compile</scope>
         </dependency>
         <!-- Bukkit Dependency -->
+        <!-- CommandHandler Dependency -->
+        <dependency>
+            <groupId>com.pneumaticraft</groupId>
+            <artifactId>CommandHandler</artifactId>
+            <version>3</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- CommandHandler Dependency -->
+        <!-- AllPay Dependency -->
+        <dependency>
+            <groupId>com.fernferret.allpay</groupId>
+            <artifactId>AllPay</artifactId>
+            <version>3</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- AllPay Dependency -->
         <!-- Start of Spout -->
         <dependency>
             <groupId>org.getspout</groupId>
@@ -129,68 +125,11 @@
             <version>dev-SNAPSHOT</version>
         </dependency>
         <!-- End of Spout -->
-        <!-- Start of Economy Dependencies -->
-        <dependency>
-            <groupId>cosine.boseconomy</groupId>
-            <artifactId>BOSEconomy</artifactId>
-            <version>0.6.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.crafter.tickleman.RealShop</groupId>
-            <artifactId>RealShop</artifactId>
-            <version>0.63</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.iCo6</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>6.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.iConomy</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>5.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.nijiko.coelho.iConomy</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>4.65</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.earth2me.essentials</groupId>
-            <artifactId>Essentials</artifactId>
-            <version>2.4.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.ashtheking.currency</groupId>
-            <artifactId>MultiCurrency</artifactId>
-            <version>0.09</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- End of Economy Dependencies -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>org.junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -218,11 +157,6 @@
             <artifactId>easymock</artifactId>
             <version>3.0</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
         </dependency>
         <!-- End of Test Dependencies -->
     </dependencies>

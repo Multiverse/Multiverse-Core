@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.List;
 
 public class ImportCommand extends MultiverseCommand {
@@ -25,7 +26,7 @@ public class ImportCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Import World");
         this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]");
-        this.setArgRange(2, 3);
+        this.setArgRange(1, 3);
         this.addKey("mvimport");
         this.addKey("mvim");
         this.addKey("mv import");
@@ -36,9 +37,60 @@ public class ImportCommand extends MultiverseCommand {
         this.worldManager = this.plugin.getMVWorldManager();
     }
 
+    /**
+     * A very basic check to see if a folder has a level.dat file.
+     * If it does, we can safely assume it's a world folder.
+     *
+     * @param worldFolder The File that may be a world.
+     *
+     * @return True if it looks like a world, false if not.
+     */
+    private boolean checkIfIsWorld(File worldFolder) {
+        if (worldFolder.isDirectory()) {
+            File[] files = worldFolder.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File file, String name) {
+                    return name.equalsIgnoreCase("level.dat");
+                }
+            });
+            if (files.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getPotentialWorlds() {
+        File worldFolder = this.plugin.getServer().getWorldContainer();
+        File[] files = worldFolder.listFiles();
+        String worldList = "";
+        ChatColor currColor = ChatColor.WHITE;
+        for (File file : files) {
+            if (file.isDirectory() && checkIfIsWorld(file)) {
+                worldList += currColor + file.getName() + " ";
+                if (currColor == ChatColor.WHITE) {
+                    currColor = ChatColor.YELLOW;
+                } else {
+                    currColor = ChatColor.WHITE;
+                }
+            }
+        }
+        return worldList;
+    }
+
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
+        if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
+            String worldList = this.getPotentialWorlds();
+            sender.sendMessage(worldList);
+            return;
+        }
+        // Since we made an exception for the list, we have to make sure they have at least 2 params:
+        if(args.size() == 1) {
+
+            return;
+        }
         File worldFile = new File(this.plugin.getServerFolder(), worldName);
         if (this.worldManager.isMVWorld(worldName) && worldFile.exists()) {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
