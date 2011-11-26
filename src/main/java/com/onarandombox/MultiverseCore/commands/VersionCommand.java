@@ -86,7 +86,6 @@ public class VersionCommand extends MultiverseCommand {
             data += "&" + URLEncoder.encode("api_paste_code", "UTF-8") + "=" + URLEncoder.encode(this.pasteBinBuffer, "UTF-8");
             data += "&" + URLEncoder.encode("api_paste_private", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8");
             data += "&" + URLEncoder.encode("api_paste_format", "UTF-8") + "=" + URLEncoder.encode("yaml", "UTF-8");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date date = new Date();
             // We're out of
             //data += "&" + URLEncoder.encode("api_paste_name", "UTF-8") + "=" + URLEncoder.encode("Multiverse 2 Dump " + dateFormat.format(date), "UTF-8");

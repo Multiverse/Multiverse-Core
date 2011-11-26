@@ -152,7 +152,12 @@ public class MVPlayerListener extends PlayerListener {
 
         // If the player was actually outside of the portal, adjust the from location
         if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
-            event.setFrom(SafeTTeleporter.findPortalBlockNextTo(event.getFrom()));
+            Location newloc = SafeTTeleporter.findPortalBlockNextTo(event.getFrom());
+            // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
+            // TODO: we want to do here.
+            if (newloc != null) {
+                event.setFrom(newloc);
+            }
         }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());

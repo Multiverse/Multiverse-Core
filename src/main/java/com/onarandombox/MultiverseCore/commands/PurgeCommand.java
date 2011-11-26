@@ -80,20 +80,10 @@ public class PurgeCommand extends MultiverseCommand {
         if (deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
             thingsToKill.add(deathName.toUpperCase());
         } else {
-            for (String d :deathName.toUpperCase().split(",")) {
-                if(d.equalsIgnoreCase("dragon")){ //could be replaced with a Map(Hash?) to allow for all mobs to have multiple keywords
-                    thingsToKill.add("ENDERDRAGON");// note UpperCase needed on this literal
-                }
-                else{
-                    thingsToKill.add(d);
-                }
-            }
+            Collections.addAll(thingsToKill, deathName.toUpperCase().split(","));
         }
         for (MultiverseWorld w : worldsToRemoveEntitiesFrom) {
             purger.purgeWorld(sender, w, thingsToKill, false, false);
         }
-
-        return;
     }
-
 }

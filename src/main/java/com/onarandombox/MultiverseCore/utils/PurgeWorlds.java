@@ -59,7 +59,7 @@ public class PurgeWorlds {
             return;
         }
         int entitiesKilled = 0;
-        for (Entity e : world.getEntities()){
+        for (Entity e : world.getEntities()) {
             this.plugin.log(Level.FINEST, "Entity list (aval for purge) from WORLD < " + mvworld.getName() + " >: " + e.toString());
 
             // Check against Monsters
@@ -108,11 +108,10 @@ public class PurgeWorlds {
      */
     private boolean killMonster(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
         String entityName = "";
+        //TODO: Fixme once either Rigby puts his awesome thing in OR Enderdragon gets a toString, OR both.
         if (e instanceof EnderDragon) {
-            this.plugin.log(Level.FINEST, "Found an enderdragon: " + e);
-            entityName = "ENDERDRAGON"; // Assumes that creaturesToKill contains the ENDERDRAGON keyword
-        }
-        else{
+            entityName = "ENDERDRAGON";
+        } else {
             entityName = e.toString().replaceAll("Craft", "").toUpperCase();
         }
         if (e instanceof Slime || e instanceof Monster || e instanceof Ghast || e instanceof EnderDragon) {
