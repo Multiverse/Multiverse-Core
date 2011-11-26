@@ -46,7 +46,9 @@ public class WorldManager implements MVWorldManager {
     }
 
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
@@ -106,7 +108,6 @@ public class WorldManager implements MVWorldManager {
      * Verifies that a given Plugin generator string exists.
      *
      * @param generator The name of the generator plugin. This should be something like CleanRoomGenerator.
-     *
      * @return True if the plugin exists and is enabled, false if not.
      */
     private boolean pluginExists(String generator) {
@@ -114,7 +115,9 @@ public class WorldManager implements MVWorldManager {
         return plugin != null && plugin.isEnabled();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
         if (generator == null) {
             return null;
@@ -133,12 +136,13 @@ public class WorldManager implements MVWorldManager {
      * Remove the world from the Multiverse list and from the config
      *
      * @param name The name of the world to remove
-     *
      * @return True if success, false if failure.
      */
     public boolean removeWorldFromConfig(String name) {
+        if (!unloadWorld(name)) {
+            return false;
+        }
         if (this.configWorlds.get("worlds." + name) != null) {
-            unloadWorld(name);
             this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
             this.configWorlds.set("worlds." + name, null);
 
@@ -154,26 +158,32 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean unloadWorld(String name) {
-
         if (this.worlds.containsKey(name)) {
-            this.worlds.remove(name);
-            this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
-            this.unloadWorldFromBukkit(name, true);
-            this.unloadedWorlds.add(name);
-            return true;
+            if (this.unloadWorldFromBukkit(name, true)) {
+                this.worlds.remove(name);
+                this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
+                this.unloadedWorlds.add(name);
+                return true;
+            } else {
+                this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
+            }
         } else if (this.plugin.getServer().getWorld(name) != null) {
             this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
             this.plugin.log(Level.WARNING, "To unload it using multiverse, use:");
             this.plugin.log(Level.WARNING, "/mv import " + name + " " + this.plugin.getServer().getWorld(name).getEnvironment().toString());
         } else {
-            this.plugin.log(Level.INFO, "Multiverse does not know about " + name + ".");
+            this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
         }
         return false;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadWorld(String name) {
         // Check if the World is already loaded
         if (this.worlds.containsKey(name)) {
@@ -204,14 +214,18 @@ public class WorldManager implements MVWorldManager {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Boolean deleteWorld(String name) {
         World world = this.plugin.getServer().getWorld(name);
         if (world == null) {
             // We can only delete loaded worlds
             return false;
         }
-        removeWorldFromConfig(name);
+        if (!removeWorldFromConfig(name)) {
+            return false;
+        }
 
         try {
             File worldFile = world.getWorldFolder();
@@ -240,7 +254,6 @@ public class WorldManager implements MVWorldManager {
      *
      * @param name   Name of the world to unload
      * @param safely Perform this safely. Set to True to save world files before unloading.
-     *
      * @return True if the world was unloaded, false if not.
      */
     private boolean unloadWorldFromBukkit(String name, boolean safely) {
@@ -248,7 +261,9 @@ public class WorldManager implements MVWorldManager {
         return this.plugin.getServer().unloadWorld(name, safely);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void removePlayersFromWorld(String name) {
         World w = this.plugin.getServer().getWorld(name);
         if (w != null) {
@@ -262,12 +277,16 @@ public class WorldManager implements MVWorldManager {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Collection<MultiverseWorld> getMVWorlds() {
         return this.worlds.values();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MultiverseWorld getMVWorld(String name) {
         if (this.worlds.containsKey(name)) {
@@ -276,7 +295,9 @@ public class WorldManager implements MVWorldManager {
         return this.getMVWorldByAlias(name);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MultiverseWorld getMVWorld(World world) {
         if (world != null) {
@@ -289,7 +310,6 @@ public class WorldManager implements MVWorldManager {
      * Returns a {@link MVWorld} if it exists, and null if it does not. This will search ONLY alias.
      *
      * @param alias The alias of the world to get.
-     *
      * @return A {@link MVWorld} or null.
      */
     private MultiverseWorld getMVWorldByAlias(String alias) {
@@ -301,13 +321,17 @@ public class WorldManager implements MVWorldManager {
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isMVWorld(String name) {
         return (this.worlds.containsKey(name) || isMVWorldAlias(name));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isMVWorld(World world) {
         return world != null && this.isMVWorld(world.getName());
@@ -317,7 +341,6 @@ public class WorldManager implements MVWorldManager {
      * This method ONLY checks the alias of each world.
      *
      * @param alias The alias of the world to check.
-     *
      * @return True if the world exists, false if not.
      */
     private boolean isMVWorldAlias(String alias) {
@@ -329,7 +352,9 @@ public class WorldManager implements MVWorldManager {
         return false;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void loadWorlds(boolean forceLoad) {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
@@ -402,7 +427,9 @@ public class WorldManager implements MVWorldManager {
         this.plugin.log(Level.INFO, count + " - World(s) loaded.");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PurgeWorlds getWorldPurger() {
         return this.worldPurger;
     }
@@ -411,7 +438,6 @@ public class WorldManager implements MVWorldManager {
      * Load the config from a file.
      *
      * @param file The file to load.
-     *
      * @return A loaded configuration.
      */
     public FileConfiguration loadWorldConfig(File file) {

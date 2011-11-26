@@ -42,7 +42,6 @@ public class ImportCommand extends MultiverseCommand {
      * If it does, we can safely assume it's a world folder.
      *
      * @param worldFolder The File that may be a world.
-     *
      * @return True if it looks like a world, false if not.
      */
     private boolean checkIfIsWorld(File worldFolder) {
@@ -81,13 +80,14 @@ public class ImportCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
+
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
             String worldList = this.getPotentialWorlds();
             sender.sendMessage(worldList);
             return;
         }
         // Since we made an exception for the list, we have to make sure they have at least 2 params:
-        if(args.size() == 1) {
+        if (args.size() == 1) {
             this.showHelp(sender);
             return;
         }
@@ -114,7 +114,6 @@ public class ImportCommand extends MultiverseCommand {
             Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
             this.worldManager.addWorld(worldName, environment, null, generator);
             Command.broadcastCommandMessage(sender, "Complete!");
-            return;
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world type did not exist.");

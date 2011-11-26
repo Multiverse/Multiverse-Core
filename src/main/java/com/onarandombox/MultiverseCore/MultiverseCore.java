@@ -113,7 +113,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
     private double allpayversion = 3;
-    private double chversion = 1;
+    private double chversion = 3;
     private MVMessaging messaging;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
