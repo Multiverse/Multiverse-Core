@@ -88,8 +88,9 @@ public class VersionCommand extends MultiverseCommand {
             data += "&" + URLEncoder.encode("api_paste_format", "UTF-8") + "=" + URLEncoder.encode("yaml", "UTF-8");
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date date = new Date();
-            data += "&" + URLEncoder.encode("api_paste_name", "UTF-8") + "=" + URLEncoder.encode("Multiverse 2 Dump " + dateFormat.format(date), "UTF-8");
-            data += "&" + URLEncoder.encode("api_user_key", "UTF-8") + "=" + URLEncoder.encode("c052ac52d2b0db88d36cc32ca462d151", "UTF-8");
+            // We're out of
+            //data += "&" + URLEncoder.encode("api_paste_name", "UTF-8") + "=" + URLEncoder.encode("Multiverse 2 Dump " + dateFormat.format(date), "UTF-8");
+            //data += "&" + URLEncoder.encode("api_user_key", "UTF-8") + "=" + URLEncoder.encode("c052ac52d2b0db88d36cc32ca462d151", "UTF-8");
             URL url = new URL("http://pastebin.com/api/api_post.php");
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
