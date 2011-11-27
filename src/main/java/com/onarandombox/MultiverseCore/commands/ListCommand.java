@@ -19,7 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCommand extends PaginatedCommand<String> {
+public class ListCommand extends PaginatedCoreCommand<String> {
 
     public ListCommand(MultiverseCore plugin) {
         super(plugin);

@@ -18,7 +18,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelpCommand extends PaginatedCommand<Command> {
+public class HelpCommand extends PaginatedCoreCommand<Command> {
 
     public HelpCommand(MultiverseCore plugin) {
         super(plugin);

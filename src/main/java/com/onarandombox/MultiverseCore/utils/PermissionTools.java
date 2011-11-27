@@ -79,7 +79,7 @@ public class PermissionTools {
         return returnString + "*";
     }
 
-    public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player teleporter, Player teleportee) {
+    public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player teleporter, Player teleportee, boolean pay) {
         if (teleporter == null) {
             return true;
         }
@@ -96,7 +96,7 @@ public class PermissionTools {
             }
             if (!bank.hasEnough(teleporter, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
                 return false;
-            } else {
+            } else if(pay) {
                 bank.pay(teleporter, toWorld.getPrice(), toWorld.getCurrency());
             }
         }

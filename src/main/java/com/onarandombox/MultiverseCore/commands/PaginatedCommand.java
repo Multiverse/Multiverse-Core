@@ -7,13 +7,11 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.pneumaticraft.commandhandler.Command;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,11 +19,11 @@ import java.util.List;
  *
  * @author fernferret
  */
-public abstract class PaginatedCommand<T> extends MultiverseCommand {
+public abstract class PaginatedCommand<T> extends Command {
     protected int ITEMS_PER_PAGE = 9;
 
 
-    public PaginatedCommand(MultiverseCore plugin) {
+    public PaginatedCommand(JavaPlugin plugin) {
         super(plugin);
     }
 

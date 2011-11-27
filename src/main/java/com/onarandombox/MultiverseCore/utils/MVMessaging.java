@@ -23,7 +23,7 @@ import java.util.Map;
 public class MVMessaging {
     private MultiverseCore plugin;
     private Map<String, Date> sentList;
-    private int cooldown = 0;
+    private int cooldown = 1000;
 
     public MVMessaging(MultiverseCore plugin) {
         this.plugin = plugin;
