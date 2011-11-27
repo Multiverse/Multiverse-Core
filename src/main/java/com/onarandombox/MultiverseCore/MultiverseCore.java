@@ -41,13 +41,32 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private final static int Protocol = 8;
+    private final static int Protocol = 9;
     // Global Multiverse config variable, states whether or not
     // Multiverse should stop other plugins from teleporting players
     // to worlds.
     public static boolean EnforceAccess;
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
+    public static Map<String, String> teleportQueue = new HashMap<String, String>();
+
+    /**
+     * This method is used to find out who is teleporting a player.
+     * @param playerName
+     * @return
+     */
+    public static String getPlayerTeleporter(String playerName) {
+        if(teleportQueue.containsKey(playerName)) {
+            String teleportee = teleportQueue.get(playerName);
+            teleportQueue.remove(playerName);
+            return teleportee;
+        }
+        return null;
+    }
+
+    public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
+        teleportQueue.put(teleporter, teleportee);
+    }
 
     @Override
     public String toString() {

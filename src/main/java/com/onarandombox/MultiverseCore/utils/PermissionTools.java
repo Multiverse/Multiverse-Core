@@ -7,7 +7,10 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 public class PermissionTools {
@@ -63,7 +66,6 @@ public class PermissionTools {
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
      *
      * @param separatedPermissionString The array of a dot separated perm string.
-     *
      * @return The dot separated parent permission string.
      */
     private String getParentPerm(String[] separatedPermissionString) {
@@ -75,5 +77,73 @@ public class PermissionTools {
             returnString += separatedPermissionString[i] + ".";
         }
         return returnString + "*";
+    }
+
+    public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player teleporter, Player teleportee) {
+        if (teleporter == null) {
+            return true;
+        }
+        // Only check payments if it's a different world:
+        if (!toWorld.equals(fromWorld)) {
+            // If the player does not have to pay, return now.
+            if (this.plugin.getMVPerms().hasPermission(teleporter, toWorld.getExemptPermission().getName(), true)) {
+                return true;
+            }
+            GenericBank bank = plugin.getBank();
+            String errString = "You need " + bank.getFormattedAmount(teleporter, toWorld.getPrice(), toWorld.getCurrency()) + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
+            if (teleportee.equals(teleporter)) {
+                errString = "You need " + bank.getFormattedAmount(teleporter, toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString();
+            }
+            if (!bank.hasEnough(teleporter, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
+                return false;
+            } else {
+                bank.pay(teleporter, toWorld.getPrice(), toWorld.getCurrency());
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Checks to see if player can go to a world given their current status.
+     * <p/>
+     * The return is a little backwards, and will return a value safe for event.setCancelled.
+     *
+     * @param fromWorld  The MultiverseWorld they are in.
+     * @param toWorld    The MultiverseWorld they want to go to.
+     * @param teleporter The player that wants to travel.
+     * @return True if they can't go to the world, False if they can.
+     */
+    public boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player teleporter, Player teleportee) {
+        // The console can send anyone anywhere
+        if (teleporter == null) {
+            return true;
+        }
+        if (toWorld != null) {
+            if (!this.plugin.getMVPerms().canEnterWorld(teleporter, toWorld)) {
+                if (teleportee.equals(teleporter)) {
+                    teleporter.sendMessage("You don't have access to go here...");
+                } else {
+                    teleporter.sendMessage("You can't send " + teleportee.getName() + " here...");
+                }
+
+                return false;
+            }
+        } else {
+            //TODO: Determine if this value is false because a world didn't exist
+            // or if it was because a world wasn't imported.
+            return true;
+        }
+        if (fromWorld != null) {
+            if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
+                if (teleportee.equals(teleporter)) {
+                    teleporter.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
+                } else {
+                    teleporter.sendMessage("You don't have access to send " + teleportee.getName() + " from " + fromWorld.getColoredWorldString() + " to " + toWorld.getColoredWorldString());
+                }
+                return false;
+            }
+        }
+        return true;
     }
 }

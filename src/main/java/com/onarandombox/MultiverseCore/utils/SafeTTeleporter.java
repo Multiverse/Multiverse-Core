@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
+import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -100,7 +101,6 @@ public class SafeTTeleporter {
      *
      * @param l
      * @param diameter
-     *
      * @return
      */
     private Location checkAroundLocation(Location l, int diameter) {
@@ -186,14 +186,24 @@ public class SafeTTeleporter {
      * @param teleporter Person who performed the teleport command.
      * @param teleportee Entity to teleport
      * @param d          Destination to teleport them to
-     *
      * @return true for success, false for failure
      */
-    public boolean safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d) {
+    public TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d) {
         if (d instanceof InvalidDestination) {
             this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
-            return false;
+            return TeleportResult.FAIL_INVALID;
         }
+        Player teleporteePlayer = null;
+        if (teleportee instanceof Player) {
+            teleporteePlayer = ((Player) teleportee);
+        } else if (teleportee.getPassenger() instanceof Player) {
+            teleporteePlayer = ((Player) teleportee.getPassenger());
+        }
+
+        if (teleporteePlayer == null) {
+            return TeleportResult.FAIL_INVALID;
+        }
+        MultiverseCore.addPlayerToTeleportQueue(teleporter.getName(), teleporteePlayer.getName());
 
         Location safeLoc = d.getLocation(teleportee);
         if (d.useSafeTeleporter()) {
@@ -205,10 +215,11 @@ public class SafeTTeleporter {
                 if (!d.getVelocity().equals(new Vector(0, 0, 0))) {
                     teleportee.setVelocity(d.getVelocity());
                 }
-                return true;
+                return TeleportResult.SUCCESS;
             }
+            return TeleportResult.FAIL_OTHER;
         }
-        return false;
+        return TeleportResult.FAIL_UNSAFE;
     }
 
     /**
@@ -220,20 +231,20 @@ public class SafeTTeleporter {
      * @param teleportee Entity to teleport.
      * @param location   Location to teleport them to.
      * @param safely     Should the destination be checked for safety before teleport?
-     *
      * @return true for success, false for failure.
      */
-    public boolean safelyTeleport(CommandSender teleporter, Entity teleportee, Location location, boolean safely) {
+    public TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, Location location, boolean safely) {
         if (safely) {
             location = this.getSafeLocation(location);
         }
 
         if (location != null) {
             if (teleportee.teleport(location)) {
-                return true;
+                return TeleportResult.SUCCESS;
             }
+            return TeleportResult.FAIL_OTHER;
         }
-        return false;
+        return TeleportResult.FAIL_UNSAFE;
     }
 
     /**
@@ -241,7 +252,6 @@ public class SafeTTeleporter {
      *
      * @param e The entity to spawn
      * @param d The MVDestination to take the entity to.
-     *
      * @return A new location to spawn the entity at.
      */
     public Location getSafeLocation(Entity e, MVDestination d) {
