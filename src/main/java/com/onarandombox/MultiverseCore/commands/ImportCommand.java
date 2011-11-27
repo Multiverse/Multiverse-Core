@@ -64,6 +64,9 @@ public class ImportCommand extends MultiverseCommand {
 
     private String getPotentialWorlds() {
         File worldFolder = this.plugin.getServer().getWorldContainer();
+        if (worldFolder == null) {
+            return "";
+        }
         File[] files = worldFolder.listFiles();
         String worldList = "";
         Collection<MultiverseWorld> worlds = this.worldManager.getMVWorlds();

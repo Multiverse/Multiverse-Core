@@ -84,7 +84,7 @@ public class TestWorldStuff {
         // Import the first world. The world folder does not exist.
         plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
         verify(mockCommandSender).sendMessage(ChatColor.RED + "FAILED.");
-        verify(mockCommandSender).sendMessage("That world folder does not exist...");
+        verify(mockCommandSender).sendMessage("That world folder does not exist. These look like worlds to me:");
 
         // We should still have no worlds.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
