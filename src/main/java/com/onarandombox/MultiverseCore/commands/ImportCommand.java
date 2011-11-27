@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -17,6 +18,8 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ImportCommand extends MultiverseCommand {
@@ -63,9 +66,17 @@ public class ImportCommand extends MultiverseCommand {
         File worldFolder = this.plugin.getServer().getWorldContainer();
         File[] files = worldFolder.listFiles();
         String worldList = "";
+        Collection<MultiverseWorld> worlds = this.worldManager.getMVWorlds();
+        List<String> worldStrings = new ArrayList<String>();
+        for (MultiverseWorld world : worlds) {
+            worldStrings.add(world.getName());
+        }
+        for (String world : this.worldManager.getUnloadedWorlds()) {
+            worldStrings.add(world);
+        }
         ChatColor currColor = ChatColor.WHITE;
         for (File file : files) {
-            if (file.isDirectory() && checkIfIsWorld(file)) {
+            if (file.isDirectory() && checkIfIsWorld(file) && !worldStrings.contains(file.getName())) {
                 worldList += currColor + file.getName() + " ";
                 if (currColor == ChatColor.WHITE) {
                     currColor = ChatColor.YELLOW;
@@ -83,6 +94,7 @@ public class ImportCommand extends MultiverseCommand {
 
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
             String worldList = this.getPotentialWorlds();
+            sender.sendMessage(ChatColor.AQUA + "====[ These look like worlds ]====");
             sender.sendMessage(worldList);
             return;
         }
@@ -116,11 +128,13 @@ public class ImportCommand extends MultiverseCommand {
             Command.broadcastCommandMessage(sender, "Complete!");
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage("That world type did not exist.");
-            sender.sendMessage("For a list of available world types, type: /mvenv");
+            sender.sendMessage("That world environment did not exist.");
+            sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage("That world folder does not exist...");
+            String worldList = this.getPotentialWorlds();
+            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
+            sender.sendMessage(worldList);
         }
     }
 }
