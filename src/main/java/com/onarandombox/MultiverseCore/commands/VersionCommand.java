@@ -9,6 +9,10 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVVersionRequestEvent;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,13 +27,6 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-enum PasteService {
-    PASTEBIN,
-    PASTIE
-};
 
 public class VersionCommand extends MultiverseCommand {
 
@@ -118,35 +115,10 @@ public class VersionCommand extends MultiverseCommand {
     }
 
     private String postToPastie(boolean isPrivate) {
+        PasteService ps = PasteServiceFactory.getService(PasteServiceType.PASTIE, isPrivate);
         try {
-            String data = URLEncoder.encode("paste[authorization]", "UTF-8") + "=" + URLEncoder.encode("burger", "UTF-8"); // burger is magic
-            data += "&" + URLEncoder.encode("paste[restricted]", "UTF-8") + "=" + URLEncoder.encode(isPrivate ? "1" : "0", "UTF-8");
-            data += "&" + URLEncoder.encode("paste[parser_id]", "UTF-8") + "=" + URLEncoder.encode("6", "UTF-8"); // 6 is plain text
-            data += "&" + URLEncoder.encode("paste[body]", "UTF-8") + "=" + URLEncoder.encode(this.pasteBinBuffer, "UTF-8");
-
-            URL url = new URL("http://pastie.org/pastes");
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(data);
-            wr.flush();
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            Pattern pastiePattern = Pattern.compile(isPrivate ? ".*http://pastie.org/.*key=([0-9a-z]+).*" : ".*http://pastie.org/([0-9]+).*");
-            String line;
-            String pastieUrl = "";
-            while ((line = rd.readLine()) != null) {
-                Matcher m = pastiePattern.matcher(line);
-                if(m.matches()) {
-                    String pastieID = m.group(1);
-                    pastieUrl = "http://pastie.org/" + (isPrivate ? "private/" : "") + pastieID;
-                    System.out.println(pastieUrl);
-                }
-            }
-            wr.close();
-            rd.close();
-            return pastieUrl;
-        } catch (Exception e) {
+            return ps.postData(ps.encodeData(this.pasteBinBuffer), ps.getPostURL());
+        } catch (PasteFailedException e) {
             System.out.print(e);
             return "Error Posting to pastie.org";
         }
