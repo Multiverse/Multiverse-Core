@@ -23,6 +23,13 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+enum PasteService {
+    PASTEBIN,
+    PASTIE
+};
 
 public class VersionCommand extends MultiverseCommand {
 
@@ -66,7 +73,7 @@ public class VersionCommand extends MultiverseCommand {
         pasteBinBuffer = versionEvent.getPasteBinBuffer();
 
         if (args.size() == 1 && args.get(0).equalsIgnoreCase("-p")) {
-            String pasteBinUrl = postToPasteBin();
+            String pasteBinUrl = postToPastie(true);
             sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteBinUrl);
             this.plugin.log(Level.INFO, "Version info dumped here: " + pasteBinUrl);
         }
@@ -107,6 +114,41 @@ public class VersionCommand extends MultiverseCommand {
         } catch (Exception e) {
             System.out.print(e);
             return "Error Posting to pastebin.com";
+        }
+    }
+
+    private String postToPastie(boolean isPrivate) {
+        try {
+            String data = URLEncoder.encode("paste[authorization]", "UTF-8") + "=" + URLEncoder.encode("burger", "UTF-8"); // burger is magic
+            data += "&" + URLEncoder.encode("paste[restricted]", "UTF-8") + "=" + URLEncoder.encode(isPrivate ? "1" : "0", "UTF-8");
+            data += "&" + URLEncoder.encode("paste[parser_id]", "UTF-8") + "=" + URLEncoder.encode("6", "UTF-8"); // 6 is plain text
+            data += "&" + URLEncoder.encode("paste[body]", "UTF-8") + "=" + URLEncoder.encode(this.pasteBinBuffer, "UTF-8");
+
+            URL url = new URL("http://pastie.org/pastes");
+            URLConnection conn = url.openConnection();
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(data);
+            wr.flush();
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            Pattern pastiePattern = Pattern.compile(isPrivate ? ".*http://pastie.org/.*key=([0-9a-z]+).*" : ".*http://pastie.org/([0-9]+).*");
+            String line;
+            String pastieUrl = "";
+            while ((line = rd.readLine()) != null) {
+                Matcher m = pastiePattern.matcher(line);
+                if(m.matches()) {
+                    String pastieID = m.group(1);
+                    pastieUrl = "http://pastie.org/" + (isPrivate ? "private/" : "") + pastieID;
+                    System.out.println(pastieUrl);
+                }
+            }
+            wr.close();
+            rd.close();
+            return pastieUrl;
+        } catch (Exception e) {
+            System.out.print(e);
+            return "Error Posting to pastie.org";
         }
     }
 }
