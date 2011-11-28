@@ -25,6 +25,7 @@ public class ModifySetCommand extends MultiverseCommand {
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);
+        this.worldManager = this.plugin.getMVWorldManager();
         this.setName("Modify a World (Set a value)");
         this.setCommandUsage("/mv modify" + ChatColor.GREEN + " set {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(1, 3);
@@ -49,7 +50,6 @@ public class ModifySetCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "adjustspawn " + ChatColor.RED + "false");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "spawn");
         this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override

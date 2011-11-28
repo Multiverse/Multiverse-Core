@@ -49,6 +49,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
     public static Map<String, String> teleportQueue = new HashMap<String, String>();
+    private AnchorManager anchorManager = new AnchorManager(this);
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -197,6 +198,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
+        this.anchorManager.loadAnchors();
     }
 
     private boolean validateAllpay() {
@@ -251,6 +253,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
         this.destFactory.registerDestinationType(CannonDestination.class, "ca");
         this.destFactory.registerDestinationType(BedDestination.class, "b");
+        this.destFactory.registerDestinationType(AnchorDestination.class, "a");
     }
 
     /**
@@ -339,6 +342,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
         this.commandHandler.registerCommand(new ModifyClearCommand(this));
         this.commandHandler.registerCommand(new ConfigCommand(this));
+        this.commandHandler.registerCommand(new AnchorCommand(this));
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
@@ -671,4 +675,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         return false;
     }
+
+    public AnchorManager getAnchorManager() {
+        return this.anchorManager;
+    }
+
 }

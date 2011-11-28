@@ -36,9 +36,7 @@ public interface MultiverseWorld {
      * @param property The name of a world property to set.
      * @param value    A value in string representation, it will be parsed to the correct type.
      * @param sender   The sender who wants this value to be set.
-     *
      * @return True if the value was set, false if not.
-     *
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     public boolean setProperty(String property, String value, CommandSender sender) throws PropertyDoesNotExistException;
@@ -48,9 +46,7 @@ public interface MultiverseWorld {
      * It will throw a PropertyDoesNotExistException if the property is not found.
      *
      * @param property The name of a world property to get.
-     *
      * @return A valid MVWorldProperty.
-     *
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     public MVConfigProperty getProperty(String property) throws PropertyDoesNotExistException;
@@ -60,9 +56,7 @@ public interface MultiverseWorld {
      * It will throw a PropertyDoesNotExistException if the property is not found.
      *
      * @param property The name of a world property to get.
-     *
      * @return A valid MVWorldProperty.
-     *
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     public String getPropertyValue(String property) throws PropertyDoesNotExistException;
@@ -71,7 +65,6 @@ public interface MultiverseWorld {
      * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
      *
      * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to clear.
-     *
      * @return True if it was cleared, false if not.
      */
     public boolean clearVariable(String property);
@@ -81,7 +74,6 @@ public interface MultiverseWorld {
      *
      * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to add a value to.
      * @param value    A value in string representation, it will be parsed to the correct type.
-     *
      * @return True if the value was added, false if not.
      */
     public boolean addToVariable(String property, String value);
@@ -92,7 +84,6 @@ public interface MultiverseWorld {
      * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to remove a value
      *                 from.
      * @param value    A value in string representation, it will be parsed to the correct type.
-     *
      * @return True if the value was removed, false if not.
      */
     public boolean removeFromVariable(String property, String value);
@@ -154,7 +145,6 @@ public interface MultiverseWorld {
      * Sets the color that this world's name/alias will display as.
      *
      * @param color A valid color name.
-     *
      * @return True if the color was set, false if not.
      */
     public boolean setColor(String color);
@@ -170,7 +160,6 @@ public interface MultiverseWorld {
      * Tells you if someone entered a valid color.
      *
      * @param color A string that may translate to a color.
-     *
      * @return True if it is a color, false if not.
      */
     public boolean isValidAliasColor(String color);
@@ -271,7 +260,6 @@ public interface MultiverseWorld {
      * the name that resides in the Bukkit enum, ex. PEACEFUL
      *
      * @param difficulty The difficulty to set the world to as a string.
-     *
      * @return True if success, false if the provided string
      *         could not be translated to a difficulty.
      */
@@ -318,7 +306,6 @@ public interface MultiverseWorld {
      *
      * @param gameMode A valid game mode string (either
      *                 an int ex. 0 or a string ex. creative).
-     *
      * @return True if the game mode was successfully changed, false if not.
      */
     public boolean setGameMode(String gameMode);
@@ -380,7 +367,6 @@ public interface MultiverseWorld {
      * Returns true upon success, false upon failure.
      *
      * @param respawnWorld The name of a world that exists on the server.
-     *
      * @return True if respawnWorld existed, false if not.
      */
     public boolean setRespawnToWorld(String respawnWorld);
@@ -449,11 +435,10 @@ public interface MultiverseWorld {
     public void setAllowMonsterSpawn(boolean allowMonsterSpawn);
 
     /**
-     * TODO: Write these docs.
+     * Clears a list property (sets it to []).
      *
-     * @param property
-     *
-     * @return
+     * @param property The property to clear.
+     * @return True if success, false if fail.
      */
     public boolean clearList(String property);
 
@@ -519,5 +504,10 @@ public interface MultiverseWorld {
      */
     public boolean getBedRespawn();
 
-
+    /**
+     * Gets all the names of all properties that can be SET
+     *
+     * @return All property names, with alternating colors.
+     */
+    public String getAllPropertyNames();
 }

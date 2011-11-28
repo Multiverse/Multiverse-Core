@@ -49,6 +49,13 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
                 filtered.add(c);
             } else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
+            } else {
+                for(String example : c.getCommandExamples()) {
+                    if(example.matches("(?i).*" + filter + ".*")) {
+                        filtered.add(c);
+                        break;
+                    }
+                }
             }
         }
         return filtered;

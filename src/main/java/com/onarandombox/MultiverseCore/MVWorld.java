@@ -23,7 +23,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-import org.omg.CosNaming._BindingIteratorImplBase;
 
 import java.io.File;
 import java.io.IOException;
@@ -720,5 +719,16 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public boolean getBedRespawn() {
         return ((BooleanConfigProperty) this.getKnownProperty("bedrespawn")).getValue();
+    }
+
+    @Override
+    public String getAllPropertyNames() {
+        ChatColor color = ChatColor.AQUA;
+        String result = "";
+        for(String name : this.propertyList.keySet()) {
+            result += color + name + " ";
+            color = (color == ChatColor.AQUA)? ChatColor.GOLD:ChatColor.AQUA;
+        }
+        return result;
     }
 }

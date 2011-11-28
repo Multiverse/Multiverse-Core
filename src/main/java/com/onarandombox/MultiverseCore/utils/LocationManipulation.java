@@ -35,18 +35,22 @@ public class LocationManipulation {
 
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
+     * world:x,y,z:pitch:yaw
      *
      * @param location
-     *
      * @return
      */
     public static String locationToString(Location location) {
+        if (location == null) {
+            return "";
+        }
         StringBuilder l = new StringBuilder();
-        l.append(location.getBlockX() + ":");
-        l.append(location.getBlockY() + ":");
+        l.append(location.getWorld() + ":");
+        l.append(location.getBlockX() + ",");
+        l.append(location.getBlockY() + ",");
         l.append(location.getBlockZ() + ":");
-        l.append(location.getYaw() + ":");
-        l.append(location.getPitch());
+        l.append(location.getPitch() + ":");
+        l.append(location.getYaw());
         return l.toString();
     }
 
@@ -59,15 +63,14 @@ public class LocationManipulation {
      * @param zStr
      * @param yawStr
      * @param pitchStr
-     *
      * @return
      */
     public Location stringToLocation(World world, String xStr, String yStr, String zStr, String yawStr, String pitchStr) {
         double x = Double.parseDouble(xStr);
         double y = Double.parseDouble(yStr);
         double z = Double.parseDouble(zStr);
-        float yaw = Float.valueOf(yawStr).floatValue();
-        float pitch = Float.valueOf(pitchStr).floatValue();
+        float yaw = Float.valueOf(yawStr);
+        float pitch = Float.valueOf(pitchStr);
 
         return new Location(world, x, y, z, yaw, pitch);
     }
@@ -76,7 +79,6 @@ public class LocationManipulation {
      * Returns a colored string with the coords
      *
      * @param l
-     *
      * @return
      */
     public static String strCoords(Location l) {
@@ -96,7 +98,6 @@ public class LocationManipulation {
      * Converts a location to a printable readable formatted string including pitch/yaw
      *
      * @param l
-     *
      * @return
      */
     public static String strCoordsRaw(Location l) {
@@ -116,7 +117,6 @@ public class LocationManipulation {
      * Return the NESW Direction a Location is facing.
      *
      * @param location
-     *
      * @return
      */
     public static String getDirection(Location location) {
@@ -149,7 +149,6 @@ public class LocationManipulation {
      * Returns the float yaw position for the given cardianl direction
      *
      * @param orientation
-     *
      * @return
      */
     public static float getYaw(String orientation) {
@@ -166,7 +165,6 @@ public class LocationManipulation {
      * Returns a speed float from a given vector.
      *
      * @param v
-     *
      * @return
      */
     public static float getSpeed(Vector v) {
@@ -181,7 +179,6 @@ public class LocationManipulation {
      *
      * @param v
      * @param direction
-     *
      * @return
      */
     public static Vector getTranslatedVector(Vector v, String direction) {
@@ -215,7 +212,6 @@ public class LocationManipulation {
      * Returns the next Location that an entity is traveling at
      *
      * @param v
-     *
      * @return
      */
     public static Location getNextBlock(Vehicle v) {

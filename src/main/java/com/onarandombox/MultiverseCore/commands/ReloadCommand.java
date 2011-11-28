@@ -33,11 +33,13 @@ public class ReloadCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         sender.sendMessage(ChatColor.GOLD + "Reloading all Multiverse Plugin configs...");
         this.plugin.loadConfigs();
+        this.plugin.getAnchorManager().loadAnchors();
         this.plugin.getMVWorldManager().loadWorlds(true);
 
         List<String> configsLoaded = new ArrayList<String>();
         configsLoaded.add("Multiverse-Core - config.yml");
         configsLoaded.add("Multiverse-Core - worlds.yml");
+        configsLoaded.add("Multiverse-Core - anchors.yml");
         // Create the event
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
         // Fire it off

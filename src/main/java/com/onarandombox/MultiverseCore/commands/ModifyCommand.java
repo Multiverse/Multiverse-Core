@@ -34,7 +34,11 @@ public class ModifyCommand extends MultiverseCommand {
         children.put("multiverse.core.modify.modify", true);
         children.put("multiverse.core.modify.clear", true);
         children.put("multiverse.core.modify.remove", true);
-        Permission modify = new Permission("multiverse.core.modify", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP, children);
+        Permission modify = new Permission("multiverse.core.modify", "Modify various aspects of worlds. It requires add/set/clear/remove. See the examples below", PermissionDefault.OP, children);
+        this.addCommandExample(ChatColor.AQUA + "/mv modify set ?");
+        this.addCommandExample(ChatColor.GREEN + "/mv modify add ?");
+        this.addCommandExample(ChatColor.BLUE + "/mv modify clear ?");
+        this.addCommandExample(ChatColor.RED + "/mv modify remove ?");
         this.setPermission(modify);
     }
 
