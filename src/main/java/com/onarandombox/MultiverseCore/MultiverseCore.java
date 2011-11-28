@@ -164,7 +164,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.banker = new AllPay(this, tag + " ");
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + Protocol + ") Enabled - By " + getAuthors());
-        this.checkServerProps();
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
@@ -567,28 +566,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             throw new IllegalArgumentException("That's not a folder!");
 
         this.serverFolder = newServerFolder;
-    }
-
-    private void checkServerProps() {
-        File serverProperties = new File(serverFolder, "server.properties");
-        try {
-            FileInputStream fileStream = new FileInputStream(serverProperties);
-            DataInputStream in = new DataInputStream(fileStream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String propLine;
-            while ((propLine = br.readLine()) != null) {
-                // Print the content on the console
-                if (propLine.matches(".*spawn-monsters.*") && !propLine.matches(".*spawn-monsters\\s*=\\s*true.*")) {
-                    this.log(Level.SEVERE, "Monster spawning has been DISABLED.");
-                    this.log(Level.SEVERE, "In order to let Multiverse fully control your worlds:");
-                    this.log(Level.SEVERE, "Please set 'spawn-monsters=true' in your server.properties file!");
-                    MultiverseCore.MobsDisabledInDefaultWorld = true;
-                }
-            }
-        } catch (IOException e) {
-            // This should never happen...
-            this.log(Level.SEVERE, e.getMessage());
-        }
     }
 
     public void setSpout() {

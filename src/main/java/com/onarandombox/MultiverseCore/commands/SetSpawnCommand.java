@@ -9,7 +9,9 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.BlockSafety;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -19,7 +21,6 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 
 public class SetSpawnCommand extends MultiverseCommand {
-
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Set World Spawn");
@@ -47,6 +48,14 @@ public class SetSpawnCommand extends MultiverseCommand {
             MultiverseWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
             if (foundWorld != null) {
                 foundWorld.setSpawnLocation(p.getLocation());
+                BlockSafety bs = new BlockSafety();
+                if(!bs.playerCanSpawnHereSafely(p.getLocation()) && foundWorld.getAdjustSpawn()) {
+                    sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
+                    sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
+                    sender.sendMessage("If you want this turned back on just do:");
+                    sender.sendMessage(ChatColor.AQUA + "/mvm set adjustspawn true " + foundWorld.getAlias());
+                    foundWorld.setAdjustSpawn(false);
+                }
                 sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));
             } else {
                 w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());

@@ -46,6 +46,7 @@ public class MVWorld implements MultiverseWorld {
 
     private Map<String, List<String>> masterList;
     private Map<String, MVConfigProperty> propertyList;
+    private String generator;
 
     private Permission permission;
     private Permission exempt;
@@ -109,6 +110,7 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("autoload", fac.getNewProperty("autoload", true, "Set this to false ONLY if you don't want this world to load itself on server restart."));
         this.propertyList.put("bedrespawn", fac.getNewProperty("bedrespawn", true, "If a player dies in this world, shoudld they go to their bed?"));
         ((LocationConfigProperty) this.getKnownProperty("spawn")).setValue(this.readSpawnFromConfig(this.getCBWorld()));
+
 
         // Set aliases
         this.propertyAliases = new HashMap<String, String>();
@@ -633,6 +635,7 @@ public class MVWorld implements MultiverseWorld {
     }
 
     private Location readSpawnFromConfig(World w) {
+
         Location spawnLocation = w.getSpawnLocation();
         Location configLocation = this.getSpawnLocation();
 
@@ -642,11 +645,11 @@ public class MVWorld implements MultiverseWorld {
         BlockSafety bs = new BlockSafety();
         // Verify that location was safe
         if (!bs.playerCanSpawnHereSafely(configLocation)) {
-            if (!((BooleanConfigProperty) this.getKnownProperty("adjustspawn")).getValue()) {
-                this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe!!");
-                this.plugin.log(Level.WARNING, "NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
-                this.plugin.log(Level.WARNING, "To turn on spawn adjustment for this world simply type:");
-                this.plugin.log(Level.WARNING, "/mvm set adjustspawn true " + this.getAlias());
+            if (!this.getAdjustSpawn()) {
+                this.plugin.log(Level.FINE, "Spawn location from world.dat file was unsafe!!");
+                this.plugin.log(Level.FINE, "NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
+                this.plugin.log(Level.FINE, "To turn on spawn adjustment for this world simply type:");
+                this.plugin.log(Level.FINE, "/mvm set adjustspawn true " + this.getAlias());
                 return configLocation;
             }
             // If it's not, find a better one.
@@ -660,7 +663,18 @@ public class MVWorld implements MultiverseWorld {
                 configLocation = this.getSpawnLocation();
                 this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(configLocation));
             } else {
-                this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
+                // If it's a standard end world, let's check in a better place:
+                Location newerSpawn = null;
+                newerSpawn = bs.getTopBlock(new Location(w, 0, 0, 0));
+                if (newerSpawn != null) {
+                    this.setSpawnLocation(newerSpawn);
+                    configLocation = this.getSpawnLocation();
+                    this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(configLocation));
+                } else {
+                    this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
+                }
+
+
             }
         }
         return configLocation;
@@ -725,9 +739,9 @@ public class MVWorld implements MultiverseWorld {
     public String getAllPropertyNames() {
         ChatColor color = ChatColor.AQUA;
         String result = "";
-        for(String name : this.propertyList.keySet()) {
+        for (String name : this.propertyList.keySet()) {
             result += color + name + " ";
-            color = (color == ChatColor.AQUA)? ChatColor.GOLD:ChatColor.AQUA;
+            color = (color == ChatColor.AQUA) ? ChatColor.GOLD : ChatColor.AQUA;
         }
         return result;
     }

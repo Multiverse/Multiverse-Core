@@ -23,7 +23,9 @@ public class BlockSafety {
         // TODO Auto-generated constructor stub
     }
 
-    /** This function checks whether the block at the given coordinates are above air or not. */
+    /**
+     * This function checks whether the block at the given coordinates are above air or not.
+     */
     public boolean isBlockAboveAir(Location l) {
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         downOne.setY(downOne.getY() - 1);
@@ -79,11 +81,34 @@ public class BlockSafety {
         return true;
     }
 
+    public Location getTopBlock(Location l) {
+        Location check = l.clone();
+        check.setY(127);
+        while (check.getY() > 0) {
+            if (this.playerCanSpawnHereSafely(check)) {
+                return check;
+            }
+            check.setY(check.getY() - 1);
+        }
+        return null;
+    }
+
+    public Location getBottomBlock(Location l) {
+        Location check = l.clone();
+        check.setY(0);
+        while (check.getY() <= 126) {
+            if (this.playerCanSpawnHereSafely(check)) {
+                return check;
+            }
+            check.setY(check.getY() + 1);
+        }
+        return null;
+    }
+
     /**
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      *
      * @param type
-     *
      * @return
      */
     private boolean isSolidBlock(Material type) {
@@ -174,7 +199,6 @@ public class BlockSafety {
      * Checks recursively below location L for 2 blocks of water
      *
      * @param l
-     *
      * @return
      */
     public boolean hasTwoBlocksofWaterBelow(Location l) {

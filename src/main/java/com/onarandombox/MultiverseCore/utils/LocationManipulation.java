@@ -45,7 +45,7 @@ public class LocationManipulation {
             return "";
         }
         StringBuilder l = new StringBuilder();
-        l.append(location.getWorld() + ":");
+        l.append(location.getWorld().getName() + ":");
         l.append(location.getBlockX() + ",");
         l.append(location.getBlockY() + ",");
         l.append(location.getBlockZ() + ":");
