@@ -55,7 +55,7 @@ public class ImportCommand extends MultiverseCommand {
                     return name.equalsIgnoreCase("level.dat");
                 }
             });
-            if (files.length > 0) {
+            if (files != null && files.length > 0) {
                 return true;
             }
         }
