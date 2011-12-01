@@ -49,8 +49,8 @@ public class LocationManipulation {
         l.append(location.getBlockX() + ",");
         l.append(location.getBlockY() + ",");
         l.append(location.getBlockZ() + ":");
-        l.append(location.getPitch() + ":");
-        l.append(location.getYaw());
+        l.append(location.getYaw() + ":");
+        l.append(location.getPitch());
         return l.toString();
     }
 
