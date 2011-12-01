@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.localization.*;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
@@ -40,7 +41,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
+public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, MessageProviding {
     private final static int Protocol = 9;
     // Global Multiverse config variable, states whether or not
     // Multiverse should stop other plugins from teleporting players
@@ -50,6 +51,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean PrefixChat;
     public static Map<String, String> teleportQueue = new HashMap<String, String>();
     private AnchorManager anchorManager = new AnchorManager(this);
+    private MessageProvider messageProvider;
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -162,6 +164,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             return;
         }
         this.banker = new AllPay(this, tag + " ");
+
+        // Initialize the MessageProvider
+        messageProvider = new SimpleMessageProvider(this);
+
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + Protocol + ") Enabled - By " + getAuthors());
         // Load the defaultWorldGenerators
@@ -198,6 +204,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
         this.anchorManager.loadAnchors();
+        this.messageProvider.setLocale(new Locale(multiverseConfig.getString("locale", "en")));
     }
 
     private boolean validateAllpay() {
@@ -655,6 +662,25 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     public AnchorManager getAnchorManager() {
         return this.anchorManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MessageProvider getMessageProvider() {
+        return messageProvider;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setMessageProvider(MessageProvider provider) {
+        if (provider == null)
+            throw new IllegalArgumentException("The new provider can't be null!");
+
+        messageProvider = provider;
     }
 
 }

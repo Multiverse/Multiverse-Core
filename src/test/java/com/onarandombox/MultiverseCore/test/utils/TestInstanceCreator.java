@@ -60,6 +60,7 @@ public class TestInstanceCreator {
                     "com.onarandombox.MultiverseCore.MultiverseCore");
             doReturn(pdf).when(core).getDescription();
             doReturn(true).when(core).isEnabled();
+            doReturn(null).when(core).getResource(anyString());
             core.setServerFolder(serverDirectory);
 
             // Add Core to the list of loaded plugins
