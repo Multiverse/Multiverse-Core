@@ -51,7 +51,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     public static boolean PrefixChat;
     public static Map<String, String> teleportQueue = new HashMap<String, String>();
     private AnchorManager anchorManager = new AnchorManager(this);
-    private MessageProvider messageProvider;
+    private MessageProvider messageProvider = new SimpleMessageProvider(this);
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -164,9 +164,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
             return;
         }
         this.banker = new AllPay(this, tag + " ");
-
-        // Initialize the MessageProvider
-        messageProvider = new SimpleMessageProvider(this);
 
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + Protocol + ") Enabled - By " + getAuthors());
