@@ -34,6 +34,8 @@ import org.powermock.api.mockito.PowerMockito;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.localization.MessageProvider;
+import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
 import com.onarandombox.MultiverseCore.utils.FileUtils;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 
@@ -135,6 +137,10 @@ public class TestInstanceCreator {
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
             worldmanagerfield.setAccessible(true);
             worldmanagerfield.set(core, wm);
+
+            // Set messageProvider
+            MessageProvider messageProvider = PowerMockito.spy(new SimpleMessageProvider(core));
+            core.setMessageProvider(messageProvider);
 
             // Init our command sender
             commandSender = spy(new TestCommandSender(mockServer));

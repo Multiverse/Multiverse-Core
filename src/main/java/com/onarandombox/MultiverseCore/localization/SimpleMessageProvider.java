@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,7 +29,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         try {
             loadLocale(locale);
         } catch (NoSuchLocalizationException e) {
-            //let's take the defaults from the enum!
+            // let's take the defaults from the enum!
         }
     }
 
@@ -39,11 +38,12 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
             try {
                 loadLocale(locale);
             } catch (NoSuchLocalizationException e) {
-                core.log(Level.WARNING, "An error occured while trying to get the localization for: "
-                                + e.getLocale().getDisplayCountry(DEFAULT_LOCALE));
                 throw e;
             }
         }
+        if (!isLocaleLoaded(locale))
+            throw new LocalizationLoadingException("Couldn't load the localization: "
+                    + locale.toString(), locale);
     }
 
     /**
@@ -51,26 +51,38 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      */
     @Override
     public void loadLocale(Locale l) throws NoSuchLocalizationException {
-        InputStream stream = null;
+        messages.remove(l);
+
+        InputStream resstream = null;
+        InputStream filestream = null;
 
         try {
-            stream = new FileInputStream(new File(core.getDataFolder(), l.getLanguage() + ".yml"));
+            filestream = new FileInputStream(new File(core.getDataFolder(), l.getLanguage() + ".yml"));
         } catch (FileNotFoundException e) {
         }
 
-        // only if that file didn't exist, we try to get the localization from the JAR.
-        if (stream == null) // this way, users can easily overwrite localizations from the JAR.
-            stream = core.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME).append("/")
+        try {
+            resstream = core.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME).append("/")
                     .append(l.getLanguage()).append(".yml").toString());
+        } catch (Exception e) {
+        }
 
-        if (stream == null)
+        if ((resstream == null) && (filestream == null))
             throw new NoSuchLocalizationException(l);
 
         messages.put(l, new HashMap<MultiverseMessage, String>(MultiverseMessage.values().length));
 
-        FileConfiguration config = YamlConfiguration.loadConfiguration(stream);
+        FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
+        FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
         for (MultiverseMessage m : MultiverseMessage.values()) {
-            messages.get(l).put(m, config.getString(m.toString(), m.getDefault()));
+            String value = m.getDefault();
+
+            if (resconfig != null)
+                value = resconfig.getString(m.toString(), value);
+            if (fileconfig != null)
+                value = fileconfig.getString(m.toString(), value);
+
+            messages.get(l).put(m, value);
         }
     }
 
@@ -95,8 +107,9 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      */
     @Override
     public String getMessage(MultiverseMessage key) {
-        if (!isLocaleLoaded(DEFAULT_LOCALE))
+        if (!isLocaleLoaded(locale)) {
             return key.getDefault();
+        }
         else
             return messages.get(locale).get(key);
     }
@@ -108,11 +121,11 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
     public String getMessage(MultiverseMessage key, Locale locale) {
         try {
             maybeLoadLocale(locale);
-            return messages.get(locale).get(key);
         } catch (LocalizationLoadingException e) {
             e.printStackTrace();
             return getMessage(key);
         }
+        return messages.get(locale).get(key);
     }
 
     /**

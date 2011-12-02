@@ -66,8 +66,6 @@ public class TestLocalization {
         // This should be the same core as creator.getCore()
         assertEquals(core, creator.getCore());
 
-        new File(TestInstanceCreator.pluginDirectory, "en.yml").delete();
-
         // Make sure there is neither the file nor the resource
         assertNull(core.getResource("localization/en.yml"));
         assertFalse(new File(TestInstanceCreator.pluginDirectory, "en.yml").exists());
@@ -97,8 +95,6 @@ public class TestLocalization {
 
         // This should be the same core as creator.getCore()
         assertEquals(core, creator.getCore());
-
-        new File(TestInstanceCreator.pluginDirectory, "en.yml").delete();
 
         // Make sure there is no file, only the resource
         assertFalse(new File(TestInstanceCreator.pluginDirectory, "en.yml").exists());
@@ -150,13 +146,14 @@ public class TestLocalization {
         assertEquals(core, creator.getCore());
 
         // Create the file
-        BufferedWriter bwriter = new BufferedWriter(new FileWriter(new File(TestInstanceCreator.pluginDirectory, "en.yml")));
+        File file = new File(TestInstanceCreator.pluginDirectory, "en.yml");
+        BufferedWriter bwriter = new BufferedWriter(new FileWriter(file));
         String expected = "a test-string from the user-file";
         bwriter.write("TEST_STRING: " + expected);
         bwriter.close();
 
         // Make sure there is the file and the resource
-        assertTrue(new File(core.getDataFolder(), "en.yml").exists());
+        assertTrue(file.exists());
         assertTrue(new File("src/main/resources/localization/en.yml").exists());
         doAnswer(new Answer<InputStream>() {
             public InputStream answer(InvocationOnMock invocation) throws Throwable {
@@ -182,5 +179,8 @@ public class TestLocalization {
         String actual = core.getMessageProvider().getMessage(MultiverseMessage.TEST_STRING);
 
         assertEquals(expected, actual);
+
+        // Clean up afterwards:
+        assertTrue(file.delete());
     }
 }
