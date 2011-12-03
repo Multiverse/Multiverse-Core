@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
+@SuppressWarnings("deprecation")
 public abstract class MVConfigMigrator {
     public List<String> createdDefaults = new ArrayList<String>();
 

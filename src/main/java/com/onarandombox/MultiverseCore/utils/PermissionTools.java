@@ -106,7 +106,7 @@ public class PermissionTools {
 
     /**
      * Checks to see if player can go to a world given their current status.
-     * <p/>
+     * <p>
      * The return is a little backwards, and will return a value safe for event.setCancelled.
      *
      * @param fromWorld  The MultiverseWorld they are in.

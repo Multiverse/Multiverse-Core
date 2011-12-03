@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * Multiverse 2 World Manager API
- * <p/>
+ * <p>
  * This API contains all of the world managing
  * functions that your heart desires!
  */
@@ -142,7 +142,7 @@ public interface MVWorldManager {
 
     /**
      * Loads the Worlds & Settings for any worlds that bukkit loaded before us.
-     * <p/>
+     * <p>
      * This way people will _always_ have some worlds in the list.
      */
     public void loadDefaultWorlds();

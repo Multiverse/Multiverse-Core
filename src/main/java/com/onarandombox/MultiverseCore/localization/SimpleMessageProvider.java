@@ -143,7 +143,6 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
     public void setLocale(Locale locale) {
         if (locale == null)
             throw new IllegalArgumentException("Can't set locale to null!");
-
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {

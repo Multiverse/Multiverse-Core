@@ -19,7 +19,9 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.localization.*;
+import com.onarandombox.MultiverseCore.localization.MessageProvider;
+import com.onarandombox.MultiverseCore.localization.MessageProviding;
+import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
@@ -36,7 +38,8 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,11 +58,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
 
     /**
      * This method is used to find out who is teleporting a player.
-     * @param playerName
-     * @return
+     *
+     * @param playerName The teleported player.
+     * @return The player that teleported the other one.
      */
     public static String getPlayerTeleporter(String playerName) {
-        if(teleportQueue.containsKey(playerName)) {
+        if (teleportQueue.containsKey(playerName)) {
             String teleportee = teleportQueue.get(playerName);
             teleportQueue.remove(playerName);
             return teleportee;
@@ -201,7 +205,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
         this.anchorManager.loadAnchors();
-        this.messageProvider.setLocale(new Locale(multiverseConfig.getString("locale", "en")));
+        try {
+            this.messageProvider.setLocale(new Locale(multiverseConfig.getString("locale", "en")));
+        } catch (IllegalArgumentException e) {
+            this.log(Level.SEVERE, e.getMessage());
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
     }
 
     private boolean validateAllpay() {
@@ -218,6 +227,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
                 return false;
             }
         } catch (Throwable t) {
+            //TODO: Deal with this. It's bad.
         }
         log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
         log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of AllPay!");
@@ -240,6 +250,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
                 return false;
             }
         } catch (Throwable t) {
+            //TODO: Deal with this. It's bad.
         }
         log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
         log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of CommandHandler (an internal library)!");
@@ -374,9 +385,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     }
 
     /**
-     * Grab and return the Teleport class.
+     * Grab and return the {@link SafeTTeleporter}.
      *
-     * @return
+     * @return The {@link SafeTTeleporter}.
      */
     public SafeTTeleporter getTeleporter() {
         return new SafeTTeleporter(this);
@@ -409,8 +420,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information
      * from the Servers Log Output.
      *
-     * @param level
-     * @param msg
+     * @param level The Log-{@link Level}
+     * @param msg   The message
      */
     public void log(Level level, String msg) {
         staticLog(level, msg);
@@ -436,8 +447,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the
      * standard Server Console.
      *
-     * @param level
-     * @param msg
+     * @param level The Log-{@link Level}
+     * @param msg   The message
      */
     public static void staticDebugLog(Level level, String msg) {
         log.log(level, "[MVCore-Debug] " + msg);
@@ -447,7 +458,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     /**
      * Parse the Authors Array into a readable String with ',' and 'and'.
      *
-     * @return
+     * @return The readable authors-{@link String}
      */
     private String getAuthors() {
         String authors = "";
@@ -480,9 +491,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
 
     /**
      * This code should get moved somewhere more appropriate, but for now, it's here.
-     *
-     * @param env
-     * @return
      */
     public Environment getEnvFromString(String env) {
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
@@ -517,7 +525,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     /**
      * Returns the number of plugins that have specifically hooked into core.
      *
-     * @return
+     * @return The number if plugins that have hooked into core.
      */
     public int getPluginCount() {
         return this.pluginCount;

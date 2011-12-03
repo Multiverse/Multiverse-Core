@@ -14,9 +14,9 @@ import org.bukkit.event.Event;
 
 /**
  * This event is fired *before* the property is actually changed.
- * <p/>
+ * <p>
  * If it is cancled, no change will happen.
- * <p/>
+ * <p>
  * If you want to get the values of the world before the change, query the world.
  * If you want to get the value being changed, use getProperty()
  */

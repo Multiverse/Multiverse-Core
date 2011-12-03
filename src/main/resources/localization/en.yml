@@ -1,1 +1,17 @@
 TEST_STRING: a test-string from the resource
+
+# Generic Strings
+GENERIC_SORRY: Sorry...
+GENERIC_PAGE: Page
+GENERIC_OF: of
+GENERIC_UNLOADED: UNLOADED
+
+# Commands
+
+# List Command
+LIST_NAME: World Listing
+LIST_DESC: Displays a listing of all worlds that you can enter.
+
+LIST_TITLE: Multiverse World List
+LIST_NO_MATCH: No worlds matched your filter:
+

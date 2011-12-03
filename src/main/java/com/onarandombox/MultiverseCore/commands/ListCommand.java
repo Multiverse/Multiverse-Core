@@ -9,7 +9,8 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.pneumaticraft.commandhandler.Command;
+import com.onarandombox.MultiverseCore.localization.MessageProvider;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
@@ -21,15 +22,18 @@ import java.util.List;
 
 public class ListCommand extends PaginatedCoreCommand<String> {
 
+    private MessageProvider provider;
+
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setName("World Listing");
+        provider = plugin.getMessageProvider();
+        this.setName(provider.getMessage(MultiverseMessage.LIST_NAME));
         this.setCommandUsage("/mv list");
         this.setArgRange(0, 2);
         this.addKey("mvlist");
         this.addKey("mvl");
         this.addKey("mv list");
-        this.setPermission("multiverse.core.list.worlds", "Displays a listing of all worlds that you can enter.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.list.worlds", provider.getMessage(MultiverseMessage.LIST_DESC), PermissionDefault.OP);
         this.setItemsPerPage(8);
     }
 
@@ -62,7 +66,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         }
         for (String name : this.plugin.getMVWorldManager().getUnloadedWorlds()) {
             if (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + name, true)) {
-                worldList.add(ChatColor.GRAY + name + " - UNLOADED");
+                worldList.add(ChatColor.GRAY + name + " - " + provider.getMessage(MultiverseMessage.GENERIC_UNLOADED));
             }
         }
         return worldList;
@@ -87,7 +91,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ Multiverse World List ]====");
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ " + this.provider.getMessage(MultiverseMessage.LIST_TITLE) + " ]====");
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
@@ -100,7 +104,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         if (filterObject.getFilter().length() > 0) {
             availableWorlds = this.getFilteredItems(availableWorlds, filterObject.getFilter());
             if (availableWorlds.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + "No worlds matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
+                sender.sendMessage(ChatColor.RED + provider.getMessage(MultiverseMessage.GENERIC_SORRY) + " " + ChatColor.WHITE + provider.getMessage(MultiverseMessage.LIST_NO_MATCH) + " " + ChatColor.AQUA + filterObject.getFilter());
                 return;
             }
         }
@@ -118,7 +122,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
             filterObject.setPage(totalPages);
         }
 
-        sender.sendMessage(ChatColor.AQUA + " Page " + filterObject.getPage() + " of " + totalPages);
+        sender.sendMessage(ChatColor.AQUA + " " + provider.getMessage(MultiverseMessage.GENERIC_PAGE) + " " + filterObject.getPage() + " " + provider.getMessage(MultiverseMessage.GENERIC_OF) + " " + totalPages);
 
         this.showPage(filterObject.getPage(), sender, availableWorlds);
     }

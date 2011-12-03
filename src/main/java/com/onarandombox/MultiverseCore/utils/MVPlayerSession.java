@@ -35,8 +35,6 @@ public class MVPlayerSession {
 
     /**
      * Grab whether the cooldown on Portal use has expired or not.
-     *
-     * @return
      */
     public boolean getTeleportable() {
         Long time = (new Date()).getTime();

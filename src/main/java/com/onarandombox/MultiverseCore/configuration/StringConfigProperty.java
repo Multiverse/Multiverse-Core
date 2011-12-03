@@ -17,11 +17,7 @@ public class StringConfigProperty implements MVConfigProperty<String> {
     private String help;
 
     public StringConfigProperty(ConfigurationSection section, String name, String defaultValue, String help) {
-        this.name = name;
-        this.configNode = name;
-        this.section = section;
-        this.help = help;
-        this.parseValue(this.section.getString(this.configNode, defaultValue));
+        this(section, name, defaultValue, defaultValue, help);
     }
 
     public StringConfigProperty(ConfigurationSection section, String name, String defaultValue, String configNode, String help) {
@@ -29,6 +25,7 @@ public class StringConfigProperty implements MVConfigProperty<String> {
         this.configNode = configNode;
         this.section = section;
         this.help = help;
+        this.value = defaultValue;
         this.parseValue(this.section.getString(this.configNode, defaultValue));
     }
 

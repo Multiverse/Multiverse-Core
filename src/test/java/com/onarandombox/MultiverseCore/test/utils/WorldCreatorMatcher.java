@@ -42,10 +42,10 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
             Util.log("Checking Environments...");
             return false;
         } else if (careAboutSeeds && ((WorldCreator) creator).seed() != this.worldCreator.seed()) {
-            System.out.print("Checking Seeds...");
+            Util.log("Checking Seeds...");
             return false;
         } else if (careAboutGenerators && !((WorldCreator) creator).generator().equals(this.worldCreator.generator())) {
-            System.out.print("Checking Gens...");
+            Util.log("Checking Gens...");
             return false;
         }
         Util.log("Creators matched!!!");

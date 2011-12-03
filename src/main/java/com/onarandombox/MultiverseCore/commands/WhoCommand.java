@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -92,7 +91,7 @@ public class WhoCommand extends MultiverseCommand {
                 result = "Empty";
             } else {
                 for (Player player : players) {
-                    result += player.getDisplayName() + " ";
+                    result += player.getDisplayName() + " " + ChatColor.WHITE;
                 }
             }
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * The API for a Multiverse Handled World.
- * <p/>
+ * <p>
  * Currently INCOMPLETE
  */
 public interface MultiverseWorld {
@@ -48,8 +48,10 @@ public interface MultiverseWorld {
      * @param property The name of a world property to get.
      * @return A valid MVWorldProperty.
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
+     * @deprecated Use {@link #getProperty(String, Class)} instead
      */
-    public MVConfigProperty getProperty(String property) throws PropertyDoesNotExistException;
+    @Deprecated
+    public MVConfigProperty<?> getProperty(String property) throws PropertyDoesNotExistException;
 
     /**
      * Gets the string representation of a property.
@@ -60,6 +62,17 @@ public interface MultiverseWorld {
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     public String getPropertyValue(String property) throws PropertyDoesNotExistException;
+
+    /**
+     * Gets the actual MVConfigProperty from this world.
+     * It will throw a PropertyDoesNotExistException if the property is not found.
+     *
+     * @param property The name of a world property to get.
+     * @param expected The type of the expected property. Use Object.class if this doesn't matter for you.
+     * @return A valid MVWorldProperty.
+     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
+     */
+    public <T> MVConfigProperty<T> getProperty(String property, Class<T> expected) throws PropertyDoesNotExistException;
 
     /**
      * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
@@ -97,7 +110,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets the environment of a world.
-     * <p/>
+     * <p>
      * Note: This will ONLY take effect once the world is unloaded/reloaded.
      *
      * @param environment A {@link org.bukkit.World.Environment}.
@@ -127,7 +140,7 @@ public interface MultiverseWorld {
 
     /**
      * Gets the alias of this world.
-     * <p/>
+     * <p>
      * This alias allows users to have a world named "world" but show up in the list as "FernIsland"
      *
      * @return The alias of the world as a String.
@@ -472,7 +485,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets whether or not Multiverse should auto-load this world.
-     * <p/>
+     * <p>
      * True is default.
      *
      * @param autoLoad True if multiverse should autoload this world the spawn, false if not.
@@ -489,7 +502,7 @@ public interface MultiverseWorld {
     /**
      * Sets whether or not a player who dies in this world will respawn in their
      * bed or follow the normal respawn pattern.
-     * <p/>
+     * <p>
      * True is default.
      *
      * @param autoLoad True if players dying in this world respawn at their bed.

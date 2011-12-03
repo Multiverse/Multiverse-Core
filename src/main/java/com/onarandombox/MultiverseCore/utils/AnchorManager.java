@@ -42,7 +42,7 @@ public class AnchorManager {
         Set<String> anchorKeys = anchors.getKeys(false);
         for (String key : anchorKeys) {
             //world:x,y,z:pitch:yaw
-            Location anchorLocation = LocationManipulation.getLocationFromString(anchors.getString(key, ""));
+            Location anchorLocation = LocationManipulation.stringToLocation(anchors.getString(key, ""));
             if (anchorLocation != null) {
                 MultiverseCore.staticLog(Level.INFO, "Loading anchor:  '" + key + "'...");
                 this.anchors.put(key, anchorLocation);
@@ -77,7 +77,7 @@ public class AnchorManager {
     }
 
     public boolean saveAnchorLocation(String anchor, String location) {
-        Location parsed = LocationManipulation.getLocationFromString(location);
+        Location parsed = LocationManipulation.stringToLocation(location);
         return parsed != null && this.saveAnchorLocation(anchor, parsed);
     }
 
