@@ -92,7 +92,7 @@ public class WhoCommand extends MultiverseCommand {
                 result = "Empty";
             } else {
                 for (Player player : players) {
-                    result += player.getDisplayName() + " ";
+                    result += player.getDisplayName() + " " + ChatColor.WHITE;
                 }
             }
 
