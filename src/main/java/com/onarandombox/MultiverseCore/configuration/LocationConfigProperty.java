@@ -77,6 +77,7 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.section.set(configNode + ".pitch", this.value.getPitch());
         this.section.set(configNode + ".yaw", this.value.getYaw());
         this.section.set(configNode + ".world", this.value.getWorld().getName());
+
         return true;
     }
 

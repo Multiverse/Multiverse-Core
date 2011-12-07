@@ -15,6 +15,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,11 +94,11 @@ public class LocationManipulation {
         try {
             float pitch = 0;
             float yaw = 0;
-            if (split.length == 3) {
+            if (split.length >= 3) {
                 yaw = (float) Double.parseDouble(split[2]);
             }
             if (split.length == 4) {
-                pitch = (float) Double.parseDouble(split[2]);
+                pitch = (float) Double.parseDouble(split[3]);
             }
             return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
         } catch (NumberFormatException e) {

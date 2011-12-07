@@ -173,10 +173,7 @@ public class MVPlayerListener extends PlayerListener {
             // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
             // TODO: we want to do here.
             if (newloc != null) {
-                System.out.println("Found a new location!");
                 event.setFrom(newloc);
-            } else {
-                System.out.println("Did NOT find a new location!");
             }
         }
         // Wait for the adjust, then return!
