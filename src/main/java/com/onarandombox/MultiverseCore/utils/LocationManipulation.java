@@ -15,6 +15,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,44 +36,73 @@ public class LocationManipulation {
 
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
-     * world:x,y,z:pitch:yaw
+     * <p/>
+     * WORLD:X,Y,Z:yaw:pitch
+     * <p/>
+     * The corresponding String2Loc function is {@link #stringToLocation }
      *
-     * @param location
-     * @return
+     * @param location The Location to save.
+     * @return The location as a string in this format: WORLD:x,y,z:yaw:pitch
      */
     public static String locationToString(Location location) {
         if (location == null) {
             return "";
         }
         StringBuilder l = new StringBuilder();
-        l.append(location.getWorld().getName() + ":");
-        l.append(location.getBlockX() + ",");
-        l.append(location.getBlockY() + ",");
-        l.append(location.getBlockZ() + ":");
-        l.append(location.getYaw() + ":");
-        l.append(location.getPitch());
-        return l.toString();
+        Formatter formatter = new Formatter(l);
+        formatter.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        return formatter.toString();
     }
 
     /**
-     * Convert a String to a Location.
+     * Returns a new location from a given string. The format is as follows:
+     * <p/>
+     * WORLD:X,Y,Z:yaw:pitch
+     * <p/>
+     * The corresponding Location2String function is {@link #stringToLocation }
      *
-     * @param world
-     * @param xStr
-     * @param yStr
-     * @param zStr
-     * @param yawStr
-     * @param pitchStr
-     * @return
+     * @param locationString The location represented as a string (WORLD:X,Y,Z:yaw:pitch)
+     * @return A new location defined by the string or null if the string was invalid.
      */
-    public Location stringToLocation(World world, String xStr, String yStr, String zStr, String yawStr, String pitchStr) {
-        double x = Double.parseDouble(xStr);
-        double y = Double.parseDouble(yStr);
-        double z = Double.parseDouble(zStr);
-        float yaw = Float.valueOf(yawStr);
-        float pitch = Float.valueOf(pitchStr);
+    public static Location stringToLocation(String locationString) {
+        //format:
+        //world:x,y,z:pitch:yaw
+        if (locationString == null) {
+            return null;
+        }
 
-        return new Location(world, x, y, z, yaw, pitch);
+        // Split the whole string, format is:
+        // {'world', 'x,y,z'[, 'pitch', 'yaw']}
+        String[] split = locationString.split(":");
+        if (split.length < 2 || split.length > 4) {
+            return null;
+        }
+        // Split the xyz string, format is:
+        // {'x', 'y', 'z'}
+        String[] xyzsplit = split[1].split(",");
+        if (xyzsplit.length != 3) {
+            return null;
+        }
+
+        // Verify the world is valid
+        World w = Bukkit.getWorld(split[0]);
+        if (w == null) {
+            return null;
+        }
+
+        try {
+            float pitch = 0;
+            float yaw = 0;
+            if (split.length == 3) {
+                yaw = (float) Double.parseDouble(split[2]);
+            }
+            if (split.length == 4) {
+                pitch = (float) Double.parseDouble(split[2]);
+            }
+            return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     /**
@@ -220,44 +250,5 @@ public class LocationManipulation {
         int x = vector.getX() < 0 ? vector.getX() == 0 ? 0 : -1 : 1;
         int z = vector.getZ() < 0 ? vector.getZ() == 0 ? 0 : -1 : 1;
         return location.add(x, 0, z);
-    }
-
-    public static Location getLocationFromString(String value) {
-        //format:
-        //world:x,y,z:pitch:yaw
-        if (value == null) {
-            return null;
-        }
-
-        // Split the whole string, format is:
-        // {'world', 'x,y,z'[, 'pitch', 'yaw']}
-        String[] split = value.split(":");
-        if (split.length < 2 || split.length > 4) {
-            return null;
-        }
-        // Split the xyz string, format is:
-        // {'x', 'y', 'z'}
-        String[] xyzsplit = split[1].split(",");
-        if (xyzsplit.length != 3) {
-            return null;
-        }
-
-        // Verify the world is valid
-        World w = Bukkit.getWorld(split[0]);
-        if (w == null) {
-            return null;
-        }
-
-        try {
-            if (split.length == 2) {
-                return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]));
-            }
-            if (split.length == 3) {
-                return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]), (float) 0.0);
-            }
-            return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), (float) Double.parseDouble(split[2]), (float) Double.parseDouble(split[3]));
-        } catch (NumberFormatException e) {
-            return null;
-        }
     }
 }

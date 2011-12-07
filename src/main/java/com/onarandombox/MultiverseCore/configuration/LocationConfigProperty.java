@@ -23,7 +23,7 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.configNode = name;
         this.section = section;
         this.help = help;
-        this.setValue(this.getLocationFromConfig(this.configNode, defaultValue));
+        this.setValue(this.getLocationFromConfig(defaultValue));
     }
 
     public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String configNode, String help) {
@@ -31,7 +31,7 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.configNode = configNode;
         this.section = section;
         this.help = help;
-        this.setValue(this.getLocationFromConfig(this.configNode, defaultValue));
+        this.setValue(this.getLocationFromConfig(defaultValue));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
 
     @Override
     public boolean parseValue(String value) {
-        Location parsed = LocationManipulation.getLocationFromString(value);
+        Location parsed = LocationManipulation.stringToLocation(value);
         return this.setValue(parsed);
     }
 
@@ -80,14 +80,14 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         return true;
     }
 
-    private Location getLocationFromConfig(String node, Location defaultValue) {
-        double x = this.section.getDouble(configNode + ".x", defaultValue.getX());
-        double y = this.section.getDouble(configNode + ".y", defaultValue.getY());
-        double z = this.section.getDouble(configNode + ".z", defaultValue.getZ());
-        double p = this.section.getDouble(configNode + ".pitch", defaultValue.getPitch());
-        double yaw = this.section.getDouble(configNode + ".yaw", defaultValue.getYaw());
-        String w = this.section.getString(configNode + ".world", defaultValue.getWorld().getName());
-        Location found = LocationManipulation.getLocationFromString(w + ":" + x + "," + y + "," + z + ":" + p + ":" + yaw);
+    private Location getLocationFromConfig(Location defaultValue) {
+        double x = this.section.getDouble(this.configNode + ".x", defaultValue.getX());
+        double y = this.section.getDouble(this.configNode + ".y", defaultValue.getY());
+        double z = this.section.getDouble(this.configNode + ".z", defaultValue.getZ());
+        double pitch = this.section.getDouble(this.configNode + ".pitch", defaultValue.getPitch());
+        double yaw = this.section.getDouble(this.configNode + ".yaw", defaultValue.getYaw());
+        String w = this.section.getString(this.configNode + ".world", defaultValue.getWorld().getName());
+        Location found = LocationManipulation.stringToLocation(w + ":" + x + "," + y + "," + z + ":" + yaw + ":" + pitch);
         if (found != null) {
             return found;
         }
