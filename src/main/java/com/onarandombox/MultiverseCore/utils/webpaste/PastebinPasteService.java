@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PastebinPasteService implements PasteService {

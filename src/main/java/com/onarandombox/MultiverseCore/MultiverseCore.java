@@ -53,8 +53,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * This method is used to find out who is teleporting a player.
-     * @param playerName
-     * @return
+     * @param playerName The teleported player.
+     * @return The player that teleported the other one.
      */
     public static String getPlayerTeleporter(String playerName) {
         if(teleportQueue.containsKey(playerName)) {
@@ -370,9 +370,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Grab and return the Teleport class.
+     * Grab and return the {@link SafeTTeleporter}.
      *
-     * @return
+     * @return The {@link SafeTTeleporter}.
      */
     public SafeTTeleporter getTeleporter() {
         return new SafeTTeleporter(this);
@@ -405,8 +405,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information
      * from the Servers Log Output.
      *
-     * @param level
-     * @param msg
+     * @param level The Log-{@link Level}
+     * @param msg The message
      */
     public void log(Level level, String msg) {
         staticLog(level, msg);
@@ -432,8 +432,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the
      * standard Server Console.
      *
-     * @param level
-     * @param msg
+     * @param level The Log-{@link Level}
+     * @param msg The message
      */
     public static void staticDebugLog(Level level, String msg) {
         log.log(level, "[MVCore-Debug] " + msg);
@@ -443,7 +443,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     /**
      * Parse the Authors Array into a readable String with ',' and 'and'.
      *
-     * @return
+     * @return The readable authors-{@link String}
      */
     private String getAuthors() {
         String authors = "";
@@ -476,9 +476,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * This code should get moved somewhere more appropriate, but for now, it's here.
-     *
-     * @param env
-     * @return
      */
     public Environment getEnvFromString(String env) {
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
@@ -513,7 +510,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     /**
      * Returns the number of plugins that have specifically hooked into core.
      *
-     * @return
+     * @return The number if plugins that have hooked into core.
      */
     public int getPluginCount() {
         return this.pluginCount;

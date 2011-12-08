@@ -45,7 +45,7 @@ public class MVWorld implements MultiverseWorld {
     private String name; // The Worlds Name, EG its folder name.
 
     private Map<String, List<String>> masterList;
-    private Map<String, MVConfigProperty> propertyList;
+    private Map<String, MVConfigProperty<?>> propertyList;
     private String generator;
 
     private Permission permission;
@@ -82,7 +82,7 @@ public class MVWorld implements MultiverseWorld {
 
         // Start NEW config awesomeness.
         ConfigPropertyFactory fac = new ConfigPropertyFactory(this.worldSection);
-        this.propertyList = new HashMap<String, MVConfigProperty>();
+        this.propertyList = new HashMap<String, MVConfigProperty<?>>();
         // The format of these are either:
         // getNewProperty(name, defaultValue, helpText)
         // or
@@ -344,8 +344,8 @@ public class MVWorld implements MultiverseWorld {
     }
 
     @Override
-    public MVConfigProperty getProperty(String name) throws PropertyDoesNotExistException {
-        MVConfigProperty p = this.getKnownProperty(name);
+    public MVConfigProperty<?> getProperty(String name) throws PropertyDoesNotExistException {
+        MVConfigProperty<?> p = this.getKnownProperty(name);
         if (p == null) {
             throw new PropertyDoesNotExistException(name);
         }
@@ -358,7 +358,7 @@ public class MVWorld implements MultiverseWorld {
      * @param name The known name of a property
      * @return The property object.
      */
-    private MVConfigProperty getKnownProperty(String name) {
+    private MVConfigProperty<?> getKnownProperty(String name) {
         if (this.propertyList.containsKey(name)) {
             return this.propertyList.get(name);
         } else if (this.propertyAliases.containsKey(name)) {
@@ -377,7 +377,7 @@ public class MVWorld implements MultiverseWorld {
      * @return True if the property was saved, false if not.
      */
     private boolean setKnownProperty(String name, String value, CommandSender sender) {
-        MVConfigProperty property;
+        MVConfigProperty<?> property;
         if (this.propertyList.containsKey(name)) {
             property = this.getKnownProperty(name);
         } else if (this.propertyAliases.containsKey(name)) {
