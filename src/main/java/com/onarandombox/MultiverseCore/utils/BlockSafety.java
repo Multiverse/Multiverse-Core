@@ -43,10 +43,11 @@ public class BlockSafety {
     }
 
     /**
-     * This function checks whether the block at the coordinates given is safe or not by checking for Laval/Fire/Air
+     * This function checks whether the block at the coordinates given is safe or not by checking for Lava/Fire/Air
      * etc. This also ensures there is enough space for a player to spawn!
      *
-     * @return
+     * @param l The {@link Location}
+     * @return Whether the player can spawn safely at the given {@link Location}
      */
     public boolean playerCanSpawnHereSafely(Location l) {
         World world = l.getWorld();
@@ -107,9 +108,6 @@ public class BlockSafety {
 
     /**
      * If someone has a better way of this... Please either tell us, or submit a pull request!
-     *
-     * @param type
-     * @return
      */
     private boolean isSolidBlock(Material type) {
         switch (type) {
@@ -196,10 +194,10 @@ public class BlockSafety {
     }
 
     /**
-     * Checks recursively below location L for 2 blocks of water
+     * Checks recursively below a {@link Location} for 2 blocks of water
      *
-     * @param l
-     * @return
+     * @param l The {@link Location}
+     * @return Whether there are 2 blocks of water
      */
     public boolean hasTwoBlocksofWaterBelow(Location l) {
         if (l.getBlockY() < 0) {

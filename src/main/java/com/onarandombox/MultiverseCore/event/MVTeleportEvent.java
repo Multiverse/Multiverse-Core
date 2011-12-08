@@ -53,9 +53,9 @@ public class MVTeleportEvent extends Event implements Cancellable {
     }
 
     /**
-     * Returns the player who requested the Teleport
+     * Gets the {@link CommandSender} who requested the Teleport
      *
-     * @return
+     * @return The {@link CommandSender} who requested the Teleport
      */
     public CommandSender getTeleporter() {
         return this.teleporter;

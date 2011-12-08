@@ -39,9 +39,9 @@ public class MVPermissions implements PermissionsInterface {
     /**
      * Check if a Player can teleport to the Destination world from there current world.
      *
-     * @param p The player to check.
-     * @param w
-     * @return
+     * @param p The {@link Player} to check.
+     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @return Whether the player can teleport to the given {@link MultiverseWorld}.
      */
     public boolean canTravelFromWorld(Player p, MultiverseWorld w) {
         List<String> blackList = w.getWorldBlacklist();
@@ -72,9 +72,9 @@ public class MVPermissions implements PermissionsInterface {
     /**
      * Check if the Player has the permissions to enter this world.
      *
-     * @param p
-     * @param w
-     * @return
+     * @param p The {@link Player} player that wants to enter
+     * @param w The {@link MultiverseWorld} he wants to enter
+     * @return Whether he has the permission to enter the world
      */
     public boolean canEnterWorld(Player p, MultiverseWorld w) {
         // If we're not enforcing access, anyone can enter.
@@ -285,9 +285,6 @@ public class MVPermissions implements PermissionsInterface {
 
     /**
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
-     *
-     * @param seperated
-     * @return
      */
     private String getParentPerm(String[] seperated) {
         if (seperated.length == 1) {

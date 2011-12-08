@@ -85,11 +85,10 @@ public class UpdateChecker {
     }
 
     /**
-     * Convert the given Version String to a Normalised Version String so we can compare it.
+     * Convert the given Version String to a Normalized Version String so we can compare it.
      *
-     * @param version
-     *
-     * @return
+     * @param version The version string
+     * @return The normalized version string
      */
     public static String normalisedVersion(String version) {
         return normalisedVersion(version, ".", 4);

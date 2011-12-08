@@ -15,7 +15,6 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +36,10 @@ public class LocationManipulation {
 
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.
-     * <p/>
+     * <p>
      * WORLD:X,Y,Z:yaw:pitch
-     * <p/>
-     * The corresponding String2Loc function is {@link #stringToLocation }
+     * <p>
+     * The corresponding String2Loc function is {@link #stringToLocation}
      *
      * @param location The Location to save.
      * @return The location as a string in this format: WORLD:x,y,z:yaw:pitch
@@ -57,10 +56,10 @@ public class LocationManipulation {
 
     /**
      * Returns a new location from a given string. The format is as follows:
-     * <p/>
+     * <p>
      * WORLD:X,Y,Z:yaw:pitch
-     * <p/>
-     * The corresponding Location2String function is {@link #stringToLocation }
+     * <p>
+     * The corresponding Location2String function is {@link #stringToLocation}
      *
      * @param locationString The location represented as a string (WORLD:X,Y,Z:yaw:pitch)
      * @return A new location defined by the string or null if the string was invalid.
@@ -109,8 +108,8 @@ public class LocationManipulation {
     /**
      * Returns a colored string with the coords
      *
-     * @param l
-     * @return
+     * @param l The {@link Location}
+     * @return The {@link String}
      */
     public static String strCoords(Location l) {
         String result = "";
@@ -128,8 +127,8 @@ public class LocationManipulation {
     /**
      * Converts a location to a printable readable formatted string including pitch/yaw
      *
-     * @param l
-     * @return
+     * @param l The {@link Location}
+     * @return The {@link String}
      */
     public static String strCoordsRaw(Location l) {
         String result = "";
@@ -147,8 +146,8 @@ public class LocationManipulation {
     /**
      * Return the NESW Direction a Location is facing.
      *
-     * @param location
-     * @return
+     * @param location The {@link Location}
+     * @return The NESW Direction
      */
     public static String getDirection(Location location) {
         double r = (location.getYaw() % 360) + 180;
@@ -177,10 +176,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the float yaw position for the given cardianl direction
+     * Returns the float yaw position for the given cardinal direction
      *
-     * @param orientation
-     * @return
+     * @param orientation The cardinal direction
+     * @return The yaw
      */
     public static float getYaw(String orientation) {
         if (orientation == null) {
@@ -195,8 +194,8 @@ public class LocationManipulation {
     /**
      * Returns a speed float from a given vector.
      *
-     * @param v
-     * @return
+     * @param v The {@link Vector}
+     * @return The speed
      */
     public static float getSpeed(Vector v) {
         return (float) Math.sqrt(v.getX() * v.getX() + v.getZ() * v.getZ());
@@ -208,9 +207,9 @@ public class LocationManipulation {
     /**
      * Returns a translated vector from the given direction
      *
-     * @param v
-     * @param direction
-     * @return
+     * @param v The old {@link Vector}
+     * @param direction The new direction
+     * @return The translated {@link Vector}
      */
     public static Vector getTranslatedVector(Vector v, String direction) {
         if (direction == null) {
@@ -240,10 +239,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the next Location that an entity is traveling at
+     * Returns the next Location that a {@link Vehicle} is traveling at
      *
-     * @param v
-     * @return
+     * @param v The {@link Vehicle}
+     * @return The {@link Location}
      */
     public static Location getNextBlock(Vehicle v) {
         Vector vector = v.getVelocity();
