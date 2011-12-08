@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
