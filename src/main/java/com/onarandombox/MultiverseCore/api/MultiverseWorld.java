@@ -49,7 +49,7 @@ public interface MultiverseWorld {
      * @return A valid MVWorldProperty.
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
-    public MVConfigProperty getProperty(String property) throws PropertyDoesNotExistException;
+    public MVConfigProperty<?> getProperty(String property) throws PropertyDoesNotExistException;
 
     /**
      * Gets the string representation of a property.
