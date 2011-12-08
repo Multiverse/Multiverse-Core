@@ -8,7 +8,6 @@
     <description>World Management Plugin</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.number>UNKNOWN</project.build.number>
     </properties>
 
     <repositories>
@@ -86,7 +85,7 @@
                     <replacements>
                         <replacement>
                             <token>maven-version-number</token>
-                            <value>${project.version}-${project.build.number}</value>
+                            <value>${project.version}-${BUILD_NUMBER}</value>
                         </replacement>
                     </replacements>
                 </configuration>
