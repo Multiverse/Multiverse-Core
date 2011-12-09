@@ -15,6 +15,10 @@
             <id>OnARandomBox</id>
             <url>http://repo.onarandombox.com/artifactory/repo</url>
         </repository>
+        <repository>
+            <id>opencraft</id>
+            <url>http://pneumaticsystem.com:25578/nexus/content/repositories/opencraft</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
