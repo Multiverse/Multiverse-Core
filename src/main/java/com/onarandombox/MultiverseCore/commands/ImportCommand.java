@@ -106,7 +106,7 @@ public class ImportCommand extends MultiverseCommand {
             this.showHelp(sender);
             return;
         }
-        File worldFile = new File(this.plugin.getServerFolder(), worldName);
+        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
         if (this.worldManager.isMVWorld(worldName) && worldFile.exists()) {
             sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
             return;
