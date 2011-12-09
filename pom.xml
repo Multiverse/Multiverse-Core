@@ -16,8 +16,8 @@
             <url>http://repo.onarandombox.com/artifactory/repo</url>
         </repository>
         <repository>
-            <id>opencraft</id>
-            <url>http://pneumaticsystem.com:25578/nexus/content/repositories/opencraft</url>
+            <id>econ</id>
+            <url>http://pneumaticsystem.com:25578/nexus/content/repositories/bukkit-econ</url>
         </repository>
     </repositories>
 
