@@ -271,9 +271,10 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean addToVariable(String property, String value) {
+        property = property.toLowerCase();
         if (this.masterList.keySet().contains(property)) {
 
-            if (property.equalsIgnoreCase("animals") || property.equalsIgnoreCase("monsters")) {
+            if (property.equals("animals") || property.equals("monsters")) {
                 this.masterList.get(property).add(value.toUpperCase());
                 this.worldSection.set(property.toLowerCase() + ".exceptions", this.masterList.get(property));
                 this.syncMobs();
@@ -289,15 +290,16 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public boolean removeFromVariable(String property, String value) {
+        property = property.toLowerCase();
         if (this.masterList.keySet().contains(property)) {
 
-            if (property.equalsIgnoreCase("animals") || property.equalsIgnoreCase("monsters")) {
+            if (property.equals("animals") || property.equals("monsters")) {
                 this.masterList.get(property).remove(value.toUpperCase());
-                this.worldSection.set("" + property.toLowerCase() + ".exceptions", this.masterList.get(property));
+                this.worldSection.set(property + ".exceptions", this.masterList.get(property));
                 this.syncMobs();
             } else {
                 this.masterList.get(property).remove(value);
-                this.worldSection.set("" + property.toLowerCase(), this.masterList.get(property));
+                this.worldSection.set(property, this.masterList.get(property));
             }
             saveConfig();
             return true;
