@@ -8,16 +8,13 @@
     <description>World Management Plugin</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.number>UNKNOWN</project.build.number>
     </properties>
 
     <repositories>
         <repository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/artifactory/repo</url>
-        </repository>
-        <repository>
-            <id>econ</id>
-            <url>http://pneumaticsystem.com:25578/nexus/content/repositories/bukkit-econ</url>
+            <id>pneumaticsystem</id>
+            <url>http://pneumaticsystem.com:25578/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
@@ -34,8 +31,24 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
+        <url>http://pneumaticsystem.com:25579</url>
     </ciManagement>
+
+    <!-- Profiles are used to detect whether this is a local or Jenkins build
+         and adjust the build number accordingly -->
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <project.build.number>${env.BUILD_NUMBER}</project.build.number>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -89,7 +102,7 @@
                     <replacements>
                         <replacement>
                             <token>maven-version-number</token>
-                            <value>${project.version}-${BUILD_NUMBER}</value>
+                            <value>${project.version}-${project.build.number}</value>
                         </replacement>
                     </replacements>
                 </configuration>
