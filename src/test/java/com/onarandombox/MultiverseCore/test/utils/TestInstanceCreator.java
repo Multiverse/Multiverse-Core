@@ -44,6 +44,7 @@ public class TestInstanceCreator {
 
     public static final File pluginDirectory = new File("bin/test/server/plugins/coretest");
     public static final File serverDirectory = new File("bin/test/server");
+    public static final File worldsDirectory = new File("bin/test/server");
 
     public boolean setUp() {
         try {
@@ -87,6 +88,7 @@ public class TestInstanceCreator {
             when(mockServer.getName()).thenReturn("TestBukkit");
             Logger.getLogger("Minecraft").setParent(Util.logger);
             when(mockServer.getLogger()).thenReturn(Util.logger);
+            when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
 
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {

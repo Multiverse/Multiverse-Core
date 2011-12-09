@@ -39,9 +39,9 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class })
 public class TestWorldStuff {
 
-    TestInstanceCreator creator;
-    Server mockServer;
-    CommandSender mockCommandSender;
+    private TestInstanceCreator creator;
+    private Server mockServer;
+    private CommandSender mockCommandSender;
 
     @Before
     public void setUp() throws Exception {
