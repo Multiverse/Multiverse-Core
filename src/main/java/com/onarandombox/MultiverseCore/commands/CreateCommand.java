@@ -46,7 +46,7 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
         String worldName = args.get(0);
-        File worldFile = new File(this.plugin.getServerFolder(), worldName);
+        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
         String env = args.get(1);
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
