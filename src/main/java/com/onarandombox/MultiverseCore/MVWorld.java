@@ -661,6 +661,7 @@ public class MVWorld implements MultiverseWorld {
             }
             // If it's not, find a better one.
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
+            this.plugin.log(Level.WARNING, "Original Location: " + LocationManipulation.strCoordsRaw(spawnLocation));
             Location newSpawn = teleporter.getSafeLocation(spawnLocation, 16, 16);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
