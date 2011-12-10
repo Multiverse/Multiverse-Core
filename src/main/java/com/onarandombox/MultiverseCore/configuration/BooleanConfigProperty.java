@@ -17,11 +17,7 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
     private String help;
 
     public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String help) {
-        this.name = name;
-        this.configNode = name;
-        this.section = section;
-        this.help = help;
-        this.setValue(this.section.getBoolean(this.configNode, defaultValue));
+        this(section, name, defaultValue, name, help);
     }
 
     public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String configNode, String help) {
@@ -29,6 +25,7 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
         this.configNode = configNode;
         this.section = section;
         this.help = help;
+        this.value = defaultValue;
         this.setValue(this.section.getBoolean(this.configNode, defaultValue));
     }
 

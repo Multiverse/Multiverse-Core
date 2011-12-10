@@ -48,7 +48,9 @@ public interface MultiverseWorld {
      * @param property The name of a world property to get.
      * @return A valid MVWorldProperty.
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
+     * @deprecated Use {@link #getProperty(String, Class)} instead
      */
+    @Deprecated
     public MVConfigProperty<?> getProperty(String property) throws PropertyDoesNotExistException;
 
     /**
@@ -60,6 +62,17 @@ public interface MultiverseWorld {
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     public String getPropertyValue(String property) throws PropertyDoesNotExistException;
+
+    /**
+     * Gets the actual MVConfigProperty from this world.
+     * It will throw a PropertyDoesNotExistException if the property is not found.
+     *
+     * @param property The name of a world property to get.
+     * @param expected The type of the expected property. Use Object.class if this doesn't matter for you.
+     * @return A valid MVWorldProperty.
+     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
+     */
+    public <T> MVConfigProperty<T> getProperty(String property, Class<T> expected) throws PropertyDoesNotExistException;
 
     /**
      * Removes all values from the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
