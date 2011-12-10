@@ -107,7 +107,7 @@ public class ModifySetCommand extends MultiverseCommand {
             if (world.setProperty(property, value, sender)) {
                 sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
             } else {
-                sender.sendMessage(world.getProperty(property).getHelp());
+                sender.sendMessage(world.getProperty(property, Object.class).getHelp());
             }
         } catch (PropertyDoesNotExistException e) {
             sender.sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + property + ChatColor.RED + "'");

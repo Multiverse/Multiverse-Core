@@ -199,7 +199,7 @@ public class TestWorldStuff {
         // Now fail one.
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "mode", "fish", "world" });
         try {
-            verify(mockCommandSender).sendMessage(mainWorld.getProperty("mode").getHelp());
+            verify(mockCommandSender).sendMessage(mainWorld.getProperty("mode", Object.class).getHelp());
         } catch (PropertyDoesNotExistException e) {
             fail("Mode property did not exist.");
         }
