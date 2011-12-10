@@ -17,11 +17,7 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
     private String help;
 
     public IntegerConfigProperty(ConfigurationSection section, String name, Integer defaultValue, String help) {
-        this.name = name;
-        this.configNode = name;
-        this.section = section;
-        this.help = help;
-        this.setValue(this.section.getInt(this.configNode, defaultValue));
+        this(section, name, defaultValue, name, help);
     }
 
     public IntegerConfigProperty(ConfigurationSection section, String name, Integer defaultValue, String configNode, String help) {
@@ -29,6 +25,7 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
         this.configNode = configNode;
         this.section = section;
         this.help = help;
+        this.value = defaultValue;
         this.setValue(this.section.getInt(this.configNode, defaultValue));
     }
 

@@ -19,11 +19,7 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
     private String help;
 
     public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String help) {
-        this.name = name;
-        this.configNode = name;
-        this.section = section;
-        this.help = help;
-        this.setValue(this.getLocationFromConfig(defaultValue));
+        this(section, name, defaultValue, name, help);
     }
 
     public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String configNode, String help) {
@@ -31,6 +27,7 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.configNode = configNode;
         this.section = section;
         this.help = help;
+        this.value = defaultValue;
         this.setValue(this.getLocationFromConfig(defaultValue));
     }
 

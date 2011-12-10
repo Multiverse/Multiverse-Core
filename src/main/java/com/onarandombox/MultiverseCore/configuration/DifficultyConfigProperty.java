@@ -18,11 +18,7 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
     private String help;
 
     public DifficultyConfigProperty(ConfigurationSection section, String name, Difficulty defaultValue, String help) {
-        this.name = name;
-        this.configNode = name;
-        this.section = section;
-        this.help = help;
-        this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
+        this(section, name, defaultValue, name, help);
     }
 
     public DifficultyConfigProperty(ConfigurationSection section, String name, Difficulty defaultValue, String configNode, String help) {
@@ -30,6 +26,7 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         this.configNode = configNode;
         this.section = section;
         this.help = help;
+        this.value = defaultValue;
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
