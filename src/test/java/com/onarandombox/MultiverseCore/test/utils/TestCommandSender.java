@@ -40,7 +40,7 @@ public class TestCommandSender implements CommandSender {
      */
     @Override
     public void sendMessage(String message) {
-        logger.info("." + ChatColor.stripColor(message) + ".");
+        logger.info(ChatColor.stripColor(message));
     }
 
     /**

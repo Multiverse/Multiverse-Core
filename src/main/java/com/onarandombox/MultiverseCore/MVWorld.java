@@ -331,10 +331,15 @@ public class MVWorld implements MultiverseWorld {
     // TODO: Provide better feedback
     @Override
     public boolean setProperty(String name, String value, CommandSender sender) throws PropertyDoesNotExistException {
-        if (this.setKnownProperty(name, value, sender) || this.setKnownProperty(this.propertyAliases.get(name), value, sender)) {
-            return true;
+        if (!this.isValidPropertyName(name)) {
+            throw new PropertyDoesNotExistException(name);
         }
-        throw new PropertyDoesNotExistException(name);
+        return this.setKnownProperty(name, value, sender) || this.setKnownProperty(this.propertyAliases.get(name), value, sender);
+
+    }
+
+    private boolean isValidPropertyName(String name) {
+        return this.propertyList.containsKey(name) || this.propertyAliases.containsKey(name);
     }
 
     @Override
