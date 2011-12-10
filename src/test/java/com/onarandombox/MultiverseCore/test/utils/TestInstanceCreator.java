@@ -79,7 +79,7 @@ public class TestInstanceCreator {
             File worldNetherFile = new File(core.getServerFolder(), "world_nether");
             Util.log("Creating world-folder: " + worldNetherFile.getAbsolutePath());
             worldNetherFile.mkdirs();
-            File worldSkylandsFile = new File(core.getServerFolder(), "world_skylands");
+            File worldSkylandsFile = new File(core.getServerFolder(), "world_the_end");
             Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
             worldSkylandsFile.mkdirs();
 

@@ -7,9 +7,6 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -17,6 +14,9 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Set;
+import java.util.logging.Logger;
 
 public class TestCommandSender implements CommandSender {
 
@@ -40,7 +40,7 @@ public class TestCommandSender implements CommandSender {
      */
     @Override
     public void sendMessage(String message) {
-        logger.info(ChatColor.stripColor(message));
+        logger.info("." + ChatColor.stripColor(message) + ".");
     }
 
     /**
@@ -67,7 +67,6 @@ public class TestCommandSender implements CommandSender {
      * Checks if this object contains an override for the specified permission, by fully qualified name
      *
      * @param name Name of the permission
-     *
      * @return true if the permission is set, otherwise false
      */
     @Override
@@ -79,7 +78,6 @@ public class TestCommandSender implements CommandSender {
      * Checks if this object contains an override for the specified {@link org.bukkit.permissions.Permission}
      *
      * @param perm Permission to check
-     *
      * @return true if the permission is set, otherwise false
      */
     @Override
@@ -93,7 +91,6 @@ public class TestCommandSender implements CommandSender {
      * If a permission override is not set on this object, the default value of the permission will be returned.
      *
      * @param name Name of the permission
-     *
      * @return Value of the permission
      */
     @Override
@@ -107,7 +104,6 @@ public class TestCommandSender implements CommandSender {
      * If a permission override is not set on this object, the default value of the permission will be returned
      *
      * @param perm Permission to get
-     *
      * @return Value of the permission
      */
     @Override
@@ -121,7 +117,6 @@ public class TestCommandSender implements CommandSender {
      * @param plugin Plugin responsible for this attachment, may not be null or disabled
      * @param name   Name of the permission to attach
      * @param value  Value of the permission
-     *
      * @return The PermissionAttachment that was just created
      */
     @Override
@@ -133,7 +128,6 @@ public class TestCommandSender implements CommandSender {
      * Adds a new empty {@link org.bukkit.permissions.PermissionAttachment} to this object
      *
      * @param plugin Plugin responsible for this attachment, may not be null or disabled
-     *
      * @return The PermissionAttachment that was just created
      */
     @Override
@@ -149,7 +143,6 @@ public class TestCommandSender implements CommandSender {
      * @param name   Name of the permission to attach
      * @param value  Value of the permission
      * @param ticks  Amount of ticks to automatically remove this attachment after
-     *
      * @return The PermissionAttachment that was just created
      */
     @Override
@@ -162,7 +155,6 @@ public class TestCommandSender implements CommandSender {
      *
      * @param plugin Plugin responsible for this attachment, may not be null or disabled
      * @param ticks  Amount of ticks to automatically remove this attachment after
-     *
      * @return The PermissionAttachment that was just created
      */
     @Override
@@ -174,7 +166,6 @@ public class TestCommandSender implements CommandSender {
      * Removes the given {@link org.bukkit.permissions.PermissionAttachment} from this object
      *
      * @param attachment Attachment to remove
-     *
      * @throws IllegalArgumentException Thrown when the specified attachment isn't part of this object
      */
     @Override
