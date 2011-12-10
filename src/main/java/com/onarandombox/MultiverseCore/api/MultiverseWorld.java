@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * The API for a Multiverse Handled World.
- * <p/>
+ * <p>
  * Currently INCOMPLETE
  */
 public interface MultiverseWorld {
@@ -97,7 +97,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets the environment of a world.
-     * <p/>
+     * <p>
      * Note: This will ONLY take effect once the world is unloaded/reloaded.
      *
      * @param environment A {@link org.bukkit.World.Environment}.
@@ -127,7 +127,7 @@ public interface MultiverseWorld {
 
     /**
      * Gets the alias of this world.
-     * <p/>
+     * <p>
      * This alias allows users to have a world named "world" but show up in the list as "FernIsland"
      *
      * @return The alias of the world as a String.
@@ -472,7 +472,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets whether or not Multiverse should auto-load this world.
-     * <p/>
+     * <p>
      * True is default.
      *
      * @param autoLoad True if multiverse should autoload this world the spawn, false if not.
@@ -489,7 +489,7 @@ public interface MultiverseWorld {
     /**
      * Sets whether or not a player who dies in this world will respawn in their
      * bed or follow the normal respawn pattern.
-     * <p/>
+     * <p>
      * True is default.
      *
      * @param autoLoad True if players dying in this world respawn at their bed.

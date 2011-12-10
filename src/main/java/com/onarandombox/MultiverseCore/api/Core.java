@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 
 /**
  * Multiverse 2 Core API
- * <p/>
+ * <p>
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
 public interface Core {

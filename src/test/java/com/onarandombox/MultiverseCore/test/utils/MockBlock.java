@@ -263,7 +263,7 @@ public class MockBlock implements Block{
     /**
      * Captures the current state of this block. You may then cast that state
      * into any accepted type, such as Furnace or Sign.
-     * <p/>
+     * <p>
      * The returned object will never be updated, and you are not guaranteed that
      * (for example) a sign is still a sign after you capture its state.
      *
@@ -352,7 +352,7 @@ public class MockBlock implements Block{
 
     /**
      * Checks if this block is empty.
-     * <p/>
+     * <p>
      * A block is considered empty when {@link #getType()} returns {@link org.bukkit.Material#AIR}.
      *
      * @return true if this block is empty
@@ -364,7 +364,7 @@ public class MockBlock implements Block{
 
     /**
      * Checks if this block is liquid.
-     * <p/>
+     * <p>
      * A block is considered liquid when {@link #getType()} returns {@link org.bukkit.Material#WATER}, {@link
      * org.bukkit.Material#STATIONARY_WATER}, {@link org.bukkit.Material#LAVA} or {@link
      * org.bukkit.Material#STATIONARY_LAVA}.
