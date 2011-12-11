@@ -5,16 +5,23 @@ package com.onarandombox.MultiverseCore.localization;
  */
 public enum MultiverseMessage {
     TEST_STRING("a test-string from the enum"),
-    LIST_NAME("World Listing"),
-    LIST_TITLE("Multiverse World List"),
-    LIST_DESC("Displays a listing of all worlds that you can enter."),
-    LIST_NO_MATCH("No worlds matched your filter:"),
+
+    // Generic Strings
     GENERIC_SORRY("Sorry..."),
-    GENERIC_OF("of"),
     GENERIC_PAGE("Page"),
+    GENERIC_OF("of"),
     GENERIC_UNLOADED("UNLOADED"),
+    GENERIC_PLUGIN_DISABLED("This plugin is Disabled!"),
+
+    // Errors
     ERROR_LOAD("Your configs were not loaded. Very little will function in Multiverse."),
-    GENERIC_PLUGIN_DISABLED("This plugin is Disabled!");
+
+    //// Commands
+    // List Command
+    LIST_NAME("World Listing"),
+    LIST_DESC("Displays a listing of all worlds that you can enter."),
+    LIST_TITLE("Multiverse World List"),
+    LIST_NO_MATCH("No worlds matched your filter:");
 
     private final String def;
 
