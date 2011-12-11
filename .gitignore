@@ -39,5 +39,5 @@ uploadtoserver.sh
 debug.log
 
 # Doxygen
-/docs
+/docs/html
 debug.txt
