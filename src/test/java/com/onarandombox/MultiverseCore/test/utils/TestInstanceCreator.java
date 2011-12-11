@@ -20,10 +20,12 @@ import java.util.logging.Logger;
 import junit.framework.Assert;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -138,7 +140,23 @@ public class TestInstanceCreator {
             worldmanagerfield.set(core, wm);
 
             // Init our command sender
-            commandSender = spy(new TestCommandSender(mockServer));
+            final Logger commandSenderLogger = Logger.getLogger("CommandSender");
+            commandSenderLogger.setParent(Util.logger);
+            commandSender = mock(CommandSender.class);
+            doAnswer(new Answer<Void>() {
+                public Void answer(InvocationOnMock invocation) throws Throwable {
+                    commandSenderLogger.info(ChatColor.stripColor((String) invocation.getArguments()[0]));
+                    return null;
+                }}).when(commandSender).sendMessage(anyString());
+            when(commandSender.getServer()).thenReturn(mockServer);
+            when(commandSender.getName()).thenReturn("MockCommandSender");
+            when(commandSender.isPermissionSet(anyString())).thenReturn(true);
+            when(commandSender.isPermissionSet(Matchers.isA(Permission.class))).thenReturn(true);
+            when(commandSender.hasPermission(anyString())).thenReturn(true);
+            when(commandSender.hasPermission(Matchers.isA(Permission.class))).thenReturn(true);
+            when(commandSender.addAttachment(core)).thenReturn(null);
+            when(commandSender.isOp()).thenReturn(true);
+
             Bukkit.setServer(mockServer);
 
             // Load Multiverse Core
