@@ -14,6 +14,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Util {
+    private Util() {}
+
     public static final Logger logger = Logger.getLogger("MV-Test");
 
     static {

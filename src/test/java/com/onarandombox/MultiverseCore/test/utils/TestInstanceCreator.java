@@ -38,8 +38,8 @@ import com.onarandombox.MultiverseCore.utils.FileUtils;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 
 public class TestInstanceCreator {
-    MultiverseCore core;
-    Server mockServer;
+    private MultiverseCore core;
+    private Server mockServer;
     private CommandSender commandSender;
 
     public static final File pluginDirectory = new File("bin/test/server/plugins/coretest");
