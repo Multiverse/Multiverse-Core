@@ -42,8 +42,11 @@ public abstract class PaginatedCommand<T> extends Command {
     }
 
     protected void showPage(int page, CommandSender sender, List<T> cmds) {
+        // Ensure the page is at least 1.
+        page = (page <= 0) ? 1 : page;
         int start = (page - 1) * ITEMS_PER_PAGE;
         int end = start + ITEMS_PER_PAGE;
+
         for (int i = start; i < end; i++) {
             // For consistancy, print some extra lines if it's a player:
             if (i < cmds.size()) {
