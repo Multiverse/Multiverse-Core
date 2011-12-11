@@ -38,3 +38,6 @@ uploadtoserver.sh
 # Testing files:
 debug.log
 
+# Doxygen
+/docs
+debug.txt
