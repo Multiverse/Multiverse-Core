@@ -37,9 +37,6 @@
         <module name="JavadocVariable"/>
         <module name="JavadocStyle"/>
         <module name="ConstantName"/>
-        <!-- Don't like errors for `final` missing
-        <module name="LocalFinalVariableName"/>
-        -->
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
         <module name="MethodName"/>
