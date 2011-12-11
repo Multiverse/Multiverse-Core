@@ -421,7 +421,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      * from the Servers Log Output.
      *
      * @param level The Log-{@link Level}
+<<<<<<< HEAD
      * @param msg   The message
+=======
+     * @param msg The message
+>>>>>>> master
      */
     public void log(Level level, String msg) {
         staticLog(level, msg);
@@ -448,7 +452,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      * standard Server Console.
      *
      * @param level The Log-{@link Level}
+<<<<<<< HEAD
      * @param msg   The message
+=======
+     * @param msg The message
+>>>>>>> master
      */
     public static void staticDebugLog(Level level, String msg) {
         log.log(level, "[MVCore-Debug] " + msg);
