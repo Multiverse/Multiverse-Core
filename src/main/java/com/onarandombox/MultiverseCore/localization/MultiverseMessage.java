@@ -12,7 +12,9 @@ public enum MultiverseMessage {
     GENERIC_SORRY("Sorry..."),
     GENERIC_OF("of"),
     GENERIC_PAGE("Page"),
-    GENERIC_UNLOADED("UNLOADED"), ERROR_LOAD("Your configs were not loaded. Very little will function in Multiverse.");
+    GENERIC_UNLOADED("UNLOADED"),
+    ERROR_LOAD("Your configs were not loaded. Very little will function in Multiverse."),
+    GENERIC_PLUGIN_DISABLED("This plugin is Disabled!");
 
     private final String def;
 

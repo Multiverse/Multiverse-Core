@@ -21,6 +21,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.localization.MessageProvider;
 import com.onarandombox.MultiverseCore.localization.MessageProviding;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
@@ -198,19 +199,21 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
         // this function will be called every time a plugin registers a new envtype with MV
         // Setup & Load our Configuration files.
         loadConfigs();
-        if (this.multiverseConfig != null) {
-            this.worldManager.loadDefaultWorlds();
-            this.worldManager.loadWorlds(true);
-        } else {
-            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
-        }
-        this.anchorManager.loadAnchors();
         try {
             this.messageProvider.setLocale(new Locale(multiverseConfig.getString("locale", "en")));
         } catch (IllegalArgumentException e) {
             this.log(Level.SEVERE, e.getMessage());
             this.getServer().getPluginManager().disablePlugin(this);
+            return;
         }
+        if (this.multiverseConfig != null) {
+            this.worldManager.loadDefaultWorlds();
+            this.worldManager.loadWorlds(true);
+        } else {
+            this.log(Level.SEVERE, this.getMessageProvider().getMessage(MultiverseMessage.ERROR_LOAD));
+        }
+        this.anchorManager.loadAnchors();
+
     }
 
     private boolean validateAllpay() {
@@ -408,7 +411,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!this.isEnabled()) {
-            sender.sendMessage("This plugin is Disabled!");
+            sender.sendMessage(this.getMessageProvider().getMessage(MultiverseMessage.GENERIC_PLUGIN_DISABLED));
             return true;
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
@@ -430,13 +433,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     public static void staticLog(Level level, String msg) {
         if (level == Level.FINE && GlobalDebug >= 1) {
             staticDebugLog(Level.INFO, msg);
-            return;
         } else if (level == Level.FINER && GlobalDebug >= 2) {
             staticDebugLog(Level.INFO, msg);
-            return;
         } else if (level == Level.FINEST && GlobalDebug >= 3) {
             staticDebugLog(Level.INFO, msg);
-            return;
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             log.log(level, tag + " " + msg);
             debugLog.log(level, tag + " " + msg);

@@ -5,6 +5,7 @@ GENERIC_SORRY: 'Sorry...'
 GENERIC_PAGE: 'Page'
 GENERIC_OF: 'of'
 GENERIC_UNLOADED: 'UNLOADED'
+GENERIC_PLUGIN_DISABLED: 'This plugin is Disabled!'
 
 # Errors
 ERROR_LOAD: 'Your configs were not loaded. Very little will function in Multiverse.'
