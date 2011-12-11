@@ -1,0 +1,106 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Multiverse 2 Copyright (c) the Multiverse Team 2011.                      ~
+  ~ Multiverse 2 is licensed under the BSD License.                           ~
+  ~ For more information please check the README.md file included             ~
+  ~ with this project.                                                        ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE module SYSTEM "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
+<module name="Checker">
+    <module name="JavadocPackage">
+        <property name="allowLegacy" value="true"/>
+    </module>
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="info"/>
+    </module>
+    <module name="Translation"/>
+    <module name="FileLength"/>
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="message" value="Line has trailing spaces."/>
+        <property name="format" value="\s+$"/>
+    </module>
+    <module name="SuppressWithNearbyCommentFilter"/>
+    <module name="TreeWalker">
+        <!-- Make suppression possible -->
+        <module name="FileContentsHolder"/>
+        <!-- Actual checks -->
+        <module name="LineLength">
+            <property name="max" value="160"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocMethod"/>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
+        <module name="JavadocStyle"/>
+        <module name="ConstantName"/>
+        <!-- Don't like errors for `final` missing
+        <module name="LocalFinalVariableName"/>
+        -->
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+        <module name="AvoidStarImport">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+        <module name="AvoidInlineConditionals"/>
+        <module name="DoubleCheckedLocking"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="HiddenField"/>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="RedundantThrows"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <!-- Don't like errors for `final` missing
+        <module name="DesignForExtension"/>
+        <module name="FinalClass"/>
+        -->
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
+        <module name="ArrayTypeStyle"/>
+        <!-- Don't like errors for `final` missing
+        <module name="FinalParameters"/>
+        -->
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+    </module>
+</module>
