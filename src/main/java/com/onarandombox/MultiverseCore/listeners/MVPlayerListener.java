@@ -32,9 +32,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.logging.Level;
 
 public class MVPlayerListener extends PlayerListener {
-    MultiverseCore plugin;
-    SafeTTeleporter mvteleporter;
-    MVWorldManager worldManager;
+    private MultiverseCore plugin;
+    private SafeTTeleporter mvteleporter;
+    private MVWorldManager worldManager;
     private PermissionTools pt;
 
 

@@ -26,7 +26,7 @@ import java.util.logging.Level;
 
 public class PurgeWorlds {
 
-    MultiverseCore plugin;
+    private MultiverseCore plugin;
 
     public PurgeWorlds(MultiverseCore plugin) {
         this.plugin = plugin;

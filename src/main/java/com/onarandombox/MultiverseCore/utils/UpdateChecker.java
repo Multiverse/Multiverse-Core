@@ -22,7 +22,7 @@ public class UpdateChecker {
 
     public static final Logger log = Logger.getLogger("Minecraft");
 
-    public Timer timer = new Timer(); // Create a new Timer.
+    private Timer timer = new Timer(); // Create a new Timer.
 
     private String name; // Hold the Plugins Name.
     private String cversion; // Hold the Plugins Current Version.

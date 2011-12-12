@@ -26,9 +26,8 @@ import java.util.logging.Level;
 
 public class SafeTTeleporter {
 
-    MultiverseCore plugin;
-
-    BlockSafety bs;
+    private MultiverseCore plugin;
+    private BlockSafety bs;
 
     public SafeTTeleporter(MultiverseCore plugin) {
         this.plugin = plugin;

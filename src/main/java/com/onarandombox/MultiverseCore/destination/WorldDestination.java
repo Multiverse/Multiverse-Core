@@ -19,8 +19,8 @@ import org.bukkit.util.Vector;
 public class WorldDestination implements MVDestination {
     private boolean isValid;
     private MultiverseWorld world;
-    float yaw = -1;
-    String direction = "";
+    private float yaw = -1;
+    private String direction = "";
 
     @Override
     public String getIdentifier() {

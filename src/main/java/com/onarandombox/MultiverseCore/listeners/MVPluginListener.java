@@ -18,7 +18,7 @@ import java.util.logging.Level;
 
 public class MVPluginListener extends ServerListener {
 
-    MultiverseCore plugin;
+    private MultiverseCore plugin;
 
     public MVPluginListener(MultiverseCore plugin) {
         this.plugin = plugin;

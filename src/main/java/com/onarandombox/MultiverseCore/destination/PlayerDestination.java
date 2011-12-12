@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 public class PlayerDestination implements MVDestination {
-    String player;
+    private String player;
     private boolean isValid;
     private JavaPlugin plugin;
 
