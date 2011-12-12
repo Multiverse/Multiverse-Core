@@ -303,7 +303,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Load the Configuration files OR create the default config files.
+     * {@inheritDoc}
      */
     @Override
     public void loadConfigs() {
@@ -466,11 +466,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Parse the Authors Array into a readable String with ',' and 'and'.
-     *
-     * @return The readable authors-{@link String}
+     * {@inheritDoc}
      */
-    private String getAuthors() {
+    @Override
+    public String getAuthors() {
         String authors = "";
         ArrayList<String> auths = this.getDescription().getAuthors();
         if (auths.size() == 0) {
@@ -554,42 +553,41 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Returns the number of plugins that have specifically hooked into core.
-     *
-     * @return The number if plugins that have hooked into core.
+     * {@inheritDoc}
      */
+    @Override
     public int getPluginCount() {
         return this.pluginCount;
     }
 
     /**
-     * Increments the number of plugins that have specifically hooked into core.
+     * {@inheritDoc}
      */
+    @Override
     public void incrementPluginCount() {
         this.pluginCount += 1;
     }
 
     /**
-     * Decrements the number of plugins that have specifically hooked into core.
+     * {@inheritDoc}
      */
+    @Override
     public void decrementPluginCount() {
         this.pluginCount -= 1;
     }
 
     /**
-     * Gets this plugin's {@link AllPay}-Banker.
-     *
-     * @return An {@link AllPay}-Banker
+     * {@inheritDoc}
      */
+    @Override
     public AllPay getBanker() {
         return this.banker;
     }
 
     /**
-     * Sets this plugin's {@link AllPay}-Banker.
-     *
-     * @param bank The new {@link AllPay}-Banker
+     * {@inheritDoc}
      */
+    @Override
     public void setBank(GenericBank bank) {
         this.bank = bank;
     }
@@ -710,15 +708,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Used by queued commands to regenerate a world on a delay.
-     *
-     * @param name Name of the world to regenerate
-     * @param useNewSeed If a new seed should be used
-     * @param randomSeed IF the new seed should be random
-     * @param seed The seed of the world.
-     *
-     * @return True if success, false if fail.
+     * {@inheritDoc}
      */
+    @Override
     public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
         MultiverseWorld world = this.worldManager.getMVWorld(name);
         if (world == null) {
@@ -750,10 +742,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Gets the {@link AnchorManager}.
-     *
-     * @return The {@link AnchorManager}
+     * {@inheritDoc}
      */
+    @Override
     public AnchorManager getAnchorManager() {
         return this.anchorManager;
     }

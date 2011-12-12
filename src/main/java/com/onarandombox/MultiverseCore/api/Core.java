@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.*;
@@ -105,4 +106,61 @@ public interface Core {
      * @return Whether the config was successfully saved
      */
     boolean saveMVConfigs();
+
+    /**
+     * Gets the {@link AnchorManager}.
+     *
+     * @return The {@link AnchorManager}
+     */
+    AnchorManager getAnchorManager();
+
+    /**
+     * Used by queued commands to regenerate a world on a delay.
+     *
+     * @param name Name of the world to regenerate
+     * @param useNewSeed If a new seed should be used
+     * @param randomSeed IF the new seed should be random
+     * @param seed The seed of the world.
+     *
+     * @return True if success, false if fail.
+     */
+    Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
+
+    /**
+     * Sets the {@link GenericBank}-Bank AllPay is using.
+     *
+     * @param bank The new {@link GenericBank}
+     */
+    void setBank(GenericBank bank);
+
+    /**
+     * Gets this plugin's {@link AllPay}-Banker.
+     *
+     * @return An {@link AllPay}-Banker
+     */
+    AllPay getBanker();
+
+    /**
+     * Decrements the number of plugins that have specifically hooked into core.
+     */
+    void decrementPluginCount();
+
+    /**
+     * Increments the number of plugins that have specifically hooked into core.
+     */
+    void incrementPluginCount();
+
+    /**
+     * Returns the number of plugins that have specifically hooked into core.
+     *
+     * @return The number if plugins that have hooked into core.
+     */
+    int getPluginCount();
+
+    /**
+     * Parse the Authors Array into a readable String with ',' and 'and'.
+     *
+     * @return The readable authors-{@link String}
+     */
+    String getAuthors();
 }
