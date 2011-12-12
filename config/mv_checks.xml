@@ -109,7 +109,9 @@
         <!-- Don't like errors for `final` missing
         <module name="FinalParameters"/>
         -->
-        <module name="TodoComment"/>
+        <module name="TodoComment">
+            <property name="severity" value="info"/>
+        </module>
         <module name="UpperEll"/>
     </module>
 </module>
