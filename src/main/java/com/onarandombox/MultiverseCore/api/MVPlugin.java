@@ -17,21 +17,21 @@ public interface MVPlugin extends LoggablePlugin {
      *
      * @return A modified buffer that contains this MVPlugin's version information.
      */
-    public String dumpVersionInfo(String buffer);
+    String dumpVersionInfo(String buffer);
 
     /**
      * Gets the reference to MultiverseCore.
      *
      * @return A valid {@link MultiverseCore}.
      */
-    public MultiverseCore getCore();
+    MultiverseCore getCore();
 
     /**
      * Sets the reference to MultiverseCore.
      *
      * @param core A valid {@link MultiverseCore}.
      */
-    public void setCore(MultiverseCore core);
+    void setCore(MultiverseCore core);
 
     /**
      * Allows Multiverse or a plugin to query another Multiverse plugin to see what version its protocol is. This
@@ -40,5 +40,5 @@ public interface MVPlugin extends LoggablePlugin {
      *
      * @return The Integer protocol version.
      */
-    public int getProtocolVersion();
+    int getProtocolVersion();
 }

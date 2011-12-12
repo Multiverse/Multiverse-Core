@@ -28,7 +28,7 @@ public interface MVDestination {
      *
      * @return The identifier or prefix that is required for this destination.
      */
-    public String getIdentifier();
+    String getIdentifier();
 
     /**
      * Allows you to determine if a Destination is valid for the type it thinks it is.
@@ -44,7 +44,7 @@ public interface MVDestination {
      *
      * @return True if the destination is valid, false if not.
      */
-    public boolean isThisType(JavaPlugin plugin, String destination);
+    boolean isThisType(JavaPlugin plugin, String destination);
 
     /**
      * Returns the location a specific entity will spawn at.
@@ -59,7 +59,7 @@ public interface MVDestination {
      *
      * @return The location of the entity.
      */
-    public Location getLocation(Entity entity);
+    Location getLocation(Entity entity);
 
     /**
      * Returns the velocity vector for this destination.
@@ -68,7 +68,7 @@ public interface MVDestination {
      *
      * @return A vector representing the speed/direction the player should travel when arriving
      */
-    public Vector getVelocity();
+    Vector getVelocity();
 
     /**
      * Sets the destination string.
@@ -81,7 +81,7 @@ public interface MVDestination {
      * @param plugin      The plugin who the type belongs to.
      * @param destination The destination string. ex: p:MyPortal:nw
      */
-    public void setDestination(JavaPlugin plugin, String destination);
+    void setDestination(JavaPlugin plugin, String destination);
 
     /**
      * Returns true if the destination is valid and players will be taken to it.
@@ -91,7 +91,7 @@ public interface MVDestination {
      *
      * @return True if the destination is valid; false if not.
      */
-    public boolean isValid();
+    boolean isValid();
 
     /**
      * Gives you a general friendly description of the type of destination.
@@ -100,7 +100,7 @@ public interface MVDestination {
      *
      * @return A friendly string description of the type of destination.
      */
-    public String getType();
+    String getType();
 
     /**
      * Gives you a specific name of the destination.
@@ -109,7 +109,7 @@ public interface MVDestination {
      *
      * @return A friendly string stating the name of the destination.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns a string that can easily be saved in the config that contains all the details needed to rebuild this
@@ -119,7 +119,7 @@ public interface MVDestination {
      *
      * @return The savable config string.
      */
-    public String toString();
+    String toString();
 
     /**
      * Returns the permissions string required to go here.
@@ -130,7 +130,7 @@ public interface MVDestination {
      *
      * @return the permissions string required to go here.
      */
-    public String getRequiredPermission();
+    String getRequiredPermission();
 
     /**
      * Should the Multiverse SafeTeleporter be used?
@@ -139,5 +139,5 @@ public interface MVDestination {
      *
      * @return True if the SafeTeleporter will be used, false if not.
      */
-    public boolean useSafeTeleporter();
+    boolean useSafeTeleporter();
 }

@@ -22,14 +22,14 @@ public interface PasteService {
      * @param data The raw data to encode.
      * @return A URL-encoded string.
      */
-    public String encodeData(String data);
+    String encodeData(String data);
 
     /**
      * Get the URL to which this paste service sends new pastes.
      *
      * @return The URL that will be accessed to complete the paste.
      */
-    public URL getPostURL();
+    URL getPostURL();
 
     /**
      * Post encoded data to the Web.
@@ -39,6 +39,6 @@ public interface PasteService {
      * @param url The URL to which to paste. Can be the result of calling #getPostURL().
      * @return The URL at which the new paste is visible.
      */
-    public String postData(String encodedData, URL url) throws PasteFailedException;
+    String postData(String encodedData, URL url) throws PasteFailedException;
 
 }

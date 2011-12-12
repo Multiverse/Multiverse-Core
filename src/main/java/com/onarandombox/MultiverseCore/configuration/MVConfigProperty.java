@@ -13,35 +13,35 @@ public interface MVConfigProperty<T> {
      *
      * @return The name of this property.
      */
-    public String getName();
+    String getName();
 
     /**
      * Gets the value of this property.
      *
      * @return The value of this property.
      */
-    public T getValue();
+    T getValue();
 
     /**
      * Gets the string representation of this value.
      *
      * @return The value of this property as a string.
      */
-    public String toString();
+    String toString();
 
     /**
      * Gets the help string for this
      *
      * @return The value of this property as a string.
      */
-    public String getHelp();
+    String getHelp();
 
     /**
      * Sets the value of this property
      *
      * @param value The T representation of this value.
      */
-    public boolean setValue(T value);
+    boolean setValue(T value);
 
     /**
      * This parseValue should be used with strings.
@@ -50,7 +50,7 @@ public interface MVConfigProperty<T> {
      *
      * @return True if the value was set, false if not.
      */
-    public boolean parseValue(String value);
+    boolean parseValue(String value);
 
-    public String getConfigNode();
+    String getConfigNode();
 }

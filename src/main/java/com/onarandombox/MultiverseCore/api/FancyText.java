@@ -13,5 +13,5 @@ public interface FancyText {
      *
      * @return And Here.
      */
-    public String getFancyText();
+    String getFancyText();
 }

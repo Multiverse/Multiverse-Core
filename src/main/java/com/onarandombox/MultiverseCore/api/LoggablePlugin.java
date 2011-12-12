@@ -19,12 +19,12 @@ public interface LoggablePlugin {
      * @param level The severity of the log.
      * @param msg   The message to log.
      */
-    public void log(Level level, String msg);
+    void log(Level level, String msg);
 
     /**
      * Gets the server instance that this plugin is attached to.
      *
      * @return A {@link Server} instance.
      */
-    public Server getServer();
+    Server getServer();
 }

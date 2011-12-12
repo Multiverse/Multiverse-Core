@@ -26,20 +26,20 @@ public interface Core {
      *
      * @return The Multiverse config file.
      */
-    public FileConfiguration getMVConfiguration();
+    FileConfiguration getMVConfiguration();
 
     /**
      * Gets the Banking system that Multiverse-Core has hooked into.
      *
      * @return A {@link GenericBank} that can be used for payments.
      */
-    public GenericBank getBank();
+    GenericBank getBank();
 
     /**
      * Reloads the Multiverse Configuration files:
      * worlds.yml and config.yml.
      */
-    public void loadConfigs();
+    void loadConfigs();
 
     /**
      * Gets the Multiverse message system. This allows you to send messages
@@ -47,7 +47,7 @@ public interface Core {
      *
      * @return The loaded {@link MVMessaging}.
      */
-    public MVMessaging getMessaging();
+    MVMessaging getMessaging();
 
     /**
      * Gets the {@link MVPlayerSession} for the given player.
@@ -58,7 +58,7 @@ public interface Core {
      *
      * @return The corresponding {@link MVPlayerSession}.
      */
-    public MVPlayerSession getPlayerSession(Player player);
+    MVPlayerSession getPlayerSession(Player player);
 
     /**
      * Gets the instantiated Safe-T-Teleporter for performing
@@ -66,7 +66,7 @@ public interface Core {
      *
      * @return A non-null {@link SafeTTeleporter}.
      */
-    public SafeTTeleporter getTeleporter();
+    SafeTTeleporter getTeleporter();
 
     /**
      * Multiverse uses an advanced permissions setup, this object
@@ -74,7 +74,7 @@ public interface Core {
      *
      * @return A non-null {@link MVPermissions}.
      */
-    public MVPermissions getMVPerms();
+    MVPermissions getMVPerms();
 
     /**
      * Multiverse uses {@link CommandHandler} to make adding and using commands
@@ -82,7 +82,7 @@ public interface Core {
      *
      * @return A non-null {@link CommandHandler}.
      */
-    public CommandHandler getCommandHandler();
+    CommandHandler getCommandHandler();
 
     /**
      * Gets the factory class responsible for loading many different destinations
@@ -90,12 +90,12 @@ public interface Core {
      *
      * @return A valid {@link DestinationFactory}.
      */
-    public DestinationFactory getDestFactory();
+    DestinationFactory getDestFactory();
 
     /**
      * Gets the primary class responsible for managing Multiverse Worlds.
      *
      * @return {@link WorldManager}.
      */
-    public MVWorldManager getMVWorldManager();
+    MVWorldManager getMVWorldManager();
 }
