@@ -77,7 +77,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             return;
         }
 
-        int totalPages = (int) Math.ceil(availableAnchors.size() / (this.ITEMS_PER_PAGE + 0.0));
+        int totalPages = (int) Math.ceil(availableAnchors.size() / (this.itemsPerPage + 0.0));
 
         if (filterObject.getPage() > totalPages) {
             filterObject.setPage(totalPages);

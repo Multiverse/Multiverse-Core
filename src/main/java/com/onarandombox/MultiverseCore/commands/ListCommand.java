@@ -111,7 +111,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
             return;
         }
 
-        int totalPages = (int) Math.ceil(availableWorlds.size() / (this.ITEMS_PER_PAGE + 0.0));
+        int totalPages = (int) Math.ceil(availableWorlds.size() / (this.itemsPerPage + 0.0));
 
         if (filterObject.getPage() > totalPages) {
             filterObject.setPage(totalPages);

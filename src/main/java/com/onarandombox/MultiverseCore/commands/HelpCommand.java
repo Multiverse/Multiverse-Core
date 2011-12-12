@@ -89,7 +89,7 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
             return;
         }
 
-        int totalPages = (int) Math.ceil(availableCommands.size() / (this.ITEMS_PER_PAGE + 0.0));
+        int totalPages = (int) Math.ceil(availableCommands.size() / (this.itemsPerPage + 0.0));
 
         if (filterObject.getPage() > totalPages) {
             filterObject.setPage(totalPages);

@@ -20,7 +20,7 @@ import java.util.List;
  * @author fernferret
  */
 public abstract class PaginatedCommand<T> extends Command {
-    protected int ITEMS_PER_PAGE = 9;
+    protected int itemsPerPage = 9;
 
 
     public PaginatedCommand(JavaPlugin plugin) {
@@ -28,7 +28,7 @@ public abstract class PaginatedCommand<T> extends Command {
     }
 
     protected void setItemsPerPage(int items) {
-        ITEMS_PER_PAGE = items;
+        itemsPerPage = items;
     }
 
     protected abstract List<T> getFilteredItems(List<T> availableItems, String filter);
@@ -44,8 +44,8 @@ public abstract class PaginatedCommand<T> extends Command {
     protected void showPage(int page, CommandSender sender, List<T> cmds) {
         // Ensure the page is at least 1.
         page = (page <= 0) ? 1 : page;
-        int start = (page - 1) * ITEMS_PER_PAGE;
-        int end = start + ITEMS_PER_PAGE;
+        int start = (page - 1) * itemsPerPage;
+        int end = start + itemsPerPage;
 
         for (int i = start; i < end; i++) {
             // For consistancy, print some extra lines if it's a player:
