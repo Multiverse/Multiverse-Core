@@ -46,6 +46,9 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The implementation of the Multiverse-{@link Core}.
+ */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private final static int Protocol = 9;
     // Global Multiverse config variable, states whether or not
@@ -63,7 +66,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @return The player that teleported the other one.
      */
     public static String getPlayerTeleporter(String playerName) {
-        if(teleportQueue.containsKey(playerName)) {
+        if (teleportQueue.containsKey(playerName)) {
             String teleportee = teleportQueue.get(playerName);
             teleportQueue.remove(playerName);
             return teleportee;
@@ -152,14 +155,26 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public FileConfiguration getMVConfiguration() {
         return this.multiverseConfig;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public GenericBank getBank() {
         return this.bank;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onEnable() {
         //this.worldManager = new WorldManager(this);
         // Perform initial checks for AllPay
@@ -290,6 +305,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     /**
      * Load the Configuration files OR create the default config files.
      */
+    @Override
     public void loadConfigs() {
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
@@ -311,6 +327,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.saveMVConfigs();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MVMessaging getMessaging() {
         return this.messaging;
     }
@@ -356,8 +376,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * What happens when the plugin gets disabled...
+     * {@inheritDoc}
      */
+    @Override
     public void onDisable() {
         debugLog.close();
         this.banker = null;
@@ -365,6 +386,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         log(Level.INFO, "- Disabled");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MVPlayerSession getPlayerSession(Player player) {
         if (this.playerSessions.containsKey(player.getName())) {
@@ -376,19 +400,17 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Grab and return the {@link SafeTTeleporter}.
-     *
-     * @return The {@link SafeTTeleporter}.
+     * {@inheritDoc}
      */
+    @Override
     public SafeTTeleporter getTeleporter() {
         return new SafeTTeleporter(this);
     }
 
     /**
-     * Grab the Permissions Handler for Multiverse.
-     *
-     * @return A valid {@link MVPermissions}.
+     * {@inheritDoc}
      */
+    @Override
     public MVPermissions getMVPerms() {
         return this.ph;
     }
@@ -408,12 +430,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Print messages to the server Log as well as to our DebugLog. 'debugLog' is used to seperate Heroes information
-     * from the Servers Log Output.
-     *
-     * @param level The Log-{@link Level}
-     * @param msg The message
+     * {@inheritDoc}
      */
+    @Override
     public void log(Level level, String msg) {
         staticLog(level, msg);
     }
@@ -472,16 +491,31 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return authors.substring(2);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public CommandHandler getCommandHandler() {
         return this.commandHandler;
     }
 
+    /**
+     * Gets the log-tag.
+     *
+     * @return The log-tag
+     */
+    // TODO this should be static!
     public String getTag() {
         return MultiverseCore.tag;
     }
 
+    // TODO This code should get moved somewhere more appropriate, but for now, it's here.
+    // TODO oh, and it should be static.
     /**
-     * This code should get moved somewhere more appropriate, but for now, it's here.
+     * Converts a {@link String} into an {@link Environment}.
+     *
+     * @param env The environment as {@link String}
+     * @return The environment as {@link Environment}
      */
     public Environment getEnvFromString(String env) {
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
@@ -502,6 +536,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
     }
 
+    /**
+     * Shows a message that the given world is not a MultiverseWorld.
+     *
+     * @param sender The {@link CommandSender} that should receive the message
+     * @param worldName The name of the invalid world
+     */
     public void showNotMVWorldMessage(CommandSender sender, String worldName) {
         sender.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
         sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
@@ -536,14 +576,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.pluginCount -= 1;
     }
 
+    /**
+     * Gets this plugin's {@link AllPay}-Banker.
+     *
+     * @return An {@link AllPay}-Banker
+     */
     public AllPay getBanker() {
         return this.banker;
     }
 
+    /**
+     * Sets this plugin's {@link AllPay}-Banker.
+     *
+     * @param bank The new {@link AllPay}-Banker
+     */
     public void setBank(GenericBank bank) {
         this.bank = bank;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public DestinationFactory getDestFactory() {
         return this.destFactory;
     }
@@ -560,10 +614,20 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.getTeleporter().safelyTeleport(teleporter, p, l, false);
     }
 
+    /**
+     * Gets the server's root-folder as {@link File}.
+     *
+     * @return The server's root-folder
+     */
     public File getServerFolder() {
         return serverFolder;
     }
 
+    /**
+     * Sets this server's root-folder.
+     *
+     * @param newServerFolder The new server-root
+     */
     public void setServerFolder(File newServerFolder) {
         if (!newServerFolder.isDirectory())
             throw new IllegalArgumentException("That's not a folder!");
@@ -580,18 +644,33 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.spoutInterface;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MVWorldManager getMVWorldManager() {
         return this.worldManager;
     }
 
+    /**
+     * Gets the {@link MVPlayerListener}.
+     *
+     * @return The {@link MVPlayerListener}.
+     */
     public MVPlayerListener getPlayerListener() {
         return this.playerListener;
     }
 
+    // TODO remove this
     public boolean loadMVConfigs() {
         return false;
     }
 
+    /**
+     * Saves the Multiverse-Config.
+     *
+     * @return Whether the Multiverse-Config was successfully saved
+     */
     public boolean saveMVConfig() {
         try {
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
@@ -602,16 +681,26 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
     }
 
+    /**
+     * Saves the world config.
+     *
+     * @return Whether the world-config was successfully saved
+     */
     public boolean saveWorldConfig() {
         return this.worldManager.saveWorldsConfig();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean saveMVConfigs() {
         return this.saveMVConfig() && this.saveWorldConfig();
     }
 
     /**
      * NOT deprecated for the time as queued commands use this.
+     * However, this is not in the API and other plugins should therefore not use it.
      *
      * @param name World to delete
      * @return True if success, false if fail.
@@ -621,9 +710,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Used by queued commands to delete a world on a delay.
+     * Used by queued commands to regenerate a world on a delay.
      *
-     * @param name World to delete
+     * @param name Name of the world to regenerate
+     * @param useNewSeed If a new seed should be used
+     * @param randomSeed IF the new seed should be random
+     * @param seed The seed of the world.
+     *
      * @return True if success, false if fail.
      */
     public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
@@ -656,6 +749,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return false;
     }
 
+    /**
+     * Gets the {@link AnchorManager}.
+     *
+     * @return The {@link AnchorManager}
+     */
     public AnchorManager getAnchorManager() {
         return this.anchorManager;
     }

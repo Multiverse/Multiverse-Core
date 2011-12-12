@@ -98,4 +98,11 @@ public interface Core {
      * @return {@link WorldManager}.
      */
     MVWorldManager getMVWorldManager();
+
+    /**
+     * Saves all configs.
+     *
+     * @return Whether the config was successfully saved
+     */
+    boolean saveMVConfigs();
 }

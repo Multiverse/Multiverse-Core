@@ -16,7 +16,7 @@ public interface LoggablePlugin {
     /**
      * Logs a message at the specified level.
      *
-     * @param level The severity of the log.
+     * @param level The Log-{@link Level}.
      * @param msg   The message to log.
      */
     void log(Level level, String msg);

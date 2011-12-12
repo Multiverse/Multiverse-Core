@@ -74,7 +74,10 @@ public interface MultiverseWorld {
      *
      * @param property The name of a world property to get.
      * @param expected The type of the expected property. Use Object.class if this doesn't matter for you.
+     * @param <T> The type of the expected property.
+     *
      * @return A valid MVWorldProperty.
+     *
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     <T> MVConfigProperty<T> getProperty(String property, Class<T> expected) throws PropertyDoesNotExistException;
@@ -401,6 +404,7 @@ public interface MultiverseWorld {
      * Multiverse-NetherPortals.
      *
      * @param scaling A scaling value, cannot be negative or 0.
+     * @return Whether the scale was set successfully.
      */
     boolean setScaling(double scaling);
 
