@@ -12,15 +12,22 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.World;
-import org.bukkit.entity.*;
-import org.bukkit.event.entity.*;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Squid;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 import java.util.List;
 import java.util.logging.Level;
-
-//import org.bukkit.event.entity.ExplosionPrimedEvent;
 
 public class MVEntityListener extends EntityListener {
 

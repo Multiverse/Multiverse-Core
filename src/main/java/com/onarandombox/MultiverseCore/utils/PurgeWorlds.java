@@ -9,9 +9,16 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Squid;
 
 import java.util.ArrayList;
 import java.util.List;

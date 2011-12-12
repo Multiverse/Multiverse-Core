@@ -9,7 +9,12 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import org.bukkit.*;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 

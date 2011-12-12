@@ -15,7 +15,12 @@ import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.utils.BlockSafety;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
-import org.bukkit.*;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
