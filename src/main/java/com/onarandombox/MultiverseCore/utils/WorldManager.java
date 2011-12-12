@@ -299,7 +299,7 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
-     * Unload a world from Bukkit
+     * Unload a world from Bukkit.
      *
      * @param name   Name of the world to unload
      * @param safely Perform this safely. Set to True to save world files before unloading.

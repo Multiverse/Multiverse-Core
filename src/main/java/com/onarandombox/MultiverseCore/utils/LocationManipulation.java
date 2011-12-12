@@ -107,7 +107,7 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns a colored string with the coords
+     * Returns a colored string with the coords.
      *
      * @param l The {@link Location}
      * @return The {@link String}
@@ -126,7 +126,7 @@ public class LocationManipulation {
     }
 
     /**
-     * Converts a location to a printable readable formatted string including pitch/yaw
+     * Converts a location to a printable readable formatted string including pitch/yaw.
      *
      * @param l The {@link Location}
      * @return The {@link String}
@@ -177,7 +177,7 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the float yaw position for the given cardinal direction
+     * Returns the float yaw position for the given cardinal direction.
      *
      * @param orientation The cardinal direction
      * @return The yaw
@@ -206,7 +206,7 @@ public class LocationManipulation {
     // -W/+E,0, -N/+S
 
     /**
-     * Returns a translated vector from the given direction
+     * Returns a translated vector from the given direction.
      *
      * @param v The old {@link Vector}
      * @param direction The new direction
@@ -240,7 +240,7 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the next Location that a {@link Vehicle} is traveling at
+     * Returns the next Location that a {@link Vehicle} is traveling at.
      *
      * @param v The {@link Vehicle}
      * @return The {@link Location}

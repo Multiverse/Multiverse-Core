@@ -16,7 +16,7 @@ public class FancyMessage implements FancyText {
     private FancyColorScheme colors;
 
     /**
-     * Allows easy creation of an alternating colored list
+     * Allows easy creation of an alternating colored list.
      *
      * @param title
      * @param message

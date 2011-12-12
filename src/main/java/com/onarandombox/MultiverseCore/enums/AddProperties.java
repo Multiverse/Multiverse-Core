@@ -7,11 +7,6 @@
 
 package com.onarandombox.MultiverseCore.enums;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public enum AddProperties {
     worldblacklist, animals, monsters
 }

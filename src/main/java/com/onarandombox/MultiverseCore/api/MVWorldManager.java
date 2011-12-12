@@ -39,7 +39,7 @@ public interface MVWorldManager {
 
     /**
      * Remove the world from the Multiverse list, from the
-     * config and deletes the folder
+     * config and deletes the folder.
      *
      * @param name The name of the world to remove
      * @return True if success, false if failure.
@@ -48,7 +48,7 @@ public interface MVWorldManager {
 
     /**
      * Remove the world from the Multiverse list, from the
-     * config and deletes the folder
+     * config if wanted, and deletes the folder.
      *
      * @param name         The name of the world to remove
      * @param removeConfig If true(default), we'll remove the entries from the
@@ -58,7 +58,7 @@ public interface MVWorldManager {
     public Boolean deleteWorld(String name, boolean removeConfig);
 
     /**
-     * Unload a world from Multiverse
+     * Unload a world from Multiverse.
      *
      * @param name Name of the world to unload
      * @return True if the world was unloaded, false if not.
@@ -117,7 +117,7 @@ public interface MVWorldManager {
     public MultiverseWorld getMVWorld(World world);
 
     /**
-     * Checks to see if the given name is a valid {@link MultiverseWorld}
+     * Checks to see if the given name is a valid {@link MultiverseWorld}.
      *
      * @param name The name or alias of the world to check.
      * @return True if the world exists, false if not.
@@ -125,7 +125,7 @@ public interface MVWorldManager {
     public boolean isMVWorld(String name);
 
     /**
-     * Checks to see if the given world is a valid {@link MultiverseWorld}
+     * Checks to see if the given world is a valid {@link MultiverseWorld}.
      *
      * @param world The Bukkit world to check.
      * @return True if the world has been loaded into MV2, false if not.
@@ -190,7 +190,7 @@ public interface MVWorldManager {
     public boolean saveWorldsConfig();
 
     /**
-     * Remove the world from the Multiverse list and from the config
+     * Remove the world from the Multiverse list and from the config.
      *
      * @param name The name of the world to remove
      * @return True if success, false if failure.

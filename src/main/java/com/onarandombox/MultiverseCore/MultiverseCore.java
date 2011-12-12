@@ -385,7 +385,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Grab the Permissions Handler for Multiverse
+     * Grab the Permissions Handler for Multiverse.
      *
      * @return A valid {@link MVPermissions}.
      */
@@ -394,7 +394,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * onCommand
+     * {@inheritDoc}
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {

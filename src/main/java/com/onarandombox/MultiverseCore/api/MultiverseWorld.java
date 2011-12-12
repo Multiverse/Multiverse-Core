@@ -320,7 +320,7 @@ public interface MultiverseWorld {
     boolean getHunger();
 
     /**
-     * Sets the game mode of this world
+     * Sets the game mode of this world.
      *
      * @param gameMode A valid game mode string (either
      *                 an int ex. 0 or a string ex. creative).
@@ -523,7 +523,7 @@ public interface MultiverseWorld {
     boolean getBedRespawn();
 
     /**
-     * Gets all the names of all properties that can be SET
+     * Gets all the names of all properties that can be SET.
      *
      * @return All property names, with alternating colors.
      */

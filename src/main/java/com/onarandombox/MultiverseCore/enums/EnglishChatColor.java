@@ -9,11 +9,6 @@ package com.onarandombox.MultiverseCore.enums;
 
 import org.bukkit.ChatColor;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public enum EnglishChatColor {
     AQUA("AQUA", ChatColor.AQUA),
     BLACK("BLACK", ChatColor.BLACK),

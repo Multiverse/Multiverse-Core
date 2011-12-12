@@ -14,11 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public abstract class PaginatedCommand<T> extends Command {
     protected int itemsPerPage = 9;
 

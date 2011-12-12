@@ -58,11 +58,6 @@ public class StringConfigProperty implements MVConfigProperty<String> {
         return value;
     }
 
-    /**
-     * Gets the help string for this
-     *
-     * @return The value of this property as a string.
-     */
     @Override
     public String getHelp() {
         return this.help;

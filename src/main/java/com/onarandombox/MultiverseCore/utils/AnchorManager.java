@@ -23,11 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class AnchorManager {
     private MultiverseCore plugin;
     private Map<String, Location> anchors;

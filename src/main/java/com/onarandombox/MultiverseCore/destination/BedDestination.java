@@ -14,11 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class BedDestination implements MVDestination {
 
     private boolean isValid;

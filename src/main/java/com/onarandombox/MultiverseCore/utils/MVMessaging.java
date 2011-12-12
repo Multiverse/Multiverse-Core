@@ -15,11 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public class MVMessaging {
     private MultiverseCore plugin;
     private Map<String, Date> sentList;

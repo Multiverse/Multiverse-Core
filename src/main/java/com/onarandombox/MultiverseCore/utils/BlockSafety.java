@@ -194,7 +194,7 @@ public class BlockSafety {
     }
 
     /**
-     * Checks recursively below a {@link Location} for 2 blocks of water
+     * Checks recursively below a {@link Location} for 2 blocks of water.
      *
      * @param l The {@link Location}
      * @return Whether there are 2 blocks of water

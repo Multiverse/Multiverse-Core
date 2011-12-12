@@ -49,7 +49,7 @@ public class DebugLog {
     }
 
     /**
-     * Log a message at a certain level
+     * Log a message at a certain level.
      *
      * @param level
      * @param msg

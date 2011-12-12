@@ -96,7 +96,7 @@ public class SafeTTeleporter {
     }
 
     /**
-     * For my crappy algorithm, radius MUST be odd
+     * For my crappy algorithm, radius MUST be odd.
      *
      * @param l
      * @param diameter

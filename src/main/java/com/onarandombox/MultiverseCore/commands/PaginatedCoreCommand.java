@@ -9,11 +9,6 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
-/**
- * Multiverse 2
- *
- * @author fernferret
- */
 public abstract class PaginatedCoreCommand<T> extends PaginatedCommand<T> {
     protected MultiverseCore plugin;
 

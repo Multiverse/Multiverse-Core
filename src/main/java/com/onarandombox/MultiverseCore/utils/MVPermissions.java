@@ -26,11 +26,6 @@ public class MVPermissions implements PermissionsInterface {
     private MultiverseCore plugin;
     private MVWorldManager worldMgr;
 
-    /**
-     * Constructor FTW
-     *
-     * @param plugin Pass along the Core Plugin.
-     */
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldMgr = plugin.getMVWorldManager();

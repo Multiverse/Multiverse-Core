@@ -32,7 +32,7 @@ public class PurgeWorlds {
         this.plugin = plugin;
     }
 
-    /** Synchronizes the given world with it's settings */
+    /** Synchronizes the given world with it's settings. */
     public void purgeWorlds(CommandSender sender, List<MultiverseWorld> worlds) {
         if (worlds == null || worlds.isEmpty()) {
             return;
@@ -104,7 +104,7 @@ public class PurgeWorlds {
     }
 
     /**
-     * Will kill the monster if it's in the list UNLESS the NEGATE boolean is set, then it will kill it if it's NOT
+     * Will kill the monster if it's in the list UNLESS the NEGATE boolean is set, then it will kill it if it's NOT.
      *
      * @param mvworld
      * @param e
