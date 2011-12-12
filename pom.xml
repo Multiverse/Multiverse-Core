@@ -16,10 +16,6 @@
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>pneumaticsystem</id>
-            <url>http://pneumaticsystem.com:25578/nexus/content/groups/public</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -269,4 +265,10 @@
         </dependency>
         <!-- End of Test Dependencies -->
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>OnARandomBox</id>
+            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+        </repository>
+    </distributionManagement>
 </project>
