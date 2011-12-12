@@ -10,7 +10,10 @@ package com.onarandombox.MultiverseCore.utils;
 import java.io.File;
 
 public class FileUtils {
-    private FileUtils() { }
+    protected FileUtils()
+    {
+        throw new UnsupportedOperationException();
+    }
 
     /*
      * Delete a folder Courtesy of: lithium3141
