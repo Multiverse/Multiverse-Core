@@ -32,9 +32,14 @@
             <property name="max" value="160"/>
             <property name="severity" value="warning"/>
         </module>
-        <module name="JavadocMethod"/>
+        <module name="JavadocMethod">
+            <property name="scope" value="package"/><!-- We don't need javadoc for private methods -->
+            <property name="tokens" value="METHOD_DEF"/><!-- We don't need javadoc for constructors -->
+        </module>
         <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
+        <module name="JavadocVariable">
+            <property name="scope" value="package"/><!-- We don't need javadoc for private variables -->
+        </module>
         <module name="JavadocStyle"/>
         <module name="WriteTag">
             <property name="tag" value="@author"/>
