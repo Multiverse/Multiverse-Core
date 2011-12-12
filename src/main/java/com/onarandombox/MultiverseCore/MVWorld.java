@@ -37,7 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-
+/**
+ * The implementation of a Multiverse handled world.
+ */
 public class MVWorld implements MultiverseWorld {
 
     private MultiverseCore plugin; // Hold the Plugin Instance.
@@ -147,6 +149,9 @@ public class MVWorld implements MultiverseWorld {
         }
     }
 
+    /**
+     * Applies all settings to the Bukkit-{@link World}.
+     */
     public void changeActiveEffects() {
         // Disable any current weather
         if (!this.getKnownProperty("weather", Boolean.class).getValue()) {
@@ -158,7 +163,7 @@ public class MVWorld implements MultiverseWorld {
         Location spawnLocation = this.getKnownProperty("spawn", Location.class).getValue();
         this.getCBWorld().setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ());
 
-        // Syncronize all Mob settings
+        // Synchronize all Mob settings
         this.syncMobs();
 
         // Ensure the memory setting is correct
@@ -220,6 +225,10 @@ public class MVWorld implements MultiverseWorld {
         this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allWorlds);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getColoredWorldString() {
         EnglishChatColor worldColor = this.getKnownProperty("color", EnglishChatColor.class).getValue();
         String alias = this.getKnownProperty("alias", String.class).getValue();
@@ -251,6 +260,10 @@ public class MVWorld implements MultiverseWorld {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public World getCBWorld() {
         return this.world;
     }
@@ -262,6 +275,9 @@ public class MVWorld implements MultiverseWorld {
         this.masterList.put("monsters", new ArrayList<String>());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean clearVariable(String property) {
         if (this.masterList.keySet().contains(property)) {
@@ -274,6 +290,9 @@ public class MVWorld implements MultiverseWorld {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addToVariable(String property, String value) {
         property = property.toLowerCase();
@@ -293,6 +312,9 @@ public class MVWorld implements MultiverseWorld {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeFromVariable(String property, String value) {
         property = property.toLowerCase();
@@ -327,14 +349,20 @@ public class MVWorld implements MultiverseWorld {
         this.plugin.getMVWorldManager().getWorldPurger().purgeWorld(null, this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setKeepSpawnInMemory(boolean value) {
         this.getKnownProperty("memory", Boolean.class).setValue(value);
         saveConfig();
     }
 
-    // TODO: Provide better feedback
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    // TODO: Provide better feedback
     public boolean setProperty(String name, String value, CommandSender sender) throws PropertyDoesNotExistException {
         if (!this.isValidPropertyName(name)) {
             throw new PropertyDoesNotExistException(name);
@@ -347,6 +375,9 @@ public class MVWorld implements MultiverseWorld {
         return this.propertyList.containsKey(name) || this.propertyAliases.containsKey(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPropertyValue(String name) throws PropertyDoesNotExistException {
         if (this.propertyList.containsKey(name)) {
@@ -355,12 +386,18 @@ public class MVWorld implements MultiverseWorld {
         throw new PropertyDoesNotExistException(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Deprecated
     public MVConfigProperty<?> getProperty(String property) throws PropertyDoesNotExistException {
         return getProperty(property, Object.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> MVConfigProperty<T> getProperty(String name, Class<T> expected) throws PropertyDoesNotExistException {
         MVConfigProperty<T> p = this.getKnownProperty(name, expected);
@@ -425,36 +462,54 @@ public class MVWorld implements MultiverseWorld {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Environment getEnvironment() {
         // This variable is not settable in-game, therefore does not get a property.
         return this.environment;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setEnvironment(Environment environment) {
         // This variable is not settable in-game, therefore does not get a property.
         this.environment = environment;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long getSeed() {
         // This variable is not settable in-game, therefore does not get a property.
         return this.seed;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSeed(Long seed) {
         // This variable is not settable in-game, therefore does not get a property.
         this.seed = seed;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         // This variable is not settable in-game, therefore does not get a property.
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getAlias() {
         String alias = this.getKnownProperty("alias", String.class).getValue();
@@ -465,89 +520,146 @@ public class MVWorld implements MultiverseWorld {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAlias(String alias) {
         this.setKnownProperty("alias", alias, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean canAnimalsSpawn() {
         return this.getKnownProperty("animals", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAllowAnimalSpawn(boolean animals) {
         this.setKnownProperty("animals", animals + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getAnimalList() {
         return this.masterList.get("animals");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean canMonstersSpawn() {
         return this.getKnownProperty("monsters", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAllowMonsterSpawn(boolean monsters) {
         this.setKnownProperty("monsters", monsters + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getMonsterList() {
         return this.masterList.get("monsters");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isPVPEnabled() {
         return this.getKnownProperty("pvp", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPVPMode(boolean pvp) {
         this.setKnownProperty("pvp", pvp + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isHidden() {
         return this.getKnownProperty("hidden", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setHidden(boolean hidden) {
         this.setKnownProperty("hidden", hidden + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<String> getWorldBlacklist() {
         return this.masterList.get("worldblacklist");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getScaling() {
         return this.getKnownProperty("scale", Double.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setScaling(double scaling) {
         return this.setKnownProperty("scale", scaling + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setColor(String aliasColor) {
         return this.setKnownProperty("color", aliasColor, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override // TODO This method should be static. (Maybe EnglishChatColor would be a good place?)
     public boolean isValidAliasColor(String aliasColor) {
         return (EnglishChatColor.fromString(aliasColor) != null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ChatColor getColor() {
         return this.getKnownProperty("color", EnglishChatColor.class).getValue().getColor();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean clearList(String property) {
         if (this.masterList.containsKey(property)) {
             this.masterList.get(property).clear();
@@ -559,46 +671,74 @@ public class MVWorld implements MultiverseWorld {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Deprecated
     public boolean getFakePVP() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public World getRespawnToWorld() {
         return (this.plugin.getServer().getWorld(this.getKnownProperty("respawn", String.class).getValue()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setRespawnToWorld(String respawnToWorld) {
         return this.setKnownProperty("respawn", respawnToWorld, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Permission getAccessPermission() {
         return this.permission;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getCurrency() {
         return this.getKnownProperty("curr", Integer.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setCurrency(int currency) {
         this.setKnownProperty("curr", currency + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getPrice() {
         return this.getKnownProperty("price", Double.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPrice(double price) {
         this.setKnownProperty("price", price + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Permission getExemptPermission() {
         return this.exempt;
@@ -615,41 +755,65 @@ public class MVWorld implements MultiverseWorld {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setGameMode(String gameMode) {
         return this.setKnownProperty("mode", gameMode + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GameMode getGameMode() {
         return this.getKnownProperty("mode", GameMode.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setEnableWeather(boolean weather) {
         this.setKnownProperty("weather", weather + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isWeatherEnabled() {
         return this.getKnownProperty("weather", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isKeepingSpawnInMemory() {
         return this.getKnownProperty("memory", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setHunger(boolean hunger) {
         this.setKnownProperty("hunger", hunger + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getHunger() {
         return this.getKnownProperty("hunger", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSpawnLocation(Location l) {
         this.getCBWorld().setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
@@ -658,7 +822,6 @@ public class MVWorld implements MultiverseWorld {
     }
 
     private Location readSpawnFromConfig(World w) {
-
         Location spawnLocation = w.getSpawnLocation();
         Location configLocation = this.getSpawnLocation();
 
@@ -704,67 +867,103 @@ public class MVWorld implements MultiverseWorld {
         return configLocation;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getSpawnLocation() {
         return this.getKnownProperty("spawn", Location.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Difficulty getDifficulty() {
         return this.getCBWorld().getDifficulty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setDifficulty(String difficulty) {
         return this.setKnownProperty("diff", difficulty, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getAutoHeal() {
         return this.getKnownProperty("autoheal", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAutoHeal(boolean heal) {
         this.setKnownProperty("autoheal", heal + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAdjustSpawn(boolean adjust) {
         this.setKnownProperty("adjustspawn", adjust + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getAdjustSpawn() {
         return this.getKnownProperty("adjustspawn", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAutoLoad(boolean autoLoad) {
         this.setKnownProperty("autoload", autoLoad + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getAutoLoad() {
         return this.getKnownProperty("autoload", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setBedRespawn(boolean respawn) {
         this.setKnownProperty("bedrespawn", respawn + "", null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getBedRespawn() {
         return this.getKnownProperty("bedrespawn", Boolean.class).getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getAllPropertyNames() {
         ChatColor color = ChatColor.AQUA;
         String result = "";
-        for (String name : this.propertyList.keySet()) {
-            result += color + name + " ";
+        for (String propertyNames : this.propertyList.keySet()) {
+            result += color + propertyNames + " ";
             color = (color == ChatColor.AQUA) ? ChatColor.GOLD : ChatColor.AQUA;
         }
         return result;
