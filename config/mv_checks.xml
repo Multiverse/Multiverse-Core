@@ -36,6 +36,12 @@
         <module name="JavadocType"/>
         <module name="JavadocVariable"/>
         <module name="JavadocStyle"/>
+        <module name="WriteTag">
+            <property name="tag" value="@author"/>
+            <property name="tagFormat" value="\S"/>
+            <property name="severity" value="ignore"/>
+            <property name="tagSeverity" value="warning"/>
+        </module>
         <module name="ConstantName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
