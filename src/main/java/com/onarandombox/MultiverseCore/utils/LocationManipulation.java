@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LocationManipulation {
+    private LocationManipulation() { }
+
     private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
 
     static {
@@ -31,7 +33,6 @@ public class LocationManipulation {
         orientationInts.put("sw", 45);
         orientationInts.put("w", 90);
         orientationInts.put("nw", 135);
-
     }
 
     /**

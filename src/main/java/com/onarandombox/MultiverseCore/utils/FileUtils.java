@@ -10,6 +10,8 @@ package com.onarandombox.MultiverseCore.utils;
 import java.io.File;
 
 public class FileUtils {
+    private FileUtils() { }
+
     /*
      * Delete a folder Courtesy of: lithium3141
      *
