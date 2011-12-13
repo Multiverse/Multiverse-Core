@@ -15,8 +15,6 @@ import org.bukkit.block.*;
 
 /**
  * Multiverse 2
- *
- * @author fernferret
  */
 public class MockBlock implements Block{
     private Material type;

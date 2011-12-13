@@ -13,21 +13,12 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 import java.util.logging.Level;
 
@@ -70,12 +61,15 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
+
+
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
         if (mvWorld == null) {
             return;
         }
+
 
         if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
             this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
@@ -111,11 +105,15 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.worldManager.getMVWorlds().size() == 0 && this.plugin.getMVPerms().hasPermission(event.getPlayer(), "multiverse.core.import", true)) {
-            event.getPlayer().sendMessage("You don't have any worlds imported into Multiverse!");
-            event.getPlayer().sendMessage("You can import your current worlds with " + ChatColor.AQUA + "/mvimport");
-            event.getPlayer().sendMessage("or you can create new ones with " + ChatColor.GOLD + "/mvcreate");
-            event.getPlayer().sendMessage("If you just wanna see all of the Multiverse Help, type: " + ChatColor.GREEN + "/mv");
+        Player p = event.getPlayer();
+        if (!p.hasPlayedBefore()) {
+            this.plugin.log(Level.WARNING, "Player joined first!");
+            this.plugin.log(Level.WARNING, "Loc: " + worldManager.getFirstSpawnWorld().getSpawnLocation());
+            // This will override other spawn plugins atm :(
+            this.spawnNewPlayer(p);
+            return;
+        } else {
+            this.plugin.log(Level.WARNING, "Player joined AGAIN!");
         }
         // Handle the Players GameMode setting for the new world.
         if (MultiverseCore.EnforceGameModes) {
@@ -127,6 +125,8 @@ public class MVPlayerListener extends PlayerListener {
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         // Handle the Players GameMode setting for the new world.
         if (MultiverseCore.EnforceGameModes) {
+            // Not yet implemented, but eventually we'll switch to this!
+            //if (this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld()).getEnforceGameMode())
             this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
         }
     }
@@ -216,7 +216,10 @@ public class MVPlayerListener extends PlayerListener {
         }
     }
 
-
+    private void spawnNewPlayer(Player player) {
+        // Spawn the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new SpawnNewbie(player, this.plugin.getMVWorldManager().getFirstSpawnWorld().getSpawnLocation()), 1L);
+    }
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameMode(Player player, World world) {
         this.plugin.log(Level.FINE, "Handeling gamemode for player: " + player.getName());
@@ -229,7 +232,21 @@ public class MVPlayerListener extends PlayerListener {
     public void handleGameMode(Player player, MultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+    }
+
+    private class SpawnNewbie implements Runnable {
+        private Player player;
+        private Location spawn;
+
+        private SpawnNewbie(Player player, Location spawn) {
+            this.player = player;
+            this.spawn = spawn;
+        }
+        @Override
+        public void run() {
+            this.player.teleport(this.spawn);
+        }
     }
 
     /**

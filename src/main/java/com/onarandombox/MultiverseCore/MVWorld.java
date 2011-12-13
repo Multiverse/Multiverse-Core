@@ -61,7 +61,7 @@ public class MVWorld implements MultiverseWorld {
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private Map<String, String> propertyAliases;
 
-    public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString) {
+    public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString, boolean fixSpawn) {
         this.config = config;
         this.plugin = instance;
 
@@ -111,6 +111,9 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("hunger", fac.getNewProperty("hunger", true, "Sorry, 'hunger' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true, "Sorry, 'autoheal' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true, "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        if(!fixSpawn) {
+            this.setAdjustSpawn(false);
+        }
         this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL, "GameMode must be set as one of the following: " + ChatColor.RED + "survival " + ChatColor.GREEN + "creative "));
         this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory", "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(), "There is no help available for this variable. Go bug Rigby90 about it."));

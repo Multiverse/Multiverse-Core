@@ -206,7 +206,6 @@ public class TestWorldStuff {
 
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "blah", "fish", "world" });
         verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '"+ChatColor.GRAY+ "blah" + ChatColor.RED + "'");
-
     }
 
     private void createInitialWorlds(Plugin plugin, Command command) {

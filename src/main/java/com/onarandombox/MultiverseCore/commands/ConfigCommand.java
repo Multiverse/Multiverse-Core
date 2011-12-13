@@ -54,7 +54,11 @@ public class ConfigCommand extends MultiverseCommand {
             sender.sendMessage(currentvals.substring(0, currentvals.length() - 2));
             return;
         }
-        if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
+        if (args.get(0).equalsIgnoreCase("firstspawnworld")) {
+            this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), args.get(1));
+            // Don't forget to set the world!
+            this.plugin.getMVWorldManager().setFirstSpawnWorld(args.get(1));
+        } else if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
             try {
                 this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
             } catch (NumberFormatException e) {

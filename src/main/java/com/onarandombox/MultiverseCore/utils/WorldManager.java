@@ -26,19 +26,11 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
- *
- * @author fernferret, Rigby90
  */
 public class WorldManager implements MVWorldManager {
     private MultiverseCore plugin;
@@ -47,6 +39,7 @@ public class WorldManager implements MVWorldManager {
     private List<String> unloadedWorlds;
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
+    private String firstSpawn;
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
@@ -83,6 +76,14 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean addWorld(String name, Environment env, String seedString, String generator) {
+        return this.addWorld(name, env, seedString, generator, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addWorld(String name, Environment env, String seedString, String generator, boolean useSpawnAdjust) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + generator);
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
@@ -130,7 +131,7 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, this.plugin.getServer().getWorld(name).getSeed(), generator);
+        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, this.plugin.getServer().getWorld(name).getSeed(), generator, useSpawnAdjust);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
         if (this.unloadedWorlds.contains(name)) {
@@ -190,6 +191,32 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFirstSpawnWorld(String world) {
+        if (world == null) {
+            this.firstSpawn = this.plugin.getServer().getWorlds().get(0).getName();
+        } else {
+            this.firstSpawn = world;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MultiverseWorld getFirstSpawnWorld() {
+        MultiverseWorld world = this.getMVWorld(this.firstSpawn);
+        if (world == null) {
+            // If the spawn world was unloaded, get the default world
+            this.plugin.log(Level.WARNING, "The world specified as the spawn world (" + this.firstSpawn + ") did not exist!!");
+            return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+        }
+        return world;
     }
 
     /**
@@ -498,7 +525,7 @@ public class WorldManager implements MVWorldManager {
                 // Grab the initial values from the config file.
                 String environment = this.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL"); // Grab the Environment as a String.
                 String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", null);
-                if(seedString == null) {
+                if (seedString == null) {
                     seedString = this.configWorlds.getLong("worlds." + worldKey + ".seed") + "";
                 }
 

@@ -16,8 +16,6 @@ import org.bukkit.event.Event;
 
 /**
  * Event that gets called when a player use the /mvtp command.
- *
- * @author fernferret
  */
 public class MVTeleportEvent extends Event implements Cancellable {
     private Player teleportee;

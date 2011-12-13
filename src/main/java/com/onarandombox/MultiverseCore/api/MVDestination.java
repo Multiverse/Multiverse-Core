@@ -15,8 +15,6 @@ import org.bukkit.util.Vector;
 /**
  * A destination API for Multiverse
  * Any plugin can add these to MV and when they are, any action that uses them (portals, MVTP, etc.) can use them!
- *
- * @author fernferret
  */
 public interface MVDestination {
     /**

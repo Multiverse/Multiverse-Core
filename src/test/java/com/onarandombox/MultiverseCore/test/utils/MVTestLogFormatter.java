@@ -16,8 +16,7 @@ import java.util.logging.LogRecord;
 
 /**
  * Formatter to format log-messages in tests
- * 
- * @author main()
+ *
  */
 public class MVTestLogFormatter extends Formatter {
     private static final DateFormat df = new SimpleDateFormat("HH:mm:ss");

@@ -9,16 +9,9 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Squid;
+import org.bukkit.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +25,12 @@ public class PurgeWorlds {
         this.plugin = plugin;
     }
 
-    /** Synchronizes the given world with it's settings. */
+    /**
+     * Synchronizes the given world with it's settings.
+     *
+     * @param sender The {@link CommandSender} who is requesting the world be purged.
+     * @param worlds A list of {@link MultiverseWorld}
+     */
     public void purgeWorlds(CommandSender sender, List<MultiverseWorld> worlds) {
         if (worlds == null || worlds.isEmpty()) {
             return;
@@ -110,7 +108,6 @@ public class PurgeWorlds {
      * @param e
      * @param creaturesToKill
      * @param negate
-     *
      * @return
      */
     private boolean killMonster(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
