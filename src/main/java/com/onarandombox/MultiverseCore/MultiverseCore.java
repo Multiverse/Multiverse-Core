@@ -428,7 +428,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
-        return this.commandHandler.locateAndRunCommand(sender, allArgs);
+        return this.commandHandler.locateAndRunCommand(sender, allArgs, DisplayPermErrors);
     }
 
     /**
