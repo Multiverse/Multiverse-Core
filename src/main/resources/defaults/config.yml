@@ -9,3 +9,4 @@ enforceaccess: true
 enforcegamemodes: true
 bedrespawn: true
 version: 2.4
+displaypermerrors: true
