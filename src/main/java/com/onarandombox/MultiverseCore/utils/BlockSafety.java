@@ -50,6 +50,11 @@ public class BlockSafety {
      * @return Whether the player can spawn safely at the given {@link Location}
      */
     public boolean playerCanSpawnHereSafely(Location l) {
+        if(l == null) {
+            // Can't safely spawn at a null location!
+            return false;
+        }
+
         World world = l.getWorld();
         Location actual = l.clone();
         Location upOne = l.clone();
