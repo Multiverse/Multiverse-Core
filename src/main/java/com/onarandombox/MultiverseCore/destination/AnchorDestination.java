@@ -80,6 +80,7 @@ public class AnchorDestination implements MVDestination {
         if (!parsed.get(0).equalsIgnoreCase(this.getIdentifier())) {
             this.isValid = false;
         }
+        this.isValid = true;
     }
 
     @Override
