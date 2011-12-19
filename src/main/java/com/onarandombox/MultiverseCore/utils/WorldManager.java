@@ -11,6 +11,8 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
+
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
@@ -258,6 +260,15 @@ public class WorldManager implements MVWorldManager {
             // We can only delete loaded worlds
             return false;
         }
+
+        // call the event!
+        MVWorldDeleteEvent mvwde = new MVWorldDeleteEvent(getMVWorld(name), removeFromConfig);
+        this.plugin.getServer().getPluginManager().callEvent(mvwde);
+        if (mvwde.isCancelled()) {
+            this.plugin.log(Level.FINE, "Tried to delete a world, but the event was cancelled!");
+            return false;
+        }
+
         if (removeFromConfig) {
             if (!removeWorldFromConfig(name)) {
                 return false;
