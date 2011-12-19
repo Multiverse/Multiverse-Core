@@ -46,7 +46,7 @@ public class PlayerDestination implements MVDestination {
             plLoc = (Player) e.getPassenger();
         }
 
-        if (p != null && plLoc != null && !plLoc.getName().equalsIgnoreCase(p.getName())) {
+        if (p != null && plLoc != null) {
             return p.getLocation();
         }
         return null;

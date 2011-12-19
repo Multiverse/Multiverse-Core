@@ -132,6 +132,9 @@ public class LocationManipulation {
      * @return The {@link String}
      */
     public static String strCoordsRaw(Location l) {
+        if(l == null) {
+            return "null";
+        }
         String result = "";
         DecimalFormat df = new DecimalFormat();
         df.setMinimumFractionDigits(0);
