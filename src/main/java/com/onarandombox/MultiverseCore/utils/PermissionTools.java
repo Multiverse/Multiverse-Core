@@ -162,6 +162,5 @@ public class PermissionTools {
             // or if it was because a world wasn't imported.
             return true;
         }
-        return true;
     }
 }
