@@ -30,6 +30,21 @@ public class MVPermissions implements PermissionsInterface {
         this.plugin = plugin;
         this.worldMgr = plugin.getMVWorldManager();
     }
+    
+    /**
+     * Check if a Player can ignore GameMode restrictions for world they travel to.
+     *
+     * @param p The {@link Player} to check.
+     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @return True if they should bypass restrictions.
+     */
+    public boolean canIgnoreGameModeRestriction(Player p, MultiverseWorld w) {
+        // If we're not enforcing gamemodes, won't change for anyone.
+        if (!MultiverseCore.EnforceGameModes) {
+            return true;
+        }
+        return this.hasPermission(p, "multiverse.gamemode.ignore." + w.getName(), false);
+    }
 
     /**
      * Check if a Player can teleport to the Destination world from there current world.
