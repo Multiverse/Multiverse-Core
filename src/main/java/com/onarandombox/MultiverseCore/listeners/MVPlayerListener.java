@@ -229,7 +229,9 @@ public class MVPlayerListener extends PlayerListener {
     public void handleGameMode(Player player, MultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+        if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {                                                 
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+        }                                                                                                                 
     }
 
     /**
