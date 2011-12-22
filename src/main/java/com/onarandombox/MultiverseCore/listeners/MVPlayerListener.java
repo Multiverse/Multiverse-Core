@@ -138,6 +138,8 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        this.plugin.log(Level.FINEST, "Got teleport event for player '" + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
+
         if (event.isCancelled()) {
             return;
         }
@@ -167,6 +169,8 @@ public class MVPlayerListener extends PlayerListener {
             if (event.isCancelled() && teleporter != null) {
                 this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
                         "' because '" + teleporter.getName() + "' don't have: multiverse.access." + event.getTo().getWorld().getName());
+            } else {
+                this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' under normal circumstances.");
             }
         } else {
             this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' because enforceaccess is off.");
