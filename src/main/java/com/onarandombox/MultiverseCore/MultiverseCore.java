@@ -63,8 +63,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * This method is used to find out who is teleporting a player.
-     * @param playerName The teleported player.
-     * @return The player that teleported the other one.
+     * @param playerName The teleported player (the teleportee).
+     * @return The player that teleported the other one (the teleporter).
      */
     public static String getPlayerTeleporter(String playerName) {
         if (teleportQueue.containsKey(playerName)) {
@@ -76,7 +76,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
-        teleportQueue.put(teleporter, teleportee);
+        staticLog(Level.FINEST, "Adding mapping '" + teleporter + "' => '" + teleportee + "' to teleport queue");
+        teleportQueue.put(teleportee, teleporter);
     }
 
     @Override

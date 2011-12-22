@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
@@ -61,8 +62,6 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-
-
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
@@ -144,11 +143,17 @@ public class MVPlayerListener extends PlayerListener {
             return;
         }
         Player teleportee = event.getPlayer();
-        Player teleporter = null;
+        CommandSender teleporter = null;
         String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
         if (teleporterName != null) {
-            teleporter = this.plugin.getServer().getPlayer(teleporterName);
+            if (teleporterName.equals("CONSOLE")) {
+                this.plugin.log(Level.FINEST, "We know the teleporter is the console! Magical!");
+                teleporter = this.plugin.getServer().getConsoleSender();
+            } else {
+                teleporter = this.plugin.getServer().getPlayer(teleporterName);
+            }
         }
+        this.plugin.log(Level.FINEST, "Inferred sender '" + teleporter + "' from name '" + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
@@ -169,8 +174,6 @@ public class MVPlayerListener extends PlayerListener {
             if (event.isCancelled() && teleporter != null) {
                 this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
                         "' because '" + teleporter.getName() + "' don't have: multiverse.access." + event.getTo().getWorld().getName());
-            } else {
-                this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' under normal circumstances.");
             }
         } else {
             this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' because enforceaccess is off.");
