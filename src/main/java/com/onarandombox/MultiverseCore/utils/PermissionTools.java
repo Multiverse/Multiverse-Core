@@ -89,7 +89,7 @@ public class PermissionTools {
                 return true;
             }
 
-            if (teleporter == null && MultiverseCore.TeleportIntercept) {
+            if (teleporter == null) {
                 teleporter = teleportee;
             }
 
