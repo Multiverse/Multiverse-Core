@@ -83,18 +83,32 @@ public class PermissionTools {
     }
 
     public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
-        if (teleporter instanceof ConsoleCommandSender) {
-            return true;
-        }
+        Player teleporterPlayer;
+        if (MultiverseCore.TeleportIntercept) {
+            if (teleporter instanceof ConsoleCommandSender) {
+                return true;
+            }
 
-        if (teleporter == null) {
-            teleporter = teleportee;
-        }
+            if (teleporter == null && MultiverseCore.TeleportIntercept) {
+                teleporter = teleportee;
+            }
 
-        if (!(teleporter instanceof Player)) {
-            return false;
+            if (!(teleporter instanceof Player)) {
+                return false;
+            }
+            teleporterPlayer = (Player) teleporter;
+        } else {
+            if (teleporter instanceof Player) {
+                teleporterPlayer = (Player) teleporter;
+            } else {
+                teleporterPlayer = null;
+            }
+
+            // Old-style!
+            if (teleporterPlayer == null) {
+                return true;
+            }
         }
-        Player teleporterPlayer = (Player) teleporter;
 
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
@@ -132,21 +146,35 @@ public class PermissionTools {
     public boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
         this.plugin.log(Level.FINEST, "Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
-        // The console can send anyone anywhere
-        if (teleporter instanceof ConsoleCommandSender) {
-            return true;
-        }
+        Player teleporterPlayer;
+        if(MultiverseCore.TeleportIntercept) {
+            // The console can send anyone anywhere
+            if (teleporter instanceof ConsoleCommandSender) {
+                return true;
+            }
 
-        // Make sure we have a teleporter of some kind, even if it's inferred to be the teleportee
-        if (teleporter == null) {
-            teleporter = teleportee;
-        }
+            // Make sure we have a teleporter of some kind, even if it's inferred to be the teleportee
+            if (teleporter == null) {
+                teleporter = teleportee;
+            }
 
-        // Now make sure we can cast the teleporter to a player, 'cause I'm tired of console things now
-        if (!(teleporter instanceof Player)) {
-            return false;
+            // Now make sure we can cast the teleporter to a player, 'cause I'm tired of console things now
+            if (!(teleporter instanceof Player)) {
+                return false;
+            }
+            teleporterPlayer = (Player) teleporter;
+        } else {
+            if (teleporter instanceof Player) {
+                teleporterPlayer = (Player) teleporter;
+            } else {
+                teleporterPlayer = null;
+            }
+
+            // Old-style!
+            if (teleporterPlayer == null) {
+                return true;
+            }
         }
-        Player teleporterPlayer = (Player) teleporter;
 
         // Actual checks
         if (toWorld != null) {
