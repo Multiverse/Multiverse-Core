@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
@@ -61,8 +62,6 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-
-
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
@@ -138,15 +137,23 @@ public class MVPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        this.plugin.log(Level.FINEST, "Got teleport event for player '" + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
+
         if (event.isCancelled()) {
             return;
         }
         Player teleportee = event.getPlayer();
-        Player teleporter = null;
+        CommandSender teleporter = null;
         String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
         if (teleporterName != null) {
-            teleporter = this.plugin.getServer().getPlayer(teleporterName);
+            if (teleporterName.equals("CONSOLE")) {
+                this.plugin.log(Level.FINEST, "We know the teleporter is the console! Magical!");
+                teleporter = this.plugin.getServer().getConsoleSender();
+            } else {
+                teleporter = this.plugin.getServer().getPlayer(teleporterName);
+            }
         }
+        this.plugin.log(Level.FINEST, "Inferred sender '" + teleporter + "' from name '" + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
