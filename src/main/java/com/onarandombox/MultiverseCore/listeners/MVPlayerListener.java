@@ -106,7 +106,7 @@ public class MVPlayerListener extends PlayerListener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
-            this.plugin.log(Level.WARNING, "Player joined first!");
+            this.plugin.log(Level.FINE, "Player joined first!");
             this.plugin.log(Level.WARNING, "Loc: " + worldManager.getFirstSpawnWorld().getSpawnLocation());
             // This will override other spawn plugins atm :(
             this.spawnNewPlayer(p);
@@ -239,9 +239,9 @@ public class MVPlayerListener extends PlayerListener {
     public void handleGameMode(Player player, MultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
-        if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {                                                 
+        if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
-        }                                                                                                                 
+        }
     }
 
     private class SpawnNewbie implements Runnable {
