@@ -107,12 +107,12 @@ public class MVPlayerListener extends PlayerListener {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
             this.plugin.log(Level.FINE, "Player joined first!");
-            this.plugin.log(Level.WARNING, "Loc: " + worldManager.getFirstSpawnWorld().getSpawnLocation());
+            this.plugin.log(Level.FINE, "Loc: " + worldManager.getFirstSpawnWorld().getSpawnLocation());
             // This will override other spawn plugins atm :(
             this.spawnNewPlayer(p);
             return;
         } else {
-            this.plugin.log(Level.WARNING, "Player joined AGAIN!");
+            this.plugin.log(Level.FINE, "Player joined AGAIN!");
         }
         // Handle the Players GameMode setting for the new world.
         if (MultiverseCore.EnforceGameModes) {
