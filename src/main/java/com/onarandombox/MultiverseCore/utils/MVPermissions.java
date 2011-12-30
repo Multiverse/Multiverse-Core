@@ -29,8 +29,9 @@ public class MVPermissions implements PermissionsInterface {
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldMgr = plugin.getMVWorldManager();
+
     }
-    
+
     /**
      * Check if a Player can ignore GameMode restrictions for world they travel to.
      *
@@ -41,9 +42,14 @@ public class MVPermissions implements PermissionsInterface {
     public boolean canIgnoreGameModeRestriction(Player p, MultiverseWorld w) {
         // If we're not enforcing gamemodes, won't change for anyone.
         if (!MultiverseCore.EnforceGameModes) {
+            this.plugin.log(Level.FINER, "Enforce gamemodes is OFF, all players roam freely!");
             return true;
         }
-        return this.hasPermission(p, "multiverse.gamemode.ignore." + w.getName(), false);
+        if(p.hasPermission("mv.bypass.gamemode.*")) {
+            this.plugin.log(Level.FINER, "Player has mv.bypass.gamemode.* their gamemode is ignored!");
+            return true;
+        }
+        return p.hasPermission("mv.bypass.gamemode." + w.getName());
     }
 
     /**

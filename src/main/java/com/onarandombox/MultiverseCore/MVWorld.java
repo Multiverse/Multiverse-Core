@@ -60,6 +60,7 @@ public class MVWorld implements MultiverseWorld {
 
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private Map<String, String> propertyAliases;
+    private Permission ignoreperm;
 
     public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString, boolean fixSpawn) {
         this.config = config;
@@ -142,10 +143,14 @@ public class MVWorld implements MultiverseWorld {
         this.saveConfig();
 
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.OP);
+        // This guy is special. He shouldn't be added to any parent perms.
+        this.ignoreperm = new Permission("mv.bypass.gamemode." + this.getName(), "Allows players with this permission to ignore gamemode changes.", PermissionDefault.FALSE);
+
         this.exempt = new Permission("multiverse.exempt." + this.getName(), "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
         try {
             this.plugin.getServer().getPluginManager().addPermission(this.permission);
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
+            this.plugin.getServer().getPluginManager().addPermission(this.ignoreperm);
             addToUpperLists(this.permission);
         } catch (IllegalArgumentException e) {
             this.plugin.log(Level.FINER, "Permissions nodes were already added for " + this.name);

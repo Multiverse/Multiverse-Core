@@ -229,7 +229,7 @@ public class MVPlayerListener extends PlayerListener {
     }
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameMode(Player player, World world) {
-        this.plugin.log(Level.FINE, "Handeling gamemode for player: " + player.getName());
+
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameMode(player, mvWorld);
@@ -240,7 +240,10 @@ public class MVPlayerListener extends PlayerListener {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
+            this.plugin.log(Level.FINE, "Handeling gamemode for player: " + player.getName());
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+        } else {
+            this.plugin.log(Level.FINE, "Player: " + player.getName() + " is IMMUNE to gamemode changes!");
         }
     }
 
