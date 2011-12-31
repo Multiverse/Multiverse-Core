@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public class MVRespawnEvent extends Event {
-    private static final long serialVersionUID = -2991894063331856687L;
     private Player player;
     private Location location;
     private String respawnMethod;

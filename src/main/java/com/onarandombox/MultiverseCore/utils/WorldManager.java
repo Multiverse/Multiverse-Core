@@ -214,7 +214,12 @@ public class WorldManager implements MVWorldManager {
         if (world == null) {
             // If the spawn world was unloaded, get the default world
             this.plugin.log(Level.WARNING, "The world specified as the spawn world (" + this.firstSpawn + ") did not exist!!");
-            return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+            try {
+                return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+            } catch (IndexOutOfBoundsException e) {
+                // This should only happen in tests.
+                return null;
+            }
         }
         return world;
     }

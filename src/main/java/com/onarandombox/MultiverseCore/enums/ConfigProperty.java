@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.enums;
 
 public enum ConfigProperty {
-    messagecooldown, teleportcooldown, worldnameprefix, enforcegamemodes, enforceaccess, displaypermerrors, debug, firstworldspawn, teleportintercept;
+    messagecooldown, teleportcooldown, worldnameprefix, enforcegamemodes, enforceaccess, displaypermerrors, debug, firstspawnworld, teleportintercept, firstspawnoverride;
 
     public static String getAllValues() {
         String buffer = "";

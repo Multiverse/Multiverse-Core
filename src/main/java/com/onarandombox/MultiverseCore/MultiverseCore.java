@@ -59,6 +59,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean PrefixChat;
     public static boolean DisplayPermErrors;
     public static boolean TeleportIntercept;
+    public static boolean FirstSpawnOverride;
     public static Map<String, String> teleportQueue = new HashMap<String, String>();
     private AnchorManager anchorManager = new AnchorManager(this);
 
@@ -222,6 +223,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
         this.anchorManager.loadAnchors();
+
+        // Now set the firstspawnworld (after the worlds are loaded):
+        // Default as the server.props world.
+        this.worldManager.setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld", getDefaultWorldName()));
+        // We have to set this one here, if it's not present, we don't know the name of the default world.
+        // and this one won't be in the defaults yml file.
+            this.multiverseConfig.set("firstspawnworld", this.worldManager.getFirstSpawnWorld().getName());
+            // A test that had no worlds loaded was being run. This should never happen in production
+        this.saveMVConfig();
+        // Check to see if spout was already loaded (most likely):
+        if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
+            this.log(Level.INFO, "Spout integration enabled.");
+        }
     }
 
     private boolean validateAllpay() {
@@ -325,10 +339,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
         EnforceGameModes = this.multiverseConfig.getBoolean("enforcegamemodes", true);
         PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
-        DisplayPermErrors = this.multiverseConfig.getBoolean("displaypermerrors", true);
         TeleportIntercept = this.multiverseConfig.getBoolean("teleportintercept", true);
-        // Default as the server.props world.
-        this.worldManager.setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld", getDefaultWorldName()));
+        // Should MV do the first spawn stuff?
+        FirstSpawnOverride = this.multiverseConfig.getBoolean("firstspawnoverride", true);
+        // Should permissions errors display to users?
         DisplayPermErrors = this.multiverseConfig.getBoolean("displaypermerrors", true);
         this.messaging = new MVMessaging(this);
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
@@ -657,6 +671,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void setSpout() {
         this.spoutInterface = new SpoutInterface();
         this.commandHandler.registerCommand(new SpoutCommand(this));
+        if (FirstSpawnOverride) {
+            this.log(Level.WARNING, "the config value 'firstspawnworld' will have NO effect!!!");
+            this.log(Level.WARNING, "  --FernFerret");
+            FirstSpawnOverride = false;
+            this.multiverseConfig.set("firstspawnoverride", false);
+        }
     }
 
     public SpoutInterface getSpout() {
