@@ -35,7 +35,7 @@ public interface MVWorldManager {
      * @param generator  The Custom generator plugin to use.
      * @return True if the world is added, false if not.
      */
-    public boolean addWorld(String name, Environment env, String seedString, String generator);
+    boolean addWorld(String name, Environment env, String seedString, String generator);
 
     /**
      * Add a new World to the Multiverse Setup.
@@ -49,7 +49,7 @@ public interface MVWorldManager {
      * @param useSpawnAdjust If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
      * @return True if the world is added, false if not.
      */
-    public boolean addWorld(String name, Environment env, String seedString, String generator, boolean useSpawnAdjust);
+    boolean addWorld(String name, Environment env, String seedString, String generator, boolean useSpawnAdjust);
 
     /**
      * Remove the world from the Multiverse list, from the
@@ -58,7 +58,7 @@ public interface MVWorldManager {
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
-    public Boolean deleteWorld(String name);
+    boolean deleteWorld(String name);
 
     /**
      * Remove the world from the Multiverse list, from the
@@ -69,7 +69,7 @@ public interface MVWorldManager {
      *                     config. If false, they'll stay and the world may come back.
      * @return True if success, false if failure.
      */
-    public Boolean deleteWorld(String name, boolean removeConfig);
+    boolean deleteWorld(String name, boolean removeConfig);
 
     /**
      * Unload a world from Multiverse.
@@ -77,7 +77,7 @@ public interface MVWorldManager {
      * @param name Name of the world to unload
      * @return True if the world was unloaded, false if not.
      */
-    public boolean unloadWorld(String name);
+    boolean unloadWorld(String name);
 
     /**
      * Loads the world. Only use this if the world has been
@@ -86,14 +86,14 @@ public interface MVWorldManager {
      * @param name The name of the world to load
      * @return True if success, false if failure.
      */
-    public boolean loadWorld(String name);
+    boolean loadWorld(String name);
 
     /**
      * Removes all players from the specified world.
      *
      * @param name World to remove players from.
      */
-    public void removePlayersFromWorld(String name);
+    void removePlayersFromWorld(String name);
 
     /**
      * Test if a given chunk generator is valid.
@@ -103,14 +103,14 @@ public interface MVWorldManager {
      * @param worldName   The worldName to use as the default.
      * @return A {@link ChunkGenerator} or null
      */
-    public ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName);
+    ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName);
 
     /**
      * Returns a list of all the worlds Multiverse knows about.
      *
      * @return A list of {@link MultiverseWorld}.
      */
-    public Collection<MultiverseWorld> getMVWorlds();
+    Collection<MultiverseWorld> getMVWorlds();
 
 
     /**
@@ -120,7 +120,7 @@ public interface MVWorldManager {
      * @param name The name or alias of the world to get.
      * @return A {@link MultiverseWorld} or null.
      */
-    public MultiverseWorld getMVWorld(String name);
+    MultiverseWorld getMVWorld(String name);
 
     /**
      * Returns a {@link MultiverseWorld} if it exists, and null if it does not.
@@ -128,7 +128,7 @@ public interface MVWorldManager {
      * @param world The Bukkit world to check.
      * @return A {@link MultiverseWorld} or null.
      */
-    public MultiverseWorld getMVWorld(World world);
+    MultiverseWorld getMVWorld(World world);
 
     /**
      * Checks to see if the given name is a valid {@link MultiverseWorld}.
@@ -136,7 +136,7 @@ public interface MVWorldManager {
      * @param name The name or alias of the world to check.
      * @return True if the world exists, false if not.
      */
-    public boolean isMVWorld(String name);
+    boolean isMVWorld(String name);
 
     /**
      * Checks to see if the given world is a valid {@link MultiverseWorld}.
@@ -144,7 +144,7 @@ public interface MVWorldManager {
      * @param world The Bukkit world to check.
      * @return True if the world has been loaded into MV2, false if not.
      */
-    public boolean isMVWorld(World world);
+    boolean isMVWorld(World world);
 
     /**
      * Load the Worlds & Settings from the configuration file.
@@ -152,21 +152,21 @@ public interface MVWorldManager {
      * @param forceLoad If set to true, this will perform a total
      *                  reset and not just load new worlds.
      */
-    public void loadWorlds(boolean forceLoad);
+    void loadWorlds(boolean forceLoad);
 
     /**
      * Loads the Worlds & Settings for any worlds that bukkit loaded before us.
      * <p>
      * This way people will _always_ have some worlds in the list.
      */
-    public void loadDefaultWorlds();
+    void loadDefaultWorlds();
 
     /**
      * Return the World Purger.
      *
      * @return A valid {@link PurgeWorlds}.
      */
-    public PurgeWorlds getWorldPurger();
+    PurgeWorlds getWorldPurger();
 
     /**
      * Gets the world players will spawn in on first join.
@@ -174,19 +174,19 @@ public interface MVWorldManager {
      *
      * @return A Multiverse world that players will spawn in or null if no MV world has been set.
      */
-    public MultiverseWorld getSpawnWorld();
+    MultiverseWorld getSpawnWorld();
 
     /**
      * Gets the list of worlds in the config, but unloaded.
      *
      * @return A List of worlds as strings.
      */
-    public List<String> getUnloadedWorlds();
+    List<String> getUnloadedWorlds();
 
     /**
      * This method populates an internal list and needs to be called after multiverse initialization.
      */
-    public void getDefaultWorldGenerators();
+    void getDefaultWorldGenerators();
 
     /**
      * Load the config from a file.
@@ -194,14 +194,14 @@ public interface MVWorldManager {
      * @param file The file to load.
      * @return A loaded configuration.
      */
-    public FileConfiguration loadWorldConfig(File file);
+    FileConfiguration loadWorldConfig(File file);
 
     /**
      * Saves the world config to disk.
      *
      * @return True if success, false if fail.
      */
-    public boolean saveWorldsConfig();
+    boolean saveWorldsConfig();
 
     /**
      * Remove the world from the Multiverse list and from the config.
@@ -209,19 +209,19 @@ public interface MVWorldManager {
      * @param name The name of the world to remove
      * @return True if success, false if failure.
      */
-    public boolean removeWorldFromConfig(String name);
+    boolean removeWorldFromConfig(String name);
 
     /**
      * Sets the initial spawn world for new players.
      *
      * @param world The World new players should spawn in.
      */
-    public void setFirstSpawnWorld(String world);
+    void setFirstSpawnWorld(String world);
 
     /**
      * Gets the world players should spawn in first.
      *
      * @return The {@link MultiverseWorld} new players should spawn in.
      */
-    public MultiverseWorld getFirstSpawnWorld();
+    MultiverseWorld getFirstSpawnWorld();
 }

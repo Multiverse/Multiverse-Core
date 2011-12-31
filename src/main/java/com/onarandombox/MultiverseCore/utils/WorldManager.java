@@ -286,7 +286,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public Boolean deleteWorld(String name, boolean removeFromConfig) {
+    public boolean deleteWorld(String name, boolean removeFromConfig) {
         World world = this.plugin.getServer().getWorld(name);
         if (world == null) {
             // We can only delete loaded worlds
@@ -337,7 +337,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public Boolean deleteWorld(String name) {
+    public boolean deleteWorld(String name) {
         return this.deleteWorld(name, true);
     }
 
