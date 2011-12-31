@@ -976,4 +976,14 @@ public class MVWorld implements MultiverseWorld {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder toStringBuilder = new StringBuilder();
+        toStringBuilder.append(this.getClass().getSimpleName());
+        toStringBuilder.append('@');
+        toStringBuilder.append(this.hashCode());
+        toStringBuilder.append(" (Name: '").append(this.getName()).append("')");
+        return toStringBuilder.toString();
+    }
 }
