@@ -148,10 +148,6 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("Monster Settings", colors));
         message.add(new FancyMessage("Multiverse Setting: ", world.canMonstersSpawn() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowMonsters() + "", colors));
-        if (MultiverseCore.MobsDisabledInDefaultWorld) {
-            message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Monsters WILL NOT SPAWN IN THIS WORLD.", colors));
-            message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Check your server log for more details.", colors));
-        }
         if (world.getMonsterList().size() > 0) {
             if (world.canMonstersSpawn()) {
                 message.add(new FancyMessage("Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));

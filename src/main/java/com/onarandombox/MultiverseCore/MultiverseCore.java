@@ -112,7 +112,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Useless stuff to keep us going.
     private static final Logger log = Logger.getLogger("Minecraft");
     private static DebugLog debugLog;
-    public static boolean MobsDisabledInDefaultWorld = false;
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
