@@ -53,7 +53,6 @@ public class MVWorld implements MultiverseWorld {
 
     private Map<String, List<String>> masterList;
     private Map<String, MVConfigProperty<?>> propertyList;
-    private String generator;
 
     private Permission permission;
     private Permission exempt;
@@ -97,28 +96,50 @@ public class MVWorld implements MultiverseWorld {
         // getNewProperty(name, defaultValue, yamlConfigNode, helpText)
         //
         // If the first type is used, name is used as the yamlConfigNode
-        this.propertyList.put("hidden", fac.getNewProperty("hidden", false, "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("alias", fac.getNewProperty("alias", "", "alias.name", "Alias must be a valid string."));
-        this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color", "Sorry, 'color' must either one of: " + EnglishChatColor.getAllColors()));
-        this.propertyList.put("pvp", fac.getNewProperty("pvp", true, "Sorry, 'pvp' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment), "Scale must be a positive double value. ex: " + ChatColor.GOLD + "2.3"));
-        this.propertyList.put("respawn", fac.getNewProperty("respawn", "", "respawnworld", "You must set this to the " + ChatColor.GOLD + " NAME" + ChatColor.RED + " not alias of a world."));
-        this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather", "Sorry, 'weather' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY, "Difficulty must be set as one of the following: " + ChatColor.GREEN + "peaceful " + ChatColor.AQUA + "easy " + ChatColor.GOLD + "normal " + ChatColor.RED + "hard"));
-        this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn", "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn", "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency", "Currency must be an integer between -1 and the highest Minecraft item ID."));
-        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price", "Price must be a double value. ex: " + ChatColor.GOLD + "1.2" + ChatColor.WHITE + ". Set to a negative value to give players money for entering this world."));
-        this.propertyList.put("hunger", fac.getNewProperty("hunger", true, "Sorry, 'hunger' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true, "Sorry, 'autoheal' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true, "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        if(!fixSpawn) {
+        this.propertyList.put("hidden", fac.getNewProperty("hidden", false,
+                "Sorry, 'hidden' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("alias", fac.getNewProperty("alias", "", "alias.name",
+                "Alias must be a valid string."));
+        this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color",
+                "Sorry, 'color' must either one of: " + EnglishChatColor.getAllColors()));
+        this.propertyList.put("pvp", fac.getNewProperty("pvp", true,
+                "Sorry, 'pvp' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment),
+                "Scale must be a positive double value. ex: " + ChatColor.GOLD + "2.3"));
+        this.propertyList.put("respawn", fac.getNewProperty("respawn", "", "respawnworld",
+                "You must set this to the " + ChatColor.GOLD + " NAME" + ChatColor.RED + " not alias of a world."));
+        this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather",
+                "Sorry, 'weather' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY,
+                "Difficulty must be set as one of the following: " + ChatColor.GREEN + "peaceful "
+                + ChatColor.AQUA + "easy " + ChatColor.GOLD + "normal " + ChatColor.RED + "hard"));
+        this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn",
+                "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn",
+                "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency",
+                "Currency must be an integer between -1 and the highest Minecraft item ID."));
+        this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price",
+                "Price must be a double value. ex: " + ChatColor.GOLD + "1.2" + ChatColor.WHITE
+                + ". Set to a negative value to give players money for entering this world."));
+        this.propertyList.put("hunger", fac.getNewProperty("hunger", true,
+                "Sorry, 'hunger' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true,
+                "Sorry, 'autoheal' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true,
+                "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE
+                + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        if (!fixSpawn) {
             this.setAdjustSpawn(false);
         }
-        this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL, "GameMode must be set as one of the following: " + ChatColor.RED + "survival " + ChatColor.GREEN + "creative "));
-        this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory", "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(), "There is no help available for this variable. Go bug Rigby90 about it."));
-        this.propertyList.put("autoload", fac.getNewProperty("autoload", true, "Set this to false ONLY if you don't want this world to load itself on server restart."));
+        this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL,
+                "GameMode must be set as one of the following: " + ChatColor.RED + "survival " + ChatColor.GREEN + "creative "));
+        this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory",
+                "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(),
+                "There is no help available for this variable. Go bug Rigby90 about it."));
+        this.propertyList.put("autoload", fac.getNewProperty("autoload", true,
+                "Set this to false ONLY if you don't want this world to load itself on server restart."));
         this.propertyList.put("bedrespawn", fac.getNewProperty("bedrespawn", true, "If a player dies in this world, shoudld they go to their bed?"));
         this.getKnownProperty("spawn", Location.class).setValue(this.readSpawnFromConfig(this.getCBWorld()));
 
@@ -144,9 +165,11 @@ public class MVWorld implements MultiverseWorld {
 
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.OP);
         // This guy is special. He shouldn't be added to any parent perms.
-        this.ignoreperm = new Permission("mv.bypass.gamemode." + this.getName(), "Allows players with this permission to ignore gamemode changes.", PermissionDefault.FALSE);
+        this.ignoreperm = new Permission("mv.bypass.gamemode." + this.getName(),
+                "Allows players with this permission to ignore gamemode changes.", PermissionDefault.FALSE);
 
-        this.exempt = new Permission("multiverse.exempt." + this.getName(), "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
+        this.exempt = new Permission("multiverse.exempt." + this.getName(),
+                "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
         try {
             this.plugin.getServer().getPluginManager().addPermission(this.permission);
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
@@ -191,7 +214,8 @@ public class MVWorld implements MultiverseWorld {
         // TODO: Move this to a per world gamemode
         if (MultiverseCore.EnforceGameModes) {
             for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
-                this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to " + this.getKnownProperty("mode", GameMode.class).getValue().toString());
+                this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to "
+                        + this.getKnownProperty("mode", GameMode.class).getValue().toString());
                 this.plugin.getPlayerListener().handleGameMode(p, this);
             }
         }
