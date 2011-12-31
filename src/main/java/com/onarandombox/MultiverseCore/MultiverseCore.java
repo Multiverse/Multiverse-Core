@@ -50,10 +50,11 @@ import java.util.logging.Logger;
  * The implementation of the Multiverse-{@link Core}.
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private final static int Protocol = 10;
+    private static final int PROTOCOL = 10;
     // Global Multiverse config variable, states whether or not
     // Multiverse should stop other plugins from teleporting players
     // to worlds.
+    // TODO This is REALLY bad style! We have to change this!
     public static boolean EnforceAccess;
     public static boolean EnforceGameModes;
     public static boolean PrefixChat;
@@ -61,6 +62,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static boolean TeleportIntercept;
     public static boolean FirstSpawnOverride;
     public static Map<String, String> teleportQueue = new HashMap<String, String>();
+    public static int GlobalDebug = 0;
+
     private AnchorManager anchorManager = new AnchorManager(this);
 
     /**
@@ -77,6 +80,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return null;
     }
 
+    /**
+     * This method is used to add a teleportation to the teleportQueue.
+     *
+     * @param teleporter The name of the player that initiated the teleportation.
+     * @param teleportee The name of the player that was teleported.
+     */
     public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
         staticLog(Level.FINEST, "Adding mapping '" + teleporter + "' => '" + teleportee + "' to teleport queue");
         teleportQueue.put(teleportee, teleporter);
@@ -106,17 +115,17 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     @Override
     public int getProtocolVersion() {
-        return MultiverseCore.Protocol;
+        return MultiverseCore.PROTOCOL;
     }
 
     // Useless stuff to keep us going.
-    private static final Logger log = Logger.getLogger("Minecraft");
+    private static final Logger LOGGER = Logger.getLogger("Minecraft");
     private static DebugLog debugLog;
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
 
-    private final static String tag = "[Multiverse-Core]";
+    private static final String LOG_TAG = "[Multiverse-Core]";
 
     // Multiverse Permissions Handler
     private MVPermissions ph;
@@ -133,19 +142,17 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private MVPluginListener pluginListener = new MVPluginListener(this);
     private MVWeatherListener weatherListener = new MVWeatherListener(this);
 
-    public UpdateChecker updateCheck;
-
-    public static int GlobalDebug = 0;
+    //public UpdateChecker updateCheck;
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
     private GenericBank bank = null;
     private AllPay banker;
-    protected int pluginCount;
+    private int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    private double allpayversion = 3;
-    private double chversion = 4;
+    private static final double ALLPAY_VERSION = 3;
+    private static final double CH_VERSION = 4;
     private MVMessaging messaging;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
@@ -185,9 +192,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        this.banker = new AllPay(this, tag + " ");
+        this.banker = new AllPay(this, LOG_TAG + " ");
         // Output a little snippet to show it's enabled.
-        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + Protocol + ") Enabled - By " + getAuthors());
+        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + getAuthors());
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
@@ -244,44 +251,34 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private boolean validateAllpay() {
         try {
             this.banker = new AllPay(this, "Verify");
-            if (this.banker.getVersion() >= allpayversion) {
+            if (this.banker.getVersion() >= ALLPAY_VERSION) {
                 return true;
-            } else {
-                log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of AllPay!");
-                log.info(tag + " The Following Plugins MAY out of date!");
-                log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher and another plugin has loaded v" + this.banker.getVersion() + "!");
-                log.info(tag + AllPay.pluginsThatUseUs.toString());
-                return false;
             }
         } catch (Throwable t) {
         }
-        log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of AllPay!");
-        log.info(tag + " Check the logs for [AllPay] - Version ... for PLUGIN NAME to find the culprit! Then Yell at that dev!");
-        log.info(tag + " Or update that plugin :P");
-        log.info(tag + " This plugin needs AllPay v" + allpayversion + " or higher!");
+        LOGGER.info(String.format("%s - Version %s was NOT ENABLED!!!", LOG_TAG, this.getDescription().getVersion()));
+        LOGGER.info(String.format("%s A plugin that has loaded before %s has an incompatible version of AllPay (an internal library)!",
+                LOG_TAG, this.getDescription().getName()));
+        LOGGER.info(String.format("%s The Following Plugins MAY out of date: %s", LOG_TAG, AllPay.pluginsThatUseUs.toString()));
+        LOGGER.info(String.format("%s This plugin needs AllPay v%f or higher and another plugin has loaded v%f!",
+                LOG_TAG, ALLPAY_VERSION, this.banker.getVersion()));
         return false;
     }
 
     private boolean validateCH() {
         try {
             this.commandHandler = new CommandHandler(this, null);
-            if (this.commandHandler.getVersion() >= chversion) {
+            if (this.commandHandler.getVersion() >= CH_VERSION) {
                 return true;
-            } else {
-                log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-                log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of CommandHandler (an internal library)!");
-                log.info(tag + " Please contact this plugin author!!!!!!!");
-                log.info(tag + " This plugin needs CommandHandler v" + chversion + " or higher and another plugin has loaded v" + this.commandHandler.getVersion() + "!");
-                return false;
             }
         } catch (Throwable t) {
         }
-        log.info(tag + " - Version " + this.getDescription().getVersion() + " was NOT ENABLED!!!");
-        log.info(tag + " A plugin that has loaded before " + this.getDescription().getName() + " has an incompatible version of CommandHandler (an internal library)!");
-        log.info(tag + " Please contact this plugin author!!!!!!!");
-        log.info(tag + " This plugin needs CommandHandler v" + chversion + " or higher!");
+        LOGGER.info(String.format("%s - Version %s was NOT ENABLED!!!", LOG_TAG, this.getDescription().getVersion()));
+        LOGGER.info(String.format("%s A plugin that has loaded before %s has an incompatible version of CommandHandler (an internal library)!",
+                LOG_TAG, this.getDescription().getName()));
+        LOGGER.info(String.format("%s Please contact this plugin author!!!", LOG_TAG));
+        LOGGER.info(String.format("%s This plugin needs CommandHandler v%f or higher and another plugin has loaded v%f!",
+                LOG_TAG, CH_VERSION, this.commandHandler.getVersion()));
         return false;
     }
 
@@ -354,7 +351,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Safely return a world name
+     * Safely return a world name.
      * (The tests call this with no worlds loaded)
      *
      * @return The default world name.
@@ -476,6 +473,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         staticLog(level, msg);
     }
 
+    /**
+     * Logs a message at the specified level.
+     *
+     * @param level The Log-{@link Level}.
+     * @param msg The message to log.
+     */
     public static void staticLog(Level level, String msg) {
         if (level == Level.FINE && GlobalDebug >= 1) {
             staticDebugLog(Level.INFO, msg);
@@ -487,8 +490,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             staticDebugLog(Level.INFO, msg);
             return;
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            log.log(level, tag + " " + msg);
-            debugLog.log(level, tag + " " + msg);
+            LOGGER.log(level, String.format("%s %s", LOG_TAG, msg));
+            debugLog.log(level, String.format("%s %s", LOG_TAG, msg));
         }
     }
 
@@ -500,7 +503,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @param msg The message
      */
     public static void staticDebugLog(Level level, String msg) {
-        log.log(level, "[MVCore-Debug] " + msg);
+        LOGGER.log(level, "[MVCore-Debug] " + msg);
         debugLog.log(level, "[MVCore-Debug] " + msg);
     }
 
@@ -544,7 +547,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     // TODO this should be static!
     public String getTag() {
-        return MultiverseCore.tag;
+        return MultiverseCore.LOG_TAG;
     }
 
     // TODO This code should get moved somewhere more appropriate, but for now, it's here.
@@ -585,6 +588,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
     }
 
+    /**
+     * Removes a player-session.
+     *
+     * @param player The {@link Player} that owned the session.
+     */
     public void removePlayerSession(Player player) {
         if (this.playerSessions.containsKey(player.getName())) {
             this.playerSessions.remove(player.getName());
@@ -672,6 +680,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.serverFolder = newServerFolder;
     }
 
+    /**
+     * Initializes Spout.
+     */
     public void setSpout() {
         this.spoutInterface = new SpoutInterface();
         this.commandHandler.registerCommand(new SpoutCommand(this));
@@ -686,6 +697,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
     }
 
+    /**
+     * Gets our {@link SpoutInterface}.
+     *
+     * @return The {@link SpoutInterface} we're using.
+     */
     public SpoutInterface getSpout() {
         return this.spoutInterface;
     }
