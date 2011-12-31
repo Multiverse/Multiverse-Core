@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
+/**
+ * This interface is implemented by every official Multiverse-plugin.
+ */
 public interface MVPlugin extends LoggablePlugin {
     /**
      * Adds This plugin's version information to the buffer and returns the new string.
