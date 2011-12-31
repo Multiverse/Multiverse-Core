@@ -708,11 +708,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.playerListener;
     }
 
-    // TODO remove this
-    public boolean loadMVConfigs() {
-        return false;
-    }
-
     /**
      * Saves the Multiverse-Config.
      *
