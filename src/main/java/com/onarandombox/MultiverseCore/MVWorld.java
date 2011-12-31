@@ -830,6 +830,9 @@ public class MVWorld implements MultiverseWorld {
         this.saveConfig();
     }
 
+    private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
+    private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
+
     private Location readSpawnFromConfig(World w) {
         Location spawnLocation = w.getSpawnLocation();
         Location configLocation = this.getSpawnLocation();
@@ -850,7 +853,8 @@ public class MVWorld implements MultiverseWorld {
             // If it's not, find a better one.
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
             this.plugin.log(Level.WARNING, "Original Location: " + LocationManipulation.strCoordsRaw(spawnLocation));
-            Location newSpawn = teleporter.getSafeLocation(spawnLocation, 16, 16);
+            Location newSpawn = teleporter.getSafeLocation(spawnLocation,
+                    SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
