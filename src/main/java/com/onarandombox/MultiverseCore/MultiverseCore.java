@@ -229,11 +229,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.worldManager.setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld", getDefaultWorldName()));
         // We have to set this one here, if it's not present, we don't know the name of the default world.
         // and this one won't be in the defaults yml file.
+        try {
             this.multiverseConfig.set("firstspawnworld", this.worldManager.getFirstSpawnWorld().getName());
+        } catch (NullPointerException e) {
             // A test that had no worlds loaded was being run. This should never happen in production
+        }
         this.saveMVConfig();
         // Check to see if spout was already loaded (most likely):
         if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
+            this.setSpout();
             this.log(Level.INFO, "Spout integration enabled.");
         }
     }
@@ -339,6 +343,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
         EnforceGameModes = this.multiverseConfig.getBoolean("enforcegamemodes", true);
         PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
+        // Should MV Intercept teleports by other plugins?
         TeleportIntercept = this.multiverseConfig.getBoolean("teleportintercept", true);
         // Should MV do the first spawn stuff?
         FirstSpawnOverride = this.multiverseConfig.getBoolean("firstspawnoverride", true);
@@ -672,7 +677,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.spoutInterface = new SpoutInterface();
         this.commandHandler.registerCommand(new SpoutCommand(this));
         if (FirstSpawnOverride) {
+            this.log(Level.WARNING, "Disabling MV's 'firstspawnoverride', since spout doesn't handle new players well yet.");
+            this.log(Level.WARNING, "This means *new players* may not spawn where you've set your \"mvspawn\" AND");
             this.log(Level.WARNING, "the config value 'firstspawnworld' will have NO effect!!!");
+            this.log(Level.WARNING, "Talk to the Spout devs to get this fixed!");
             this.log(Level.WARNING, "  --FernFerret");
             FirstSpawnOverride = false;
             this.multiverseConfig.set("firstspawnoverride", false);
