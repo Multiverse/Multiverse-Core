@@ -129,7 +129,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
-
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
     private MVWeatherListener weatherListener = new MVWeatherListener(this);
@@ -706,6 +705,24 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public MVPlayerListener getPlayerListener() {
         return this.playerListener;
+    }
+
+    /**
+     * Gets the {@link MVEntityListener}.
+     *
+     * @return The {@link MVEntityListener}.
+     */
+    public MVEntityListener getEntityListener() {
+        return this.entityListener;
+    }
+
+    /**
+     * Gets the {@link MVWeatherListener}.
+     *
+     * @return The {@link MVWeatherListener}.
+     */
+    public MVWeatherListener getWeatherListener() {
+        return this.weatherListener;
     }
 
     /**
