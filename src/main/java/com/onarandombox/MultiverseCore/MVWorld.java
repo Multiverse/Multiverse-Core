@@ -701,6 +701,7 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public boolean setRespawnToWorld(String respawnToWorld) {
+        if (!this.plugin.getMVWorldManager().isMVWorld(respawnToWorld)) return false;
         return this.setKnownProperty("respawn", respawnToWorld, null);
     }
 
