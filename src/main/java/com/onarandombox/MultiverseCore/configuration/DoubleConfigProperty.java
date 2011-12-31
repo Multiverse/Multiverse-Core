@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.configuration;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link Double} config-property.
+ */
 public class DoubleConfigProperty implements MVConfigProperty<Double> {
     private String name;
     private Double value;

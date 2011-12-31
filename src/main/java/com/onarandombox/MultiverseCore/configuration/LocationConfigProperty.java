@@ -11,6 +11,9 @@ import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link Location} config-property.
+ */
 public class LocationConfigProperty implements MVConfigProperty<Location> {
     private String name;
     private Location value;

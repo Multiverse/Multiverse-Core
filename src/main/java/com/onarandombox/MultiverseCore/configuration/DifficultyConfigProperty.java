@@ -10,6 +10,9 @@ package com.onarandombox.MultiverseCore.configuration;
 import org.bukkit.Difficulty;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link Difficulty} config-property.
+ */
 public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
     private String name;
     private Difficulty value;

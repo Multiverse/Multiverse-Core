@@ -10,6 +10,9 @@ package com.onarandombox.MultiverseCore.configuration;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link GameMode} config-property.
+ */
 public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
     private String name;
     private GameMode value;

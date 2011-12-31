@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.configuration;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link Integer} config-property.
+ */
 public class IntegerConfigProperty implements MVConfigProperty<Integer> {
     private String name;
     private Integer value;

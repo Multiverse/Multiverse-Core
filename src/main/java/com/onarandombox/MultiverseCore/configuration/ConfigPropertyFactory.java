@@ -22,73 +22,209 @@ public class ConfigPropertyFactory {
     }
 
     // Booleans
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String help) {
         return new BooleanConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String node, String help) {
         return new BooleanConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // Integers
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public IntegerConfigProperty getNewProperty(String name, int defaultValue, String help) {
         return new IntegerConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public IntegerConfigProperty getNewProperty(String name, int defaultValue, String node, String help) {
         return new IntegerConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // Doubles
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public DoubleConfigProperty getNewProperty(String name, double defaultValue, String help) {
         return new DoubleConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node, String help) {
         return new DoubleConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // Strings
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public StringConfigProperty getNewProperty(String name, String defaultValue, String help) {
         return new StringConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public StringConfigProperty getNewProperty(String name, String defaultValue, String node, String help) {
         return new StringConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // Colors
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public ColorConfigProperty getNewProperty(String name, EnglishChatColor defaultValue, String help) {
         return new ColorConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public ColorConfigProperty getNewProperty(String name, EnglishChatColor defaultValue, String node, String help) {
         return new ColorConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // Difficulty
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public DifficultyConfigProperty getNewProperty(String name, Difficulty defaultValue, String help) {
         return new DifficultyConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public DifficultyConfigProperty getNewProperty(String name, Difficulty defaultValue, String node, String help) {
         return new DifficultyConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // GameMode
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public GameModeConfigProperty getNewProperty(String name, GameMode defaultValue, String help) {
         return new GameModeConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public GameModeConfigProperty getNewProperty(String name, GameMode defaultValue, String node, String help) {
         return new GameModeConfigProperty(this.section, name, defaultValue, node, help);
     }
 
     // GameMode
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public LocationConfigProperty getNewProperty(String name, Location defaultValue, String help) {
         return new LocationConfigProperty(this.section, name, defaultValue, help);
     }
 
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
     public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node, String help) {
         return new LocationConfigProperty(this.section, name, defaultValue, node, help);
     }

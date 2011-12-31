@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.configuration;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link Boolean} config-property.
+ */
 public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
     private String name;
     private Boolean value;

@@ -10,6 +10,9 @@ package com.onarandombox.MultiverseCore.configuration;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link EnglishChatColor} config-property.
+ */
 public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
     private String name;
     private EnglishChatColor value;

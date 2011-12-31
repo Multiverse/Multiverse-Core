@@ -7,6 +7,11 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
+/**
+ * A generic config-property.
+ *
+ * @param <T> The type of the config-property.
+ */
 public interface MVConfigProperty<T> {
     /**
      * Gets the name of this property.
@@ -40,6 +45,7 @@ public interface MVConfigProperty<T> {
      * Sets the value of this property.
      *
      * @param value The T representation of this value.
+     * @return True the value was successfully set.
      */
     boolean setValue(T value);
 
@@ -52,5 +58,10 @@ public interface MVConfigProperty<T> {
      */
     boolean parseValue(String value);
 
+    /**
+     * Gets the name of the config-node that this {@link MVConfigProperty} is saved as.
+     *
+     * @return The name of the config-node that this {@link MVConfigProperty} is saved as.
+     */
     String getConfigNode();
 }
