@@ -420,6 +420,7 @@ public class MVWorld implements MultiverseWorld {
 
     /**
      * {@inheritDoc}
+     * @deprecated Use {@link #getProperty(String, Class)} instead
      */
     @Override
     @Deprecated
@@ -705,6 +706,7 @@ public class MVWorld implements MultiverseWorld {
 
     /**
      * {@inheritDoc}
+     * @deprecated This is deprecated.
      */
     @Override
     @Deprecated

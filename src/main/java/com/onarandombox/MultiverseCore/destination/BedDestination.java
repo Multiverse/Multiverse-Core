@@ -14,16 +14,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+/**
+ * A bed-{@link MVDestination}.
+ */
 public class BedDestination implements MVDestination {
 
     private boolean isValid;
     private Location knownBedLoc;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIdentifier() {
         return "b";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         String[] split = destination.split(":");
@@ -31,6 +40,9 @@ public class BedDestination implements MVDestination {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getLocation(Entity entity) {
         if (entity instanceof Player) {
@@ -40,31 +52,49 @@ public class BedDestination implements MVDestination {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Vector getVelocity() {
         return new Vector();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
         // Not needed.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return "Bed";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Bed";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRequiredPermission() {
         if (knownBedLoc != null) {
@@ -73,6 +103,9 @@ public class BedDestination implements MVDestination {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean useSafeTeleporter() {
         // Bukkit should have already checked this.

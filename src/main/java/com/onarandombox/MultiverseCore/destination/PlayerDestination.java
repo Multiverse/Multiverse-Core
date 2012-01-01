@@ -14,16 +14,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+/**
+ * A player-{@link MVDestination}.
+ */
 public class PlayerDestination implements MVDestination {
     private String player;
     private boolean isValid;
     private JavaPlugin plugin;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIdentifier() {
         return "pl";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         String[] items = destination.split(":");
@@ -36,6 +45,9 @@ public class PlayerDestination implements MVDestination {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getLocation(Entity e) {
         Player p = plugin.getServer().getPlayer(this.player);
@@ -52,11 +64,17 @@ public class PlayerDestination implements MVDestination {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
         String[] items = destination.split(":");
@@ -71,11 +89,17 @@ public class PlayerDestination implements MVDestination {
         this.plugin = plugin;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return "Player";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.player;
@@ -86,15 +110,25 @@ public class PlayerDestination implements MVDestination {
         return "pl:" + this.player;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRequiredPermission() {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean useSafeTeleporter() {
         return true;

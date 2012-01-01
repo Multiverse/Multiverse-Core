@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.event;
 
 import org.bukkit.event.Event;
 
+/**
+ * Called when somebody requests version information about Multiverse.
+ */
 public class MVVersionRequestEvent extends Event {
 
     private String pasteBinBuffer;

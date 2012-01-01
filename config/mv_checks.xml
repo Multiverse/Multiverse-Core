@@ -8,9 +8,9 @@
 <!DOCTYPE module SYSTEM "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
 <module name="Checker">
-    <module name="JavadocPackage">
-        <property name="allowLegacy" value="true"/>
-    </module>
+<!--     <module name="JavadocPackage"> -->
+<!--         <property name="allowLegacy" value="true"/> -->
+<!--     </module> -->
     <module name="NewlineAtEndOfFile">
         <property name="severity" value="info"/>
     </module>
@@ -94,9 +94,10 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 7, 8, 5000"/>
+            <property name="ignoreNumbers" value="-1, 0, 0.5, 1, 2, 3, 4, 5 7, 8, 5000"/>
             <!-- Explanations why we ignore certain magic numbers: -->
             <!-- 3: Log-level -->
+            <!-- 4, 5: Array-indexes in Destinations -->
             <!-- 8: Default nether scale in MVWorld -->
             <!-- 7: max number of args in CreateCommand -->
             <!-- 5000: Default messagecooldown in MultiverseCore -->

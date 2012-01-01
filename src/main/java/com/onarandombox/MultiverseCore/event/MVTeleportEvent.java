@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.event;
 
 import com.onarandombox.MultiverseCore.api.MVDestination;
+
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -66,6 +67,14 @@ public class MVTeleportEvent extends Event implements Cancellable {
      */
     public MVDestination getDestination() {
         return this.dest;
+    }
+
+    /**
+     * Looks if this {@link MVTeleportEvent} is using the {@link SafeTTeleporter}.
+     * @return True if this {@link MVTeleportEvent} is using the {@link SafeTTeleporter}.
+     */
+    public boolean isUsingSafeTTeleporter() {
+        return useSafeTeleport;
     }
 
     @Override

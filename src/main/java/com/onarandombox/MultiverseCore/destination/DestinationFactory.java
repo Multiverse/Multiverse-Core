@@ -66,6 +66,13 @@ public class DestinationFactory {
         return new InvalidDestination();
     }
 
+    /**
+     * Registers a {@link MVDestination}.
+     *
+     * @param c The {@link Class} of the {@link MVDestination} to register.
+     * @param identifier The {@link String}-identifier.
+     * @return True if the class was successfully registered.
+     */
     public boolean registerDestinationType(Class<? extends MVDestination> c, String identifier) {
         if (this.destList.containsKey(identifier)) {
             return false;
@@ -79,12 +86,14 @@ public class DestinationFactory {
         Permission other = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.other." + identifier);
         PermissionTools pt = new PermissionTools(this.plugin);
         if (self == null) {
-            self = new Permission("multiverse.teleport.self." + identifier, "Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
+            self = new Permission("multiverse.teleport.self." + identifier,
+                    "Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
             this.plugin.getServer().getPluginManager().addPermission(self);
             pt.addToParentPerms("multiverse.teleport.self." + identifier);
         }
         if (other == null) {
-            other = new Permission("multiverse.teleport.other." + identifier, "Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
+            other = new Permission("multiverse.teleport.other." + identifier,
+                    "Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
             this.plugin.getServer().getPluginManager().addPermission(other);
             pt.addToParentPerms("multiverse.teleport.other." + identifier);
         }
