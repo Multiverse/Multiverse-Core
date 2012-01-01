@@ -33,7 +33,6 @@ import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.SpoutInterface;
-import com.onarandombox.MultiverseCore.utils.UpdateChecker;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
@@ -208,6 +207,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + getAuthors());
@@ -362,7 +362,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         FirstSpawnOverride = this.multiverseConfig.getBoolean("firstspawnoverride", true);
         // Should permissions errors display to users?
         DisplayPermErrors = this.multiverseConfig.getBoolean("displaypermerrors", true);
-        this.messaging = new MVMessaging(this);
+
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
         this.saveMVConfigs();
     }

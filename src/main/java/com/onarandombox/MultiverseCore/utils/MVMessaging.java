@@ -11,18 +11,16 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MVMessaging {
-    private MultiverseCore plugin;
-    private Map<String, Date> sentList;
-    private int cooldown = 1000;
+    private Map<String, Long> sentList;
+    private int cooldown;
 
-    public MVMessaging(MultiverseCore plugin) {
-        this.plugin = plugin;
-        this.sentList = new HashMap<String, Date>();
+    public MVMessaging() {
+        this.sentList = new HashMap<String, Long>();
+        this.cooldown = 5000;
     }
 
     public void setCooldown(int milliseconds) {
@@ -35,28 +33,22 @@ public class MVMessaging {
      * @param sender         The person/console to send the message to.
      * @param message        The message to send.
      * @param ignoreCooldown If true this message will always be sent. Useful for things like menus
-     *
      * @return true if the message was sent, false if not.
      */
     public boolean sendMessage(CommandSender sender, String message, boolean ignoreCooldown) {
-        if (!(sender instanceof Player) || ignoreCooldown) {
-            sender.sendMessage(message);
-            return true;
-        }
-        if (!this.sentList.containsKey(sender.getName())) {
-            sender.sendMessage(message);
-            this.sentList.put(sender.getName(), new Date());
-            return true;
-        } else {
-            if (this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))) {
-                sender.sendMessage(message);
-                this.sentList.put(sender.getName(), new Date());
-                return true;
-            }
-        }
-        return false;
+        return this.sendMessages(sender, new String[]{ message }, ignoreCooldown);
     }
 
+    /**
+     * Sends a group of messages to the specified sender if the cooldown has passed.
+     * This method is needed, since sending many messages in quick succession would violate
+     * the cooldown.
+     *
+     * @param sender         The person/console to send the message to.
+     * @param messages       The messages to send.
+     * @param ignoreCooldown If true these messages will always be sent. Useful for things like menus
+     * @return true if the message was sent, false if not.
+     */
     public boolean sendMessages(CommandSender sender, String[] messages, boolean ignoreCooldown) {
         if (!(sender instanceof Player) || ignoreCooldown) {
 
@@ -65,27 +57,26 @@ public class MVMessaging {
         }
         if (!this.sentList.containsKey(sender.getName())) {
             this.sendMessages(sender, messages);
-            this.sentList.put(sender.getName(), new Date());
+            this.sentList.put(sender.getName(), System.currentTimeMillis());
             return true;
         } else {
-            if (this.sentList.get(sender.getName()).after(new Date((new Date()).getTime() + this.cooldown))) {
+            long time = System.currentTimeMillis();
+            if (time >= this.sentList.get(sender.getName()) + this.cooldown) {
                 this.sendMessages(sender, messages);
-                this.sentList.put(sender.getName(), new Date());
+                this.sentList.put(sender.getName(), System.currentTimeMillis());
                 return true;
             }
         }
         return false;
     }
 
-    public boolean sendMessage(CommandSender sender, String message) {
-        return this.sendMessage(sender, message, true);
+    private void sendMessage(CommandSender sender, String message) {
+        sender.sendMessage(message);
     }
 
-    public boolean sendMessages(CommandSender sender, String[] messages) {
-        boolean success = true;
+    private void sendMessages(CommandSender sender, String[] messages) {
         for (String s : messages) {
-            success = (!(!this.sendMessage(sender, s, true) && success));
+            sender.sendMessage(s);
         }
-        return success;
     }
 }
