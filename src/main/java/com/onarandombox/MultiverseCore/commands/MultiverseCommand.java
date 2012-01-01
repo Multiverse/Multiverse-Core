@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.command.CommandSender;
 
@@ -22,10 +23,12 @@ public abstract class MultiverseCommand extends Command {
      * The reference to the core.
      */
     protected MultiverseCore plugin;
+    protected MVMessaging messaging;
 
     public MultiverseCommand(MultiverseCore plugin) {
         super(plugin);
         this.plugin = plugin;
+        this.messaging = this.plugin.getMessaging();
     }
 
     @Override
