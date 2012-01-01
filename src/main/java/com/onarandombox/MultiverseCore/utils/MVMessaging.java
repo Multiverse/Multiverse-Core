@@ -79,4 +79,8 @@ public class MVMessaging {
             sender.sendMessage(s);
         }
     }
+
+    public int getCooldown() {
+        return cooldown;
+    }
 }

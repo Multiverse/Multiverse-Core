@@ -53,15 +53,17 @@ public class VersionCommand extends MultiverseCommand {
         buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getBank().getEconUsed()).append('\n');
         buffer.append("[Multiverse-Core] Permissions Plugin: ").append(this.plugin.getMVPerms().getType()).append('\n');
         buffer.append("[Multiverse-Core] Dumping Config Values: (version ")
-                .append(this.plugin.getMVConfiguration().getString("version", "NOT SET")).append(")").append('\n');
-        buffer.append("[Multiverse-Core] messagecooldown: ").append("Not yet IMPLEMENTED").append('\n');
-        buffer.append("[Multiverse-Core] teleportcooldown: ").append("Not yet IMPLEMENTED").append('\n');
-        buffer.append("[Multiverse-Core] worldnameprefix: ").append(MultiverseCore.PrefixChat).append('\n');
-        buffer.append("[Multiverse-Core] enforceaccess: ").append(MultiverseCore.EnforceAccess).append('\n');
-        buffer.append("[Multiverse-Core] enforcegamemodes: ").append(MultiverseCore.EnforceGameModes).append('\n');
-        buffer.append("[Multiverse-Core] displaypermerrors: ").append(MultiverseCore.DisplayPermErrors).append('\n');
-        buffer.append("[Multiverse-Core] teleportintercept: ").append(MultiverseCore.TeleportIntercept).append('\n');
-        buffer.append("[Multiverse-Core] debug: ").append(MultiverseCore.GlobalDebug).append('\n');
+                .append(this.plugin.getMVConfiguration().getDouble("version", -1)).append(")").append('\n');
+        buffer.append("[Multiverse-Core]  messagecooldown: ").append(this.plugin.getMessaging().getCooldown()).append('\n');
+        buffer.append("[Multiverse-Core]  teleportcooldown: ").append("Not yet IMPLEMENTED").append('\n');
+        buffer.append("[Multiverse-Core]  worldnameprefix: ").append(MultiverseCore.PrefixChat).append('\n');
+        buffer.append("[Multiverse-Core]  enforceaccess: ").append(MultiverseCore.EnforceAccess).append('\n');
+        buffer.append("[Multiverse-Core]  enforcegamemodes: ").append(MultiverseCore.EnforceGameModes).append('\n');
+        buffer.append("[Multiverse-Core]  displaypermerrors: ").append(MultiverseCore.DisplayPermErrors).append('\n');
+        buffer.append("[Multiverse-Core]  teleportintercept: ").append(MultiverseCore.TeleportIntercept).append('\n');
+        buffer.append("[Multiverse-Core]  firstspawnoverride: ").append(MultiverseCore.FirstSpawnOverride).append('\n');
+        buffer.append("[Multiverse-Core]  firstspawnworld: ").append(this.plugin.getMVConfiguration().getString("firstspawnworld", "NOT SET")).append('\n');
+        buffer.append("[Multiverse-Core]  debug: ").append(MultiverseCore.GlobalDebug).append('\n');
         buffer.append("[Multiverse-Core] Special Code: FRN002").append('\n');
 
         MVVersionEvent versionEvent = new MVVersionEvent(buffer.toString());
