@@ -8,9 +8,9 @@
 <!DOCTYPE module SYSTEM "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
 <module name="Checker">
-<!--     <module name="JavadocPackage"> -->
-<!--         <property name="allowLegacy" value="true"/> -->
-<!--     </module> -->
+    <module name="JavadocPackage">
+        <property name="allowLegacy" value="true"/>
+    </module>
     <module name="NewlineAtEndOfFile">
         <property name="severity" value="info"/>
     </module>
