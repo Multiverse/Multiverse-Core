@@ -11,6 +11,9 @@ import org.bukkit.event.Event;
 
 import java.util.List;
 
+/**
+ * Called when the Multiverse-config should be reloaded.
+ */
 public class MVConfigReloadEvent extends Event {
     private static final long serialVersionUID = 3647950355746345397L;
     private List<String> configsLoaded;
@@ -20,10 +23,18 @@ public class MVConfigReloadEvent extends Event {
         this.configsLoaded = configsLoaded;
     }
 
+    /**
+     * Adds a config to this event.
+     * @param config The config to add.
+     */
     public void addConfig(String config) {
         this.configsLoaded.add(config);
     }
 
+    /**
+     * Gets all loaded configs.
+     * @return A list of all loaded configs.
+     */
     public List<String> getAllConfigsLoaded() {
         return this.configsLoaded;
     }

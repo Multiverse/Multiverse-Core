@@ -21,6 +21,7 @@ import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
+import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
@@ -110,9 +111,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return "The Multiverse-Core Plugin";
     }
 
+    /**
+     * {@inheritDoc}
+     * @deprecated This is now deprecated, nobody needs it any longer.
+     * All version info-dumping is now done with {@link MVVersionEvent}.
+     */
     @Override
+    @Deprecated
     public String dumpVersionInfo(String buffer) {
-        // I'm kinda cheating on this one, since we call the init event.
         return buffer;
     }
 

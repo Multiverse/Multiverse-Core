@@ -16,17 +16,26 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+/**
+ * A world-{@link MVDestination}.
+ */
 public class WorldDestination implements MVDestination {
     private boolean isValid;
     private MultiverseWorld world;
     private float yaw = -1;
     private String direction = "";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIdentifier() {
         return "w";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         String[] items = destination.split(":");
@@ -48,6 +57,9 @@ public class WorldDestination implements MVDestination {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getLocation(Entity e) {
         Location spawnLoc = getAcurateSpawnLocation(e, this.world);
@@ -62,15 +74,23 @@ public class WorldDestination implements MVDestination {
         if (world != null) {
             return world.getSpawnLocation();
         } else {
+            // add 0.5 to x and z to center people
+            // (spawn location is stored as int meaning that you would spawn in the corner of a block)
             return e.getWorld().getSpawnLocation().add(.5, 0, .5);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
         String[] items = destination.split(":");
@@ -97,11 +117,17 @@ public class WorldDestination implements MVDestination {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return "World";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.world.getColoredWorldString();
@@ -115,6 +141,9 @@ public class WorldDestination implements MVDestination {
         return this.world.getCBWorld().getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRequiredPermission() {
         // TODO: Potenitally replace spaces wiht tabs for friendlier yaml.
@@ -122,10 +151,17 @@ public class WorldDestination implements MVDestination {
         return "multiverse.access." + this.world.getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean useSafeTeleporter() {
         return true;

@@ -61,7 +61,9 @@
         </module>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
-        <module name="UnusedImports"/>
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="true"/>
+        </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
         <module name="EmptyForIteratorPad"/>
@@ -94,9 +96,10 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 7, 8, 5000"/>
+            <property name="ignoreNumbers" value="-1, 0, 0.5, 1, 2, 3, 4, 5 7, 8, 5000"/>
             <!-- Explanations why we ignore certain magic numbers: -->
             <!-- 3: Log-level -->
+            <!-- 4, 5: Array-indexes in Destinations -->
             <!-- 8: Default nether scale in MVWorld -->
             <!-- 7: max number of args in CreateCommand -->
             <!-- 5000: Default messagecooldown in MultiverseCore -->

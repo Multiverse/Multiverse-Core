@@ -11,6 +11,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+/**
+ * Called
+ */
 public class MVRespawnEvent extends Event {
     private Player player;
     private Location location;
