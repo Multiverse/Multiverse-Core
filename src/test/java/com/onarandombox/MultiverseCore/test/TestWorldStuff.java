@@ -131,7 +131,7 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");
-        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage("Complete!");
+        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Complete!");
     }
 
     @Test

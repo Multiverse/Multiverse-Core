@@ -143,8 +143,10 @@ public class ImportCommand extends MultiverseCommand {
 
         if (worldFile.exists() && env != null) {
             Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
-            this.worldManager.addWorld(worldName, environment, null, generator, useSpawnAdjust);
-            Command.broadcastCommandMessage(sender, "Complete!");
+            if (this.worldManager.addWorld(worldName, environment, null, generator, useSpawnAdjust))
+                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
+            else
+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world environment did not exist.");
