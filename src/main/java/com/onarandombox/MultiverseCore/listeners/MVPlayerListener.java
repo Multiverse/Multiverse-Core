@@ -186,17 +186,7 @@ public class MVPlayerListener extends PlayerListener {
         if (event.isCancelled() || event.getFrom() == null) {
             return;
         }
-        // REMEMBER! getTo MAY be NULL HERE!!!
-        // If the player was actually outside of the portal, adjust the from location
-        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
-            Location newloc = SafeTTeleporter.findPortalBlockNextTo(event.getFrom());
-            // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
-            // TODO: we want to do here.
-            if (newloc != null) {
-                event.setFrom(newloc);
-            }
-        }
-        // Wait for the adjust, then return!
+        // The adjust should have happened much earlier.
         if (event.getTo() == null) {
             return;
         }

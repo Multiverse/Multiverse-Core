@@ -56,6 +56,19 @@ public class LocationManipulation {
     }
 
     /**
+     * This method simply does some rounding, rather than forcing a call to the server to get the blockdata.
+     *
+     * @param l The location to round to the block location
+     * @return A rounded location.
+     */
+    public static Location getBlockLocation(Location l) {
+        l.setX(l.getBlockX());
+        l.setY(l.getBlockY());
+        l.setZ(l.getBlockZ());
+        return l;
+    }
+
+    /**
      * Returns a new location from a given string. The format is as follows:
      * <p>
      * WORLD:X,Y,Z:yaw:pitch
@@ -132,7 +145,7 @@ public class LocationManipulation {
      * @return The {@link String}
      */
     public static String strCoordsRaw(Location l) {
-        if(l == null) {
+        if (l == null) {
             return "null";
         }
         String result = "";
