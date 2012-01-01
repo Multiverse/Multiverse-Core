@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Imports a new world of the specified type.
+ */
 public class ImportCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -115,7 +118,8 @@ public class ImportCommand extends MultiverseCommand {
 
         // Make sure we don't already know about this world.
         if (this.worldManager.isMVWorld(worldName)) {
-            sender.sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
+            sender.sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
+                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
             return;
         }
 
@@ -123,8 +127,8 @@ public class ImportCommand extends MultiverseCommand {
 
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
-        for(String s : args) {
-            if(s.equalsIgnoreCase("-n")) {
+        for (String s : args) {
+            if (s.equalsIgnoreCase("-n")) {
                 useSpawnAdjust = false;
             }
         }

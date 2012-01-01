@@ -217,6 +217,7 @@ public interface MultiverseWorld {
      * Turn pvp on or off. This setting is used to set the world's PVP mode, and thus relies on fakePVP
      *
      * @return True if this world has fakepvp on
+     * @deprecated This is deprecated.
      */
     @Deprecated
     boolean getFakePVP();

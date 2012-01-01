@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Used to teleport players.
+ */
 public class TeleportCommand extends MultiverseCommand {
     private SafeTTeleporter playerTeleporter;
 
@@ -44,6 +47,8 @@ public class TeleportCommand extends MultiverseCommand {
         this.playerTeleporter = new SafeTTeleporter(this.plugin);
         this.setPermission(menu);
     }
+
+    private static final int UNSAFE_TELEPORT_EXPIRE_DELAY = 15;
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
@@ -77,7 +82,9 @@ public class TeleportCommand extends MultiverseCommand {
             String[] cannonSpeed = destinationName.split("-");
             try {
                 double speed = Double.parseDouble(cannonSpeed[1]);
-                destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX() + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":" + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
+                destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX()
+                        + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":"
+                        + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
             } catch (Exception e) {
                 destinationName = "i:invalid";
             }
@@ -107,14 +114,17 @@ public class TeleportCommand extends MultiverseCommand {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {
-                teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
+                teleporter.sendMessage("Doesn't look like you're allowed to send " + ChatColor.GOLD
+                        + teleportee.getName() + ChatColor.WHITE + " to " + ChatColor.RED + "there...");
             }
             return;
         } else if (teleporter != null && !this.plugin.getMVPerms().canTravelFromLocation(teleporter, d.getLocation(teleportee))) {
             if (teleportee.equals(teleporter)) {
-                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED + "THERE from " + ChatColor.GREEN + ((Player) teleporter).getWorld().getName());
+                teleporter.sendMessage("DOH! Doesn't look like you can get to " + ChatColor.RED
+                        + "THERE from " + ChatColor.GREEN + ((Player) teleporter).getWorld().getName());
             } else {
-                teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + ((Player) teleporter).getWorld().getName() + " can get to " + ChatColor.RED + "THERE from where they are...");
+                teleporter.sendMessage("DOH! Doesn't look like " + ChatColor.GREEN + ((Player) teleporter).getWorld().getName()
+                        + " can get to " + ChatColor.RED + "THERE from where they are...");
             }
             return;
         }
@@ -149,7 +159,7 @@ public class TeleportCommand extends MultiverseCommand {
         if (result == TeleportResult.FAIL_UNSAFE) {
             this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + LocationManipulation.strCoordsRaw(d.getLocation(teleportee)));
             this.plugin.log(Level.FINE, "Queueing Command");
-            Class<?> paramTypes[] = {CommandSender.class, Player.class, Location.class};
+            Class<?>[] paramTypes = {CommandSender.class, Player.class, Location.class};
             List<Object> items = new ArrayList<Object>();
             items.add(teleporter);
             items.add(teleportee);
@@ -158,24 +168,26 @@ public class TeleportCommand extends MultiverseCommand {
             if (!teleportee.equals(teleporter)) {
                 player = teleportee.getName();
             }
-            String message = ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " did not teleport " + ChatColor.AQUA + player + ChatColor.WHITE + " to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
-            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items, paramTypes, message, "Would you like to try anyway?", "", "", 15);
-        } else {
-            // Player was teleported successfully (or the tp event was fired I should say);
-
+            String message = ChatColor.GREEN + "Multiverse" + ChatColor.WHITE + " did not teleport "
+                    + ChatColor.AQUA + player + ChatColor.WHITE + " to " + ChatColor.DARK_AQUA + d.getName() + ChatColor.WHITE + " because it was unsafe.";
+            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items,
+                    paramTypes, message, "Would you like to try anyway?", "", "", UNSAFE_TELEPORT_EXPIRE_DELAY);
         }
+        // else: Player was teleported successfully (or the tp event was fired I should say)
     }
 
     private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {
         MVMessaging message = this.plugin.getMessaging();
         if (teleporter.equals(teleportee)) {
             if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.teleport.self." + destination.getIdentifier(), true)) {
-                message.sendMessages(teleporter, new String[]{"You don't have permission to teleport yourself to a " + ChatColor.GREEN + destination.getType() + " Destination.", ChatColor.RED + "   (multiverse.teleport.self." + destination.getIdentifier() + ")"});
+                message.sendMessages(teleporter, new String[]{"You don't have permission to teleport yourself to a " + ChatColor.GREEN
+                        + destination.getType() + " Destination.", ChatColor.RED + "   (multiverse.teleport.self." + destination.getIdentifier() + ")"});
                 return false;
             }
         } else {
             if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.teleport.other." + destination.getIdentifier(), true)) {
-                message.sendMessages(teleporter, new String[]{"You don't have permission to teleport another player to a " + ChatColor.GREEN + destination.getType() + " Destination.", ChatColor.RED + "   (multiverse.teleport.other." + destination.getIdentifier() + ")"});
+                message.sendMessages(teleporter, new String[]{"You don't have permission to teleport another player to a " + ChatColor.GREEN
+                        + destination.getType() + " Destination.", ChatColor.RED + "   (multiverse.teleport.other." + destination.getIdentifier() + ")"});
                 return false;
             }
         }

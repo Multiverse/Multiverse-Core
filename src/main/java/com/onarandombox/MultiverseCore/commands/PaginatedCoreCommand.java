@@ -9,7 +9,14 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
+/**
+ * A generic paginated Multiverse-command.
+ * @param <T> The type of items on the page.
+ */
 public abstract class PaginatedCoreCommand<T> extends PaginatedCommand<T> {
+    /**
+     * The reference to the core.
+     */
     protected MultiverseCore plugin;
 
     public PaginatedCoreCommand(MultiverseCore plugin) {

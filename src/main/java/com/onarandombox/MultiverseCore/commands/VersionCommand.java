@@ -21,6 +21,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Dumps version info to the console.
+ */
 public class VersionCommand extends MultiverseCommand {
 
     public VersionCommand(MultiverseCore plugin) {
@@ -31,7 +34,8 @@ public class VersionCommand extends MultiverseCommand {
         this.addKey("mv version");
         this.addKey("mvv");
         this.addKey("mvversion");
-        this.setPermission("multiverse.core.version", "Dumps version info to the console, optionally to pastie.org with -p or pastebin.com with a -b.", PermissionDefault.TRUE);
+        this.setPermission("multiverse.core.version",
+                "Dumps version info to the console, optionally to pastie.org with -p or pastebin.com with a -b.", PermissionDefault.TRUE);
     }
 
     private String pasteBinBuffer = "";

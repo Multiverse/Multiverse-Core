@@ -18,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a nice help menu.
+ */
 public class HelpCommand extends PaginatedCoreCommand<Command> {
 
     public HelpCommand(MultiverseCore plugin) {
@@ -50,8 +53,8 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
             } else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
             } else {
-                for(String example : c.getCommandExamples()) {
-                    if(example.matches("(?i).*" + filter + ".*")) {
+                for (String example : c.getCommandExamples()) {
+                    if (example.matches("(?i).*" + filter + ".*")) {
                         filtered.add(c);
                         break;
                     }
@@ -76,7 +79,8 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
         if (filterObject.getFilter().length() > 0) {
             availableCommands = this.getFilteredItems(availableCommands, filterObject.getFilter());
             if (availableCommands.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + "No commands matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
+                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE
+                        + "No commands matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
                 return;
             }
         }

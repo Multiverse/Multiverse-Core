@@ -19,6 +19,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Used to set world-properties.
+ */
 public class ModifySetCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 

@@ -27,6 +27,9 @@ import java.util.List;
 // Will use when we can compile with JDK 6
 //import com.sun.xml.internal.ws.util.StringUtils;
 
+/**
+ * Returns detailed information about a world.
+ */
 public class InfoCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -116,7 +119,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
         if (world.getPrice() > 0) {
-            message.add(new FancyMessage("Price to enter this world: ", this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));
+            message.add(new FancyMessage("Price to enter this world: ",
+                    this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));
         } else {
             message.add(new FancyMessage("Price to enter this world: ", ChatColor.GREEN + "FREE!", colors));
         }
@@ -150,7 +154,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowMonsters() + "", colors));
         if (world.getMonsterList().size() > 0) {
             if (world.canMonstersSpawn()) {
-                message.add(new FancyMessage("Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
+                message.add(new FancyMessage("Monsters that" + ChatColor.RED + " CAN NOT "
+                        + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
             } else {
                 message.add(new FancyMessage("Monsters that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getMonsterList()), colors));
             }
@@ -166,7 +171,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowAnimals() + "", colors));
         if (world.getMonsterList().size() > 0) {
             if (world.canMonstersSpawn()) {
-                message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getAnimalList()), colors));
+                message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT "
+                        + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getAnimalList()), colors));
             } else {
                 message.add(new FancyMessage("Animals that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getAnimalList()), colors));
             }
@@ -194,6 +200,12 @@ public class InfoCommand extends MultiverseCommand {
         return result;
     }
 
+    /**
+     * Gets a "positive" or "negative" {@link ChatColor}.
+     *
+     * @param positive Whether this {@link ChatColor} should be "positive".
+     * @return The {@link ChatColor}.
+     */
     protected ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }

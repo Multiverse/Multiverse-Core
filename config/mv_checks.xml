@@ -94,10 +94,11 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 8, 5000"/>
+            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 7, 8, 5000"/>
             <!-- Explanations why we ignore certain magic numbers: -->
             <!-- 3: Log-level -->
             <!-- 8: Default nether scale in MVWorld -->
+            <!-- 7: max number of args in CreateCommand -->
             <!-- 5000: Default messagecooldown in MultiverseCore -->
         </module>
         <module name="MissingSwitchDefault"/>
@@ -121,5 +122,8 @@
             <property name="severity" value="info"/>
         </module>
         <module name="UpperEll"/>
+        <module name="Indentation"/>
+        <module name="MissingDeprecated"/>
+        <module name="MissingOverride"/>
     </module>
 </module>

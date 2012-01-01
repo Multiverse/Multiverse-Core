@@ -19,6 +19,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Creates a new world and loads it.
+ */
 public class CreateCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -47,8 +50,8 @@ public class CreateCommand extends MultiverseCommand {
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
-        for(String s : args) {
-            if(s.equalsIgnoreCase("-n")) {
+        for (String s : args) {
+            if (s.equalsIgnoreCase("-n")) {
                 useSpawnAdjust = false;
             }
         }

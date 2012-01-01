@@ -18,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Removes values from a world-property.
+ */
 public class ModifyRemoveCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -78,9 +81,11 @@ public class ModifyRemoveCommand extends MultiverseCommand {
             return;
         }
         if (world.removeFromVariable(property, value)) {
-            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE + " was " + ChatColor.RED + "removed from " + ChatColor.GREEN + property);
+            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE
+                    + " was " + ChatColor.RED + "removed from " + ChatColor.GREEN + property);
         } else {
-            sender.sendMessage(ChatColor.RED + "There was an error removing " + ChatColor.GRAY + value + ChatColor.WHITE + " from " + ChatColor.GOLD + property);
+            sender.sendMessage(ChatColor.RED + "There was an error removing " + ChatColor.GRAY
+                    + value + ChatColor.WHITE + " from " + ChatColor.GOLD + property);
         }
     }
 

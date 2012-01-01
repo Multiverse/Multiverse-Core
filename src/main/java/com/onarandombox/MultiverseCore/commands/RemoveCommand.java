@@ -14,6 +14,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Unloads a world and removes it from the config.
+ */
 public class RemoveCommand extends MultiverseCommand {
 
     public RemoveCommand(MultiverseCore plugin) {
@@ -24,7 +27,8 @@ public class RemoveCommand extends MultiverseCommand {
         this.addKey("mvremove");
         this.addKey("mv remove");
         this.addCommandExample("/mv remove " + ChatColor.GREEN + "MyWorld");
-        this.setPermission("multiverse.core.remove", "Unloads a world from Multiverse and removes it from worlds.yml, this does NOT DELETE the world folder.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.remove",
+                "Unloads a world from Multiverse and removes it from worlds.yml, this does NOT DELETE the world folder.", PermissionDefault.OP);
     }
 
     @Override

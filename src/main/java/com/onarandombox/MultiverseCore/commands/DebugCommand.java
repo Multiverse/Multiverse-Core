@@ -15,6 +15,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Enables debug-information.
+ */
 public class DebugCommand extends MultiverseCommand {
 
     public DebugCommand(MultiverseCore plugin) {
@@ -42,7 +45,8 @@ public class DebugCommand extends MultiverseCommand {
                     }
                     MultiverseCore.GlobalDebug = debugLevel;
                 } catch (NumberFormatException e) {
-                    sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
+                    sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE
+                            + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
                 }
 
             }

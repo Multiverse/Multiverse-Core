@@ -19,6 +19,9 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.List;
 
+/**
+ * Edit a world with spout.
+ */
 public class SpoutCommand extends MultiverseCommand {
 
     public SpoutCommand(MultiverseCore plugin) {

@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Used to modify various aspects of worlds.
+ */
 public class ModifyCommand extends MultiverseCommand {
 
     public ModifyCommand(MultiverseCore plugin) {
@@ -42,6 +45,13 @@ public class ModifyCommand extends MultiverseCommand {
         this.setPermission(modify);
     }
 
+    /**
+     * Validates the specified action.
+     *
+     * @param action The {@link Action}.
+     * @param property The property.
+     * @return Whether this action is valid.
+     */
     protected static boolean validateAction(Action action, String property) {
         if (action != Action.Set) {
             try {

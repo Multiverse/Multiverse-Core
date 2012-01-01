@@ -13,8 +13,14 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
+/**
+ * A generic Multiverse-command.
+ */
 public abstract class MultiverseCommand extends Command {
 
+    /**
+     * The reference to the core.
+     */
     protected MultiverseCore plugin;
 
     public MultiverseCommand(MultiverseCore plugin) {

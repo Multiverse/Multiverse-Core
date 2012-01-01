@@ -18,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Removes all values from a world-property.
+ */
 public class ModifyClearCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
