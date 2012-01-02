@@ -17,14 +17,14 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
 
     public final static String LOCALIZATION_FOLDER_NAME = "localization";
 
-    private final HashMap<Locale, HashMap<MultiverseMessage, String>> messages;
-    private final MultiverseCore core;
+    private final HashMap<Locale, HashMap<MultiverseMessage, List<String>>> messages;
+    private final JavaPlugin plugin;
 
     private Locale locale = DEFAULT_LOCALE;
 
-    public SimpleMessageProvider(MultiverseCore core) {
-        this.core = core;
-        messages = new HashMap<Locale, HashMap<MultiverseMessage, String>>();
+    public SimpleMessageProvider(JavaPlugin plugin) {
+        this.plugin = plugin;
+        messages = new HashMap<Locale, HashMap<MultiverseMessage, List<String>>>();
 
         try {
             loadLocale(locale);
@@ -57,12 +57,12 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         InputStream filestream = null;
 
         try {
-            filestream = new FileInputStream(new File(core.getDataFolder(), l.getLanguage() + ".yml"));
+            filestream = new FileInputStream(new File(plugin.getDataFolder(), l.getLanguage() + ".yml"));
         } catch (FileNotFoundException e) {
         }
 
         try {
-            resstream = core.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME).append("/")
+            resstream = plugin.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME).append("/")
                     .append(l.getLanguage()).append(".yml").toString());
         } catch (Exception e) {
         }
@@ -70,19 +70,29 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         if ((resstream == null) && (filestream == null))
             throw new NoSuchLocalizationException(l);
 
-        messages.put(l, new HashMap<MultiverseMessage, String>(MultiverseMessage.values().length));
+        messages.put(l, new HashMap<MultiverseMessage, List<String>>(MultiverseMessage.values().length));
 
         FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
         FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
         for (MultiverseMessage m : MultiverseMessage.values()) {
-            String value = m.getDefault();
+            List<String> values = m.getDefault();
 
-            if (resconfig != null)
-                value = resconfig.getString(m.toString(), value);
-            if (fileconfig != null)
-                value = fileconfig.getString(m.toString(), value);
+            if (resconfig != null) {
+                if (resconfig.isList(m.toString())) {
+                    values = resconfig.getStringList(m.toString());
+                } else {
+                    values.add(resconfig.getString(m.toString(), values.get(0)));
+                }
+            }
+            if (fileconfig != null) {
+                if (fileconfig.isList(m.toString())) {
+                    values = fileconfig.getStringList(m.toString());
+                } else {
+                    values.add(fileconfig.getString(m.toString(), values.get(0)));
+                }
+            }
 
-            messages.get(l).put(m, value);
+            messages.get(l).put(m, values);
         }
     }
 
@@ -108,10 +118,10 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
     @Override
     public String getMessage(MultiverseMessage key) {
         if (!isLocaleLoaded(locale)) {
-            return key.getDefault();
+            return key.getDefault().get(0);
         }
         else
-            return messages.get(locale).get(key);
+            return messages.get(locale).get(key).get(0);
     }
 
     /**
@@ -125,7 +135,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
             e.printStackTrace();
             return getMessage(key);
         }
-        return messages.get(locale).get(key);
+        return messages.get(locale).get(key).get(0);
     }
 
     /**
