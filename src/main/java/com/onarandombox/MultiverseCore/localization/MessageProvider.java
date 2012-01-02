@@ -17,18 +17,20 @@ public interface MessageProvider {
      * Returns a message (as {@link String}) for the specified key (as {@link MultiverseMessage}).
      *
      * @param key The key
+     * @param args Args for String.format()
      * @return The message
      */
-    public String getMessage(MultiverseMessage key);
+    public String getMessage(MultiverseMessage key, Object... args);
 
     /**
      * Returns a message (as {@link String}) in a specified {@link Locale} for the specified key (as {@link MultiverseMessage}).
      *
      * @param key The Key
      * @param locale The {@link Locale}
+     * @param args Args for String.format()
      * @return The message
      */
-    public String getMessage(MultiverseMessage key, Locale locale);
+    public String getMessage(MultiverseMessage key, Locale locale, Object... args);
 
     /**
      * Returns the Locale this MessageProvider is currently using.

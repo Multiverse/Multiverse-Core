@@ -46,6 +46,13 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
                     + locale.toString(), locale);
     }
 
+    public String format(String string, Object... args) {
+        // Replaces & with the Section character
+        string = string.replaceAll("&", Character.toString((char) 167));
+
+        return String.format(string, args);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -106,26 +113,26 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(MultiverseMessage key) {
+    public String getMessage(MultiverseMessage key, Object... args) {
         if (!isLocaleLoaded(locale)) {
-            return key.getDefault();
+            return format(key.getDefault(), args);
         }
         else
-            return messages.get(locale).get(key);
+            return format(messages.get(locale).get(key), args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(MultiverseMessage key, Locale locale) {
+    public String getMessage(MultiverseMessage key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {
             e.printStackTrace();
             return getMessage(key);
         }
-        return messages.get(locale).get(key);
+        return format(messages.get(locale).get(key), args);
     }
 
     /**
