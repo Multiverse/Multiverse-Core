@@ -29,6 +29,23 @@ public interface MessageProvider {
      * @return The message
      */
     public String getMessage(MultiverseMessage key, Locale locale);
+    
+    /**
+     * Returns a message (as {@link List}) of Strings for the specified key (as {@link MultiverseMessage}).
+     *
+     * @param key The key
+     * @return The messages
+     */
+    public List<String> getMessages(MultiverseMessage key);
+
+    /**
+     * Returns a message (as {@link List}) of Strings in a specified {@link Locale} for the specified key (as {@link MultiverseMessage}).
+     *
+     * @param key The key
+     * @param locale The {@link Locale}
+     * @return The messages
+     */
+    public List<String> getMessages(MultiverseMessage key, Locale locale);
 
     /**
      * Returns the Locale this MessageProvider is currently using.
