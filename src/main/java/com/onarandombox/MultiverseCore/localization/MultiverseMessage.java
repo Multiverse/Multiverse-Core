@@ -23,16 +23,18 @@ public enum MultiverseMessage {
     LIST_TITLE("Multiverse World List"),
     LIST_NO_MATCH("No worlds matched your filter:");
 
-    private final String def;
+    private final List<String> def;
 
-    MultiverseMessage(String def) {
-        this.def = def;
+    MultiverseMessage(String def, String... extra) {
+        this.def = new ArrayList<String>();
+        this.def.add(def);
+        this.def.addAll(Arrays.asList(extra));
     }
 
     /**
      * @return This {@link MultiverseMessage}'s default-message
      */
-    public String getDefault() {
+    public List<String> getDefault() {
         return def;
     }
 
