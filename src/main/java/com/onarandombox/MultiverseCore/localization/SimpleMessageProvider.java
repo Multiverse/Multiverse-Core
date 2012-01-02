@@ -45,6 +45,20 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
             throw new LocalizationLoadingException("Couldn't load the localization: "
                     + locale.toString(), locale);
     }
+    
+    public List<String> format(List<String> strings, Object... args) {
+        for (String string : strings) {
+            format(string, args);
+        }
+        return strings;
+    }
+
+    public String format(String string, Object... args) {
+        // Replaces & with the Section character
+        string = string.replaceAll("&", Character.toString((char) 167));
+
+        return String.format(string, args);
+    }
 
     /**
      * {@inheritDoc}
@@ -116,52 +130,52 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(MultiverseMessage key) {
+    public String getMessage(MultiverseMessage key, Object... args) {
         if (!isLocaleLoaded(locale)) {
-            return key.getDefault().get(0);
+            return format(key.getDefault().get(0), args);
         }
         else
-            return messages.get(locale).get(key).get(0);
+            return format(messages.get(locale).get(key).get(0), args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(MultiverseMessage key, Locale locale) {
+    public String getMessage(MultiverseMessage key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {
             e.printStackTrace();
-            return getMessage(key);
+            return getMessage(key, args);
         }
-        return messages.get(locale).get(key).get(0);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getMessages(MultiverseMessage key) {
-        if (!isLocaleLoaded(locale)) {
-            return key.getDefault();
-        }
-        else
-            return messages.get(locale).get(key);
+        return format(messages.get(locale).get(key).get(0), args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> getMessages(MultiverseMessage key, Locale locale) {
+    public List<String> getMessages(MultiverseMessage key, Object... args) {
+        if (!isLocaleLoaded(locale)) {
+            return format(key.getDefault(), args);
+        }
+        else
+            return format(messages.get(locale).get(key), args);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getMessages(MultiverseMessage key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {
             e.printStackTrace();
-            return getMessages(key);
+            return format(getMessages(key), args);
         }
-        return messages.get(locale).get(key);
+        return format(messages.get(locale).get(key), args);
     }
 
     /**
