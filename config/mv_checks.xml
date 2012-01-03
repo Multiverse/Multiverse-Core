@@ -98,12 +98,16 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 0.5, 1, 2, 3, 4, 5 7, 8, 5000"/>
+            <property name="ignoreNumbers" value="-1, 0, 0.5, 1, 2, 3, 4, 5 7, 8, 127, 45, 90, 135, 180, 225, 270, 315, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, 180, 360, 5000"/>
             <!-- Explanations why we ignore certain magic numbers: -->
             <!-- 3: Log-level -->
             <!-- 4, 5: Array-indexes in Destinations -->
             <!-- 8: Default nether scale in MVWorld -->
             <!-- 7: max number of args in CreateCommand -->
+            <!-- 127: max Y-coord in BlockSafety -->
+            <!-- 45, 90, 135, 180, 225, 270, 315: Orientation-degrees in LocationManipulation -->
+            <!-- 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5: Orientation-degrees in LocationManipulation -->
+            <!-- 180, 360: Orientation-degrees in LocationManipulation -->
             <!-- 5000: Default messagecooldown in MultiverseCore -->
         </module>
         <module name="MissingSwitchDefault"/>

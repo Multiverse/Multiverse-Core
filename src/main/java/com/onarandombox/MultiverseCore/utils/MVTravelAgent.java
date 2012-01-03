@@ -16,6 +16,9 @@ import org.bukkit.entity.Player;
 
 import java.util.logging.Level;
 
+/**
+ * The Multiverse-{@link TravelAgent}.
+ */
 public class MVTravelAgent implements TravelAgent {
     private MVDestination destination;
     private MultiverseCore core;
@@ -27,45 +30,72 @@ public class MVTravelAgent implements TravelAgent {
         this.player = p;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TravelAgent setSearchRadius(int radius) {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getSearchRadius() {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TravelAgent setCreationRadius(int radius) {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getCreationRadius() {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getCanCreatePortal() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setCanCreatePortal(boolean create) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location findOrCreate(Location location) {
         return this.getSafeLocation();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location findPortal(Location location) {
         return this.getSafeLocation();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean createPortal(Location location) {
         return false;

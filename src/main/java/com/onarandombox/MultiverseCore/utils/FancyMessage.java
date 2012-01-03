@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.api.FancyText;
 
+/**
+ * A colored text-message.
+ */
 public class FancyMessage implements FancyText {
     private String title;
     private String message;
@@ -27,10 +30,16 @@ public class FancyMessage implements FancyText {
         this.colors = scheme;
     }
 
+    /**
+     * Makes this {@link FancyMessage} use the main-color.
+     */
     public void setColorMain() {
         this.main = true;
     }
 
+    /**
+     * Makes this {@link FancyMessage} use the alt-color.
+     */
     public void setColorAlt() {
         this.main = false;
     }
@@ -40,10 +49,18 @@ public class FancyMessage implements FancyText {
         return this.colors.getMain(this.main) + this.title + this.colors.getDefault() + message;
     }
 
+    /**
+     * Specifies whether this {@link FancyMessage} should use the alt-color.
+     * @param altColor Whether this {@link FancyMessage} should use the alt-color.
+     */
     public void setAltColor(boolean altColor) {
         this.main = !altColor;
     }
 
+    /**
+     * Specifies whether this {@link FancyMessage} should use the main-color.
+     * @param mainColor Whether this {@link FancyMessage} should use the main-color.
+     */
     public void setMainColor(boolean mainColor) {
         this.main = mainColor;
     }

@@ -13,12 +13,15 @@ import org.bukkit.entity.Player;
 
 import java.util.Date;
 
+/**
+ * A player-session.
+ */
 public class MVPlayerSession {
 
     private Player player; // Player holder, may be unnecessary.
 
-    private Long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
-    private Long messageLast = 0L; // Timestamp for the Players last Alert Message.
+    private long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
+    private long messageLast = 0L; // Timestamp for the Players last Alert Message.
 
     private Configuration config; // Configuration file to find out Cooldown Timers.
 
@@ -35,13 +38,10 @@ public class MVPlayerSession {
 
     /**
      * Grab whether the cooldown on Portal use has expired or not.
+     * @return True if the {@link Player} associated with this player-session is teleportable.
      */
     public boolean getTeleportable() {
-        Long time = (new Date()).getTime();
-        if ((time - this.teleportLast) > this.config.getInt("portalcooldown", 5000)) {
-            return true;
-        } else {
-            return false;
-        }
+        long time = (new Date()).getTime();
+        return ((time - this.teleportLast) > this.config.getInt("portalcooldown", 5000));
     }
 }

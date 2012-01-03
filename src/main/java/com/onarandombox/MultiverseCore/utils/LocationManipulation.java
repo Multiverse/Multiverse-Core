@@ -15,10 +15,13 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
-import java.util.Formatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class to manipulate locations.
+ */
 public class LocationManipulation {
     private LocationManipulation() { }
 
@@ -33,6 +36,9 @@ public class LocationManipulation {
         orientationInts.put("sw", 45);
         orientationInts.put("w", 90);
         orientationInts.put("nw", 135);
+
+        // "freeze" the map:
+        orientationInts = Collections.unmodifiableMap(orientationInts);
     }
 
     /**
@@ -49,10 +55,8 @@ public class LocationManipulation {
         if (location == null) {
             return "";
         }
-        StringBuilder l = new StringBuilder();
-        Formatter formatter = new Formatter(l);
-        formatter.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        return formatter.toString();
+        return String.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
+                location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     /**

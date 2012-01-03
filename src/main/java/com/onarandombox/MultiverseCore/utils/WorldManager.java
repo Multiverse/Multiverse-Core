@@ -26,7 +26,12 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -131,7 +136,8 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin, this.plugin.getServer().getWorld(name).getSeed(), generator, useSpawnAdjust);
+        MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin,
+                this.plugin.getServer().getWorld(name).getSeed(), generator, useSpawnAdjust);
         this.worldPurger.purgeWorld(null, mvworld);
         this.worlds.put(name, mvworld);
         if (this.unloadedWorlds.contains(name)) {
@@ -147,8 +153,8 @@ public class WorldManager implements MVWorldManager {
      * @return True if the plugin exists and is enabled, false if not.
      */
     private boolean pluginExists(String generator) {
-        Plugin plugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
-        return plugin != null && plugin.isEnabled();
+        Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
+        return myPlugin != null && myPlugin.isEnabled();
     }
 
     /**
@@ -160,12 +166,11 @@ public class WorldManager implements MVWorldManager {
             return null;
         }
 
-        Plugin plugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
-        if (plugin == null) {
+        Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
+        if (myPlugin == null) {
             return null;
         } else {
-            return plugin.getDefaultWorldGenerator(worldName, generatorID);
-
+            return myPlugin.getDefaultWorldGenerator(worldName, generatorID);
         }
     }
 
@@ -452,9 +457,9 @@ public class WorldManager implements MVWorldManager {
     @Override
     public void loadDefaultWorlds() {
         this.ensureConfigIsPrepared();
-        List<World> worlds = this.plugin.getServer().getWorlds();
+        List<World> myWorlds = this.plugin.getServer().getWorlds();
         Set<String> worldStrings = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
-        for (World w : worlds) {
+        for (World w : myWorlds) {
             String name = w.getName();
             if (!worldStrings.contains(name)) {
                 if (this.defaultGens.containsKey(name)) {
@@ -611,6 +616,10 @@ public class WorldManager implements MVWorldManager {
         return this.unloadedWorlds;
     }
 
+    /**
+     * Gets the {@link FileConfiguration} that this {@link WorldManager} is using.
+     * @return The {@link FileConfiguration} that this {@link WorldManager} is using.
+     */
     public FileConfiguration getConfigWorlds() {
         return this.configWorlds;
     }

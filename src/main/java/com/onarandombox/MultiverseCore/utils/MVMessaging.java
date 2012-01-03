@@ -7,13 +7,15 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility-class for messaging.
+ */
 public class MVMessaging {
     private Map<String, Long> sentList;
     private int cooldown;
@@ -23,6 +25,10 @@ public class MVMessaging {
         this.cooldown = 5000;
     }
 
+    /**
+     * Sets the message-cooldown.
+     * @param milliseconds The new message-cooldown in milliseconds.
+     */
     public void setCooldown(int milliseconds) {
         this.cooldown = milliseconds;
     }
@@ -70,16 +76,16 @@ public class MVMessaging {
         return false;
     }
 
-    private void sendMessage(CommandSender sender, String message) {
-        sender.sendMessage(message);
-    }
-
     private void sendMessages(CommandSender sender, String[] messages) {
         for (String s : messages) {
             sender.sendMessage(s);
         }
     }
 
+    /**
+     * Gets the message-cooldown.
+     * @return The message-cooldown.
+     */
     public int getCooldown() {
         return cooldown;
     }

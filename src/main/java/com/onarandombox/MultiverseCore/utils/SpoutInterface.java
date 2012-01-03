@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.utils;
 
 import org.getspout.spoutapi.SpoutManager;
 
+/**
+ * A helper-class holding the {@link SpoutManager}.
+ */
 public class SpoutInterface {
     private SpoutManager spoutManager;
 
@@ -16,6 +19,10 @@ public class SpoutInterface {
         this.spoutManager = SpoutManager.getInstance();
     }
 
+    /**
+     * Gets the {@link SpoutManager}.
+     * @return The {@link SpoutManager}.
+     */
     public SpoutManager getManager() {
         return this.spoutManager;
     }
