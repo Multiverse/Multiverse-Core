@@ -266,8 +266,13 @@ public class MVPermissions implements PermissionsInterface {
         return true;
     }
 
-    // TODO remove this?
-    private Permission addPermission(String string, PermissionDefault defaultValue) {
+    /**
+     * Adds a permission.
+     * @param string The permission as {@link String}.
+     * @param defaultValue The default-value.
+     * @return The permission as {@link Permission}.
+     */
+    public Permission addPermission(String string, PermissionDefault defaultValue) {
         if (this.plugin.getServer().getPluginManager().getPermission(string) == null) {
             Permission permission = new Permission(string, defaultValue);
             this.plugin.getServer().getPluginManager().addPermission(permission);
