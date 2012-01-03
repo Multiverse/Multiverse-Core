@@ -12,20 +12,26 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.logging.Level;
 
+/**
+ * Multiverse's {@link PlayerListener}.
+ */
 public class MVPlayerListener extends PlayerListener {
     private MultiverseCore plugin;
-    private SafeTTeleporter mvteleporter;
     private MVWorldManager worldManager;
     private PermissionTools pt;
 
@@ -107,7 +113,7 @@ public class MVPlayerListener extends PlayerListener {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
             this.plugin.log(Level.FINE, "Player joined first!");
-            if(MultiverseCore.FirstSpawnOverride) {
+            if (MultiverseCore.FirstSpawnOverride) {
                 this.plugin.log(Level.FINE, "Moving NEW player to(firstspawnoverride): " + worldManager.getFirstSpawnWorld().getSpawnLocation());
                 this.spawnNewPlayer(p);
             }
@@ -154,7 +160,8 @@ public class MVPlayerListener extends PlayerListener {
                 teleporter = this.plugin.getServer().getPlayer(teleporterName);
             }
         }
-        this.plugin.log(Level.FINEST, "Inferred sender '" + teleporter + "' from name '" + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
+        this.plugin.log(Level.FINEST, String.format("Inferred sender '%s' from name '%s', fetched from name '%s'",
+                teleporter, teleporterName, teleportee.getName()));
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
@@ -166,24 +173,25 @@ public class MVPlayerListener extends PlayerListener {
         // Charge the teleporter
         event.setCancelled(!pt.playerHasMoneyToEnter(fromWorld, toWorld, teleporter, teleportee, true));
         if (event.isCancelled() && teleporter != null) {
-            this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
-                    "' because '" + teleporter.getName() + "' don't have the FUNDS required to enter it.");
+            this.plugin.log(Level.FINE, String.format("Player '%s' was DENIED ACCESS to '%s' because '%s' don't have the FUNDS required to enter it.",
+                    teleportee.getName(), event.getTo().getWorld().getName(), teleporter.getName()));
             return;
         }
         if (MultiverseCore.EnforceAccess) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
             if (event.isCancelled() && teleporter != null) {
-                this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
-                        "' because '" + teleporter.getName() + "' don't have: multiverse.access." + event.getTo().getWorld().getName());
+                this.plugin.log(Level.FINE, String.format("Player '%s' was DENIED ACCESS to '%s' because '%s' don't have: multiverse.access.%s",
+                        teleportee.getName(), event.getTo().getWorld().getName(), teleporter.getName(), event.getTo().getWorld().getName()));
             }
         } else {
-            this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' because enforceaccess is off.");
+            this.plugin.log(Level.FINE, String.format("Player '%s' was allowed to go to '%s' because enforceaccess is off.",
+                    teleportee.getName(), event.getTo().getWorld().getName()));
         }
     }
 
     @Override
     public void onPlayerPortal(PlayerPortalEvent event) {
-        if (event.isCancelled() || event.getFrom() == null) {
+        if (event.isCancelled() || (event.getFrom() == null)) {
             return;
         }
         // The adjust should have happened much earlier.
@@ -199,24 +207,30 @@ public class MVPlayerListener extends PlayerListener {
         }
         event.setCancelled(!pt.playerHasMoneyToEnter(fromWorld, toWorld, event.getPlayer(), event.getPlayer(), true));
         if (event.isCancelled()) {
-            this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
-                    "' because they don't have the FUNDS required to enter.");
+            this.plugin.log(Level.FINE, String.format("Player '%s' was DENIED ACCESS to '%s' because they don't have the FUNDS required to enter.",
+                    event.getPlayer().getName(), event.getTo().getWorld().getName()));
             return;
         }
         if (MultiverseCore.EnforceAccess) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
-                this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName() +
-                        "' because they don't have: multiverse.access." + event.getTo().getWorld().getName());
+                this.plugin.log(Level.FINE, String.format("Player '%s' was DENIED ACCESS to '%s' because they don't have: multiverse.access.%s",
+                        event.getPlayer().getName(), event.getTo().getWorld().getName(), event.getTo().getWorld().getName()));
             }
         } else {
-            this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName() + "' was allowed to go to '" + event.getTo().getWorld().getName() + "' because enforceaccess is off.");
+            this.plugin.log(Level.FINE, String.format("Player '%s' was allowed to go to '%s' because enforceaccess is off.",
+                    event.getPlayer().getName(), event.getTo().getWorld().getName()));
         }
     }
 
-    private void spawnNewPlayer(Player player) {
+    private void spawnNewPlayer(final Player player) {
         // Spawn the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new SpawnNewbie(player, this.plugin.getMVWorldManager().getFirstSpawnWorld().getSpawnLocation()), 1L);
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
+            new Runnable() {
+                public void run() {
+                    player.teleport(plugin.getMVWorldManager().getFirstSpawnWorld().getSpawnLocation());
+                }
+            }, 1L);
     }
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameMode(Player player, World world) {
@@ -227,53 +241,34 @@ public class MVPlayerListener extends PlayerListener {
         }
     }
 
-    public void handleGameMode(Player player, MultiverseWorld world) {
+    /**
+     * Handles the gamemode for the specified {@link Player}.
+     * @param player The {@link Player}.
+     * @param world The world the player is in.
+     */
+    public void handleGameMode(final Player player, final MultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
             this.plugin.log(Level.FINE, "Handeling gamemode for player: " + player.getName());
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new HandleGameMode(player, world), 1L);
+            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
+                new Runnable() {
+                    public void run() {
+                        // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
+                        if (player.getWorld() == world.getCBWorld()) {
+                            MultiverseCore.staticLog(Level.FINE, "Handeling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
+                            MultiverseCore.staticLog(Level.FINE, "PWorld: " + player.getWorld());
+                            MultiverseCore.staticLog(Level.FINE, "AWorld: " + world);
+                            player.setGameMode(world.getGameMode());
+                        } else {
+                            MultiverseCore.staticLog(Level.FINE,
+                                    String.format("The gamemode was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'",
+                                    player.getName(), player.getWorld().getName(), world.getName()));
+                        }
+                    }
+                }, 1L);
         } else {
             this.plugin.log(Level.FINE, "Player: " + player.getName() + " is IMMUNE to gamemode changes!");
-        }
-    }
-
-    private class SpawnNewbie implements Runnable {
-        private Player player;
-        private Location spawn;
-
-        private SpawnNewbie(Player player, Location spawn) {
-            this.player = player;
-            this.spawn = spawn;
-        }
-        @Override
-        public void run() {
-            this.player.teleport(this.spawn);
-        }
-    }
-
-    /**
-     * The following private class is used to handle player game mode changes within a scheduler.
-     */
-    private class HandleGameMode implements Runnable {
-
-        private Player player;
-        private MultiverseWorld world;
-
-        private HandleGameMode(Player player, MultiverseWorld world) {
-            this.player = player;
-            this.world = world;
-        }
-
-        @Override
-        public void run() {
-            // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
-            if (player.getWorld().getName().equals(world.getCBWorld().getName())) {
-                MultiverseCore.staticLog(Level.FINE, "Handeling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
-                MultiverseCore.staticLog(Level.FINE, "PWorld: " + player.getWorld());
-                MultiverseCore.staticLog(Level.FINE, "AWorld: " + world);
-                player.setGameMode(world.getGameMode());
-            }
         }
     }
 }
