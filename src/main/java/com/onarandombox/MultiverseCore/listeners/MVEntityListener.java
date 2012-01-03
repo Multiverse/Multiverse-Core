@@ -29,6 +29,9 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Multiverse's {@link EntityListener}.
+ */
 public class MVEntityListener extends EntityListener {
 
     private MultiverseCore plugin;
@@ -73,6 +76,7 @@ public class MVEntityListener extends EntityListener {
 
     /**
      * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
+     * @param event The event.
      */
     @Override
     public void onCreatureSpawn(CreatureSpawnEvent event) {

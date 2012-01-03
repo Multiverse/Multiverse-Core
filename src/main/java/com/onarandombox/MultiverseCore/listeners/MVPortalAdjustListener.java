@@ -11,11 +11,17 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.Event.Type;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerPortalEvent;
 
 import java.util.logging.Level;
 
+/**
+ * Multiverse's second {@link PlayerListener}.
+ * <p>
+ * Used to double-monitor {@link Type#PLAYER_PORTAL}.
+ */
 public class MVPortalAdjustListener extends PlayerListener {
 
     private MultiverseCore plugin;

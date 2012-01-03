@@ -16,6 +16,9 @@ import org.bukkit.event.server.ServerListener;
 import java.util.Arrays;
 import java.util.logging.Level;
 
+/**
+ * Multiverse's {@link ServerListener}.
+ */
 public class MVPluginListener extends ServerListener {
 
     private MultiverseCore plugin;
@@ -24,7 +27,10 @@ public class MVPluginListener extends ServerListener {
         this.plugin = plugin;
     }
 
-    /** Keep an eye out for Plugins which we can utilize. */
+    /**
+     * Keep an eye out for Plugins which we can utilize.
+     * @param event The event.
+     */
     @Override
     public void onPluginEnable(PluginEnableEvent event) {
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
@@ -38,7 +44,10 @@ public class MVPluginListener extends ServerListener {
         }
     }
 
-    /** We'll check if any of the plugins we rely on decide to Disable themselves. */
+    /**
+     * We'll check if any of the plugins we rely on decide to Disable themselves.
+     * @param event The event.
+     */
     @Override
     public void onPluginDisable(PluginDisableEvent event) {
         // TODO: Disable econ when it disables.

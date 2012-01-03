@@ -13,6 +13,9 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.weather.WeatherListener;
 
+/**
+ * Multiverse's {@link WeatherListener}.
+ */
 public class MVWeatherListener extends WeatherListener {
     private MultiverseCore plugin;
 
@@ -22,7 +25,6 @@ public class MVWeatherListener extends WeatherListener {
 
     @Override
     public void onWeatherChange(WeatherChangeEvent event) {
-
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
@@ -32,7 +34,6 @@ public class MVWeatherListener extends WeatherListener {
 
     @Override
     public void onThunderChange(ThunderChangeEvent event) {
-
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled

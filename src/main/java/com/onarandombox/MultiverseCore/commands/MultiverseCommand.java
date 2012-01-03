@@ -23,6 +23,9 @@ public abstract class MultiverseCommand extends Command {
      * The reference to the core.
      */
     protected MultiverseCore plugin;
+    /**
+     * The reference to {@link MVMessaging}.
+     */
     protected MVMessaging messaging;
 
     public MultiverseCommand(MultiverseCore plugin) {

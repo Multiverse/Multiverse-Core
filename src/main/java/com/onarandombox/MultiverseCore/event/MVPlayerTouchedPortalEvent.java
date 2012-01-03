@@ -26,10 +26,18 @@ public class MVPlayerTouchedPortalEvent extends Event implements Cancellable {
         this.l = l;
     }
 
+    /**
+     * Gets the {@link Location} of the portal-block that was touched.
+     * @return The {@link Location} of the portal-block that was touched.
+     */
     public Location getBlockTouched() {
         return this.l;
     }
 
+    /**
+     * Gets the {@link Player} that's touching the portal.
+     * @return The {@link Player} that's touching the portal.
+     */
     public Player getPlayer() {
         return this.p;
     }
