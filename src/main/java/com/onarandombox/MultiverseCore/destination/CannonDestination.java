@@ -81,9 +81,11 @@ public class CannonDestination implements MVDestination {
         }
 
         try {
+            // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
             Float.parseFloat(parsed.get(3));
             Float.parseFloat(parsed.get(4));
             Float.parseFloat(parsed.get(5));
+            // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         } catch (NumberFormatException e) {
             return false;
         }
@@ -151,9 +153,11 @@ public class CannonDestination implements MVDestination {
         this.location.setZ(coords[2]);
 
         try {
+            // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
             this.location.setPitch(Float.parseFloat(parsed.get(3)));
             this.location.setYaw(Float.parseFloat(parsed.get(4)));
             this.speed = Math.abs(Float.parseFloat(parsed.get(5)));
+            // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         } catch (NumberFormatException e) {
             this.isValid = false;
             return;
@@ -196,15 +200,6 @@ public class CannonDestination implements MVDestination {
         this.isValid = false;
     }
 
-    @Override
-    public String toString() {
-        if (isValid) {
-            return "ca:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY()
-                    + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ":" + this.speed;
-        }
-        return "i:Invalid Destination";
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -219,5 +214,14 @@ public class CannonDestination implements MVDestination {
     @Override
     public boolean useSafeTeleporter() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        if (isValid) {
+            return "ca:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY()
+                    + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ":" + this.speed;
+        }
+        return "i:Invalid Destination";
     }
 }

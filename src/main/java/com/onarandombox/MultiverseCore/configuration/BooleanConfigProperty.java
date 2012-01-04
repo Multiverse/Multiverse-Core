@@ -32,16 +32,25 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
         this.setValue(this.section.getBoolean(this.configNode, defaultValue));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Boolean value) {
         if (value == null) {
@@ -52,6 +61,9 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         if (value == null) {
@@ -64,18 +76,24 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

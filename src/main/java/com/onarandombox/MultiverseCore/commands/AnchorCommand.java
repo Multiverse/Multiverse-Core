@@ -35,7 +35,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething " + ChatColor.RED + "-d");
         this.addCommandExample("/mv anchors ");
         this.setPermission("multiverse.core.anchor", "Allows management of Anchor Destinations.", PermissionDefault.OP);
-        this.setItemsPerPage(8);
+        this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     private List<String> getFancyAnchorList(Player p) {

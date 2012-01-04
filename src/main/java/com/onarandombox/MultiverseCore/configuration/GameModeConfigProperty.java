@@ -33,16 +33,25 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GameMode getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(GameMode value) {
         if (value == null) {
@@ -53,6 +62,9 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         try {
@@ -66,18 +78,24 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

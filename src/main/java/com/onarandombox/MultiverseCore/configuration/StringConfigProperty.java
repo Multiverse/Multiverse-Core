@@ -32,16 +32,25 @@ public class StringConfigProperty implements MVConfigProperty<String> {
         this.parseValue(this.section.getString(this.configNode, defaultValue));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         if (value == null) {
@@ -51,21 +60,25 @@ public class StringConfigProperty implements MVConfigProperty<String> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(String value) {
         if (value == null) {
@@ -74,5 +87,10 @@ public class StringConfigProperty implements MVConfigProperty<String> {
         this.value = value;
         this.section.set(configNode, this.value);
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

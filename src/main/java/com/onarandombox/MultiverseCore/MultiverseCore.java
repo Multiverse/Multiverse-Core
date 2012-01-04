@@ -70,6 +70,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Multiverse should stop other plugins from teleporting players
     // to worlds.
     // TODO This is REALLY bad style! We have to change this!
+    // No, I'm NOT going to suppress these warnings because we HAVE TO CHANGE THIS!
     public static boolean EnforceAccess;
     public static boolean PrefixChat;
     public static boolean DisplayPermErrors;
@@ -367,7 +368,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Should permissions errors display to users?
         DisplayPermErrors = this.multiverseConfig.getBoolean("displaypermerrors", true);
 
-        this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
+        this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000)); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         // Update the version of the config!
         this.multiverseConfig.set("version", coreDefaults.get("version"));
 

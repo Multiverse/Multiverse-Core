@@ -106,7 +106,7 @@ public class BlockSafety {
      */
     public Location getTopBlock(Location l) {
         Location check = l.clone();
-        check.setY(127);
+        check.setY(127); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         while (check.getY() > 0) {
             if (this.playerCanSpawnHereSafely(check)) {
                 return check;
@@ -124,7 +124,7 @@ public class BlockSafety {
     public Location getBottomBlock(Location l) {
         Location check = l.clone();
         check.setY(0);
-        while (check.getY() < 127) {
+        while (check.getY() < 127) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             if (this.playerCanSpawnHereSafely(check)) {
                 return check;
             }

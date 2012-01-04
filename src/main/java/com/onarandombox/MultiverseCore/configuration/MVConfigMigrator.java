@@ -17,8 +17,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-@SuppressWarnings("deprecation")
+/*
+ * This is a mess, so I'm just going to suppress all warnings here.
+ * BEGIN CHECKSTYLE-SUPPRESSION: ALL
+ */
+
+/**
+ * @deprecated This isn't used any more, is it?
+ */
+@Deprecated
 public abstract class MVConfigMigrator {
+
     public List<String> createdDefaults = new ArrayList<String>();
 
     public abstract boolean migrate(String name, File folder);
@@ -60,3 +69,7 @@ public abstract class MVConfigMigrator {
         return oldFolder;
     }
 }
+
+/*
+ * END CHECKSTYLE-SUPPRESSION: ALL
+ */

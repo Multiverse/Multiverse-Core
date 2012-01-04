@@ -33,16 +33,25 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public EnglishChatColor getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(EnglishChatColor value) {
         if (value == null) {
@@ -53,6 +62,9 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         EnglishChatColor color = EnglishChatColor.fromString(value);
@@ -63,18 +75,24 @@ public class ColorConfigProperty implements MVConfigProperty<EnglishChatColor> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

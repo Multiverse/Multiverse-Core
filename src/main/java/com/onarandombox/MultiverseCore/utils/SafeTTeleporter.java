@@ -61,8 +61,8 @@ public class SafeTTeleporter {
         // TODO: Make this configurable
         Location safe = checkAboveAndBelowLocation(l, tolerance, radius);
         if (safe != null) {
-            safe.setX(safe.getBlockX() + .5);
-            safe.setZ(safe.getBlockZ() + .5);
+            safe.setX(safe.getBlockX() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+            safe.setZ(safe.getBlockZ() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
             this.plugin.log(Level.FINE, "Hey! I found one: " + LocationManipulation.strCoordsRaw(safe));
         } else {
             this.plugin.log(Level.FINE, "Uh oh! No safe place found!");

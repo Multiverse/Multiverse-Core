@@ -36,7 +36,8 @@ public class ModifyClearCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "clear " + ChatColor.RED + "animals");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "clear " + ChatColor.RED + "monsters");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "clear " + ChatColor.RED + "worldblacklist");
-        this.setPermission("multiverse.core.modify.clear", "Removes all values from a property. This will work on properties that contain lists.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.modify.clear",
+                "Removes all values from a property. This will work on properties that contain lists.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
 
@@ -76,9 +77,11 @@ public class ModifyClearCommand extends MultiverseCommand {
         }
         if (world.clearList(property)) {
             sender.sendMessage(property + " was cleared. It contains 0 values now.");
-            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + property + ChatColor.WHITE + " was " + ChatColor.GREEN + "CLEARED" + ChatColor.WHITE + ". It contains " + ChatColor.LIGHT_PURPLE + "0" + ChatColor.WHITE + " values now.");
+            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + property + ChatColor.WHITE + " was "
+                    + ChatColor.GREEN + "CLEARED" + ChatColor.WHITE + ". It contains " + ChatColor.LIGHT_PURPLE + "0" + ChatColor.WHITE + " values now.");
         } else {
-            sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.GOLD + property + ChatColor.WHITE + " was " + ChatColor.GOLD + "NOT" + ChatColor.WHITE + " cleared.");
+            sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.GOLD + property
+                    + ChatColor.WHITE + " was " + ChatColor.GOLD + "NOT" + ChatColor.WHITE + " cleared.");
         }
     }
 

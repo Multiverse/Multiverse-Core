@@ -42,6 +42,6 @@ public class MVPlayerSession {
      */
     public boolean getTeleportable() {
         long time = (new Date()).getTime();
-        return ((time - this.teleportLast) > this.config.getInt("portalcooldown", 5000));
+        return ((time - this.teleportLast) > this.config.getInt("portalcooldown", 5000)); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 }

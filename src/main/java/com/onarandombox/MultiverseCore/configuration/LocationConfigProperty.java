@@ -34,37 +34,50 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.setValue(this.getLocationFromConfig(defaultValue));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         Location parsed = LocationManipulation.stringToLocation(value);
         return this.setValue(parsed);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return LocationManipulation.strCoordsRaw(this.value);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Location value) {
         if (value == null) {
@@ -93,5 +106,10 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
             return found;
         }
         return defaultValue;
+    }
+
+    @Override
+    public String toString() {
+        return LocationManipulation.strCoordsRaw(this.value);
     }
 }

@@ -22,7 +22,7 @@ public class MVMessaging {
 
     public MVMessaging() {
         this.sentList = new HashMap<String, Long>();
-        this.cooldown = 5000;
+        this.cooldown = 5000; // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     /**

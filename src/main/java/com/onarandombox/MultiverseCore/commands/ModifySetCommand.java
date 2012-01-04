@@ -51,7 +51,8 @@ public class ModifySetCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "heal " + ChatColor.RED + "true");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "adjustspawn " + ChatColor.RED + "false");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "spawn");
-        this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. "
+                + "If you do not include a world, the current world will be used.", PermissionDefault.OP);
     }
 
     @Override
@@ -108,7 +109,8 @@ public class ModifySetCommand extends MultiverseCommand {
         }
         try {
             if (world.setProperty(property, value, sender)) {
-                sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
+                sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property
+                        + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
             } else {
                 sender.sendMessage(world.getProperty(property, Object.class).getHelp());
             }

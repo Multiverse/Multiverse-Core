@@ -33,16 +33,25 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Difficulty getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Difficulty value) {
         if (value == null) {
@@ -53,6 +62,9 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         try {
@@ -66,18 +78,24 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

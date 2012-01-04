@@ -28,6 +28,7 @@ public class LocationManipulation {
     private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
 
     static {
+        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         orientationInts.put("n", 180);
         orientationInts.put("ne", 225);
         orientationInts.put("e", 270);
@@ -39,6 +40,7 @@ public class LocationManipulation {
 
         // "freeze" the map:
         orientationInts = Collections.unmodifiableMap(orientationInts);
+        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
     /**
@@ -92,7 +94,7 @@ public class LocationManipulation {
         // Split the whole string, format is:
         // {'world', 'x,y,z'[, 'pitch', 'yaw']}
         String[] split = locationString.split(":");
-        if (split.length < 2 || split.length > 4) {
+        if (split.length < 2 || split.length > 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             return null;
         }
         // Split the xyz string, format is:
@@ -114,7 +116,7 @@ public class LocationManipulation {
             if (split.length >= 3) {
                 yaw = (float) Double.parseDouble(split[2]);
             }
-            if (split.length == 4) {
+            if (split.length == 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
                 pitch = (float) Double.parseDouble(split[3]);
             }
             return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
@@ -171,6 +173,7 @@ public class LocationManipulation {
      * @return The NESW Direction
      */
     public static String getDirection(Location location) {
+        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         double r = (location.getYaw() % 360) + 180;
         // Remember, these numbers are every 45 degrees with a 22.5 offset, to detect boundaries.
         String dir;
@@ -192,6 +195,7 @@ public class LocationManipulation {
             dir = "nw";
         else
             dir = "n";
+        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
         return dir;
     }

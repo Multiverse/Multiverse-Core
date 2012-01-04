@@ -32,7 +32,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         this.addKey("mvl");
         this.addKey("mv list");
         this.setPermission("multiverse.core.list.worlds", "Displays a listing of all worlds that you can enter.", PermissionDefault.OP);
-        this.setItemsPerPage(8);
+        this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     private List<String> getFancyWorldList(Player p) {

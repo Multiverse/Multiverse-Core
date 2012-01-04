@@ -32,16 +32,25 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
         this.setValue(this.section.getDouble(this.configNode, defaultValue));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Double getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Double value) {
         if (value == null) {
@@ -52,6 +61,9 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         try {
@@ -62,18 +74,24 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

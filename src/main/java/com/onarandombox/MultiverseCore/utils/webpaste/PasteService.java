@@ -37,6 +37,7 @@ public interface PasteService {
      * @param encodedData A URL-encoded String containing the full request to post to
      *                    the given URL. Can be the result of calling #encodeData().
      * @param url The URL to which to paste. Can be the result of calling #getPostURL().
+     * @throws PasteFailedException When pasting/posting the data failed.
      * @return The URL at which the new paste is visible.
      */
     String postData(String encodedData, URL url) throws PasteFailedException;

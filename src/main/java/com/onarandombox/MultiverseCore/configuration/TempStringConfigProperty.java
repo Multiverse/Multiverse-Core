@@ -28,20 +28,33 @@ public class TempStringConfigProperty implements MVConfigProperty<String> {
         this.method = method;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getValue() {
         return this.value;
     }
 
+    /**
+     * Gets the method used to set this {@link TempStringConfigProperty}.
+     * @return The name of that method.
+     */
     public String getMethod() {
         return this.method;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         if (value == null) {
@@ -51,21 +64,25 @@ public class TempStringConfigProperty implements MVConfigProperty<String> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return "";
     }
 
-    @Override
-    public String toString() {
-        return value;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(String value) {
         if (value == null) {
@@ -73,5 +90,10 @@ public class TempStringConfigProperty implements MVConfigProperty<String> {
         }
         this.value = value;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

@@ -5,6 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
+// TODO maybe remove this comment...?
 // This file is no longer licensed under that silly CC license. I have blanked it out and will start implementaiton of my own in a few days. For now there is no help.
 package com.onarandombox.MultiverseCore.commands;
 
@@ -36,7 +37,7 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
         this.addKey("mv search");
         this.addCommandExample("/mv help ?");
         this.setPermission("multiverse.help", "Displays a nice help menu.", PermissionDefault.TRUE);
-        this.setItemsPerPage(7);
+        this.setItemsPerPage(7); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     @Override

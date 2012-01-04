@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,14 +67,18 @@ public class MVWorld implements MultiverseWorld {
     private Map<String, String> propertyAliases;
     private Permission ignoreperm;
 
-    private static final Map<String, String> staticTimes = new HashMap<String, String>();
+    private static final Map<String, String> TIME_ALIASES;
 
     static {
+        Map<String, String> staticTimes = new HashMap<String, String>();
         staticTimes.put("morning", "8:00");
         staticTimes.put("day", "12:00");
         staticTimes.put("noon", "12:00");
         staticTimes.put("midnight", "0:00");
         staticTimes.put("night", "20:00");
+
+        // now set TIME_ALIASES to a "frozen" map
+        TIME_ALIASES = Collections.unmodifiableMap(staticTimes);
     }
 
     public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString, boolean fixSpawn) {
@@ -239,7 +244,7 @@ public class MVWorld implements MultiverseWorld {
 
     private double getDefaultScale(Environment environment) {
         if (environment == Environment.NETHER) {
-            return 8.0;
+            return 8.0; // SUPPRESS CHECKSTYLE: MagicNumberCheck
         }
         return 1.0;
     }
@@ -931,7 +936,8 @@ public class MVWorld implements MultiverseWorld {
                 if (newerSpawn != null) {
                     this.setSpawnLocation(newerSpawn);
                     configLocation = this.getSpawnLocation();
-                    this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(configLocation));
+                    this.plugin.log(Level.INFO, "New Spawn for '" + this.getName()
+                            + "' is Located at: " + LocationManipulation.locationToString(configLocation));
                 } else {
                     this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
                 }
@@ -1052,8 +1058,12 @@ public class MVWorld implements MultiverseWorld {
         long time = this.getCBWorld().getTime();
         // I'm tired, so they get time in 24 hour for now.
         // Someone else can add 12 hr format if they want :P
+
+        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         int hours = (int) ((time / 1000 + 8) % 24);
         int minutes = (int) (60 * (time % 1000) / 1000);
+        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
+
         return String.format("%d:%02d", hours, minutes);
     }
 
@@ -1061,9 +1071,10 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
+    // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     public boolean setTime(String timeAsString) {
-        if (staticTimes.containsKey(timeAsString.toLowerCase())) {
-            return this.setTime(staticTimes.get(timeAsString.toLowerCase()));
+        if (TIME_ALIASES.containsKey(timeAsString.toLowerCase())) {
+            return this.setTime(TIME_ALIASES.get(timeAsString.toLowerCase()));
         }
         // Regex that extracts a time in the following formats:
         // 11:11pm, 11:11, 23:11, 1111, 1111p, and the aliases at the top of this file.
@@ -1087,7 +1098,7 @@ public class MVWorld implements MultiverseWorld {
             }
         }
         // Translate 24th hour to 0th hour.
-        if (hour == 24) {
+        if (hour == 24) { // SUPPRESS CHECKSTYLE MagicNumberCheck
             hour = 0;
         }
         // Clamp the hour
@@ -1110,6 +1121,7 @@ public class MVWorld implements MultiverseWorld {
         this.getCBWorld().setTime((long) totaltime);
         return true;
     }
+    // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
     @Override
     public String toString() {

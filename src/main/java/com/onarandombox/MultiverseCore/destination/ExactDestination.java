@@ -53,7 +53,7 @@ public class ExactDestination implements MVDestination {
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
-        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+        if (!(parsed.size() == 3 || parsed.size() == 5)) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             return false;
         }
         // If it's not an Exact type
@@ -76,7 +76,7 @@ public class ExactDestination implements MVDestination {
 
         try {
             Float.parseFloat(parsed.get(3));
-            Float.parseFloat(parsed.get(4));
+            Float.parseFloat(parsed.get(4)); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         } catch (NumberFormatException e) {
             return false;
         }
@@ -111,7 +111,7 @@ public class ExactDestination implements MVDestination {
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
-        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+        if (!(parsed.size() == 3 || parsed.size() == 5)) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             this.isValid = false;
             return;
         }
@@ -152,7 +152,7 @@ public class ExactDestination implements MVDestination {
 
         try {
             this.location.setPitch(Float.parseFloat(parsed.get(3)));
-            this.location.setYaw(Float.parseFloat(parsed.get(4)));
+            this.location.setYaw(Float.parseFloat(parsed.get(4))); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         } catch (NumberFormatException e) {
             this.isValid = false;
             return;
