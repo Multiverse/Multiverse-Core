@@ -71,7 +71,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // to worlds.
     // TODO This is REALLY bad style! We have to change this!
     public static boolean EnforceAccess;
-    public static boolean EnforceGameModes;
     public static boolean PrefixChat;
     public static boolean DisplayPermErrors;
     public static boolean TeleportIntercept;
@@ -360,7 +359,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         GlobalDebug = this.multiverseConfig.getInt("debug", 0);
         // Lets cache these values due to the fact that they will be accessed many times.
         EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
-        EnforceGameModes = this.multiverseConfig.getBoolean("enforcegamemodes", true);
         PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
         // Should MV Intercept teleports by other plugins?
         TeleportIntercept = this.multiverseConfig.getBoolean("teleportintercept", true);
@@ -370,6 +368,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         DisplayPermErrors = this.multiverseConfig.getBoolean("displaypermerrors", true);
 
         this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000));
+        // Update the version of the config!
+        this.multiverseConfig.set("version", coreDefaults.get("version"));
+
+        // Remove old values.
+        this.multiverseConfig.set("enforcegamemodes", null);
+        this.multiverseConfig.set("bedrespawn", null);
+        this.multiverseConfig.set("opfallback", null);
+
         this.saveMVConfigs();
     }
 

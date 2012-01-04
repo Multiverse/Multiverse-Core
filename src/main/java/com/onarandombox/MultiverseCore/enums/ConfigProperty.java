@@ -24,10 +24,6 @@ public enum ConfigProperty {
      */
     worldnameprefix,
     /**
-     * If value is set to false, Multiverse will NOT enforce world-gamemodes.
-     */
-    enforcegamemodes,
-    /**
      * If value is set to false, Multiverse will NOT enforce world access permissions.
      */
     enforceaccess,

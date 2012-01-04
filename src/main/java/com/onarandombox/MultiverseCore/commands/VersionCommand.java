@@ -58,7 +58,6 @@ public class VersionCommand extends MultiverseCommand {
         buffer.append("[Multiverse-Core]  teleportcooldown: ").append("Not yet IMPLEMENTED").append('\n');
         buffer.append("[Multiverse-Core]  worldnameprefix: ").append(MultiverseCore.PrefixChat).append('\n');
         buffer.append("[Multiverse-Core]  enforceaccess: ").append(MultiverseCore.EnforceAccess).append('\n');
-        buffer.append("[Multiverse-Core]  enforcegamemodes: ").append(MultiverseCore.EnforceGameModes).append('\n');
         buffer.append("[Multiverse-Core]  displaypermerrors: ").append(MultiverseCore.DisplayPermErrors).append('\n');
         buffer.append("[Multiverse-Core]  teleportintercept: ").append(MultiverseCore.TeleportIntercept).append('\n');
         buffer.append("[Multiverse-Core]  firstspawnoverride: ").append(MultiverseCore.FirstSpawnOverride).append('\n');

@@ -228,4 +228,20 @@ public class ConfigPropertyFactory {
     public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node, String help) {
         return new LocationConfigProperty(this.section, name, defaultValue, node, help);
     }
+
+    /**
+     * Constructs a new TempStringConfigProperty
+     *
+     * The boolean is a dummy. This is so I can differentiate from the non-temp one.
+     *
+     * @param name The name of this ConifgProperty
+     * @param defaultValue The default value.
+     * @param help What string is shown for help.
+     * @param method The method that should be executed.
+     * @param b Dummy.
+     * @return The TempStringConfigProperty
+     */
+    public TempStringConfigProperty getNewProperty(String name, String defaultValue, String help, String method, boolean b) {
+        return new TempStringConfigProperty(name, defaultValue, help, method);
+    }
 }

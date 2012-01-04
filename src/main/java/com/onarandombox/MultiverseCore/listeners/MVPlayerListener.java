@@ -122,19 +122,13 @@ public class MVPlayerListener extends PlayerListener {
             this.plugin.log(Level.FINE, "Player joined AGAIN!");
         }
         // Handle the Players GameMode setting for the new world.
-        if (MultiverseCore.EnforceGameModes) {
-            this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
-        }
+        this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
     }
 
     @Override
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
-        // Handle the Players GameMode setting for the new world.
-        if (MultiverseCore.EnforceGameModes) {
-            // Not yet implemented, but eventually we'll switch to this!
-            //if (this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld()).getEnforceGameMode())
-            this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
-        }
+        // Permissions now determine whether or not to handle a gamemode.
+        this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
     }
 
     @Override
@@ -232,6 +226,7 @@ public class MVPlayerListener extends PlayerListener {
                 }
             }, 1L);
     }
+
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameMode(Player player, World world) {
 

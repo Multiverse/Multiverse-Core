@@ -533,4 +533,23 @@ public interface MultiverseWorld {
      * @return All property names, with alternating colors.
      */
     String getAllPropertyNames();
+
+    /**
+     * Sets the current time in a world.
+     *
+     * This method will take the following formats:
+     * 11:37am
+     *  4:30p
+     *  day(morning), night, noon, midnight
+     *
+     * @param timeAsString The formatted time to set the world to.
+     * @return True if the time was set, false if not.
+     */
+    boolean setTime(String timeAsString);
+
+    /**
+     * Same as {@link #getTime()}, but returns a string.
+     * @return The time as a short string: 12:34pm
+     */
+    String getTime();
 }

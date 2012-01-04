@@ -8,14 +8,15 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.configuration.*;
+import com.onarandombox.MultiverseCore.configuration.ConfigPropertyFactory;
+import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
+import com.onarandombox.MultiverseCore.configuration.TempStringConfigProperty;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.utils.BlockSafety;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -31,11 +32,15 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The implementation of a Multiverse handled world.
@@ -60,6 +65,16 @@ public class MVWorld implements MultiverseWorld {
     private boolean canSave = false; // Prevents all the setters from constantly saving to the config when being called from the constructor.
     private Map<String, String> propertyAliases;
     private Permission ignoreperm;
+
+    private static final Map<String, String> staticTimes = new HashMap<String, String>();
+
+    static {
+        staticTimes.put("morning", "8:00");
+        staticTimes.put("day", "12:00");
+        staticTimes.put("noon", "12:00");
+        staticTimes.put("midnight", "0:00");
+        staticTimes.put("night", "20:00");
+    }
 
     public MVWorld(World world, FileConfiguration config, MultiverseCore instance, Long seed, String generatorString, boolean fixSpawn) {
         this.config = config;
@@ -112,7 +127,7 @@ public class MVWorld implements MultiverseWorld {
                 "Sorry, 'weather' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY,
                 "Difficulty must be set as one of the following: " + ChatColor.GREEN + "peaceful "
-                + ChatColor.AQUA + "easy " + ChatColor.GOLD + "normal " + ChatColor.RED + "hard"));
+                        + ChatColor.AQUA + "easy " + ChatColor.GOLD + "normal " + ChatColor.RED + "hard"));
         this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn",
                 "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn",
@@ -121,14 +136,14 @@ public class MVWorld implements MultiverseWorld {
                 "Currency must be an integer between -1 and the highest Minecraft item ID."));
         this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price",
                 "Price must be a double value. ex: " + ChatColor.GOLD + "1.2" + ChatColor.WHITE
-                + ". Set to a negative value to give players money for entering this world."));
+                        + ". Set to a negative value to give players money for entering this world."));
         this.propertyList.put("hunger", fac.getNewProperty("hunger", true,
                 "Sorry, 'hunger' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("autoheal", fac.getNewProperty("autoheal", true,
                 "Sorry, 'autoheal' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true,
                 "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE
-                + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+                        + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
         if (!fixSpawn) {
             this.setAdjustSpawn(false);
         }
@@ -141,6 +156,7 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("autoload", fac.getNewProperty("autoload", true,
                 "Set this to false ONLY if you don't want this world to load itself on server restart."));
         this.propertyList.put("bedrespawn", fac.getNewProperty("bedrespawn", true, "If a player dies in this world, shoudld they go to their bed?"));
+        this.propertyList.put("time", fac.getNewProperty("time", "", "Set the time to whatever you want! (Will NOT freeze time)", "setTime", true));
         this.getKnownProperty("spawn", Location.class).setValue(this.readSpawnFromConfig(this.getCBWorld()));
 
 
@@ -210,15 +226,12 @@ public class MVWorld implements MultiverseWorld {
             this.plugin.log(Level.WARNING, "Someone tried to set a scale <= 0, defaulting to 1.");
         }
 
-        // Set the gamemode
-        // TODO: Move this to a per world gamemode
-        if (MultiverseCore.EnforceGameModes) {
-            for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
-                this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to "
-                        + this.getKnownProperty("mode", GameMode.class).getValue().toString());
-                this.plugin.getPlayerListener().handleGameMode(p, this);
-            }
+        for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
+            this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to "
+                    + this.getKnownProperty("mode", GameMode.class).getValue().toString());
+            this.plugin.getPlayerListener().handleGameMode(p, this);
         }
+
 
         // Set the difficulty
         this.getCBWorld().setDifficulty(this.getKnownProperty("diff", Difficulty.class).getValue());
@@ -420,6 +433,7 @@ public class MVWorld implements MultiverseWorld {
 
     /**
      * {@inheritDoc}
+     *
      * @deprecated Use {@link #getProperty(String, Class)} instead
      */
     @Override
@@ -443,7 +457,7 @@ public class MVWorld implements MultiverseWorld {
     /**
      * This method should only be used from inside this class when it is KNOWN that the property exists.
      *
-     * @param name The known name of a property
+     * @param name     The known name of a property
      * @param expected The Type of the expected value
      * @return The property object.
      */
@@ -489,10 +503,31 @@ public class MVWorld implements MultiverseWorld {
             value = propertyChangeEvent.getNewValue();
         }
         if (property.parseValue(value)) {
+            if (property instanceof TempStringConfigProperty) {
+                return this.setActiveProperty((TempStringConfigProperty) property);
+            }
             this.saveConfig();
             return true;
         }
         return false;
+    }
+
+    private boolean setActiveProperty(TempStringConfigProperty property) {
+        try {
+            Method method = this.getClass().getMethod(property.getMethod(), String.class);
+            Object returnVal = method.invoke(this, (String) property.getValue());
+            if (returnVal instanceof Boolean) {
+                return (Boolean) returnVal;
+            } else {
+                return true;
+            }
+        } catch (NoSuchMethodException e) {
+            return false;
+        } catch (IllegalAccessException e) {
+            return false;
+        } catch (InvocationTargetException e) {
+            return false;
+        }
     }
 
     /**
@@ -706,6 +741,7 @@ public class MVWorld implements MultiverseWorld {
 
     /**
      * {@inheritDoc}
+     *
      * @deprecated This is deprecated.
      */
     @Override
@@ -1006,6 +1042,73 @@ public class MVWorld implements MultiverseWorld {
             color = (color == ChatColor.AQUA) ? ChatColor.GOLD : ChatColor.AQUA;
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTime() {
+        long time = this.getCBWorld().getTime();
+        // I'm tired, so they get time in 24 hour for now.
+        // Someone else can add 12 hr format if they want :P
+        int hours = (int) ((time / 1000 + 8) % 24);
+        int minutes = (int) (60 * (time % 1000) / 1000);
+        return String.format("%d:%02d", hours, minutes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setTime(String timeAsString) {
+        if (staticTimes.containsKey(timeAsString.toLowerCase())) {
+            return this.setTime(staticTimes.get(timeAsString.toLowerCase()));
+        }
+        // Regex that extracts a time in the following formats:
+        // 11:11pm, 11:11, 23:11, 1111, 1111p, and the aliases at the top of this file.
+        String timeRegex = "(\\d\\d?):?(\\d\\d)(a|p)?m?";
+        Pattern pattern = Pattern.compile(timeRegex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(timeAsString);
+        matcher.find();
+        int hour = 0;
+        double minute = 0;
+        int count = matcher.groupCount();
+        if (count >= 2) {
+            hour = Integer.parseInt(matcher.group(1));
+            minute = Integer.parseInt(matcher.group(2));
+        }
+        // If there were 4 matches (all, hour, min, ampm)
+        if (count == 4) {
+            // We want 24 hour time for calcs, but if they
+            // added a p[m], turn it into a 24 hr one.
+            if (matcher.group(3).equals("p")) {
+                hour += 12;
+            }
+        }
+        // Translate 24th hour to 0th hour.
+        if (hour == 24) {
+            hour = 0;
+        }
+        // Clamp the hour
+        if (hour > 23 || hour < 0) {
+            return false;
+        }
+        // Clamp the minute
+        if (minute > 59 || minute < 0) {
+            return false;
+        }
+        // 60 seconds in a minute, time needs to be in hrs * 1000, per
+        // the bukkit docs.
+        double totaltime = (hour + (minute / 60.0)) * 1000;
+        // Somehow there's an 8 hour offset...
+        totaltime -= 8000;
+        if (totaltime < 0) {
+            totaltime = 24000 + totaltime;
+        }
+
+        this.getCBWorld().setTime((long) totaltime);
+        return true;
     }
 
     @Override
