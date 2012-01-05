@@ -122,7 +122,7 @@ public class MVWorld implements MultiverseWorld {
                 "Alias must be a valid string."));
         this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color",
                 "Sorry, 'color' must either one of: " + EnglishChatColor.getAllColors()));
-        this.propertyList.put("pvp", fac.getNewProperty("pvp", true,
+        this.propertyList.put("pvp", fac.getNewProperty("pvp", true, "pvp",
                 "Sorry, 'pvp' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ".", "setActualPVP"));
         this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment), "scale",
                 "Scale must be a positive double value. ex: " + ChatColor.GOLD + "2.3", "verifyScaleSetProperly"));
@@ -201,13 +201,13 @@ public class MVWorld implements MultiverseWorld {
         }
     }
 
-    private boolean setActualPVP() {
+    public boolean setActualPVP() {
         // Set the PVP mode
         this.world.setPVP(this.getKnownProperty("pvp", Boolean.class).getValue());
         return true;
     }
 
-    private boolean verifyScaleSetProperly() {
+    public boolean verifyScaleSetProperly() {
         // Ensure the scale is above 0
         if (this.getKnownProperty("scale", Double.class).getValue() <= 0) {
             // Disallow negative or 0 scalings.
@@ -217,13 +217,13 @@ public class MVWorld implements MultiverseWorld {
         return true;
     }
 
-    private boolean setActualKeepSpawnInMemory() {
+    public boolean setActualKeepSpawnInMemory() {
         // Ensure the memory setting is correct
         this.world.setKeepSpawnInMemory(this.getKnownProperty("memory", Boolean.class).getValue());
         return true;
     }
 
-    private boolean setActualSpawn() {
+    public boolean setActualSpawn() {
         // Set the spawn location
         Location spawnLocation = this.getKnownProperty("spawn", Location.class).getValue();
         this.getCBWorld().setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ());
@@ -519,10 +519,13 @@ public class MVWorld implements MultiverseWorld {
                 return true;
             }
         } catch (NoSuchMethodException e) {
+            System.out.println(e);
             return false;
         } catch (IllegalAccessException e) {
+            System.out.println(e);
             return false;
         } catch (InvocationTargetException e) {
+            System.out.println(e);
             return false;
         }
     }
