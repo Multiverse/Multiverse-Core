@@ -10,20 +10,20 @@ package com.onarandombox.MultiverseCore.configuration;
 /**
  * A {@link String} config-property that will NOT be saved to the config.
  */
-public class TempStringConfigProperty implements MVConfigProperty<String> {
+public class ActiveStringConfigProperty implements MVActiveConfigProperty<String> {
     private String name;
     private String value;
     private String method;
     private String help;
 
-    public TempStringConfigProperty(String name, String defaultValue, String help) {
+    public ActiveStringConfigProperty(String name, String defaultValue, String help) {
         this.name = name;
         this.help = help;
         this.value = defaultValue;
         this.parseValue(defaultValue);
     }
 
-    public TempStringConfigProperty(String name, String defaultValue, String help, String method) {
+    public ActiveStringConfigProperty(String name, String defaultValue, String help, String method) {
         this(name, defaultValue, help);
         this.method = method;
     }
@@ -45,11 +45,26 @@ public class TempStringConfigProperty implements MVConfigProperty<String> {
     }
 
     /**
-     * Gets the method used to set this {@link TempStringConfigProperty}.
-     * @return The name of that method.
+     * {@inheritDoc}
      */
     public String getMethod() {
         return this.method;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setMethod(String methodName) {
+        this.method = methodName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return String.class;
     }
 
     /**

@@ -12,12 +12,13 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * A {@link Boolean} config-property.
  */
-public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
+public class BooleanConfigProperty implements MVActiveConfigProperty<Boolean> {
     private String name;
     private Boolean value;
     private String configNode;
     private ConfigurationSection section;
     private String help;
+    private String method;
 
     public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String help) {
         this(section, name, defaultValue, name, help);
@@ -30,6 +31,11 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
         this.help = help;
         this.value = defaultValue;
         this.setValue(this.section.getBoolean(this.configNode, defaultValue));
+    }
+
+    public BooleanConfigProperty(ConfigurationSection section, String name, Boolean defaultValue, String configNode, String help, String method) {
+        this(section, name, defaultValue, configNode, help);
+        this.method = method;
     }
 
     /**
@@ -95,5 +101,35 @@ public class BooleanConfigProperty implements MVConfigProperty<Boolean> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
+    @Override
+    public String getMethod() {
+        return this.method;
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        this.method = methodName;
+    }
+
+    /**
+     * Returns the class of the object we're looking at.
+     *
+     * @return the class of the object we're looking at.
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return Boolean.class;
     }
 }

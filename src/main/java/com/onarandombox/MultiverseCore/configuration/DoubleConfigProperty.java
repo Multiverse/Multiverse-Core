@@ -12,12 +12,13 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * A {@link Double} config-property.
  */
-public class DoubleConfigProperty implements MVConfigProperty<Double> {
+public class DoubleConfigProperty implements MVActiveConfigProperty<Double> {
     private String name;
     private Double value;
     private String configNode;
     private ConfigurationSection section;
     private String help;
+    private String method;
 
     public DoubleConfigProperty(ConfigurationSection section, String name, Double defaultValue, String help) {
         this(section, name, defaultValue, name, help);
@@ -30,6 +31,11 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
         this.help = help;
         this.value = defaultValue;
         this.setValue(this.section.getDouble(this.configNode, defaultValue));
+    }
+
+    public DoubleConfigProperty(ConfigurationSection section, String name, Double defaultValue, String configNode, String help, String method) {
+        this(section, name, defaultValue, configNode, help);
+        this.method = method;
     }
 
     /**
@@ -93,5 +99,35 @@ public class DoubleConfigProperty implements MVConfigProperty<Double> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
+    @Override
+    public String getMethod() {
+        return this.method;
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        this.method = methodName;
+    }
+
+    /**
+     * Returns the class of the object we're looking at.
+     *
+     * @return the class of the object we're looking at.
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return Double.class;
     }
 }

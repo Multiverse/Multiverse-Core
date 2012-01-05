@@ -13,7 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * A {@link Difficulty} config-property.
  */
-public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
+public class DifficultyConfigProperty implements MVActiveConfigProperty<Difficulty> {
     private String name;
     private Difficulty value;
     private String configNode;
@@ -97,5 +97,33 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
+    @Override
+    public String getMethod() {
+        return "setDifficulty";
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        // Unused here. This will only ever be setDifficulty.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return Difficulty.class;
     }
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 Copyright (c) the Multiverse Team 2012.                       *
  * Multiverse 2 is licensed under the BSD License.                            *
  * For more information please check the README.md file included              *
  * with this project.                                                         *
@@ -46,6 +46,22 @@ public class ConfigPropertyFactory {
     public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String node, String help) {
         return new BooleanConfigProperty(this.section, name, defaultValue, node, help);
     }
+
+    /**
+     * Constructs a new ActiveBooleanConfigProperty
+     *
+     * This property will execute 'method' after it has been successfully set.
+     *
+     * @param name The name of this ConifgProperty
+     * @param defaultValue The default value.
+     * @param help What string is shown for help.
+     * @param node
+     * @param method The method that should be executed.
+     * @return The ActiveStringConfigProperty
+     */
+     public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String help, String node, String method) {
+         return new BooleanConfigProperty(this.section, name, defaultValue, help, node, method);
+     }
 
     // Integers
     /**
@@ -98,6 +114,19 @@ public class ConfigPropertyFactory {
     public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node, String help) {
         return new DoubleConfigProperty(this.section, name, defaultValue, node, help);
     }
+
+    /**
+    * Constructs a new ConfigProperty.
+    *
+    * @param name The name of this ConfigProperty.
+    * @param defaultValue The default-value.
+    * @param node The name of the configuration-node this ConfigProperty will be stored as.
+    * @param help The text that's displayed when a user failed to set the property.
+    * @return The ConfigProperty.
+    */
+   public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node, String help, String method) {
+       return new DoubleConfigProperty(this.section, name, defaultValue, node, help, method);
+   }
 
     // Strings
     /**
@@ -230,18 +259,32 @@ public class ConfigPropertyFactory {
     }
 
     /**
-     * Constructs a new TempStringConfigProperty
+     * Constructs a new ConfigProperty.
      *
-     * The boolean is a dummy. This is so I can differentiate from the non-temp one.
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
+    public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node, String help, String method) {
+        return new LocationConfigProperty(this.section, name, defaultValue, node, help, method);
+    }
+
+    /**
+     * Constructs a new ActiveStringConfigProperty
+     *
+     * This property will execute 'method' after it has been successfully set.
+     * This string will NOT be saved to the config file.
      *
      * @param name The name of this ConifgProperty
      * @param defaultValue The default value.
      * @param help What string is shown for help.
      * @param method The method that should be executed.
-     * @param b Dummy.
-     * @return The TempStringConfigProperty
+     * @param saveToConfig Should the variable save to the config?
+     * @return The ActiveStringConfigProperty
      */
-    public TempStringConfigProperty getNewProperty(String name, String defaultValue, String help, String method, boolean b) {
-        return new TempStringConfigProperty(name, defaultValue, help, method);
+    public ActiveStringConfigProperty getNewProperty(String name, String defaultValue, String help, String method, boolean saveToConfig) {
+        return new ActiveStringConfigProperty(name, defaultValue, help, method);
     }
 }

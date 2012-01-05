@@ -9,8 +9,8 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.ConfigPropertyFactory;
+import com.onarandombox.MultiverseCore.configuration.MVActiveConfigProperty;
 import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
-import com.onarandombox.MultiverseCore.configuration.TempStringConfigProperty;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
@@ -123,20 +123,20 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("color", fac.getNewProperty("color", EnglishChatColor.WHITE, "alias.color",
                 "Sorry, 'color' must either one of: " + EnglishChatColor.getAllColors()));
         this.propertyList.put("pvp", fac.getNewProperty("pvp", true,
-                "Sorry, 'pvp' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment),
-                "Scale must be a positive double value. ex: " + ChatColor.GOLD + "2.3"));
+                "Sorry, 'pvp' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ".", "setActualPVP"));
+        this.propertyList.put("scale", fac.getNewProperty("scale", this.getDefaultScale(this.environment), "scale",
+                "Scale must be a positive double value. ex: " + ChatColor.GOLD + "2.3", "verifyScaleSetProperly"));
         this.propertyList.put("respawn", fac.getNewProperty("respawn", "", "respawnworld",
                 "You must set this to the " + ChatColor.GOLD + " NAME" + ChatColor.RED + " not alias of a world."));
         this.propertyList.put("weather", fac.getNewProperty("weather", true, "allowweather",
-                "Sorry, 'weather' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+                "Sorry, 'weather' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ".", "setActualWeather"));
         this.propertyList.put("difficulty", fac.getNewProperty("difficulty", Difficulty.EASY,
                 "Difficulty must be set as one of the following: " + ChatColor.GREEN + "peaceful "
                         + ChatColor.AQUA + "easy " + ChatColor.GOLD + "normal " + ChatColor.RED + "hard"));
         this.propertyList.put("animals", fac.getNewProperty("animals", true, "animals.spawn",
-                "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+                "Sorry, 'animals' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ".", "syncMobs"));
         this.propertyList.put("monsters", fac.getNewProperty("monsters", true, "monsters.spawn",
-                "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+                "Sorry, 'monsters' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ".", "syncMobs"));
         this.propertyList.put("currency", fac.getNewProperty("currency", -1, "entryfee.currency",
                 "Currency must be an integer between -1 and the highest Minecraft item ID."));
         this.propertyList.put("price", fac.getNewProperty("price", 0.0, "entryfee.price",
@@ -155,13 +155,13 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("gamemode", fac.getNewProperty("gamemode", GameMode.SURVIVAL,
                 "GameMode must be set as one of the following: " + ChatColor.RED + "survival " + ChatColor.GREEN + "creative "));
         this.propertyList.put("memory", fac.getNewProperty("keepspawninmemory", true, "keepspawninmemory",
-                "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
-        this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(),
-                "There is no help available for this variable. Go bug Rigby90 about it."));
+                "Sorry, 'memory' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE + "or" + ChatColor.RED + " false" + ChatColor.WHITE + ".", "setActualKeepSpawnInMemory"));
+        this.propertyList.put("spawn", fac.getNewProperty("spawn", this.world.getSpawnLocation(), "spawn",
+                "There is no help available for this variable. Go bug Rigby90 about it.", "setActualKeepSpawnInMemory"));
         this.propertyList.put("autoload", fac.getNewProperty("autoload", true,
                 "Set this to false ONLY if you don't want this world to load itself on server restart."));
         this.propertyList.put("bedrespawn", fac.getNewProperty("bedrespawn", true, "If a player dies in this world, shoudld they go to their bed?"));
-        this.propertyList.put("time", fac.getNewProperty("time", "", "Set the time to whatever you want! (Will NOT freeze time)", "setTime", true));
+        this.propertyList.put("time", fac.getNewProperty("time", "", "Set the time to whatever you want! (Will NOT freeze time)", "setActualTime", true));
         this.getKnownProperty("spawn", Location.class).setValue(this.readSpawnFromConfig(this.getCBWorld()));
 
 
@@ -201,45 +201,33 @@ public class MVWorld implements MultiverseWorld {
         }
     }
 
-    /**
-     * Applies all settings to the Bukkit-{@link World}.
-     */
-    public void changeActiveEffects() {
-        // Disable any current weather
-        if (!this.getKnownProperty("weather", Boolean.class).getValue()) {
-            this.getCBWorld().setStorm(false);
-            this.getCBWorld().setThundering(false);
-        }
-
-        // Set the spawn location
-        Location spawnLocation = this.getKnownProperty("spawn", Location.class).getValue();
-        this.getCBWorld().setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ());
-
-        // Synchronize all Mob settings
-        this.syncMobs();
-
-        // Ensure the memory setting is correct
-        this.world.setKeepSpawnInMemory(this.getKnownProperty("memory", Boolean.class).getValue());
-
+    private boolean setActualPVP() {
         // Set the PVP mode
         this.world.setPVP(this.getKnownProperty("pvp", Boolean.class).getValue());
+        return true;
+    }
 
+    private boolean verifyScaleSetProperly() {
         // Ensure the scale is above 0
         if (this.getKnownProperty("scale", Double.class).getValue() <= 0) {
             // Disallow negative or 0 scalings.
             this.getKnownProperty("scale", Double.class).setValue(1.0);
             this.plugin.log(Level.WARNING, "Someone tried to set a scale <= 0, defaulting to 1.");
         }
+        return true;
+    }
 
-        for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
-            this.plugin.log(Level.FINER, "Setting " + p.getName() + "'s GameMode to "
-                    + this.getKnownProperty("mode", GameMode.class).getValue().toString());
-            this.plugin.getPlayerListener().handleGameMode(p, this);
-        }
+    private boolean setActualKeepSpawnInMemory() {
+        // Ensure the memory setting is correct
+        this.world.setKeepSpawnInMemory(this.getKnownProperty("memory", Boolean.class).getValue());
+        return true;
+    }
 
-
-        // Set the difficulty
-        this.getCBWorld().setDifficulty(this.getKnownProperty("diff", Difficulty.class).getValue());
+    private boolean setActualSpawn() {
+        // Set the spawn location
+        Location spawnLocation = this.getKnownProperty("spawn", Location.class).getValue();
+        this.getCBWorld().setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ());
+        return true;
     }
 
     private double getDefaultScale(Environment environment) {
@@ -508,8 +496,8 @@ public class MVWorld implements MultiverseWorld {
             value = propertyChangeEvent.getNewValue();
         }
         if (property.parseValue(value)) {
-            if (property instanceof TempStringConfigProperty) {
-                return this.setActiveProperty((TempStringConfigProperty) property);
+            if (property instanceof MVActiveConfigProperty) {
+                return this.setActiveProperty((MVActiveConfigProperty) property);
             }
             this.saveConfig();
             return true;
@@ -517,10 +505,14 @@ public class MVWorld implements MultiverseWorld {
         return false;
     }
 
-    private boolean setActiveProperty(TempStringConfigProperty property) {
+    private boolean setActiveProperty(MVActiveConfigProperty property) {
         try {
-            Method method = this.getClass().getMethod(property.getMethod(), String.class);
-            Object returnVal = method.invoke(this, (String) property.getValue());
+            if(property.getMethod() == null) {
+                // This property did not have a method.
+                return true;
+            }
+            Method method = this.getClass().getMethod(property.getMethod());
+            Object returnVal = method.invoke(this);
             if (returnVal instanceof Boolean) {
                 return (Boolean) returnVal;
             } else {
@@ -823,7 +815,6 @@ public class MVWorld implements MultiverseWorld {
     private void saveConfig() {
         if (this.canSave) {
             try {
-                this.changeActiveEffects();
                 this.config.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
             } catch (IOException e) {
                 this.plugin.log(Level.SEVERE, "Could not save worlds.yml. Please check your filesystem permissions.");
@@ -836,7 +827,25 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public boolean setGameMode(String gameMode) {
-        return this.setKnownProperty("mode", gameMode + "", null);
+        return this.setKnownProperty("mode", gameMode, null);
+    }
+
+    /**
+     * Sets the actual gamemode by iterating through players.
+     *
+     * gameMode is not used, but it's in the reflection template.
+     *
+     * Needs a bit o' refactoring.
+     *
+     * @return True if the gamemodes of players were set successfully. (always)
+     */
+    public boolean setActualGameMode() {
+        for (Player p : this.plugin.getServer().getWorld(this.getName()).getPlayers()) {
+            this.plugin.log(Level.FINER, String.format("Setting %s's GameMode to %s",
+                    p.getName(), this.getKnownProperty("mode", GameMode.class).getValue().toString()));
+            this.plugin.getPlayerListener().handleGameMode(p, this);
+        }
+        return true;
     }
 
     /**
@@ -853,6 +862,15 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public void setEnableWeather(boolean weather) {
         this.setKnownProperty("weather", weather + "", null);
+    }
+
+    public boolean setActualWeather() {
+        // Disable any current weather
+        if (!this.getKnownProperty("weather", Boolean.class).getValue()) {
+            this.getCBWorld().setStorm(false);
+            this.getCBWorld().setThundering(false);
+        }
+        return true;
     }
 
     /**
@@ -969,7 +987,12 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public boolean setDifficulty(String difficulty) {
-        return this.setKnownProperty("diff", difficulty, null);
+        if (this.setKnownProperty("diff", difficulty, null)) {
+            // Set the difficulty
+            this.getCBWorld().setDifficulty(this.getKnownProperty("diff", Difficulty.class).getValue());
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1065,6 +1088,10 @@ public class MVWorld implements MultiverseWorld {
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
         return String.format("%d:%02d", hours, minutes);
+    }
+
+    public boolean setActualTime() {
+        return this.setTime(this.getKnownProperty("time", String.class).toString());
     }
 
     /**

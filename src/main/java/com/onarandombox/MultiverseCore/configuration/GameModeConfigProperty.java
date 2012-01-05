@@ -13,7 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * A {@link GameMode} config-property.
  */
-public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
+public class GameModeConfigProperty implements MVActiveConfigProperty<GameMode> {
     private String name;
     private GameMode value;
     private String configNode;
@@ -97,5 +97,33 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
+    @Override
+    public String getMethod() {
+        return "setActualGameMode";
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        // Not required. Gamemode will only ever be one.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return GameMode.class;
     }
 }

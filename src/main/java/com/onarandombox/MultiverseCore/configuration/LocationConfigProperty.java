@@ -14,12 +14,13 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * A {@link Location} config-property.
  */
-public class LocationConfigProperty implements MVConfigProperty<Location> {
+public class LocationConfigProperty implements MVActiveConfigProperty<Location> {
     private String name;
     private Location value;
     private String configNode;
     private ConfigurationSection section;
     private String help;
+    private String method;
 
     public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String help) {
         this(section, name, defaultValue, name, help);
@@ -32,6 +33,11 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.help = help;
         this.value = defaultValue;
         this.setValue(this.getLocationFromConfig(defaultValue));
+    }
+
+    public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String configNode, String help, String method) {
+        this(section, name, defaultValue, configNode, help);
+        this.method = method;
     }
 
     /**
@@ -111,5 +117,35 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
     @Override
     public String toString() {
         return LocationManipulation.strCoordsRaw(this.value);
+    }
+
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
+    @Override
+    public String getMethod() {
+        return this.method;
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        this.method = methodName;
+    }
+
+    /**
+     * Returns the class of the object we're looking at.
+     *
+     * @return the class of the object we're looking at.
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return Location.class;
     }
 }
