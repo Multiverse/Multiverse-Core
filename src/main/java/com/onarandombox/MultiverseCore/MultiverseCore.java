@@ -326,7 +326,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
         pm.registerEvent(Event.Type.PLAYER_LOGIN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
         pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this); // To prepend the world name
-        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.playerListener, Priority.High, this); // We want this high to have it go last, so it can cancel if needbe.
+        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.playerListener, Priority.High, this);
+                // We want this high to have it go last, so it can cancel if needbe.
+
         pm.registerEvent(Event.Type.PLAYER_PORTAL, this.portalAdjustListener, Priority.Lowest, this); // To handle portal correction
         pm.registerEvent(Event.Type.PLAYER_CHANGED_WORLD, this.playerListener, Priority.Monitor, this); // To switch gamemode
 

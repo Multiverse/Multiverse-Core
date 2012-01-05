@@ -47,6 +47,7 @@ public class ActiveStringConfigProperty implements MVActiveConfigProperty<String
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getMethod() {
         return this.method;
     }

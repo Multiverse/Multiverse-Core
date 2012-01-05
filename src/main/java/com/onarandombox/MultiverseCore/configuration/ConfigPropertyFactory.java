@@ -55,13 +55,13 @@ public class ConfigPropertyFactory {
      * @param name The name of this ConifgProperty
      * @param defaultValue The default value.
      * @param help What string is shown for help.
-     * @param node
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
      * @param method The method that should be executed.
      * @return The ActiveStringConfigProperty
      */
-     public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String help, String node, String method) {
-         return new BooleanConfigProperty(this.section, name, defaultValue, help, node, method);
-     }
+    public BooleanConfigProperty getNewProperty(String name, boolean defaultValue, String help, String node, String method) {
+        return new BooleanConfigProperty(this.section, name, defaultValue, help, node, method);
+    }
 
     // Integers
     /**
@@ -116,17 +116,18 @@ public class ConfigPropertyFactory {
     }
 
     /**
-    * Constructs a new ConfigProperty.
-    *
-    * @param name The name of this ConfigProperty.
-    * @param defaultValue The default-value.
-    * @param node The name of the configuration-node this ConfigProperty will be stored as.
-    * @param help The text that's displayed when a user failed to set the property.
-    * @return The ConfigProperty.
-    */
-   public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node, String help, String method) {
-       return new DoubleConfigProperty(this.section, name, defaultValue, node, help, method);
-   }
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param node The name of the configuration-node this ConfigProperty will be stored as.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @param method The name of the method that's used to set this property.
+     * @return The ConfigProperty.
+     */
+    public DoubleConfigProperty getNewProperty(String name, double defaultValue, String node, String help, String method) {
+        return new DoubleConfigProperty(this.section, name, defaultValue, node, help, method);
+    }
 
     // Strings
     /**
@@ -265,6 +266,7 @@ public class ConfigPropertyFactory {
      * @param defaultValue The default-value.
      * @param node The name of the configuration-node this ConfigProperty will be stored as.
      * @param help The text that's displayed when a user failed to set the property.
+     * @param method The name of the method that's used to set this property.
      * @return The ConfigProperty.
      */
     public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node, String help, String method) {
