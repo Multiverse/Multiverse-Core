@@ -32,6 +32,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.localization.LazyLocaleMessageProvider;
 import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
+import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
@@ -189,5 +190,12 @@ public class TestLocalization {
 
         // Clean up afterwards:
         assertTrue(file.delete());
+    }
+
+    @Test
+    public void testFormat() {
+        String testString = "%sthisisasimpletest&moretesting&&thatsit.";
+        String result = SimpleMessageProvider.format(testString, "arg");
+        assertEquals("argthisisasimpletest\u00A7moretesting&thatsit.", result);
     }
 }
