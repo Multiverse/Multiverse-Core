@@ -14,7 +14,6 @@ import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -163,7 +162,8 @@ public class TeleportCommand extends MultiverseCommand {
         }
         TeleportResult result = this.playerTeleporter.safelyTeleport(teleporter, teleportee, d);
         if (result == TeleportResult.FAIL_UNSAFE) {
-            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + LocationManipulation.strCoordsRaw(d.getLocation(teleportee)));
+            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName()
+                    + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
             this.plugin.log(Level.FINE, "Queueing Command");
             Class<?>[] paramTypes = { CommandSender.class, Player.class, Location.class };
             List<Object> items = new ArrayList<Object>();

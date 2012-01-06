@@ -11,6 +11,7 @@ import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -28,15 +29,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalAdjustListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.utils.AnchorManager;
-import com.onarandombox.MultiverseCore.utils.DebugLog;
-import com.onarandombox.MultiverseCore.utils.MVMessaging;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
-import com.onarandombox.MultiverseCore.utils.SpoutInterface;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -178,6 +171,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final double CH_VERSION = 4;
     private MVMessaging messaging;
     private BlockSafety blockSafety;
+    private LocationManipulation locationManipulation;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
 
@@ -188,7 +182,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
         // Setup our BlockSafety
-        this.blockSafety = new SimpleBlockSafety();
+        this.blockSafety = new SimpleBlockSafety(this);
+        // Setup our LocationManipulation
+        this.locationManipulation = new SimpleLocationManipulation();
     }
 
     /**
@@ -859,6 +855,22 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public void setBlockSafety(BlockSafety bs) {
         this.blockSafety = bs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LocationManipulation getLocationManipulation() {
+        return locationManipulation;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setLocationManipulation(LocationManipulation locationManipulation) {
+        this.locationManipulation = locationManipulation;
     }
 
 }

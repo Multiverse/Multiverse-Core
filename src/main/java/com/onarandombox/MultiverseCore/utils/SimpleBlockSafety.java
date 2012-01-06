@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.Core;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +23,11 @@ import java.util.logging.Level;
  * The default-implementation of {@link BlockSafety}.
  */
 public class SimpleBlockSafety implements BlockSafety {
+    private final Core plugin;
+
+    public SimpleBlockSafety(Core plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * {@inheritDoc}
@@ -228,7 +234,7 @@ public class SimpleBlockSafety implements BlockSafety {
         if (this.isBlockAboveAir(cart.getLocation())) {
             return true;
         }
-        if (this.isEntitiyOnTrack(LocationManipulation.getNextBlock(cart))) {
+        if (this.isEntitiyOnTrack(plugin.getLocationManipulation().getNextBlock(cart))) {
             return true;
         }
         return false;

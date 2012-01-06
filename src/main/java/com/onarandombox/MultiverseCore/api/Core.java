@@ -179,4 +179,20 @@ public interface Core {
      * @see SimpleBlockSafety
      */
     void setBlockSafety(BlockSafety blockSafety);
+
+    /**
+     * Gets the {@link LocationManipulation} this {@link Core} is using.
+     * @return The {@link LocationManipulation} this {@link Core} is using.
+     * @see LocationManipulation
+     * @see SimpleLocationManipulation
+     */
+    LocationManipulation getLocationManipulation();
+
+    /**
+     * Sets the {@link LocationManipulation} this {@link Core} is using.
+     * @param locationManipulation The new {@link LocationManipulation}.
+     * @see LocationManipulation
+     * @see SimpleLocationManipulation
+     */
+    void setLocationManipulation(LocationManipulation locationManipulation);
 }

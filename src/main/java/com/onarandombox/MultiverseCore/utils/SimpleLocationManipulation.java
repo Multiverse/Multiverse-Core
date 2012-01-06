@@ -14,23 +14,21 @@ import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
+
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility class to manipulate locations.
- *
- * @deprecated Use instead: {@link com.onarandombox.MultiverseCore.api.LocationManipulation} and {@link SimpleLocationManipulation}.
+ * The default-implementation of {@link LocationManipulation}.
  */
-@Deprecated
-public class LocationManipulation {
-    private LocationManipulation() { }
-
-    private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
+public class SimpleLocationManipulation implements LocationManipulation {
+    private static final Map<String, Integer> ORIENTATION_INTS;
 
     static {
+        Map<String, Integer> orientationInts = new HashMap<String, Integer>();
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         orientationInts.put("n", 180);
         orientationInts.put("ne", 225);
@@ -42,21 +40,15 @@ public class LocationManipulation {
         orientationInts.put("nw", 135);
 
         // "freeze" the map:
-        orientationInts = Collections.unmodifiableMap(orientationInts);
+        ORIENTATION_INTS = Collections.unmodifiableMap(orientationInts);
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
     /**
-     * Convert a Location into a Colon separated string to allow us to store it in text.
-     * <p>
-     * WORLD:X,Y,Z:yaw:pitch
-     * <p>
-     * The corresponding String2Loc function is {@link #stringToLocation}
-     *
-     * @param location The Location to save.
-     * @return The location as a string in this format: WORLD:x,y,z:yaw:pitch
+     * {@inheritDoc}
      */
-    public static String locationToString(Location location) {
+    @Override
+    public String locationToString(Location location) {
         if (location == null) {
             return "";
         }
@@ -65,12 +57,10 @@ public class LocationManipulation {
     }
 
     /**
-     * This method simply does some rounding, rather than forcing a call to the server to get the blockdata.
-     *
-     * @param l The location to round to the block location
-     * @return A rounded location.
+     * {@inheritDoc}
      */
-    public static Location getBlockLocation(Location l) {
+    @Override
+    public Location getBlockLocation(Location l) {
         l.setX(l.getBlockX());
         l.setY(l.getBlockY());
         l.setZ(l.getBlockZ());
@@ -78,16 +68,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns a new location from a given string. The format is as follows:
-     * <p>
-     * WORLD:X,Y,Z:yaw:pitch
-     * <p>
-     * The corresponding Location2String function is {@link #stringToLocation}
-     *
-     * @param locationString The location represented as a string (WORLD:X,Y,Z:yaw:pitch)
-     * @return A new location defined by the string or null if the string was invalid.
+     * {@inheritDoc}
      */
-    public static Location stringToLocation(String locationString) {
+    @Override
+    public Location stringToLocation(String locationString) {
         //format:
         //world:x,y,z:pitch:yaw
         if (locationString == null) {
@@ -129,12 +113,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns a colored string with the coords.
-     *
-     * @param l The {@link Location}
-     * @return The {@link String}
+     * {@inheritDoc}
      */
-    public static String strCoords(Location l) {
+    @Override
+    public String strCoords(Location l) {
         String result = "";
         DecimalFormat df = new DecimalFormat();
         df.setMinimumFractionDigits(0);
@@ -148,12 +130,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Converts a location to a printable readable formatted string including pitch/yaw.
-     *
-     * @param l The {@link Location}
-     * @return The {@link String}
+     * {@inheritDoc}
      */
-    public static String strCoordsRaw(Location l) {
+    @Override
+    public String strCoordsRaw(Location l) {
         if (l == null) {
             return "null";
         }
@@ -170,12 +150,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Return the NESW Direction a Location is facing.
-     *
-     * @param location The {@link Location}
-     * @return The NESW Direction
+     * {@inheritDoc}
      */
-    public static String getDirection(Location location) {
+    @Override
+    public String getDirection(Location location) {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         double r = (location.getYaw() % 360) + 180;
         // Remember, these numbers are every 45 degrees with a 22.5 offset, to detect boundaries.
@@ -204,28 +182,24 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the float yaw position for the given cardinal direction.
-     *
-     * @param orientation The cardinal direction
-     * @return The yaw
+     * {@inheritDoc}
      */
-    public static float getYaw(String orientation) {
+    @Override
+    public float getYaw(String orientation) {
         if (orientation == null) {
             return 0;
         }
-        if (orientationInts.containsKey(orientation.toLowerCase())) {
-            return orientationInts.get(orientation.toLowerCase());
+        if (ORIENTATION_INTS.containsKey(orientation.toLowerCase())) {
+            return ORIENTATION_INTS.get(orientation.toLowerCase());
         }
         return 0;
     }
 
     /**
-     * Returns a speed float from a given vector.
-     *
-     * @param v The {@link Vector}
-     * @return The speed
+     * {@inheritDoc}
      */
-    public static float getSpeed(Vector v) {
+    @Override
+    public float getSpeed(Vector v) {
         return (float) Math.sqrt(v.getX() * v.getX() + v.getZ() * v.getZ());
     }
 
@@ -233,13 +207,10 @@ public class LocationManipulation {
     // -W/+E,0, -N/+S
 
     /**
-     * Returns a translated vector from the given direction.
-     *
-     * @param v The old {@link Vector}
-     * @param direction The new direction
-     * @return The translated {@link Vector}
+     * {@inheritDoc}
      */
-    public static Vector getTranslatedVector(Vector v, String direction) {
+    @Override
+    public Vector getTranslatedVector(Vector v, String direction) {
         if (direction == null) {
             return v;
         }
@@ -267,12 +238,10 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the next Location that a {@link Vehicle} is traveling at.
-     *
-     * @param v The {@link Vehicle}
-     * @return The {@link Location}
+     * {@inheritDoc}
      */
-    public static Location getNextBlock(Vehicle v) {
+    @Override
+    public Location getNextBlock(Vehicle v) {
         Vector vector = v.getVelocity();
         Location location = v.getLocation();
         int x = vector.getX() < 0 ? vector.getX() == 0 ? 0 : -1 : 1;

@@ -65,7 +65,7 @@ public class SafeTTeleporter {
         if (safe != null) {
             safe.setX(safe.getBlockX() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
             safe.setZ(safe.getBlockZ() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-            this.plugin.log(Level.FINE, "Hey! I found one: " + LocationManipulation.strCoordsRaw(safe));
+            this.plugin.log(Level.FINE, "Hey! I found one: " + plugin.getLocationManipulation().strCoordsRaw(safe));
         } else {
             this.plugin.log(Level.FINE, "Uh oh! No safe place found!");
         }
@@ -79,7 +79,7 @@ public class SafeTTeleporter {
         }
         // We want half of it, so we can go up and down
         tolerance /= 2;
-        this.plugin.log(Level.FINER, "Given Location of: " + LocationManipulation.strCoordsRaw(l));
+        this.plugin.log(Level.FINER, "Given Location of: " + plugin.getLocationManipulation().strCoordsRaw(l));
         this.plugin.log(Level.FINER, "Checking +-" + tolerance + " with a radius of " + radius);
 
         // For now this will just do a straight up block.
