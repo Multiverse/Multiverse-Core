@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +75,20 @@ public class MVMessaging {
             }
         }
         return false;
+    }
+
+    /**
+     * Sends a group of messages to the specified sender if the cooldown has passed.
+     * This method is needed, since sending many messages in quick succession would violate
+     * the cooldown.
+     *
+     * @param sender         The person/console to send the message to.
+     * @param messages       The messages to send.
+     * @param ignoreCooldown If true these messages will always be sent. Useful for things like menus
+     * @return true if the message was sent, false if not.
+     */
+    public boolean sendMessages(CommandSender sender, Collection<String> messages, boolean ignoreCooldown) {
+        return this.sendMessages(sender, messages.toArray(new String[0]), ignoreCooldown);
     }
 
     private void sendMessages(CommandSender sender, String[] messages) {
