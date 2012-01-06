@@ -15,7 +15,15 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class SimpleMessageProvider implements LazyLocaleMessageProvider {
 
-    public final static String LOCALIZATION_FOLDER_NAME = "localization";
+    private final static String LOCALIZATION_FOLDER_NAME = "localization";
+
+    // Regex 1: replace all single & with the section char
+    private final static String FORMAT_PATTERN_1 = "([^&])(&)([^&])";
+    private final static String FORMAT_REPL_1 = "$1\u00A7$3";
+
+    // Regex 2: replace all double & with single &
+    private final static String FORMAT_PATTERN_2 = "&&";
+    private final static String FORMAT_REPL_2 = "&";
 
     private final HashMap<Locale, HashMap<MultiverseMessage, String>> messages;
     private final MultiverseCore core;
@@ -46,9 +54,18 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
                     + locale.toString(), locale);
     }
 
-    public String format(String string, Object... args) {
+    /**
+     * Formats the specified string.
+     * <p>
+     * You can use {@code &} to get colors. To get an {@code &} in the output, you have to write {@code &&}.
+     *
+     * @param string The {@link String}.
+     * @param args Args for {@link String#format(String, Object...)}.
+     * @return The formatted string.
+     */
+    public static String format(String string, Object... args) {
         // Replaces & with the Section character
-        string = string.replaceAll("&", Character.toString((char) 167));
+        string = string.replaceAll(FORMAT_PATTERN_1, FORMAT_REPL_1).replaceAll(FORMAT_PATTERN_2, FORMAT_REPL_2);
 
         return String.format(string, args);
     }
