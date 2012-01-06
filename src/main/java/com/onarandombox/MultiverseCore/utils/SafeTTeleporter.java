@@ -8,9 +8,11 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,7 +36,7 @@ public class SafeTTeleporter {
 
     public SafeTTeleporter(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.bs = new BlockSafety();
+        this.bs = plugin.getBlockSafety();
     }
 
     private static final int DEFAULT_TOLERANCE = 6;

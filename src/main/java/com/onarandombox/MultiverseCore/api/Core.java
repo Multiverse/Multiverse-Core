@@ -163,4 +163,20 @@ public interface Core {
      * @return The readable authors-{@link String}
      */
     String getAuthors();
+
+    /**
+     * Gets the {@link BlockSafety} this {@link Core} is using.
+     * @return The {@link BlockSafety} this {@link Core} is using.
+     * @see BlockSafety
+     * @see SimpleBlockSafety
+     */
+    BlockSafety getBlockSafety();
+
+    /**
+     * Sets the {@link BlockSafety} this {@link Core} is using.
+     * @param blockSafety The new {@link BlockSafety}.
+     * @see BlockSafety
+     * @see SimpleBlockSafety
+     */
+    void setBlockSafety(BlockSafety blockSafety);
 }

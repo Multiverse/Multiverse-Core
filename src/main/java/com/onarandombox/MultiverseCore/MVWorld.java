@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.ConfigPropertyFactory;
 import com.onarandombox.MultiverseCore.configuration.MVActiveConfigProperty;
@@ -14,7 +15,6 @@ import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import com.onarandombox.MultiverseCore.utils.BlockSafety;
 import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.ChatColor;
@@ -953,7 +953,7 @@ public class MVWorld implements MultiverseWorld {
         // Set the worldspawn to our configspawn
         w.setSpawnLocation(configLocation.getBlockX(), configLocation.getBlockY(), configLocation.getBlockZ());
         SafeTTeleporter teleporter = this.plugin.getTeleporter();
-        BlockSafety bs = new BlockSafety();
+        BlockSafety bs = this.plugin.getBlockSafety();
         // Verify that location was safe
         if (!bs.playerCanSpawnHereSafely(configLocation)) {
             if (!this.getAdjustSpawn()) {

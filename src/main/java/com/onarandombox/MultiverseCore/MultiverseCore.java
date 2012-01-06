@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -33,6 +34,7 @@ import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SpoutInterface;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
@@ -175,6 +177,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final double ALLPAY_VERSION = 3;
     private static final double CH_VERSION = 4;
     private MVMessaging messaging;
+    private BlockSafety blockSafety;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
 
@@ -184,6 +187,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
+        // Setup our BlockSafety
+        this.blockSafety = new SimpleBlockSafety();
     }
 
     /**
@@ -838,6 +843,22 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public AnchorManager getAnchorManager() {
         return this.anchorManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BlockSafety getBlockSafety() {
+        return blockSafety;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBlockSafety(BlockSafety bs) {
+        this.blockSafety = bs;
     }
 
 }
