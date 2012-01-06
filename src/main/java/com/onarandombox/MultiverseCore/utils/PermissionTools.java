@@ -126,6 +126,12 @@ public class PermissionTools {
             }
         }
 
+        // If the toWorld isn't controlled by MV,
+        // We don't care.
+        if(toWorld == null) {
+            return true;
+        }
+
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
             // If the player does not have to pay, return now.
