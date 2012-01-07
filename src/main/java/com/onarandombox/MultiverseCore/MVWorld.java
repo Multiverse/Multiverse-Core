@@ -393,7 +393,12 @@ public class MVWorld implements MultiverseWorld {
         return false;
     }
 
-    private void syncMobs() {
+    /**
+     * Ensure that the value of the animals and monsters config
+     * properties are set in accordance with the current animals
+     * and monsters in the world, respectively.
+     */
+    public void syncMobs() {
 
         if (this.getAnimalList().isEmpty()) {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), this.getKnownProperty("animals", Boolean.class).getValue());
