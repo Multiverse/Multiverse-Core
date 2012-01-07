@@ -10,14 +10,16 @@ package com.onarandombox.MultiverseCore.utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility-class for messaging.
+ * The default-implementation of {@link MultiverseMessaging}.
  */
-public class MVMessaging {
+public class MVMessaging implements MultiverseMessaging {
     private Map<String, Long> sentList;
     private int cooldown;
 
@@ -27,35 +29,25 @@ public class MVMessaging {
     }
 
     /**
-     * Sets the message-cooldown.
-     * @param milliseconds The new message-cooldown in milliseconds.
+     * {@inheritDoc}
      */
+    @Override
     public void setCooldown(int milliseconds) {
         this.cooldown = milliseconds;
     }
 
     /**
-     * Sends a message to the specified sender if the cooldown has passed.
-     *
-     * @param sender         The person/console to send the message to.
-     * @param message        The message to send.
-     * @param ignoreCooldown If true this message will always be sent. Useful for things like menus
-     * @return true if the message was sent, false if not.
+     * {@inheritDoc}
      */
+    @Override
     public boolean sendMessage(CommandSender sender, String message, boolean ignoreCooldown) {
         return this.sendMessages(sender, new String[]{ message }, ignoreCooldown);
     }
 
     /**
-     * Sends a group of messages to the specified sender if the cooldown has passed.
-     * This method is needed, since sending many messages in quick succession would violate
-     * the cooldown.
-     *
-     * @param sender         The person/console to send the message to.
-     * @param messages       The messages to send.
-     * @param ignoreCooldown If true these messages will always be sent. Useful for things like menus
-     * @return true if the message was sent, false if not.
+     * {@inheritDoc}
      */
+    @Override
     public boolean sendMessages(CommandSender sender, String[] messages, boolean ignoreCooldown) {
         if (!(sender instanceof Player) || ignoreCooldown) {
 
@@ -78,15 +70,9 @@ public class MVMessaging {
     }
 
     /**
-     * Sends a group of messages to the specified sender if the cooldown has passed.
-     * This method is needed, since sending many messages in quick succession would violate
-     * the cooldown.
-     *
-     * @param sender         The person/console to send the message to.
-     * @param messages       The messages to send.
-     * @param ignoreCooldown If true these messages will always be sent. Useful for things like menus
-     * @return true if the message was sent, false if not.
+     * {@inheritDoc}
      */
+    @Override
     public boolean sendMessages(CommandSender sender, Collection<String> messages, boolean ignoreCooldown) {
         return this.sendMessages(sender, messages.toArray(new String[0]), ignoreCooldown);
     }
@@ -98,9 +84,9 @@ public class MVMessaging {
     }
 
     /**
-     * Gets the message-cooldown.
-     * @return The message-cooldown.
+     * {@inheritDoc}
      */
+    @Override
     public int getCooldown() {
         return cooldown;
     }

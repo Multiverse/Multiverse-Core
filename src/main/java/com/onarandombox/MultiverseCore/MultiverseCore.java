@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
@@ -169,7 +170,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private SpoutInterface spoutInterface = null;
     private static final double ALLPAY_VERSION = 3;
     private static final double CH_VERSION = 4;
-    private MVMessaging messaging;
+    private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
 
@@ -400,7 +401,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public MVMessaging getMessaging() {
+    public MultiverseMessaging getMessaging() {
         return this.messaging;
     }
 

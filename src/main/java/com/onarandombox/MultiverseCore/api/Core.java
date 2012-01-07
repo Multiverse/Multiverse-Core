@@ -46,9 +46,9 @@ public interface Core {
      * Gets the Multiverse message system. This allows you to send messages
      * to users at specified intervals.
      *
-     * @return The loaded {@link MVMessaging}.
+     * @return The loaded {@link MultiverseMessaging}.
      */
-    MVMessaging getMessaging();
+    MultiverseMessaging getMessaging();
 
     /**
      * Gets the {@link MVPlayerSession} for the given player.
