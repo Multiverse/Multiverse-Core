@@ -124,7 +124,7 @@ public class MockWorldFactory {
         // we have to invert the order!
         ArrayList<World> myList = new ArrayList<World>(createdWorlds.values());
         List<World> retList = new ArrayList<World>();
-        for (int i = (myList.size() - 1); i > 0; i--) {
+        for (int i = (myList.size() - 1); i >= 0; i--) {
             retList.add(myList.get(i));
         }
         return retList;
