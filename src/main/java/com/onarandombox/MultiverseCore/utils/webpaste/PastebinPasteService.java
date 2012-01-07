@@ -10,14 +10,21 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.regex.Pattern;
 
+/**
+ * Pastes to {@code pastebin.com}.
+ */
 public class PastebinPasteService implements PasteService {
 
-    protected boolean isPrivate;
+    private boolean isPrivate;
 
     public PastebinPasteService(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public URL getPostURL() {
         try {
             return new URL("http://pastebin.com/api/api_post.php");
@@ -26,6 +33,10 @@ public class PastebinPasteService implements PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String encodeData(String data) {
         try {
             String encData = URLEncoder.encode("api_dev_key", "UTF-8") + "=" + URLEncoder.encode("d61d68d31e8e0392b59b50b277411c71", "UTF-8");
@@ -39,6 +50,10 @@ public class PastebinPasteService implements PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String postData(String encodedData, URL url) throws PasteFailedException {
         try {
             URLConnection conn = url.openConnection();
@@ -60,15 +75,17 @@ public class PastebinPasteService implements PasteService {
             throw new PasteFailedException(e);
         }
     }
-    
+
+    // TODO maybe remove this?
     private Pattern getURLMatchingPattern() {
-        if(this.isPrivate) {
+        if (this.isPrivate) {
             return Pattern.compile(".*http://pastie.org/.*key=([0-9a-z]+).*");
         } else {
             return Pattern.compile(".*http://pastie.org/([0-9]+).*");
         }
     }
 
+    // TODO maybe remove this?
     private String formatURL(String pastieID) {
         return "http://pastie.org/" + (this.isPrivate ? "private/" : "") + pastieID;
     }

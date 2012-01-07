@@ -18,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a listing of all worlds that a player can enter.
+ */
 public class ListCommand extends PaginatedCoreCommand<String> {
 
     public ListCommand(MultiverseCore plugin) {
@@ -29,7 +32,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         this.addKey("mvl");
         this.addKey("mv list");
         this.setPermission("multiverse.core.list.worlds", "Displays a listing of all worlds that you can enter.", PermissionDefault.OP);
-        this.setItemsPerPage(8);
+        this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     private List<String> getFancyWorldList(Player p) {
@@ -99,7 +102,8 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         if (filterObject.getFilter().length() > 0) {
             availableWorlds = this.getFilteredItems(availableWorlds, filterObject.getFilter());
             if (availableWorlds.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + "No worlds matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
+                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE
+                        + "No worlds matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
                 return;
             }
         }

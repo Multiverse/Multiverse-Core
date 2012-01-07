@@ -11,14 +11,21 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Pastes to {@code pastie.org}.
+ */
 public class PastiePasteService implements PasteService {
 
-    protected boolean isPrivate;
+    private boolean isPrivate;
 
     public PastiePasteService(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public URL getPostURL() {
         try {
             return new URL("http://pastie.org/pastes");
@@ -27,6 +34,10 @@ public class PastiePasteService implements PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String encodeData(String data) {
         try {
             String encData = URLEncoder.encode("paste[authorization]", "UTF-8") + "=" + URLEncoder.encode("burger", "UTF-8"); // burger is magic
@@ -39,6 +50,10 @@ public class PastiePasteService implements PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String postData(String encodedData, URL url) throws PasteFailedException {
         try {
             URLConnection conn = url.openConnection();
@@ -53,7 +68,7 @@ public class PastiePasteService implements PasteService {
             Pattern pastiePattern = this.getURLMatchingPattern();
             while ((line = rd.readLine()) != null) {
                 Matcher m = pastiePattern.matcher(line);
-                if(m.matches()) {
+                if (m.matches()) {
                     String pastieID = m.group(1);
                     pastieUrl = this.formatURL(pastieID);
                 }
@@ -65,9 +80,9 @@ public class PastiePasteService implements PasteService {
             throw new PasteFailedException(e);
         }
     }
-    
+
     private Pattern getURLMatchingPattern() {
-        if(this.isPrivate) {
+        if (this.isPrivate) {
             return Pattern.compile(".*http://pastie.org/.*key=([0-9a-z]+).*");
         } else {
             return Pattern.compile(".*http://pastie.org/([0-9]+).*");

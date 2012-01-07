@@ -16,6 +16,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Reloads worlds.yml and config.yml.
+ */
 public class ReloadCommand extends MultiverseCommand {
 
     public ReloadCommand(MultiverseCore plugin) {

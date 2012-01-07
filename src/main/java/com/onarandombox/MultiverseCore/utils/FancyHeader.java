@@ -9,23 +9,30 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.api.FancyText;
 
+/**
+ * A colored text-header.
+ */
 public class FancyHeader implements FancyText {
 
     private FancyColorScheme colors;
-    private String text;
+    private StringBuilder text;
 
     public FancyHeader(String text, FancyColorScheme scheme) {
         this.colors = scheme;
-        this.text = text;
+        this.text = new StringBuilder(text);
     }
 
     @Override
     public String getFancyText() {
-        return colors.getHeader() + "--- " + text + colors.getHeader() + " ---";
+        return String.format("%s--- %s%s ---", colors.getHeader(), text.toString(), colors.getHeader());
     }
 
+    /**
+     * Appends text to this {@link FancyHeader}.
+     * @param string The text to append.
+     */
     public void appendText(String string) {
-        this.text += string;
+        this.text.append(string);
     }
 
 }

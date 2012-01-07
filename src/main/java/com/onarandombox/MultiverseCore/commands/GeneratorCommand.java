@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Returns a list of loaded generator plugins.
+ */
 public class GeneratorCommand extends MultiverseCommand {
 
     public GeneratorCommand(MultiverseCore plugin) {

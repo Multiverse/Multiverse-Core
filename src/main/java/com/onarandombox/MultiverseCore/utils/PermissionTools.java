@@ -16,6 +16,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
+/**
+ * Utility-class for permissions.
+ */
 public class PermissionTools {
     private MultiverseCore plugin;
 
@@ -23,6 +26,10 @@ public class PermissionTools {
         this.plugin = plugin;
     }
 
+    /**
+     * Adds a permission to the parent-permissions.
+     * @param permString The new permission as {@link String}.
+     */
     public void addToParentPerms(String permString) {
         String permStringChopped = permString.replace(".*", "");
 
@@ -82,6 +89,15 @@ public class PermissionTools {
         return returnString + "*";
     }
 
+    /**
+     * Checks if the given {@link Player} has enough money to enter the specified {@link MultiverseWorld}.
+     * @param fromWorld The {@link MultiverseWorld} the player is coming from.
+     * @param toWorld The {@link MultiverseWorld} the player is going to.
+     * @param teleporter The teleporter.
+     * @param teleportee The teleportee.
+     * @param pay If the player has to pay the money.
+     * @return True if the player can enter the world.
+     */
     public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
         Player teleporterPlayer;
         if (MultiverseCore.TeleportIntercept) {
@@ -110,6 +126,12 @@ public class PermissionTools {
             }
         }
 
+        // If the toWorld isn't controlled by MV,
+        // We don't care.
+        if(toWorld == null) {
+            return true;
+        }
+
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
             // If the player does not have to pay, return now.
@@ -117,13 +139,15 @@ public class PermissionTools {
                 return true;
             }
             GenericBank bank = plugin.getBank();
-            String errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency()) + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
+            String errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency())
+                    + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
             if (teleportee.equals(teleporter)) {
-                errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString();
+                errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency())
+                        + " to enter " + toWorld.getColoredWorldString();
             }
             if (!bank.hasEnough(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
                 return false;
-            } else if(pay) {
+            } else if (pay) {
                 bank.pay(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
             }
         }
@@ -147,7 +171,7 @@ public class PermissionTools {
         this.plugin.log(Level.FINEST, "Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
-        if(MultiverseCore.TeleportIntercept) {
+        if (MultiverseCore.TeleportIntercept) {
             // The console can send anyone anywhere
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;
@@ -188,7 +212,7 @@ public class PermissionTools {
                 return false;
             }
         } else {
-            //TODO: Determine if this value is false because a world didn't exist
+            // TODO: Determine if this value is false because a world didn't exist
             // or if it was because a world wasn't imported.
             return true;
         }
@@ -197,17 +221,18 @@ public class PermissionTools {
                 if (teleportee.equals(teleporter)) {
                     teleporter.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
                 } else {
-                    teleporter.sendMessage("You don't have access to send " + teleportee.getName() + " from " + fromWorld.getColoredWorldString() + " to " + toWorld.getColoredWorldString());
+                    teleporter.sendMessage("You don't have access to send " + teleportee.getName() + " from "
+                         + fromWorld.getColoredWorldString() + " to " + toWorld.getColoredWorldString());
                 }
                 return false;
             }
         }
         return true;
     }
-    
+
     /**
      * Checks to see if a player should bypass game mode restrictions.
-     * 
+     *
      * @param toWorld world travelling to.
      * @param teleportee player travelling.
      * @return True if they should bypass restrictions
@@ -216,7 +241,7 @@ public class PermissionTools {
         if (toWorld != null) {
             return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
         } else {
-            //TODO: Determine if this value is false because a world didn't exist
+            // TODO: Determine if this value is false because a world didn't exist
             // or if it was because a world wasn't imported.
             return true;
         }

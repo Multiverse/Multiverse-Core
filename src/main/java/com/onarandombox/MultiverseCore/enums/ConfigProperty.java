@@ -7,9 +7,52 @@
 
 package com.onarandombox.MultiverseCore.enums;
 
+/**
+ * An enum containing all config-properties that can be set.
+ */
 public enum ConfigProperty {
-    messagecooldown, teleportcooldown, worldnameprefix, enforcegamemodes, enforceaccess, displaypermerrors, debug, firstspawnworld, teleportintercept, firstspawnoverride;
+    /**
+     * How long to leave in between sending a message to the player. (NOT YET IMPLEMENTED)
+     */
+    messagecooldown,
+    /**
+     * How fast are people allowed to use /MVTP (NOT YET IMPLEMENTED).
+     */
+    teleportcooldown,
+    /**
+     * Prefix chat-messages with world-names.
+     */
+    worldnameprefix,
+    /**
+     * If value is set to false, Multiverse will NOT enforce world access permissions.
+     */
+    enforceaccess,
+    /**
+     * Whether users should get detailed information about the permissions they would need.
+     */
+    displaypermerrors,
+    /**
+     * Debug-information.
+     */
+    debug,
+    /**
+     * The world new users will spawn in.
+     */
+    firstspawnworld,
+    /**
+     * Whether Multiverse should intercept teleports.
+     */
+    teleportintercept,
+    /**
+     * Whether Multiverse should override the first spawn.
+     */
+    firstspawnoverride;
 
+    /**
+     * Constructs a string containing all values in this enum.
+     *
+     * @return That {@link String}.
+     */
     public static String getAllValues() {
         String buffer = "";
         for (ConfigProperty c : ConfigProperty.values()) {

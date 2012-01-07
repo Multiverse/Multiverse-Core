@@ -11,32 +11,40 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 
 import java.util.logging.Level;
 
+/**
+ * Used to determine block/location-related facts.
+ */
 public class BlockSafety {
-
-    public BlockSafety() {
-        // TODO Auto-generated constructor stub
-    }
 
     /**
      * This function checks whether the block at the given coordinates are above air or not.
+     * @param l The {@link Location} of the block.
+     * @return True if the block at that {@link Location} is above air.
      */
     public boolean isBlockAboveAir(Location l) {
-        Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
+        Location downOne = l.clone();
         downOne.setY(downOne.getY() - 1);
         return (downOne.getBlock().getType() == Material.AIR);
     }
 
-    public boolean blockIsNotSafe(World world, double x, double y, double z) {
-        Location l = new Location(world, x, y, z);
-        return !playerCanSpawnHereSafely(l);
+    // TODO maybe remove this?
+    private boolean blockIsNotSafe(World world, double x, double y, double z) {
+        return !playerCanSpawnHereSafely(world, x, y, z);
     }
 
+    /**
+     * Checks if a player can spawn safely at the given coordinates.
+     * @param world The {@link World}.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @param z The z-coordinate.
+     * @return True if a player can spawn safely at the given coordinates.
+     */
     public boolean playerCanSpawnHereSafely(World world, double x, double y, double z) {
         Location l = new Location(world, x, y, z);
         return playerCanSpawnHereSafely(l);
@@ -50,7 +58,7 @@ public class BlockSafety {
      * @return Whether the player can spawn safely at the given {@link Location}
      */
     public boolean playerCanSpawnHereSafely(Location l) {
-        if(l == null) {
+        if (l == null) {
             // Can't safely spawn at a null location!
             return false;
         }
@@ -62,20 +70,24 @@ public class BlockSafety {
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
 
-        if (this.isSolidBlock(world.getBlockAt(actual).getType()) ||
-                this.isSolidBlock(upOne.getBlock().getType())) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here (Actual)? (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Error Here (upOne)? (" + upOne.getBlock().getType() + ")[" + this.isSolidBlock(upOne.getBlock().getType()) + "]");
+        if (this.isSolidBlock(world.getBlockAt(actual).getType())
+                || this.isSolidBlock(upOne.getBlock().getType())) {
+            MultiverseCore.staticLog(Level.FINER, "Error Here (Actual)? ("
+                + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here (upOne)? ("
+                + upOne.getBlock().getType() + ")[" + this.isSolidBlock(upOne.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here (downOne)? (" + downOne.getBlock().getType() + ")[" + this.isSolidBlock(downOne.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "Error Here (downOne)? ("
+                + downOne.getBlock().getType() + ")[" + this.isSolidBlock(downOne.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            MultiverseCore.staticLog(Level.FINER, "There's fire below! (" + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+            MultiverseCore.staticLog(Level.FINER, "There's fire below! ("
+                + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
@@ -87,9 +99,14 @@ public class BlockSafety {
         return true;
     }
 
+    /**
+     * Gets the location of the top block at the specified {@link Location}.
+     * @param l Any {@link Location}.
+     * @return The {@link Location} of the top-block.
+     */
     public Location getTopBlock(Location l) {
         Location check = l.clone();
-        check.setY(127);
+        check.setY(127); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         while (check.getY() > 0) {
             if (this.playerCanSpawnHereSafely(check)) {
                 return check;
@@ -99,10 +116,15 @@ public class BlockSafety {
         return null;
     }
 
+    /**
+     * Gets the location of the top block at the specified {@link Location}.
+     * @param l Any {@link Location}.
+     * @return The {@link Location} of the top-block.
+     */
     public Location getBottomBlock(Location l) {
         Location check = l.clone();
         check.setY(0);
-        while (check.getY() <= 126) {
+        while (check.getY() < 127) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             if (this.playerCanSpawnHereSafely(check)) {
                 return check;
             }
@@ -111,7 +133,7 @@ public class BlockSafety {
         return null;
     }
 
-    /**
+    /*
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      */
     private boolean isSolidBlock(Material type) {
@@ -174,16 +196,23 @@ public class BlockSafety {
                 return false;
             case WATER:
                 return false;
+            default:
+                return true;
         }
-        return true;
     }
 
-    public boolean isEntitiyOnTrack(Entity e, Location l) {
+    /**
+     * Checks if an entity would be on track at the specified {@link Location}.
+     * @param l The {@link Location}.
+     * @return True if an entity would be on tracks at the specified {@link Location}.
+     */
+    public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
         return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
     }
 
-    public void showDangers(Location l) {
+    // TODO maybe remove this?
+    private void showDangers(Location l) {
         Location actual = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         Location upOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
         Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
@@ -204,7 +233,7 @@ public class BlockSafety {
      * @param l The {@link Location}
      * @return Whether there are 2 blocks of water
      */
-    public boolean hasTwoBlocksofWaterBelow(Location l) {
+    private boolean hasTwoBlocksofWaterBelow(Location l) {
         if (l.getBlockY() < 0) {
             return false;
         }
@@ -221,17 +250,26 @@ public class BlockSafety {
         return hasTwoBlocksofWaterBelow(oneBelow);
     }
 
+    /**
+     * Checks if the specified {@link Minecart} can spawn safely.
+     * @param cart The {@link Minecart}.
+     * @return True if the minecart can spawn safely.
+     */
     public boolean canSpawnCartSafely(Minecart cart) {
-
         if (this.isBlockAboveAir(cart.getLocation())) {
             return true;
         }
-        if (this.isEntitiyOnTrack(cart, LocationManipulation.getNextBlock(cart))) {
+        if (this.isEntitiyOnTrack(LocationManipulation.getNextBlock(cart))) {
             return true;
         }
         return false;
     }
 
+    /**
+     * Checks if the specified {@link Vehicle} can spawn safely.
+     * @param vehicle The {@link Vehicle}.
+     * @return True if the vehicle can spawn safely.
+     */
     public boolean canSpawnVehicleSafely(Vehicle vehicle) {
         if (this.isBlockAboveAir(vehicle.getLocation())) {
             return true;

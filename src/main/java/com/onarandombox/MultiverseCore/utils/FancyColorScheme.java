@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.utils;
 
 import org.bukkit.ChatColor;
 
+/**
+ * A color-scheme.
+ */
 public class FancyColorScheme {
     private ChatColor headerColor;
     private ChatColor mainColor;
@@ -22,22 +25,43 @@ public class FancyColorScheme {
         this.defContentColor = defaultColor;
     }
 
+    /**
+     * Gets the header's {@link ChatColor}.
+     * @return The header's {@link ChatColor}.
+     */
     public ChatColor getHeader() {
         return this.headerColor;
     }
 
+    /**
+     * Gets the main {@link ChatColor}.
+     * @return The main {@link ChatColor}.
+     */
     public ChatColor getMain() {
         return this.mainColor;
     }
 
+    /**
+     * Gets the alt {@link ChatColor}.
+     * @return The alt {@link ChatColor}.
+     */
     public ChatColor getAlt() {
         return this.altColor;
     }
 
+    /**
+     * Gets the default {@link ChatColor}.
+     * @return The default {@link ChatColor}.
+     */
     public ChatColor getDefault() {
         return this.defContentColor;
     }
 
+    /**
+     * Gets either the main or the alt {@link ChatColor}.
+     * @param main True if the main-color is desired, false to get the alt color.
+     * @return The desired {@link ChatColor}.
+     */
     public ChatColor getMain(boolean main) {
         return main ? this.getMain() : this.getAlt();
     }

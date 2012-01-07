@@ -5,6 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
+// TODO maybe remove this comment...?
 // This file is no longer licensed under that silly CC license. I have blanked it out and will start implementaiton of my own in a few days. For now there is no help.
 package com.onarandombox.MultiverseCore.commands;
 
@@ -18,6 +19,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a nice help menu.
+ */
 public class HelpCommand extends PaginatedCoreCommand<Command> {
 
     public HelpCommand(MultiverseCore plugin) {
@@ -33,7 +37,7 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
         this.addKey("mv search");
         this.addCommandExample("/mv help ?");
         this.setPermission("multiverse.help", "Displays a nice help menu.", PermissionDefault.TRUE);
-        this.setItemsPerPage(7);
+        this.setItemsPerPage(7); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     @Override
@@ -50,8 +54,8 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
             } else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
             } else {
-                for(String example : c.getCommandExamples()) {
-                    if(example.matches("(?i).*" + filter + ".*")) {
+                for (String example : c.getCommandExamples()) {
+                    if (example.matches("(?i).*" + filter + ".*")) {
                         filtered.add(c);
                         break;
                     }
@@ -76,7 +80,8 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
         if (filterObject.getFilter().length() > 0) {
             availableCommands = this.getFilteredItems(availableCommands, filterObject.getFilter());
             if (availableCommands.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + "No commands matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
+                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE
+                        + "No commands matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
                 return;
             }
         }

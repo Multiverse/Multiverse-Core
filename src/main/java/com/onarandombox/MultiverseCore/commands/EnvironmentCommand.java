@@ -14,6 +14,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Lists valid known environments.
+ */
 public class EnvironmentCommand extends MultiverseCommand {
 
     public EnvironmentCommand(MultiverseCore plugin) {
@@ -29,6 +32,11 @@ public class EnvironmentCommand extends MultiverseCommand {
         this.setPermission("multiverse.core.list.environments", "Lists valid known environments.", PermissionDefault.OP);
     }
 
+    /**
+     * Shows all valid known environments to a {@link CommandSender}.
+     *
+     * @param sender The {@link CommandSender}.
+     */
     public static void showEnvironments(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");
         sender.sendMessage(ChatColor.GREEN + "NORMAL");

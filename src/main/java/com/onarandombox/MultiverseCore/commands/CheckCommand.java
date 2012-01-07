@@ -17,7 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
-
+/**
+ * Checks to see if a player can go to a destination.
+ */
 public class CheckCommand extends MultiverseCommand {
 
     public CheckCommand(MultiverseCore plugin) {

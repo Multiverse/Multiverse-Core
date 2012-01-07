@@ -24,6 +24,9 @@ import org.bukkit.util.Vector;
 
 import java.util.logging.Level;
 
+/**
+ * The {@link SafeTTeleporter}.
+ */
 public class SafeTTeleporter {
 
     private MultiverseCore plugin;
@@ -34,18 +37,32 @@ public class SafeTTeleporter {
         this.bs = new BlockSafety();
     }
 
+    private static final int DEFAULT_TOLERANCE = 6;
+    private static final int DEFAULT_RADIUS = 9;
+
+    /**
+     * Gets the next safe location around the given location.
+     * @param l A {@link Location}.
+     * @return A safe {@link Location}.
+     */
     public Location getSafeLocation(Location l) {
-        return this.getSafeLocation(l, 6, 9);
+        return this.getSafeLocation(l, DEFAULT_TOLERANCE, DEFAULT_RADIUS);
     }
 
+    /**
+     * Gets the next safe location around the given location.
+     * @param l A {@link Location}.
+     * @param tolerance The tolerance.
+     * @param radius The radius.
+     * @return A safe {@link Location}.
+     */
     public Location getSafeLocation(Location l, int tolerance, int radius) {
-
         // Check around the player first in a configurable radius:
         // TODO: Make this configurable
         Location safe = checkAboveAndBelowLocation(l, tolerance, radius);
         if (safe != null) {
-            safe.setX(safe.getBlockX() + .5);
-            safe.setZ(safe.getBlockZ() + .5);
+            safe.setX(safe.getBlockX() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+            safe.setZ(safe.getBlockZ() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
             this.plugin.log(Level.FINE, "Hey! I found one: " + LocationManipulation.strCoordsRaw(safe));
         } else {
             this.plugin.log(Level.FINE, "Uh oh! No safe place found!");
@@ -54,7 +71,6 @@ public class SafeTTeleporter {
     }
 
     private Location checkAboveAndBelowLocation(Location l, int tolerance, int radius) {
-
         // Tolerance must be an even number:
         if (tolerance % 2 != 0) {
             tolerance += 1;
@@ -95,12 +111,8 @@ public class SafeTTeleporter {
         return null;
     }
 
-    /**
+    /*
      * For my crappy algorithm, radius MUST be odd.
-     *
-     * @param l
-     * @param diameter
-     * @return
      */
     private Location checkAroundLocation(Location l, int diameter) {
         if (diameter % 2 == 0) {
@@ -273,7 +285,7 @@ public class SafeTTeleporter {
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {
             // Add offset to account for a vehicle on dry land!
-            if (e instanceof Minecart && !this.bs.isEntitiyOnTrack(e, safeLocation)) {
+            if (e instanceof Minecart && !this.bs.isEntitiyOnTrack(safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
                 this.plugin.log(Level.FINER, "Player was inside a minecart. Offsetting Y location.");
             }
@@ -282,18 +294,22 @@ public class SafeTTeleporter {
         }
         if (e instanceof Player) {
             Player p = (Player) e;
-            this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
+            this.plugin.getMessaging().sendMessage(p, "No safe locations found!", false);
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         } else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
-            this.plugin.getMessaging().sendMessage(p, "No safe locations found!");
+            this.plugin.getMessaging().sendMessage(p, "No safe locations found!", false);
             this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
         }
         this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return null;
     }
 
-
+    /**
+     * Finds a portal-block next to the specified {@link Location}.
+     * @param l The {@link Location}
+     * @return The next portal-block's {@link Location}.
+     */
     public static Location findPortalBlockNextTo(Location l) {
         Block b = l.getWorld().getBlockAt(l);
         Location foundLocation = null;

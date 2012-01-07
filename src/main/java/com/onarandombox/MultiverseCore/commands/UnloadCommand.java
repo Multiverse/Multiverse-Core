@@ -15,6 +15,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Unloads worlds from Multiverse.
+ */
 public class UnloadCommand extends MultiverseCommand {
 
     public UnloadCommand(MultiverseCore plugin) {
@@ -24,7 +27,8 @@ public class UnloadCommand extends MultiverseCommand {
         this.setArgRange(1, 1);
         this.addKey("mvunload");
         this.addKey("mv unload");
-        this.setPermission("multiverse.core.unload", "Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.unload",
+                "Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.", PermissionDefault.OP);
     }
 
     @Override

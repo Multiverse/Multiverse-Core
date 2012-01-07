@@ -19,6 +19,9 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.List;
 
+/**
+ * Edit a world with spout.
+ */
 public class SpoutCommand extends MultiverseCommand {
 
     public SpoutCommand(MultiverseCore plugin) {
@@ -48,10 +51,13 @@ public class SpoutCommand extends MultiverseCommand {
         }
         PopupScreen pop = new GenericPopup();
         GenericButton button = new GenericButton("Fish");
+        // TODO maybe use constants for these
+        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         button.setX(50);
         button.setY(50);
         button.setWidth(100);
         button.setHeight(40);
+        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         pop.attachWidget(this.plugin, button);
         sender.sendMessage(ChatColor.GREEN + "YAY!");
         p.getMainScreen().attachPopupScreen(pop);

@@ -15,6 +15,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Deletes worlds.
+ */
 public class DeleteCommand extends MultiverseCommand {
 
     public DeleteCommand(MultiverseCore plugin) {
@@ -30,8 +33,9 @@ public class DeleteCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Class<?> paramTypes[] = {String.class};
+        Class<?>[] paramTypes = {String.class};
         List<Object> objectArgs = new ArrayList<Object>(args);
-        this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs, paramTypes, ChatColor.GREEN + "World Deleted!", ChatColor.RED + "World could NOT be deleted!");
+        this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
+                paramTypes, ChatColor.GREEN + "World Deleted!", ChatColor.RED + "World could NOT be deleted!");
     }
 }

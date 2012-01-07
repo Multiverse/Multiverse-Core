@@ -7,6 +7,32 @@
 
 package com.onarandombox.MultiverseCore.enums;
 
+/**
+ * An enum containing possible teleport-results.
+ */
 public enum TeleportResult {
-    FAIL_PERMISSION, FAIL_UNSAFE, FAIL_TOO_POOR, FAIL_INVALID, FAIL_OTHER, SUCCESS
+    /**
+     * Insufficient permissions.
+     */
+    FAIL_PERMISSION,
+    /**
+     * The teleport was unsafe.
+     */
+    FAIL_UNSAFE,
+    /**
+     * The player was to poor.
+     */
+    FAIL_TOO_POOR,
+    /**
+     * The teleport was invalid.
+     */
+    FAIL_INVALID,
+    /**
+     * Unknown reason.
+     */
+    FAIL_OTHER,
+    /**
+     * The player was successfully teleported.
+     */
+    SUCCESS
 }

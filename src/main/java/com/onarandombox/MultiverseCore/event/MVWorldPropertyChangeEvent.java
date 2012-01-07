@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 /**
  * This event is fired *before* the property is actually changed.
  * <p>
- * If it is cancled, no change will happen.
+ * If it is cancelled, no change will happen.
  * <p>
  * If you want to get the values of the world before the change, query the world.
  * If you want to get the value being changed, use getProperty()
@@ -36,14 +36,26 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
         this.value = value;
     }
 
+    /**
+     * Gets the changed world property's name.
+     * @return The changed world property's name.
+     */
     public String getPropertyName() {
         return this.name;
     }
 
+    /**
+     * Gets the new value.
+     * @return The new value.
+     */
     public String getNewValue() {
         return this.value;
     }
 
+    /**
+     * Sets the new value.
+     * @param value The new new value.
+     */
     public void setNewValue(String value) {
         this.value = value;
     }

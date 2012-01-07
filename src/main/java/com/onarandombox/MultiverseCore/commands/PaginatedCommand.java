@@ -14,28 +14,60 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
+/**
+ * A generic paginated command.
+ * @param <T> The type of items on the page.
+ */
 public abstract class PaginatedCommand<T> extends Command {
-    protected int itemsPerPage = 9;
-
+    private static final int DEFAULT_ITEMS_PER_PAGE = 9;
+    /**
+     * The number of items per page.
+     */
+    protected int itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
     public PaginatedCommand(JavaPlugin plugin) {
         super(plugin);
     }
 
+    /**
+     * Set the number of items per page.
+     *
+     * @param items The new number of items per page.
+     */
     protected void setItemsPerPage(int items) {
         itemsPerPage = items;
     }
 
+    /**
+     * Gets filtered items.
+     * @param availableItems All available items.
+     * @param filter The filter-{@link String}.
+     * @return A list of items that match the filter.
+     */
     protected abstract List<T> getFilteredItems(List<T> availableItems, String filter);
 
+    /**
+     * Constructs a single string from a list of strings.
+     *
+     * @param list The {@link List} of strings.
+     * @return A single {@link String}.
+     */
     protected String stitchThisString(List<String> list) {
-        String returnstr = "";
+        StringBuilder builder = new StringBuilder();
         for (String s : list) {
-            returnstr += s + " ";
+            builder.append(s);
+            builder.append(' ');
         }
-        return returnstr;
+        return builder.toString();
     }
 
+    /**
+     * Shows a page.
+     *
+     * @param page The number of the page to show.
+     * @param sender The {@link CommandSender} that wants to see the page.
+     * @param cmds The items that should be displayed on the page.
+     */
     protected void showPage(int page, CommandSender sender, List<T> cmds) {
         // Ensure the page is at least 1.
         page = (page <= 0) ? 1 : page;
@@ -52,8 +84,20 @@ public abstract class PaginatedCommand<T> extends Command {
         }
     }
 
+    /**
+     * Converts an item into a string.
+     *
+     * @param item The item.
+     * @return A {@link String}.
+     */
     protected abstract String getItemText(T item);
 
+    /**
+     * Constructs a {@link FilterObject} from a {@link List} of arguments.
+     *
+     * @param args The {@link List} of arguments.
+     * @return The {@link FilterObject}.
+     */
     protected FilterObject getPageAndFilter(List<String> args) {
         int page = 1;
 
@@ -80,6 +124,9 @@ public abstract class PaginatedCommand<T> extends Command {
         return new FilterObject(page, filter);
     }
 
+    /**
+     * "Key-Object" containing information about the page and the filter that were requested.
+     */
     protected class FilterObject {
         private Integer page;
         private String filter;
@@ -89,14 +136,27 @@ public abstract class PaginatedCommand<T> extends Command {
             this.filter = filter;
         }
 
+        /**
+         * Gets the page.
+         * @return The page.
+         */
         public Integer getPage() {
             return this.page;
         }
 
+        /**
+         * Sets the page.
+         *
+         * @param page The new page.
+         */
         public void setPage(int page) {
             this.page = page;
         }
 
+        /**
+         * Gets the filter.
+         * @return The filter.
+         */
         public String getFilter() {
             return this.filter;
         }

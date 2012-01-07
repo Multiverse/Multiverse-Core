@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.CreatureType;
@@ -29,16 +28,17 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Multiverse's {@link EntityListener}.
+ */
 public class MVEntityListener extends EntityListener {
 
     private MultiverseCore plugin;
     private MVWorldManager worldManager;
-    private PermissionTools pt;
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
-        this.pt = new PermissionTools(this.plugin);
     }
 
     @Override
@@ -73,6 +73,7 @@ public class MVEntityListener extends EntityListener {
 
     /**
      * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
+     * @param event The event.
      */
     @Override
     public void onCreatureSpawn(CreatureSpawnEvent event) {

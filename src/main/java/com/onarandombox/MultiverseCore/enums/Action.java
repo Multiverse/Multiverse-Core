@@ -7,6 +7,24 @@
 
 package com.onarandombox.MultiverseCore.enums;
 
+/**
+ * A enum containing all actions that can be used to modify world-properties.
+ */
 public enum Action {
-    Set, Add, Remove, Clear
+    /**
+     * Setting a property.
+     */
+    Set,
+    /**
+     * Adding something to a list-property.
+     */
+    Add,
+    /**
+     * Removing something from a list-property.
+     */
+    Remove,
+    /**
+     * Clearing a list-property.
+     */
+    Clear
 }

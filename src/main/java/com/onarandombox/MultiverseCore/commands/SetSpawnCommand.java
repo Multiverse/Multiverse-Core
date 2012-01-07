@@ -20,6 +20,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Sets the spawn for a world.
+ */
 public class SetSpawnCommand extends MultiverseCommand {
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
@@ -40,6 +43,11 @@ public class SetSpawnCommand extends MultiverseCommand {
         setWorldSpawn(sender);
     }
 
+    /**
+     * Does the actual spawn-setting-work.
+     *
+     * @param sender The {@link CommandSender} that's setting the spawn.
+     */
     protected void setWorldSpawn(CommandSender sender) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
@@ -49,7 +57,7 @@ public class SetSpawnCommand extends MultiverseCommand {
             if (foundWorld != null) {
                 foundWorld.setSpawnLocation(p.getLocation());
                 BlockSafety bs = new BlockSafety();
-                if(!bs.playerCanSpawnHereSafely(p.getLocation()) && foundWorld.getAdjustSpawn()) {
+                if (!bs.playerCanSpawnHereSafely(p.getLocation()) && foundWorld.getAdjustSpawn()) {
                     sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
                     sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
                     sender.sendMessage("If you want this turned back on just do:");

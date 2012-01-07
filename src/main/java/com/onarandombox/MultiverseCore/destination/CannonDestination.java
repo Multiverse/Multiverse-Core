@@ -17,12 +17,19 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A cannon-{@link MVDestination}.
+ */
 public class CannonDestination implements MVDestination {
     private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
     private boolean isValid;
     private Location location;
     private double speed;
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Vector getVelocity() {
         double pitchRadians = Math.toRadians(location.getPitch());
         double yawRadians = Math.toRadians(location.getYaw());
@@ -35,20 +42,28 @@ public class CannonDestination implements MVDestination {
         return new Vector(x, y, z);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIdentifier() {
         return "ca";
     }
 
+    // NEED ca:world:x,y,z:pitch:yaw:speed
+    // so basically 6
+    private static final int SPLIT_SIZE = 6;
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
             return false;
         }
         List<String> parsed = Arrays.asList(destination.split(":"));
-        // NEED ca:world:x,y,z:pitch:yaw:speed
-        // so basically 6
-        if (parsed.size() != 6) {
+        if (parsed.size() != SPLIT_SIZE) {
             return false;
         }
         // If it's not an Cannon type
@@ -66,35 +81,44 @@ public class CannonDestination implements MVDestination {
         }
 
         try {
+            // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
             Float.parseFloat(parsed.get(3));
             Float.parseFloat(parsed.get(4));
             Float.parseFloat(parsed.get(5));
+            // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         } catch (NumberFormatException e) {
             return false;
         }
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getLocation(Entity e) {
         return this.location;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
             return;
         }
         List<String> parsed = Arrays.asList(destination.split(":"));
-        // Need at least: e:world:x,y,z
-        // OR e:world:x,y,z:pitch:yaw
-        // so basically 3 or 5
-        if (parsed.size() != 6) {
+
+        if (parsed.size() != SPLIT_SIZE) {
             this.isValid = false;
             return;
         }
@@ -129,9 +153,11 @@ public class CannonDestination implements MVDestination {
         this.location.setZ(coords[2]);
 
         try {
+            // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
             this.location.setPitch(Float.parseFloat(parsed.get(3)));
             this.location.setYaw(Float.parseFloat(parsed.get(4)));
             this.speed = Math.abs(Float.parseFloat(parsed.get(5)));
+            // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         } catch (NumberFormatException e) {
             this.isValid = false;
             return;
@@ -141,18 +167,30 @@ public class CannonDestination implements MVDestination {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return "Cannon!";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
-        return "Cannon (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ() + ":" +
-                this.location.getPitch() + ":" + this.location.getYaw() + ":" + this.speed + ")";
+        return "Cannon (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ() + ":"
+                + this.location.getPitch() + ":" + this.location.getYaw() + ":" + this.speed + ")";
 
     }
 
+    /**
+     * Sets this {@link CannonDestination}.
+     *
+     * @param location The {@link Location}.
+     * @param speed The speed.
+     */
     public void setDestination(Location location, double speed) {
         if (location != null) {
             this.location = location;
@@ -162,21 +200,28 @@ public class CannonDestination implements MVDestination {
         this.isValid = false;
     }
 
-    @Override
-    public String toString() {
-        if (isValid) {
-            return "ca:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY() + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ":" + this.speed;
-        }
-        return "i:Invalid Destination";
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRequiredPermission() {
         return "multiverse.access." + this.location.getWorld().getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean useSafeTeleporter() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        if (isValid) {
+            return "ca:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY()
+                    + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ":" + this.speed;
+        }
+        return "i:Invalid Destination";
     }
 }

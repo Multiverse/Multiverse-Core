@@ -15,6 +15,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Loads a world into Multiverse.
+ */
 public class LoadCommand extends MultiverseCommand {
 
     public LoadCommand(MultiverseCore plugin) {

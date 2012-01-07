@@ -19,6 +19,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Creates a new world and loads it.
+ */
 public class CreateCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -26,7 +29,7 @@ public class CreateCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Create World");
         this.setCommandUsage("/mv create" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]] [-n]");
-        this.setArgRange(2, 7);
+        this.setArgRange(2, 7); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         this.addKey("mvcreate");
         this.addKey("mvc");
         this.addKey("mv create");
@@ -47,8 +50,8 @@ public class CreateCommand extends MultiverseCommand {
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
-        for(String s : args) {
-            if(s.equalsIgnoreCase("-n")) {
+        for (String s : args) {
+            if (s.equalsIgnoreCase("-n")) {
                 useSpawnAdjust = false;
             }
         }

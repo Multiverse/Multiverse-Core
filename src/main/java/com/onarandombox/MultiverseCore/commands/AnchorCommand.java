@@ -16,6 +16,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Allows management of Anchor Destinations.
+ */
 public class AnchorCommand extends PaginatedCoreCommand<String> {
 
     public AnchorCommand(MultiverseCore plugin) {
@@ -32,7 +35,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething " + ChatColor.RED + "-d");
         this.addCommandExample("/mv anchors ");
         this.setPermission("multiverse.core.anchor", "Allows management of Anchor Destinations.", PermissionDefault.OP);
-        this.setItemsPerPage(8);
+        this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     private List<String> getFancyAnchorList(Player p) {
@@ -59,7 +62,8 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         if (filterObject.getFilter().length() > 0) {
             availableAnchors = this.getFilteredItems(availableAnchors, filterObject.getFilter());
             if (availableAnchors.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + "No anchors matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
+                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE
+                        + "No anchors matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
                 return;
             }
         } else {

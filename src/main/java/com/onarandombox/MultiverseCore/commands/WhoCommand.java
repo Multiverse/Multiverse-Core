@@ -18,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * States who is in what world.
+ */
 public class WhoCommand extends MultiverseCommand {
 
     private MVWorldManager worldManager;

@@ -18,6 +18,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Removes values from a world-property.
+ */
 public class ModifyRemoveCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -37,7 +40,8 @@ public class ModifyRemoveCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "remove " + ChatColor.GREEN + "sheep " + ChatColor.RED + "animals");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "remove " + ChatColor.GREEN + "creeper " + ChatColor.RED + "monsters");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "remove " + ChatColor.GREEN + "MyWorld " + ChatColor.RED + "worldblacklist");
-        this.setPermission("multiverse.core.modify.remove", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.modify.remove", "Modify various aspects of worlds. See the help wiki for how to use this command properly. "
+                + "If you do not include a world, the current world will be used.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
 
@@ -78,9 +82,11 @@ public class ModifyRemoveCommand extends MultiverseCommand {
             return;
         }
         if (world.removeFromVariable(property, value)) {
-            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE + " was " + ChatColor.RED + "removed from " + ChatColor.GREEN + property);
+            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE
+                    + " was " + ChatColor.RED + "removed from " + ChatColor.GREEN + property);
         } else {
-            sender.sendMessage(ChatColor.RED + "There was an error removing " + ChatColor.GRAY + value + ChatColor.WHITE + " from " + ChatColor.GOLD + property);
+            sender.sendMessage(ChatColor.RED + "There was an error removing " + ChatColor.GRAY
+                    + value + ChatColor.WHITE + " from " + ChatColor.GOLD + property);
         }
     }
 

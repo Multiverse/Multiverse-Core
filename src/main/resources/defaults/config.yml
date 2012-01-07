@@ -1,14 +1,14 @@
 # This is the MV2 Config. If you mess it up, copy the values out
-# Delete it, and it will be regenerated. Then use the ingame interface
-# to add your values back.
+# delete it, and it will be regenerated. Then use the ingame interface
+# to add your values back via the "/mv conf" command.
+# When in-game, simply type: "/mv conf ?" for help.
 # A config with explanations can be found here:
 # https://github.com/Multiverse/Multiverse-Core/wiki/config.yml
 
 worldnameprefix: true
 enforceaccess: true
-enforcegamemodes: true
-bedrespawn: true
-version: 2.5
 displaypermerrors: true
 teleportintercept: true
 firstspawnoverride: true
+messagecooldown: 5000
+version: 2.7
