@@ -13,6 +13,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Confirms actions.
+ */
 public class ConfirmCommand extends MultiverseCommand {
 
     public ConfirmCommand(MultiverseCore plugin) {

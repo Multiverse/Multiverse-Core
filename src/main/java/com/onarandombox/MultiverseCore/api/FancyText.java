@@ -7,11 +7,14 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+/**
+ * A fancy text.
+ */
 public interface FancyText {
     /**
-     * TODO: Write something useful here.
+     * Gets the {@link String}-representation of this {@link FancyText}.
      *
-     * @return And Here.
+     * @return The {@link String}-representation of this {@link FancyText}.
      */
-    public String getFancyText();
+    String getFancyText();
 }

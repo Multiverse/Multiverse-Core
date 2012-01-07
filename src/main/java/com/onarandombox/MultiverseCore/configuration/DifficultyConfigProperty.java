@@ -10,7 +10,10 @@ package com.onarandombox.MultiverseCore.configuration;
 import org.bukkit.Difficulty;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
+/**
+ * A {@link Difficulty} config-property.
+ */
+public class DifficultyConfigProperty implements MVActiveConfigProperty<Difficulty> {
     private String name;
     private Difficulty value;
     private String configNode;
@@ -30,16 +33,25 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Difficulty getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Difficulty value) {
         if (value == null) {
@@ -50,6 +62,9 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         try {
@@ -63,9 +78,20 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 
     @Override
@@ -73,8 +99,31 @@ public class DifficultyConfigProperty implements MVConfigProperty<Difficulty> {
         return value.toString();
     }
 
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
     @Override
-    public String getHelp() {
-        return this.help;
+    public String getMethod() {
+        return "setDifficulty";
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        // Unused here. This will only ever be setDifficulty.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return Difficulty.class;
     }
 }

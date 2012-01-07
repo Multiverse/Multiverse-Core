@@ -9,6 +9,11 @@ package com.onarandombox.MultiverseCore.event;
 
 import org.bukkit.event.Event;
 
+/**
+ * Called when somebody requests version information about Multiverse.
+ * @deprecated Use {@link MVVersionEvent} instead.
+ */
+@Deprecated
 public class MVVersionRequestEvent extends Event {
 
     private String pasteBinBuffer;
@@ -18,10 +23,22 @@ public class MVVersionRequestEvent extends Event {
         this.pasteBinBuffer = pasteBinBuffer;
     }
 
+    /**
+     * Gets the pasteBinBuffer.
+     * @return The pasteBinBuffer.
+     * @deprecated Use {@link MVVersionEvent} instead.
+     */
+    @Deprecated
     public String getPasteBinBuffer() {
         return this.pasteBinBuffer;
     }
 
+    /**
+     * Sets the pasteBinBuffer.
+     * @param buffer The new pasteBinBuffer.
+     * @deprecated Use {@link MVVersionEvent} instead.
+     */
+    @Deprecated
     public void setPasteBinBuffer(String buffer) {
         this.pasteBinBuffer = buffer;
     }

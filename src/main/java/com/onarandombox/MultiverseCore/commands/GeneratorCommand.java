@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Returns a list of loaded generator plugins.
+ */
 public class GeneratorCommand extends MultiverseCommand {
 
     public GeneratorCommand(MultiverseCore plugin) {
@@ -46,13 +49,8 @@ public class GeneratorCommand extends MultiverseCommand {
         String loadedGens = "";
         boolean altColor = false;
         for (String s : generators) {
-            if (altColor) {
-                altColor = false;
-                loadedGens += ChatColor.YELLOW + s + "";
-            } else {
-                altColor = true;
-                loadedGens += ChatColor.WHITE + s + "";
-            }
+            loadedGens += (altColor ? ChatColor.YELLOW : ChatColor.WHITE) + s + " ";
+            altColor = !altColor;
         }
         if (loadedGens.length() == 0) {
             loadedGens = ChatColor.RED + "No Generator Plugins found.";

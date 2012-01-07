@@ -8,10 +8,19 @@
 package com.onarandombox.MultiverseCore.enums;
 
 /**
- * Multiverse 2
- *
- * @author fernferret
+ * An enum containing all list-properties.
  */
 public enum AddProperties {
-    worldblacklist, animals, monsters
+    /**
+     * Worlds that people cannot go to from a world.
+     */
+    worldblacklist,
+    /**
+     * Animal-exceptions.
+     */
+    animals,
+    /**
+     * Monster-exceptions.
+     */
+    monsters
 }

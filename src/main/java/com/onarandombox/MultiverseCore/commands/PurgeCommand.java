@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Removes a type of mob from a world.
+ */
 public class PurgeCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 

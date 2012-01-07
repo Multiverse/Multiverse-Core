@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.enums.ConfigProperty;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -16,9 +15,10 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Allows you to set Global MV Variables.
+ */
 public class ConfigCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
-
     public ConfigCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Configuration");
@@ -33,7 +33,6 @@ public class ConfigCommand extends MultiverseCommand {
         this.addCommandExample("/mv config " + ChatColor.GREEN + "debug" + ChatColor.AQUA + " 3");
         this.addCommandExample("/mv config " + ChatColor.GREEN + "enforceaccess" + ChatColor.AQUA + " false");
         this.setPermission("multiverse.core.config", "Allows you to set Global MV Variables.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getMVWorldManager();
     }
 
     @Override
@@ -54,7 +53,12 @@ public class ConfigCommand extends MultiverseCommand {
             sender.sendMessage(currentvals.substring(0, currentvals.length() - 2));
             return;
         }
-        if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown") || args.get(0).equalsIgnoreCase("debug")) {
+        if (args.get(0).equalsIgnoreCase("firstspawnworld")) {
+            this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), args.get(1));
+            // Don't forget to set the world!
+            this.plugin.getMVWorldManager().setFirstSpawnWorld(args.get(1));
+        } else if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown")
+                || args.get(0).equalsIgnoreCase("debug")) {
             try {
                 this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
             } catch (NumberFormatException e) {
@@ -66,7 +70,8 @@ public class ConfigCommand extends MultiverseCommand {
             try {
                 property = ConfigProperty.valueOf(args.get(0).toLowerCase());
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " you can't set " + ChatColor.AQUA + args.get(0));
+                sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA
+                        + args.get(0) + ChatColor.WHITE + " you can't set " + ChatColor.AQUA + args.get(0));
                 sender.sendMessage(ChatColor.GREEN + "Valid values are:");
                 sender.sendMessage(ConfigProperty.getAllValues());
                 return;

@@ -11,8 +11,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
+/**
+ * The Multiverse debug-logger.
+ */
 public class DebugLog {
 
     private FileHandler fh;
@@ -44,15 +52,18 @@ public class DebugLog {
     }
 
     /**
-     * Log a message at a certain level
+     * Log a message at a certain level.
      *
-     * @param level
-     * @param msg
+     * @param level The log-{@link Level}.
+     * @param msg the message.
      */
     public void log(Level level, String msg) {
         this.log.log(level, msg);
     }
 
+    /**
+     * Our log-{@link Formatter}.
+     */
     private class LogFormatter extends Formatter {
         private final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -78,6 +89,9 @@ public class DebugLog {
         }
     }
 
+    /**
+     * Closes this {@link DebugLog}.
+     */
     public void close() {
         this.fh.close();
     }

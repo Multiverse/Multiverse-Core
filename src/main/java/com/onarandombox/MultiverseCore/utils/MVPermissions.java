@@ -21,19 +21,33 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Multiverse's {@link PermissionsInterface}.
+ */
 public class MVPermissions implements PermissionsInterface {
 
     private MultiverseCore plugin;
     private MVWorldManager worldMgr;
 
-    /**
-     * Constructor FTW
-     *
-     * @param plugin Pass along the Core Plugin.
-     */
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldMgr = plugin.getMVWorldManager();
+
+    }
+
+    /**
+     * Check if a Player can ignore GameMode restrictions for world they travel to.
+     *
+     * @param p The {@link Player} to check.
+     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @return True if they should bypass restrictions.
+     */
+    public boolean canIgnoreGameModeRestriction(Player p, MultiverseWorld w) {
+        if (p.hasPermission("mv.bypass.gamemode.*")) {
+            this.plugin.log(Level.FINER, "Player has mv.bypass.gamemode.* their gamemode is ignored!");
+            return true;
+        }
+        return p.hasPermission("mv.bypass.gamemode." + w.getName());
     }
 
     /**
@@ -58,6 +72,12 @@ public class MVPermissions implements PermissionsInterface {
         return returnValue;
     }
 
+    /**
+     * Checks if the specified {@link CommandSender} can travel to the specified {@link Location}.
+     * @param sender The {@link CommandSender}.
+     * @param location The {@link Location}.
+     * @return Whether the {@link CommandSender} can travel to the specified {@link Location}.
+     */
     public boolean canTravelFromLocation(CommandSender sender, Location location) {
         if (!(sender instanceof Player)) {
             return true;
@@ -84,7 +104,7 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
     }
 
-    public boolean canEnterLocation(Player p, Location l) {
+    private boolean canEnterLocation(Player p, Location l) {
         if (l == null) {
             return false;
         }
@@ -207,11 +227,17 @@ public class MVPermissions implements PermissionsInterface {
         return null;
     }
 
-
+    /**
+     * Gets the type of this {@link PermissionsInterface}.
+     * @return The type of this {@link PermissionsInterface}.
+     */
     public String getType() {
         return "Bukkit Permissions (SuperPerms)";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasAnyPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
@@ -222,6 +248,9 @@ public class MVPermissions implements PermissionsInterface {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasAllPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
@@ -232,6 +261,12 @@ public class MVPermissions implements PermissionsInterface {
         return true;
     }
 
+    /**
+     * Adds a permission.
+     * @param string The permission as {@link String}.
+     * @param defaultValue The default-value.
+     * @return The permission as {@link Permission}.
+     */
     public Permission addPermission(String string, PermissionDefault defaultValue) {
         if (this.plugin.getServer().getPluginManager().getPermission(string) == null) {
             Permission permission = new Permission(string, defaultValue);

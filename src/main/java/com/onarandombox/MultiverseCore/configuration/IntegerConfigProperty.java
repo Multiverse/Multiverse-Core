@@ -9,6 +9,9 @@ package com.onarandombox.MultiverseCore.configuration;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * A {@link Integer} config-property.
+ */
 public class IntegerConfigProperty implements MVConfigProperty<Integer> {
     private String name;
     private Integer value;
@@ -29,16 +32,25 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
         this.setValue(this.section.getInt(this.configNode, defaultValue));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Integer getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Integer value) {
         if (value == null) {
@@ -49,6 +61,9 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         try {
@@ -59,18 +74,24 @@ public class IntegerConfigProperty implements MVConfigProperty<Integer> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

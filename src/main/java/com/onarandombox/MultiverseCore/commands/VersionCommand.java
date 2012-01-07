@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.event.MVVersionRequestEvent;
+import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
@@ -21,6 +21,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Dumps version info to the console.
+ */
 public class VersionCommand extends MultiverseCommand {
 
     public VersionCommand(MultiverseCore plugin) {
@@ -31,10 +34,9 @@ public class VersionCommand extends MultiverseCommand {
         this.addKey("mv version");
         this.addKey("mvv");
         this.addKey("mvversion");
-        this.setPermission("multiverse.core.version", "Dumps version info to the console, optionally to pastie.org with -p or pastebin.com with a -b.", PermissionDefault.TRUE);
+        this.setPermission("multiverse.core.version",
+                "Dumps version info to the console, optionally to pastie.org with -p or pastebin.com with a -b.", PermissionDefault.TRUE);
     }
-
-    private String pasteBinBuffer = "";
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
@@ -43,31 +45,42 @@ public class VersionCommand extends MultiverseCommand {
             sender.sendMessage("Version info dumped to console. Please check your server logs.");
         }
 
-        logAndAddToPasteBinBuffer("Multiverse-Core Version: " + this.plugin.getDescription().getVersion());
-        logAndAddToPasteBinBuffer("Bukkit Version: " + this.plugin.getServer().getVersion());
-        logAndAddToPasteBinBuffer("Loaded Worlds: " + this.plugin.getMVWorldManager().getMVWorlds().size());
-        logAndAddToPasteBinBuffer("Multiverse Plugins Loaded: " + this.plugin.getPluginCount());
-        logAndAddToPasteBinBuffer("Economy being used: " + this.plugin.getBank().getEconUsed());
-        logAndAddToPasteBinBuffer("Permissions Plugin: " + this.plugin.getMVPerms().getType());
-        logAndAddToPasteBinBuffer("Dumping Config Values: (version " + this.plugin.getMVConfiguration().getString("version", "NOT SET") + ")");
-        logAndAddToPasteBinBuffer("messagecooldown: " + "Not yet IMPLEMENTED");
-        logAndAddToPasteBinBuffer("teleportcooldown: " + "Not yet IMPLEMENTED");
-        logAndAddToPasteBinBuffer("worldnameprefix: " + MultiverseCore.PrefixChat);
-        logAndAddToPasteBinBuffer("enforceaccess: " + MultiverseCore.EnforceAccess);
-        logAndAddToPasteBinBuffer("enforcegamemodes: " + MultiverseCore.EnforceGameModes);
-        logAndAddToPasteBinBuffer("debug: " + MultiverseCore.GlobalDebug);
-        logAndAddToPasteBinBuffer("Special Code: FRN002");
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("[Multiverse-Core] Multiverse-Core Version: ").append(this.plugin.getDescription().getVersion()).append('\n');
+        buffer.append("[Multiverse-Core] Bukkit Version: ").append(this.plugin.getServer().getVersion()).append('\n');
+        buffer.append("[Multiverse-Core] Loaded Worlds: ").append(this.plugin.getMVWorldManager().getMVWorlds().size()).append('\n');
+        buffer.append("[Multiverse-Core] Multiverse Plugins Loaded: ").append(this.plugin.getPluginCount()).append('\n');
+        buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getBank().getEconUsed()).append('\n');
+        buffer.append("[Multiverse-Core] Permissions Plugin: ").append(this.plugin.getMVPerms().getType()).append('\n');
+        buffer.append("[Multiverse-Core] Dumping Config Values: (version ")
+                .append(this.plugin.getMVConfiguration().getDouble("version", -1)).append(")").append('\n');
+        buffer.append("[Multiverse-Core]  messagecooldown: ").append(this.plugin.getMessaging().getCooldown()).append('\n');
+        buffer.append("[Multiverse-Core]  teleportcooldown: ").append("Not yet IMPLEMENTED").append('\n');
+        buffer.append("[Multiverse-Core]  worldnameprefix: ").append(MultiverseCore.PrefixChat).append('\n');
+        buffer.append("[Multiverse-Core]  enforceaccess: ").append(MultiverseCore.EnforceAccess).append('\n');
+        buffer.append("[Multiverse-Core]  displaypermerrors: ").append(MultiverseCore.DisplayPermErrors).append('\n');
+        buffer.append("[Multiverse-Core]  teleportintercept: ").append(MultiverseCore.TeleportIntercept).append('\n');
+        buffer.append("[Multiverse-Core]  firstspawnoverride: ").append(MultiverseCore.FirstSpawnOverride).append('\n');
+        buffer.append("[Multiverse-Core]  firstspawnworld: ").append(this.plugin.getMVConfiguration().getString("firstspawnworld", "NOT SET")).append('\n');
+        buffer.append("[Multiverse-Core]  debug: ").append(MultiverseCore.GlobalDebug).append('\n');
+        buffer.append("[Multiverse-Core] Special Code: FRN002").append('\n');
 
-        MVVersionRequestEvent versionEvent = new MVVersionRequestEvent(pasteBinBuffer);
+        MVVersionEvent versionEvent = new MVVersionEvent(buffer.toString());
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
-        pasteBinBuffer = versionEvent.getPasteBinBuffer();
+
+        // log to console
+        String data = versionEvent.getVersionInfo();
+        String[] lines = data.split("\n");
+        for (String line : lines) {
+            this.plugin.log(Level.INFO, line);
+        }
 
         if (args.size() == 1) {
             String pasteUrl = "";
             if (args.get(0).equalsIgnoreCase("-p")) {
-                pasteUrl = this.postToService(PasteServiceType.PASTIE, true); // private post to pastie
+                pasteUrl = postToService(PasteServiceType.PASTIE, true, data); // private post to pastie
             } else if (args.get(0).equalsIgnoreCase("-b")) {
-                pasteUrl = this.postToService(PasteServiceType.PASTEBIN, true); // private post to pastie
+                pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data); // private post to pastie
             } else {
                 return;
             }
@@ -77,11 +90,6 @@ public class VersionCommand extends MultiverseCommand {
         }
     }
 
-    private void logAndAddToPasteBinBuffer(String string) {
-        this.pasteBinBuffer += "[Multiverse-Core] " + string + "\n";
-        this.plugin.log(Level.INFO, string);
-    }
-
     /**
      * Send the current contents of this.pasteBinBuffer to a web service.
      *
@@ -89,10 +97,10 @@ public class VersionCommand extends MultiverseCommand {
      * @param isPrivate Should the paste be marked as private.
      * @return URL of visible paste
      */
-    private String postToService(PasteServiceType type, boolean isPrivate) {
+    private static String postToService(PasteServiceType type, boolean isPrivate, String pasteData) {
         PasteService ps = PasteServiceFactory.getService(type, isPrivate);
         try {
-            return ps.postData(ps.encodeData(this.pasteBinBuffer), ps.getPostURL());
+            return ps.postData(ps.encodeData(pasteData), ps.getPostURL());
         } catch (PasteFailedException e) {
             System.out.print(e);
             return "Error posting to service";

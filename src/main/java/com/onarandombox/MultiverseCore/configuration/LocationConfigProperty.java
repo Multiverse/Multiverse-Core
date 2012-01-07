@@ -11,12 +11,16 @@ import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class LocationConfigProperty implements MVConfigProperty<Location> {
+/**
+ * A {@link Location} config-property.
+ */
+public class LocationConfigProperty implements MVActiveConfigProperty<Location> {
     private String name;
     private Location value;
     private String configNode;
     private ConfigurationSection section;
     private String help;
+    private String method;
 
     public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String help) {
         this(section, name, defaultValue, name, help);
@@ -31,37 +35,55 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
         this.setValue(this.getLocationFromConfig(defaultValue));
     }
 
+    public LocationConfigProperty(ConfigurationSection section, String name, Location defaultValue, String configNode, String help, String method) {
+        this(section, name, defaultValue, configNode, help);
+        this.method = method;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         Location parsed = LocationManipulation.stringToLocation(value);
         return this.setValue(parsed);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
     }
 
-    @Override
-    public String toString() {
-        return LocationManipulation.strCoordsRaw(this.value);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHelp() {
         return this.help;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(Location value) {
         if (value == null) {
@@ -90,5 +112,40 @@ public class LocationConfigProperty implements MVConfigProperty<Location> {
             return found;
         }
         return defaultValue;
+    }
+
+    @Override
+    public String toString() {
+        return LocationManipulation.strCoordsRaw(this.value);
+    }
+
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
+    @Override
+    public String getMethod() {
+        return this.method;
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        this.method = methodName;
+    }
+
+    /**
+     * Returns the class of the object we're looking at.
+     *
+     * @return the class of the object we're looking at.
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return Location.class;
     }
 }

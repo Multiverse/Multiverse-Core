@@ -18,11 +18,15 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Teleports a player to the spawn.
+ */
 public class SpawnCommand extends MultiverseCommand {
 
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);
-        Permission otherPerm = new Permission("multiverse.core.spawn.other", "Teleports another player to the spawn of the world they are in.", PermissionDefault.OP);
+        Permission otherPerm = new Permission("multiverse.core.spawn.other",
+                "Teleports another player to the spawn of the world they are in.", PermissionDefault.OP);
         this.setName("Spawn");
         this.setCommandUsage("/mv spawn" + ChatColor.GOLD + " [PLAYER]");
         this.setArgRange(0, 1);

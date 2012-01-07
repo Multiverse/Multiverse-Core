@@ -27,6 +27,9 @@ import java.util.List;
 // Will use when we can compile with JDK 6
 //import com.sun.xml.internal.ws.util.StringUtils;
 
+/**
+ * Returns detailed information about a world.
+ */
 public class InfoCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -106,17 +109,14 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("General Info", colors));
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
-        String enforced = "";
-        if (!MultiverseCore.EnforceGameModes) {
-            enforced = ChatColor.RED + " Not Enforced!";
-        }
-        message.add(new FancyMessage("Game Mode: ", world.getGameMode() + enforced, colors));
+        message.add(new FancyMessage("Game Mode: ", world.getGameMode().toString(), colors));
         //message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
         message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
         if (world.getPrice() > 0) {
-            message.add(new FancyMessage("Price to enter this world: ", this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));
+            message.add(new FancyMessage("Price to enter this world: ",
+                    this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency()), colors));
         } else {
             message.add(new FancyMessage("Price to enter this world: ", ChatColor.GREEN + "FREE!", colors));
         }
@@ -148,13 +148,10 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyHeader("Monster Settings", colors));
         message.add(new FancyMessage("Multiverse Setting: ", world.canMonstersSpawn() + "", colors));
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowMonsters() + "", colors));
-        if (MultiverseCore.MobsDisabledInDefaultWorld) {
-            message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Monsters WILL NOT SPAWN IN THIS WORLD.", colors));
-            message.add(new FancyMessage(ChatColor.RED + "WARNING: ", "Check your server log for more details.", colors));
-        }
         if (world.getMonsterList().size() > 0) {
             if (world.canMonstersSpawn()) {
-                message.add(new FancyMessage("Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
+                message.add(new FancyMessage("Monsters that" + ChatColor.RED + " CAN NOT "
+                        + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getMonsterList()), colors));
             } else {
                 message.add(new FancyMessage("Monsters that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getMonsterList()), colors));
             }
@@ -170,7 +167,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("Bukkit Setting: ", world.getCBWorld().getAllowAnimals() + "", colors));
         if (world.getMonsterList().size() > 0) {
             if (world.canMonstersSpawn()) {
-                message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getAnimalList()), colors));
+                message.add(new FancyMessage("Animals that" + ChatColor.RED + " CAN NOT "
+                        + ChatColor.GREEN + "spawn: ", toCommaSeperated(world.getAnimalList()), colors));
             } else {
                 message.add(new FancyMessage("Animals that" + ChatColor.GREEN + " CAN SPAWN: ", toCommaSeperated(world.getAnimalList()), colors));
             }
@@ -198,6 +196,12 @@ public class InfoCommand extends MultiverseCommand {
         return result;
     }
 
+    /**
+     * Gets a "positive" or "negative" {@link ChatColor}.
+     *
+     * @param positive Whether this {@link ChatColor} should be "positive".
+     * @return The {@link ChatColor}.
+     */
     protected ChatColor getChatColor(boolean positive) {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }

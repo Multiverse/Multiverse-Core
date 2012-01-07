@@ -21,6 +21,9 @@ import java.util.List;
 // This will contain all the properties that support the ADD/REMOVE
 // Anything not in here will only support the SET action
 
+/**
+ * Used to modify various aspects of worlds.
+ */
 public class ModifyAddCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
@@ -36,7 +39,8 @@ public class ModifyAddCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "add " + ChatColor.GREEN + "sheep " + ChatColor.RED + "animals");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "add " + ChatColor.GREEN + "creeper " + ChatColor.RED + "monsters");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "add " + ChatColor.GREEN + "MyWorld " + ChatColor.RED + "worldblacklist");
-        this.setPermission("multiverse.core.modify.add", "Modify various aspects of worlds. See the help wiki for how to use this command properly. If you do not include a world, the current world will be used.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.modify.add", "Modify various aspects of worlds. See the help wiki for how to use this command properly. "
+                + "If you do not include a world, the current world will be used.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
 
@@ -78,7 +82,8 @@ public class ModifyAddCommand extends MultiverseCommand {
         }
 
         if (world.addToVariable(property, value)) {
-            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE + " was " + ChatColor.GREEN + "added to " + ChatColor.GREEN + property);
+            sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA
+                    + value + ChatColor.WHITE + " was " + ChatColor.GREEN + "added to " + ChatColor.GREEN + property);
         } else {
             sender.sendMessage(value + " could not be added to " + property);
         }

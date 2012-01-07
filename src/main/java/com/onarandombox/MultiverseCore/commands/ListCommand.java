@@ -20,6 +20,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a listing of all worlds that a player can enter.
+ */
 public class ListCommand extends PaginatedCoreCommand<String> {
 
     private MessageProvider provider;
@@ -34,7 +37,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         this.addKey("mvl");
         this.addKey("mv list");
         this.setPermission("multiverse.core.list.worlds", provider.getMessage(MultiverseMessage.LIST_DESC), PermissionDefault.OP);
-        this.setItemsPerPage(8);
+        this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
     private List<String> getFancyWorldList(Player p) {
@@ -116,7 +119,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
             return;
         }
 
-        int totalPages = (int) Math.ceil(availableWorlds.size() / (this.ITEMS_PER_PAGE + 0.0));
+        int totalPages = (int) Math.ceil(availableWorlds.size() / (this.itemsPerPage + 0.0));
 
         if (filterObject.getPage() > totalPages) {
             filterObject.setPage(totalPages);

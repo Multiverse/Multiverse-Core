@@ -18,11 +18,22 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+/*
+ * Apparently this isn't used and I don't know if we'll ever use this,
+ * so I'm just going to deprecate it for now and suppress the warnings.
+ *
+ * BEGIN CHECKSTYLE-SUPPRESSION: ALL
+ */
+
+/**
+ * @deprecated Currently unused.
+ */
+@Deprecated
 public class UpdateChecker {
 
     public static final Logger log = Logger.getLogger("Minecraft");
 
-    public Timer timer = new Timer(); // Create a new Timer.
+    private Timer timer = new Timer(); // Create a new Timer.
 
     private String name; // Hold the Plugins Name.
     private String cversion; // Hold the Plugins Current Version.
@@ -104,3 +115,7 @@ public class UpdateChecker {
     }
 
 }
+
+/*
+ * END CHECKSTYLE-SUPPRESSION: ALL
+ */

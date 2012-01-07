@@ -15,14 +15,20 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
-import java.util.Formatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class to manipulate locations.
+ */
 public class LocationManipulation {
+    private LocationManipulation() { }
+
     private static Map<String, Integer> orientationInts = new HashMap<String, Integer>();
 
     static {
+        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         orientationInts.put("n", 180);
         orientationInts.put("ne", 225);
         orientationInts.put("e", 270);
@@ -32,6 +38,9 @@ public class LocationManipulation {
         orientationInts.put("w", 90);
         orientationInts.put("nw", 135);
 
+        // "freeze" the map:
+        orientationInts = Collections.unmodifiableMap(orientationInts);
+        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
     /**
@@ -48,10 +57,21 @@ public class LocationManipulation {
         if (location == null) {
             return "";
         }
-        StringBuilder l = new StringBuilder();
-        Formatter formatter = new Formatter(l);
-        formatter.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        return formatter.toString();
+        return String.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
+                location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+    }
+
+    /**
+     * This method simply does some rounding, rather than forcing a call to the server to get the blockdata.
+     *
+     * @param l The location to round to the block location
+     * @return A rounded location.
+     */
+    public static Location getBlockLocation(Location l) {
+        l.setX(l.getBlockX());
+        l.setY(l.getBlockY());
+        l.setZ(l.getBlockZ());
+        return l;
     }
 
     /**
@@ -74,7 +94,7 @@ public class LocationManipulation {
         // Split the whole string, format is:
         // {'world', 'x,y,z'[, 'pitch', 'yaw']}
         String[] split = locationString.split(":");
-        if (split.length < 2 || split.length > 4) {
+        if (split.length < 2 || split.length > 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             return null;
         }
         // Split the xyz string, format is:
@@ -96,7 +116,7 @@ public class LocationManipulation {
             if (split.length >= 3) {
                 yaw = (float) Double.parseDouble(split[2]);
             }
-            if (split.length == 4) {
+            if (split.length == 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
                 pitch = (float) Double.parseDouble(split[3]);
             }
             return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
@@ -106,7 +126,7 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns a colored string with the coords
+     * Returns a colored string with the coords.
      *
      * @param l The {@link Location}
      * @return The {@link String}
@@ -125,12 +145,15 @@ public class LocationManipulation {
     }
 
     /**
-     * Converts a location to a printable readable formatted string including pitch/yaw
+     * Converts a location to a printable readable formatted string including pitch/yaw.
      *
      * @param l The {@link Location}
      * @return The {@link String}
      */
     public static String strCoordsRaw(Location l) {
+        if (l == null) {
+            return "null";
+        }
         String result = "";
         DecimalFormat df = new DecimalFormat();
         df.setMinimumFractionDigits(0);
@@ -150,6 +173,7 @@ public class LocationManipulation {
      * @return The NESW Direction
      */
     public static String getDirection(Location location) {
+        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         double r = (location.getYaw() % 360) + 180;
         // Remember, these numbers are every 45 degrees with a 22.5 offset, to detect boundaries.
         String dir;
@@ -171,12 +195,13 @@ public class LocationManipulation {
             dir = "nw";
         else
             dir = "n";
+        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
         return dir;
     }
 
     /**
-     * Returns the float yaw position for the given cardinal direction
+     * Returns the float yaw position for the given cardinal direction.
      *
      * @param orientation The cardinal direction
      * @return The yaw
@@ -205,7 +230,7 @@ public class LocationManipulation {
     // -W/+E,0, -N/+S
 
     /**
-     * Returns a translated vector from the given direction
+     * Returns a translated vector from the given direction.
      *
      * @param v The old {@link Vector}
      * @param direction The new direction
@@ -239,7 +264,7 @@ public class LocationManipulation {
     }
 
     /**
-     * Returns the next Location that a {@link Vehicle} is traveling at
+     * Returns the next Location that a {@link Vehicle} is traveling at.
      *
      * @param v The {@link Vehicle}
      * @return The {@link Location}

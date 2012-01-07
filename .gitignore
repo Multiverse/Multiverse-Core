@@ -2,6 +2,7 @@
 /.classpath
 /.project
 /.settings
+/.checkstyle
 
 # netbeans
 /nbproject
@@ -38,3 +39,6 @@ uploadtoserver.sh
 # Testing files:
 debug.log
 
+# Doxygen
+/docs/html
+debug.txt

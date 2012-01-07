@@ -1,3 +1,16 @@
+Building
+========
+Update the submodules after you clone and before you build with maven.
+
+```
+$ git submodule update --init --recursive
+$ mvn install
+```
+
+More details are available on the [build instructions wiki page](https://github.com/Multiverse/Multiverse-Core/wiki/Building).
+
+License
+=======
 Copyright (c) 2011, The Multiverse Team All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

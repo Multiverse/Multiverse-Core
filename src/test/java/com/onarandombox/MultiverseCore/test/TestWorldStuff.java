@@ -131,7 +131,7 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");
-        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage("Complete!");
+        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Complete!");
     }
 
     @Test
@@ -206,7 +206,6 @@ public class TestWorldStuff {
 
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "blah", "fish", "world" });
         verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '"+ChatColor.GRAY+ "blah" + ChatColor.RED + "'");
-
     }
 
     private void createInitialWorlds(Plugin plugin, Command command) {
@@ -216,6 +215,6 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");
-        verify(mockCommandSender, times(3)).sendMessage("Complete!");
+        verify(mockCommandSender, times(3)).sendMessage(ChatColor.GREEN + "Complete!");
     }
 }

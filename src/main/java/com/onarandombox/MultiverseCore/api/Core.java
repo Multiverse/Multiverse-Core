@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.*;
@@ -26,20 +27,20 @@ public interface Core {
      *
      * @return The Multiverse config file.
      */
-    public FileConfiguration getMVConfiguration();
+    FileConfiguration getMVConfiguration();
 
     /**
      * Gets the Banking system that Multiverse-Core has hooked into.
      *
      * @return A {@link GenericBank} that can be used for payments.
      */
-    public GenericBank getBank();
+    GenericBank getBank();
 
     /**
      * Reloads the Multiverse Configuration files:
      * worlds.yml and config.yml.
      */
-    public void loadConfigs();
+    void loadConfigs();
 
     /**
      * Gets the Multiverse message system. This allows you to send messages
@@ -47,7 +48,7 @@ public interface Core {
      *
      * @return The loaded {@link MVMessaging}.
      */
-    public MVMessaging getMessaging();
+    MVMessaging getMessaging();
 
     /**
      * Gets the {@link MVPlayerSession} for the given player.
@@ -58,7 +59,7 @@ public interface Core {
      *
      * @return The corresponding {@link MVPlayerSession}.
      */
-    public MVPlayerSession getPlayerSession(Player player);
+    MVPlayerSession getPlayerSession(Player player);
 
     /**
      * Gets the instantiated Safe-T-Teleporter for performing
@@ -66,7 +67,7 @@ public interface Core {
      *
      * @return A non-null {@link SafeTTeleporter}.
      */
-    public SafeTTeleporter getTeleporter();
+    SafeTTeleporter getTeleporter();
 
     /**
      * Multiverse uses an advanced permissions setup, this object
@@ -74,7 +75,7 @@ public interface Core {
      *
      * @return A non-null {@link MVPermissions}.
      */
-    public MVPermissions getMVPerms();
+    MVPermissions getMVPerms();
 
     /**
      * Multiverse uses {@link CommandHandler} to make adding and using commands
@@ -82,7 +83,7 @@ public interface Core {
      *
      * @return A non-null {@link CommandHandler}.
      */
-    public CommandHandler getCommandHandler();
+    CommandHandler getCommandHandler();
 
     /**
      * Gets the factory class responsible for loading many different destinations
@@ -90,12 +91,76 @@ public interface Core {
      *
      * @return A valid {@link DestinationFactory}.
      */
-    public DestinationFactory getDestFactory();
+    DestinationFactory getDestFactory();
 
     /**
      * Gets the primary class responsible for managing Multiverse Worlds.
      *
      * @return {@link WorldManager}.
      */
-    public MVWorldManager getMVWorldManager();
+    MVWorldManager getMVWorldManager();
+
+    /**
+     * Saves all configs.
+     *
+     * @return Whether the config was successfully saved
+     */
+    boolean saveMVConfigs();
+
+    /**
+     * Gets the {@link AnchorManager}.
+     *
+     * @return The {@link AnchorManager}
+     */
+    AnchorManager getAnchorManager();
+
+    /**
+     * Used by queued commands to regenerate a world on a delay.
+     *
+     * @param name Name of the world to regenerate
+     * @param useNewSeed If a new seed should be used
+     * @param randomSeed IF the new seed should be random
+     * @param seed The seed of the world.
+     *
+     * @return True if success, false if fail.
+     */
+    Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
+
+    /**
+     * Sets the {@link GenericBank}-Bank AllPay is using.
+     *
+     * @param bank The new {@link GenericBank}
+     */
+    void setBank(GenericBank bank);
+
+    /**
+     * Gets this plugin's {@link AllPay}-Banker.
+     *
+     * @return An {@link AllPay}-Banker
+     */
+    AllPay getBanker();
+
+    /**
+     * Decrements the number of plugins that have specifically hooked into core.
+     */
+    void decrementPluginCount();
+
+    /**
+     * Increments the number of plugins that have specifically hooked into core.
+     */
+    void incrementPluginCount();
+
+    /**
+     * Returns the number of plugins that have specifically hooked into core.
+     *
+     * @return The number if plugins that have hooked into core.
+     */
+    int getPluginCount();
+
+    /**
+     * Parse the Authors Array into a readable String with ',' and 'and'.
+     *
+     * @return The readable authors-{@link String}
+     */
+    String getAuthors();
 }

@@ -17,21 +17,34 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * An anchor-{@link MVDestination}.
+ */
 public class AnchorDestination implements MVDestination {
     private boolean isValid;
     private Location location;
     private MultiverseCore plugin;
     private String name;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIdentifier() {
         return "a";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
@@ -47,16 +60,25 @@ public class AnchorDestination implements MVDestination {
         return parsed.get(0).equalsIgnoreCase("a");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getLocation(Entity e) {
         return this.location;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
@@ -73,20 +95,27 @@ public class AnchorDestination implements MVDestination {
         }
         this.name = parsed.get(1);
         this.location = this.plugin.getAnchorManager().getAnchorLocation(parsed.get(1));
-        if(this.location == null) {
+        if (this.location == null) {
             this.isValid = false;
             return;
         }
         if (!parsed.get(0).equalsIgnoreCase(this.getIdentifier())) {
             this.isValid = false;
         }
+        this.isValid = true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return "Anchor";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Anchor: " + this.name;
@@ -100,11 +129,17 @@ public class AnchorDestination implements MVDestination {
         return "i:Invalid Destination";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRequiredPermission() {
         return "multiverse.access." + this.location.getWorld().getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean useSafeTeleporter() {
         // This is an ANCHOR destination, don't safely teleport here.

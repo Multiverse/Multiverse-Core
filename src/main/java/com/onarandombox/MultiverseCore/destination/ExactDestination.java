@@ -17,20 +17,33 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * An exact {@link MVDestination}.
+ */
 public class ExactDestination implements MVDestination {
     private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
     private boolean isValid;
     private Location location;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getIdentifier() {
         return "e";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
@@ -40,7 +53,7 @@ public class ExactDestination implements MVDestination {
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
-        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+        if (!(parsed.size() == 3 || parsed.size() == 5)) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             return false;
         }
         // If it's not an Exact type
@@ -63,23 +76,32 @@ public class ExactDestination implements MVDestination {
 
         try {
             Float.parseFloat(parsed.get(3));
-            Float.parseFloat(parsed.get(4));
+            Float.parseFloat(parsed.get(4)); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         } catch (NumberFormatException e) {
             return false;
         }
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Location getLocation(Entity e) {
         return this.location;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid() {
         return this.isValid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
         if (!(plugin instanceof MultiverseCore)) {
@@ -89,7 +111,7 @@ public class ExactDestination implements MVDestination {
         // Need at least: e:world:x,y,z
         // OR e:world:x,y,z:pitch:yaw
         // so basically 3 or 5
-        if (!(parsed.size() == 3 || parsed.size() == 5)) {
+        if (!(parsed.size() == 3 || parsed.size() == 5)) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             this.isValid = false;
             return;
         }
@@ -130,7 +152,7 @@ public class ExactDestination implements MVDestination {
 
         try {
             this.location.setPitch(Float.parseFloat(parsed.get(3)));
-            this.location.setYaw(Float.parseFloat(parsed.get(4)));
+            this.location.setYaw(Float.parseFloat(parsed.get(4))); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         } catch (NumberFormatException e) {
             this.isValid = false;
             return;
@@ -139,16 +161,28 @@ public class ExactDestination implements MVDestination {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return "Exact";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
-        return "Exact (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ")";
+        return "Exact (" + this.location.getX() + ", " + this.location.getY() + ", " + this.location.getZ()
+                + ":" + location.getPitch() + ":" + location.getYaw() + ")";
     }
 
+    /**
+     * Sets this {@link ExactDestination}.
+     *
+     * @param location The {@link Location}.
+     */
     public void setDestination(Location location) {
         if (location != null) {
             this.location = location;
@@ -157,19 +191,29 @@ public class ExactDestination implements MVDestination {
         this.isValid = false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         if (isValid) {
-            return "e:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY() + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw();
+            return "e:" + location.getWorld().getName() + ":" + location.getX() + "," + location.getY()
+                    + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw();
         }
         return "i:Invalid Destination";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRequiredPermission() {
         return "multiverse.access." + this.location.getWorld().getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean useSafeTeleporter() {
         // This is an EXACT destination, don't safely teleport here.

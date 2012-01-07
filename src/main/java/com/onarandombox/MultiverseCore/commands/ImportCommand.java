@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -22,13 +23,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Imports a new world of the specified type.
+ */
 public class ImportCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Import World");
-        this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + "[GENERATOR[:ID]]");
+        this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + " -g [GENERATOR[:ID]] [-n]");
         this.setArgRange(1, 3);
         this.addKey("mvimport");
         this.addKey("mvim");
@@ -97,24 +101,36 @@ public class ImportCommand extends MultiverseCommand {
 
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
             String worldList = this.getPotentialWorlds();
-            sender.sendMessage(ChatColor.AQUA + "====[ These look like worlds ]====");
-            sender.sendMessage(worldList);
+            if (worldList.length() > 2) {
+                sender.sendMessage(ChatColor.AQUA + "====[ These look like worlds ]====");
+                sender.sendMessage(worldList);
+            } else {
+                sender.sendMessage(ChatColor.RED + "No potential worlds found. Sorry!");
+            }
             return;
         }
         // Since we made an exception for the list, we have to make sure they have at least 2 params:
+        // Note the exception is --list, which is covered above.
         if (args.size() == 1) {
             this.showHelp(sender);
             return;
         }
-        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
-        if (this.worldManager.isMVWorld(worldName) && worldFile.exists()) {
-            sender.sendMessage(ChatColor.RED + "Multiverse already knows about this world!");
+
+        // Make sure we don't already know about this world.
+        if (this.worldManager.isMVWorld(worldName)) {
+            sender.sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
+                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
             return;
         }
 
-        String generator = null;
-        if (args.size() == 3) {
-            generator = args.get(2);
+        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
+
+        String generator = CommandHandler.getFlag("-g", args);
+        boolean useSpawnAdjust = true;
+        for (String s : args) {
+            if (s.equalsIgnoreCase("-n")) {
+                useSpawnAdjust = false;
+            }
         }
 
         String env = args.get(1);
@@ -127,8 +143,10 @@ public class ImportCommand extends MultiverseCommand {
 
         if (worldFile.exists() && env != null) {
             Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
-            this.worldManager.addWorld(worldName, environment, null, generator);
-            Command.broadcastCommandMessage(sender, "Complete!");
+            if (this.worldManager.addWorld(worldName, environment, null, generator, useSpawnAdjust))
+                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
+            else
+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world environment did not exist.");

@@ -9,13 +9,19 @@ package com.onarandombox.MultiverseCore.utils;
 
 import java.io.File;
 
+/**
+ * File-utilities.
+ */
 public class FileUtils {
-    /*
-     * Delete a folder Courtesy of: lithium3141
+    protected FileUtils() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Used to delete a folder.
      *
-     * @param file The folder to delete
-     *
-     * @return true if success
+     * @param file The folder to delete.
+     * @return true if the folder was successfully deleted.
      */
     public static boolean deleteFolder(File file) {
         if (file.exists()) {

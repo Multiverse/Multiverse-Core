@@ -13,8 +13,8 @@
 
     <repositories>
         <repository>
-            <id>pneumaticsystem</id>
-            <url>http://pneumaticsystem.com:25578/nexus/content/groups/public</url>
+            <id>onarandombox</id>
+            <url>http://repo.onarandombox.com/content/groups/public</url>
         </repository>
     </repositories>
 
@@ -31,7 +31,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://pneumaticsystem.com:25579</url>
+        <url>http://ci.onarandombox.com</url>
     </ciManagement>
 
     <!-- Profiles are used to detect whether this is a local or Jenkins build
@@ -102,7 +102,7 @@
                     <replacements>
                         <replacement>
                             <token>maven-version-number</token>
-                            <value>${project.version}-${project.build.number}</value>
+                            <value>${project.version}-b${project.build.number}</value>
                         </replacement>
                     </replacements>
                 </configuration>
@@ -145,6 +145,15 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <enableRulesSummary>true</enableRulesSummary>
+                    <configLocation>${project.basedir}/config/mv_checks.xml</configLocation>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -161,7 +170,7 @@
         <!-- Start of Spout -->
         <dependency>
             <groupId>org.getspout</groupId>
-            <artifactId>spoutapi</artifactId>
+            <artifactId>spoutpluginapi</artifactId>
             <version>dev-SNAPSHOT</version>
         </dependency>
         <!-- End of Spout -->
@@ -256,4 +265,10 @@
         </dependency>
         <!-- End of Test Dependencies -->
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>OnARandomBox</id>
+            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+        </repository>
+    </distributionManagement>
 </project>

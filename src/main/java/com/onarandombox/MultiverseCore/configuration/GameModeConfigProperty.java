@@ -10,7 +10,10 @@ package com.onarandombox.MultiverseCore.configuration;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
+/**
+ * A {@link GameMode} config-property.
+ */
+public class GameModeConfigProperty implements MVActiveConfigProperty<GameMode> {
     private String name;
     private GameMode value;
     private String configNode;
@@ -30,16 +33,25 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         this.parseValue(this.section.getString(this.configNode, defaultValue.toString()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GameMode getValue() {
         return this.value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean setValue(GameMode value) {
         if (value == null) {
@@ -50,6 +62,9 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean parseValue(String value) {
         try {
@@ -63,9 +78,20 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getConfigNode() {
         return this.configNode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getHelp() {
+        return this.help;
     }
 
     @Override
@@ -73,8 +99,31 @@ public class GameModeConfigProperty implements MVConfigProperty<GameMode> {
         return value.toString();
     }
 
+    /**
+     * Gets the method that will be executed.
+     *
+     * @return The name of the method in MVWorld to be called.
+     */
     @Override
-    public String getHelp() {
-        return this.help;
+    public String getMethod() {
+        return "setActualGameMode";
+    }
+
+    /**
+     * Sets the method that will be executed.
+     *
+     * @param methodName The name of the method in MVWorld to be called.
+     */
+    @Override
+    public void setMethod(String methodName) {
+        // Not required. Gamemode will only ever be one.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getPropertyClass() {
+        return GameMode.class;
     }
 }

@@ -7,12 +7,18 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import java.util.logging.Level;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
+/**
+ * Utility-class for permissions.
+ */
 public class PermissionTools {
     private MultiverseCore plugin;
 
@@ -20,6 +26,10 @@ public class PermissionTools {
         this.plugin = plugin;
     }
 
+    /**
+     * Adds a permission to the parent-permissions.
+     * @param permString The new permission as {@link String}.
+     */
     public void addToParentPerms(String permString) {
         String permStringChopped = permString.replace(".*", "");
 
@@ -79,10 +89,49 @@ public class PermissionTools {
         return returnString + "*";
     }
 
-    public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player teleporter, Player teleportee, boolean pay) {
-        if (teleporter == null) {
+    /**
+     * Checks if the given {@link Player} has enough money to enter the specified {@link MultiverseWorld}.
+     * @param fromWorld The {@link MultiverseWorld} the player is coming from.
+     * @param toWorld The {@link MultiverseWorld} the player is going to.
+     * @param teleporter The teleporter.
+     * @param teleportee The teleportee.
+     * @param pay If the player has to pay the money.
+     * @return True if the player can enter the world.
+     */
+    public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
+        Player teleporterPlayer;
+        if (MultiverseCore.TeleportIntercept) {
+            if (teleporter instanceof ConsoleCommandSender) {
+                return true;
+            }
+
+            if (teleporter == null) {
+                teleporter = teleportee;
+            }
+
+            if (!(teleporter instanceof Player)) {
+                return false;
+            }
+            teleporterPlayer = (Player) teleporter;
+        } else {
+            if (teleporter instanceof Player) {
+                teleporterPlayer = (Player) teleporter;
+            } else {
+                teleporterPlayer = null;
+            }
+
+            // Old-style!
+            if (teleporterPlayer == null) {
+                return true;
+            }
+        }
+
+        // If the toWorld isn't controlled by MV,
+        // We don't care.
+        if(toWorld == null) {
             return true;
         }
+
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
             // If the player does not have to pay, return now.
@@ -90,14 +139,16 @@ public class PermissionTools {
                 return true;
             }
             GenericBank bank = plugin.getBank();
-            String errString = "You need " + bank.getFormattedAmount(teleporter, toWorld.getPrice(), toWorld.getCurrency()) + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
+            String errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency())
+                    + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
             if (teleportee.equals(teleporter)) {
-                errString = "You need " + bank.getFormattedAmount(teleporter, toWorld.getPrice(), toWorld.getCurrency()) + " to enter " + toWorld.getColoredWorldString();
+                errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency())
+                        + " to enter " + toWorld.getColoredWorldString();
             }
-            if (!bank.hasEnough(teleporter, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
+            if (!bank.hasEnough(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
                 return false;
-            } else if(pay) {
-                bank.pay(teleporter, toWorld.getPrice(), toWorld.getCurrency());
+            } else if (pay) {
+                bank.pay(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
             }
         }
         return true;
@@ -111,16 +162,47 @@ public class PermissionTools {
      *
      * @param fromWorld  The MultiverseWorld they are in.
      * @param toWorld    The MultiverseWorld they want to go to.
-     * @param teleporter The player that wants to travel.
+     * @param teleporter The CommandSender that wants to send someone somewhere. If null,
+     *                   will be given the same value as teleportee.
+     * @param teleportee The player going somewhere.
      * @return True if they can't go to the world, False if they can.
      */
-    public boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, Player teleporter, Player teleportee) {
-        // The console can send anyone anywhere
-        if (teleporter == null) {
-            return true;
+    public boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
+        this.plugin.log(Level.FINEST, "Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
+
+        Player teleporterPlayer;
+        if (MultiverseCore.TeleportIntercept) {
+            // The console can send anyone anywhere
+            if (teleporter instanceof ConsoleCommandSender) {
+                return true;
+            }
+
+            // Make sure we have a teleporter of some kind, even if it's inferred to be the teleportee
+            if (teleporter == null) {
+                teleporter = teleportee;
+            }
+
+            // Now make sure we can cast the teleporter to a player, 'cause I'm tired of console things now
+            if (!(teleporter instanceof Player)) {
+                return false;
+            }
+            teleporterPlayer = (Player) teleporter;
+        } else {
+            if (teleporter instanceof Player) {
+                teleporterPlayer = (Player) teleporter;
+            } else {
+                teleporterPlayer = null;
+            }
+
+            // Old-style!
+            if (teleporterPlayer == null) {
+                return true;
+            }
         }
+
+        // Actual checks
         if (toWorld != null) {
-            if (!this.plugin.getMVPerms().canEnterWorld(teleporter, toWorld)) {
+            if (!this.plugin.getMVPerms().canEnterWorld(teleporterPlayer, toWorld)) {
                 if (teleportee.equals(teleporter)) {
                     teleporter.sendMessage("You don't have access to go here...");
                 } else {
@@ -130,7 +212,7 @@ public class PermissionTools {
                 return false;
             }
         } else {
-            //TODO: Determine if this value is false because a world didn't exist
+            // TODO: Determine if this value is false because a world didn't exist
             // or if it was because a world wasn't imported.
             return true;
         }
@@ -139,11 +221,29 @@ public class PermissionTools {
                 if (teleportee.equals(teleporter)) {
                     teleporter.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
                 } else {
-                    teleporter.sendMessage("You don't have access to send " + teleportee.getName() + " from " + fromWorld.getColoredWorldString() + " to " + toWorld.getColoredWorldString());
+                    teleporter.sendMessage("You don't have access to send " + teleportee.getName() + " from "
+                         + fromWorld.getColoredWorldString() + " to " + toWorld.getColoredWorldString());
                 }
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Checks to see if a player should bypass game mode restrictions.
+     *
+     * @param toWorld world travelling to.
+     * @param teleportee player travelling.
+     * @return True if they should bypass restrictions
+     */
+    public boolean playerCanIgnoreGameModeRestriction(MultiverseWorld toWorld, Player teleportee) {
+        if (toWorld != null) {
+            return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
+        } else {
+            // TODO: Determine if this value is false because a world didn't exist
+            // or if it was because a world wasn't imported.
+            return true;
+        }
     }
 }

@@ -21,6 +21,9 @@ import org.bukkit.permissions.PermissionDefault;
 import java.text.DecimalFormat;
 import java.util.List;
 
+/**
+ * Returns detailed information on the Players where abouts.
+ */
 public class CoordCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
 

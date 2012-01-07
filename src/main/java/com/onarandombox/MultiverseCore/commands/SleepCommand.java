@@ -14,6 +14,9 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
+/**
+ * Takes the player to the latest bed he's slept in.
+ */
 public class SleepCommand extends MultiverseCommand {
 
     public SleepCommand(MultiverseCore plugin) {

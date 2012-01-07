@@ -8,7 +8,11 @@
 package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 
+/**
+ * This interface is implemented by every official Multiverse-plugin.
+ */
 public interface MVPlugin extends LoggablePlugin {
     /**
      * Adds This plugin's version information to the buffer and returns the new string.
@@ -16,22 +20,26 @@ public interface MVPlugin extends LoggablePlugin {
      * @param buffer The string that contains Core and all other MV plugins' versions.
      *
      * @return A modified buffer that contains this MVPlugin's version information.
+     *
+     * @deprecated This is now deprecated, nobody needs it any longer.
+     * All version info-dumping is now done with {@link MVVersionEvent}.
      */
-    public String dumpVersionInfo(String buffer);
+    @Deprecated
+    String dumpVersionInfo(String buffer);
 
     /**
      * Gets the reference to MultiverseCore.
      *
      * @return A valid {@link MultiverseCore}.
      */
-    public MultiverseCore getCore();
+    MultiverseCore getCore();
 
     /**
      * Sets the reference to MultiverseCore.
      *
      * @param core A valid {@link MultiverseCore}.
      */
-    public void setCore(MultiverseCore core);
+    void setCore(MultiverseCore core);
 
     /**
      * Allows Multiverse or a plugin to query another Multiverse plugin to see what version its protocol is. This
@@ -40,5 +48,5 @@ public interface MVPlugin extends LoggablePlugin {
      *
      * @return The Integer protocol version.
      */
-    public int getProtocolVersion();
+    int getProtocolVersion();
 }
