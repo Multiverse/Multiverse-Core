@@ -71,13 +71,13 @@ public class TestWorldProperties {
         String[] normalArgs = new String[] { "import", "world", "normal" };
         core.onCommand(mockCommandSender, mockCommand, "", normalArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
-        verify(mockCommandSender).sendMessage("Complete!");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
         // Import a second world
         String[] netherArgs = new String[] { "import", "world_nether", "nether" };
         core.onCommand(mockCommandSender, mockCommand, "", netherArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
-        verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage("Complete!");
+        verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage(ChatColor.GREEN + "Complete!");
 
         // ////////////////////////////////////////////////
         // let's set some world-properties
