@@ -165,29 +165,52 @@ public class TestWorldProperties {
          *             Modify & Verify
          * ****************************************** */
         mvWorld.setHidden(true);
+        assertEquals(true, mvWorld.isHidden());
         mvWorld.setAlias("alias");
-        assertFalse(mvWorld.setColor("INVALID COLOR"));
+        assertEquals("alias", mvWorld.getAlias());
         assertTrue(mvWorld.setColor("BLACK"));
+        ChatColor oldColor = mvWorld.getColor();
+        assertFalse(mvWorld.setColor("INVALID COLOR"));
+        assertEquals(oldColor, mvWorld.getColor());
         mvWorld.setPVPMode(false);
-        mvWorld.setScaling(2D);
+        assertEquals(false, mvWorld.isPVPEnabled());
+        assertTrue(mvWorld.setScaling(2D));
+        assertEquals((Object) 2D, (Object) mvWorld.getScaling());
         assertFalse(mvWorld.setRespawnToWorld("INVALID WORLD"));
         assertTrue(mvWorld.setRespawnToWorld("world_nether"));
+        assertSame(worldManager.getMVWorld("world_nether").getCBWorld(), mvWorld.getRespawnToWorld());
         mvWorld.setEnableWeather(false);
-        assertFalse(mvWorld.setDifficulty("INVALID DIFFICULTY"));
+        assertEquals(false, mvWorld.isWeatherEnabled());
         assertTrue(mvWorld.setDifficulty("PEACEFUL"));
+        Difficulty oldDifficulty = mvWorld.getDifficulty();
+        assertFalse(mvWorld.setDifficulty("INVALID DIFFICULTY"));
+        assertEquals(oldDifficulty, mvWorld.getDifficulty());
         mvWorld.setAllowAnimalSpawn(false);
+        assertEquals(false, mvWorld.canAnimalsSpawn());
         mvWorld.setAllowMonsterSpawn(false);
+        assertEquals(false, mvWorld.canMonstersSpawn());
         mvWorld.setCurrency(1);
+        assertEquals(1, mvWorld.getCurrency());
         mvWorld.setPrice(1D);
+        assertEquals((Object) 1D, (Object) mvWorld.getPrice());
         mvWorld.setHunger(false);
+        assertEquals(false, mvWorld.getHunger());
         mvWorld.setAutoHeal(false);
+        assertEquals(false, mvWorld.getAutoHeal());
         mvWorld.setAdjustSpawn(false);
-        assertFalse(mvWorld.setGameMode("INVALID GAMEMODE"));
+        assertEquals(false, mvWorld.getAdjustSpawn());
         assertTrue(mvWorld.setGameMode("CREATIVE"));
+        GameMode oldGamemode = mvWorld.getGameMode();
+        assertFalse(mvWorld.setGameMode("INVALID GAMEMODE"));
+        assertEquals(oldGamemode, mvWorld.getGameMode());
         mvWorld.setKeepSpawnInMemory(false);
+        assertEquals(false, mvWorld.isKeepingSpawnInMemory());
         mvWorld.setBedRespawn(false);
+        assertEquals(false, mvWorld.getBedRespawn());
         mvWorld.setAutoLoad(false);
+        assertEquals(false, mvWorld.getAutoLoad());
         mvWorld.setSpawnLocation(new Location(mvWorld.getCBWorld(), 1, 1, 1));
+        assertEquals(new Location(mvWorld.getCBWorld(), 1, 1, 1), mvWorld.getSpawnLocation());
 
         /* ****************************************** *
          *    Call some events and verify behavior
