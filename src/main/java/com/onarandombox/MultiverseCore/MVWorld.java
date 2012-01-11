@@ -236,7 +236,16 @@ public class MVWorld implements MultiverseWorld {
      */
     public boolean setActualKeepSpawnInMemory() {
         // Ensure the memory setting is correct
-        this.world.setKeepSpawnInMemory(this.getKnownProperty("memory", Boolean.class).getValue());
+        this.getCBWorld().setKeepSpawnInMemory(this.getKnownProperty("memory", Boolean.class).getValue());
+        return true;
+    }
+
+    /**
+     * Used by the active difficulty-property to set the "actual" property.
+     * @return True if the property was successfully set.
+     */
+    public boolean setActualDifficulty() {
+        this.getCBWorld().setDifficulty(this.getKnownProperty("difficulty", Difficulty.class).getValue());
         return true;
     }
 
