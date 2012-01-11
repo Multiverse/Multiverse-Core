@@ -106,7 +106,7 @@ public class DifficultyConfigProperty implements MVActiveConfigProperty<Difficul
      */
     @Override
     public String getMethod() {
-        return "setDifficulty";
+        return "setActualDifficulty";
     }
 
     /**
