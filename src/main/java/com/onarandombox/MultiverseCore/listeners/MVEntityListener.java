@@ -124,7 +124,7 @@ public class MVEntityListener extends EntityListener {
         } else if (creatureList.isEmpty()) {
             // 2. There are no exceptions and animals are NOT allowed. Kill it.
             return true;
-        } else if (creatureList.contains(creature) && allowCreatureSpawning) {
+        } else if (creatureList.contains(creature.toUpperCase()) && allowCreatureSpawning) {
             // 3. There ARE exceptions and animals ARE allowed. Kill it.
             return true;
         } else if (!creatureList.contains(creature.toUpperCase()) && allowCreatureSpawning) {
@@ -136,9 +136,10 @@ public class MVEntityListener extends EntityListener {
         } else if (!creatureList.contains(creature.toUpperCase()) && !allowCreatureSpawning) {
             // 6. Animals are NOT allowed to spawn, and this creature is not in the save list... KILL IT
             return true;
+        } else {
+            // This code should NEVER execute. I just left the verbose conditions in right now.
+            throw new UnsupportedOperationException();
         }
-        // This code should NEVER execute. I just left the verbose conditions in right now.
-        return false;
     }
 
 }
