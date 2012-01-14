@@ -204,6 +204,15 @@ public class MVWorld implements MultiverseWorld {
         } catch (IllegalArgumentException e) {
             this.plugin.log(Level.FINER, "Permissions nodes were already added for " + this.name);
         }
+
+        // Sync all active settings.
+        this.setActualPVP();
+        this.verifyScaleSetProperly();
+        this.setActualKeepSpawnInMemory();
+        this.setActualDifficulty();
+        this.setActualGameMode();
+        this.setActualSpawn();
+        this.syncMobs();
     }
 
     /**
@@ -549,8 +558,12 @@ public class MVWorld implements MultiverseWorld {
             Method method = this.getClass().getMethod(property.getMethod());
             Object returnVal = method.invoke(this);
             if (returnVal instanceof Boolean) {
+                if ((Boolean) returnVal) {
+                    this.saveConfig();
+                }
                 return (Boolean) returnVal;
             } else {
+                this.saveConfig();
                 return true;
             }
         } catch (NoSuchMethodException e) {
