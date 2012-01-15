@@ -19,6 +19,7 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.generator.ChunkGenerator;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
@@ -81,10 +82,11 @@ public class MockWorldFactory {
         createdWorlds.put(world.getName(), world);
     }
 
-    private static World basics(String world, World.Environment env) {
+    private static World basics(String world, World.Environment env, WorldType type) {
         World mockWorld = mock(World.class);
         when(mockWorld.getName()).thenReturn(world);
         when(mockWorld.getEnvironment()).thenReturn(env);
+        when(mockWorld.getWorldType()).thenReturn(type);
         when(mockWorld.getSpawnLocation()).thenReturn(new Location(mockWorld, 0, 0, 0));
         when(mockWorld.getWorldFolder()).thenAnswer(new Answer<File>() {
             public File answer(InvocationOnMock invocation) throws Throwable {
@@ -101,15 +103,15 @@ public class MockWorldFactory {
         return mockWorld;
     }
 
-    public static World makeNewMockWorld(String world, World.Environment env) {
-        World w = basics(world, env);
+    public static World makeNewMockWorld(String world, World.Environment env, WorldType type) {
+        World w = basics(world, env, type);
         registerWorld(w);
         return w;
     }
 
-    public static World makeNewMockWorld(String world, World.Environment env, long seed,
+    public static World makeNewMockWorld(String world, World.Environment env, WorldType type, long seed,
             ChunkGenerator generator) {
-        World mockWorld = basics(world, env);
+        World mockWorld = basics(world, env, type);
         when(mockWorld.getGenerator()).thenReturn(generator);
         when(mockWorld.getSeed()).thenReturn(seed);
         registerWorld(mockWorld);

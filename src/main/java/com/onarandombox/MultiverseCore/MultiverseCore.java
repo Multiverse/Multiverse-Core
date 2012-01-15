@@ -38,7 +38,6 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -580,33 +579,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // TODO this should be static!
     public String getTag() {
         return MultiverseCore.LOG_TAG;
-    }
-
-    // TODO This code should get moved somewhere more appropriate, but for now, it's here.
-    // TODO oh, and it should be static.
-    /**
-     * Converts a {@link String} into an {@link Environment}.
-     *
-     * @param env The environment as {@link String}
-     * @return The environment as {@link Environment}
-     */
-    public Environment getEnvFromString(String env) {
-        // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
-            env = "NETHER";
-
-        if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS"))
-            env = "THE_END";
-
-        if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD"))
-            env = "NORMAL";
-
-        try {
-            // If the value wasn't found, maybe it's new, try checking the enum directly.
-            return Environment.valueOf(env);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
     }
 
     /**

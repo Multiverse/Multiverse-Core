@@ -23,6 +23,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,6 +69,7 @@ public class MVWorld implements MultiverseWorld {
     private Permission ignoreperm;
 
     private static final Map<String, String> TIME_ALIASES;
+    private WorldType type;
 
     static {
         Map<String, String> staticTimes = new HashMap<String, String>();
@@ -90,6 +92,7 @@ public class MVWorld implements MultiverseWorld {
         this.name = world.getName();
         this.seed = seed;
         this.environment = world.getEnvironment();
+        this.type = world.getWorldType();
 
         // Initialize our lists
         this.initLists();
@@ -106,6 +109,8 @@ public class MVWorld implements MultiverseWorld {
             worldSection.set("seed", this.seed);
         }
         worldSection.set("environment", this.environment.toString());
+
+        worldSection.set("type", this.type.toString());
 
         // Start NEW config awesomeness.
         ConfigPropertyFactory fac = new ConfigPropertyFactory(this.worldSection);
@@ -1143,6 +1148,14 @@ public class MVWorld implements MultiverseWorld {
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
         return String.format("%d:%02d", hours, minutes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WorldType getWorldType() {
+        return this.type;
     }
 
     /**

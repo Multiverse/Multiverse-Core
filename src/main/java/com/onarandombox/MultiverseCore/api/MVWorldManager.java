@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.api;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -32,10 +33,11 @@ public interface MVWorldManager {
      * @param seedString The seed in the form of a string.
      *                   If the seed is a Long,
      *                   it will be interpreted as such.
+     * @param type       The Type of the world to be made.
      * @param generator  The Custom generator plugin to use.
      * @return True if the world is added, false if not.
      */
-    boolean addWorld(String name, Environment env, String seedString, String generator);
+    boolean addWorld(String name, Environment env, String seedString, WorldType type, String generator);
 
     /**
      * Add a new World to the Multiverse Setup.
@@ -45,11 +47,12 @@ public interface MVWorldManager {
      * @param seedString     The seed in the form of a string.
      *                       If the seed is a Long,
      *                       it will be interpreted as such.
+     * @param type       The Type of the world to be made.
      * @param generator      The Custom generator plugin to use.
      * @param useSpawnAdjust If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
      * @return True if the world is added, false if not.
      */
-    boolean addWorld(String name, Environment env, String seedString, String generator, boolean useSpawnAdjust);
+    boolean addWorld(String name, Environment env, String seedString, WorldType type, String generator, boolean useSpawnAdjust);
 
     /**
      * Remove the world from the Multiverse list, from the

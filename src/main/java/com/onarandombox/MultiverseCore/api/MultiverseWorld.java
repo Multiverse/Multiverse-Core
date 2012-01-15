@@ -15,6 +15,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
@@ -22,8 +23,6 @@ import java.util.List;
 
 /**
  * The API for a Multiverse Handled World.
- * <p>
- * Currently INCOMPLETE
  */
 public interface MultiverseWorld {
 
@@ -536,7 +535,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets the current time in a world.
-     *
+     * <p>
      * This method will take the following formats:
      * 11:37am
      *  4:30p
@@ -552,4 +551,14 @@ public interface MultiverseWorld {
      * @return The time as a short string: 12:34pm
      */
     String getTime();
+
+    /**
+     * Gets the type of this world. As of 1.1-R1 this will be:
+     * FLAT or NORMAL
+     * <p>
+     * This is *not* the generator.
+     *
+     * @return The Type of this world.
+     */
+    WorldType getWorldType();
 }
