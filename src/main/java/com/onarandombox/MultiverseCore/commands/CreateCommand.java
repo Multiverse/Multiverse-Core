@@ -30,7 +30,7 @@ public class CreateCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Create World");
         this.setCommandUsage("/mv create" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]] -t [WORLDTYPE] [-n]");
-        this.setArgRange(2, 7); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        this.setArgRange(2, 9); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         this.addKey("mvcreate");
         this.addKey("mvc");
         this.addKey("mv create");
@@ -38,6 +38,7 @@ public class CreateCommand extends MultiverseCommand {
         this.addCommandExample("/mv create " + ChatColor.GOLD + "world" + ChatColor.GREEN + " normal");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "lavaland" + ChatColor.RED + " nether");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "starwars" + ChatColor.AQUA + " end");
+        this.addCommandExample("/mv create " + ChatColor.GOLD + "flatroom" + ChatColor.GREEN + " normal" + ChatColor.AQUA + " -t flat");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "gargamel" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -s gargamel");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "moonworld" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g BukkitFullOfMoon");
         this.worldManager = this.plugin.getMVWorldManager();
