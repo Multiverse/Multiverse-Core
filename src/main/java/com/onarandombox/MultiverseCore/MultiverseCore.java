@@ -171,7 +171,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    private static final double ALLPAY_VERSION = 3;
+    private static final double ALLPAY_VERSION = 5;
     private static final double CH_VERSION = 4;
     private MVMessaging messaging;
 
