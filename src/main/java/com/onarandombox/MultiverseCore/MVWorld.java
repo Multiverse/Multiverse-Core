@@ -632,6 +632,14 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
+    public String getPermissibleName() {
+        return this.name.toLowerCase();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getAlias() {
         String alias = this.getKnownProperty("alias", String.class).getValue();
         if (alias == null || alias.length() == 0) {

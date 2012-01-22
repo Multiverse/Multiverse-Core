@@ -146,6 +146,18 @@ public interface MultiverseWorld {
     String getName();
 
     /**
+     * Gets the lowercased name of the world. This method is required, since the permissables
+     * lowercase all permissions when recalculating.
+     * <p>
+     * Note: This also means if a user has worlds named: world and WORLD, that they can both
+     * exist, and both be teleported to independently, but their permissions **cannot** be
+     * uniqueified at this time. See bug report #.
+     *
+     * @return The lowercased name of the world.
+     */
+    String getPermissibleName();
+
+    /**
      * Gets the alias of this world.
      * <p>
      * This alias allows users to have a world named "world" but show up in the list as "FernIsland"
