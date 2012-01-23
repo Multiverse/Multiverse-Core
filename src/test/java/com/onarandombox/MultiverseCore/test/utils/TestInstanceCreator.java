@@ -127,7 +127,7 @@ public class TestInstanceCreator {
                             } catch (Exception e) {
                                 return null;
                             }
-                            return MockWorldFactory.makeNewMockWorld(arg.name(), arg.environment());
+                            return MockWorldFactory.makeNewMockWorld(arg.name(), arg.environment(), arg.type());
                         }
                     });
 

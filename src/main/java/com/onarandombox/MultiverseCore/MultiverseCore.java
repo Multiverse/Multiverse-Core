@@ -25,7 +25,6 @@ import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
-import com.onarandombox.MultiverseCore.listeners.MVPortalAdjustListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.DebugLog;
@@ -38,15 +37,12 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -65,7 +61,7 @@ import java.util.logging.Logger;
  * The implementation of the Multiverse-{@link Core}.
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private static final int PROTOCOL = 10;
+    private static final int PROTOCOL = 12;
     // Global Multiverse config variable, states whether or not
     // Multiverse should stop other plugins from teleporting players
     // to worlds.
@@ -157,7 +153,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup the block/player/entity listener.
     private MVPlayerListener playerListener = new MVPlayerListener(this);
-    private MVPortalAdjustListener portalAdjustListener = new MVPortalAdjustListener(this);
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
     private MVWeatherListener weatherListener = new MVWeatherListener(this);
@@ -171,7 +166,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    private static final double ALLPAY_VERSION = 3;
+    private static final double ALLPAY_VERSION = 5;
     private static final double CH_VERSION = 4;
     private MVMessaging messaging;
 
@@ -319,28 +314,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener, Priority.Highest, this); // Cancel Teleports if needed.
-        pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this); // To create the Player Session
-        pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener, Priority.Normal, this); // To remove Player Sessions
-        pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
-        pm.registerEvent(Event.Type.PLAYER_LOGIN, this.playerListener, Priority.Low, this); // Let plugins which specialize in (re)spawning carry more weight.
-        pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this); // To prepend the world name
-        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.playerListener, Priority.High, this);
-                // We want this high to have it go last, so it can cancel if needbe.
-
-        pm.registerEvent(Event.Type.PLAYER_PORTAL, this.portalAdjustListener, Priority.Lowest, this); // To handle portal correction
-        pm.registerEvent(Event.Type.PLAYER_CHANGED_WORLD, this.playerListener, Priority.Monitor, this); // To switch gamemode
-
-        pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this); // To Allow/Disallow fake PVP
-        pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Priority.Normal, this); // To prevent all or certain animals/monsters from spawning.
-        pm.registerEvent(Event.Type.FOOD_LEVEL_CHANGE, this.entityListener, Priority.Normal, this);
-
-        pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.pluginListener, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.PLUGIN_DISABLE, this.pluginListener, Priority.Monitor, this);
-
-        pm.registerEvent(Event.Type.WEATHER_CHANGE, this.weatherListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.THUNDER_CHANGE, this.weatherListener, Priority.Normal, this);
+        pm.registerEvents(this.playerListener, this);
+        pm.registerEvents(this.entityListener, this);
+        pm.registerEvents(this.pluginListener, this);
+        pm.registerEvents(this.weatherListener, this);
     }
 
     /**
@@ -581,33 +558,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return MultiverseCore.LOG_TAG;
     }
 
-    // TODO This code should get moved somewhere more appropriate, but for now, it's here.
-    // TODO oh, and it should be static.
-    /**
-     * Converts a {@link String} into an {@link Environment}.
-     *
-     * @param env The environment as {@link String}
-     * @return The environment as {@link Environment}
-     */
-    public Environment getEnvFromString(String env) {
-        // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
-            env = "NETHER";
-
-        if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS"))
-            env = "THE_END";
-
-        if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD"))
-            env = "NORMAL";
-
-        try {
-            // If the value wasn't found, maybe it's new, try checking the enum directly.
-            return Environment.valueOf(env);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
-
     /**
      * Shows a message that the given world is not a MultiverseWorld.
      *
@@ -717,15 +667,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void setSpout() {
         this.spoutInterface = new SpoutInterface();
         this.commandHandler.registerCommand(new SpoutCommand(this));
-        if (FirstSpawnOverride) {
-            this.log(Level.WARNING, "Disabling MV's 'firstspawnoverride', since spout doesn't handle new players well yet.");
-            this.log(Level.WARNING, "This means *new players* may not spawn where you've set your \"mvspawn\" AND");
-            this.log(Level.WARNING, "the config value 'firstspawnworld' will have NO effect!!!");
-            this.log(Level.WARNING, "Talk to the Spout devs to get this fixed!");
-            this.log(Level.WARNING, "  --FernFerret");
-            FirstSpawnOverride = false;
-            this.multiverseConfig.set("firstspawnoverride", false);
-        }
     }
 
     /**

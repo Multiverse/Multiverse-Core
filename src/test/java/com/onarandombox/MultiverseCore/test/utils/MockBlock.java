@@ -12,6 +12,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.*;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
 
 /**
  * Multiverse 2
@@ -27,35 +30,31 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the metadata for this block
-     *
-     * @return block specific metadata
+     * {@inheritDoc}
      */
     @Override
     public byte getData() {
         return 0;
     }
 
-    /** @deprecated use {@link #getRelative(org.bukkit.block.BlockFace face)} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Block getFace(BlockFace face) {
         return null;
     }
 
-    /** @deprecated use {@link #getRelative(org.bukkit.block.BlockFace face, int distance)} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Block getFace(BlockFace face, int distance) {
         return null;
     }
 
     /**
-     * Gets the block at the given offsets
-     *
-     * @param modX X-coordinate offset
-     * @param modY Y-coordinate offset
-     * @param modZ Z-coordinate offset
-     *
-     * @return Block at the given offsets
+     * {@inheritDoc}
      */
     @Override
     public Block getRelative(int modX, int modY, int modZ) {
@@ -63,15 +62,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the block at the given face<br />
-     * <br />
-     * This method is equal to getRelative(face, 1)
-     *
-     * @param face Face of this block to return
-     *
-     * @return Block at the given face
-     *
-     * @see #getRelative(org.bukkit.block.BlockFace, int)
+     * {@inheritDoc}
      */
     @Override
     public Block getRelative(BlockFace face) {
@@ -79,20 +70,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the block at the given distance of the given face<br />
-     * <br />
-     * For example, the following method places water at 100,102,100; two blocks
-     * above 100,100,100.
-     * <pre>
-     * Block block = world.getBlockAt(100,100,100);
-     * Block shower = block.getFace(BlockFace.UP, 2);
-     * shower.setType(Material.WATER);
-     * </pre>
-     *
-     * @param face     Face of this block to return
-     * @param distance Distance to get the block at
-     *
-     * @return Block at the given face
+     * {@inheritDoc}
      */
     @Override
     public Block getRelative(BlockFace face, int distance) {
@@ -100,9 +78,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the type of this block
-     *
-     * @return block type
+     * {@inheritDoc}
      */
     @Override
     public Material getType() {
@@ -110,29 +86,33 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the type-id of this block
-     *
-     * @return block type-id
+     * {@inheritDoc}
      */
     @Override
     public int getTypeId() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
     /**
-     * Gets the light level between 0-15
-     *
-     * @return light level
+     * {@inheritDoc}
      */
     @Override
     public byte getLightLevel() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
+    }
+
+    @Override
+    public byte getLightFromSky() {
+        return 0;
+    }
+
+    @Override
+    public byte getLightFromBlocks() {
+        return 0;
     }
 
     /**
-     * Gets the world which contains this Block
-     *
-     * @return World containing this block
+     * {@inheritDoc}
      */
     @Override
     public World getWorld() {
@@ -140,9 +120,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the x-coordinate of this block
-     *
-     * @return x-coordinate
+     * {@inheritDoc}
      */
     @Override
     public int getX() {
@@ -150,9 +128,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the y-coordinate of this block
-     *
-     * @return y-coordinate
+     * {@inheritDoc}
      */
     @Override
     public int getY() {
@@ -160,9 +136,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the z-coordinate of this block
-     *
-     * @return z-coordinate
+     * {@inheritDoc}
      */
     @Override
     public int getZ() {
@@ -170,9 +144,7 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the Location of the block
-     *
-     * @return Location of block
+     * {@inheritDoc}
      */
     @Override
     public Location getLocation() {
@@ -180,34 +152,26 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Gets the chunk which contains this block
-     *
-     * @return Containing Chunk
+     * {@inheritDoc}
      */
     @Override
     public Chunk getChunk() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
-     * Sets the metadata for this block
-     *
-     * @param data New block specific metadata
+     * {@inheritDoc}
      */
     @Override
     public void setData(byte data) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void setData(byte data, boolean applyPhyiscs) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
-     * Sets the type of this block
-     *
-     * @param type Material to change this block to
+     * {@inheritDoc}
      */
     @Override
     public void setType(Material type) {
@@ -215,145 +179,97 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Sets the type-id of this block
-     *
-     * @param type Type-Id to change this block to
-     *
-     * @return whether the block was changed
+     * {@inheritDoc}
      */
     @Override
     public boolean setTypeId(int type) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public boolean setTypeId(int type, boolean applyPhysics) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhyiscs) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
-     * Gets the face relation of this block compared to the given block<br />
-     * <br />
-     * For example:
-     * <pre>
-     * Block current = world.getBlockAt(100, 100, 100);
-     * Block target = world.getBlockAt(100, 101, 100);
-     *
-     * current.getFace(target) == BlockFace.Up;
-     * </pre>
-     * <br />
-     * If the given block is not connected to this block, null may be returned
-     *
-     * @param block Block to compare against this block
-     *
-     * @return BlockFace of this block which has the requested block, or null
+     * {@inheritDoc}
      */
     @Override
     public BlockFace getFace(Block block) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
-     * Captures the current state of this block. You may then cast that state
-     * into any accepted type, such as Furnace or Sign.
-     * <p>
-     * The returned object will never be updated, and you are not guaranteed that
-     * (for example) a sign is still a sign after you capture its state.
-     *
-     * @return BlockState with the current state of this block.
+     * {@inheritDoc}
      */
     @Override
     public BlockState getState() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
-     * Returns the biome that this block resides in
-     *
-     * @return Biome type containing this block
+     * {@inheritDoc}
      */
     @Override
     public Biome getBiome() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
-     * Returns true if the block is being powered by Redstone.
-     *
-     * @return True if the block is powered.
+     * {@inheritDoc}
      */
     @Override
     public boolean isBlockPowered() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
-     * Returns true if the block is being indirectly powered by Redstone.
-     *
-     * @return True if the block is indirectly powered.
+     * {@inheritDoc}
      */
     @Override
     public boolean isBlockIndirectlyPowered() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
-     * Returns true if the block face is being powered by Redstone.
-     *
-     * @param face The block face
-     *
-     * @return True if the block face is powered.
+     * {@inheritDoc}
      */
     @Override
     public boolean isBlockFacePowered(BlockFace face) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
-     * Returns true if the block face is being indirectly powered by Redstone.
-     *
-     * @param face The block face
-     *
-     * @return True if the block face is indirectly powered.
+     * {@inheritDoc}
      */
     @Override
     public boolean isBlockFaceIndirectlyPowered(BlockFace face) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
-     * Returns the redstone power being provided to this block face
-     *
-     * @param face the face of the block to query or BlockFace.SELF for the block itself
-     *
-     * @return The power level.
+     * {@inheritDoc}
      */
     @Override
     public int getBlockPower(BlockFace face) {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
     /**
-     * Returns the redstone power being provided to this block
-     *
-     * @return The power level.
+     * {@inheritDoc}
      */
     @Override
     public int getBlockPower() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
     /**
-     * Checks if this block is empty.
-     * <p>
-     * A block is considered empty when {@link #getType()} returns {@link org.bukkit.Material#AIR}.
-     *
-     * @return true if this block is empty
+     * {@inheritDoc}
      */
     @Override
     public boolean isEmpty() {
@@ -361,46 +277,54 @@ public class MockBlock implements Block{
     }
 
     /**
-     * Checks if this block is liquid.
-     * <p>
-     * A block is considered liquid when {@link #getType()} returns {@link org.bukkit.Material#WATER}, {@link
-     * org.bukkit.Material#STATIONARY_WATER}, {@link org.bukkit.Material#LAVA} or {@link
-     * org.bukkit.Material#STATIONARY_LAVA}.
-     *
-     * @return true if this block is liquid
+     * {@inheritDoc}
      */
     @Override
     public boolean isLiquid() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     /**
-     * Gets the temperature of the biome of this block
-     *
-     * @return Temperature of this block
+     * {@inheritDoc}
      */
     @Override
     public double getTemperature() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
     /**
-     * Gets the humidity of the biome of this block
-     *
-     * @return Humidity of this block
+     * {@inheritDoc}
      */
     @Override
     public double getHumidity() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
     /**
-     * Returns the reaction of the block when moved by a piston
-     *
-     * @return reaction
+     * {@inheritDoc}
      */
     @Override
     public PistonMoveReaction getPistonMoveReaction() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
+    }
+
+    @Override
+    public boolean breakNaturally() {
+        return false;
+    }
+
+    @Override
+    public boolean breakNaturally(ItemStack itemStack) {
+        return false;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops() {
+        return null;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(ItemStack itemStack) {
+        return null;
     }
 }

@@ -15,6 +15,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
@@ -22,8 +23,6 @@ import java.util.List;
 
 /**
  * The API for a Multiverse Handled World.
- * <p>
- * Currently INCOMPLETE
  */
 public interface MultiverseWorld {
 
@@ -145,6 +144,18 @@ public interface MultiverseWorld {
      * @return The name of the world as a String.
      */
     String getName();
+
+    /**
+     * Gets the lowercased name of the world. This method is required, since the permissables
+     * lowercase all permissions when recalculating.
+     * <p>
+     * Note: This also means if a user has worlds named: world and WORLD, that they can both
+     * exist, and both be teleported to independently, but their permissions **cannot** be
+     * uniqueified at this time. See bug report #.
+     *
+     * @return The lowercased name of the world.
+     */
+    String getPermissibleName();
 
     /**
      * Gets the alias of this world.
@@ -536,7 +547,7 @@ public interface MultiverseWorld {
 
     /**
      * Sets the current time in a world.
-     *
+     * <p>
      * This method will take the following formats:
      * 11:37am
      *  4:30p
@@ -552,4 +563,14 @@ public interface MultiverseWorld {
      * @return The time as a short string: 12:34pm
      */
     String getTime();
+
+    /**
+     * Gets the type of this world. As of 1.1-R1 this will be:
+     * FLAT or NORMAL
+     * <p>
+     * This is *not* the generator.
+     *
+     * @return The Type of this world.
+     */
+    WorldType getWorldType();
 }

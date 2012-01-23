@@ -23,6 +23,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,6 +69,7 @@ public class MVWorld implements MultiverseWorld {
     private Permission ignoreperm;
 
     private static final Map<String, String> TIME_ALIASES;
+    private WorldType type;
 
     static {
         Map<String, String> staticTimes = new HashMap<String, String>();
@@ -90,6 +92,7 @@ public class MVWorld implements MultiverseWorld {
         this.name = world.getName();
         this.seed = seed;
         this.environment = world.getEnvironment();
+        this.type = world.getWorldType();
 
         // Initialize our lists
         this.initLists();
@@ -106,6 +109,8 @@ public class MVWorld implements MultiverseWorld {
             worldSection.set("seed", this.seed);
         }
         worldSection.set("environment", this.environment.toString());
+
+        worldSection.set("type", this.type.toString());
 
         // Start NEW config awesomeness.
         ConfigPropertyFactory fac = new ConfigPropertyFactory(this.worldSection);
@@ -204,6 +209,15 @@ public class MVWorld implements MultiverseWorld {
         } catch (IllegalArgumentException e) {
             this.plugin.log(Level.FINER, "Permissions nodes were already added for " + this.name);
         }
+
+        // Sync all active settings.
+        this.setActualPVP();
+        this.verifyScaleSetProperly();
+        this.setActualKeepSpawnInMemory();
+        this.setActualDifficulty();
+        this.setActualGameMode();
+        this.setActualSpawn();
+        this.syncMobs();
     }
 
     /**
@@ -549,18 +563,16 @@ public class MVWorld implements MultiverseWorld {
             Method method = this.getClass().getMethod(property.getMethod());
             Object returnVal = method.invoke(this);
             if (returnVal instanceof Boolean) {
+                if ((Boolean) returnVal) {
+                    this.saveConfig();
+                }
                 return (Boolean) returnVal;
             } else {
+                this.saveConfig();
                 return true;
             }
-        } catch (NoSuchMethodException e) {
-            System.out.println(e);
-            return false;
-        } catch (IllegalAccessException e) {
-            System.out.println(e);
-            return false;
-        } catch (InvocationTargetException e) {
-            System.out.println(e);
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -608,6 +620,14 @@ public class MVWorld implements MultiverseWorld {
     public String getName() {
         // This variable is not settable in-game, therefore does not get a property.
         return this.name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getPermissibleName() {
+        return this.name.toLowerCase();
     }
 
     /**
@@ -1130,6 +1150,14 @@ public class MVWorld implements MultiverseWorld {
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
         return String.format("%d:%02d", hours, minutes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WorldType getWorldType() {
+        return this.type;
     }
 
     /**
