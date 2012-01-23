@@ -128,7 +128,7 @@ public class PermissionTools {
 
         // If the toWorld isn't controlled by MV,
         // We don't care.
-        if(toWorld == null) {
+        if (toWorld == null) {
             return true;
         }
 
@@ -148,7 +148,7 @@ public class PermissionTools {
             if (!bank.hasEnough(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
                 return false;
             } else if (pay) {
-                bank.pay(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
+                bank.give(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
             }
         }
         return true;
