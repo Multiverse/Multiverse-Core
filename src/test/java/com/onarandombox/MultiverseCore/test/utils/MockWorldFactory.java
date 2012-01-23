@@ -7,8 +7,7 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,9 +19,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.block.Block;
 import org.bukkit.generator.ChunkGenerator;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -31,51 +29,6 @@ public class MockWorldFactory {
     private static final Map<String, World> createdWorlds = new HashMap<String, World>();
 
     private MockWorldFactory() {
-    }
-
-    private static class LocationMatcher extends ArgumentMatcher<Location> {
-        private Location l;
-
-        public LocationMatcher(Location location) {
-            this.l = location;
-        }
-
-        public boolean matches(Object creator) {
-            return creator.equals(l);
-        }
-    }
-
-    private static class LocationMatcherAbove extends LocationMatcher {
-
-        public LocationMatcherAbove(Location location) {
-            super(location);
-        }
-
-        public boolean matches(Object creator) {
-            Util.log("Checking above...");
-            if (super.l == null || creator == null) {
-                return false;
-            }
-            boolean equal = ((Location) creator).getBlockY() >= super.l.getBlockY();
-            Util.log("Checking equals/\\..." + equal);
-            return equal;
-        }
-    }
-
-    private static class LocationMatcherBelow extends LocationMatcher {
-
-        public LocationMatcherBelow(Location location) {
-            super(location);
-        }
-
-        public boolean matches(Object creator) {
-            if (super.l == null || creator == null) {
-                return false;
-            }
-            boolean equal = ((Location) creator).getBlockY() < super.l.getBlockY();
-            Util.log("Checking equals\\/..." + equal);
-            return equal;
-        }
     }
 
     private static void registerWorld(World world) {
@@ -95,11 +48,31 @@ public class MockWorldFactory {
 
                 World thiss = (World) invocation.getMock();
                 return new File(TestInstanceCreator.serverDirectory, thiss.getName());
-            }});
-        LocationMatcherAbove matchWorldAbove = new LocationMatcherAbove(new Location(mockWorld, 0, 0, 0));
-        LocationMatcherBelow matchWorldBelow = new LocationMatcherBelow(new Location(mockWorld, 0, 0, 0));
-        when(mockWorld.getBlockAt(Matchers.argThat(matchWorldAbove))).thenReturn(new MockBlock(new Location(mockWorld, 0, 0, 0), Material.AIR));
-        when(mockWorld.getBlockAt(Matchers.argThat(matchWorldBelow))).thenReturn(new MockBlock(new Location(mockWorld, 0, 0, 0), Material.STONE));
+            }
+        });
+        when(mockWorld.getBlockAt(any(Location.class))).thenAnswer(new Answer<Block>() {
+            public Block answer(InvocationOnMock invocation) throws Throwable {
+                Location loc;
+                try {
+                    loc = (Location) invocation.getArguments()[0];
+                } catch (Exception e) {
+                    return null;
+                }
+
+                Block mockBlock = mock(Block.class);
+                Material blockType = Material.AIR; // TODO we might use other materials, too
+
+                when(mockBlock.getType()).thenReturn(blockType);
+                when(mockBlock.getTypeId()).thenReturn(blockType.getId());
+                when(mockBlock.getWorld()).thenReturn(loc.getWorld());
+                when(mockBlock.getX()).thenReturn(loc.getBlockX());
+                when(mockBlock.getY()).thenReturn(loc.getBlockY());
+                when(mockBlock.getZ()).thenReturn(loc.getBlockZ());
+                when(mockBlock.getLocation()).thenReturn(loc);
+                when(mockBlock.isEmpty()).thenReturn(blockType == Material.AIR);
+                return mockBlock;
+            }
+        });
         return mockWorld;
     }
 
