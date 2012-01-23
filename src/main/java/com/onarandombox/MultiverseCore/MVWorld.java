@@ -571,14 +571,8 @@ public class MVWorld implements MultiverseWorld {
                 this.saveConfig();
                 return true;
             }
-        } catch (NoSuchMethodException e) {
-            System.out.println(e);
-            return false;
-        } catch (IllegalAccessException e) {
-            System.out.println(e);
-            return false;
-        } catch (InvocationTargetException e) {
-            System.out.println(e);
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
