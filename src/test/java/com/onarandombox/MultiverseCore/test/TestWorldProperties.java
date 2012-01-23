@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,10 +21,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.internal.verification.VerificationModeFactory;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -43,7 +39,6 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 public class TestWorldProperties {
 
     private TestInstanceCreator creator;
-    private Server mockServer;
     private MultiverseCore core;
     private CommandSender mockCommandSender;
 
@@ -51,7 +46,6 @@ public class TestWorldProperties {
     public void setUp() throws Exception {
         creator = new TestInstanceCreator();
         assertTrue(creator.setUp());
-        mockServer = creator.getServer();
         core = creator.getCore();
         mockCommandSender = creator.getCommandSender();
     }
@@ -140,25 +134,25 @@ public class TestWorldProperties {
         when(playerNewJoinEvent.getPlayer()).thenReturn(mockNewPlayer);
 
         // call both weather change events
-        core.getWeatherListener().onWeatherChange(weatherChangeOffEvent);
+        core.getWeatherListener().weatherChange(weatherChangeOffEvent);
         assertFalse(weatherChangeOffEvent.isCancelled());
-        core.getWeatherListener().onWeatherChange(weatherChangeOnEvent);
+        core.getWeatherListener().weatherChange(weatherChangeOnEvent);
         assertFalse(weatherChangeOnEvent.isCancelled());
 
         // call both thunder change events
-        core.getWeatherListener().onThunderChange(thunderChangeOffEvent);
+        core.getWeatherListener().thunderChange(thunderChangeOffEvent);
         assertFalse(thunderChangeOffEvent.isCancelled());
-        core.getWeatherListener().onThunderChange(thunderChangeOnEvent);
+        core.getWeatherListener().thunderChange(thunderChangeOnEvent);
         assertFalse(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        core.getPlayerListener().onPlayerChat(playerChatEvent);
+        core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
 
         // call player join events
-        core.getPlayerListener().onPlayerJoin(playerJoinEvent);
+        core.getPlayerListener().playerJoin(playerJoinEvent);
         verify(mockPlayer, never()).teleport(any(Location.class));
-        core.getPlayerListener().onPlayerJoin(playerNewJoinEvent);
+        core.getPlayerListener().playerJoin(playerNewJoinEvent);
         verify(mockNewPlayer).teleport(worldManager.getFirstSpawnWorld().getSpawnLocation());
 
         /* ****************************************** *
@@ -216,15 +210,15 @@ public class TestWorldProperties {
          *    Call some events and verify behavior
          * ****************************************** */
         // call both weather change events
-        core.getWeatherListener().onWeatherChange(weatherChangeOffEvent);
+        core.getWeatherListener().weatherChange(weatherChangeOffEvent);
         assertFalse(weatherChangeOffEvent.isCancelled());
-        core.getWeatherListener().onWeatherChange(weatherChangeOnEvent);
+        core.getWeatherListener().weatherChange(weatherChangeOnEvent);
         assertTrue(weatherChangeOnEvent.isCancelled());
 
         // call both thunder change events
-        core.getWeatherListener().onThunderChange(thunderChangeOffEvent);
+        core.getWeatherListener().thunderChange(thunderChangeOffEvent);
         assertFalse(thunderChangeOffEvent.isCancelled());
-        core.getWeatherListener().onThunderChange(thunderChangeOnEvent);
+        core.getWeatherListener().thunderChange(thunderChangeOnEvent);
         assertTrue(thunderChangeOnEvent.isCancelled());
     }
 
