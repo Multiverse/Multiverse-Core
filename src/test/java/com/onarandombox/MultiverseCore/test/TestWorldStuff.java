@@ -202,6 +202,7 @@ public class TestWorldStuff {
     }
 
     @Test
+    // TODO Migrate this to TestWorldProperties
     public void testModifyGameMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
