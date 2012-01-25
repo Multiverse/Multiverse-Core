@@ -127,6 +127,11 @@ public class TestInstanceCreator {
                             } catch (Exception e) {
                                 return null;
                             }
+                            // Add special case for creating null worlds.
+                            // Not sure I like doing it this way, but this is a special case
+                            if (arg.name().equalsIgnoreCase("nullworld")) {
+                                return MockWorldFactory.makeNewNullMockWorld(arg.name(), arg.environment(), arg.type());
+                            }
                             return MockWorldFactory.makeNewMockWorld(arg.name(), arg.environment(), arg.type());
                         }
                     });

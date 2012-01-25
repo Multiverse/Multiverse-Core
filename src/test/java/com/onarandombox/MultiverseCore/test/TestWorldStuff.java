@@ -168,6 +168,40 @@ public class TestWorldStuff {
     }
 
     @Test
+    public void testNullWorld() {
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null
+        assertNotNull(plugin);
+
+        // Make sure Core is enabled
+        assertTrue(plugin.isEnabled());
+
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
+
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Create the NULL world
+        // The safe check is now BALLS SLOW. Use the -n to skip checking.
+        String[] normalArgs = new String[]{ "create", "nullworld", "normal", "-n" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+
+        // We should now have one world!
+        assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Verify
+        verify(mockCommandSender).sendMessage("Starting creation of world 'nullworld'...");
+        verify(mockCommandSender).sendMessage("Complete!");
+
+        WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("nullworld"));
+        verify(mockServer).createWorld(Matchers.argThat(matcher));
+    }
+
+    @Test
     public void testModifyGameMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");

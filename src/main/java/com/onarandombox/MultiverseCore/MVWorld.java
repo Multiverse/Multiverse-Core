@@ -1011,7 +1011,7 @@ public class MVWorld implements MultiverseWorld {
                 this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(configLocation));
             } else {
                 // If it's a standard end world, let's check in a better place:
-                Location newerSpawn = null;
+                Location newerSpawn;
                 newerSpawn = bs.getTopBlock(new Location(w, 0, 0, 0));
                 if (newerSpawn != null) {
                     this.setSpawnLocation(newerSpawn);

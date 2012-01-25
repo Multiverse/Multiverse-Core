@@ -40,7 +40,50 @@ public class MockWorldFactory {
         when(mockWorld.getName()).thenReturn(world);
         when(mockWorld.getEnvironment()).thenReturn(env);
         when(mockWorld.getWorldType()).thenReturn(type);
-        when(mockWorld.getSpawnLocation()).thenReturn(new Location(mockWorld, 0, 0, 0));
+        when(mockWorld.getSpawnLocation()).thenReturn(new Location(mockWorld, 0, 64, 0));
+        when(mockWorld.getWorldFolder()).thenAnswer(new Answer<File>() {
+            public File answer(InvocationOnMock invocation) throws Throwable {
+                if (!(invocation.getMock() instanceof World))
+                    return null;
+
+                World thiss = (World) invocation.getMock();
+                return new File(TestInstanceCreator.serverDirectory, thiss.getName());
+            }
+        });
+        when(mockWorld.getBlockAt(any(Location.class))).thenAnswer(new Answer<Block>() {
+            public Block answer(InvocationOnMock invocation) throws Throwable {
+                Location loc;
+                try {
+                    loc = (Location) invocation.getArguments()[0];
+                } catch (Exception e) {
+                    return null;
+                }
+                Material blockType = Material.AIR;
+                Block mockBlock = mock(Block.class);
+                if (loc.getBlockY() < 64) {
+                    blockType = Material.DIRT;
+                }
+
+                when(mockBlock.getType()).thenReturn(blockType);
+                when(mockBlock.getTypeId()).thenReturn(blockType.getId());
+                when(mockBlock.getWorld()).thenReturn(loc.getWorld());
+                when(mockBlock.getX()).thenReturn(loc.getBlockX());
+                when(mockBlock.getY()).thenReturn(loc.getBlockY());
+                when(mockBlock.getZ()).thenReturn(loc.getBlockZ());
+                when(mockBlock.getLocation()).thenReturn(loc);
+                when(mockBlock.isEmpty()).thenReturn(blockType == Material.AIR);
+                return mockBlock;
+            }
+        });
+        return mockWorld;
+    }
+
+    private static World nullWorld(String world, World.Environment env, WorldType type) {
+        World mockWorld = mock(World.class);
+        when(mockWorld.getName()).thenReturn(world);
+        when(mockWorld.getEnvironment()).thenReturn(env);
+        when(mockWorld.getWorldType()).thenReturn(type);
+        when(mockWorld.getSpawnLocation()).thenReturn(new Location(mockWorld, 0, 64, 0));
         when(mockWorld.getWorldFolder()).thenAnswer(new Answer<File>() {
             public File answer(InvocationOnMock invocation) throws Throwable {
                 if (!(invocation.getMock() instanceof World))
@@ -60,7 +103,7 @@ public class MockWorldFactory {
                 }
 
                 Block mockBlock = mock(Block.class);
-                Material blockType = Material.AIR; // TODO we might use other materials, too
+                Material blockType = Material.AIR;
 
                 when(mockBlock.getType()).thenReturn(blockType);
                 when(mockBlock.getTypeId()).thenReturn(blockType.getId());
@@ -78,6 +121,12 @@ public class MockWorldFactory {
 
     public static World makeNewMockWorld(String world, World.Environment env, WorldType type) {
         World w = basics(world, env, type);
+        registerWorld(w);
+        return w;
+    }
+
+    public static World makeNewNullMockWorld(String world, World.Environment env, WorldType type) {
+        World w = nullWorld(world, env, type);
         registerWorld(w);
         return w;
     }

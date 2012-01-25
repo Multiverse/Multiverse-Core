@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Multiverse 2 Copyright (c) the Multiverse Team 2012.                       *
+ * Multiverse 2 is licensed under the BSD License.                            *
+ * For more information please check the README.md file included              *
+ * with this project.                                                         *
+ ******************************************************************************/
+
 package com.onarandombox.MultiverseCore.test;
 
 import static org.junit.Assert.*;
@@ -99,7 +106,7 @@ public class TestWorldProperties {
         assertTrue(mvWorld.canAnimalsSpawn());
         assertTrue(mvWorld.canMonstersSpawn());
         assertEquals(-1, mvWorld.getCurrency());
-        assertEquals((Object) 0D, (Object) mvWorld.getPrice());
+        assertEquals(0, mvWorld.getPrice(), 0);
         assertTrue(mvWorld.getHunger());
         assertTrue(mvWorld.getAutoHeal());
         assertTrue(mvWorld.getAdjustSpawn());
@@ -107,7 +114,7 @@ public class TestWorldProperties {
         assertTrue(mvWorld.isKeepingSpawnInMemory());
         assertTrue(mvWorld.getBedRespawn());
         assertTrue(mvWorld.getAutoLoad());
-        assertEquals(new Location(mvWorld.getCBWorld(), 0, 0, 0), mvWorld.getSpawnLocation());
+        assertEquals(new Location(mvWorld.getCBWorld(), 0, 64, 0), mvWorld.getSpawnLocation());
 
         /* ****************************************** *
          *    Call some events and verify behavior
