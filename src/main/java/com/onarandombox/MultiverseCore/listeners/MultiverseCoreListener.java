@@ -7,9 +7,6 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import org.bukkit.event.CustomEventListener;
-import org.bukkit.event.Event;
-
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
 import com.onarandombox.MultiverseCore.event.MVPlayerTouchedPortalEvent;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
@@ -17,80 +14,66 @@ import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 /**
  * Subclasses of this listener can be used to conveniently listen to MultiverseCore-events.
  */
-public abstract class MultiverseCoreListener extends CustomEventListener {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final void onCustomEvent(Event event) {
-        if (event.getEventName().equals("MVConfigReload") && event instanceof MVConfigReloadEvent) {
-            onMVConfigReload((MVConfigReloadEvent) event);
-        } else if (event.getEventName().equals("MVPlayerTouchedPortalEvent") && event instanceof MVPlayerTouchedPortalEvent) {
-            onPlayerTouchedPortal((MVPlayerTouchedPortalEvent) event);
-        } else if (event.getEventName().equals("MVRespawn") && event instanceof MVRespawnEvent) {
-            onPlayerRespawn((MVRespawnEvent) event);
-        } else if (event.getEventName().equals("SafeTTeleporter") && event instanceof MVTeleportEvent) {
-            onPlayerTeleport((MVTeleportEvent) event);
-        } else if (event.getEventName().equals("MVVersionEvent") && event instanceof MVVersionEvent) {
-            onVersionRequest((MVVersionEvent) event);
-        } else if (event.getEventName().equals("MVWorldDeleteEvent") && event instanceof MVWorldDeleteEvent) {
-            onWorldDelete((MVWorldDeleteEvent) event);
-        } else if (event.getEventName().equals("MVWorldPropertyChange") && event instanceof MVWorldPropertyChangeEvent) {
-            onWorldPropertyChange((MVWorldPropertyChangeEvent) event);
-        }
-    }
-
+public abstract class MultiverseCoreListener implements Listener {
     /**
      * Called when a {@link MVWorldPropertyChangeEvent} is fired.
      * @param event The event.
      */
-    public void onWorldPropertyChange(MVWorldPropertyChangeEvent event) {
+    @EventHandler
+    public void worldPropertyChange(MVWorldPropertyChangeEvent event) {
     }
 
     /**
      * Called when a {@link MVWorldDeleteEvent} is fired.
      * @param event The event.
      */
-    public void onWorldDelete(MVWorldDeleteEvent event) {
+    @EventHandler
+    public void worldDelete(MVWorldDeleteEvent event) {
     }
 
     /**
      * Called when a {@link MVVersionEvent} is fired.
      * @param event The event.
      */
-    public void onVersionRequest(MVVersionEvent event) {
+    @EventHandler
+    public void versionRequest(MVVersionEvent event) {
     }
 
     /**
      * Called when a {@link MVTeleportEvent} is fired.
      * @param event The event.
      */
-    public void onPlayerTeleport(MVTeleportEvent event) {
+    @EventHandler
+    public void playerTeleport(MVTeleportEvent event) {
     }
 
     /**
      * Called when a {@link MVRespawnEvent} is fired.
      * @param event The event.
      */
-    public void onPlayerRespawn(MVRespawnEvent event) {
+    @EventHandler
+    public void playerRespawn(MVRespawnEvent event) {
     }
 
     /**
      * Called when a {@link MVPlayerTouchedPortalEvent} is fired.
      * @param event The event.
      */
-    public void onPlayerTouchedPortal(MVPlayerTouchedPortalEvent event) {
+    @EventHandler
+    public void playerTouchedPortal(MVPlayerTouchedPortalEvent event) {
     }
 
     /**
      * Called when a {@link MVConfigReloadEvent} is fired.
      * @param event The event.
      */
-    public void onMVConfigReload(MVConfigReloadEvent event) {
+    @EventHandler
+    public void configReload(MVConfigReloadEvent event) {
     }
-
 }

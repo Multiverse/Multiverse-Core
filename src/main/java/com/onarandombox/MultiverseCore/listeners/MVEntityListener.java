@@ -18,9 +18,10 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -29,9 +30,9 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * Multiverse's {@link EntityListener}.
+ * Multiverse's Entity {@link Listener}.
  */
-public class MVEntityListener extends EntityListener {
+public class MVEntityListener implements Listener {
 
     private MultiverseCore plugin;
     private MVWorldManager worldManager;
@@ -41,8 +42,12 @@ public class MVEntityListener extends EntityListener {
         this.worldManager = plugin.getMVWorldManager();
     }
 
-    @Override
-    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+    /**
+     * This method is called when an entity's food level goes higher or lower.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void foodLevelChange(FoodLevelChangeEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -58,9 +63,12 @@ public class MVEntityListener extends EntityListener {
         }
     }
 
-
-    @Override
-    public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+    /**
+     * This method is called when an entity's health goes up or down.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void entityRegainHealth(EntityRegainHealthEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -75,8 +83,8 @@ public class MVEntityListener extends EntityListener {
      * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
      * @param event The event.
      */
-    @Override
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
+    @EventHandler
+    public void creatureSpawn(CreatureSpawnEvent event) {
 
         // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
         if (event.getSpawnReason() == SpawnReason.CUSTOM) {
@@ -124,7 +132,7 @@ public class MVEntityListener extends EntityListener {
         } else if (creatureList.isEmpty()) {
             // 2. There are no exceptions and animals are NOT allowed. Kill it.
             return true;
-        } else if (creatureList.contains(creature) && allowCreatureSpawning) {
+        } else if (creatureList.contains(creature.toUpperCase()) && allowCreatureSpawning) {
             // 3. There ARE exceptions and animals ARE allowed. Kill it.
             return true;
         } else if (!creatureList.contains(creature.toUpperCase()) && allowCreatureSpawning) {
@@ -136,9 +144,10 @@ public class MVEntityListener extends EntityListener {
         } else if (!creatureList.contains(creature.toUpperCase()) && !allowCreatureSpawning) {
             // 6. Animals are NOT allowed to spawn, and this creature is not in the save list... KILL IT
             return true;
+        } else {
+            // This code should NEVER execute. I just left the verbose conditions in right now.
+            throw new UnsupportedOperationException();
         }
-        // This code should NEVER execute. I just left the verbose conditions in right now.
-        return false;
     }
 
 }
