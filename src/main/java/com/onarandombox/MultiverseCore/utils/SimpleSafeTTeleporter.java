@@ -33,11 +33,9 @@ import java.util.logging.Level;
 public class SimpleSafeTTeleporter implements SafeTTeleporter {
 
     private MultiverseCore plugin;
-    private BlockSafety bs;
 
     public SimpleSafeTTeleporter(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.bs = plugin.getBlockSafety();
     }
 
     private static final int DEFAULT_TOLERANCE = 6;
@@ -144,13 +142,13 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // ...
         int adjustedCircle = ((circle - 1) / 2);
         checkLoc.add(adjustedCircle, 0, 0);
-        if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+        if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
             return true;
         }
         // Now we go to the right that adjustedCircle many
         for (int i = 0; i < adjustedCircle; i++) {
             checkLoc.add(0, 0, 1);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -158,7 +156,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then down adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(-1, 0, 0);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -166,7 +164,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then left adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(0, 0, -1);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -174,7 +172,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then up Then left adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(1, 0, 0);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -182,7 +180,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then finish up by doing adjustedCircle - 1
         for (int i = 0; i < adjustedCircle - 1; i++) {
             checkLoc.add(0, 0, 1);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -251,25 +249,25 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     @Override
     public Location getSafeLocation(Entity e, MVDestination d) {
         Location l = d.getLocation(e);
-        if (this.bs.playerCanSpawnHereSafely(l)) {
+        if (plugin.getBlockSafety().playerCanSpawnHereSafely(l)) {
             plugin.log(Level.FINE, "The first location you gave me was safe.");
             return l;
         }
         if (e instanceof Minecart) {
             Minecart m = (Minecart) e;
-            if (!this.bs.canSpawnCartSafely(m)) {
+            if (!plugin.getBlockSafety().canSpawnCartSafely(m)) {
                 return null;
             }
         } else if (e instanceof Vehicle) {
             Vehicle v = (Vehicle) e;
-            if (!this.bs.canSpawnVehicleSafely(v)) {
+            if (!plugin.getBlockSafety().canSpawnVehicleSafely(v)) {
                 return null;
             }
         }
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {
             // Add offset to account for a vehicle on dry land!
-            if (e instanceof Minecart && !this.bs.isEntitiyOnTrack(safeLocation)) {
+            if (e instanceof Minecart && !plugin.getBlockSafety().isEntitiyOnTrack(safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
                 this.plugin.log(Level.FINER, "Player was inside a minecart. Offsetting Y location.");
             }
