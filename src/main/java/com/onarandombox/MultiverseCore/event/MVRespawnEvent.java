@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.event;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * Called when a player is respawning.
@@ -25,6 +26,24 @@ public class MVRespawnEvent extends Event {
         this.player = p;
         this.location = spawningAt;
         this.respawnMethod = respawnMethod;
+    }
+
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    /**
+     * Gets the handler list. This is required by the event system.
+     * @return A list of HANDLERS.
+     */
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     /**

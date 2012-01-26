@@ -18,7 +18,7 @@
         </repository>
         <repository>
             <id>Bukkit Offical</id>
-            <url>http://repo.bukkit.org/content/repositories/public/</url>
+            <url>http://repo.bukkit.org/content/repositories/public</url>
         </repository>
     </repositories>
 

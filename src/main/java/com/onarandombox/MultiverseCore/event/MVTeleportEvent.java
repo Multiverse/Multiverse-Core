@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * Event that gets called when a player use the /mvtp command.
@@ -31,6 +32,24 @@ public class MVTeleportEvent extends Event implements Cancellable {
         this.teleporter = teleporter;
         this.dest = dest;
         this.useSafeTeleport = safeTeleport;
+    }
+
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    /**
+     * Gets the handler list. This is required by the event system.
+     * @return A list of HANDLERS.
+     */
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     /**

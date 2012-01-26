@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.event;
 
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * Called when somebody requests version information about Multiverse.
@@ -12,6 +13,24 @@ public class MVVersionEvent extends Event {
     public MVVersionEvent(String versionInfo) {
         super("MVVersionEvent");
         versionInfoBuilder = new StringBuilder(versionInfo);
+    }
+
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    /**
+     * Gets the handler list. This is required by the event system.
+     * @return A list of HANDLERS.
+     */
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     /**
