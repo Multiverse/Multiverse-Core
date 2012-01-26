@@ -66,8 +66,11 @@ public interface Core {
      * safe teleports.
      *
      * @return A non-null {@link SafeTTeleporter}.
+     *
+     * @deprecated Use {@link #getSafeTTeleporter()} instead.
      */
-    SafeTTeleporter getTeleporter();
+    @Deprecated
+    com.onarandombox.MultiverseCore.utils.SafeTTeleporter getTeleporter();
 
     /**
      * Multiverse uses an advanced permissions setup, this object
@@ -195,4 +198,21 @@ public interface Core {
      * @see SimpleLocationManipulation
      */
     void setLocationManipulation(LocationManipulation locationManipulation);
+
+    /**
+     * Gets the {@link SafeTTeleporter} this {@link Core} is using.
+     * @return The {@link SafeTTeleporter} this {@link Core} is using.
+     * @see SafeTTeleporter
+     * @see SimpleSafeTTeleporter
+     */
+    SafeTTeleporter getSafeTTeleporter();
+
+    /**
+     * Sets the {@link SafeTTeleporter} this {@link Core} is using.
+     * @param safeTTeleporter The new {@link SafeTTeleporter}.
+     * @see SafeTTeleporter
+     * @see SimpleSafeTTeleporter
+     */
+    void setSafeTTeleporter(SafeTTeleporter safeTTeleporter);
+
 }

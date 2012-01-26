@@ -85,6 +85,6 @@ public class SpawnCommand extends MultiverseCommand {
         } else {
             spawnLocation = player.getWorld().getSpawnLocation();
         }
-        this.plugin.getTeleporter().safelyTeleport(player, player, spawnLocation, false);
+        this.plugin.getSafeTTeleporter().safelyTeleport(player, player, spawnLocation, false);
     }
 }

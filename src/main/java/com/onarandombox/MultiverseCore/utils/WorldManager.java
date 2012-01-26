@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.World;
@@ -371,7 +372,7 @@ public class WorldManager implements MVWorldManager {
         if (w != null) {
             World safeWorld = this.plugin.getServer().getWorlds().get(0);
             List<Player> ps = w.getPlayers();
-            SafeTTeleporter teleporter = this.plugin.getTeleporter();
+            SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             for (Player p : ps) {
                 // We're removing players forcefully from a world, they'd BETTER spawn safely.
                 teleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);

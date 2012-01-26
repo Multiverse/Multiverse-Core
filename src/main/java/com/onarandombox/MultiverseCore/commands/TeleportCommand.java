@@ -14,7 +14,7 @@ import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -42,7 +42,7 @@ public class TeleportCommand extends MultiverseCommand {
         this.setArgRange(1, 2);
         this.addKey("mvtp");
         this.addKey("mv tp");
-        this.playerTeleporter = new SafeTTeleporter(this.plugin);
+        this.playerTeleporter = this.plugin.getSafeTTeleporter();
         this.setPermission(menu);
     }
 
