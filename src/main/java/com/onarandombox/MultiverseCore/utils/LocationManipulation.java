@@ -17,6 +17,7 @@ import org.bukkit.util.Vector;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -60,7 +61,10 @@ public class LocationManipulation {
         if (location == null) {
             return "";
         }
-        return String.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
+        // We set the locale to ENGLISH here so we always save with the format:
+        // world:1.2,5.4,3.6:1.8:21.3
+        // Otherwise we blow up when parsing!
+        return String.format(Locale.ENGLISH, "%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
                 location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 

@@ -9,22 +9,30 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.weather.WeatherListener;
 
 /**
- * Multiverse's {@link WeatherListener}.
+ * Multiverse's Weather {@link Listener}.
  */
-public class MVWeatherListener extends WeatherListener {
+public class MVWeatherListener implements Listener {
     private MultiverseCore plugin;
 
     public MVWeatherListener(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
-    @Override
-    public void onWeatherChange(WeatherChangeEvent event) {
+    /**
+     * This method is called when the weather changes.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void weatherChange(WeatherChangeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
@@ -32,8 +40,15 @@ public class MVWeatherListener extends WeatherListener {
         }
     }
 
-    @Override
-    public void onThunderChange(ThunderChangeEvent event) {
+    /**
+     * This method is called when a big storm is going to start.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void thunderChange(ThunderChangeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled

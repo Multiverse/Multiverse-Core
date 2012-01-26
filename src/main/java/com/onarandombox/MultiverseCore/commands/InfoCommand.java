@@ -109,6 +109,7 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
         message.add(new FancyMessage("Game Mode: ", world.getGameMode().toString(), colors));
+        message.add(new FancyMessage("World Type: ", world.getWorldType().toString(), colors));
         //message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
         message.add(new FancyMessage("Spawn Location: ", plugin.getLocationManipulation().strCoords(spawn), colors));

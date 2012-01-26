@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -28,8 +29,8 @@ public class CreateCommand extends MultiverseCommand {
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Create World");
-        this.setCommandUsage("/mv create" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]] [-n]");
-        this.setArgRange(2, 7); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        this.setCommandUsage("/mv create" + ChatColor.GREEN + " {NAME} {ENV}" + ChatColor.GOLD + " -s [SEED] -g [GENERATOR[:ID]] -t [WORLDTYPE] [-n]");
+        this.setArgRange(2, 9); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         this.addKey("mvcreate");
         this.addKey("mvc");
         this.addKey("mv create");
@@ -37,6 +38,7 @@ public class CreateCommand extends MultiverseCommand {
         this.addCommandExample("/mv create " + ChatColor.GOLD + "world" + ChatColor.GREEN + " normal");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "lavaland" + ChatColor.RED + " nether");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "starwars" + ChatColor.AQUA + " end");
+        this.addCommandExample("/mv create " + ChatColor.GOLD + "flatroom" + ChatColor.GREEN + " normal" + ChatColor.AQUA + " -t flat");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "gargamel" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -s gargamel");
         this.addCommandExample("/mv create " + ChatColor.GOLD + "moonworld" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g BukkitFullOfMoon");
         this.worldManager = this.plugin.getMVWorldManager();
@@ -49,6 +51,7 @@ public class CreateCommand extends MultiverseCommand {
         String env = args.get(1);
         String seed = CommandHandler.getFlag("-s", args);
         String generator = CommandHandler.getFlag("-g", args);
+        String typeString = CommandHandler.getFlag("-t", args);
         boolean useSpawnAdjust = true;
         for (String s : args) {
             if (s.equalsIgnoreCase("-n")) {
@@ -61,16 +64,27 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
 
-        Environment environment = this.plugin.getEnvFromString(env);
+        Environment environment = EnvironmentCommand.getEnvFromString(env);
         if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
 
+        // If they didn't specify a type, default to NORMAL
+        if (typeString == null) {
+            typeString = "NORMAL";
+        }
+        WorldType type = EnvironmentCommand.getWorldTypeFromString(typeString);
+        if (type == null) {
+            sender.sendMessage(ChatColor.RED + "That is not a valid World Type.");
+            EnvironmentCommand.showWorldTypes(sender);
+            return;
+        }
+
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
-        if (this.worldManager.addWorld(worldName, environment, seed, generator, useSpawnAdjust)) {
+        if (this.worldManager.addWorld(worldName, environment, seed, type, generator, useSpawnAdjust)) {
             Command.broadcastCommandMessage(sender, "Complete!");
         } else {
             Command.broadcastCommandMessage(sender, "FAILED.");

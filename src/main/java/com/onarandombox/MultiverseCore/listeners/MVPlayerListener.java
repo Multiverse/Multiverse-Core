@@ -12,14 +12,18 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -28,9 +32,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.logging.Level;
 
 /**
- * Multiverse's {@link PlayerListener}.
+ * Multiverse's {@link Listener} for players.
  */
-public class MVPlayerListener extends PlayerListener {
+public class MVPlayerListener implements Listener {
     private MultiverseCore plugin;
     private MVWorldManager worldManager;
     private PermissionTools pt;
@@ -41,9 +45,12 @@ public class MVPlayerListener extends PlayerListener {
         worldManager = plugin.getMVWorldManager();
         pt = new PermissionTools(plugin);
     }
-
-    @Override
-    public void onPlayerChat(PlayerChatEvent event) {
+    /**
+     * This method is called when a player wants to chat.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void playerChat(PlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -66,8 +73,12 @@ public class MVPlayerListener extends PlayerListener {
         }
     }
 
-    @Override
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
+    /**
+     * This method is called when a player respawns.
+     * @param event The Event that was fired.
+     */
+    @EventHandler(priority = EventPriority.LOW)
+    public void playerRespawn(PlayerRespawnEvent event) {
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
@@ -108,8 +119,12 @@ public class MVPlayerListener extends PlayerListener {
         return w.getSpawnLocation();
     }
 
-    @Override
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    /**
+     * This method is called when a player joins the server.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void playerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
             this.plugin.log(Level.FINE, "Player joined first!");
@@ -125,19 +140,31 @@ public class MVPlayerListener extends PlayerListener {
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
     }
 
-    @Override
-    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+    /**
+     * This method is called when a player changes worlds.
+     * @param event The Event that was fired.
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
     }
 
-    @Override
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    /**
+     * This method is called when a player quits the game.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void playerQuit(PlayerQuitEvent event) {
         this.plugin.removePlayerSession(event.getPlayer());
     }
 
-    @Override
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
+    /**
+     * This method is called when a player teleports anywhere.
+     * @param event The Event that was fired.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void playerTeleport(PlayerTeleportEvent event) {
         this.plugin.log(Level.FINEST, "Got teleport event for player '" + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
 
         if (event.isCancelled()) {
@@ -183,8 +210,39 @@ public class MVPlayerListener extends PlayerListener {
         }
     }
 
-    @Override
-    public void onPlayerPortal(PlayerPortalEvent event) {
+    /**
+     * This method is called to adjust the portal location to the actual portal location (and not
+     * right outside of it.
+     * @param event The Event that was fired.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerPortalCheck(PlayerPortalEvent event) {
+        this.plugin.log(Level.FINE, "CALLING CORE-ADJUST!!!");
+        if (event.isCancelled() || event.getFrom() == null) {
+            return;
+        }
+
+        // REMEMBER! getTo MAY be NULL HERE!!!
+        // If the player was actually outside of the portal, adjust the from location
+        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
+            Location newloc = SafeTTeleporter.findPortalBlockNextTo(event.getFrom());
+            // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
+            // TODO: we want to do here.
+            if (newloc != null) {
+                event.setFrom(newloc);
+            }
+        }
+        // Wait for the adjust, then return!
+        if (event.getTo() == null) {
+            return;
+        }
+    }
+    /**
+     * This method is called when a player actually portals via a vanilla style portal.
+     * @param event The Event that was fired.
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerPortal(PlayerPortalEvent event) {
         if (event.isCancelled() || (event.getFrom() == null)) {
             return;
         }
