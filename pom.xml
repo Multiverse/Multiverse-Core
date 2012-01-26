@@ -16,6 +16,10 @@
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public</url>
         </repository>
+        <repository>
+            <id>Bukkit Offical</id>
+            <url>http://repo.bukkit.org/content/repositories/public/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -162,7 +166,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.1-R1-SNAPSHOT</version>
+            <version>1.1-R1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
