@@ -14,7 +14,6 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.FancyColorScheme;
 import com.onarandombox.MultiverseCore.utils.FancyHeader;
 import com.onarandombox.MultiverseCore.utils.FancyMessage;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -113,7 +112,7 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("World Type: ", world.getWorldType().toString(), colors));
         //message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
-        message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
+        message.add(new FancyMessage("Spawn Location: ", plugin.getLocationManipulation().strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
         if (world.getPrice() > 0) {
             message.add(new FancyMessage("Price to enter this world: ",

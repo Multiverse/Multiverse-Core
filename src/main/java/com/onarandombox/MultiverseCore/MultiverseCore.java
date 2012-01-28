@@ -9,10 +9,14 @@ package com.onarandombox.MultiverseCore;
 
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.*;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
@@ -26,14 +30,7 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.utils.AnchorManager;
-import com.onarandombox.MultiverseCore.utils.DebugLog;
-import com.onarandombox.MultiverseCore.utils.MVMessaging;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.SpoutInterface;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -168,7 +165,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private SpoutInterface spoutInterface = null;
     private static final double ALLPAY_VERSION = 5;
     private static final double CH_VERSION = 4;
-    private MVMessaging messaging;
+    private MultiverseMessaging messaging;
+    private BlockSafety blockSafety;
+    private LocationManipulation locationManipulation;
+    private SafeTTeleporter safeTTeleporter;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
 
@@ -178,6 +178,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
+        // Setup our BlockSafety
+        this.blockSafety = new SimpleBlockSafety(this);
+        // Setup our LocationManipulation
+        this.locationManipulation = new SimpleLocationManipulation();
+        // Setup our SafeTTeleporter
+        this.safeTTeleporter = new SimpleSafeTTeleporter(this);
     }
 
     /**
@@ -375,7 +381,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public MVMessaging getMessaging() {
+    public MultiverseMessaging getMessaging() {
         return this.messaging;
     }
 
@@ -445,10 +451,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
+     *
+     * @deprecated This is deprecated.
      */
     @Override
-    public SafeTTeleporter getTeleporter() {
-        return new SafeTTeleporter(this);
+    @Deprecated
+    public com.onarandombox.MultiverseCore.utils.SafeTTeleporter getTeleporter() {
+        return new com.onarandombox.MultiverseCore.utils.SafeTTeleporter(this);
     }
 
     /**
@@ -637,7 +646,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
         // This command is the override, and MUST NOT TELEPORT SAFELY
-        this.getTeleporter().safelyTeleport(teleporter, p, l, false);
+        this.getSafeTTeleporter().safelyTeleport(teleporter, p, l, false);
     }
 
     /**
@@ -779,7 +788,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         if (this.worldManager.deleteWorld(name, false)) {
             this.worldManager.loadWorlds(false);
-            SafeTTeleporter teleporter = this.getTeleporter();
+            SafeTTeleporter teleporter = this.getSafeTTeleporter();
             Location newSpawn = this.getServer().getWorld(name).getSpawnLocation();
             // Send all players that were in the old world, BACK to it!
             for (Player p : ps) {
@@ -798,4 +807,51 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return this.anchorManager;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BlockSafety getBlockSafety() {
+        return blockSafety;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBlockSafety(BlockSafety bs) {
+        this.blockSafety = bs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LocationManipulation getLocationManipulation() {
+        return locationManipulation;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setLocationManipulation(LocationManipulation locationManipulation) {
+        this.locationManipulation = locationManipulation;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SafeTTeleporter getSafeTTeleporter() {
+        return safeTTeleporter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSafeTTeleporter(SafeTTeleporter safeTTeleporter) {
+        this.safeTTeleporter = safeTTeleporter;
+    }
 }

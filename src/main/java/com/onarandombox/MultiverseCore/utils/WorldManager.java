@@ -11,6 +11,8 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.World;
@@ -41,7 +43,7 @@ import java.util.logging.Level;
  */
 public class WorldManager implements MVWorldManager {
     private MultiverseCore plugin;
-    private PurgeWorlds worldPurger;
+    private WorldPurger worldPurger;
     private Map<String, MultiverseWorld> worlds;
     private List<String> unloadedWorlds;
     private FileConfiguration configWorlds = null;
@@ -52,7 +54,7 @@ public class WorldManager implements MVWorldManager {
         this.plugin = core;
         this.worlds = new HashMap<String, MultiverseWorld>();
         this.unloadedWorlds = new ArrayList<String>();
-        this.worldPurger = new PurgeWorlds(this.plugin);
+        this.worldPurger = new SimpleWorldPurger(plugin);
     }
 
     /**
@@ -139,7 +141,7 @@ public class WorldManager implements MVWorldManager {
 
         MultiverseWorld mvworld = new MVWorld(world, this.configWorlds, this.plugin,
                 this.plugin.getServer().getWorld(name).getSeed(), generator, useSpawnAdjust);
-        this.worldPurger.purgeWorld(null, mvworld);
+        this.worldPurger.purgeWorld(mvworld);
         this.worlds.put(name, mvworld);
         if (this.unloadedWorlds.contains(name)) {
             this.unloadedWorlds.remove(name);
@@ -371,7 +373,7 @@ public class WorldManager implements MVWorldManager {
         if (w != null) {
             World safeWorld = this.plugin.getServer().getWorlds().get(0);
             List<Player> ps = w.getPlayers();
-            SafeTTeleporter teleporter = this.plugin.getTeleporter();
+            SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             for (Player p : ps) {
                 // We're removing players forcefully from a world, they'd BETTER spawn safely.
                 teleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);
@@ -575,10 +577,20 @@ public class WorldManager implements MVWorldManager {
 
     /**
      * {@inheritDoc}
+     * @deprecated This is deprecated!
      */
     @Override
+    @Deprecated
     public PurgeWorlds getWorldPurger() {
-        return this.worldPurger;
+        return new PurgeWorlds(plugin);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WorldPurger getTheWorldPurger() {
+        return worldPurger;
     }
 
     /**

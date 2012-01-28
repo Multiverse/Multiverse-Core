@@ -8,6 +8,9 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.Core;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,49 +20,38 @@ import org.bukkit.entity.Vehicle;
 import java.util.logging.Level;
 
 /**
- * Used to determine block/location-related facts.
- *
- * @deprecated Use instead: {@link com.onarandombox.MultiverseCore.api.BlockSafety} and {@link SimpleBlockSafety}.
+ * The default-implementation of {@link BlockSafety}.
  */
-@Deprecated
-public class BlockSafety {
+public class SimpleBlockSafety implements BlockSafety {
+    private final Core plugin;
+
+    public SimpleBlockSafety(Core plugin) {
+        this.plugin = plugin;
+    }
 
     /**
-     * This function checks whether the block at the given coordinates are above air or not.
-     * @param l The {@link Location} of the block.
-     * @return True if the block at that {@link Location} is above air.
+     * {@inheritDoc}
      */
+    @Override
     public boolean isBlockAboveAir(Location l) {
         Location downOne = l.clone();
         downOne.setY(downOne.getY() - 1);
         return (downOne.getBlock().getType() == Material.AIR);
     }
 
-    // TODO maybe remove this?
-    private boolean blockIsNotSafe(World world, double x, double y, double z) {
-        return !playerCanSpawnHereSafely(world, x, y, z);
-    }
-
     /**
-     * Checks if a player can spawn safely at the given coordinates.
-     * @param world The {@link World}.
-     * @param x The x-coordinate.
-     * @param y The y-coordinate.
-     * @param z The z-coordinate.
-     * @return True if a player can spawn safely at the given coordinates.
+     * {@inheritDoc}
      */
+    @Override
     public boolean playerCanSpawnHereSafely(World world, double x, double y, double z) {
         Location l = new Location(world, x, y, z);
         return playerCanSpawnHereSafely(l);
     }
 
     /**
-     * This function checks whether the block at the coordinates given is safe or not by checking for Lava/Fire/Air
-     * etc. This also ensures there is enough space for a player to spawn!
-     *
-     * @param l The {@link Location}
-     * @return Whether the player can spawn safely at the given {@link Location}
+     * {@inheritDoc}
      */
+    @Override
     public boolean playerCanSpawnHereSafely(Location l) {
         if (l == null) {
             // Can't safely spawn at a null location!
@@ -103,10 +95,9 @@ public class BlockSafety {
     }
 
     /**
-     * Gets the location of the top block at the specified {@link Location}.
-     * @param l Any {@link Location}.
-     * @return The {@link Location} of the top-block.
+     * {@inheritDoc}
      */
+    @Override
     public Location getTopBlock(Location l) {
         Location check = l.clone();
         check.setY(127); // SUPPRESS CHECKSTYLE: MagicNumberCheck
@@ -120,10 +111,9 @@ public class BlockSafety {
     }
 
     /**
-     * Gets the location of the top block at the specified {@link Location}.
-     * @param l Any {@link Location}.
-     * @return The {@link Location} of the top-block.
+     * {@inheritDoc}
      */
+    @Override
     public Location getBottomBlock(Location l) {
         Location check = l.clone();
         check.setY(0);
@@ -205,29 +195,12 @@ public class BlockSafety {
     }
 
     /**
-     * Checks if an entity would be on track at the specified {@link Location}.
-     * @param l The {@link Location}.
-     * @return True if an entity would be on tracks at the specified {@link Location}.
+     * {@inheritDoc}
      */
+    @Override
     public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
         return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
-    }
-
-    // TODO maybe remove this?
-    private void showDangers(Location l) {
-        Location actual = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
-        Location upOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
-        Location downOne = new Location(l.getWorld(), l.getX(), l.getY(), l.getZ());
-        upOne.setY(upOne.getY() + 1);
-        downOne.setY(downOne.getY() - 1);
-
-        System.out.print("Location Up:   " + upOne.getBlock().getType());
-        System.out.print("               " + upOne);
-        System.out.print("Location:      " + actual.getBlock().getType());
-        System.out.print("               " + actual);
-        System.out.print("Location Down: " + downOne.getBlock().getType());
-        System.out.print("               " + downOne);
     }
 
     /**
@@ -254,25 +227,23 @@ public class BlockSafety {
     }
 
     /**
-     * Checks if the specified {@link Minecart} can spawn safely.
-     * @param cart The {@link Minecart}.
-     * @return True if the minecart can spawn safely.
+     * {@inheritDoc}
      */
+    @Override
     public boolean canSpawnCartSafely(Minecart cart) {
         if (this.isBlockAboveAir(cart.getLocation())) {
             return true;
         }
-        if (this.isEntitiyOnTrack(LocationManipulation.getNextBlock(cart))) {
+        if (this.isEntitiyOnTrack(plugin.getLocationManipulation().getNextBlock(cart))) {
             return true;
         }
         return false;
     }
 
     /**
-     * Checks if the specified {@link Vehicle} can spawn safely.
-     * @param vehicle The {@link Vehicle}.
-     * @return True if the vehicle can spawn safely.
+     * {@inheritDoc}
      */
+    @Override
     public boolean canSpawnVehicleSafely(Vehicle vehicle) {
         if (this.isBlockAboveAir(vehicle.getLocation())) {
             return true;

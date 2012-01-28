@@ -46,9 +46,9 @@ public interface Core {
      * Gets the Multiverse message system. This allows you to send messages
      * to users at specified intervals.
      *
-     * @return The loaded {@link MVMessaging}.
+     * @return The loaded {@link MultiverseMessaging}.
      */
-    MVMessaging getMessaging();
+    MultiverseMessaging getMessaging();
 
     /**
      * Gets the {@link MVPlayerSession} for the given player.
@@ -66,8 +66,11 @@ public interface Core {
      * safe teleports.
      *
      * @return A non-null {@link SafeTTeleporter}.
+     *
+     * @deprecated Use {@link #getSafeTTeleporter()} instead.
      */
-    SafeTTeleporter getTeleporter();
+    @Deprecated
+    com.onarandombox.MultiverseCore.utils.SafeTTeleporter getTeleporter();
 
     /**
      * Multiverse uses an advanced permissions setup, this object
@@ -163,4 +166,53 @@ public interface Core {
      * @return The readable authors-{@link String}
      */
     String getAuthors();
+
+    /**
+     * Gets the {@link BlockSafety} this {@link Core} is using.
+     * @return The {@link BlockSafety} this {@link Core} is using.
+     * @see BlockSafety
+     * @see SimpleBlockSafety
+     */
+    BlockSafety getBlockSafety();
+
+    /**
+     * Sets the {@link BlockSafety} this {@link Core} is using.
+     * @param blockSafety The new {@link BlockSafety}.
+     * @see BlockSafety
+     * @see SimpleBlockSafety
+     */
+    void setBlockSafety(BlockSafety blockSafety);
+
+    /**
+     * Gets the {@link LocationManipulation} this {@link Core} is using.
+     * @return The {@link LocationManipulation} this {@link Core} is using.
+     * @see LocationManipulation
+     * @see SimpleLocationManipulation
+     */
+    LocationManipulation getLocationManipulation();
+
+    /**
+     * Sets the {@link LocationManipulation} this {@link Core} is using.
+     * @param locationManipulation The new {@link LocationManipulation}.
+     * @see LocationManipulation
+     * @see SimpleLocationManipulation
+     */
+    void setLocationManipulation(LocationManipulation locationManipulation);
+
+    /**
+     * Gets the {@link SafeTTeleporter} this {@link Core} is using.
+     * @return The {@link SafeTTeleporter} this {@link Core} is using.
+     * @see SafeTTeleporter
+     * @see SimpleSafeTTeleporter
+     */
+    SafeTTeleporter getSafeTTeleporter();
+
+    /**
+     * Sets the {@link SafeTTeleporter} this {@link Core} is using.
+     * @param safeTTeleporter The new {@link SafeTTeleporter}.
+     * @see SafeTTeleporter
+     * @see SimpleSafeTTeleporter
+     */
+    void setSafeTTeleporter(SafeTTeleporter safeTTeleporter);
+
 }

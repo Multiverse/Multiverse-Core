@@ -8,9 +8,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.BlockSafety;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -56,7 +55,7 @@ public class SetSpawnCommand extends MultiverseCommand {
             MultiverseWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
             if (foundWorld != null) {
                 foundWorld.setSpawnLocation(p.getLocation());
-                BlockSafety bs = new BlockSafety();
+                BlockSafety bs = this.plugin.getBlockSafety();
                 if (!bs.playerCanSpawnHereSafely(p.getLocation()) && foundWorld.getAdjustSpawn()) {
                     sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
                     sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
@@ -64,7 +63,7 @@ public class SetSpawnCommand extends MultiverseCommand {
                     sender.sendMessage(ChatColor.AQUA + "/mvm set adjustspawn true " + foundWorld.getAlias());
                     foundWorld.setAdjustSpawn(false);
                 }
-                sender.sendMessage("Spawn was set to: " + LocationManipulation.strCoords(p.getLocation()));
+                sender.sendMessage("Spawn was set to: " + plugin.getLocationManipulation().strCoords(p.getLocation()));
             } else {
                 w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
                 sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully (Pitch/Yaws).");
