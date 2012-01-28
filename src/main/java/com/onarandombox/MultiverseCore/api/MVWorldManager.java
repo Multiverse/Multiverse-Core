@@ -8,6 +8,8 @@
 package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
+import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
+
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -168,8 +170,20 @@ public interface MVWorldManager {
      * Return the World Purger.
      *
      * @return A valid {@link PurgeWorlds}.
+     * @deprecated {@link PurgeWorlds} is deprecated!
      */
+    @Deprecated
     PurgeWorlds getWorldPurger();
+
+    /**
+     * Gets the {@link WorldPurger}.
+     * <p>
+     * TODO: Remove {@link #getWorldPurger()} and replace it with this method.
+     * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
+     * @see WorldPurger
+     * @see SimpleWorldPurger
+     */
+    WorldPurger getTheWorldPurger();
 
     /**
      * Gets the world players will spawn in on first join.

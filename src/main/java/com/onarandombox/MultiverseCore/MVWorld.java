@@ -431,7 +431,7 @@ public class MVWorld implements MultiverseWorld {
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
-        this.plugin.getMVWorldManager().getWorldPurger().purgeWorld(null, this);
+        this.plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(this);
     }
 
     /**
