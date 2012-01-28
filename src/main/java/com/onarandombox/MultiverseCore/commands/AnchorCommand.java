@@ -85,6 +85,8 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
 
         if (filterObject.getPage() > totalPages) {
             filterObject.setPage(totalPages);
+        } else if (filterObject.getPage() < 1) {
+            filterObject.setPage(1);
         }
 
         sender.sendMessage(ChatColor.AQUA + " Page " + filterObject.getPage() + " of " + totalPages);
@@ -98,7 +100,11 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             this.showList(sender, args);
             return;
         }
-        if (args.size() == 2) {
+        if (args.size() == 1 && (this.getPageAndFilter(args).getPage() != 1 || args.get(0).equals("1"))) {
+            this.showList(sender, args);
+            return;
+        }
+        if (args.size() == 2 && args.get(1).equalsIgnoreCase("-d")) {
             if (this.plugin.getAnchorManager().deleteAnchor(args.get(0))) {
                 sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.RED + "deleted!");
             } else {
@@ -111,6 +117,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             sender.sendMessage("You must be a player to create Anchors.");
             return;
         }
+
         Player player = (Player) sender;
         if (this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), player.getLocation())) {
             sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.GREEN + "created!");
