@@ -514,6 +514,7 @@ public class MVWorld implements MultiverseWorld {
                 return (MVConfigProperty<T>) this.propertyList.get(this.propertyAliases.get(name));
             }
         } catch (ClassCastException e) {
+            return null;
         }
         return null;
     }
@@ -559,6 +560,7 @@ public class MVWorld implements MultiverseWorld {
         try {
             if (property.getMethod() == null) {
                 // This property did not have a method.
+                this.saveConfig();
                 return true;
             }
             Method method = this.getClass().getMethod(property.getMethod());
@@ -573,6 +575,8 @@ public class MVWorld implements MultiverseWorld {
                 return true;
             }
         } catch (Exception e) {
+            // TODO: I don't care about 3 catches,
+            // TODO: I hate pokemon errors :/ - FernFerret
             e.printStackTrace();
             return false;
         }
