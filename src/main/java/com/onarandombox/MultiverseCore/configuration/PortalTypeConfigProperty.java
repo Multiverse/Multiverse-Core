@@ -8,11 +8,10 @@
 package com.onarandombox.MultiverseCore.configuration;
 
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
-import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
- * A {@link org.bukkit.GameMode} config-property.
+ * A {@link AllowedPortalType} config-property.
  */
 public class PortalTypeConfigProperty implements MVConfigProperty<AllowedPortalType> {
     private String name;
