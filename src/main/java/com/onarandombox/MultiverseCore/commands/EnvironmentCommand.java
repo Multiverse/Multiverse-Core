@@ -91,6 +91,7 @@ public class EnvironmentCommand extends MultiverseCommand {
      * @return The environment as {@link org.bukkit.World.Environment}
      */
     public static World.Environment getEnvFromString(String env) {
+        env = env.toUpperCase();
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
         if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
             env = "NETHER";

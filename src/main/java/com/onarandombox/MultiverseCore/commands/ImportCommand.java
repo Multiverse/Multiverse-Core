@@ -34,7 +34,7 @@ public class ImportCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Import World");
         this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + " -g [GENERATOR[:ID]] [-n] -t [TYPE]");
-        this.setArgRange(2, 5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        this.setArgRange(1, 5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         this.addKey("mvimport");
         this.addKey("mvim");
         this.addKey("mv import");

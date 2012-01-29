@@ -1167,7 +1167,7 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public void allowPortalMaking(AllowedPortalType type) {
-        this.setKnownProperty("bedrespawn", type.toString(), null);
+        this.setKnownProperty("portalform", type.toString(), null);
     }
 
     /**
