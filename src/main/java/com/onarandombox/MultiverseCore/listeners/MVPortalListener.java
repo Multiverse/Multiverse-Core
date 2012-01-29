@@ -45,7 +45,7 @@ public class MVPortalListener implements Listener {
 
     /**
      * This is called when a portal is created as the result of another world being linked.
-     * @param event
+     * @param event The event where a portal was formed due to a world link
      */
     @EventHandler
     public void portalForm(PortalCreateEvent event) {

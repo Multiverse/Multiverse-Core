@@ -130,10 +130,10 @@ public class ImportCommand extends MultiverseCommand {
         String generator = CommandHandler.getFlag("-g", args);
         String typeString = CommandHandler.getFlag("-t", args);
         boolean allowStructures = true;
-            String structureString = CommandHandler.getFlag("-a", args);
-            if (structureString != null) {
-                allowStructures = Boolean.parseBoolean(structureString);
-            }
+        String structureString = CommandHandler.getFlag("-a", args);
+        if (structureString != null) {
+            allowStructures = Boolean.parseBoolean(structureString);
+        }
         boolean useSpawnAdjust = true;
         for (String s : args) {
             if (s.equalsIgnoreCase("-n")) {

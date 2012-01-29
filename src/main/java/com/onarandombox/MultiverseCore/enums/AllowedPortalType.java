@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore.enums;
 import org.bukkit.PortalType;
 
 /**
- * Custom enum that adds all/none for allowing
+ * Custom enum that adds all/none for allowing portal creation.
  */
 public enum AllowedPortalType {
     /**
