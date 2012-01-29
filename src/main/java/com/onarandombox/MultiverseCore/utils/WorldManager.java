@@ -84,15 +84,17 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean addWorld(String name, Environment env, String seedString, WorldType type, String generator) {
-        return this.addWorld(name, env, seedString, type, generator, true);
+    public boolean addWorld(String name, Environment env, String seedString, WorldType type, boolean generateStructures,
+                            String generator) {
+        return this.addWorld(name, env, seedString, type, generateStructures, generator, true);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean addWorld(String name, Environment env, String seedString, WorldType type, String generator, boolean useSpawnAdjust) {
+    public boolean addWorld(String name, Environment env, String seedString, WorldType type, boolean generateStructures,
+                            String generator, boolean useSpawnAdjust) {
         plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + type.toString() + ", " + generator);
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
@@ -111,6 +113,7 @@ public class WorldManager implements MVWorldManager {
         }
         c.environment(env);
         c.type(type);
+        c.generateStructures(generateStructures);
 
         World world;
         StringBuilder builder = new StringBuilder();
@@ -281,9 +284,10 @@ public class WorldManager implements MVWorldManager {
             String type = this.configWorlds.getString("worlds." + name + ".type", "NORMAL");
             String seedString = this.configWorlds.getString("worlds." + name + ".seed", "");
             String generatorString = this.configWorlds.getString("worlds." + name + ".generator");
+            boolean generateStructures = this.configWorlds.getBoolean("worlds." + name + ".generatestructures", true);
 
-            addWorld(name, EnvironmentCommand.getEnvFromString(environment), seedString,
-                    EnvironmentCommand.getWorldTypeFromString(type), generatorString);
+            this.addWorld(name, EnvironmentCommand.getEnvFromString(environment), seedString,
+                    EnvironmentCommand.getWorldTypeFromString(type), generateStructures, generatorString);
             if (this.unloadedWorlds.contains(name)) {
                 this.unloadedWorlds.remove(name);
             }
@@ -469,9 +473,11 @@ public class WorldManager implements MVWorldManager {
             String name = w.getName();
             if (!worldStrings.contains(name)) {
                 if (this.defaultGens.containsKey(name)) {
-                    this.addWorld(name, w.getEnvironment(), w.getSeed() + "", w.getWorldType(), this.defaultGens.get(name));
+                    this.addWorld(name, w.getEnvironment(), w.getSeed() + "", w.getWorldType(),
+                            w.canGenerateStructures(), this.defaultGens.get(name));
                 } else {
-                    this.addWorld(name, w.getEnvironment(), w.getSeed() + "", w.getWorldType(), null);
+                    this.addWorld(name, w.getEnvironment(), w.getSeed() + "", w.getWorldType(),
+                            w.canGenerateStructures(), null);
                 }
 
             }
@@ -545,6 +551,7 @@ public class WorldManager implements MVWorldManager {
                 String environment = this.configWorlds.getString("worlds." + worldKey + ".environment", "NORMAL");
                 String type = this.configWorlds.getString("worlds." + worldKey + ".type", "NORMAL");
                 String seedString = this.configWorlds.getString("worlds." + worldKey + ".seed", null);
+                boolean generateStructures = this.configWorlds.getBoolean("worlds." + worldKey + ".generatestructures", true);
                 if (seedString == null) {
                     seedString = this.configWorlds.getLong("worlds." + worldKey + ".seed") + "";
                 }
@@ -554,9 +561,8 @@ public class WorldManager implements MVWorldManager {
                     this.plugin.log(Level.WARNING, "Found SKYLANDS world. Not importing automatically, as it won't work atm :(");
                     continue;
                 }
-                // TODO: UNCOMMENT BEFORE RELEASE
                 addWorld(worldKey, EnvironmentCommand.getEnvFromString(environment), seedString,
-                        EnvironmentCommand.getWorldTypeFromString(type), generatorString);
+                        EnvironmentCommand.getWorldTypeFromString(type), generateStructures, generatorString);
 
                 // Increment the world count
                 count++;
