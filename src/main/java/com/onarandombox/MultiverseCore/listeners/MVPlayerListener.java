@@ -308,7 +308,7 @@ public class MVPlayerListener implements Listener {
                     public void run() {
                         // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
                         if (player.getWorld() == world.getCBWorld()) {
-                            MultiverseCore.staticLog(Level.FINE, "Handeling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
+                            MultiverseCore.staticLog(Level.FINE, "Handling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
                             MultiverseCore.staticLog(Level.FINE, "PWorld: " + player.getWorld());
                             MultiverseCore.staticLog(Level.FINE, "AWorld: " + world);
                             player.setGameMode(world.getGameMode());

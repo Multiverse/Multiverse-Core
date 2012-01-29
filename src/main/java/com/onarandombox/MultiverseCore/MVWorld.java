@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.ConfigPropertyFactory;
 import com.onarandombox.MultiverseCore.configuration.MVActiveConfigProperty;
 import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
+import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
@@ -156,6 +157,8 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true,
                 "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE
                         + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("portalform", fac.getNewProperty("portalform", AllowedPortalType.ALL,
+                        "Allow portal forming must be NONE, ALL, NETHER or END."));
         if (!fixSpawn) {
             this.setAdjustSpawn(false);
         }
@@ -1157,6 +1160,22 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public WorldType getWorldType() {
         return this.type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void allowPortalMaking(AllowedPortalType type) {
+        this.setKnownProperty("bedrespawn", type.toString(), null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AllowedPortalType getAllowedPortals() {
+        return this.getKnownProperty("portalform", AllowedPortalType.class).getValue();
     }
 
     /**

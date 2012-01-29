@@ -30,6 +30,7 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
@@ -153,6 +154,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private MVEntityListener entityListener = new MVEntityListener(this);
     private MVPluginListener pluginListener = new MVPluginListener(this);
     private MVWeatherListener weatherListener = new MVWeatherListener(this);
+    private MVPortalListener portalListener = new MVPortalListener(this);
 
     //public UpdateChecker updateCheck;
 
@@ -324,6 +326,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvents(this.entityListener, this);
         pm.registerEvents(this.pluginListener, this);
         pm.registerEvents(this.weatherListener, this);
+        pm.registerEvents(this.portalListener, this);
+
     }
 
     /**
