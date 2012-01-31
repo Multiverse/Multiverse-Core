@@ -158,6 +158,26 @@
                     <configLocation>${project.basedir}/config/mv_checks.xml</configLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.main__.util:SerializationConfig</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -241,6 +261,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of Economy Dependencies -->
+        <!-- SerializationConfig Dependency -->
+        <dependency>
+            <groupId>me.main__.util</groupId>
+            <artifactId>SerializationConfig</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of SerializationConfig Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
