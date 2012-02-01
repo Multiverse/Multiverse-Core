@@ -198,69 +198,6 @@
             <version>dev-SNAPSHOT</version>
         </dependency>
         <!-- End of Spout -->
-        <!-- Start of Economy Dependencies -->
-        <dependency>
-            <groupId>cosine.boseconomy</groupId>
-            <artifactId>BOSEconomy</artifactId>
-            <version>0.6.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.crafter.tickleman.RealShop</groupId>
-            <artifactId>RealShop</artifactId>
-            <version>0.63</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.iCo6</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>6.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.iConomy</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>5.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.nijiko.coelho.iConomy</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>4.65</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.earth2me.essentials</groupId>
-            <artifactId>Essentials</artifactId>
-            <version>2.4.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.ashtheking.currency</groupId>
-            <artifactId>MultiCurrency</artifactId>
-            <version>0.09</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ca.agnate</groupId>
-            <artifactId>EconXP</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- End of Economy Dependencies -->
         <!-- SerializationConfig Dependency -->
         <dependency>
             <groupId>me.main__.util</groupId>
