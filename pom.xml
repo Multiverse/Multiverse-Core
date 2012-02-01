@@ -81,7 +81,6 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/lib/allpay/src/main/java</source>
                                 <source>${project.basedir}/lib/commandhandler/src</source>
                                 <source>${project.basedir}/lib/commandhandler/lib/ShellParser/src</source>
                             </sources>
@@ -172,6 +171,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>me.main__.util:SerializationConfig</include>
+                                    <include>com.fernferret.allpay:AllPay</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -270,6 +270,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of SerializationConfig Dependency -->
+        <!-- Start of AllPay Dependency -->
+        <dependency>
+            <groupId>com.fernferret.allpay</groupId>
+            <artifactId>AllPay</artifactId>
+            <version>5</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of AllPay Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
