@@ -33,6 +33,9 @@ import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
+
+import me.main__.util.SerializationConfig.SerializationConfig;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -60,20 +63,12 @@ import java.util.logging.Logger;
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final int PROTOCOL = 12;
-    // Global Multiverse config variable, states whether or not
-    // Multiverse should stop other plugins from teleporting players
-    // to worlds.
-    // TODO This is REALLY bad style! We have to change this!
-    // No, I'm NOT going to suppress these warnings because we HAVE TO CHANGE THIS!
-    public static boolean EnforceAccess;
-    public static boolean PrefixChat;
-    public static boolean DisplayPermErrors;
-    public static boolean TeleportIntercept;
-    public static boolean FirstSpawnOverride;
-    public static Map<String, String> teleportQueue = new HashMap<String, String>();
-    public static int GlobalDebug = 0;
+
+    // TODO maybe add deprecated stubs for the old globals
+    private static Map<String, String> teleportQueue = new HashMap<String, String>();
 
     private AnchorManager anchorManager = new AnchorManager(this);
+    private static MultiverseCoreConfiguration config;
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -176,6 +171,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     @Override
     public void onLoad() {
+        // Register our config
+        SerializationConfig.registerAll(MultiverseCoreConfiguration.class);
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
@@ -344,21 +341,18 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
-        // Setup the Debug option, we'll default to false because this option will not be in the default config.
-        GlobalDebug = this.multiverseConfig.getInt("debug", 0);
-        // Lets cache these values due to the fact that they will be accessed many times.
-        EnforceAccess = this.multiverseConfig.getBoolean("enforceaccess", false);
-        PrefixChat = this.multiverseConfig.getBoolean("worldnameprefix", true);
-        // Should MV Intercept teleports by other plugins?
-        TeleportIntercept = this.multiverseConfig.getBoolean("teleportintercept", true);
-        // Should MV do the first spawn stuff?
-        FirstSpawnOverride = this.multiverseConfig.getBoolean("firstspawnoverride", true);
-        // Should permissions errors display to users?
-        DisplayPermErrors = this.multiverseConfig.getBoolean("displaypermerrors", true);
+        MultiverseCoreConfiguration wantedConfig = null;
+        try {
+            wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
+        } catch (Exception e) {
+            // We're just thinking "no risk no fun" and therefore have to catch and forget this exception
+        } finally {
+            config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
+        }
+        // ... and save it
+        multiverseConfig.set("multiverse-configuration", config);
 
-        this.messaging.setCooldown(this.multiverseConfig.getInt("messagecooldown", 5000)); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-        // Update the version of the config!
-        this.multiverseConfig.set("version", coreDefaults.get("version"));
+        this.messaging.setCooldown(config.getMessageCooldown());
 
         // Remove old values.
         this.multiverseConfig.set("enforcegamemodes", null);
@@ -483,7 +477,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
-        return this.commandHandler.locateAndRunCommand(sender, allArgs, DisplayPermErrors);
+        return this.commandHandler.locateAndRunCommand(sender, allArgs, config.getDisplayPermErrors());
     }
 
     /**
@@ -501,13 +495,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @param msg The message to log.
      */
     public static void staticLog(Level level, String msg) {
-        if (level == Level.FINE && GlobalDebug >= 1) {
+        if (level == Level.FINE && config.getGlobalDebug() >= 1) {
             staticDebugLog(Level.INFO, msg);
             return;
-        } else if (level == Level.FINER && GlobalDebug >= 2) {
+        } else if (level == Level.FINER && config.getGlobalDebug() >= 2) {
             staticDebugLog(Level.INFO, msg);
             return;
-        } else if (level == Level.FINEST && GlobalDebug >= 3) {
+        } else if (level == Level.FINEST && config.getGlobalDebug() >= 3) {
             staticDebugLog(Level.INFO, msg);
             return;
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
@@ -857,5 +851,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public void setSafeTTeleporter(SafeTTeleporter safeTTeleporter) {
         this.safeTTeleporter = safeTTeleporter;
+    }
+
+    /**
+     * Gets our {@link MultiverseCoreConfiguration}.
+     * @return The {@link MultiverseCoreConfiguration} we're using.
+     */
+    public static MultiverseCoreConfiguration getStaticConfig() {
+        return config;
     }
 }

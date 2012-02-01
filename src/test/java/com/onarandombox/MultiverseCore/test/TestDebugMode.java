@@ -70,12 +70,12 @@ public class TestDebugMode {
         when(mockCommand.getName()).thenReturn("mv");
 
         // Assert debug mode is off
-        Assert.assertEquals(0, MultiverseCore.GlobalDebug);
+        Assert.assertEquals(0, MultiverseCore.getStaticConfig().getGlobalDebug());
 
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
 
-        Assert.assertEquals(3, MultiverseCore.GlobalDebug);
+        Assert.assertEquals(3, MultiverseCore.getStaticConfig().getGlobalDebug());
     }
 }

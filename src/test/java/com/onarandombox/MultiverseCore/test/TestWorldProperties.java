@@ -165,10 +165,10 @@ public class TestWorldProperties {
         assertFalse(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        MultiverseCore.PrefixChat = true;
+        MultiverseCore.getStaticConfig().setPrefixChat(true);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
-        MultiverseCore.PrefixChat = false;
+        MultiverseCore.getStaticConfig().setPrefixChat(false);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 
@@ -263,7 +263,7 @@ public class TestWorldProperties {
         assertTrue(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        MultiverseCore.PrefixChat = true;
+        MultiverseCore.getStaticConfig().setPrefixChat(true);
         core.getPlayerListener().playerChat(playerChatEvent);
         // never because it's hidden!
         verify(playerChatEvent, never()).setFormat(
@@ -271,7 +271,7 @@ public class TestWorldProperties {
         mvWorld.setHidden(false);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
-        MultiverseCore.PrefixChat = false;
+        MultiverseCore.getStaticConfig().setPrefixChat(false);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 
