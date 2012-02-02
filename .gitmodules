@@ -1,4 +1,0 @@
-[submodule "lib/commandhandler"]
-	path = lib/commandhandler
-	url = git://github.com/PneumatiCraft/CommandHandler.git
-	branch = notrie
