@@ -67,27 +67,6 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            <!-- Build Helper - Additional Source Folders -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-wsdl-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/lib/commandhandler/src</source>
-                                <source>${project.basedir}/lib/commandhandler/lib/ShellParser/src</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>maven-replacer-plugin</artifactId>
@@ -172,6 +151,7 @@
                                 <includes>
                                     <include>me.main__.util:SerializationConfig</include>
                                     <include>com.fernferret.allpay:AllPay</include>
+                                    <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -182,6 +162,10 @@
                                 <relocation>
                                     <pattern>me.main__.util</pattern>
                                     <shadedPattern>me.main__.util.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.pneumaticraft.commandhandler</pattern>
+                                    <shadedPattern>com.pneumaticraft.commandhandler.multiverse</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -226,6 +210,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of AllPay Dependency -->
+        <!-- Start of CommandHandler Dependency -->
+        <dependency>
+            <groupId>com.pneumaticraft.commandhandler</groupId>
+            <artifactId>CommandHandler</artifactId>
+            <version>6</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of CommandHandler Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
