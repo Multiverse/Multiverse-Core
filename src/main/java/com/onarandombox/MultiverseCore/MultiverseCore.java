@@ -62,9 +62,8 @@ import java.util.logging.Logger;
  * The implementation of the Multiverse-{@link Core}.
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private static final int PROTOCOL = 12;
+    private static final int PROTOCOL = 13;
 
-    // TODO maybe add deprecated stubs for the old globals
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
 
     private AnchorManager anchorManager = new AnchorManager(this);
@@ -280,7 +279,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         LOGGER.info(String.format("%s - Version %s was NOT ENABLED!!!", LOG_TAG, this.getDescription().getVersion()));
         LOGGER.info(String.format("%s A plugin that has loaded before %s has an incompatible version of AllPay (an internal library)!",
                 LOG_TAG, this.getDescription().getName()));
-        LOGGER.info(String.format("%s The Following Plugins MAY out of date: %s", LOG_TAG, AllPay.pluginsThatUseUs.toString()));
+        LOGGER.info(String.format("%s The Following Plugins MAY out of date: %s", LOG_TAG, this.banker.getPluginsThatUseUs()));
         LOGGER.info(String.format("%s This plugin needs AllPay v%f or higher and another plugin has loaded v%f!",
                 LOG_TAG, ALLPAY_VERSION, this.banker.getVersion()));
         return false;
