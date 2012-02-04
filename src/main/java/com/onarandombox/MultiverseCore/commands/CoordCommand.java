@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -61,8 +60,8 @@ public class CoordCommand extends MultiverseCommand {
             DecimalFormat df = new DecimalFormat();
             df.setMinimumFractionDigits(0);
             df.setMaximumFractionDigits(2);
-            p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + LocationManipulation.strCoords(p.getLocation()));
-            p.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + LocationManipulation.getDirection(p.getLocation()));
+            p.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + plugin.getLocationManipulation().strCoords(p.getLocation()));
+            p.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + plugin.getLocationManipulation().getDirection(p.getLocation()));
             p.sendMessage(ChatColor.AQUA + "Block: " + ChatColor.WHITE + Material.getMaterial(world.getBlockTypeIdAt(p.getLocation())));
         } else {
             sender.sendMessage("This command needs to be used from a Player.");

@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * This event is fired *before* the property is actually changed.
@@ -27,13 +28,30 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
     private String value;
     private String name;
 
-
     public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, String value) {
         super("MVWorldPropertyChange");
         this.world = world;
         this.changer = changer;
         this.name = name;
         this.value = value;
+    }
+
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    /**
+     * Gets the handler list. This is required by the event system.
+     * @return A list of handlers.
+     */
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     /**

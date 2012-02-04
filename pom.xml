@@ -16,6 +16,10 @@
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public</url>
         </repository>
+        <repository>
+            <id>Bukkit Official</id>
+            <url>http://repo.bukkit.org/content/repositories/public</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -62,28 +66,6 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
-            </plugin>
-            <!-- Build Helper - Additional Source Folders -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-wsdl-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/lib/allpay/src/main/java</source>
-                                <source>${project.basedir}/lib/commandhandler/src</source>
-                                <source>${project.basedir}/lib/commandhandler/lib/ShellParser/src</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -154,6 +136,42 @@
                     <configLocation>${project.basedir}/config/mv_checks.xml</configLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.main__.util:SerializationConfig</include>
+                                    <include>com.fernferret.allpay:AllPay</include>
+                                    <include>com.pneumaticraft.commandhandler:CommandHandler</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.fernferret.allpay</pattern>
+                                    <shadedPattern>com.fernferret.allpay.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>me.main__.util</pattern>
+                                    <shadedPattern>me.main__.util.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.pneumaticraft.commandhandler</pattern>
+                                    <shadedPattern>com.pneumaticraft.commandhandler.multiverse</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -162,7 +180,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.1-R1-SNAPSHOT</version>
+            <version>1.1-R3</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -174,69 +192,33 @@
             <version>dev-SNAPSHOT</version>
         </dependency>
         <!-- End of Spout -->
-        <!-- Start of Economy Dependencies -->
+        <!-- SerializationConfig Dependency -->
         <dependency>
-            <groupId>cosine.boseconomy</groupId>
-            <artifactId>BOSEconomy</artifactId>
-            <version>0.6.2</version>
+            <groupId>me.main__.util</groupId>
+            <artifactId>SerializationConfig</artifactId>
+            <version>1.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
+        <!-- End of SerializationConfig Dependency -->
+        <!-- Start of AllPay Dependency -->
         <dependency>
-            <groupId>fr.crafter.tickleman.RealShop</groupId>
-            <artifactId>RealShop</artifactId>
-            <version>0.63</version>
+            <groupId>com.fernferret.allpay</groupId>
+            <artifactId>AllPay</artifactId>
+            <version>6</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
+        <!-- End of AllPay Dependency -->
+        <!-- Start of CommandHandler Dependency -->
         <dependency>
-            <groupId>com.iCo6</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>6.0</version>
+            <groupId>com.pneumaticraft.commandhandler</groupId>
+            <artifactId>CommandHandler</artifactId>
+            <version>6</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.iConomy</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>5.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.nijiko.coelho.iConomy</groupId>
-            <artifactId>iConomy</artifactId>
-            <version>4.65</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.earth2me.essentials</groupId>
-            <artifactId>Essentials</artifactId>
-            <version>2.4.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.ashtheking.currency</groupId>
-            <artifactId>MultiCurrency</artifactId>
-            <version>0.09</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ca.agnate</groupId>
-            <artifactId>EconXP</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- End of Economy Dependencies -->
+        <!-- End of CommandHandler Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

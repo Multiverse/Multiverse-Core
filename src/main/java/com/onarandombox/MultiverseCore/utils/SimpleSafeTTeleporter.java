@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
@@ -27,40 +27,31 @@ import org.bukkit.util.Vector;
 import java.util.logging.Level;
 
 /**
- * The {@link SafeTTeleporter}.
- *
- * @deprecated Use instead: {@link com.onarandombox.MultiverseCore.api.SafeTTeleporter} and {@link SimpleSafeTTeleporter}.
+ * The default-implementation of {@link SafeTTeleporter}.
  */
-@Deprecated
-public class SafeTTeleporter {
+public class SimpleSafeTTeleporter implements SafeTTeleporter {
 
     private MultiverseCore plugin;
-    private BlockSafety bs;
 
-    public SafeTTeleporter(MultiverseCore plugin) {
+    public SimpleSafeTTeleporter(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.bs = plugin.getBlockSafety();
     }
 
     private static final int DEFAULT_TOLERANCE = 6;
     private static final int DEFAULT_RADIUS = 9;
 
     /**
-     * Gets the next safe location around the given location.
-     * @param l A {@link Location}.
-     * @return A safe {@link Location}.
+     * {@inheritDoc}
      */
+    @Override
     public Location getSafeLocation(Location l) {
         return this.getSafeLocation(l, DEFAULT_TOLERANCE, DEFAULT_RADIUS);
     }
 
     /**
-     * Gets the next safe location around the given location.
-     * @param l A {@link Location}.
-     * @param tolerance The tolerance.
-     * @param radius The radius.
-     * @return A safe {@link Location}.
+     * {@inheritDoc}
      */
+    @Override
     public Location getSafeLocation(Location l, int tolerance, int radius) {
         // Check around the player first in a configurable radius:
         // TODO: Make this configurable
@@ -150,13 +141,13 @@ public class SafeTTeleporter {
         // ...
         int adjustedCircle = ((circle - 1) / 2);
         checkLoc.add(adjustedCircle, 0, 0);
-        if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+        if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
             return true;
         }
         // Now we go to the right that adjustedCircle many
         for (int i = 0; i < adjustedCircle; i++) {
             checkLoc.add(0, 0, 1);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -164,7 +155,7 @@ public class SafeTTeleporter {
         // Then down adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(-1, 0, 0);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -172,7 +163,7 @@ public class SafeTTeleporter {
         // Then left adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(0, 0, -1);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -180,7 +171,7 @@ public class SafeTTeleporter {
         // Then up Then left adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(1, 0, 0);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -188,7 +179,7 @@ public class SafeTTeleporter {
         // Then finish up by doing adjustedCircle - 1
         for (int i = 0; i < adjustedCircle - 1; i++) {
             checkLoc.add(0, 0, 1);
-            if (this.bs.playerCanSpawnHereSafely(checkLoc)) {
+            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -196,14 +187,9 @@ public class SafeTTeleporter {
     }
 
     /**
-     * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if
-     * it's not, will adjust the final destination accordingly.
-     *
-     * @param teleporter Person who performed the teleport command.
-     * @param teleportee Entity to teleport
-     * @param d          Destination to teleport them to
-     * @return true for success, false for failure
+     * {@inheritDoc}
      */
+    @Override
     public TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d) {
         if (d instanceof InvalidDestination) {
             this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
@@ -239,16 +225,9 @@ public class SafeTTeleporter {
     }
 
     /**
-     * Safely teleport the entity to the Location. This may perform checks to
-     * see if the place is safe, and if
-     * it's not, will adjust the final destination accordingly.
-     *
-     * @param teleporter Person who issued the teleport command.
-     * @param teleportee Entity to teleport.
-     * @param location   Location to teleport them to.
-     * @param safely     Should the destination be checked for safety before teleport?
-     * @return true for success, false for failure.
+     * {@inheritDoc}
      */
+    @Override
     public TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, Location location, boolean safely) {
         if (safely) {
             location = this.getSafeLocation(location);
@@ -264,33 +243,30 @@ public class SafeTTeleporter {
     }
 
     /**
-     * Returns a safe location for the entity to spawn at.
-     *
-     * @param e The entity to spawn
-     * @param d The MVDestination to take the entity to.
-     * @return A new location to spawn the entity at.
+     * {@inheritDoc}
      */
+    @Override
     public Location getSafeLocation(Entity e, MVDestination d) {
         Location l = d.getLocation(e);
-        if (this.bs.playerCanSpawnHereSafely(l)) {
+        if (plugin.getBlockSafety().playerCanSpawnHereSafely(l)) {
             plugin.log(Level.FINE, "The first location you gave me was safe.");
             return l;
         }
         if (e instanceof Minecart) {
             Minecart m = (Minecart) e;
-            if (!this.bs.canSpawnCartSafely(m)) {
+            if (!plugin.getBlockSafety().canSpawnCartSafely(m)) {
                 return null;
             }
         } else if (e instanceof Vehicle) {
             Vehicle v = (Vehicle) e;
-            if (!this.bs.canSpawnVehicleSafely(v)) {
+            if (!plugin.getBlockSafety().canSpawnVehicleSafely(v)) {
                 return null;
             }
         }
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {
             // Add offset to account for a vehicle on dry land!
-            if (e instanceof Minecart && !this.bs.isEntitiyOnTrack(safeLocation)) {
+            if (e instanceof Minecart && !plugin.getBlockSafety().isEntitiyOnTrack(safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
                 this.plugin.log(Level.FINER, "Player was inside a minecart. Offsetting Y location.");
             }
@@ -311,11 +287,10 @@ public class SafeTTeleporter {
     }
 
     /**
-     * Finds a portal-block next to the specified {@link Location}.
-     * @param l The {@link Location}
-     * @return The next portal-block's {@link Location}.
+     * {@inheritDoc}
      */
-    public static Location findPortalBlockNextTo(Location l) {
+    @Override
+    public Location findPortalBlockNextTo(Location l) {
         Block b = l.getWorld().getBlockAt(l);
         Location foundLocation = null;
         if (b.getType() == Material.PORTAL) {

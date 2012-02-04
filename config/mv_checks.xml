@@ -13,9 +13,7 @@
     <module name="JavadocPackage">
         <property name="allowLegacy" value="true"/>
     </module>
-    <module name="NewlineAtEndOfFile">
-        <property name="severity" value="info"/>
-    </module>
+    <module name="NewlineAtEndOfFile" />
     <module name="Translation"/>
     <module name="FileLength"/>
     <module name="FileTabCharacter">

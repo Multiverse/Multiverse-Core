@@ -22,12 +22,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
@@ -54,6 +56,7 @@ public class TestDebugMode {
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+        Core core = (Core) plugin;
 
         // Make sure Core is not null
         assertNotNull(plugin);
@@ -70,12 +73,12 @@ public class TestDebugMode {
         when(mockCommand.getName()).thenReturn("mv");
 
         // Assert debug mode is off
-        Assert.assertEquals(0, MultiverseCore.GlobalDebug);
+        Assert.assertEquals(0, core.getMVConfig().getGlobalDebug());
 
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
 
-        Assert.assertEquals(3, MultiverseCore.GlobalDebug);
+        Assert.assertEquals(3, core.getMVConfig().getGlobalDebug());
     }
 }

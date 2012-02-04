@@ -33,8 +33,8 @@ public class ImportCommand extends MultiverseCommand {
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Import World");
-        this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + " -g [GENERATOR[:ID]] [-n] -t [TYPE]");
-        this.setArgRange(2, 5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        this.setCommandUsage("/mv import" + ChatColor.GREEN + " {NAME} {ENV} " + ChatColor.GOLD + " -g [GENERATOR[:ID]] [-n] -t [TYPE] -a [true|false]");
+        this.setArgRange(1, 9); // SUPPRESS CHECKSTYLE: MagicNumberCheck
         this.addKey("mvimport");
         this.addKey("mvim");
         this.addKey("mv import");
@@ -129,6 +129,11 @@ public class ImportCommand extends MultiverseCommand {
 
         String generator = CommandHandler.getFlag("-g", args);
         String typeString = CommandHandler.getFlag("-t", args);
+        boolean allowStructures = true;
+        String structureString = CommandHandler.getFlag("-a", args);
+        if (structureString != null) {
+            allowStructures = Boolean.parseBoolean(structureString);
+        }
         boolean useSpawnAdjust = true;
         for (String s : args) {
             if (s.equalsIgnoreCase("-n")) {
@@ -157,7 +162,7 @@ public class ImportCommand extends MultiverseCommand {
 
         if (worldFile.exists() && env != null) {
             Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
-            if (this.worldManager.addWorld(worldName, environment, null, type, generator, useSpawnAdjust))
+            if (this.worldManager.addWorld(worldName, environment, null, type, allowStructures, generator, useSpawnAdjust))
                 Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
             else
                 Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");

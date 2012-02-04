@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
 import org.bukkit.Location;
 import org.bukkit.TravelAgent;
@@ -106,7 +107,7 @@ public class MVTravelAgent implements TravelAgent {
         if (this.destination instanceof CannonDestination) {
             this.core.log(Level.FINE, "Using Stock TP method. This cannon will have 0 velocity");
         }
-        SafeTTeleporter teleporter = new SafeTTeleporter(this.core);
+        SafeTTeleporter teleporter = this.core.getSafeTTeleporter();
         Location newLoc = this.destination.getLocation(this.player);
         if (this.destination.useSafeTeleporter()) {
             newLoc = teleporter.getSafeLocation(this.player, this.destination);

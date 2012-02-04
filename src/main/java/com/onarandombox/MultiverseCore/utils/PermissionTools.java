@@ -100,7 +100,7 @@ public class PermissionTools {
      */
     public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
         Player teleporterPlayer;
-        if (MultiverseCore.TeleportIntercept) {
+        if (plugin.getMVConfig().getTeleportIntercept()) {
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;
             }
@@ -171,7 +171,7 @@ public class PermissionTools {
         this.plugin.log(Level.FINEST, "Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
-        if (MultiverseCore.TeleportIntercept) {
+        if (plugin.getMVConfig().getTeleportIntercept()) {
             // The console can send anyone anywhere
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;

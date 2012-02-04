@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -26,57 +27,47 @@ import java.util.logging.Level;
 
 /**
  * Utility class that removes animals from worlds that don't belong there.
- *
- * @deprecated Use instead: {@link WorldPurger} and {@link SimpleWorldPurger}.
  */
-@Deprecated
-public class PurgeWorlds {
+public class SimpleWorldPurger implements WorldPurger {
 
     private MultiverseCore plugin;
 
-    public PurgeWorlds(MultiverseCore plugin) {
+    public SimpleWorldPurger(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Synchronizes the given world with it's settings.
-     *
-     * @param sender The {@link CommandSender} who is requesting the world be purged.
-     * @param worlds A list of {@link MultiverseWorld}
+     * {@inheritDoc}
      */
-    public void purgeWorlds(CommandSender sender, List<MultiverseWorld> worlds) {
+    @Override
+    public void purgeWorlds(List<MultiverseWorld> worlds) {
         if (worlds == null || worlds.isEmpty()) {
             return;
         }
         for (MultiverseWorld world : worlds) {
-            this.purgeWorld(sender, world);
+            this.purgeWorld(world);
         }
     }
 
     /**
-     * Convenience method for {@link #purgeWorld(CommandSender, MultiverseWorld, List, boolean, boolean)} that takes the settings from the world-config.
-     *
-     * @param sender The {@link CommandSender} that initiated the action (TODO: Do we really need this?)
-     * @param world The {@link MultiverseWorld}.
+     * {@inheritDoc}
      */
-    public void purgeWorld(CommandSender sender, MultiverseWorld world) {
+    @Override
+    public void purgeWorld(MultiverseWorld world) {
         if (world == null) {
             return;
         }
         ArrayList<String> allMobs = new ArrayList<String>(world.getAnimalList());
         allMobs.addAll(world.getMonsterList());
-        purgeWorld(sender, world, allMobs, !world.canAnimalsSpawn(), !world.canMonstersSpawn());
+        purgeWorld(world, allMobs, !world.canAnimalsSpawn(), !world.canMonstersSpawn());
     }
 
     /**
-     * Clear all animals/monsters that do not belong to a world according to the config.
-     * @param sender The {@link CommandSender} that initiated the action. (TODO: Do we really need this?)
-     * @param mvworld The {@link MultiverseWorld}.
-     * @param thingsToKill A {@link List} of animals/monsters to be killed.
-     * @param negateAnimals Whether the monsters in the list should be negated.
-     * @param negateMonsters Whether the animals in the list should be negated.
+     * {@inheritDoc}
      */
-    public void purgeWorld(CommandSender sender, MultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
+    @Override
+    public void purgeWorld(MultiverseWorld mvworld, List<String> thingsToKill,
+            boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
         if (mvworld == null) {
             return;
         }
@@ -97,11 +88,18 @@ public class PurgeWorlds {
             if (this.killCreature(mvworld, e, thingsToKill, negateAnimals)) {
                 entitiesKilled++;
             }
-
         }
         if (sender != null) {
             sender.sendMessage(entitiesKilled + " entities purged from the world '" + world.getName() + "'");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void purgeWorld(MultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
+        purgeWorld(mvworld, thingsToKill, negateAnimals, negateMonsters, null);
     }
 
     private boolean killCreature(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
@@ -122,7 +120,7 @@ public class PurgeWorlds {
         return false;
     }
 
-    /**
+    /*
      * Will kill the monster if it's in the list UNLESS the NEGATE boolean is set, then it will kill it if it's NOT.
      */
     private boolean killMonster(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {

@@ -36,14 +36,14 @@ public class DebugCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.size() == 1) {
             if (args.get(0).equalsIgnoreCase("off")) {
-                MultiverseCore.GlobalDebug = 0;
+                plugin.getMVConfig().setGlobalDebug(0);
             } else {
                 try {
                     int debugLevel = Integer.parseInt(args.get(0));
                     if (debugLevel > 3 || debugLevel < 0) {
                         throw new NumberFormatException();
                     }
-                    MultiverseCore.GlobalDebug = debugLevel;
+                    plugin.getMVConfig().setGlobalDebug(debugLevel);
                 } catch (NumberFormatException e) {
                     sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE
                             + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
@@ -55,10 +55,10 @@ public class DebugCommand extends MultiverseCommand {
     }
 
     private void displayDebugMode(CommandSender sender) {
-        if (MultiverseCore.GlobalDebug == 0) {
+        if (plugin.getMVConfig().getGlobalDebug() == 0) {
             sender.sendMessage("Multiverse Debug mode is " + ChatColor.RED + "OFF");
         } else {
-            sender.sendMessage("Multiverse Debug mode is " + ChatColor.GREEN + MultiverseCore.GlobalDebug);
+            sender.sendMessage("Multiverse Debug mode is " + ChatColor.GREEN + plugin.getMVConfig().getGlobalDebug());
             this.plugin.log(Level.FINE, "Multiverse Debug ENABLED");
         }
     }

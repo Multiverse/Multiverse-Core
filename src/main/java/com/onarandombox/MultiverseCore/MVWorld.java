@@ -7,16 +7,16 @@
 
 package com.onarandombox.MultiverseCore;
 
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.ConfigPropertyFactory;
 import com.onarandombox.MultiverseCore.configuration.MVActiveConfigProperty;
 import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
+import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import com.onarandombox.MultiverseCore.utils.BlockSafety;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -33,7 +33,6 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,6 +157,8 @@ public class MVWorld implements MultiverseWorld {
         this.propertyList.put("adjustspawn", fac.getNewProperty("adjustspawn", true,
                 "Sorry, 'adjustspawn' must either be:" + ChatColor.GREEN + " true " + ChatColor.WHITE
                         + "or" + ChatColor.RED + " false" + ChatColor.WHITE + "."));
+        this.propertyList.put("portalform", fac.getNewProperty("portalform", AllowedPortalType.ALL,
+                        "Allow portal forming must be NONE, ALL, NETHER or END."));
         if (!fixSpawn) {
             this.setAdjustSpawn(false);
         }
@@ -433,7 +434,7 @@ public class MVWorld implements MultiverseWorld {
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
-        this.plugin.getMVWorldManager().getWorldPurger().purgeWorld(null, this);
+        this.plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(this);
     }
 
     /**
@@ -513,6 +514,7 @@ public class MVWorld implements MultiverseWorld {
                 return (MVConfigProperty<T>) this.propertyList.get(this.propertyAliases.get(name));
             }
         } catch (ClassCastException e) {
+            return null;
         }
         return null;
     }
@@ -558,6 +560,7 @@ public class MVWorld implements MultiverseWorld {
         try {
             if (property.getMethod() == null) {
                 // This property did not have a method.
+                this.saveConfig();
                 return true;
             }
             Method method = this.getClass().getMethod(property.getMethod());
@@ -572,6 +575,8 @@ public class MVWorld implements MultiverseWorld {
                 return true;
             }
         } catch (Exception e) {
+            // TODO: I don't care about 3 catches,
+            // TODO: I hate pokemon errors :/ - FernFerret
             e.printStackTrace();
             return false;
         }
@@ -986,8 +991,8 @@ public class MVWorld implements MultiverseWorld {
 
         // Set the worldspawn to our configspawn
         w.setSpawnLocation(configLocation.getBlockX(), configLocation.getBlockY(), configLocation.getBlockZ());
-        SafeTTeleporter teleporter = this.plugin.getTeleporter();
-        BlockSafety bs = new BlockSafety();
+        SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
+        BlockSafety bs = this.plugin.getBlockSafety();
         // Verify that location was safe
         if (!bs.playerCanSpawnHereSafely(configLocation)) {
             if (!this.getAdjustSpawn()) {
@@ -999,7 +1004,7 @@ public class MVWorld implements MultiverseWorld {
             }
             // If it's not, find a better one.
             this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
-            this.plugin.log(Level.WARNING, "Original Location: " + LocationManipulation.strCoordsRaw(spawnLocation));
+            this.plugin.log(Level.WARNING, "Original Location: " + plugin.getLocationManipulation().strCoordsRaw(spawnLocation));
             Location newSpawn = teleporter.getSafeLocation(spawnLocation,
                     SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
             // I think we could also do this, as I think this is what Notch does.
@@ -1008,7 +1013,8 @@ public class MVWorld implements MultiverseWorld {
             if (newSpawn != null) {
                 this.setSpawnLocation(newSpawn);
                 configLocation = this.getSpawnLocation();
-                this.plugin.log(Level.INFO, "New Spawn for '" + this.getName() + "' is Located at: " + LocationManipulation.locationToString(configLocation));
+                this.plugin.log(Level.INFO, "New Spawn for '" + this.getName()
+                        + "' is Located at: " + plugin.getLocationManipulation().locationToString(configLocation));
             } else {
                 // If it's a standard end world, let's check in a better place:
                 Location newerSpawn;
@@ -1017,7 +1023,7 @@ public class MVWorld implements MultiverseWorld {
                     this.setSpawnLocation(newerSpawn);
                     configLocation = this.getSpawnLocation();
                     this.plugin.log(Level.INFO, "New Spawn for '" + this.getName()
-                            + "' is Located at: " + LocationManipulation.locationToString(configLocation));
+                            + "' is Located at: " + plugin.getLocationManipulation().locationToString(configLocation));
                 } else {
                     this.plugin.log(Level.SEVERE, "New safe spawn NOT found!!!");
                 }
@@ -1158,6 +1164,22 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public WorldType getWorldType() {
         return this.type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void allowPortalMaking(AllowedPortalType type) {
+        this.setKnownProperty("portalform", type.toString(), null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AllowedPortalType getAllowedPortals() {
+        return this.getKnownProperty("portalform", AllowedPortalType.class).getValue();
     }
 
     /**

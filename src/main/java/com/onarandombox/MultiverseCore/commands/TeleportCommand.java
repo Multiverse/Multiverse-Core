@@ -14,8 +14,7 @@ import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -43,7 +42,7 @@ public class TeleportCommand extends MultiverseCommand {
         this.setArgRange(1, 2);
         this.addKey("mvtp");
         this.addKey("mv tp");
-        this.playerTeleporter = new SafeTTeleporter(this.plugin);
+        this.playerTeleporter = this.plugin.getSafeTTeleporter();
         this.setPermission(menu);
     }
 
@@ -111,7 +110,7 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         }
 
-        if (MultiverseCore.EnforceAccess && teleporter != null && !this.plugin.getMVPerms().canEnterDestination(teleporter, d)) {
+        if (plugin.getMVConfig().getEnforceAccess() && teleporter != null && !this.plugin.getMVPerms().canEnterDestination(teleporter, d)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {
@@ -163,7 +162,8 @@ public class TeleportCommand extends MultiverseCommand {
         }
         TeleportResult result = this.playerTeleporter.safelyTeleport(teleporter, teleportee, d);
         if (result == TeleportResult.FAIL_UNSAFE) {
-            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName() + " to " + LocationManipulation.strCoordsRaw(d.getLocation(teleportee)));
+            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName()
+                    + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
             this.plugin.log(Level.FINE, "Queueing Command");
             Class<?>[] paramTypes = { CommandSender.class, Player.class, Location.class };
             List<Object> items = new ArrayList<Object>();

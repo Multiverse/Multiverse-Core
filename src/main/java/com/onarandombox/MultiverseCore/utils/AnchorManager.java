@@ -48,7 +48,7 @@ public class AnchorManager {
         Set<String> anchorKeys = anchorsSection.getKeys(false);
         for (String key : anchorKeys) {
             //world:x,y,z:pitch:yaw
-            Location anchorLocation = LocationManipulation.stringToLocation(anchorsSection.getString(key, ""));
+            Location anchorLocation = plugin.getLocationManipulation().stringToLocation(anchorsSection.getString(key, ""));
             if (anchorLocation != null) {
                 MultiverseCore.staticLog(Level.INFO, "Loading anchor:  '" + key + "'...");
                 this.anchors.put(key, anchorLocation);
@@ -98,7 +98,7 @@ public class AnchorManager {
      * @return True if the anchor was successfully saved.
      */
     public boolean saveAnchorLocation(String anchor, String location) {
-        Location parsed = LocationManipulation.stringToLocation(location);
+        Location parsed = plugin.getLocationManipulation().stringToLocation(location);
         return parsed != null && this.saveAnchorLocation(anchor, parsed);
     }
 
@@ -112,7 +112,7 @@ public class AnchorManager {
         if (l == null) {
             return false;
         }
-        this.anchorConfig.set("anchors." + anchor, LocationManipulation.locationToString(l));
+        this.anchorConfig.set("anchors." + anchor, plugin.getLocationManipulation().locationToString(l));
         this.anchors.put(anchor, l);
         return this.saveAnchors();
     }

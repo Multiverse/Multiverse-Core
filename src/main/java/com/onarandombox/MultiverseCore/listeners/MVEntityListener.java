@@ -85,9 +85,8 @@ public class MVEntityListener implements Listener {
      */
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
-
         // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
-        if (event.getSpawnReason() == SpawnReason.CUSTOM) {
+        if (event.getSpawnReason() == SpawnReason.CUSTOM || event.getSpawnReason() == SpawnReason.EGG) {
             return;
         }
 

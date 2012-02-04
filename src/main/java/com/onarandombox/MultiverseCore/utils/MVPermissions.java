@@ -98,7 +98,8 @@ public class MVPermissions implements PermissionsInterface {
      */
     public boolean canEnterWorld(Player p, MultiverseWorld w) {
         // If we're not enforcing access, anyone can enter.
-        if (!MultiverseCore.EnforceAccess) {
+        if (!plugin.getMVConfig().getEnforceAccess()) {
+            this.plugin.log(Level.FINEST, "EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
@@ -169,9 +170,9 @@ public class MVPermissions implements PermissionsInterface {
         // plugin reloads, when MV asks the API if a player has a perm, it reports that they do NOT.
         // For the moment, we're going to check all of this node's parents to see if the user has those. It stops
         // when if finds a true or there are no more parents. --FF
-        if (!hasPermission) {
-            hasPermission = this.hasAnyParentPermission(sender, node);
-        }
+//        if (!hasPermission) {
+//            hasPermission = this.hasAnyParentPermission(sender, node);
+//        }
 
         return hasPermission;
     }
@@ -179,10 +180,12 @@ public class MVPermissions implements PermissionsInterface {
     // TODO: Better player checks, most likely not needed, but safer.
     private boolean checkActualPermission(CommandSender sender, String node) {
         Player player = (Player) sender;
-        this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]");
+
         boolean hasPermission = sender.hasPermission(node);
         if (hasPermission) {
-            this.plugin.log(Level.FINER, "Player [" + player.getName() + "] HAS PERMISSION [" + node + "]!");
+            this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
+        } else {
+            this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
         }
         return hasPermission;
     }

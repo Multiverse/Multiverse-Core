@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.configuration.MVConfigProperty;
+import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 
 import org.bukkit.ChatColor;
@@ -573,4 +574,18 @@ public interface MultiverseWorld {
      * @return The Type of this world.
      */
     WorldType getWorldType();
+
+    /**
+     * Sets The types of portals that are allowed in this world.
+     *
+     * @param type The type of portals allowed in this world.
+     */
+    void allowPortalMaking(AllowedPortalType type);
+
+    /**
+     * Gets which type(s) of portals are allowed to be constructed in this world.
+     *
+     * @return The type of portals that are allowed.
+     */
+    AllowedPortalType getAllowedPortals();
 }

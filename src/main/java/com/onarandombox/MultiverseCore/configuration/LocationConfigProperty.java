@@ -61,6 +61,7 @@ public class LocationConfigProperty implements MVActiveConfigProperty<Location> 
      */
     @Override
     public boolean parseValue(String value) {
+        // TODO: oh my god, what should we do here?
         Location parsed = LocationManipulation.stringToLocation(value);
         return this.setValue(parsed);
     }
@@ -108,6 +109,7 @@ public class LocationConfigProperty implements MVActiveConfigProperty<Location> 
         double yaw = this.section.getDouble(this.configNode + ".yaw", defaultValue.getYaw());
         String w = this.section.getString(this.configNode + ".world", defaultValue.getWorld().getName());
         Location found = LocationManipulation.stringToLocation(w + ":" + x + "," + y + "," + z + ":" + yaw + ":" + pitch);
+        // TODO: oh my god, what should we do here?
         if (found != null) {
             return found;
         }
@@ -116,6 +118,7 @@ public class LocationConfigProperty implements MVActiveConfigProperty<Location> 
 
     @Override
     public String toString() {
+        // TODO: oh my god, what should we do here?
         return LocationManipulation.strCoordsRaw(this.value);
     }
 

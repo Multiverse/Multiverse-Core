@@ -14,7 +14,6 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.utils.FancyColorScheme;
 import com.onarandombox.MultiverseCore.utils.FancyHeader;
 import com.onarandombox.MultiverseCore.utils.FancyMessage;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -62,9 +61,13 @@ public class InfoCommand extends MultiverseCommand {
                 return;
             }
         } else if (args.size() == 1) {
-            if (this.worldManager.getMVWorld(args.get(0)) != null) {
+            if (this.worldManager.isMVWorld(args.get(0))) {
                 // then we have a world!
                 worldName = args.get(0);
+            } else if(this.worldManager.getUnloadedWorlds().contains(args.get(0))){
+                sender.sendMessage("That world exists, but it is unloaded!");
+                sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, args.get(0)));
+                return;
             } else {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
@@ -94,8 +97,11 @@ public class InfoCommand extends MultiverseCommand {
                 p = (Player) sender;
             }
             showPage(pageNum, sender, this.buildEntireCommand(this.worldManager.getMVWorld(worldName), p));
+        } else if (this.worldManager.getUnloadedWorlds().contains(worldName)) {
+            sender.sendMessage("That world exists, but it is unloaded!");
+            sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, worldName));
         } else if (this.plugin.getServer().getWorld(worldName) != null) {
-            sender.sendMessage("That world exists, but multiverse does not know about it!");
+            sender.sendMessage("That world exists, but Multiverse does not know about it!");
             sender.sendMessage("You can import it with" + ChatColor.AQUA + "/mv import " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
             sender.sendMessage("For available environments type " + ChatColor.GREEN + "/mv env");
         }
@@ -110,10 +116,11 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
         message.add(new FancyMessage("Game Mode: ", world.getGameMode().toString(), colors));
-        message.add(new FancyMessage("World Type: ", world.getWorldType().toString(), colors));
+        message.add(new FancyMessage("Difficulty: ", world.getDifficulty().toString(), colors));
+
         //message.add(new FancyMessage("Game Mode: ", StringUtils.capitalize(world.getGameMode().toString()), colors));
         Location spawn = world.getSpawnLocation();
-        message.add(new FancyMessage("Spawn Location: ", LocationManipulation.strCoords(spawn), colors));
+        message.add(new FancyMessage("Spawn Location: ", plugin.getLocationManipulation().strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
         if (world.getPrice() > 0) {
             message.add(new FancyMessage("Price to enter this world: ",
@@ -136,7 +143,8 @@ public class InfoCommand extends MultiverseCommand {
         // Page 2
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("More World Settings", colors));
-        message.add(new FancyMessage("Difficulty: ", world.getDifficulty().toString(), colors));
+        message.add(new FancyMessage("World Type: ", world.getWorldType().toString(), colors));
+        message.add(new FancyMessage("Structures: ", world.getCBWorld().canGenerateStructures() + "", colors));
         message.add(new FancyMessage("Weather: ", world.isWeatherEnabled() + "", colors));
         message.add(new FancyMessage("Players will get hungry: ", world.getHunger() + "", colors));
         message.add(new FancyMessage("Keep spawn in memory: ", world.isKeepingSpawnInMemory() + "", colors));

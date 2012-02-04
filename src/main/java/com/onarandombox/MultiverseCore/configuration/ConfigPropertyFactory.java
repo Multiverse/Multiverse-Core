@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.configuration;
 
+import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -233,9 +234,9 @@ public class ConfigPropertyFactory {
         return new GameModeConfigProperty(this.section, name, defaultValue, node, help);
     }
 
-    // GameMode
+    // Location
     /**
-     * Constructs a new ConfigProperty.
+     * Constructs a new LocationConfigProperty.
      *
      * @param name The name of this ConfigProperty.
      * @param defaultValue The default-value.
@@ -271,6 +272,19 @@ public class ConfigPropertyFactory {
      */
     public LocationConfigProperty getNewProperty(String name, Location defaultValue, String node, String help, String method) {
         return new LocationConfigProperty(this.section, name, defaultValue, node, help, method);
+    }
+
+        // GameMode
+    /**
+     * Constructs a new ConfigProperty.
+     *
+     * @param name The name of this ConfigProperty.
+     * @param defaultValue The default-value.
+     * @param help The text that's displayed when a user failed to set the property.
+     * @return The ConfigProperty.
+     */
+    public PortalTypeConfigProperty getNewProperty(String name, AllowedPortalType defaultValue, String help) {
+        return new PortalTypeConfigProperty(this.section, name, defaultValue, help);
     }
 
     /**

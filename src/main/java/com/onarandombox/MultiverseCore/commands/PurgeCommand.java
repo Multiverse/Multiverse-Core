@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -78,7 +78,7 @@ public class PurgeCommand extends MultiverseCommand {
             worldsToRemoveEntitiesFrom.add(this.worldManager.getMVWorld(worldName));
         }
 
-        PurgeWorlds purger = this.worldManager.getWorldPurger();
+        WorldPurger purger = this.worldManager.getTheWorldPurger();
         ArrayList<String> thingsToKill = new ArrayList<String>();
         if (deathName.equalsIgnoreCase("all") || deathName.equalsIgnoreCase("animals") || deathName.equalsIgnoreCase("monsters")) {
             thingsToKill.add(deathName.toUpperCase());
@@ -86,7 +86,7 @@ public class PurgeCommand extends MultiverseCommand {
             Collections.addAll(thingsToKill, deathName.toUpperCase().split(","));
         }
         for (MultiverseWorld w : worldsToRemoveEntitiesFrom) {
-            purger.purgeWorld(sender, w, thingsToKill, false, false);
+            purger.purgeWorld(w, thingsToKill, false, false, sender);
         }
     }
 }

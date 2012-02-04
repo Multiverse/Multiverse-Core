@@ -12,7 +12,6 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
-import com.onarandombox.MultiverseCore.utils.SafeTTeleporter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -56,7 +55,7 @@ public class MVPlayerListener implements Listener {
         }
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
-        if (MultiverseCore.PrefixChat) {
+        if (plugin.getMVConfig().getPrefixChat()) {
             String world = event.getPlayer().getWorld().getName();
             String prefix = "";
             // If we're not a MV world, don't do anything
@@ -128,7 +127,7 @@ public class MVPlayerListener implements Listener {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
             this.plugin.log(Level.FINE, "Player joined first!");
-            if (MultiverseCore.FirstSpawnOverride) {
+            if (plugin.getMVConfig().getFirstSpawnOverride()) {
                 this.plugin.log(Level.FINE, "Moving NEW player to(firstspawnoverride): " + worldManager.getFirstSpawnWorld().getSpawnLocation());
                 this.spawnNewPlayer(p);
             }
@@ -198,7 +197,7 @@ public class MVPlayerListener implements Listener {
                     teleportee.getName(), event.getTo().getWorld().getName(), teleporter.getName()));
             return;
         }
-        if (MultiverseCore.EnforceAccess) {
+        if (plugin.getMVConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
             if (event.isCancelled() && teleporter != null) {
                 this.plugin.log(Level.FINE, String.format("Player '%s' was DENIED ACCESS to '%s' because '%s' don't have: multiverse.access.%s",
@@ -225,7 +224,7 @@ public class MVPlayerListener implements Listener {
         // REMEMBER! getTo MAY be NULL HERE!!!
         // If the player was actually outside of the portal, adjust the from location
         if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.PORTAL) {
-            Location newloc = SafeTTeleporter.findPortalBlockNextTo(event.getFrom());
+            Location newloc = this.plugin.getSafeTTeleporter().findPortalBlockNextTo(event.getFrom());
             // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
             // TODO: we want to do here.
             if (newloc != null) {
@@ -263,7 +262,7 @@ public class MVPlayerListener implements Listener {
                     event.getPlayer().getName(), event.getTo().getWorld().getName()));
             return;
         }
-        if (MultiverseCore.EnforceAccess) {
+        if (plugin.getMVConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
                 this.plugin.log(Level.FINE, String.format("Player '%s' was DENIED ACCESS to '%s' because they don't have: multiverse.access.%s",
@@ -309,7 +308,7 @@ public class MVPlayerListener implements Listener {
                     public void run() {
                         // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
                         if (player.getWorld() == world.getCBWorld()) {
-                            MultiverseCore.staticLog(Level.FINE, "Handeling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
+                            MultiverseCore.staticLog(Level.FINE, "Handling gamemode for player: " + player.getName() + ", " + world.getGameMode().toString());
                             MultiverseCore.staticLog(Level.FINE, "PWorld: " + player.getWorld());
                             MultiverseCore.staticLog(Level.FINE, "AWorld: " + world);
                             player.setGameMode(world.getGameMode());

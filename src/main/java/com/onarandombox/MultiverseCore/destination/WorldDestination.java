@@ -8,9 +8,9 @@
 package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.LocationManipulation;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -93,6 +93,9 @@ public class WorldDestination implements MVDestination {
      */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
+        // TODO Taking a JavaPlugin here is rather useless, if we keep casting it up to MultiverseCore.
+        // We should change that.
+        Core core = (Core) plugin;
         String[] items = destination.split(":");
         if (items.length > 3) {
             isValid = false;
@@ -100,19 +103,20 @@ public class WorldDestination implements MVDestination {
         }
         if (items.length == 1 && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[0])) {
             isValid = true;
-            this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[0]);
+            this.world = core.getMVWorldManager().getMVWorld(items[0]);
             return;
         }
         if (items.length == 2 && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[0])) {
-            this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[0]);
-            this.yaw = LocationManipulation.getYaw(items[1]);
+            this.world = core.getMVWorldManager().getMVWorld(items[0]);
+            this.yaw = core.getLocationManipulation().getYaw(items[1]);
             return;
         }
         if (items[0].equalsIgnoreCase("w") && ((MultiverseCore) plugin).getMVWorldManager().isMVWorld(items[1])) {
             this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[1]);
             isValid = true;
             if (items.length == 3) {
-                this.yaw = LocationManipulation.getYaw(items[2]);
+                // TODO: oh my god, what should we do here?
+                this.yaw = core.getLocationManipulation().getYaw(items[2]);
             }
         }
     }
