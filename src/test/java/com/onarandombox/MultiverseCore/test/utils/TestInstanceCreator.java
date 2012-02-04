@@ -38,14 +38,11 @@ import org.powermock.api.mockito.PowerMockito;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-<<<<<<< HEAD
 import com.onarandombox.MultiverseCore.localization.MessageProvider;
 import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
-=======
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
->>>>>>> master
 import com.onarandombox.MultiverseCore.utils.FileUtils;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 
