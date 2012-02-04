@@ -52,14 +52,16 @@ public class ListCommand extends PaginatedCoreCommand<String> {
             } else if (env == Environment.THE_END) {
                 color = ChatColor.AQUA;
             }
-            String outputCache = world.getColoredWorldString() + ChatColor.WHITE + " - " + color + world.getEnvironment();
+            StringBuilder builder = new StringBuilder();
+            builder.append(world.getColoredWorldString()).append(ChatColor.WHITE);
+            builder.append(" - ").append(color).append(world.getEnvironment());
             if (world.isHidden()) {
-                if (p == null || p.hasPermission("multiverse.core.modify")) {
+                if (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.core.modify", true)) {
                     // Prefix hidden worlds with an "[H]"
-                    worldList.add(ChatColor.GRAY + "[H]" + outputCache);
+                    worldList.add(ChatColor.GRAY + "[H]" + builder.toString());
                 }
             } else {
-                worldList.add(outputCache);
+                worldList.add(builder.toString());
             }
         }
         for (String name : this.plugin.getMVWorldManager().getUnloadedWorlds()) {

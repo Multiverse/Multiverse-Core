@@ -64,7 +64,8 @@ import java.util.logging.Logger;
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final int PROTOCOL = 13;
-
+    // TODO: Investigate if this one is really needed to be static.
+    // Doubt it. -- FernFerret
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
 
     private AnchorManager anchorManager = new AnchorManager(this);
@@ -152,8 +153,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private MVWeatherListener weatherListener = new MVWeatherListener(this);
     private MVPortalListener portalListener = new MVPortalListener(this);
 
-    //public UpdateChecker updateCheck;
-
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
     private GenericBank bank = null;
@@ -161,8 +160,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private int pluginCount;
     private DestinationFactory destFactory;
     private SpoutInterface spoutInterface = null;
-    private static final double ALLPAY_VERSION = 5;
-    private static final double CH_VERSION = 4;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -209,12 +206,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void onEnable() {
-        //this.worldManager = new WorldManager(this);
-        // Perform initial checks for AllPay
-        if (!this.validateAllpay() || !this.validateCH()) {
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
         this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
         // Output a little snippet to show it's enabled.
@@ -267,40 +258,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.setSpout();
             this.log(Level.INFO, "Spout integration enabled.");
         }
-    }
-
-    private boolean validateAllpay() {
-        try {
-            this.banker = new AllPay(this, "Verify");
-            if (this.banker.getVersion() >= ALLPAY_VERSION) {
-                return true;
-            }
-        } catch (Throwable t) {
-        }
-        LOGGER.info(String.format("%s - Version %s was NOT ENABLED!!!", LOG_TAG, this.getDescription().getVersion()));
-        LOGGER.info(String.format("%s A plugin that has loaded before %s has an incompatible version of AllPay (an internal library)!",
-                LOG_TAG, this.getDescription().getName()));
-        LOGGER.info(String.format("%s The Following Plugins MAY out of date: %s", LOG_TAG, this.banker.getPluginsThatUseUs()));
-        LOGGER.info(String.format("%s This plugin needs AllPay v%f or higher and another plugin has loaded v%f!",
-                LOG_TAG, ALLPAY_VERSION, this.banker.getVersion()));
-        return false;
-    }
-
-    private boolean validateCH() {
-        try {
-            this.commandHandler = new CommandHandler(this, null);
-            if (this.commandHandler.getVersion() >= CH_VERSION) {
-                return true;
-            }
-        } catch (Throwable t) {
-        }
-        LOGGER.info(String.format("%s - Version %s was NOT ENABLED!!!", LOG_TAG, this.getDescription().getVersion()));
-        LOGGER.info(String.format("%s A plugin that has loaded before %s has an incompatible version of CommandHandler (an internal library)!",
-                LOG_TAG, this.getDescription().getName()));
-        LOGGER.info(String.format("%s Please contact this plugin author!!!", LOG_TAG));
-        LOGGER.info(String.format("%s This plugin needs CommandHandler v%f or higher and another plugin has loaded v%f!",
-                LOG_TAG, CH_VERSION, this.commandHandler.getVersion()));
-        return false;
     }
 
     private void initializeDestinationFactory() {
@@ -896,6 +853,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public MultiverseCoreConfig getMVConfig() {
+        return config;
+    }
+
+    /**
+     * This method is currently used by other plugins.
+     * It will be removed in 2.4
+     * @return
+     */
+    @Deprecated
+    public static MultiverseCoreConfiguration getStaticConfig() {
         return config;
     }
 }

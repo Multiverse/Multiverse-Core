@@ -61,9 +61,13 @@ public class InfoCommand extends MultiverseCommand {
                 return;
             }
         } else if (args.size() == 1) {
-            if (this.worldManager.getMVWorld(args.get(0)) != null) {
+            if (this.worldManager.isMVWorld(args.get(0))) {
                 // then we have a world!
                 worldName = args.get(0);
+            } else if(this.worldManager.getUnloadedWorlds().contains(args.get(0))){
+                sender.sendMessage("That world exists, but it is unloaded!");
+                sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, args.get(0)));
+                return;
             } else {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
@@ -93,8 +97,11 @@ public class InfoCommand extends MultiverseCommand {
                 p = (Player) sender;
             }
             showPage(pageNum, sender, this.buildEntireCommand(this.worldManager.getMVWorld(worldName), p));
+        } else if (this.worldManager.getUnloadedWorlds().contains(worldName)) {
+            sender.sendMessage("That world exists, but it is unloaded!");
+            sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, worldName));
         } else if (this.plugin.getServer().getWorld(worldName) != null) {
-            sender.sendMessage("That world exists, but multiverse does not know about it!");
+            sender.sendMessage("That world exists, but Multiverse does not know about it!");
             sender.sendMessage("You can import it with" + ChatColor.AQUA + "/mv import " + ChatColor.GREEN + worldName + ChatColor.LIGHT_PURPLE + "{ENV}");
             sender.sendMessage("For available environments type " + ChatColor.GREEN + "/mv env");
         }
