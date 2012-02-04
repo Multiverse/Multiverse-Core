@@ -55,7 +55,7 @@ public class VersionCommand extends MultiverseCommand {
         buffer.append("[Multiverse-Core] Dumping Config Values: (version ")
                 .append(this.plugin.getMVConfig().getVersion()).append(")").append('\n');
         buffer.append("[Multiverse-Core]  messagecooldown: ").append(plugin.getMessaging().getCooldown()).append('\n');
-        buffer.append("[Multiverse-Core]  teleportcooldown: ").append("Not yet IMPLEMENTED").append('\n');
+        buffer.append("[Multiverse-Core]  teleportcooldown: ").append(plugin.getMVConfig().getTeleportCooldown()).append('\n');
         buffer.append("[Multiverse-Core]  worldnameprefix: ").append(plugin.getMVConfig().getPrefixChat()).append('\n');
         buffer.append("[Multiverse-Core]  enforceaccess: ").append(plugin.getMVConfig().getEnforceAccess()).append('\n');
         buffer.append("[Multiverse-Core]  displaypermerrors: ").append(plugin.getMVConfig().getDisplayPermErrors()).append('\n');

@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 
+import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
@@ -23,9 +24,9 @@ public class MVPlayerSession {
     private long teleportLast = 0L; // Timestamp for the Players last Portal Teleportation.
     private long messageLast = 0L; // Timestamp for the Players last Alert Message.
 
-    private MultiverseCoreConfiguration config; // Configuration file to find out Cooldown Timers.
+    private MultiverseCoreConfig config; // Configuration file to find out Cooldown Timers.
 
-    public MVPlayerSession(Player player, MultiverseCoreConfiguration config) {
+    public MVPlayerSession(Player player, MultiverseCoreConfig config) {
         this.player = player;
         this.config = config;
         // this.bedSpawn = null;
@@ -42,6 +43,6 @@ public class MVPlayerSession {
      */
     public boolean getTeleportable() {
         long time = (new Date()).getTime();
-        return ((time - this.teleportLast) > this.config.getPortalCooldown());
+        return ((time - this.teleportLast) > this.config.getTeleportCooldown());
     }
 }

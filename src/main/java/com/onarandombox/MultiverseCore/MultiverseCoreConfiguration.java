@@ -14,7 +14,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private boolean enforceaccess;
     @Property
-    private boolean prefixChat;
+    private boolean prefixchat;
     @Property
     private boolean teleportintercept;
     @Property
@@ -30,7 +30,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private String firstspawnworld;
     @Property
-    private int portalcooldown;
+    private int teleportcooldown;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -47,14 +47,14 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     public void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
-        prefixChat = true;
+        prefixchat = true;
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
         globaldebug = 0;
         messagecooldown = 5000;
-        portalcooldown = 5000;
-        this.version = 2.8;
+        teleportcooldown = 1000;
+        this.version = 2.9;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -81,7 +81,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getPrefixChat() {
-        return this.prefixChat;
+        return this.prefixchat;
     }
 
     /**
@@ -89,7 +89,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public void setPrefixChat(boolean prefixChat) {
-        this.prefixChat = prefixChat;
+        this.prefixchat = prefixChat;
     }
 
     /**
@@ -208,15 +208,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
-    public int getPortalCooldown() {
-        return this.portalcooldown;
+    public int getTeleportCooldown() {
+        return this.teleportcooldown;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setPortalCooldown(int portalCooldown) {
-        this.portalcooldown = portalCooldown;
+    public void setTeleportCooldown(int teleportCooldown) {
+        this.teleportcooldown = teleportCooldown;
     }
 }

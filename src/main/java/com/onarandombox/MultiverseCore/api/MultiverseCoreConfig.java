@@ -18,13 +18,13 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * Sets portalCooldown.
      * @param portalCooldown The new value.
      */
-    void setPortalCooldown(int portalCooldown);
+    void setTeleportCooldown(int portalCooldown);
 
     /**
      * Gets portalCooldown.
      * @return portalCooldown.
      */
-    int getPortalCooldown();
+    int getTeleportCooldown();
 
     /**
      * Sets firstSpawnWorld.
