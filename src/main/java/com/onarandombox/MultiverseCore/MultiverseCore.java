@@ -252,14 +252,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Now set the firstspawnworld (after the worlds are loaded):
         // Default as the server.props world.
-        this.worldManager.setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld", getDefaultWorldName()));
-        // We have to set this one here, if it's not present, we don't know the name of the default world.
-        // and this one won't be in the defaults yml file.
-        try {
-            this.multiverseConfig.set("firstspawnworld", this.worldManager.getFirstSpawnWorld().getName());
-        } catch (NullPointerException e) {
-            // A test that had no worlds loaded was being run. This should never happen in production
+        if (this.config.getFirstSpawnWorld() == null) {
+            this.config.setFirstSpawnWorld(getDefaultWorldName());
         }
+        this.worldManager.setFirstSpawnWorld(this.config.getFirstSpawnWorld());
         this.saveMVConfig();
         // Check to see if spout was already loaded (most likely):
         if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
@@ -333,11 +329,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void loadConfigs() {
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
-        this.multiverseConfig.setDefaults(coreDefaults);
-        this.multiverseConfig.options().copyDefaults(true);
-        this.saveMVConfig();
-        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         MultiverseCoreConfiguration wantedConfig = null;
@@ -358,7 +349,60 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.multiverseConfig.set("bedrespawn", null);
         this.multiverseConfig.set("opfallback", null);
 
+        // Old Config Format
+        this.migrate22Values();
         this.saveMVConfigs();
+    }
+
+    /**
+     * Thes are the MV config 2.0-2.2 values,
+     * they should be migrated to the new format.
+     */
+    private void migrate22Values() {
+        if (this.multiverseConfig.isSet("worldnameprefix")) {
+            this.log(Level.INFO, "Migrating 'worldnameprefix'...");
+            this.config.setPrefixChat(this.multiverseConfig.getBoolean("worldnameprefix"));
+            this.multiverseConfig.set("worldnameprefix", null);
+        }
+        if (this.multiverseConfig.isSet("firstspawnworld")) {
+            this.log(Level.INFO, "Migrating 'firstspawnworld'...");
+            this.config.setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld"));
+            this.multiverseConfig.set("firstspawnworld", null);
+        }
+        if (this.multiverseConfig.isSet("enforceaccess")) {
+            this.log(Level.INFO, "Migrating 'enforceaccess'...");
+            this.config.setEnforceAccess(this.multiverseConfig.getBoolean("enforceaccess"));
+            this.multiverseConfig.set("enforceaccess", null);
+        }
+        if (this.multiverseConfig.isSet("displaypermerrors")) {
+            this.log(Level.INFO, "Migrating 'displaypermerrors'...");
+            this.config.setDisplayPermErrors(this.multiverseConfig.getBoolean("displaypermerrors"));
+            this.multiverseConfig.set("displaypermerrors", null);
+        }
+        if (this.multiverseConfig.isSet("teleportintercept")) {
+            this.log(Level.INFO, "Migrating 'teleportintercept'...");
+            this.config.setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
+            this.multiverseConfig.set("teleportintercept", null);
+        }
+        if (this.multiverseConfig.isSet("firstspawnoverride")) {
+            this.log(Level.INFO, "Migrating 'firstspawnoverride'...");
+            this.config.setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
+            this.multiverseConfig.set("firstspawnoverride", null);
+        }
+        if (this.multiverseConfig.isSet("messagecooldown")) {
+            this.log(Level.INFO, "Migrating 'messagecooldown'...");
+            this.config.setMessageCooldown(this.multiverseConfig.getInt("messagecooldown"));
+            this.multiverseConfig.set("messagecooldown", null);
+        }
+        if (this.multiverseConfig.isSet("debug")) {
+            this.log(Level.INFO, "Migrating 'debug'...");
+            this.config.setGlobalDebug(this.multiverseConfig.getInt("debug"));
+            this.multiverseConfig.set("debug", null);
+        }
+        if (this.multiverseConfig.isSet("version")) {
+            this.log(Level.INFO, "Migrating 'version'...");
+            this.multiverseConfig.set("version", null);
+        }
     }
 
     /**

@@ -18,11 +18,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
     @Property
     private boolean firstSpawnOverride;
     @Property
+    private String firstSpawnWorld;
+    @Property
     private boolean displayPermErrors;
     @Property
     private int globalDebug;
     @Property
     private int messageCooldown;
+    @Property
+    private double version;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -45,6 +49,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
         displayPermErrors = true;
         globalDebug = 0;
         messageCooldown = 5000;
+        this.version = 2.8;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -55,7 +60,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return enforceAccess.
      */
     public boolean getEnforceAccess() {
-        return enforceAccess;
+        return this.enforceAccess;
     }
 
     /**
@@ -71,7 +76,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return prefixChat.
      */
     public boolean getPrefixChat() {
-        return prefixChat;
+        return this.prefixChat;
     }
 
     /**
@@ -87,7 +92,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return teleportIntercept.
      */
     public boolean getTeleportIntercept() {
-        return teleportIntercept;
+        return this.teleportIntercept;
     }
 
     /**
@@ -103,7 +108,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return firstSpawnOverride.
      */
     public boolean getFirstSpawnOverride() {
-        return firstSpawnOverride;
+        return this.firstSpawnOverride;
     }
 
     /**
@@ -119,7 +124,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return displayPermErrors.
      */
     public boolean getDisplayPermErrors() {
-        return displayPermErrors;
+        return this.displayPermErrors;
     }
 
     /**
@@ -135,7 +140,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return globalDebug.
      */
     public int getGlobalDebug() {
-        return globalDebug;
+        return this.globalDebug;
     }
 
     /**
@@ -151,7 +156,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      * @return messageCooldown.
      */
     public int getMessageCooldown() {
-        return messageCooldown;
+        return this.messageCooldown;
     }
 
     /**
@@ -160,5 +165,29 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
      */
     public void setMessageCooldown(int messageCooldown) {
         this.messageCooldown = messageCooldown;
+    }
+
+    /**
+     * Gets firstSpawnWorld.
+     * @return firstSpawnWorld.
+     */
+    public String getFirstSpawnWorld() {
+        return this.firstSpawnWorld;
+    }
+
+    /**
+     * Sets firstSpawnWorld.
+     * @param firstSpawnWorld The new value.
+     */
+    public void setFirstSpawnWorld(String firstSpawnWorld) {
+        this.firstSpawnWorld = firstSpawnWorld;
+    }
+
+    /**
+     * Gets the version of this config.
+     * @return version.
+     */
+    public double getVersion() {
+        return this.version;
     }
 }
