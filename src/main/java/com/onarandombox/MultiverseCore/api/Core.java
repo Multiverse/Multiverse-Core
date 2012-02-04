@@ -26,7 +26,9 @@ public interface Core {
      * Gets the Multiverse config file.
      *
      * @return The Multiverse config file.
+     * @deprecated Don't modify the config-file manually!
      */
+    @Deprecated
     FileConfiguration getMVConfiguration();
 
     /**
@@ -215,4 +217,9 @@ public interface Core {
      */
     void setSafeTTeleporter(SafeTTeleporter safeTTeleporter);
 
+    /**
+     * Gets the {@link MultiverseCoreConfig}.
+     * @return The configuration.
+     */
+    MultiverseCoreConfig getMVConfig();
 }

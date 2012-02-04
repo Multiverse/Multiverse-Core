@@ -98,7 +98,7 @@ public class MVPermissions implements PermissionsInterface {
      */
     public boolean canEnterWorld(Player p, MultiverseWorld w) {
         // If we're not enforcing access, anyone can enter.
-        if (!MultiverseCore.getStaticConfig().getEnforceAccess()) {
+        if (!plugin.getMVConfig().getEnforceAccess()) {
             this.plugin.log(Level.FINEST, "EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }

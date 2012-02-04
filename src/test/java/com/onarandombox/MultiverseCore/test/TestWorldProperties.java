@@ -34,6 +34,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -165,10 +166,10 @@ public class TestWorldProperties {
         assertFalse(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        MultiverseCore.getStaticConfig().setPrefixChat(true);
+        core.getMVConfig().setPrefixChat(true);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
-        MultiverseCore.getStaticConfig().setPrefixChat(false);
+        core.getMVConfig().setPrefixChat(false);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 
@@ -263,7 +264,7 @@ public class TestWorldProperties {
         assertTrue(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        MultiverseCore.getStaticConfig().setPrefixChat(true);
+        core.getMVConfig().setPrefixChat(true);
         core.getPlayerListener().playerChat(playerChatEvent);
         // never because it's hidden!
         verify(playerChatEvent, never()).setFormat(
@@ -271,7 +272,7 @@ public class TestWorldProperties {
         mvWorld.setHidden(false);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
-        MultiverseCore.getStaticConfig().setPrefixChat(false);
+        core.getMVConfig().setPrefixChat(false);
         core.getPlayerListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 

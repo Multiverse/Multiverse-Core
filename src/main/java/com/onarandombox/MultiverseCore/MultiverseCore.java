@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
@@ -67,6 +68,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
 
     private AnchorManager anchorManager = new AnchorManager(this);
+    // TODO please let's make this non-static
     private static MultiverseCoreConfiguration config;
 
     /**
@@ -186,8 +188,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
+     * @deprecated This is deprecated.
      */
     @Override
+    @Deprecated
     public FileConfiguration getMVConfiguration() {
         return this.multiverseConfig;
     }
@@ -251,11 +255,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.anchorManager.loadAnchors();
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        // Default as the server.props world.
-        if (this.config.getFirstSpawnWorld() == null) {
-            this.config.setFirstSpawnWorld(getDefaultWorldName());
+        this.worldManager.setFirstSpawnWorld(config.getFirstSpawnWorld());
+        try {
+            config.setFirstSpawnWorld(this.worldManager.getFirstSpawnWorld().getName());
+        } catch (NullPointerException e) {
+            // A test that had no worlds loaded was being run. This should never happen in production
         }
-        this.worldManager.setFirstSpawnWorld(this.config.getFirstSpawnWorld());
         this.saveMVConfig();
         // Check to see if spout was already loaded (most likely):
         if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
@@ -329,6 +334,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void loadConfigs() {
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+        Configuration coreDefaults = YamlConfiguration.loadConfiguration(this.getClass().getResourceAsStream("/defaults/config.yml"));
+        this.multiverseConfig.setDefaults(coreDefaults);
+        this.multiverseConfig.options().copyDefaults(false);
+        this.multiverseConfig.options().copyHeader(true);
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         MultiverseCoreConfiguration wantedConfig = null;
@@ -339,8 +348,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } finally {
             config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
         }
-        // ... and save it
-        multiverseConfig.set("multiverse-configuration", config);
 
         this.messaging.setCooldown(config.getMessageCooldown());
 
@@ -403,19 +410,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.log(Level.INFO, "Migrating 'version'...");
             this.multiverseConfig.set("version", null);
         }
-    }
-
-    /**
-     * Safely return a world name.
-     * (The tests call this with no worlds loaded)
-     *
-     * @return The default world name.
-     */
-    private String getDefaultWorldName() {
-        if (this.getServer().getWorlds().size() > 0) {
-            return this.getServer().getWorlds().get(0).getName();
-        }
-        return "";
     }
 
     /**
@@ -485,7 +479,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (this.playerSessions.containsKey(player.getName())) {
             return this.playerSessions.get(player.getName());
         } else {
-            this.playerSessions.put(player.getName(), new MVPlayerSession(player, this.multiverseConfig, this));
+            this.playerSessions.put(player.getName(), new MVPlayerSession(player, config));
             return this.playerSessions.get(player.getName());
         }
     }
@@ -770,6 +764,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public boolean saveMVConfig() {
         try {
+            this.multiverseConfig.set("multiverse-configuration", config);
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
             return true;
         } catch (IOException e) {
@@ -897,10 +892,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Gets our {@link MultiverseCoreConfiguration}.
-     * @return The {@link MultiverseCoreConfiguration} we're using.
+     * {@inheritDoc}
      */
-    public static MultiverseCoreConfiguration getStaticConfig() {
+    @Override
+    public MultiverseCoreConfig getMVConfig() {
         return config;
     }
 }

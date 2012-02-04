@@ -2,31 +2,35 @@ package com.onarandombox.MultiverseCore;
 
 import java.util.Map;
 
+import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
+
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 
 /**
  * Our configuration.
  */
-public class MultiverseCoreConfiguration extends SerializationConfig {
+public class MultiverseCoreConfiguration extends SerializationConfig implements MultiverseCoreConfig {
     @Property
-    private boolean enforceAccess;
+    private boolean enforceaccess;
     @Property
     private boolean prefixChat;
     @Property
-    private boolean teleportIntercept;
+    private boolean teleportintercept;
     @Property
-    private boolean firstSpawnOverride;
+    private boolean firstspawnoverride;
     @Property
-    private String firstSpawnWorld;
+    private boolean displaypermerrors;
     @Property
-    private boolean displayPermErrors;
+    private int globaldebug;
     @Property
-    private int globalDebug;
-    @Property
-    private int messageCooldown;
+    private int messagecooldown;
     @Property
     private double version;
+    @Property
+    private String firstspawnworld;
+    @Property
+    private int portalcooldown;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -42,13 +46,14 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
     @Override
     public void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
-        enforceAccess = false;
+        enforceaccess = false;
         prefixChat = true;
-        teleportIntercept = true;
-        firstSpawnOverride = true;
-        displayPermErrors = true;
-        globalDebug = 0;
-        messageCooldown = 5000;
+        teleportintercept = true;
+        firstspawnoverride = true;
+        displaypermerrors = true;
+        globaldebug = 0;
+        messagecooldown = 5000;
+        portalcooldown = 5000;
         this.version = 2.8;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
@@ -56,138 +61,162 @@ public class MultiverseCoreConfiguration extends SerializationConfig {
     // And here we go:
 
     /**
-     * Gets enforceAccess.
-     * @return enforceAccess.
+     * {@inheritDoc}
      */
+    @Override
     public boolean getEnforceAccess() {
-        return this.enforceAccess;
+        return this.enforceaccess;
     }
 
     /**
-     * Sets enforceAccess.
-     * @param enforceAccess The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setEnforceAccess(boolean enforceAccess) {
-        this.enforceAccess = enforceAccess;
+        this.enforceaccess = enforceAccess;
     }
 
     /**
-     * Gets prefixChat.
-     * @return prefixChat.
+     * {@inheritDoc}
      */
+    @Override
     public boolean getPrefixChat() {
         return this.prefixChat;
     }
 
     /**
-     * Sets prefixChat.
-     * @param prefixChat The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setPrefixChat(boolean prefixChat) {
         this.prefixChat = prefixChat;
     }
 
     /**
-     * Gets teleportIntercept.
-     * @return teleportIntercept.
+     * {@inheritDoc}
      */
+    @Override
     public boolean getTeleportIntercept() {
-        return this.teleportIntercept;
+        return this.teleportintercept;
     }
 
     /**
-     * Sets teleportIntercept.
-     * @param teleportIntercept The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setTeleportIntercept(boolean teleportIntercept) {
-        this.teleportIntercept = teleportIntercept;
+        this.teleportintercept = teleportIntercept;
     }
 
     /**
-     * Gets firstSpawnOverride.
-     * @return firstSpawnOverride.
+     * {@inheritDoc}
      */
+    @Override
     public boolean getFirstSpawnOverride() {
-        return this.firstSpawnOverride;
+        return this.firstspawnoverride;
     }
 
     /**
-     * Sets firstSpawnOverride.
-     * @param firstSpawnOverride The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setFirstSpawnOverride(boolean firstSpawnOverride) {
-        this.firstSpawnOverride = firstSpawnOverride;
+        this.firstspawnoverride = firstSpawnOverride;
     }
 
     /**
-     * Gets displayPermErrors.
-     * @return displayPermErrors.
+     * {@inheritDoc}
      */
+    @Override
     public boolean getDisplayPermErrors() {
-        return this.displayPermErrors;
+        return this.displaypermerrors;
     }
 
     /**
-     * Sets displayPermErrors.
-     * @param displayPermErrors The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setDisplayPermErrors(boolean displayPermErrors) {
-        this.displayPermErrors = displayPermErrors;
+        this.displaypermerrors = displayPermErrors;
     }
 
     /**
-     * Gets globalDebug.
-     * @return globalDebug.
+     * {@inheritDoc}
      */
+    @Override
     public int getGlobalDebug() {
-        return this.globalDebug;
+        return this.globaldebug;
     }
 
     /**
-     * Sets globalDebug.
-     * @param globalDebug The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setGlobalDebug(int globalDebug) {
-        this.globalDebug = globalDebug;
+        this.globaldebug = globalDebug;
     }
 
     /**
-     * Gets messageCooldown.
-     * @return messageCooldown.
+     * {@inheritDoc}
      */
+    @Override
     public int getMessageCooldown() {
-        return this.messageCooldown;
+        return this.messagecooldown;
     }
 
     /**
-     * Sets messageCooldown.
-     * @param messageCooldown The new value.
+     * {@inheritDoc}
      */
+    @Override
     public void setMessageCooldown(int messageCooldown) {
-        this.messageCooldown = messageCooldown;
+        this.messagecooldown = messageCooldown;
     }
 
     /**
-     * Gets firstSpawnWorld.
-     * @return firstSpawnWorld.
+     * {@inheritDoc}
      */
-    public String getFirstSpawnWorld() {
-        return this.firstSpawnWorld;
-    }
-
-    /**
-     * Sets firstSpawnWorld.
-     * @param firstSpawnWorld The new value.
-     */
-    public void setFirstSpawnWorld(String firstSpawnWorld) {
-        this.firstSpawnWorld = firstSpawnWorld;
-    }
-
-    /**
-     * Gets the version of this config.
-     * @return version.
-     */
+    @Override
     public double getVersion() {
         return this.version;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFirstSpawnWorld() {
+        return this.firstspawnworld;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFirstSpawnWorld(String firstSpawnWorld) {
+        this.firstspawnworld = firstSpawnWorld;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPortalCooldown() {
+        return this.portalcooldown;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setPortalCooldown(int portalCooldown) {
+        this.portalcooldown = portalCooldown;
     }
 }
