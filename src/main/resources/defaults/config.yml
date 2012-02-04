@@ -4,11 +4,3 @@
 # When in-game, simply type: "/mv conf ?" for help.
 # A config with explanations can be found here:
 # https://github.com/Multiverse/Multiverse-Core/wiki/config.yml
-
-worldnameprefix: true
-enforceaccess: true
-displaypermerrors: true
-teleportintercept: true
-firstspawnoverride: true
-messagecooldown: 5000
-version: 2.7

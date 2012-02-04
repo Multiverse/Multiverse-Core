@@ -110,7 +110,7 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         }
 
-        if (MultiverseCore.getStaticConfig().getEnforceAccess() && teleporter != null && !this.plugin.getMVPerms().canEnterDestination(teleporter, d)) {
+        if (plugin.getMVConfig().getEnforceAccess() && teleporter != null && !this.plugin.getMVPerms().canEnterDestination(teleporter, d)) {
             if (teleportee.equals(teleporter)) {
                 teleporter.sendMessage("Doesn't look like you're allowed to go " + ChatColor.RED + "there...");
             } else {

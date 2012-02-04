@@ -210,7 +210,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public void setFirstSpawnWorld(String world) {
-        if (world == null) {
+        if ((world == null) && (this.plugin.getServer().getWorlds().size() > 0)) {
             this.firstSpawn = this.plugin.getServer().getWorlds().get(0).getName();
         } else {
             this.firstSpawn = world;
