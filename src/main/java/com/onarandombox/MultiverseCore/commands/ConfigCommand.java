@@ -38,53 +38,81 @@ public class ConfigCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.size() <= 1) {
-            String[] allProps = ConfigProperty.getAllValues().split(" ");
-            String currentvals = "";
-            for (String prop : allProps) {
-                currentvals += ChatColor.GREEN;
-                currentvals += prop;
-                currentvals += ChatColor.WHITE;
-                currentvals += " = ";
-                currentvals += ChatColor.GOLD;
-                currentvals += this.plugin.getMVConfiguration().get(prop, "NOT SET");
-                currentvals += ChatColor.WHITE;
-                currentvals += ", ";
-            }
-            sender.sendMessage(currentvals.substring(0, currentvals.length() - 2));
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(ChatColor.GREEN).append("enforceAccess").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getEnforceAccess());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("prefixChat").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getPrefixChat()).append(", ");
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("teleportIntercept").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getTeleportIntercept());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("firstSpawnOverride").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getFirstSpawnOverride());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("firstSpawnWorld").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getFirstSpawnWorld());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("displayPermErrors").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getDisplayPermErrors());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("globalDebug").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getGlobalDebug());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("messageCooldown").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getMessageCooldown());
+            builder.append(ChatColor.WHITE).append(", ");
+            builder.append(ChatColor.GREEN).append("version").append(ChatColor.WHITE).append(" = ");
+            builder.append(ChatColor.GOLD).append(MultiverseCore.getStaticConfig().getVersion());
+            sender.sendMessage(new StringBuilder().append(ChatColor.AQUA)
+                    .append(" === [ All Values ] ===").toString());
+            sender.sendMessage(builder.toString());
             return;
         }
         if (args.get(0).equalsIgnoreCase("firstspawnworld")) {
-            this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), args.get(1));
+            MultiverseCore.getStaticConfig().setFirstSpawnWorld(args.get(1));
             // Don't forget to set the world!
             this.plugin.getMVWorldManager().setFirstSpawnWorld(args.get(1));
-        } else if (args.get(0).equalsIgnoreCase("messagecooldown") || args.get(0).equalsIgnoreCase("teleportcooldown")
-                || args.get(0).equalsIgnoreCase("debug")) {
+        } else if (args.get(0).equalsIgnoreCase("messagecooldown")) {
             try {
                 this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Integer.parseInt(args.get(1)));
             } catch (NumberFormatException e) {
                 sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be an integer!");
                 return;
             }
-        } else {
-            ConfigProperty property = null;
+        } else if (args.get(0).equalsIgnoreCase("debug")) {
             try {
-                property = ConfigProperty.valueOf(args.get(0).toLowerCase());
-            } catch (IllegalArgumentException e) {
+                MultiverseCore.getStaticConfig().setGlobalDebug(Integer.parseInt(args.get(1)));
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be an integer!");
+                return;
+            }
+        } else {
+            boolean value = false;
+            try {
+                value =  Boolean.parseBoolean(args.get(1));
+            } catch (Exception e) {
+                sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be true or false!");
+                return;
+            }
+            if (args.get(0).equalsIgnoreCase("enforceaccess")) {
+                MultiverseCore.getStaticConfig().setEnforceAccess(value);
+            } else if (args.get(0).equalsIgnoreCase("prefixchat")) {
+                MultiverseCore.getStaticConfig().setPrefixChat(value);
+            } else if (args.get(0).equalsIgnoreCase("teleportintercept")) {
+                MultiverseCore.getStaticConfig().setTeleportIntercept(value);
+            } else if (args.get(0).equalsIgnoreCase("firstspawnoverride")) {
+                MultiverseCore.getStaticConfig().setFirstSpawnOverride(value);
+            } else if (args.get(0).equalsIgnoreCase("displaypermerrors")) {
+                MultiverseCore.getStaticConfig().setDisplayPermErrors(value);
+            } else {
                 sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA
                         + args.get(0) + ChatColor.WHITE + " you can't set " + ChatColor.AQUA + args.get(0));
                 sender.sendMessage(ChatColor.GREEN + "Valid values are:");
                 sender.sendMessage(ConfigProperty.getAllValues());
                 return;
-            }
-
-            if (property != null) {
-                try {
-                    this.plugin.getMVConfiguration().set(args.get(0).toLowerCase(), Boolean.parseBoolean(args.get(1)));
-                } catch (Exception e) {
-                    sender.sendMessage(ChatColor.RED + "Sorry, " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE + " must be true or false!");
-                    return;
-                }
-
             }
         }
         if (this.plugin.saveMVConfigs()) {
