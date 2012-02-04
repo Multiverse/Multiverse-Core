@@ -20,13 +20,13 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private boolean firstspawnoverride;
     @Property
-    private boolean displayPermErrors;
+    private boolean displaypermerrors;
     @Property
     private int globaldebug;
     @Property
     private int messagecooldown;
     @Property
-    private int version;
+    private double version;
     @Property
     private String firstspawnworld;
     @Property
@@ -50,10 +50,11 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         prefixChat = true;
         teleportintercept = true;
         firstspawnoverride = true;
-        displayPermErrors = true;
+        displaypermerrors = true;
         globaldebug = 0;
         messagecooldown = 5000;
         portalcooldown = 5000;
+        this.version = 2.8;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -64,7 +65,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getEnforceAccess() {
-        return enforceaccess;
+        return this.enforceaccess;
     }
 
     /**
@@ -80,7 +81,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getPrefixChat() {
-        return prefixChat;
+        return this.prefixChat;
     }
 
     /**
@@ -96,7 +97,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getTeleportIntercept() {
-        return teleportintercept;
+        return this.teleportintercept;
     }
 
     /**
@@ -112,7 +113,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getFirstSpawnOverride() {
-        return firstspawnoverride;
+        return this.firstspawnoverride;
     }
 
     /**
@@ -128,7 +129,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getDisplayPermErrors() {
-        return displayPermErrors;
+        return this.displaypermerrors;
     }
 
     /**
@@ -136,7 +137,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public void setDisplayPermErrors(boolean displayPermErrors) {
-        this.displayPermErrors = displayPermErrors;
+        this.displaypermerrors = displayPermErrors;
     }
 
     /**
@@ -144,7 +145,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public int getGlobalDebug() {
-        return globaldebug;
+        return this.globaldebug;
     }
 
     /**
@@ -160,7 +161,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public int getMessageCooldown() {
-        return messagecooldown;
+        return this.messagecooldown;
     }
 
     /**
@@ -175,8 +176,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
-    public int getVersion() {
-        return version;
+    public double getVersion() {
+        return this.version;
     }
 
     /**
@@ -192,7 +193,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public String getFirstSpawnWorld() {
-        return firstspawnworld;
+        return this.firstspawnworld;
     }
 
     /**
@@ -208,7 +209,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public int getPortalCooldown() {
-        return portalcooldown;
+        return this.portalcooldown;
     }
 
     /**

@@ -48,7 +48,7 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * Gets version.
      * @return version.
      */
-    int getVersion();
+    double getVersion();
 
     /**
      * Sets messageCooldown.
