@@ -524,7 +524,7 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
                 this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
                 // Special namespace for gamemodes
-                this.plugin.getServer().getPluginManager().removePermission("mv.gamemode.bypass." + w.getName());
+                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
             }
             // Recalc the all permission
             this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
