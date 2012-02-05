@@ -7,8 +7,6 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
-
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import org.bukkit.entity.Player;
 

@@ -23,7 +23,8 @@ import java.util.logging.Level;
  */
 
 /**
- * @deprecated This isn't used any more, is it?
+ * This will be gone in 2.4.
+ * @deprecated This isn't used any more, is it? No. No it is not.
  */
 @Deprecated
 public abstract class MVConfigMigrator {

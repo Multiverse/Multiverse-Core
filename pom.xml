@@ -205,7 +205,7 @@
         <dependency>
             <groupId>com.fernferret.allpay</groupId>
             <artifactId>AllPay</artifactId>
-            <version>6</version>
+            <version>8</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

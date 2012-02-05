@@ -64,7 +64,7 @@ public class InfoCommand extends MultiverseCommand {
             if (this.worldManager.isMVWorld(args.get(0))) {
                 // then we have a world!
                 worldName = args.get(0);
-            } else if(this.worldManager.getUnloadedWorlds().contains(args.get(0))){
+            } else if (this.worldManager.getUnloadedWorlds().contains(args.get(0))) {
                 sender.sendMessage("That world exists, but it is unloaded!");
                 sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, args.get(0)));
                 return;
