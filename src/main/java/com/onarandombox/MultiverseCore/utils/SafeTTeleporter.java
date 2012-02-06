@@ -63,7 +63,6 @@ public class SafeTTeleporter {
      */
     public Location getSafeLocation(Location l, int tolerance, int radius) {
         // Check around the player first in a configurable radius:
-        // TODO: Make this configurable
         Location safe = checkAboveAndBelowLocation(l, tolerance, radius);
         if (safe != null) {
             safe.setX(safe.getBlockX() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck

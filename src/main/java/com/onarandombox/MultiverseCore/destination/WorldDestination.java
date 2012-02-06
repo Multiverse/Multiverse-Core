@@ -115,7 +115,6 @@ public class WorldDestination implements MVDestination {
             this.world = ((MultiverseCore) plugin).getMVWorldManager().getMVWorld(items[1]);
             isValid = true;
             if (items.length == 3) {
-                // TODO: oh my god, what should we do here?
                 this.yaw = core.getLocationManipulation().getYaw(items[2]);
             }
         }

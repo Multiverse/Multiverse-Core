@@ -249,7 +249,6 @@ public class LocationManipulation {
         }
         float speed = getSpeed(v);
         float halfSpeed = (float) (speed / 2.0);
-        // TODO: Mathmatacize this:
         if (direction.equalsIgnoreCase("n")) {
             return new Vector(0, 0, -1 * speed);
         } else if (direction.equalsIgnoreCase("ne")) {
