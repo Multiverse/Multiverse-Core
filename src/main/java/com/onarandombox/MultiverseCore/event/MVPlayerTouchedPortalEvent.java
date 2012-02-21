@@ -22,7 +22,6 @@ public class MVPlayerTouchedPortalEvent extends Event implements Cancellable {
     private boolean isCancelled;
 
     public MVPlayerTouchedPortalEvent(Player p, Location l) {
-        super("MVPlayerTouchedPortalEvent");
         this.p = p;
         this.l = l;
     }

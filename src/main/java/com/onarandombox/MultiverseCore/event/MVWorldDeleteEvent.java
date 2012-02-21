@@ -16,8 +16,6 @@ public class MVWorldDeleteEvent extends Event implements Cancellable {
     private final boolean removeFromConfig;
 
     public MVWorldDeleteEvent(MultiverseWorld world, boolean removeFromConfig) {
-        super("MVWorldDeleteEvent");
-
         if (world == null)
             throw new IllegalArgumentException("world can't be null!");
 

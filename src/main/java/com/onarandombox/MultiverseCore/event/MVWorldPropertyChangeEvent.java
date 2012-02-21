@@ -29,7 +29,6 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
     private String name;
 
     public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, String value) {
-        super("MVWorldPropertyChange");
         this.world = world;
         this.changer = changer;
         this.name = name;
