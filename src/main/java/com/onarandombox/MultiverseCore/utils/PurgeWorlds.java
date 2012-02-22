@@ -133,7 +133,7 @@ public class PurgeWorlds {
             entityName = e.toString().replaceAll("Craft", "").toUpperCase();
         }
         if (e instanceof Slime || e instanceof Monster || e instanceof Ghast || e instanceof EnderDragon) {
-            this.plugin.log(Level.FINER, "Looking at a monster: " + e);
+            this.plugin.log(Level.FINEST, "Looking at a monster: " + e);
             if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
                 if (!negate) {
                     this.plugin.log(Level.FINEST, "Removing a monster: " + e);
