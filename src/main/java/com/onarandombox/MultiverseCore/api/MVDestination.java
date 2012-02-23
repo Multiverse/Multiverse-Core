@@ -45,7 +45,7 @@ public interface MVDestination {
     boolean isThisType(JavaPlugin plugin, String destination);
 
     /**
-     * Returns the location a specific entity will spawn at.
+     * Returns the location a specific entity will spawn at when being teleported to this Destination.
      * <p>
      * To just retrieve the location as it is stored you can just pass null, but be warned some destinations may return
      * null back to you if you do this. It is always safer to pass an actual entity. This is used so things like
