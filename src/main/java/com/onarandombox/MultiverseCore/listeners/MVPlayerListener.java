@@ -130,11 +130,15 @@ public class MVPlayerListener implements Listener {
             if (plugin.getMVConfig().getFirstSpawnOverride()) {
                 this.plugin.log(Level.FINE, String.format("Moving NEW player to(firstspawnoverride): %s",
                         worldManager.getFirstSpawnWorld().getSpawnLocation()));
-                this.spawnNewPlayer(p);
+                this.sendPlayerToDefaultWorld(p);
             }
             return;
         } else {
             this.plugin.log(Level.FINER, "Player joined AGAIN!");
+            if (!this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld(), false)) {
+                p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
+                this.sendPlayerToDefaultWorld(p);
+            }
         }
         // Handle the Players GameMode setting for the new world.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
@@ -291,8 +295,8 @@ public class MVPlayerListener implements Listener {
         }
     }
 
-    private void spawnNewPlayer(final Player player) {
-        // Spawn the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
+    private void sendPlayerToDefaultWorld(final Player player) {
+        // Remove the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
             new Runnable() {
                 public void run() {
