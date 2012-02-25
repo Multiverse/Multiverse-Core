@@ -135,7 +135,7 @@ public class MVPlayerListener implements Listener {
             return;
         } else {
             this.plugin.log(Level.FINER, "Player joined AGAIN!");
-            if (!this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld(), false)) {
+            if (!this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
             }

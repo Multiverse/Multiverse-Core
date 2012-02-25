@@ -308,6 +308,7 @@ public class TestWorldProperties {
         mockPlayer = mock(Player.class);
         when(mockPlayer.getWorld()).thenReturn(mvWorld.getCBWorld());
         when(mockPlayer.hasPlayedBefore()).thenReturn(true);
+        when(mockPlayer.hasPermission("multiverse.access.world")).thenReturn(true);
         playerChatEvent = PowerMockito.mock(PlayerChatEvent.class);
         when(playerChatEvent.getPlayer()).thenReturn(mockPlayer);
         when(playerChatEvent.getFormat()).thenReturn("format");
