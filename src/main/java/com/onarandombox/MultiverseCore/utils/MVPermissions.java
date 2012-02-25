@@ -140,6 +140,12 @@ public class MVPermissions implements PermissionsInterface {
         return this.hasPermission(p, d.getRequiredPermission(), false);
     }
 
+    /**
+     * Tells a {@link CommandSender} why another {@link CommandSender} can or can not access a certain {@link MVDestination}.
+     * @param asker The {@link CommandSender} that's asking.
+     * @param playerInQuestion The {@link CommandSender} whose permissions we want to know.
+     * @param d The {@link MVDestination}.
+     */
     public void tellMeWhyICantDoThis(CommandSender asker, CommandSender playerInQuestion, MVDestination d) {
         boolean cango = true;
         if (!(playerInQuestion instanceof Player)) {
@@ -148,7 +154,7 @@ public class MVPermissions implements PermissionsInterface {
         }
         Player p = (Player) playerInQuestion;
         if (d == null) {
-            asker.sendMessage(String.format("The provided Destination is %sNULL%s, and therefore %sNVALID%s.",
+            asker.sendMessage(String.format("The provided Destination is %sNULL%s, and therefore %sINVALID%s.",
                     ChatColor.RED, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE));
             cango = false;
         }
