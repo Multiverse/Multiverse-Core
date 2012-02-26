@@ -84,7 +84,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean addWorld(String name, Environment env, String seedString, WorldType type, boolean generateStructures,
+    public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                             String generator) {
         return this.addWorld(name, env, seedString, type, generateStructures, generator, true);
     }
@@ -93,9 +93,8 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean addWorld(String name, Environment env, String seedString, WorldType type, boolean generateStructures,
+    public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                             String generator, boolean useSpawnAdjust) {
-        plugin.log(Level.FINE, "Adding world with: " + name + ", " + env.toString() + ", " + seedString + ", " + type.toString() + ", " + generator);
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
@@ -112,8 +111,12 @@ public class WorldManager implements MVWorldManager {
             c.generator(generator);
         }
         c.environment(env);
-        c.type(type);
-        c.generateStructures(generateStructures);
+        if (type != null) {
+            c.type(type);
+        }
+        if (generateStructures != null) {
+            c.generateStructures(generateStructures);
+        }
 
         World world;
         StringBuilder builder = new StringBuilder();
@@ -524,7 +527,7 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
                 this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
                 // Special namespace for gamemodes
-                this.plugin.getServer().getPluginManager().removePermission("mv.gamemode.bypass." + w.getName());
+                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
             }
             // Recalc the all permission
             this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);

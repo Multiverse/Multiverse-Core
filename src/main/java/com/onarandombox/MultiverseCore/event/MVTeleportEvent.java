@@ -28,7 +28,6 @@ public class MVTeleportEvent extends Event implements Cancellable {
     private boolean isCancelled;
 
     public MVTeleportEvent(MVDestination dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
-        super("SafeTTeleporter");
         this.teleportee = teleportee;
         this.teleporter = teleporter;
         this.dest = dest;

@@ -22,7 +22,6 @@ public class MVRespawnEvent extends Event {
 
 
     public MVRespawnEvent(Location spawningAt, Player p, String respawnMethod) {
-        super("MVRespawn");
         this.player = p;
         this.location = spawningAt;
         this.respawnMethod = respawnMethod;

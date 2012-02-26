@@ -206,7 +206,11 @@ public class MVWorld implements MultiverseWorld {
             this.plugin.getServer().getPluginManager().addPermission(this.permission);
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
             this.plugin.getServer().getPluginManager().addPermission(this.ignoreperm);
-            addToUpperLists(this.permission);
+            // Add the permission and exempt to parents.
+            this.addToUpperLists(this.permission);
+
+            // Add ignore to it's parent:
+            this.ignoreperm.addParent("mv.bypass.gamemode.*", true);
         } catch (IllegalArgumentException e) {
             this.plugin.log(Level.FINER, "Permissions nodes were already added for " + this.name);
         }

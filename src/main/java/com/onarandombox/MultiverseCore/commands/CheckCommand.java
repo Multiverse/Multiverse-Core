@@ -45,18 +45,13 @@ public class CheckCommand extends MultiverseCommand {
         }
         MVDestination dest = this.plugin.getDestFactory().getDestination(args.get(1));
         if (dest instanceof InvalidDestination) {
-            sender.sendMessage("You asked if '" + args.get(0) + "' could go to " + ChatColor.GREEN + args.get(0) + ChatColor.WHITE + ",");
+            sender.sendMessage(String.format("You asked if '%s' could go to %s%s%s,",
+                    args.get(0), ChatColor.GREEN, args.get(0), ChatColor.WHITE));
             sender.sendMessage("but I couldn't find a Destination of that name? Did you type it correctly?");
             return;
         }
 
         MVPermissions perms = this.plugin.getMVPerms();
-        if (perms.canEnterDestination(p, dest)) {
-            sender.sendMessage(ChatColor.GREEN + args.get(0) + ChatColor.WHITE + " can travel to " + ChatColor.GREEN + args.get(1));
-        } else {
-            sender.sendMessage(ChatColor.AQUA + args.get(0) + ChatColor.RED + " CANNOT travel to " + ChatColor.AQUA + args.get(1));
-            sender.sendMessage("Please turn debug mode to 3 then watch the console to find out why!");
-            sender.sendMessage("Use: " + ChatColor.GREEN + "/mv debug 3");
-        }
+        perms.tellMeWhyICantDoThis(sender, p, dest);
     }
 }

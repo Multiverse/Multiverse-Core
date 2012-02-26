@@ -64,7 +64,7 @@ public class InfoCommand extends MultiverseCommand {
             if (this.worldManager.isMVWorld(args.get(0))) {
                 // then we have a world!
                 worldName = args.get(0);
-            } else if(this.worldManager.getUnloadedWorlds().contains(args.get(0))){
+            } else if (this.worldManager.getUnloadedWorlds().contains(args.get(0))) {
                 sender.sendMessage("That world exists, but it is unloaded!");
                 sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, args.get(0)));
                 return;
@@ -75,7 +75,8 @@ public class InfoCommand extends MultiverseCommand {
                     try {
                         pageNum = Integer.parseInt(args.get(0)) - 1;
                     } catch (NumberFormatException e) {
-                        pageNum = 0;
+                        sender.sendMessage("That world does not exist.");
+                        return;
                     }
                 } else {
                     sender.sendMessage("You must enter a" + ChatColor.LIGHT_PURPLE + " world" + ChatColor.WHITE + " from the console!");

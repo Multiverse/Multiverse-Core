@@ -11,8 +11,7 @@ public class MVVersionEvent extends Event {
     private final StringBuilder versionInfoBuilder;
 
     public MVVersionEvent(String versionInfo) {
-        super("MVVersionEvent");
-        versionInfoBuilder = new StringBuilder(versionInfo);
+        this.versionInfoBuilder = new StringBuilder(versionInfo);
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -38,7 +37,7 @@ public class MVVersionEvent extends Event {
      * @return The version-info.
      */
     public String getVersionInfo() {
-        return versionInfoBuilder.toString();
+        return this.versionInfoBuilder.toString();
     }
 
     /**
@@ -46,6 +45,6 @@ public class MVVersionEvent extends Event {
      * @param moreVersionInfo The version-info to add. Should end with '\n'.
      */
     public void appendVersionInfo(String moreVersionInfo) {
-        versionInfoBuilder.append(moreVersionInfo);
+        this.versionInfoBuilder.append(moreVersionInfo);
     }
 }

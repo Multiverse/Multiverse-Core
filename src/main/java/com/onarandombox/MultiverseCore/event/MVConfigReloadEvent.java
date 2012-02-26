@@ -20,7 +20,6 @@ public class MVConfigReloadEvent extends Event {
     private List<String> configsLoaded;
 
     public MVConfigReloadEvent(List<String> configsLoaded) {
-        super("MVConfigReload");
         this.configsLoaded = configsLoaded;
     }
 

@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,11 +27,14 @@ public class WhoCommand extends MultiverseCommand {
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Who?");
-        this.setCommandUsage("/mv who" + ChatColor.GOLD + " [WORLD]");
+        this.setCommandUsage("/mv who" + ChatColor.GOLD + " [WORLD|--all]");
         this.setArgRange(0, 1);
         this.addKey("mv who");
         this.addKey("mvw");
         this.addKey("mvwho");
+        this.addCommandExample("/mv who");
+        this.addCommandExample(String.format("/mv who %s--all", ChatColor.GREEN));
+        this.addCommandExample(String.format("/mv who %smyworld", ChatColor.GOLD));
         this.setPermission("multiverse.core.list.who", "States who is in what world.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
@@ -48,57 +50,57 @@ public class WhoCommand extends MultiverseCommand {
             showAll = false;
         }
 
-        List<MultiverseWorld> worlds = new ArrayList<MultiverseWorld>();
-
-        if (args.size() > 0) {
-            MultiverseWorld world = this.worldManager.getMVWorld(args.get(0));
+        if (args.size()  == 1) {
             if (args.get(0).equalsIgnoreCase("--all") || args.get(0).equalsIgnoreCase("-a")) {
                 showAll = true;
-                worlds = new ArrayList<MultiverseWorld>(this.worldManager.getMVWorlds());
-            } else if (world != null) {
-                if (!world.isHidden()) {
-                    worlds.add(world);
-                }
             } else {
-                sender.sendMessage(ChatColor.RED + "World does not exist");
+                // single world mode
+                MultiverseWorld world = this.worldManager.getMVWorld(args.get(0));
+                if (world == null) {
+                    sender.sendMessage(ChatColor.RED + "That world does not exist.");
+                    return;
+                }
+
+                if (!this.plugin.getMVPerms().canEnterWorld(p, world)) {
+                    sender.sendMessage(ChatColor.RED + "You aren't allowed to access to this world!");
+                    return;
+                }
+
+                sender.sendMessage(String.format("%s--- Players in %s%s ---", ChatColor.AQUA,
+                        world.getColoredWorldString(), ChatColor.AQUA));
+                sender.sendMessage(buildPlayerString(world));
                 return;
             }
-        } else {
-            worlds = new ArrayList<MultiverseWorld>(this.worldManager.getMVWorlds());
         }
 
-        if (worlds.size() == 0) {
-            sender.sendMessage("Multiverse does not know about any of your worlds :(");
-        } else if (worlds.size() == 1) {
-            sender.sendMessage(ChatColor.AQUA + "--- Players in" + worlds.get(0).getColoredWorldString() + ChatColor.AQUA + " ---");
-        } else {
-            sender.sendMessage(ChatColor.AQUA + "--- There are players in ---");
-        }
-
-        for (MultiverseWorld world : worlds) {
-            if (!(this.worldManager.isMVWorld(world.getName()))) {
-                continue;
-            }
-
-            if (p != null && (!this.plugin.getMVPerms().canEnterWorld(p, world))) {
-                continue;
-            }
-            List<Player> players = world.getCBWorld().getPlayers();
-
-            String result = "";
-            if (players.size() <= 0 && !showAll) {
-                continue;
-            }
-
-            if (players.size() <= 0) {
-                result = "Empty";
-            } else {
-                for (Player player : players) {
-                    result += player.getDisplayName() + " " + ChatColor.WHITE;
+        // multiworld mode
+        sender.sendMessage(ChatColor.AQUA + "--- Worlds and their players ---");
+        boolean shownOne = false;
+        for (MultiverseWorld world : this.worldManager.getMVWorlds()) {
+            if (this.plugin.getMVPerms().canEnterWorld(p, world)) { // only show world if the player can access it
+                if (showAll || !world.getCBWorld().getPlayers().isEmpty()) { // either show all or show if the world is not empty
+                    sender.sendMessage(String.format("%s%s - %s", world.getColoredWorldString(), ChatColor.WHITE, buildPlayerString(world)));
+                    shownOne = true;
                 }
             }
+        }
+        if (!shownOne) {
+            sender.sendMessage("No worlds found.");
+        }
+        return;
+    }
 
-            sender.sendMessage(world.getColoredWorldString() + ChatColor.WHITE + " - " + result);
+    private String buildPlayerString(MultiverseWorld world) {
+        List<Player> players = world.getCBWorld().getPlayers();
+        if (players.size() == 0) {
+            return "No players found.";
+        } else {
+            StringBuilder playerBuilder = new StringBuilder();
+            for (Player player : players) {
+                playerBuilder.append(player.getDisplayName()).append(", ");
+            }
+            String bString = playerBuilder.toString();
+            return bString.substring(0, bString.length() - 2);
         }
     }
 }

@@ -14,11 +14,7 @@ import com.onarandombox.MultiverseCore.api.WorldPurger;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Animals;
-import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
 
 import java.util.ArrayList;
@@ -71,22 +67,57 @@ public class SimpleWorldPurger implements WorldPurger {
         if (mvworld == null) {
             return;
         }
-        World world = this.plugin.getServer().getWorld(mvworld.getName());
+        World world = mvworld.getCBWorld();
         if (world == null) {
             return;
         }
         int entitiesKilled = 0;
+        boolean specifiedAll = thingsToKill.contains("ALL");
+        boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
+        boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
         for (Entity e : world.getEntities()) {
-            this.plugin.log(Level.FINEST, "Entity list (aval for purge) from WORLD < " + mvworld.getName() + " >: " + e.toString());
-
-            // Check against Monsters
-            if (killMonster(mvworld, e, thingsToKill, negateMonsters)) {
+            boolean negate;
+            boolean specified = false;
+            if (e instanceof Squid || e instanceof Animals) {
+                // it's an animal
+                if (specifiedAnimals && !negateAnimals) {
+                    this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all animals: " + e);
+                    e.remove();
+                    entitiesKilled++;
+                    continue;
+                }
+                if (specifiedAnimals)
+                    specified = true;
+                negate = negateAnimals;
+            } else {
+                // it's a monster
+                if (specifiedMonsters && !negateMonsters) {
+                    this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all monsters: " + e);
+                    e.remove();
+                    entitiesKilled++;
+                    continue;
+                }
+                if (specifiedMonsters)
+                    specified = true;
+                negate = negateMonsters;
+            }
+            for (String s : thingsToKill) {
+                if (e.getType().getName().equalsIgnoreCase(s)) {
+                    specified = true;
+                    if (!negate) {
+                        this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);
+                        e.remove();
+                        entitiesKilled++;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            if (!specified && negate) {
+                this.plugin.log(Level.FINEST, "Removing an entity because it was NOT specified and we ARE negating: " + e);
+                e.remove();
                 entitiesKilled++;
                 continue;
-            }
-            // Check against Animals
-            if (this.killCreature(mvworld, e, thingsToKill, negateAnimals)) {
-                entitiesKilled++;
             }
         }
         if (sender != null) {
@@ -101,53 +132,4 @@ public class SimpleWorldPurger implements WorldPurger {
     public void purgeWorld(MultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
         purgeWorld(mvworld, thingsToKill, negateAnimals, negateMonsters, null);
     }
-
-    private boolean killCreature(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
-        String entityName = e.toString().replaceAll("Craft", "").toUpperCase();
-        if (e instanceof Squid || e instanceof Animals) {
-            if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("ANIMALS")) {
-                if (!negate) {
-                    e.remove();
-                    return true;
-                }
-            } else {
-                if (negate) {
-                    e.remove();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /*
-     * Will kill the monster if it's in the list UNLESS the NEGATE boolean is set, then it will kill it if it's NOT.
-     */
-    private boolean killMonster(MultiverseWorld mvworld, Entity e, List<String> creaturesToKill, boolean negate) {
-        String entityName = "";
-        //TODO: Fixme once either Rigby puts his awesome thing in OR Enderdragon gets a toString, OR both.
-        if (e instanceof EnderDragon) {
-            entityName = "ENDERDRAGON";
-        } else {
-            entityName = e.toString().replaceAll("Craft", "").toUpperCase();
-        }
-        if (e instanceof Slime || e instanceof Monster || e instanceof Ghast || e instanceof EnderDragon) {
-            this.plugin.log(Level.FINER, "Looking at a monster: " + e);
-            if (creaturesToKill.contains(entityName) || creaturesToKill.contains("ALL") || creaturesToKill.contains("MONSTERS")) {
-                if (!negate) {
-                    this.plugin.log(Level.FINEST, "Removing a monster: " + e);
-                    e.remove();
-                    return true;
-                }
-            } else {
-                if (negate) {
-                    this.plugin.log(Level.FINEST, "Removing a monster: " + e);
-                    e.remove();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 }

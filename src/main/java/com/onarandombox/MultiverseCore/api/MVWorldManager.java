@@ -40,7 +40,7 @@ public interface MVWorldManager {
      * @param generator          The Custom generator plugin to use.
      * @return True if the world is added, false if not.
      */
-    boolean addWorld(String name, Environment env, String seedString, WorldType type, boolean generateStructures,
+    boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                      String generator);
 
     /**
@@ -57,7 +57,7 @@ public interface MVWorldManager {
      * @param useSpawnAdjust If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
      * @return True if the world is added, false if not.
      */
-    boolean addWorld(String name, Environment env, String seedString, WorldType type, boolean generateStructures,
+    boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                      String generator, boolean useSpawnAdjust);
 
     /**
