@@ -78,6 +78,9 @@ public class MVPlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
