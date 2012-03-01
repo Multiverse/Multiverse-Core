@@ -522,7 +522,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public String getAuthors() {
         String authors = "";
-        ArrayList<String> auths = this.getDescription().getAuthors();
+        List<String> auths = this.getDescription().getAuthors();
         if (auths.size() == 0) {
             return "";
         }
