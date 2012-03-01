@@ -189,7 +189,9 @@ public class MVWorld implements MultiverseWorld {
 
         // Things I haven't converted yet.
         this.getMobExceptions();
-        this.getWorldBlacklist().addAll(worldSection.getList("worldblacklist", new ArrayList<String>()));
+        List<String> tempWorldBlacklist = worldSection.getStringList("worldblacklist");
+        if (tempWorldBlacklist != null)
+            this.getWorldBlacklist().addAll(tempWorldBlacklist);
 
         // Enable and do the save.
         this.canSave = true;
@@ -334,16 +336,19 @@ public class MVWorld implements MultiverseWorld {
     // TODO: Migrate this method.
     private void getMobExceptions() {
         List<String> temp;
-        temp = this.worldSection.getList("animals.exceptions", new ArrayList<String>());
+        temp = this.worldSection.getStringList("animals.exceptions");
         // Add Animals to the exclusion list
-
-        for (String s : temp) {
-            this.masterList.get("animals").add(s.toUpperCase());
+        if (temp != null) {
+            for (String s : temp) {
+                this.masterList.get("animals").add(s.toUpperCase());
+            }
         }
-        temp = this.worldSection.getList("monsters.exceptions", new ArrayList<String>());
+        temp = this.worldSection.getStringList("monsters.exceptions");
         // Add Monsters to the exclusion list
-        for (String s : temp) {
-            this.masterList.get("monsters").add(s.toUpperCase());
+        if (temp != null) {
+            for (String s : temp) {
+                this.masterList.get("monsters").add(s.toUpperCase());
+            }
         }
     }
 

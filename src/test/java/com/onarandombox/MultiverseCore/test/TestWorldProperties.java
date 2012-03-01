@@ -21,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -71,7 +72,7 @@ public class TestWorldProperties {
     private PlayerJoinEvent playerJoinEvent;
     private PlayerRespawnEvent playerRespawnBed;
     private PlayerRespawnEvent playerRespawnNormal;
-    private Entity mockEntity;
+    private HumanEntity mockHumanEntity;
     private EntityRegainHealthEvent entityRegainHealthEvent;
     private FoodLevelChangeEvent entityFoodLevelChangeEvent;
     private FoodLevelChangeEvent entityFoodLevelRiseEvent;
@@ -327,17 +328,17 @@ public class TestWorldProperties {
         when(playerRespawnNormal.getPlayer()).thenReturn(mockPlayer);
         when(playerRespawnNormal.isBedSpawn()).thenReturn(false);
         //// Entity events
-        mockEntity = mock(Entity.class);
+        mockHumanEntity = mock(HumanEntity.class);
         // entity regain health
         entityRegainHealthEvent = PowerMockito.mock(EntityRegainHealthEvent.class);
         when(entityRegainHealthEvent.getRegainReason()).thenReturn(RegainReason.REGEN);
-        when(mockEntity.getLocation()).thenReturn(new Location(mvWorld.getCBWorld(), 0, 0, 0));
-        when(entityRegainHealthEvent.getEntity()).thenReturn(mockEntity);
+        when(mockHumanEntity.getLocation()).thenReturn(new Location(mvWorld.getCBWorld(), 0, 0, 0));
+        when(entityRegainHealthEvent.getEntity()).thenReturn(mockHumanEntity);
         // entity food level change event
         entityFoodLevelChangeEvent = PowerMockito.mock(FoodLevelChangeEvent.class);
         // this won't do anything since we're not mocking a player,
         // but the plugin should be able to handle this!
-        when(entityFoodLevelChangeEvent.getEntity()).thenReturn(mockEntity);
+        when(entityFoodLevelChangeEvent.getEntity()).thenReturn(mockHumanEntity);
         entityFoodLevelRiseEvent = PowerMockito.mock(FoodLevelChangeEvent.class);
         when(mockPlayer.getFoodLevel()).thenReturn(2);
         when(entityFoodLevelRiseEvent.getEntity()).thenReturn(mockPlayer);
