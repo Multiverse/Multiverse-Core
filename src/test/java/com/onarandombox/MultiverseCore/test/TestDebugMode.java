@@ -20,6 +20,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,7 +34,7 @@ import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MultiverseCore.class })
+@PrepareForTest({ MultiverseCore.class, PluginDescriptionFile.class })
 public class TestDebugMode {
     TestInstanceCreator creator;
     Server mockServer;

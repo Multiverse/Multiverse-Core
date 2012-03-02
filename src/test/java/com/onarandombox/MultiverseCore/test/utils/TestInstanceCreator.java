@@ -35,6 +35,7 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.MockGateway;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -58,14 +59,17 @@ public class TestInstanceCreator {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
 
+            MockGateway.MOCK_STANDARD_METHODS = false;
+
             core = PowerMockito.spy(new MultiverseCore());
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
 
             // Return a fake PDF file.
-            PluginDescriptionFile pdf = new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
-                    "com.onarandombox.MultiverseCore.MultiverseCore");
+            PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
+                    "com.onarandombox.MultiverseCore.MultiverseCore"));
+            when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
             doReturn(pdf).when(core).getDescription();
             doReturn(true).when(core).isEnabled();
             core.setServerFolder(serverDirectory);

@@ -20,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -32,10 +31,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -53,9 +52,8 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class,
         WeatherChangeEvent.class, ThunderChangeEvent.class, PlayerChatEvent.class,
         PlayerJoinEvent.class, PlayerRespawnEvent.class, EntityRegainHealthEvent.class,
-        FoodLevelChangeEvent.class, WorldManager.class })
+        FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class })
 public class TestWorldProperties {
-
     private TestInstanceCreator creator;
     private MultiverseCore core;
     private CommandSender mockCommandSender;
