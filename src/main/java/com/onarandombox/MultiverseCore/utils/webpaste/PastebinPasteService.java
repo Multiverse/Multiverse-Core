@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.regex.Pattern;
 
 /**
  * Pastes to {@code pastebin.com}.
@@ -74,19 +73,5 @@ public class PastebinPasteService implements PasteService {
         } catch (Exception e) {
             throw new PasteFailedException(e);
         }
-    }
-
-    // TODO maybe remove this?
-    private Pattern getURLMatchingPattern() {
-        if (this.isPrivate) {
-            return Pattern.compile(".*http://pastie.org/.*key=([0-9a-z]+).*");
-        } else {
-            return Pattern.compile(".*http://pastie.org/([0-9]+).*");
-        }
-    }
-
-    // TODO maybe remove this?
-    private String formatURL(String pastieID) {
-        return "http://pastie.org/" + (this.isPrivate ? "private/" : "") + pastieID;
     }
 }

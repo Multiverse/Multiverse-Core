@@ -54,7 +54,7 @@ public class DestinationFactory {
             Class<? extends MVDestination> myClass = this.destList.get(idenChar);
             try {
                 MVDestination mydest = myClass.newInstance();
-                if (!mydest.isThisType((MultiverseCore) this.plugin, destination)) {
+                if (!mydest.isThisType(this.plugin, destination)) {
                     return new InvalidDestination();
                 }
                 mydest.setDestination(this.plugin, destination);

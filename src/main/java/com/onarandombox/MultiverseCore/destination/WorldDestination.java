@@ -70,7 +70,7 @@ public class WorldDestination implements MVDestination {
         return spawnLoc;
     }
 
-    private Location getAcurateSpawnLocation(Entity e, MultiverseWorld world) {
+    private static Location getAcurateSpawnLocation(Entity e, MultiverseWorld world) {
         if (world != null) {
             return world.getSpawnLocation();
         } else {

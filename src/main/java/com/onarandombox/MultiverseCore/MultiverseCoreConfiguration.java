@@ -11,6 +11,26 @@ import me.main__.util.SerializationConfig.SerializationConfig;
  * Our configuration.
  */
 public class MultiverseCoreConfiguration extends SerializationConfig implements MultiverseCoreConfig {
+    private static MultiverseCoreConfiguration instance;
+
+    /**
+     * Sets the statically saved instance.
+     * @param instance The new instance.
+     */
+    public static void setInstance(MultiverseCoreConfiguration instance) {
+        MultiverseCoreConfiguration.instance = instance;
+    }
+
+    /**
+     * Gets the statically saved instance.
+     * @return The statically saved instance.
+     */
+    public static MultiverseCoreConfiguration getInstance() {
+        if (instance == null)
+            throw new IllegalStateException("The instance wasn't set!");
+        return instance;
+    }
+
     @Property
     private boolean enforceaccess;
     @Property
@@ -34,10 +54,12 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
 
     public MultiverseCoreConfiguration() {
         super();
+        MultiverseCoreConfiguration.setInstance(this);
     }
 
     public MultiverseCoreConfiguration(Map<String, Object> values) {
         super(values);
+        MultiverseCoreConfiguration.setInstance(this);
     }
 
     /**

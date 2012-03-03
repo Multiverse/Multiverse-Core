@@ -41,7 +41,7 @@ public class MVPortalListener implements Listener {
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getBlocks().get(0).getWorld());
         // We have to do it like this due to a bug in 1.1-R3
-        if (this.cancelPortalEvent(world, event.getPortalType())) {
+        if (cancelPortalEvent(world, event.getPortalType())) {
             event.setCancelled(true);
         }
     }
@@ -59,7 +59,7 @@ public class MVPortalListener implements Listener {
         for (Block b : event.getBlocks()) {
             if (b.getType() == Material.PORTAL) {
                 MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(b.getWorld());
-                if (this.cancelPortalEvent(world, PortalType.NETHER)) {
+                if (cancelPortalEvent(world, PortalType.NETHER)) {
                     event.setCancelled(true);
                     return;
                 }
@@ -67,12 +67,12 @@ public class MVPortalListener implements Listener {
         }
         // If We're here, then the Portal was an Ender type:
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getBlocks().get(0).getWorld());
-        if (this.cancelPortalEvent(world, PortalType.ENDER)) {
+        if (cancelPortalEvent(world, PortalType.ENDER)) {
             event.setCancelled(true);
         }
     }
 
-    private boolean cancelPortalEvent(MultiverseWorld world, PortalType type) {
+    private static boolean cancelPortalEvent(MultiverseWorld world, PortalType type) {
         if (world.getAllowedPortals() == AllowedPortalType.NONE) {
             return true;
         } else if (world.getAllowedPortals() != AllowedPortalType.ALL) {

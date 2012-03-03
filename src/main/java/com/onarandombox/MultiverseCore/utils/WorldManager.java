@@ -156,18 +156,6 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
-     * Verifies that a given Plugin generator string exists.
-     *
-     * @param generator The name of the generator plugin. This should be something like CleanRoomGenerator.
-     * @return True if the plugin exists and is enabled, false if not.
-     */
-    // TODO maybe remove this since it's unused?
-    private boolean pluginExists(String generator) {
-        Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
-        return myPlugin != null && myPlugin.isEnabled();
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override

@@ -16,7 +16,6 @@ import java.util.List;
  * Called when the Multiverse-config should be reloaded.
  */
 public class MVConfigReloadEvent extends Event {
-    private static final long serialVersionUID = 3647950355746345397L;
     private List<String> configsLoaded;
 
     public MVConfigReloadEvent(List<String> configsLoaded) {

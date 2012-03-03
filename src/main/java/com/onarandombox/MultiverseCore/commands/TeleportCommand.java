@@ -50,12 +50,8 @@ public class TeleportCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        // Check if the command was sent from a Player.
         CommandSender teleporter = sender;
         Player teleportee = null;
-        if (sender instanceof Player) {
-            teleporter = (Player) sender;
-        }
 
         String destinationName;
 
