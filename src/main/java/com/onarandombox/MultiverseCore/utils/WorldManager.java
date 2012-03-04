@@ -591,7 +591,8 @@ public class WorldManager implements MVWorldManager {
     public boolean saveWorldsConfig() {
         try {
             this.configWorlds.options().pathSeparator(SEPARATOR);
-            for (Map.Entry<String, MultiverseWorld> entry : worlds.entrySet()) {
+            this.configWorlds.set("worlds", null);
+            for (Map.Entry<String, ? extends MultiverseWorld> entry : worldsFromTheConfig.entrySet()) {
                 this.configWorlds.set("worlds" + SEPARATOR + entry.getKey(), entry.getValue());
             }
             this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
