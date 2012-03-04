@@ -235,13 +235,13 @@ public class TestWorldStuff {
         // Now fail one.
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "mode", "fish", "world" });
         try {
-            verify(mockCommandSender).sendMessage(mainWorld.getProperty("mode", Object.class).getHelp());
+            verify(mockCommandSender).sendMessage(ChatColor.RED + mainWorld.getPropertyHelp("mode"));
         } catch (PropertyDoesNotExistException e) {
             fail("Mode property did not exist.");
         }
 
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "blah", "fish", "world" });
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '"+ChatColor.GRAY+ "blah" + ChatColor.RED + "'");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'");
     }
 
     private void createInitialWorlds(Plugin plugin, Command command) {

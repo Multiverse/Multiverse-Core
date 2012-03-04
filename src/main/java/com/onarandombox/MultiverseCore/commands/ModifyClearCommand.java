@@ -75,6 +75,7 @@ public class ModifyClearCommand extends MultiverseCommand {
             sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/cgB2B");
             return;
         }
+        // TODO fix this
         if (world.clearList(property)) {
             sender.sendMessage(property + " was cleared. It contains 0 values now.");
             sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + property + ChatColor.WHITE + " was "

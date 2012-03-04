@@ -12,7 +12,7 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @param value The value.
      * @return True on success, false if the operation failed.
      */
-    boolean setProperty(String property, String value);
+    boolean setConfigProperty(String property, String value);
 
     /**
      * Sets portalCooldown.

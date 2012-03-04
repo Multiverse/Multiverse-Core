@@ -21,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -45,6 +46,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 
@@ -145,7 +147,7 @@ public class TestWorldProperties {
         assertTrue(mvWorld.isKeepingSpawnInMemory());
         assertTrue(mvWorld.getBedRespawn());
         assertTrue(mvWorld.getAutoLoad());
-        assertEquals(new Location(mvWorld.getCBWorld(), 0, 64, 0), mvWorld.getSpawnLocation());
+        assertEquals(new SpawnLocation(0, 64, 0), mvWorld.getSpawnLocation());
 
         /* ****************************************** *
          *    Call some events and verify behavior
@@ -242,7 +244,7 @@ public class TestWorldProperties {
         mvWorld.setAutoLoad(false);
         assertEquals(false, mvWorld.getAutoLoad());
         mvWorld.setSpawnLocation(new Location(mvWorld.getCBWorld(), 1, 1, 1));
-        assertEquals(new Location(mvWorld.getCBWorld(), 1, 1, 1), mvWorld.getSpawnLocation());
+        assertEquals(new SpawnLocation(1, 1, 1), mvWorld.getSpawnLocation());
 
         /* ****************************************** *
          *    Call some events and verify behavior
@@ -279,7 +281,7 @@ public class TestWorldProperties {
         core.getPlayerListener().playerJoin(playerJoinEvent);
         verify(mockPlayer, never()).teleport(any(Location.class));
         core.getPlayerListener().playerJoin(playerNewJoinEvent);
-        verify(mockNewPlayer).teleport(new Location(mvWorld.getCBWorld(), 1, 1, 1));
+        verify(mockNewPlayer).teleport(new SpawnLocation(1, 1, 1));
 
         // call player respawn events
         core.getPlayerListener().playerRespawn(playerRespawnBed);
