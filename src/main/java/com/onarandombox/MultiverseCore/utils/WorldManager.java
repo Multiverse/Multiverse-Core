@@ -18,6 +18,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Level;
 
 /**
@@ -470,6 +472,7 @@ public class WorldManager implements MVWorldManager {
     }
 
     private void ensureConfigIsPrepared() {
+        this.configWorlds.options().pathSeparator(SEPARATOR);
         if (this.configWorlds.getConfigurationSection("worlds") == null) {
             this.configWorlds.createSection("worlds");
         }
@@ -550,6 +553,8 @@ public class WorldManager implements MVWorldManager {
         return worldPurger;
     }
 
+    private static final char SEPARATOR = '\uF8FF';
+
     /**
      * {@inheritDoc}
      */
@@ -557,12 +562,26 @@ public class WorldManager implements MVWorldManager {
     public FileConfiguration loadWorldConfig(File file) {
         this.configWorlds = YamlConfiguration.loadConfiguration(file);
         this.ensureConfigIsPrepared();
+        try {
+            this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         // load world-objects
-        Set<String> worldKeys = this.configWorlds.getConfigurationSection("worlds").getKeys(false);
-        if (worldKeys != null) {
-            for (String key : worldKeys) {
-                if (this.configWorlds.get("worlds." + key) instanceof MVWorld) {
-                    this.worldsFromTheConfig.put(key, (MVWorld) this.configWorlds.get("worlds." + key));
+        Stack<String> worldKeys = new Stack<String>();
+        worldKeys.addAll(this.configWorlds.getConfigurationSection("worlds").getKeys(false));
+        while (!worldKeys.isEmpty()) {
+            String key = worldKeys.pop();
+            String path = "worlds" + SEPARATOR + key;
+            Object obj = this.configWorlds.get(path);
+            if ((obj != null) && (obj instanceof MVWorld)) {
+                this.worldsFromTheConfig.put(key.replaceAll(String.valueOf(SEPARATOR), "."), (MVWorld) obj);
+            } else if (this.configWorlds.isConfigurationSection(path)) {
+                ConfigurationSection section = this.configWorlds.getConfigurationSection(path);
+                Set<String> subkeys = section.getKeys(false);
+                for (String subkey : subkeys) {
+                    worldKeys.push(key + SEPARATOR + subkey);
                 }
             }
         }
@@ -575,8 +594,9 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean saveWorldsConfig() {
         try {
+            this.configWorlds.options().pathSeparator(SEPARATOR);
             for (Map.Entry<String, MultiverseWorld> entry : worlds.entrySet()) {
-                this.configWorlds.set("worlds." + entry.getKey(), entry.getValue());
+                this.configWorlds.set("worlds" + SEPARATOR + entry.getKey(), entry.getValue());
             }
             this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
             return true;
