@@ -169,15 +169,11 @@ public class WorldManager implements MVWorldManager {
         if (!unloadWorld(name)) {
             return false;
         }
-        if (this.configWorlds.get("worlds." + name) != null) {
+        if (this.worldsFromTheConfig.containsKey(name)) {
+            this.worldsFromTheConfig.remove(name);
             this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
-            this.configWorlds.set("worlds." + name, null);
 
             this.saveWorldsConfig();
-            // Remove it from the list of worlds.
-            if (this.worldsFromTheConfig.containsKey(name)) {
-                this.worldsFromTheConfig.remove(name);
-            }
             return true;
         } else {
             this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
