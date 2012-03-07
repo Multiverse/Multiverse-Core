@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,6 +32,7 @@ public class MockWorldFactory {
 
     private static final Map<World, Boolean> pvpStates = new WeakHashMap<World, Boolean>();
     private static final Map<World, Boolean> keepSpawnInMemoryStates = new WeakHashMap<World, Boolean>();
+    private static final Map<World, Difficulty> difficultyStates = new WeakHashMap<World, Difficulty>();
 
     private MockWorldFactory() {
     }
@@ -74,6 +76,22 @@ public class MockWorldFactory {
                 return null;
             }
         }).when(mockWorld).setKeepSpawnInMemory(anyBoolean());
+        when(mockWorld.getDifficulty()).thenAnswer(new Answer<Difficulty>() {
+            @Override
+            public Difficulty answer(InvocationOnMock invocation) throws Throwable {
+                World w = (World) invocation.getMock();
+                if (!difficultyStates.containsKey(w))
+                    difficultyStates.put(w, Difficulty.NORMAL); // default value
+                return difficultyStates.get(w);
+            }
+        });
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                difficultyStates.put((World) invocation.getMock(), (Difficulty) invocation.getArguments()[0]);
+                return null;
+            }
+        }).when(mockWorld).setDifficulty(any(Difficulty.class));
         when(mockWorld.getEnvironment()).thenReturn(env);
         when(mockWorld.getWorldType()).thenReturn(type);
         when(mockWorld.getSpawnLocation()).thenReturn(new Location(mockWorld, 0, 64, 0));

@@ -452,6 +452,14 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void copyValues(SerializationConfig other) {
+        super.copyValues(other);
+    }
+
+    /**
      * Sets the CB-World.
      * <p>
      * This is used to set some values after deserialization.

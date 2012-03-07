@@ -567,12 +567,26 @@ public class WorldManager implements MVWorldManager {
         // load world-objects
         Stack<String> worldKeys = new Stack<String>();
         worldKeys.addAll(this.configWorlds.getConfigurationSection("worlds").getKeys(false));
+        Map<String, MVWorld> newWorldsFromTheConfig = new HashMap<String, MVWorld>();
         while (!worldKeys.isEmpty()) {
             String key = worldKeys.pop();
             String path = "worlds" + SEPARATOR + key;
             Object obj = this.configWorlds.get(path);
             if ((obj != null) && (obj instanceof MVWorld)) {
-                this.worldsFromTheConfig.put(key.replaceAll(String.valueOf(SEPARATOR), "."), (MVWorld) obj);
+                String worldName = key.replaceAll(String.valueOf(SEPARATOR), ".");
+                if (this.worldsFromTheConfig.containsKey(worldName)) {
+                    // Object-Recycling :D
+                    MVWorld oldMVWorld = (MVWorld) this.worlds.get(worldName);
+                    oldMVWorld.copyValues((MVWorld) obj);
+                    newWorldsFromTheConfig.put(worldName, oldMVWorld);
+                } else {
+                    // we have to use a new one
+                    World cbworld = this.plugin.getServer().getWorld(worldName);
+                    MVWorld mvworld = (MVWorld) obj;
+                    if (cbworld != null)
+                        mvworld.init(cbworld, this.plugin);
+                    newWorldsFromTheConfig.put(worldName, mvworld);
+                }
             } else if (this.configWorlds.isConfigurationSection(path)) {
                 ConfigurationSection section = this.configWorlds.getConfigurationSection(path);
                 Set<String> subkeys = section.getKeys(false);
@@ -581,6 +595,8 @@ public class WorldManager implements MVWorldManager {
                 }
             }
         }
+        this.worldsFromTheConfig = newWorldsFromTheConfig;
+        this.worlds.keySet().retainAll(this.worldsFromTheConfig.keySet());
         return this.configWorlds;
     }
 
