@@ -9,10 +9,13 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
+import com.onarandombox.MultiverseCore.utils.webpaste.BitlyURLShortener;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
+import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,6 +28,7 @@ import java.util.logging.Level;
  * Dumps version info to the console.
  */
 public class VersionCommand extends MultiverseCommand {
+    private static final URLShortener SHORTENER = new BitlyURLShortener();
 
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
@@ -39,7 +43,7 @@ public class VersionCommand extends MultiverseCommand {
     }
 
     @Override
-    public void runCommand(CommandSender sender, List<String> args) {
+    public void runCommand(final CommandSender sender, final List<String> args) {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
             sender.sendMessage("Version info dumped to console. Please check your server logs.");
@@ -69,25 +73,30 @@ public class VersionCommand extends MultiverseCommand {
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
 
         // log to console
-        String data = versionEvent.getVersionInfo();
+        final String data = versionEvent.getVersionInfo();
         String[] lines = data.split("\n");
         for (String line : lines) {
             this.plugin.log(Level.INFO, line);
         }
 
-        if (args.size() == 1) {
-            String pasteUrl = "";
-            if (args.get(0).equalsIgnoreCase("-p")) {
-                pasteUrl = postToService(PasteServiceType.PASTIE, true, data); // private post to pastie
-            } else if (args.get(0).equalsIgnoreCase("-b")) {
-                pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data); // private post to pastie
-            } else {
-                return;
-            }
+        this.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(this.plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (args.size() == 1) {
+                    String pasteUrl;
+                    if (args.get(0).equalsIgnoreCase("-p")) {
+                        pasteUrl = postToService(PasteServiceType.PASTIE, true, data); // private post to pastie
+                    } else if (args.get(0).equalsIgnoreCase("-b")) {
+                        pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data); // private post to pastie
+                    } else {
+                        return;
+                    }
 
-            sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
-            this.plugin.log(Level.INFO, "Version info dumped here: " + pasteUrl);
-        }
+                    sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
+                    plugin.log(Level.INFO, "Version info dumped here: " + pasteUrl);
+                }
+            }
+        });
     }
 
     /**
@@ -100,7 +109,7 @@ public class VersionCommand extends MultiverseCommand {
     private static String postToService(PasteServiceType type, boolean isPrivate, String pasteData) {
         PasteService ps = PasteServiceFactory.getService(type, isPrivate);
         try {
-            return ps.postData(ps.encodeData(pasteData), ps.getPostURL());
+            return SHORTENER.shorten(ps.postData(ps.encodeData(pasteData), ps.getPostURL()));
         } catch (PasteFailedException e) {
             System.out.print(e);
             return "Error posting to service";
