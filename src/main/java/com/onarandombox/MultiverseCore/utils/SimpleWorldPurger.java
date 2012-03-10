@@ -15,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Slime;
@@ -105,7 +106,8 @@ public class SimpleWorldPurger implements WorldPurger {
                 negate = negateMonsters;
             }
             for (String s : thingsToKill) {
-                if (e.getType().getName() != null && e.getType().getName().equalsIgnoreCase(s)) {
+                EntityType type = EntityType.fromName(s);
+                if (type != null && type.equals(e.getType())) {
                     specified = true;
                     if (!negate) {
                         this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);
