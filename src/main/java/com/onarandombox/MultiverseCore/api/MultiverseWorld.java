@@ -566,8 +566,8 @@ public interface MultiverseWorld {
     String getTime();
 
     /**
-     * Gets the type of this world. As of 1.1-R1 this will be:
-     * FLAT or NORMAL
+     * Gets the type of this world. As of 1.2 this will be:
+     * FLAT, NORMAL or VERSION_1_1
      * <p>
      * This is *not* the generator.
      *
