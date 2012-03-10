@@ -106,7 +106,7 @@ public class SimpleWorldPurger implements WorldPurger {
                 negate = negateMonsters;
             }
             for (String s : thingsToKill) {
-                if (e.getType().getName().equalsIgnoreCase(s)) {
+                if (e.getType().getName() != null && e.getType().getName().equalsIgnoreCase(s)) {
                     specified = true;
                     if (!negate) {
                         this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);

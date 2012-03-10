@@ -207,7 +207,7 @@
         <dependency>
             <groupId>com.fernferret.allpay</groupId>
             <artifactId>AllPay</artifactId>
-            <version>8</version>
+            <version>9</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -216,7 +216,7 @@
         <dependency>
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>
-            <version>6</version>
+            <version>7</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
