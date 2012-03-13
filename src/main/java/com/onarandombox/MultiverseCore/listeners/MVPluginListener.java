@@ -44,6 +44,11 @@ public class MVPluginListener implements Listener {
             this.plugin.setSpout();
             this.plugin.log(Level.INFO, "Spout integration enabled.");
         }
+
+        if (event.getPlugin().getDescription().getName().equals("dynmap")) {
+            this.plugin.setDynmap();
+            this.plugin.log(Level.INFO, "Dynmap integration enabled.");
+        }
     }
 
     /**

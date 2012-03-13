@@ -6,6 +6,7 @@ import com.onarandombox.MultiverseCore.plugins.destination.DynmapMarkerDestinati
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapCore;
+import org.dynmap.bukkit.DynmapPlugin;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerSet;
 
@@ -16,14 +17,14 @@ import java.util.List;
  */
 public class DynmapConnector {
 
-    private DynmapCore plugin;
+    private DynmapPlugin plugin;
     private MultiverseCore core;
 
     /**
      * This class should only ever get initialized ONCE!
      */
     public DynmapConnector(Plugin dynmapCore, MultiverseCore core) {
-        this.plugin = (DynmapCore) dynmapCore;
+        this.plugin = ((DynmapPlugin) dynmapCore);
         this.core = core;
         this.addDestinationToManager();
     }

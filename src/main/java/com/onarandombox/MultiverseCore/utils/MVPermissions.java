@@ -164,6 +164,10 @@ public class MVPermissions implements PermissionsInterface {
                     "The player will spawn at an %sindeterminate location%s. Talk to the MV Devs if you see this",
                     ChatColor.RED, ChatColor.WHITE));
             cango = false;
+            asker.sendMessage(String.format(
+                                "Here are some more details for you:"));
+            asker.sendMessage(d.toString());
+            return;
         }
         String worldName = d.getLocation(p).getWorld().getName();
         if (!this.worldMgr.isMVWorld(worldName)) {

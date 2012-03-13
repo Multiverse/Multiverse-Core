@@ -89,7 +89,7 @@ public class DynmapMarkerDestination implements MVDestination{
             this.isValid = false;
             return;
         }
-        this.dynmap.getLocation(parsed.get(1), parsed.get(2));
+        this.location = this.dynmap.getLocation(parsed.get(1), parsed.get(2));
         if (this.location == null) {
             this.isValid = false;
             return;

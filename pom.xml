@@ -234,6 +234,13 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>dynmap</artifactId>
+            <version>0.34.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <!-- End DynMap Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
