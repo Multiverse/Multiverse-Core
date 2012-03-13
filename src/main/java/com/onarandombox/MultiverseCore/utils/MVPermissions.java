@@ -252,10 +252,15 @@ public class MVPermissions implements PermissionsInterface {
         Player player = (Player) sender;
 
         boolean hasPermission = sender.hasPermission(node);
+        if (!sender.isPermissionSet(node)) {
+            this.plugin.log(Level.FINER, String.format("The node [%s%s%s] was %sNOT%s set for [%s%s%s].",
+                    ChatColor.RED, node, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.AQUA,
+                    player.getDisplayName(), ChatColor.WHITE));
+        }
         if (hasPermission) {
-            this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
+            this.plugin.log(Level.FINER, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
         } else {
-            this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
+            this.plugin.log(Level.FINER, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
         }
         return hasPermission;
     }
