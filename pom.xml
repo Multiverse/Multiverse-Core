@@ -20,6 +20,11 @@
             <id>Bukkit Official</id>
             <url>http://repo.bukkit.org/content/repositories/public</url>
         </repository>
+        <!-- I've been told they'll have a repo this weekend :D
+        <repository>
+            <id>DynMap</id>
+            <url>TBD</url>
+        </repository> -->
     </repositories>
 
     <pluginRepositories>
@@ -221,6 +226,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of CommandHandler Dependency -->
+        <!-- Start DynMap Dependency -->
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>DynmapCore</artifactId>
+            <version>0.34.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End DynMap Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

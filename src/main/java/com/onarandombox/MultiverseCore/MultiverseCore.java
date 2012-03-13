@@ -32,6 +32,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
+import com.onarandombox.MultiverseCore.plugins.DynmapConnector;
 import com.onarandombox.MultiverseCore.utils.*;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
@@ -71,6 +72,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
     private MultiverseCoreConfiguration config;
+    private DynmapConnector dynmapConnecter;
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -257,6 +259,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
             this.setSpout();
             this.log(Level.INFO, "Spout integration enabled.");
+        }
+
+        // Check to see if Dynmap was already loaded:
+        if (this.getServer().getPluginManager().getPlugin("dynmap") != null) {
+            this.getDynmap();
+            this.log(Level.INFO, "Dynmap integration enabled.");
         }
     }
 
@@ -865,5 +873,21 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Deprecated
     public static MultiverseCoreConfiguration getStaticConfig() {
         return MultiverseCoreConfiguration.getInstance();
+    }
+
+    /**
+     * Returns true if dynmap was detected.
+     * @return True if dynmap was detected.
+     */
+    public boolean isDynmapLoaded() {
+        return !(this.dynmapConnecter == null);
+    }
+
+    public DynmapConnector getDynmap() {
+        return this.dynmapConnecter;
+    }
+
+    public void setDynmap() {
+        this.dynmapConnecter = new DynmapConnector(this.getServer().getPluginManager().getPlugin("dynmap"), this);
     }
 }
