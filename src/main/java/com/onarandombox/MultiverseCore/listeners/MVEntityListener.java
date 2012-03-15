@@ -10,6 +10,9 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+
+
+
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
@@ -85,6 +88,7 @@ public class MVEntityListener implements Listener {
      */
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
+    	//System.out.println("CreatureSpawn");
         // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
         // TODO: Allow the egg thing to be a config param. Doubt this will be per world; seems silly.
         if (event.getSpawnReason() == SpawnReason.CUSTOM || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
@@ -99,13 +103,16 @@ public class MVEntityListener implements Listener {
         if (!(this.worldManager.isMVWorld(world.getName())))
             return;
 
-        EntityType type = event.getEntityType();
+
+        EntityType creature = event.getEntityType();
+
+
         MultiverseWorld mvworld = this.worldManager.getMVWorld(world.getName());
 
         /**
          * Handle people with non-standard animals: ie a patched craftbukkit.
          */
-        if (type == null) {
+        if (creature == null) {
             this.plugin.log(Level.FINER, "Found a null typed creature.");
             return;
         }
@@ -113,14 +120,11 @@ public class MVEntityListener implements Listener {
         /**
          * Animal Handling
          */
-        if (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid) {
-            event.setCancelled(shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.canAnimalsSpawn(), type.getName().toUpperCase()));
-        }
-        /**
-         * Monster Handling
-         */
+
         if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime) {
-            event.setCancelled(shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.canMonstersSpawn(), type.getName().toUpperCase()));
+
+            event.setCancelled(MVEntityListener.shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.canMonstersSpawn(), creature.getName().toUpperCase()));
+
         }
     }
 
