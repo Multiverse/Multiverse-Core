@@ -432,7 +432,7 @@ public class MVWorld implements MultiverseWorld {
      * and monsters in the world, respectively.
      */
     public void syncMobs() {
-
+        /*
         if (this.getAnimalList().isEmpty()) {
             this.world.setSpawnFlags(this.world.getAllowMonsters(), this.getKnownProperty("animals", Boolean.class).getValue());
         } else {
@@ -443,7 +443,7 @@ public class MVWorld implements MultiverseWorld {
         } else {
             this.world.setSpawnFlags(true, this.world.getAllowAnimals());
         }
-        this.plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(this);
+        this.plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(this);*/
     }
 
     /**

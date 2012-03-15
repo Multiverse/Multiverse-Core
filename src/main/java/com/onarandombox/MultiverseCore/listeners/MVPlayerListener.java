@@ -76,8 +76,9 @@ public class MVPlayerListener implements Listener {
      * This method is called when a player respawns.
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void playerRespawn(PlayerRespawnEvent event) {
+    	
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
@@ -105,9 +106,9 @@ public class MVPlayerListener implements Listener {
         // World has been set to the appropriate world
         Location respawnLocation = getMostAccurateRespawnLocation(world);
 
-        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
-        this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
-        event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+        //MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
+        //this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
+        event.setRespawnLocation(respawnLocation);
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
