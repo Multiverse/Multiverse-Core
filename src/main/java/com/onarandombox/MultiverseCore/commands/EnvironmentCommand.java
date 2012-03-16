@@ -53,7 +53,7 @@ public class EnvironmentCommand extends MultiverseCommand {
      */
     public static void showWorldTypes(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid World Types are:");
-        sender.sendMessage(String.format("%sNORMAL%,s %sFLAT %sor %sVERSION_1_1",
+        sender.sendMessage(String.format("%sNORMAL%s, %sFLAT %sor %sVERSION_1_1",
                 ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, ChatColor.GOLD));
     }
 
