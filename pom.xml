@@ -187,13 +187,13 @@
             <scope>compile</scope>
         </dependency>
         <!-- Bukkit Dependency -->
-        <!-- Start of Spout -->
+        <!-- Start of Spout (disabled because we aren't using it)
         <dependency>
             <groupId>org.getspout</groupId>
             <artifactId>spoutpluginapi</artifactId>
             <version>dev-SNAPSHOT</version>
         </dependency>
-        <!-- End of Spout -->
+             End of Spout -->
         <!-- SerializationConfig Dependency -->
         <dependency>
             <groupId>me.main__.util</groupId>

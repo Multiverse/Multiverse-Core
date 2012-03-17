@@ -159,7 +159,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private AllPay banker;
     private int pluginCount;
     private DestinationFactory destFactory;
-    private SpoutInterface spoutInterface = null;
+    //private SpoutInterface spoutInterface = null;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -253,11 +253,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             // A test that had no worlds loaded was being run. This should never happen in production
         }
         this.saveMVConfig();
+        /*
         // Check to see if spout was already loaded (most likely):
         if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
             this.setSpout();
             this.log(Level.INFO, "Spout integration enabled.");
         }
+        */
     }
 
     private void initializeDestinationFactory() {
@@ -662,9 +664,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.serverFolder = newServerFolder;
     }
 
+    /*
     /**
      * Initializes Spout.
-     */
+     * /
     public void setSpout() {
         this.spoutInterface = new SpoutInterface();
         this.commandHandler.registerCommand(new SpoutCommand(this));
@@ -674,10 +677,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * Gets our {@link SpoutInterface}.
      *
      * @return The {@link SpoutInterface} we're using.
-     */
+     * /
     public SpoutInterface getSpout() {
         return this.spoutInterface;
     }
+    */
 
     /**
      * {@inheritDoc}
