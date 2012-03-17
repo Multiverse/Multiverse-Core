@@ -11,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -44,6 +45,7 @@ public class TestWorldCreation {
     }
 
     @Test
+    @Ignore
     public void test() {
         // Initialize a fake command
         Command mockCommand = mock(Command.class);
