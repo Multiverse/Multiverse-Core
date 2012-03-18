@@ -69,7 +69,7 @@ public class WorldManager implements MVWorldManager {
                 return s.equalsIgnoreCase("bukkit.yml");
             }
         });
-        if (files.length == 1) {
+        if (files != null && files.length == 1) {
             FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(files[0]);
             if (bukkitConfig.isConfigurationSection("worlds")) {
                 Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
@@ -77,6 +77,8 @@ public class WorldManager implements MVWorldManager {
                     defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
                 }
             }
+        } else {
+            this.plugin.log(Level.WARNING, "Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
     }
 

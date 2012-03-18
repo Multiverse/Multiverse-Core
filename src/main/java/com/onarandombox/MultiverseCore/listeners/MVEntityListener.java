@@ -113,13 +113,13 @@ public class MVEntityListener implements Listener {
         /**
          * Animal Handling
          */
-        if (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid) {
+        if (!event.isCancelled() && (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid)) {
             event.setCancelled(shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.canAnimalsSpawn(), type.getName().toUpperCase()));
         }
         /**
          * Monster Handling
          */
-        if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime) {
+        if (!event.isCancelled() && (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime)) {
             event.setCancelled(shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.canMonstersSpawn(), type.getName().toUpperCase()));
         }
     }

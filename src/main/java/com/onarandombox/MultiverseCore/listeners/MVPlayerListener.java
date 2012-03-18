@@ -238,7 +238,6 @@ public class MVPlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerPortalCheck(PlayerPortalEvent event) {
-        this.plugin.log(Level.FINE, "CALLING CORE-ADJUST!!!");
         if (event.isCancelled() || event.getFrom() == null) {
             return;
         }
