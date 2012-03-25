@@ -68,7 +68,7 @@ public class MVPlayerListener implements Listener {
             }
             prefix = mvworld.getColoredWorldString();
             String format = event.getFormat();
-            event.setFormat("[" + prefix + "]" + format);
+            event.setFormat(prefix  + format);
         }
     }
 
