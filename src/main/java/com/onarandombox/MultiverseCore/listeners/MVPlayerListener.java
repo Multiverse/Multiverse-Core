@@ -311,6 +311,9 @@ public class MVPlayerListener implements Listener {
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameMode(player, mvWorld);
+        } else {
+            this.plugin.log(Level.FINER, String.format(
+                    "Not handling gamemode for world '%s' not managed by Multiverse.", world.getName()));
         }
     }
 
