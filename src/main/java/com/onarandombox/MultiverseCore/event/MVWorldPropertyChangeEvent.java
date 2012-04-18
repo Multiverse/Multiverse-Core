@@ -19,16 +19,18 @@ import org.bukkit.event.HandlerList;
  * If it is cancelled, no change will happen.
  * <p>
  * If you want to get the values of the world before the change, query the world.
- * If you want to get the value being changed, use getProperty()
+ * To get the name of the property that was changed, use {@link #getPropertyName()}.
+ * To get the new value, use {@link #getTheNewValue()}. To change it, use {@link #setTheNewValue(Object)}.
+ * @param <T> The type of the property that was set.
  */
-public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
+public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable {
     private MultiverseWorld world;
     private CommandSender changer;
     private boolean isCancelled = false;
-    private String value;
     private String name;
+    private T value;
 
-    public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, String value) {
+    public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, T value) {
         this.world = world;
         this.changer = changer;
         this.name = name;
@@ -64,16 +66,38 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
     /**
      * Gets the new value.
      * @return The new value.
+     * @deprecated Use {@link #getTheNewValue()} instead.
      */
+    @Deprecated
     public String getNewValue() {
+        return this.value.toString();
+    }
+
+    /**
+     * Gets the new value.
+     * @return The new value.
+     */
+    public T getTheNewValue() {
         return this.value;
     }
 
     /**
      * Sets the new value.
+     * <p>
+     * This method is only a stub, it'll <b>always</b> throw an {@link UnsupportedOperationException}!
      * @param value The new new value.
+     * @deprecated Use {@link #setTheNewValue(Object)} instead.
      */
+    @Deprecated
     public void setNewValue(String value) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Sets the new value.
+     * @param value The new value.
+     */
+    public void setTheNewValue(T value) {
         this.value = value;
     }
 
@@ -88,6 +112,8 @@ public class MVWorldPropertyChangeEvent extends Event implements Cancellable {
 
     /**
      * Gets the person (or console) who was responsible for the change.
+     * <p>
+     * This may be null!
      *
      * @return The person (or console) who was responsible for the change.
      */

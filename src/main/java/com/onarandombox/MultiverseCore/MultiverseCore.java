@@ -171,6 +171,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void onLoad() {
         // Register our config
         SerializationConfig.registerAll(MultiverseCoreConfiguration.class);
+        // Register our world
+        SerializationConfig.registerAll(MVWorld.class);
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
@@ -424,6 +426,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void onDisable() {
+        this.saveMVConfigs();
         debugLog.close();
         this.banker = null;
         this.bank = null;

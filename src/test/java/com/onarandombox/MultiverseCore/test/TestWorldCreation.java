@@ -86,9 +86,6 @@ public class TestWorldCreation {
         assertNotNull(worldsSection);
         assertEquals(2, worldsSection.getKeys(false).size());
         assertTrue(worldsSection.getKeys(false).contains("world2"));
-        // TODO: Uncomment once this is fixed!!!
-        //assertTrue(worldsSection.getKeys(false).contains("'fish.world'"));
-
-        // Worlds with .s are a special case, verify that they work.
+        assertTrue(worldsSection.getKeys(false).contains("fish.world"));
     }
 }
