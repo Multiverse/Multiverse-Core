@@ -180,7 +180,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.2.3-R0.2-SNAPSHOT</version>
+            <version>1.2.5-R1.0</version>
             <!-- If you want the lates, use this -->
             <!-- <version>LATEST</version> -->
             <type>jar</type>
