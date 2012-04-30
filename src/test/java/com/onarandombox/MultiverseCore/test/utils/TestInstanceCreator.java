@@ -103,6 +103,7 @@ public class TestInstanceCreator {
 
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
+                @Override
                 public World answer(InvocationOnMock invocation) throws Throwable {
                     String arg;
                     try {
@@ -115,6 +116,7 @@ public class TestInstanceCreator {
             });
 
             when(mockServer.getWorlds()).thenAnswer(new Answer<List<World>>() {
+                @Override
                 public List<World> answer(InvocationOnMock invocation) throws Throwable {
                     return MockWorldFactory.getWorlds();
                 }
@@ -124,6 +126,7 @@ public class TestInstanceCreator {
 
             when(mockServer.createWorld(Matchers.isA(WorldCreator.class))).thenAnswer(
                     new Answer<World>() {
+                        @Override
                         public World answer(InvocationOnMock invocation) throws Throwable {
                             WorldCreator arg;
                             try {
@@ -146,6 +149,7 @@ public class TestInstanceCreator {
             BukkitScheduler mockScheduler = mock(BukkitScheduler.class);
             when(mockScheduler.scheduleSyncDelayedTask(any(Plugin.class), any(Runnable.class), anyLong())).
             thenAnswer(new Answer<Integer>() {
+                @Override
                 public Integer answer(InvocationOnMock invocation) throws Throwable {
                     Runnable arg;
                     try {
@@ -158,6 +162,7 @@ public class TestInstanceCreator {
                 }});
             when(mockScheduler.scheduleSyncDelayedTask(any(Plugin.class), any(Runnable.class))).
             thenAnswer(new Answer<Integer>() {
+                @Override
                 public Integer answer(InvocationOnMock invocation) throws Throwable {
                     Runnable arg;
                     try {
@@ -204,6 +209,7 @@ public class TestInstanceCreator {
             commandSenderLogger.setParent(Util.logger);
             commandSender = mock(CommandSender.class);
             doAnswer(new Answer<Void>() {
+                @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {
                     commandSenderLogger.info(ChatColor.stripColor((String) invocation.getArguments()[0]));
                     return null;

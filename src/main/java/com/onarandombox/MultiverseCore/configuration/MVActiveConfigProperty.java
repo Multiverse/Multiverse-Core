@@ -10,8 +10,10 @@ package com.onarandombox.MultiverseCore.configuration;
 /**
  * An "active" {@link MVConfigProperty} that uses the specified method to be "actually" set.
  * @param <T> The type of the config-property.
+ * @deprecated This is deprecated.
  * @see MVConfigProperty
  */
+@Deprecated
 public interface MVActiveConfigProperty<T> extends MVConfigProperty<T> {
     /**
      * Gets the method that will be executed.
