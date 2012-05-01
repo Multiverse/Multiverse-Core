@@ -385,6 +385,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private void migrateWorldConfig() {
         FileConfiguration wconf = YamlConfiguration
                 .loadConfiguration(new File(getDataFolder(), "worlds.yml"));
+
+        if (!wconf.isConfigurationSection("worlds")) // empty config
+            return;
+
         Map<String, Object> values = wconf.getConfigurationSection("worlds").getValues(false);
 
         boolean wasChanged = false;
