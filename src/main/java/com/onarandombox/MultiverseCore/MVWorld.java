@@ -386,16 +386,19 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     @Property(serializor = GameModePropertySerializor.class, validator = GameModePropertyValidator.class,
             description = "GameMode must be set as one of the following: survival creative")
     private GameMode gameMode;
+    @Property
+    private boolean keepSpawnLoaded;
     @Property(description = "Sorry, this must either be: true or false.")
     private VirtualProperty<Boolean> keepSpawnInMemory = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
             world.get().setKeepSpawnInMemory(newValue);
+            keepSpawnLoaded = newValue;
         }
 
         @Override
         public Boolean get() {
-            return world.get().getKeepSpawnInMemory();
+            return keepSpawnLoaded;
         }
     };
     @Property
@@ -621,6 +624,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
         this.generator = null;
+        this.keepSpawnLoaded = false;
     }
 
     /**
