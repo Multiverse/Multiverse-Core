@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,6 +55,7 @@ public class UpdateChecker {
     }
 
     public void checkUpdate() {
+        BufferedReader rd = null;
         try {
             URL url = new URL("http://bukkit.onarandombox.com/multiverse/version.php?n=" + URLEncoder.encode(this.name, "UTF-8") + "&v=" + this.cversion);
             URLConnection conn = url.openConnection();
@@ -65,7 +67,7 @@ public class UpdateChecker {
                 return;
             }
 
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
             String version = null;
 
@@ -76,7 +78,6 @@ public class UpdateChecker {
             }
 
             if (version == null) {
-                rd.close();
                 return;
             }
 
@@ -92,6 +93,12 @@ public class UpdateChecker {
             rd.close();
         } catch (Exception e) {
             // No need to alert the user of any error here... it's not important.
+        } finally {
+            if (rd != null) {
+                try {
+                    rd.close();
+                } catch (IOException ignore) { }
+            }
         }
     }
 

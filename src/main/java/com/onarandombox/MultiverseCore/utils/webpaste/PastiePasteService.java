@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -55,14 +56,16 @@ public class PastiePasteService implements PasteService {
      */
     @Override
     public String postData(String encodedData, URL url) throws PasteFailedException {
+        OutputStreamWriter wr = null;
+        BufferedReader rd = null;
         try {
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(encodedData);
             wr.flush();
 
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
             String pastieUrl = "";
             Pattern pastiePattern = this.getURLMatchingPattern();
@@ -73,11 +76,20 @@ public class PastiePasteService implements PasteService {
                     pastieUrl = this.formatURL(pastieID);
                 }
             }
-            wr.close();
-            rd.close();
             return pastieUrl;
         } catch (Exception e) {
             throw new PasteFailedException(e);
+        } finally {
+            if (wr != null) {
+                try {
+                    wr.close();
+                } catch (IOException ignore) { }
+            }
+            if (rd != null) {
+                try {
+                    rd.close();
+                } catch (IOException ignore) { }
+            }
         }
     }
 
