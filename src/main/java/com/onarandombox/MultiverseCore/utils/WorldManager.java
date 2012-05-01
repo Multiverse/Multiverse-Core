@@ -287,7 +287,7 @@ public class WorldManager implements MVWorldManager {
         MVWorld mvworld = worldsFromTheConfig.get(worldName);
         World cbworld;
         try {
-            cbworld = WorldCreator.name(worldName).createWorld();
+            cbworld = creator.createWorld();
         } catch (Exception e) {
             e.printStackTrace();
             brokenWorld(worldName);
