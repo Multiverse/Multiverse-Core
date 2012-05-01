@@ -466,8 +466,11 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         super.copyValues(other);
     }
 
+    /**
+     * Null-location.
+     */
     @SerializableAs("MVNullLocation (It's a bug if you see this in your config file)")
-    private static final class NullLocation extends SpawnLocation {
+    public static final class NullLocation extends SpawnLocation {
         public NullLocation() {
             super(0, -1, 0);
         }
