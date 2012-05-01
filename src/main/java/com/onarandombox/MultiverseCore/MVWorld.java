@@ -39,6 +39,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.util.Vector;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -466,6 +467,36 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     }
 
     /**
+     * That's the spawn-location when the MVWorld-object wasn't property initialized.
+     */
+    public static final SpawnLocation NULL_LOCATION = new SpawnLocation(0, -1, 0) {
+        @Override
+        public Location clone() {
+            throw new UnsupportedOperationException();
+        };
+
+        @Override
+        public Map<String, Object> serialize() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Vector toVector() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int hashCode() {
+            return -1;
+        };
+
+        @Override
+        public String toString() {
+            return "NULL LOCATION";
+        };
+    };
+
+    /**
      * Sets the CB-World.
      * <p>
      * This is used to set some values after deserialization.
@@ -480,7 +511,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.environment = cbWorld.getEnvironment();
         this.seed = cbWorld.getSeed();
         this.name = cbWorld.getName();
-        if (this.spawnLocation == null)
+        if (this.spawnLocation == NULL_LOCATION)
             this.spawnLocation = new SpawnLocation(readSpawnFromWorld(cbWorld));
 
         this.initPerms();
@@ -571,7 +602,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.adjustSpawn = true;
         this.portalForm = AllowedPortalType.ALL;
         this.gameMode = GameMode.SURVIVAL;
-        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new SpawnLocation(0, 0, 0);
+        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : NULL_LOCATION;
         this.autoLoad = true;
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
