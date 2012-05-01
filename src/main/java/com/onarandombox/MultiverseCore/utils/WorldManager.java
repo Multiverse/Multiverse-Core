@@ -272,7 +272,7 @@ public class WorldManager implements MVWorldManager {
         WorldCreator creator = WorldCreator.name(name);
 
         creator.environment(world.getEnvironment()).seed(world.getSeed());
-        if (world.getGenerator() != null)
+        if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
             creator.generator(world.getGenerator());
 
         return doLoad(creator);
