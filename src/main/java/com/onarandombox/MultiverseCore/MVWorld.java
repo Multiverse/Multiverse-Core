@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.configuration.EntryFee;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
@@ -371,10 +372,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     };
     @Property(validator = SpawningPropertyValidator.class, description = "Sorry, 'animals' must either be: true or false.")
     private SpawnSettings spawning;
-    @Property(description = "Currency must be an integer between -1 and the highest Minecraft item ID.")
-    private int currency;
-    @Property(description = "Price must be a double value. ex: 1.2. Set to a negative value to give players money for entering this world.")
-    private double price;
+    @Property
+    private EntryFee entryfee;
     @Property(description = "Sorry, 'hunger' must either be: true or false.")
     private boolean hunger;
     @Property(description = "Sorry, 'autoheal' must either be: true or false.")
@@ -564,8 +563,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.respawnWorld = new String();
         this.allowWeather = true;
         this.spawning = new SpawnSettings();
-        this.currency = -1;
-        this.price = 0D;
+        this.entryfee = new EntryFee();
         this.hunger = true;
         this.autoHeal = true;
         this.adjustSpawn = true;
@@ -1050,7 +1048,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public int getCurrency() {
-        return this.currency;
+        return this.entryfee.getCurrency();
     }
 
     /**
@@ -1058,7 +1056,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public void setCurrency(int currency) {
-        this.setPropertyValueUnchecked("currency", currency);
+        this.setPropertyValueUnchecked("entryfee.currency", currency);
     }
 
     /**
@@ -1066,7 +1064,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public double getPrice() {
-        return this.price;
+        return this.entryfee.getAmount();
     }
 
     /**
@@ -1074,7 +1072,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public void setPrice(double price) {
-        this.setPropertyValueUnchecked("price", price);
+        this.setPropertyValueUnchecked("entryfee.amount", price);
     }
 
     /**

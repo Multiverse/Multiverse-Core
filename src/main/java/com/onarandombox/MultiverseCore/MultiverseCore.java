@@ -27,6 +27,7 @@ import com.onarandombox.MultiverseCore.destination.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
@@ -42,6 +43,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -52,7 +54,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -299,6 +303,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.multiverseConfig.setDefaults(coreDefaults);
         this.multiverseConfig.options().copyDefaults(false);
         this.multiverseConfig.options().copyHeader(true);
+
+        this.migrateWorldConfig();
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         MultiverseCoreConfiguration wantedConfig = null;
@@ -370,6 +376,181 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (this.multiverseConfig.isSet("version")) {
             this.log(Level.INFO, "Migrating 'version'...");
             this.multiverseConfig.set("version", null);
+        }
+    }
+
+    /**
+     * Migrate the worlds.yml to SerializationConfig.
+     */
+    private void migrateWorldConfig() {
+        FileConfiguration wconf = YamlConfiguration
+                .loadConfiguration(new File(getDataFolder(), "worlds.yml"));
+        Map<String, Object> values = wconf.getConfigurationSection("worlds").getValues(false);
+
+        boolean wasChanged = false;
+        Map<String, Object> newValues = new LinkedHashMap<String, Object>(values.size());
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            if (entry.getValue() instanceof MVWorld) {
+                // fine
+                newValues.put(entry.getKey(), entry.getValue());
+            } else if (entry.getValue() instanceof ConfigurationSection) {
+                // we have to migrate this
+                MVWorld world = new MVWorld(Collections.EMPTY_MAP);
+                ConfigurationSection section = (ConfigurationSection) entry.getValue();
+
+                // migrate animals and monsters
+                if (section.isConfigurationSection("animals")) {
+                    ConfigurationSection animalSection = section.getConfigurationSection("animals");
+                    if (animalSection.contains("spawn")) {
+                        if (animalSection.isBoolean("spawn"))
+                            world.setAllowAnimalSpawn(animalSection.getBoolean("spawn"));
+                        else
+                            world.setAllowAnimalSpawn(Boolean.parseBoolean(animalSection.getString("spawn")));
+                    }
+                    if (animalSection.isList("exceptions")) {
+                        world.getAnimalList().clear();
+                        world.getAnimalList().addAll(animalSection.getStringList("exceptions"));
+                    }
+                }
+                if (section.isConfigurationSection("monsters")) {
+                    ConfigurationSection monsterSection = section.getConfigurationSection("monsters");
+                    if (monsterSection.contains("spawn")) {
+                        if (monsterSection.isBoolean("spawn"))
+                            world.setAllowMonsterSpawn(monsterSection.getBoolean("spawn"));
+                        else
+                            world.setAllowMonsterSpawn(Boolean.parseBoolean(monsterSection.getString("spawn")));
+                    }
+                    if (monsterSection.isList("exceptions")) {
+                        world.getMonsterList().clear();
+                        world.getMonsterList().addAll(monsterSection.getStringList("exceptions"));
+                    }
+                }
+
+                // migrate entryfee
+                if (section.isConfigurationSection("entryfee")) {
+                    ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
+                    if (feeSection.isInt("currency"))
+                        world.setCurrency(feeSection.getInt("currency"));
+
+                    if (feeSection.isDouble("amount"))
+                        world.setPrice(feeSection.getDouble("amount"));
+                    else if (feeSection.isInt("amount"))
+                        world.setPrice(feeSection.getInt("amount"));
+                }
+
+                // migrate pvp
+                if (section.isBoolean("pvp")) {
+                    world.setPVPMode(section.getBoolean("pvp"));
+                }
+
+                // migrate alias
+                if (section.isConfigurationSection("alias")) {
+                    ConfigurationSection aliasSection = section.getConfigurationSection("alias");
+                    if (aliasSection.isString("color"))
+                        world.setColor(aliasSection.getString("color"));
+                    if (aliasSection.isString("name"))
+                        world.setAlias(aliasSection.getString("name"));
+                }
+
+                // migrate worldblacklist
+                if (section.isList("worldblacklist")) {
+                    world.getWorldBlacklist().clear();
+                    world.getWorldBlacklist().addAll(section.getStringList("worldblacklist"));
+                }
+
+                // migrate scale
+                if (section.isDouble("scale")) {
+                    world.setScaling(section.getDouble("scale"));
+                }
+
+                // migrate gamemode
+                if (section.isString("gamemode")) {
+                    try {
+                        world.setPropertyValue("gamemode", section.getString("gamemode"));
+                    } catch (PropertyDoesNotExistException e) {
+                        throw new RuntimeException("Who forgot to update the migrator?", e);
+                    }
+                }
+
+                // migrate hunger
+                if (section.isBoolean("hunger")) {
+                    world.setHunger(section.getBoolean("hunger"));
+                }
+
+                // migrate hidden
+                if (section.isBoolean("hidden")) {
+                    world.setHidden(section.getBoolean("hidden"));
+                }
+
+                // migrate autoheal
+                if (section.isBoolean("autoheal")) {
+                    world.setAutoHeal(section.getBoolean("autoheal"));
+                }
+
+                // migrate portalform
+                if (section.isString("portalform")) {
+                    try {
+                        world.setPropertyValue("portalform", section.getString("portalform"));
+                    } catch (PropertyDoesNotExistException e) {
+                        throw new RuntimeException("Who forgot to update the migrator?", e);
+                    }
+                }
+
+                // migrate environment
+                if (section.isString("environment")) {
+                    try {
+                        world.setPropertyValue("environment", section.getString("environment"));
+                    } catch (PropertyDoesNotExistException e) {
+                        throw new RuntimeException("Who forgot to update the migrator?", e);
+                    }
+                }
+
+                // migrate generator
+                if (section.isString("generator")) {
+                    world.setGenerator(section.getString("generator"));
+                }
+
+                // migrate seed
+                if (section.isLong("seed")) {
+                    world.setSeed(section.getLong("seed"));
+                }
+
+                // migrate weather
+                if (section.isBoolean("weather")) {
+                    world.setEnableWeather(section.getBoolean("weather"));
+                }
+
+                // migrate adjustspawn
+                if (section.isBoolean("adjustspawn")) {
+                    world.setAdjustSpawn(section.getBoolean("adjustspawn"));
+                }
+
+                newValues.put(entry.getKey(), world);
+                wasChanged = true;
+            } else {
+                // huh?
+                this.log(Level.WARNING, "Removing unknown entry in the config: " + entry);
+                // just don't add to newValues
+                wasChanged = true;
+            }
+        }
+
+        if (wasChanged) {
+            // clear config
+            wconf.set("worlds", null);
+
+            // and rebuild it
+            ConfigurationSection rootSection = wconf.createSection("worlds");
+            for (Map.Entry<String, Object> entry : newValues.entrySet()) {
+                rootSection.set(entry.getKey(), entry.getValue());
+            }
+
+            try {
+                wconf.save(new File(getDataFolder(), "worlds.yml"));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
