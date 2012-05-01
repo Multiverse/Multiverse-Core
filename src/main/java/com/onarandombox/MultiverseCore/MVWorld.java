@@ -511,11 +511,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     }
 
     /**
-     * That's the spawn-location when the MVWorld-object wasn't property initialized.
-     */
-    public static final SpawnLocation NULL_LOCATION = new NullLocation();
-
-    /**
      * Sets the CB-World.
      * <p>
      * This is used to set some values after deserialization.
@@ -530,7 +525,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.environment = cbWorld.getEnvironment();
         this.seed = cbWorld.getSeed();
         this.name = cbWorld.getName();
-        if (this.spawnLocation == NULL_LOCATION)
+        if (this.spawnLocation instanceof NullLocation)
             this.spawnLocation = new SpawnLocation(readSpawnFromWorld(cbWorld));
 
         this.initPerms();
@@ -621,7 +616,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.adjustSpawn = true;
         this.portalForm = AllowedPortalType.ALL;
         this.gameMode = GameMode.SURVIVAL;
-        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : NULL_LOCATION;
+        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
         this.autoLoad = true;
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
