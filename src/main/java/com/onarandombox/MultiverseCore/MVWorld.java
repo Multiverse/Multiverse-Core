@@ -69,8 +69,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private MultiverseCore plugin; // Hold the Plugin Instance.
 
     private Reference<World> world; // A reference to the World Instance.
-    private Environment environment; // Hold the Environment type EG Environment.NETHER / Environment.NORMAL
-    private long seed; // The world seed
     private String name; // The Worlds Name, EG its folder name.
 
     /**
@@ -438,6 +436,12 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
             return world.get().getTime();
         }
     };
+    @Property
+    private Environment environment;
+    @Property
+    private long seed;
+    @Property
+    private String generator;
     // End of properties
     // --------------------------------------------------------------
 
@@ -446,6 +450,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private Permission ignoreperm;
 
     public MVWorld(boolean fixSpawn) {
+        super();
         if (!fixSpawn) {
             this.adjustSpawn = false;
         }
@@ -570,6 +575,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.autoLoad = true;
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
+        this.generator = null;
     }
 
     /**
@@ -791,7 +797,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public Environment getEnvironment() {
-        // This variable is not settable in-game, therefore does not get a property.
         return this.environment;
     }
 
@@ -800,16 +805,14 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public void setEnvironment(Environment environment) {
-        // This variable is not settable in-game, therefore does not get a property.
-        this.environment = environment;
+        this.setPropertyValueUnchecked("environment", environment);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Long getSeed() {
-        // This variable is not settable in-game, therefore does not get a property.
+    public long getSeed() {
         return this.seed;
     }
 
@@ -818,8 +821,23 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public void setSeed(long seed) {
-        // This variable is not settable in-game, therefore does not get a property.
-        this.seed = seed;
+        this.setPropertyValueUnchecked("seed", seed);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getGenerator() {
+        return this.generator;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setGenerator(String generator) {
+        this.setPropertyValueUnchecked("generator", generator);
     }
 
     /**

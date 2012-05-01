@@ -142,6 +142,9 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
+        // set generator (special case because we can't read it from org.bukkit.World)
+        this.worlds.get(name).setGenerator(generator);
+
         this.saveWorldsConfig();
         return true;
     }
@@ -262,7 +265,17 @@ public class WorldManager implements MVWorldManager {
     }
 
     private boolean doLoad(String name) {
-        return doLoad(WorldCreator.name(name));
+        if (!worldsFromTheConfig.containsKey(name))
+            throw new IllegalArgumentException("That world doesn't exist!");
+
+        MVWorld world = worldsFromTheConfig.get(name);
+        WorldCreator creator = WorldCreator.name(name);
+
+        creator.environment(world.getEnvironment()).seed(world.getSeed());
+        if (world.getGenerator() != null)
+            creator.generator(world.getGenerator());
+
+        return doLoad(creator);
     }
 
     private boolean doLoad(WorldCreator creator) {

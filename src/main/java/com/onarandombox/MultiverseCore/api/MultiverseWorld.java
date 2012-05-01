@@ -46,7 +46,7 @@ public interface MultiverseWorld {
      * Gets the type of this world. As of 1.2 this will be:
      * FLAT, NORMAL or VERSION_1_1
      * <p>
-     * This is *not* the generator.
+     * This is <b>not</b> the generator.
      *
      * @return The Type of this world.
      */
@@ -104,7 +104,7 @@ public interface MultiverseWorld {
      *
      * @return The Long version of the seed.
      */
-    Long getSeed();
+    long getSeed();
 
     /**
      * Sets the seed of this world.
@@ -112,6 +112,20 @@ public interface MultiverseWorld {
      * @param seed A Long that is the seed.
      */
     void setSeed(long seed);
+
+    /**
+     * Gets the generator of this world.
+     *
+     * @return The name of the generator.
+     */
+    String getGenerator();
+
+    /**
+     * Sets the generator of this world.
+     *
+     * @param generator The new generator's name.
+     */
+    void setGenerator(String generator);
 
     /**
      * Gets the help-message for a property.
