@@ -466,10 +466,12 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         super.copyValues(other);
     }
 
-    /**
-     * That's the spawn-location when the MVWorld-object wasn't property initialized.
-     */
-    public static final SpawnLocation NULL_LOCATION = new SpawnLocation(0, -1, 0) {
+    @SerializableAs("MVNullLocation (It's a bug if you see this in your config file)")
+    private static final class NullLocation extends SpawnLocation {
+        public NullLocation() {
+            super(0, -1, 0);
+        }
+
         @Override
         public Location clone() {
             throw new UnsupportedOperationException();
@@ -477,7 +479,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
 
         @Override
         public Map<String, Object> serialize() {
-            throw new UnsupportedOperationException();
+            return Collections.EMPTY_MAP;
+        }
+
+        /**
+         * Let Bukkit be able to deserialize this.
+         * @param args The map.
+         * @return The deserialized object.
+         */
+        public static NullLocation deserialize(Map<String, Object> args) {
+            return new NullLocation();
         }
 
         @Override
@@ -494,7 +505,12 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         public String toString() {
             return "NULL LOCATION";
         };
-    };
+    }
+
+    /**
+     * That's the spawn-location when the MVWorld-object wasn't property initialized.
+     */
+    public static final SpawnLocation NULL_LOCATION = new NullLocation();
 
     /**
      * Sets the CB-World.
