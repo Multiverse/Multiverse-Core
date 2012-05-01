@@ -520,13 +520,41 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 }
 
                 // migrate weather
-                if (section.isBoolean("weather")) {
-                    world.setEnableWeather(section.getBoolean("weather"));
+                if (section.isBoolean("allowweather")) {
+                    world.setEnableWeather(section.getBoolean("allowweather"));
                 }
 
                 // migrate adjustspawn
                 if (section.isBoolean("adjustspawn")) {
                     world.setAdjustSpawn(section.getBoolean("adjustspawn"));
+                }
+
+                // migrate autoload
+                if (section.isBoolean("autoload")) {
+                    world.setAutoLoad(section.getBoolean("autoload"));
+                }
+
+                // migrate bedrespawn
+                if (section.isBoolean("bedrespawn")) {
+                    world.setBedRespawn(section.getBoolean("bedrespawn"));
+                }
+
+                // migrate spawn
+                if (section.isConfigurationSection("spawn")) {
+                    ConfigurationSection spawnSect = section.getConfigurationSection("spawn");
+                    Location spawnLoc = world.getSpawnLocation();
+                    if (spawnSect.isDouble("yaw"))
+                        spawnLoc.setYaw((float) spawnSect.getDouble("yaw"));
+                    if (spawnSect.isDouble("pitch"))
+                        spawnLoc.setPitch((float) spawnSect.getDouble("pitch"));
+                    if (spawnSect.isDouble("x"))
+                        spawnLoc.setX(spawnSect.getDouble("x"));
+                    if (spawnSect.isDouble("y"))
+                        spawnLoc.setY(spawnSect.getDouble("y"));
+                    if (spawnSect.isDouble("z"))
+                        spawnLoc.setZ(spawnSect.getDouble("z"));
+
+                    world.setSpawnLocation(spawnLoc);
                 }
 
                 newValues.put(entry.getKey(), world);

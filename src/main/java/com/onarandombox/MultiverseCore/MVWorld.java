@@ -69,7 +69,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
 
     private MultiverseCore plugin; // Hold the Plugin Instance.
 
-    private Reference<World> world; // A reference to the World Instance.
+    private Reference<World> world = new WeakReference<World>(null); // A reference to the World Instance.
     private String name; // The Worlds Name, EG its folder name.
 
     /**
@@ -404,7 +404,9 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private VirtualProperty<Location> spawn = new VirtualProperty<Location>() {
         @Override
         public void set(Location newValue) {
-            world.get().setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
+            if (getCBWorld() != null)
+                getCBWorld().setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
+
             spawnLocation = new SpawnLocation(newValue);
         }
 
@@ -569,7 +571,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.adjustSpawn = true;
         this.portalForm = AllowedPortalType.ALL;
         this.gameMode = GameMode.SURVIVAL;
-        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : null;
+        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new SpawnLocation(0, 0, 0);
         this.autoLoad = true;
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
