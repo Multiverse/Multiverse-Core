@@ -341,7 +341,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private String alias;
     @Property(serializor = EnumPropertySerializor.class, description = "Sorry, 'color' must be a valid color-name.")
     private EnglishChatColor color;
-    @Property(description = "Sorry, 'pvp' must either be: true or false.", virtualType = Boolean.class)
+    @Property(description = "Sorry, 'pvp' must either be: true or false.", virtualType = Boolean.class, persistVirtual = true)
     private VirtualProperty<Boolean> pvp = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
@@ -359,7 +359,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private String respawnWorld;
     @Property(validator = AllowWeatherPropertyValidator.class, description = "Sorry, this must either be: true or false.")
     private boolean allowWeather;
-    @Property(serializor = DifficultyPropertySerializor.class, virtualType = Difficulty.class,
+    @Property(serializor = DifficultyPropertySerializor.class, virtualType = Difficulty.class, persistVirtual = true,
             description = "Difficulty must be set as one of the following: peaceful easy normal hard")
     private VirtualProperty<Difficulty> difficulty = new VirtualProperty<Difficulty>() {
         @Override
@@ -387,19 +387,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     @Property(serializor = GameModePropertySerializor.class, validator = GameModePropertyValidator.class,
             description = "GameMode must be set as one of the following: survival creative")
     private GameMode gameMode;
-    @Property
-    private boolean keepSpawnLoaded;
-    @Property(description = "Sorry, this must either be: true or false.", virtualType = Boolean.class)
+    @Property(description = "Sorry, this must either be: true or false.", virtualType = Boolean.class, persistVirtual = true)
     private VirtualProperty<Boolean> keepSpawnInMemory = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
             world.get().setKeepSpawnInMemory(newValue);
-            keepSpawnLoaded = newValue;
         }
 
         @Override
         public Boolean get() {
-            return keepSpawnLoaded;
+            return world.get().getKeepSpawnInMemory();
         }
     };
     @Property
@@ -534,6 +531,19 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
             this.spawnLocation = new SpawnLocation(readSpawnFromWorld(cbWorld));
 
         this.initPerms();
+
+        this.flushPendingVPropChanges();
+    }
+
+    /**
+     * This prepares the MVWorld for unloading.
+     */
+    public void tearDown() {
+        try {
+            this.buildVPropChanges();
+        } catch (IllegalStateException e) {
+            // do nothing
+        }
     }
 
     /**
@@ -626,7 +636,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
         this.generator = null;
-        this.keepSpawnLoaded = true;
     }
 
     /**

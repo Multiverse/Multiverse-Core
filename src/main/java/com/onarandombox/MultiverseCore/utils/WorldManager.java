@@ -226,6 +226,9 @@ public class WorldManager implements MVWorldManager {
             if (this.unloadWorldFromBukkit(name, true)) {
                 this.worlds.remove(name);
                 this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
+
+                this.worldsFromTheConfig.get(name).tearDown();
+
                 return true;
             } else {
                 this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
