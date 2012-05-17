@@ -90,7 +90,7 @@ public class WhoCommand extends MultiverseCommand {
         return;
     }
 
-    private String buildPlayerString(MultiverseWorld world) {
+    private static String buildPlayerString(MultiverseWorld world) {
         List<Player> players = world.getCBWorld().getPlayers();
         if (players.size() == 0) {
             return "No players found.";

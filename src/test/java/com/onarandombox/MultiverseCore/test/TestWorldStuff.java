@@ -18,6 +18,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +35,7 @@ import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class })
+@PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class, PluginDescriptionFile.class })
 public class TestWorldStuff {
 
     private TestInstanceCreator creator;
@@ -234,13 +235,13 @@ public class TestWorldStuff {
         // Now fail one.
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "mode", "fish", "world" });
         try {
-            verify(mockCommandSender).sendMessage(mainWorld.getProperty("mode", Object.class).getHelp());
+            verify(mockCommandSender).sendMessage(ChatColor.RED + mainWorld.getPropertyHelp("mode"));
         } catch (PropertyDoesNotExistException e) {
             fail("Mode property did not exist.");
         }
 
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "blah", "fish", "world" });
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '"+ChatColor.GRAY+ "blah" + ChatColor.RED + "'");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'");
     }
 
     private void createInitialWorlds(Plugin plugin, Command command) {

@@ -12,7 +12,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -99,14 +99,13 @@ public class MVEntityListener implements Listener {
         if (!(this.worldManager.isMVWorld(world.getName())))
             return;
 
-        CreatureType creature = event.getCreatureType();
-
+        EntityType type = event.getEntityType();
         MultiverseWorld mvworld = this.worldManager.getMVWorld(world.getName());
 
         /**
          * Handle people with non-standard animals: ie a patched craftbukkit.
          */
-        if (creature == null) {
+        if (type == null) {
             this.plugin.log(Level.FINER, "Found a null typed creature.");
             return;
         }
@@ -114,18 +113,18 @@ public class MVEntityListener implements Listener {
         /**
          * Animal Handling
          */
-        if (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid) {
-            event.setCancelled(this.shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.canAnimalsSpawn(), creature.toString().toUpperCase()));
+        if (!event.isCancelled() && (event.getEntity() instanceof Animals || event.getEntity() instanceof Squid)) {
+            event.setCancelled(shouldWeKillThisCreature(mvworld.getAnimalList(), mvworld.canAnimalsSpawn(), type.getName().toUpperCase()));
         }
         /**
          * Monster Handling
          */
-        if (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime) {
-            event.setCancelled(this.shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.canMonstersSpawn(), creature.toString().toUpperCase()));
+        if (!event.isCancelled() && (event.getEntity() instanceof Monster || event.getEntity() instanceof Ghast || event.getEntity() instanceof Slime)) {
+            event.setCancelled(shouldWeKillThisCreature(mvworld.getMonsterList(), mvworld.canMonstersSpawn(), type.getName().toUpperCase()));
         }
     }
 
-    private boolean shouldWeKillThisCreature(List<String> creatureList, boolean allowCreatureSpawning, String creature) {
+    private static boolean shouldWeKillThisCreature(List<String> creatureList, boolean allowCreatureSpawning, String creature) {
         if (creatureList.isEmpty() && allowCreatureSpawning) {
             // 1. There are no exceptions and animals are allowed. Save it.
             return false;

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 
+import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 
@@ -11,6 +12,26 @@ import me.main__.util.SerializationConfig.SerializationConfig;
  * Our configuration.
  */
 public class MultiverseCoreConfiguration extends SerializationConfig implements MultiverseCoreConfig {
+    private static MultiverseCoreConfiguration instance;
+
+    /**
+     * Sets the statically saved instance.
+     * @param instance The new instance.
+     */
+    public static void setInstance(MultiverseCoreConfiguration instance) {
+        MultiverseCoreConfiguration.instance = instance;
+    }
+
+    /**
+     * Gets the statically saved instance.
+     * @return The statically saved instance.
+     */
+    public static MultiverseCoreConfiguration getInstance() {
+        if (instance == null)
+            throw new IllegalStateException("The instance wasn't set!");
+        return instance;
+    }
+
     @Property
     private boolean enforceaccess;
     @Property
@@ -34,10 +55,12 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
 
     public MultiverseCoreConfiguration() {
         super();
+        MultiverseCoreConfiguration.setInstance(this);
     }
 
     public MultiverseCoreConfiguration(Map<String, Object> values) {
         super(values);
+        MultiverseCoreConfiguration.setInstance(this);
     }
 
     /**
@@ -56,6 +79,18 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         teleportcooldown = 1000;
         this.version = 2.9;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setConfigProperty(String property, String value) {
+        try {
+            return this.setProperty(property, value, true);
+        } catch (NoSuchPropertyException e) {
+            return false;
+        }
     }
 
     // And here we go:

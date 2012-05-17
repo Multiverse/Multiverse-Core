@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MultiverseCore.class })
+@PrepareForTest({ MultiverseCore.class, PluginDescriptionFile.class })
 public class TestLocalization {
     TestInstanceCreator creator;
     Server mockServer;

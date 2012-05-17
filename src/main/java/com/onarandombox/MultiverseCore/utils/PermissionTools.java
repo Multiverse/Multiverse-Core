@@ -78,7 +78,7 @@ public class PermissionTools {
      * @param separatedPermissionString The array of a dot separated perm string.
      * @return The dot separated parent permission string.
      */
-    private String getParentPerm(String[] separatedPermissionString) {
+    private static String getParentPerm(String[] separatedPermissionString) {
         if (separatedPermissionString.length == 1) {
             return null;
         }

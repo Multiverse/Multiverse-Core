@@ -25,19 +25,16 @@ public class FileUtils {
      */
     public static boolean deleteFolder(File file) {
         if (file.exists()) {
+            boolean ret = true;
             // If the file exists, and it has more than one file in it.
             if (file.isDirectory()) {
                 for (File f : file.listFiles()) {
-                    if (!FileUtils.deleteFolder(f)) {
-                        return false;
-                    }
+                    ret = ret && deleteFolder(f);
                 }
             }
-            file.delete();
-            return !file.exists();
+            return ret && file.delete();
         } else {
             return false;
         }
     }
-
 }

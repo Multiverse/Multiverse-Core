@@ -51,17 +51,17 @@ public class MVMessaging implements MultiverseMessaging {
     public boolean sendMessages(CommandSender sender, String[] messages, boolean ignoreCooldown) {
         if (!(sender instanceof Player) || ignoreCooldown) {
 
-            this.sendMessages(sender, messages);
+            sendMessages(sender, messages);
             return true;
         }
         if (!this.sentList.containsKey(sender.getName())) {
-            this.sendMessages(sender, messages);
+            sendMessages(sender, messages);
             this.sentList.put(sender.getName(), System.currentTimeMillis());
             return true;
         } else {
             long time = System.currentTimeMillis();
             if (time >= this.sentList.get(sender.getName()) + this.cooldown) {
-                this.sendMessages(sender, messages);
+                sendMessages(sender, messages);
                 this.sentList.put(sender.getName(), System.currentTimeMillis());
                 return true;
             }
@@ -77,7 +77,7 @@ public class MVMessaging implements MultiverseMessaging {
         return this.sendMessages(sender, messages.toArray(new String[0]), ignoreCooldown);
     }
 
-    private void sendMessages(CommandSender sender, String[] messages) {
+    private static void sendMessages(CommandSender sender, String[] messages) {
         for (String s : messages) {
             sender.sendMessage(s);
         }

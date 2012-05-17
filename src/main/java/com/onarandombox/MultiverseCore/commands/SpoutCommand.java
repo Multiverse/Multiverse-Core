@@ -4,7 +4,7 @@
  * For more information please check the README.md file included              *
  * with this project.                                                         *
  ******************************************************************************/
-
+/*
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Edit a world with spout.
- */
+ * /
 public class SpoutCommand extends MultiverseCommand {
 
     public SpoutCommand(MultiverseCore plugin) {
@@ -51,7 +51,7 @@ public class SpoutCommand extends MultiverseCommand {
         }
         PopupScreen pop = new GenericPopup();
         GenericButton button = new GenericButton("Fish");
-        // TODO maybe use constants for these
+        // TO-DO maybe use constants for these
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         button.setX(50);
         button.setY(50);
@@ -63,3 +63,4 @@ public class SpoutCommand extends MultiverseCommand {
         p.getMainScreen().attachPopupScreen(pop);
     }
 }
+*/

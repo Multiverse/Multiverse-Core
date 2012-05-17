@@ -16,7 +16,6 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 
 import java.util.Arrays;
-import java.util.logging.Level;
 
 /**
  * Multiverse's Plugin {@link Listener}.
@@ -40,10 +39,12 @@ public class MVPluginListener implements Listener {
             this.plugin.setBank(this.plugin.getBanker().loadEconPlugin());
         }
 
+        /*
         if (event.getPlugin().getDescription().getName().equals("Spout")) {
             this.plugin.setSpout();
             this.plugin.log(Level.INFO, "Spout integration enabled.");
         }
+        */
     }
 
     /**

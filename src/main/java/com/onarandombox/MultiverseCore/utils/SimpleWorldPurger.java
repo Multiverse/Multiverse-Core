@@ -15,6 +15,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
 
 import java.util.ArrayList;
@@ -76,7 +80,7 @@ public class SimpleWorldPurger implements WorldPurger {
         boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
         boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
         for (Entity e : world.getEntities()) {
-            boolean negate;
+            boolean negate = false;
             boolean specified = false;
             if (e instanceof Squid || e instanceof Animals) {
                 // it's an animal
@@ -89,7 +93,7 @@ public class SimpleWorldPurger implements WorldPurger {
                 if (specifiedAnimals)
                     specified = true;
                 negate = negateAnimals;
-            } else {
+            } else if (e instanceof Monster || e instanceof Ghast || e instanceof Slime) {
                 // it's a monster
                 if (specifiedMonsters && !negateMonsters) {
                     this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all monsters: " + e);
@@ -102,7 +106,8 @@ public class SimpleWorldPurger implements WorldPurger {
                 negate = negateMonsters;
             }
             for (String s : thingsToKill) {
-                if (e.getType().getName().equalsIgnoreCase(s)) {
+                EntityType type = EntityType.fromName(s);
+                if (type != null && type.equals(e.getType())) {
                     specified = true;
                     if (!negate) {
                         this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);

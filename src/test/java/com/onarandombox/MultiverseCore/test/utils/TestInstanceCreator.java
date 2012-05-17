@@ -35,6 +35,7 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.MockGateway;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -60,14 +61,17 @@ public class TestInstanceCreator {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
 
+            MockGateway.MOCK_STANDARD_METHODS = false;
+
             core = PowerMockito.spy(new MultiverseCore());
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
 
             // Return a fake PDF file.
-            PluginDescriptionFile pdf = new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
-                    "com.onarandombox.MultiverseCore.MultiverseCore");
+            PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
+                    "com.onarandombox.MultiverseCore.MultiverseCore"));
+            when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
             doReturn(pdf).when(core).getDescription();
             doReturn(true).when(core).isEnabled();
             doReturn(null).when(core).getResource(anyString());
@@ -102,6 +106,7 @@ public class TestInstanceCreator {
 
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
+                @Override
                 public World answer(InvocationOnMock invocation) throws Throwable {
                     String arg;
                     try {
@@ -114,6 +119,7 @@ public class TestInstanceCreator {
             });
 
             when(mockServer.getWorlds()).thenAnswer(new Answer<List<World>>() {
+                @Override
                 public List<World> answer(InvocationOnMock invocation) throws Throwable {
                     return MockWorldFactory.getWorlds();
                 }
@@ -123,6 +129,7 @@ public class TestInstanceCreator {
 
             when(mockServer.createWorld(Matchers.isA(WorldCreator.class))).thenAnswer(
                     new Answer<World>() {
+                        @Override
                         public World answer(InvocationOnMock invocation) throws Throwable {
                             WorldCreator arg;
                             try {
@@ -145,6 +152,7 @@ public class TestInstanceCreator {
             BukkitScheduler mockScheduler = mock(BukkitScheduler.class);
             when(mockScheduler.scheduleSyncDelayedTask(any(Plugin.class), any(Runnable.class), anyLong())).
             thenAnswer(new Answer<Integer>() {
+                @Override
                 public Integer answer(InvocationOnMock invocation) throws Throwable {
                     Runnable arg;
                     try {
@@ -157,6 +165,7 @@ public class TestInstanceCreator {
                 }});
             when(mockScheduler.scheduleSyncDelayedTask(any(Plugin.class), any(Runnable.class))).
             thenAnswer(new Answer<Integer>() {
+                @Override
                 public Integer answer(InvocationOnMock invocation) throws Throwable {
                     Runnable arg;
                     try {
@@ -207,6 +216,7 @@ public class TestInstanceCreator {
             commandSenderLogger.setParent(Util.logger);
             commandSender = mock(CommandSender.class);
             doAnswer(new Answer<Void>() {
+                @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {
                     commandSenderLogger.info(ChatColor.stripColor((String) invocation.getArguments()[0]));
                     return null;

@@ -81,6 +81,7 @@ public class ModifyRemoveCommand extends MultiverseCommand {
             sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/4W8cY");
             return;
         }
+        // TODO fix this
         if (world.removeFromVariable(property, value)) {
             sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE
                     + " was " + ChatColor.RED + "removed from " + ChatColor.GREEN + property);

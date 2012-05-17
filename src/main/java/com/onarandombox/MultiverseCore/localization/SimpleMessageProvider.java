@@ -13,17 +13,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
+/**
+ * The normal {@link MessageProvider}-implementation.
+ */
 public class SimpleMessageProvider implements LazyLocaleMessageProvider {
-
-    private final static String LOCALIZATION_FOLDER_NAME = "localization";
+    private static final String LOCALIZATION_FOLDER_NAME = "localization";
 
     // Regex 1: replace all single & with the section char
-    private final static String FORMAT_PATTERN_1 = "([^&])(&)([^&])";
-    private final static String FORMAT_REPL_1 = "$1\u00A7$3";
+    private static final String FORMAT_PATTERN_1 = "([^&])(&)([^&])";
+    private static final String FORMAT_REPL_1 = "$1\u00A7$3";
 
     // Regex 2: replace all double & with single &
-    private final static String FORMAT_PATTERN_2 = "&&";
-    private final static String FORMAT_REPL_2 = "&";
+    private static final String FORMAT_PATTERN_2 = "&&";
+    private static final String FORMAT_REPL_2 = "&";
 
     private final HashMap<Locale, HashMap<MultiverseMessage, String>> messages;
     private final MultiverseCore core;
@@ -41,6 +43,11 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         }
     }
 
+    /**
+     * Loads a given {@link Locale} if and only if it wasn't already loaded.
+     * @param locale The locale
+     * @throws LocalizationLoadingException If the locale wasn't loaded successfully.
+     */
     public void maybeLoadLocale(Locale locale) throws LocalizationLoadingException {
         if (!isLocaleLoaded(locale)) {
             try {
@@ -131,9 +138,8 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      */
     @Override
     public String getMessage(MultiverseMessage key, Object... args) {
-        if (!isLocaleLoaded(locale)) {
+        if (!isLocaleLoaded(locale))
             return format(key.getDefault(), args);
-        }
         else
             return format(messages.get(locale).get(key), args);
     }

@@ -20,6 +20,7 @@ public class MVPlayerTouchedPortalEvent extends Event implements Cancellable {
     private Player p;
     private Location l;
     private boolean isCancelled;
+    private boolean canUse = true;
 
     public MVPlayerTouchedPortalEvent(Player p, Location l) {
         this.p = p;
@@ -58,6 +59,26 @@ public class MVPlayerTouchedPortalEvent extends Event implements Cancellable {
      */
     public Player getPlayer() {
         return this.p;
+    }
+
+    /**
+     * Gets whether or not the player in this event can use this portal.
+     *
+     * @return True if the player can use this portal.
+     */
+    public boolean canUseThisPortal() {
+        return this.canUse;
+    }
+
+    /**
+     * Sets whether or not the player in this event can use this portal.
+     * <p>
+     * Setting this to false will cause the player to bounce back!
+     *
+     * @param canUse Whether or not the user can go through this portal.
+     */
+    public void setCanUseThisPortal(boolean canUse) {
+        this.canUse = canUse;
     }
 
     @Override

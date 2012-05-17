@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MultiverseCore.class })
+@PrepareForTest({ MultiverseCore.class, PluginDescriptionFile.class })
 public class TestWorldPurger {
     TestInstanceCreator creator;
     MultiverseCore core;

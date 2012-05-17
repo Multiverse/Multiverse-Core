@@ -81,6 +81,7 @@ public class ModifyAddCommand extends MultiverseCommand {
             return;
         }
 
+        // TODO fix this
         if (world.addToVariable(property, value)) {
             sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA
                     + value + ChatColor.WHITE + " was " + ChatColor.GREEN + "added to " + ChatColor.GREEN + property);

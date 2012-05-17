@@ -229,6 +229,7 @@ public class MVPermissions implements PermissionsInterface {
      * @param isOpRequired @Deprecated. This is not used for anything anymore.
      * @return True if they have that permission or any parent.
      */
+    @Override
     public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
         if (!(sender instanceof Player)) {
             return true;
@@ -251,10 +252,15 @@ public class MVPermissions implements PermissionsInterface {
         Player player = (Player) sender;
 
         boolean hasPermission = sender.hasPermission(node);
+        if (!sender.isPermissionSet(node)) {
+            this.plugin.log(Level.FINER, String.format("The node [%s%s%s] was %sNOT%s set for [%s%s%s].",
+                    ChatColor.RED, node, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.AQUA,
+                    player.getDisplayName(), ChatColor.WHITE));
+        }
         if (hasPermission) {
-            this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
+            this.plugin.log(Level.FINER, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
         } else {
-            this.plugin.log(Level.FINEST, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
+            this.plugin.log(Level.FINER, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
         }
         return hasPermission;
     }
@@ -268,6 +274,7 @@ public class MVPermissions implements PermissionsInterface {
      * @param node   The permission node to check (possibly already a parent).
      * @return True if they have any parent perm, false if none.
      */
+    // TODO remove this...?
     private boolean hasAnyParentPermission(CommandSender sender, String node) {
         String parentPerm = this.pullOneLevelOff(node);
         // Base case
@@ -288,7 +295,7 @@ public class MVPermissions implements PermissionsInterface {
      * @param node The root node to check.
      * @return The parent of the node
      */
-    private String pullOneLevelOff(String node) {
+    private static String pullOneLevelOff(String node) {
         if (node == null) {
             return null;
         }
@@ -393,7 +400,7 @@ public class MVPermissions implements PermissionsInterface {
     /**
      * If the given permission was 'multiverse.core.tp.self', this would return 'multiverse.core.tp.*'.
      */
-    private String getParentPerm(String[] seperated) {
+    private static String getParentPerm(String[] seperated) {
         if (seperated.length == 1) {
             return null;
         }
@@ -403,5 +410,4 @@ public class MVPermissions implements PermissionsInterface {
         }
         return returnString + "*";
     }
-
 }

@@ -99,4 +99,13 @@ public enum EnglishChatColor {
         }
         return null;
     }
+
+    /**
+     * Looks if the given-color name is a valid color.
+     * @param aliasColor A color-name.
+     * @return True if the name is a valid color, false if it isn't.
+     */
+    public static boolean isValidAliasColor(String aliasColor) {
+        return (EnglishChatColor.fromString(aliasColor) != null);
+    }
 }

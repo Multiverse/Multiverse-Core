@@ -65,24 +65,24 @@ public class SimpleBlockSafety implements BlockSafety {
         upOne.setY(upOne.getY() + 1);
         downOne.setY(downOne.getY() - 1);
 
-        if (this.isSolidBlock(world.getBlockAt(actual).getType())
-                || this.isSolidBlock(upOne.getBlock().getType())) {
+        if (isSolidBlock(world.getBlockAt(actual).getType())
+                || isSolidBlock(upOne.getBlock().getType())) {
             MultiverseCore.staticLog(Level.FINER, "Error Here (Actual)? ("
-                + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+                + actual.getBlock().getType() + ")[" + isSolidBlock(actual.getBlock().getType()) + "]");
             MultiverseCore.staticLog(Level.FINER, "Error Here (upOne)? ("
-                + upOne.getBlock().getType() + ")[" + this.isSolidBlock(upOne.getBlock().getType()) + "]");
+                + upOne.getBlock().getType() + ")[" + isSolidBlock(upOne.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
             MultiverseCore.staticLog(Level.FINER, "Error Here (downOne)? ("
-                + downOne.getBlock().getType() + ")[" + this.isSolidBlock(downOne.getBlock().getType()) + "]");
+                + downOne.getBlock().getType() + ")[" + isSolidBlock(downOne.getBlock().getType()) + "]");
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
             MultiverseCore.staticLog(Level.FINER, "There's fire below! ("
-                + actual.getBlock().getType() + ")[" + this.isSolidBlock(actual.getBlock().getType()) + "]");
+                + actual.getBlock().getType() + ")[" + isSolidBlock(actual.getBlock().getType()) + "]");
             return false;
         }
 
@@ -129,7 +129,7 @@ public class SimpleBlockSafety implements BlockSafety {
     /*
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      */
-    private boolean isSolidBlock(Material type) {
+    private static boolean isSolidBlock(Material type) {
         switch (type) {
             case AIR:
                 return false;

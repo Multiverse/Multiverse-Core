@@ -22,5 +22,4 @@ public class NoSuchLocalizationException extends LocalizationLoadingException {
     public NoSuchLocalizationException(Throwable cause, Locale locale) {
         super(cause, locale);
     }
-
 }

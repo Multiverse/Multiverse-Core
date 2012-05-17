@@ -11,7 +11,9 @@ package com.onarandombox.MultiverseCore.configuration;
  * A generic config-property.
  *
  * @param <T> The type of the config-property.
+ * @deprecated This is deprecated.
  */
+@Deprecated
 public interface MVConfigProperty<T> {
     /**
      * Gets the name of this property.

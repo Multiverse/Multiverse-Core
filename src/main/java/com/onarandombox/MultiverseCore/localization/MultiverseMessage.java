@@ -1,9 +1,11 @@
 package com.onarandombox.MultiverseCore.localization;
 
+
 /**
  * An enum containing all messages/strings used by Multiverse.
  */
 public enum MultiverseMessage {
+    // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
     TEST_STRING("a test-string from the enum"),
 
     // Generic Strings
@@ -22,6 +24,7 @@ public enum MultiverseMessage {
     LIST_DESC("Displays a listing of all worlds that you can enter."),
     LIST_TITLE("Multiverse World List"),
     LIST_NO_MATCH("No worlds matched your filter:");
+    // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
     private final String def;
 
@@ -35,5 +38,4 @@ public enum MultiverseMessage {
     public String getDefault() {
         return def;
     }
-
 }

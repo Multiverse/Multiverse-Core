@@ -5,13 +5,13 @@ import java.util.Locale;
 /**
  * Multiverse 2 MessageProvider
  * <p>
- * This interface describes a Multiverse-MessageProvider
+ * This interface describes a Multiverse-MessageProvider.
  */
 public interface MessageProvider {
     /**
      * The default locale.
      */
-    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     /**
      * Returns a message (as {@link String}) for the specified key (as {@link MultiverseMessage}).
@@ -20,7 +20,7 @@ public interface MessageProvider {
      * @param args Args for String.format()
      * @return The message
      */
-    public String getMessage(MultiverseMessage key, Object... args);
+    String getMessage(MultiverseMessage key, Object... args);
 
     /**
      * Returns a message (as {@link String}) in a specified {@link Locale} for the specified key (as {@link MultiverseMessage}).
@@ -30,17 +30,17 @@ public interface MessageProvider {
      * @param args Args for String.format()
      * @return The message
      */
-    public String getMessage(MultiverseMessage key, Locale locale, Object... args);
+    String getMessage(MultiverseMessage key, Locale locale, Object... args);
 
     /**
-     * Returns the Locale this MessageProvider is currently using.
+     * @return the Locale this MessageProvider is currently using.
      */
-    public Locale getLocale();
+    Locale getLocale();
 
     /**
      * Sets the locale for this MessageProvider.
      *
      * @param locale The new {@link Locale}.
      */
-    public void setLocale(Locale locale);
+    void setLocale(Locale locale);
 }

@@ -17,16 +17,15 @@ public interface LazyLocaleMessageProvider extends MessageProvider {
      *
      * @param locale The desired {@link Locale}.
      * @throws LocalizationLoadingException When an error occurs while trying to load the specified localization.
-     * @throws NoSuchLocalizationException When no localization was found for the desired locale.
      */
-    public void loadLocale(Locale locale) throws NoSuchLocalizationException, LocalizationLoadingException;
+    void loadLocale(Locale locale) throws LocalizationLoadingException;
 
     /**
      * Retrieves all loaded localizations.
      *
      * @return A {@link Set} of {@link Locale}s whose localizations are currently loaded.
      */
-    public Set<Locale> getLoadedLocales();
+    Set<Locale> getLoadedLocales();
 
     /**
      * Detects if a localization is loaded for the specified {@link Locale}.
@@ -34,6 +33,6 @@ public interface LazyLocaleMessageProvider extends MessageProvider {
      * @param locale The {@link Locale}.
      * @return Whether a localization is loaded for the specified {@link Locale}.
      */
-    public boolean isLocaleLoaded(Locale locale);
+    boolean isLocaleLoaded(Locale locale);
 
 }

@@ -52,7 +52,7 @@ public class ImportCommand extends MultiverseCommand {
      * @param worldFolder The File that may be a world.
      * @return True if it looks like a world, false if not.
      */
-    private boolean checkIfIsWorld(File worldFolder) {
+    private static boolean checkIfIsWorld(File worldFolder) {
         if (worldFolder.isDirectory()) {
             File[] files = worldFolder.listFiles(new FilenameFilter() {
                 @Override

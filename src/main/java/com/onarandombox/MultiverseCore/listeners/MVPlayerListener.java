@@ -135,7 +135,8 @@ public class MVPlayerListener implements Listener {
             return;
         } else {
             this.plugin.log(Level.FINER, "Player joined AGAIN!");
-            if (!this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
+            if (this.plugin.getMVConfig().getEnforceAccess() // check this only if we're enforcing access!
+                    && !this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
             }
@@ -237,7 +238,6 @@ public class MVPlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerPortalCheck(PlayerPortalEvent event) {
-        this.plugin.log(Level.FINE, "CALLING CORE-ADJUST!!!");
         if (event.isCancelled() || event.getFrom() == null) {
             return;
         }
@@ -311,6 +311,9 @@ public class MVPlayerListener implements Listener {
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameMode(player, mvWorld);
+        } else {
+            this.plugin.log(Level.FINER, String.format(
+                    "Not handling gamemode for world '%s' not managed by Multiverse.", world.getName()));
         }
     }
 

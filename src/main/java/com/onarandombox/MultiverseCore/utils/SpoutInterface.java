@@ -4,14 +4,14 @@
  * For more information please check the README.md file included              *
  * with this project.                                                         *
  ******************************************************************************/
-
+/*
 package com.onarandombox.MultiverseCore.utils;
 
 import org.getspout.spoutapi.SpoutManager;
 
 /**
  * A helper-class holding the {@link SpoutManager}.
- */
+ * /
 public class SpoutInterface {
     private SpoutManager spoutManager;
 
@@ -22,8 +22,9 @@ public class SpoutInterface {
     /**
      * Gets the {@link SpoutManager}.
      * @return The {@link SpoutManager}.
-     */
+     * /
     public SpoutManager getManager() {
         return this.spoutManager;
     }
 }
+*/

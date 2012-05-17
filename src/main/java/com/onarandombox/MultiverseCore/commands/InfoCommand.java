@@ -190,7 +190,7 @@ public class InfoCommand extends MultiverseCommand {
         return worldInfo;
     }
 
-    private String toCommaSeperated(List<String> list) {
+    private static String toCommaSeperated(List<String> list) {
         if (list == null || list.size() == 0) {
             return "";
         }
@@ -216,7 +216,7 @@ public class InfoCommand extends MultiverseCommand {
         return positive ? ChatColor.GREEN : ChatColor.RED;
     }
 
-    private void showPage(int page, CommandSender sender, List<List<FancyText>> doc) {
+    private static void showPage(int page, CommandSender sender, List<List<FancyText>> doc) {
         page = page < 0 ? 0 : page;
         page = page > doc.size() - 1 ? doc.size() - 1 : page;
         boolean altColor = false;
