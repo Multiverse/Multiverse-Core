@@ -191,6 +191,8 @@ public class MVPlayerListener implements Listener {
                 teleporter, teleporterName, teleportee.getName()));
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        if (fromWorld == null || toWorld == null)
+            return;
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Teleporting to the same world.
             this.plugin.log(Level.FINER, String.format("Player '%s' is teleporting to the same world.",
