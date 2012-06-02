@@ -215,7 +215,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
         // Output a little snippet to show it's enabled.
-        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + getAuthors());
+        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + this.getDescription().getAuthors());
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
