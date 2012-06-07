@@ -432,11 +432,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         boolean wasChanged = false;
         Map<String, Object> newValues = new LinkedHashMap<String, Object>(values.size());
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            this.log(Level.FINE, "Migrating: " + entry.getKey());
             if (entry.getValue() instanceof MVWorld) {
                 // fine
                 newValues.put(entry.getKey(), entry.getValue());
             } else if (entry.getValue() instanceof ConfigurationSection) {
+                this.log(Level.FINE, "Migrating: " + entry.getKey());
                 // we have to migrate this
                 MVWorld world = new MVWorld(Collections.EMPTY_MAP);
                 ConfigurationSection section = (ConfigurationSection) entry.getValue();
