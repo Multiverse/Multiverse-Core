@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -21,10 +23,9 @@ import java.util.logging.Logger;
 /**
  * The Multiverse debug-logger.
  */
-public class DebugLog {
+public class DebugLog extends Logger {
 
     private FileHandler fh;
-    private Logger log;
 
     /**
      * Creates a new debug logger.
@@ -33,32 +34,23 @@ public class DebugLog {
      * @param file   The file to log to.
      */
     public DebugLog(String logger, String file) {
-        this.log = Logger.getLogger(logger);
+        super(logger, null);
 
         try {
             this.fh = new FileHandler(file, true);
-            this.log.setUseParentHandlers(false);
-            for (Handler handler : this.log.getHandlers()) {
-                this.log.removeHandler(handler);
+            this.setUseParentHandlers(false);
+            List<Handler> toRemove = Arrays.asList(this.getHandlers());
+            for (Handler handler : toRemove) {
+                this.removeHandler(handler);
             }
-            this.log.addHandler(this.fh);
-            this.log.setLevel(Level.ALL);
+            this.addHandler(this.fh);
+            this.setLevel(Level.ALL);
             this.fh.setFormatter(new LogFormatter());
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Log a message at a certain level.
-     *
-     * @param level The log-{@link Level}.
-     * @param msg the message.
-     */
-    public void log(Level level, String msg) {
-        this.log.log(level, msg);
     }
 
     /**
