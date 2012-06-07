@@ -74,6 +74,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         propertyAliases.put("mode", "gameMode");
         propertyAliases.put("diff", "difficulty");
         propertyAliases.put("spawnlocation", "spawn");
+        propertyAliases.put("animals", "spawning.animals.spawn");
+        propertyAliases.put("monsters", "spawning.monsters.spawn");
     }
     /*
      * We have to use setCBWorld(), setPlugin() and initPerms() to prepare this object for use.
