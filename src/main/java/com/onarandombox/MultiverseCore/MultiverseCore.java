@@ -18,7 +18,36 @@ import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands.*;
+import com.onarandombox.MultiverseCore.commands.AnchorCommand;
+import com.onarandombox.MultiverseCore.commands.CheckCommand;
+import com.onarandombox.MultiverseCore.commands.ConfigCommand;
+import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
+import com.onarandombox.MultiverseCore.commands.CoordCommand;
+import com.onarandombox.MultiverseCore.commands.CreateCommand;
+import com.onarandombox.MultiverseCore.commands.DebugCommand;
+import com.onarandombox.MultiverseCore.commands.DeleteCommand;
+import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
+import com.onarandombox.MultiverseCore.commands.HelpCommand;
+import com.onarandombox.MultiverseCore.commands.ImportCommand;
+import com.onarandombox.MultiverseCore.commands.InfoCommand;
+import com.onarandombox.MultiverseCore.commands.ListCommand;
+import com.onarandombox.MultiverseCore.commands.LoadCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyAddCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyClearCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyCommand;
+import com.onarandombox.MultiverseCore.commands.ModifyRemoveCommand;
+import com.onarandombox.MultiverseCore.commands.ModifySetCommand;
+import com.onarandombox.MultiverseCore.commands.PurgeCommand;
+import com.onarandombox.MultiverseCore.commands.RegenCommand;
+import com.onarandombox.MultiverseCore.commands.ReloadCommand;
+import com.onarandombox.MultiverseCore.commands.RemoveCommand;
+import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
+import com.onarandombox.MultiverseCore.commands.SpawnCommand;
+import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.onarandombox.MultiverseCore.commands.UnloadCommand;
+import com.onarandombox.MultiverseCore.commands.VersionCommand;
+import com.onarandombox.MultiverseCore.commands.WhoCommand;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
@@ -31,13 +60,19 @@ import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
-import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
-import com.onarandombox.MultiverseCore.utils.*;
+import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.DebugLog;
+import com.onarandombox.MultiverseCore.utils.MVMessaging;
+import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
+import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
+import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
+import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
-
 import me.main__.util.SerializationConfig.SerializationConfig;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -304,9 +339,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.multiverseConfig.options().copyDefaults(false);
         this.multiverseConfig.options().copyHeader(true);
 
-        this.migrateWorldConfig();
-        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
-
         MultiverseCoreConfiguration wantedConfig = null;
         try {
             wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
@@ -315,6 +347,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } finally {
             config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
         }
+
+        this.migrateWorldConfig();
+        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
         this.messaging.setCooldown(config.getMessageCooldown());
 
@@ -386,14 +421,17 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         FileConfiguration wconf = YamlConfiguration
                 .loadConfiguration(new File(getDataFolder(), "worlds.yml"));
 
-        if (!wconf.isConfigurationSection("worlds")) // empty config
+        if (!wconf.isConfigurationSection("worlds")) {// empty config
+            this.log(Level.FINE, "No worlds to migrate!");
             return;
+        }
 
         Map<String, Object> values = wconf.getConfigurationSection("worlds").getValues(false);
 
         boolean wasChanged = false;
         Map<String, Object> newValues = new LinkedHashMap<String, Object>(values.size());
         for (Map.Entry<String, Object> entry : values.entrySet()) {
+            this.log(Level.INFO, "Migrating: " + entry.getKey());
             if (entry.getValue() instanceof MVWorld) {
                 // fine
                 newValues.put(entry.getKey(), entry.getValue());
