@@ -349,7 +349,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } finally {
             config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
         }
-        System.out.println(MultiverseCoreConfiguration.isSet());
         this.migrateWorldConfig();
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
