@@ -216,6 +216,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getDataFolder().mkdirs();
         // Setup our Debug Log
         debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
+        debugLog.setStandardLogger(LOGGER);
+        SerializationConfig.initLogging(debugLog);
         // Setup our BlockSafety
         this.blockSafety = new SimpleBlockSafety(this);
         // Setup our LocationManipulation
@@ -347,7 +349,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } finally {
             config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
         }
-
+        System.out.println(MultiverseCoreConfiguration.isSet());
         this.migrateWorldConfig();
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
@@ -431,7 +433,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         boolean wasChanged = false;
         Map<String, Object> newValues = new LinkedHashMap<String, Object>(values.size());
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            this.log(Level.INFO, "Migrating: " + entry.getKey());
+            this.log(Level.FINE, "Migrating: " + entry.getKey());
             if (entry.getValue() instanceof MVWorld) {
                 // fine
                 newValues.put(entry.getKey(), entry.getValue());
@@ -747,13 +749,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static void staticLog(Level level, String msg) {
         if (level == Level.FINE && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 1) {
             staticDebugLog(Level.INFO, msg);
-            return;
         } else if (level == Level.FINER && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 2) {
             staticDebugLog(Level.INFO, msg);
-            return;
         } else if (level == Level.FINEST && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 3) {
             staticDebugLog(Level.INFO, msg);
-            return;
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             LOGGER.log(level, String.format("%s %s", LOG_TAG, msg));
             debugLog.log(level, String.format("%s %s", LOG_TAG, msg));
@@ -768,8 +767,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @param msg The message
      */
     public static void staticDebugLog(Level level, String msg) {
-        LOGGER.log(level, "[MVCore-Debug] " + msg);
-        debugLog.log(level, "[MVCore-Debug] " + msg);
+        debugLog.log(level, msg);
     }
 
     /**

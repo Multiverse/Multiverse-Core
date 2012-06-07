@@ -1,12 +1,11 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.Map;
-
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
-
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
+
+import java.util.Map;
 
 /**
  * Our configuration.
@@ -20,6 +19,13 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     public static void setInstance(MultiverseCoreConfiguration instance) {
         MultiverseCoreConfiguration.instance = instance;
+    }
+
+    /**
+     * @return True if the static instance of config is set.
+     */
+    public static boolean isSet() {
+        return instance != null;
     }
 
     /**

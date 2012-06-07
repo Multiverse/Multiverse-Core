@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,6 +28,7 @@ import java.util.logging.Logger;
 public class DebugLog extends Logger {
 
     private FileHandler fh;
+    private Logger standardLog = null;
 
     /**
      * Creates a new debug logger.
@@ -35,7 +38,6 @@ public class DebugLog extends Logger {
      */
     public DebugLog(String logger, String file) {
         super(logger, null);
-
         try {
             this.fh = new FileHandler(file, true);
             this.setUseParentHandlers(false);
@@ -50,6 +52,30 @@ public class DebugLog extends Logger {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Specifies the logger to use to send debug messages to as the debug logger itself only sends messages to a file.
+     *
+     * @param logger Logger to send debug messages to.
+     */
+    public void setStandardLogger(Logger logger) {
+        this.standardLog = logger;
+    }
+
+    /**
+     * Log a message at a certain level.
+     *
+     * @param level The log-{@link Level}.
+     * @param msg the message.
+     */
+    public void log(Level level, String msg) {
+        if (MultiverseCoreConfiguration.isSet() && MultiverseCoreConfiguration.getInstance().getGlobalDebug() > 0) {
+            if (standardLog != null) {
+                standardLog.log(level, "[MVCore-Debug] " + msg);
+            }
+            super.log(level, "[MVCore-Debug] " + msg);
         }
     }
 
