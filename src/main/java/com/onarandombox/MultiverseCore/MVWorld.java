@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.configuration.EntryFee;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.configuration.SpawnSettings;
@@ -16,8 +17,6 @@ import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.IllegalPropertyValueException;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
@@ -26,7 +25,6 @@ import me.main__.util.SerializationConfig.SerializationConfig;
 import me.main__.util.SerializationConfig.Serializor;
 import me.main__.util.SerializationConfig.ValidateAllWith;
 import me.main__.util.SerializationConfig.VirtualProperty;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -61,6 +59,22 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
+    private static Map<String, String> propertyAliases;
+
+    static {
+        propertyAliases = new HashMap<String, String>();
+        propertyAliases.put("curr", "currency");
+        propertyAliases.put("scaling", "scale");
+        propertyAliases.put("aliascolor", "color");
+        propertyAliases.put("heal", "autoHeal");
+        propertyAliases.put("storm", "allowWeather");
+        propertyAliases.put("weather", "allowWeather");
+        propertyAliases.put("spawnmemory", "keepSpawnInMemory");
+        propertyAliases.put("memory", "keepSpawnInMemory");
+        propertyAliases.put("mode", "gameMode");
+        propertyAliases.put("diff", "difficulty");
+        propertyAliases.put("spawnlocation", "spawn");
+    }
     /*
      * We have to use setCBWorld(), setPlugin() and initPerms() to prepare this object for use.
      */
@@ -644,19 +658,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      * @see SerializationConfig
      */
     protected static Map<String, String> getAliases() {
-        Map<String, String> aliases = new HashMap<String, String>();
-        aliases.put("curr", "currency");
-        aliases.put("scaling", "scale");
-        aliases.put("aliascolor", "color");
-        aliases.put("heal", "autoHeal");
-        aliases.put("storm", "allowWeather");
-        aliases.put("weather", "allowWeather");
-        aliases.put("spawnmemory", "keepSpawnInMemory");
-        aliases.put("memory", "keepSpawnInMemory");
-        aliases.put("mode", "gameMode");
-        aliases.put("diff", "difficulty");
-        aliases.put("spawnlocation", "spawn");
-        return aliases;
+        return propertyAliases;
     }
 
     private static double getDefaultScale(Environment environment) {
