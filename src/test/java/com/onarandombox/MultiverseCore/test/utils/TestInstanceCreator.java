@@ -7,18 +7,14 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
+import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
+import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.utils.FileUtils;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import junit.framework.Assert;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -37,13 +33,15 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockGateway;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
-import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
-import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.utils.FileUtils;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
     private MultiverseCore core;
@@ -257,6 +255,8 @@ public class TestInstanceCreator {
             Assert.fail(e.getMessage());
             return false;
         }
+
+        core.onDisable();
 
         FileUtils.deleteFolder(serverDirectory);
         MockWorldFactory.clearWorlds();
