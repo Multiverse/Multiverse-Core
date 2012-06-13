@@ -289,6 +289,21 @@ public interface MultiverseWorld {
     boolean setColor(String color);
 
     /**
+     * Gets the style that this world's name/alias will display as.
+     *
+     * @return The style of this world. {@code null} for "normal" style.
+     */
+    ChatColor getStyle();
+
+    /**
+     * Sets the style that this world's name/alias will display as.
+     *
+     * @param style A valid style name.
+     * @return True if the style was set, false if not.
+     */
+    boolean setStyle(String style);
+
+    /**
      * Tells you if someone entered a valid color.
      *
      * @param color A string that may translate to a color.

@@ -16,6 +16,7 @@ import com.onarandombox.MultiverseCore.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
+import com.onarandombox.MultiverseCore.enums.EnglishChatStyle;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.IllegalPropertyValueException;
@@ -357,6 +358,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private String alias;
     @Property(serializor = EnumPropertySerializor.class, description = "Sorry, 'color' must be a valid color-name.")
     private EnglishChatColor color;
+    @Property(serializor = EnumPropertySerializor.class, description = "Sorry, 'style' must be a valid style-name.")
+    private EnglishChatStyle style;
     @Property(description = "Sorry, 'pvp' must either be: true or false.", virtualType = Boolean.class, persistVirtual = true)
     private VirtualProperty<Boolean> pvp = new VirtualProperty<Boolean>() {
         @Override
@@ -637,6 +640,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.hidden = false;
         this.alias = new String();
         this.color = EnglishChatColor.WHITE;
+        this.style = EnglishChatStyle.NORMAL;
         this.scale = getDefaultScale(environment);
         this.respawnWorld = new String();
         this.allowWeather = true;
@@ -712,10 +716,17 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         if (alias.length() == 0) {
             alias = this.getName();
         }
+
         if ((color == null) || (color.getColor() == null)) {
             this.setPropertyValueUnchecked("color", EnglishChatColor.WHITE);
         }
-        return color.getColor() + alias + ChatColor.WHITE;
+
+        StringBuilder nameBuilder = new StringBuilder().append(color.getColor());
+        if (style.getColor() != null)
+            nameBuilder.append(style.getColor());
+        nameBuilder.append(alias).append(ChatColor.WHITE).toString();
+
+        return nameBuilder.toString();
     }
 
     /**
@@ -1367,6 +1378,22 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     @Override
     public void allowPortalMaking(AllowedPortalType portalType) {
         this.setPropertyValueUnchecked("portalForm", portalType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ChatColor getStyle() {
+        return style.getColor();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setStyle(String style) {
+        return this.setPropertyUnchecked("style", style);
     }
 
     @Override
