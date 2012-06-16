@@ -68,7 +68,7 @@ public class WhoCommand extends MultiverseCommand {
 
                 sender.sendMessage(String.format("%s--- Players in %s%s ---", ChatColor.AQUA,
                         world.getColoredWorldString(), ChatColor.AQUA));
-                sender.sendMessage(buildPlayerString(world));
+                sender.sendMessage(buildPlayerString(world, p));
                 return;
             }
         }
@@ -79,7 +79,7 @@ public class WhoCommand extends MultiverseCommand {
         for (MultiverseWorld world : this.worldManager.getMVWorlds()) {
             if (this.plugin.getMVPerms().canEnterWorld(p, world)) { // only show world if the player can access it
                 if (showAll || !world.getCBWorld().getPlayers().isEmpty()) { // either show all or show if the world is not empty
-                    sender.sendMessage(String.format("%s%s - %s", world.getColoredWorldString(), ChatColor.WHITE, buildPlayerString(world)));
+                    sender.sendMessage(String.format("%s%s - %s", world.getColoredWorldString(), ChatColor.WHITE, buildPlayerString(world, p)));
                     shownOne = true;
                 }
             }
@@ -90,14 +90,15 @@ public class WhoCommand extends MultiverseCommand {
         return;
     }
 
-    private static String buildPlayerString(MultiverseWorld world) {
+    private static String buildPlayerString(MultiverseWorld world, Player viewer) {
         List<Player> players = world.getCBWorld().getPlayers();
         if (players.size() == 0) {
             return "No players found.";
         } else {
             StringBuilder playerBuilder = new StringBuilder();
             for (Player player : players) {
-                playerBuilder.append(player.getDisplayName()).append(", ");
+                if ((viewer == null) || viewer.canSee(player))
+                        playerBuilder.append(player.getDisplayName()).append(", ");
             }
             String bString = playerBuilder.toString();
             return bString.substring(0, bString.length() - 2);
