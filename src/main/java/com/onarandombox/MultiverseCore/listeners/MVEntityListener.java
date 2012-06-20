@@ -105,7 +105,7 @@ public class MVEntityListener implements Listener {
         /**
          * Handle people with non-standard animals: ie a patched craftbukkit.
          */
-        if (type == null) {
+        if (type == null || type.getName() == null) {
             this.plugin.log(Level.FINER, "Found a null typed creature.");
             return;
         }
