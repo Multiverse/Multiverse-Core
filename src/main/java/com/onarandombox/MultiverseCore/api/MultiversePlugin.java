@@ -41,6 +41,12 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        if (theCore.getProtocolVersion() < this.getProtocolVersion()) {
+            this.getLogger().severe("You need a newer version of Multiverse-Core!");
+            this.getLogger().severe("Disabling!");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         this.setCore(theCore);
 
         // Turn on Logging
