@@ -26,9 +26,9 @@ import java.util.logging.Logger;
  * The Multiverse debug-logger.
  */
 public class DebugLog extends Logger {
-
     private FileHandler fh;
     private Logger standardLog = null;
+    private String prefix = "[MVCore-Debug] ";
 
     /**
      * Creates a new debug logger.
@@ -56,6 +56,14 @@ public class DebugLog extends Logger {
     }
 
     /**
+     * Sets the log-tag.
+     * @param tag The new tag.
+     */
+    public void setTag(String tag) {
+        this.prefix = tag + " ";
+    }
+
+    /**
      * Specifies the logger to use to send debug messages to as the debug logger itself only sends messages to a file.
      *
      * @param logger Logger to send debug messages to.
@@ -70,12 +78,15 @@ public class DebugLog extends Logger {
      * @param level The log-{@link Level}.
      * @param msg the message.
      */
+    @Override
     public void log(Level level, String msg) {
         if (MultiverseCoreConfiguration.isSet() && MultiverseCoreConfiguration.getInstance().getGlobalDebug() > 0) {
-            if (standardLog != null) {
-                standardLog.log(level, "[MVCore-Debug] " + msg);
+            // only redirect to standardLog if it's lower than INFO so we don't log that twice!
+            if ((level.intValue() < Level.INFO.intValue()) && (standardLog != null)) {
+                standardLog.log(level, prefix + msg);
             }
-            super.log(level, "[MVCore-Debug] " + msg);
+
+            super.log(level, prefix + msg);
         }
     }
 
