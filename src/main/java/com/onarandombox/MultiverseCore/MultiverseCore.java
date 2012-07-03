@@ -753,8 +753,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } else if (level == Level.FINEST && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 3) {
             staticDebugLog(Level.INFO, msg);
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            LOGGER.log(level, String.format("%s %s", LOG_TAG, msg));
-            debugLog.log(level, String.format("%s %s", LOG_TAG, msg));
+            String message = LOG_TAG + " " + msg;
+            LOGGER.log(level, message);
+            debugLog.log(level, message);
         }
     }
 
