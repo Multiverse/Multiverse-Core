@@ -30,6 +30,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockGateway;
 
@@ -60,6 +61,12 @@ public class TestInstanceCreator {
             MockGateway.MOCK_STANDARD_METHODS = false;
 
             core = PowerMockito.spy(new MultiverseCore());
+            PowerMockito.doAnswer(new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) throws Throwable {
+                    return null; // don't run metrics in tests
+                }
+            }).when(core, "setupMetrics");
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
