@@ -374,10 +374,17 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 envGraph.addPlotter(new EnvironmentPlotter(this, env));
 
 
-            m.addCustomData(new Metrics.Plotter("world_count") {
+            m.addCustomData(new Metrics.Plotter("Loaded worlds") {
                 @Override
                 public int getValue() {
                     return getMVWorldManager().getMVWorlds().size();
+                }
+            });
+            m.addCustomData(new Metrics.Plotter("Total number of worlds") {
+                @Override
+                public int getValue() {
+                    return getMVWorldManager().getMVWorlds().size()
+                            + getMVWorldManager().getUnloadedWorlds().size();
                 }
             });
 
