@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Imports a new world of the specified type.
+ * Creates a clone of a world.
  */
 public class CloneCommand extends MultiverseCommand {
     private MVWorldManager worldManager;
