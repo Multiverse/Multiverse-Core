@@ -61,6 +61,17 @@ public interface MVWorldManager {
                      String generator, boolean useSpawnAdjust);
 
     /**
+     * Make a copy of a world.
+     *
+     * @param oldName            Name of world to be copied
+     * @param newName            Name of world to be created
+     * @param env                Environment Type
+     * @param generator          The Custom generator plugin to use.
+     * @return True if the world is copied successfully, false if not.
+     */
+    boolean cloneWorld(String oldName, String newName, String generator);
+
+    /**
      * Remove the world from the Multiverse list, from the
      * config and deletes the folder.
      *

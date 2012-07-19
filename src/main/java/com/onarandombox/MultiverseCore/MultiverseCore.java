@@ -21,6 +21,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
+import com.onarandombox.MultiverseCore.commands.CloneCommand;
 import com.onarandombox.MultiverseCore.commands.ConfigCommand;
 import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
 import com.onarandombox.MultiverseCore.commands.CoordCommand;
@@ -656,6 +657,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new ListCommand(this));
         this.commandHandler.registerCommand(new InfoCommand(this));
         this.commandHandler.registerCommand(new CreateCommand(this));
+        this.commandHandler.registerCommand(new CloneCommand(this));
         this.commandHandler.registerCommand(new ImportCommand(this));
         this.commandHandler.registerCommand(new ReloadCommand(this));
         this.commandHandler.registerCommand(new SetSpawnCommand(this));
@@ -1026,6 +1028,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public Boolean deleteWorld(String name) {
         return this.worldManager.deleteWorld(name);
+    }
+
+    /**
+     * NOT deprecated for the time as queued commands use this.
+     * However, this is not in the API and other plugins should therefore not use it.
+     *
+     * @param oldName   World to copy
+     * @param newName   World to create
+     * @param generator The Custom generator plugin to use.
+     * @return True if success, false if fail.
+     */
+    public Boolean cloneWorld(String oldName, String newName, String generator) {
+        return this.worldManager.cloneWorld(oldName, newName, generator);
     }
 
     /**
