@@ -8,7 +8,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -44,7 +46,7 @@ public class CloneCommand extends MultiverseCommand {
         this.addCommandExample("/mv clone " + ChatColor.GOLD + "world" + ChatColor.GREEN + " world_backup");
         this.addCommandExample("/mv clone " + ChatColor.GOLD + "skyblock_pristine" + ChatColor.GREEN + " skyblock");
         this.addCommandExample("To clone a world that uses a generator, you'll need the generator:");
-        this.addCommandExample("/mv clone " + ChatColor.GOLD + "CleanRoom" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g CleanRoomGenerator");
+        this.addCommandExample("/mv clone " + ChatColor.GOLD + "CleanRoom" + ChatColor.GREEN + " CleanRoomCopy" + ChatColor.DARK_AQUA + " -g CleanRoomGenerator");
         this.setPermission("multiverse.core.clone", "Clones a world.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
@@ -118,14 +120,27 @@ public class CloneCommand extends MultiverseCommand {
         boolean useSpawnAdjust = this.worldManager.getMVWorld(oldWorldName).getAdjustSpawn();
 
         Environment environment = worldCreator.environment();
-        Command.broadcastCommandMessage(sender, String.format("Copying environment '%s'...", environment.toString()));
 
         if (newWorldFile.exists()) {
             Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", newWorldName));
-            if (this.worldManager.addWorld(newWorldName, environment, null, null, null, generator, useSpawnAdjust))
+            if (this.worldManager.addWorld(newWorldName, environment, null, null, null, generator, useSpawnAdjust)) {
+                Command.broadcastCommandMessage(sender, "Copying settings...");
+                // getMVWorld() doesn't actually return an MVWorld
+                MVWorld newWorld = (MVWorld) this.worldManager.getMVWorld(newWorldName);
+                MVWorld oldWorld = (MVWorld) this.worldManager.getMVWorld(oldWorldName);
+                newWorld.copyValues(oldWorld);
+                try {
+                	// don't keep the alias the same -- that would be useless
+                	newWorld.setPropertyValue("alias", newWorldName);
+               	} catch (PropertyDoesNotExistException e) {
+               		// this should never happen
+               		sender.sendMessage("Property 'alias' somehow doesn't exist");
+               		throw new RuntimeException(e);
+               	}
                 Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            else
+            } else {
                 Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            }
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("Couldn't copy the world files.  Go complain to somebody.");
