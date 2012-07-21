@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import com.onarandombox.MultiverseCore.utils.FileUtils;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -29,6 +30,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Creates a clone of a world.
@@ -51,25 +53,9 @@ public class CloneCommand extends MultiverseCommand {
         this.worldManager = this.plugin.getMVWorldManager();
     }
     
-    private void copy(File from, File to) throws IOException {
-    	// assumes from exists and to does not
-    	to.mkdirs();
-    	File[] files = from.listFiles();
-    	for (File file : files) {
-    		if (file.isDirectory()) {
-    			copy(file, new File(to, file.getName()));
-    		} else if (file.getName().equals("uid.dat")) {
-    			// skip this because multiverse won't import a world with the same uid.dat as another one
-    		} else {
-    			File destFile = new File(to, file.getName());
-    			destFile.createNewFile();
-    			FileChannel src = new FileInputStream(file).getChannel();
-    			FileChannel dest = new FileOutputStream(destFile).getChannel();
-    			src.transferTo(0, src.size(), dest);
-    			src.close();
-    			dest.close();
-    		}
-    	}
+    private void deleteUID(File worldFolder) throws IOException {
+    	File uidFile = new File(worldFolder, "uid.dat");
+    	uidFile.delete();
     }
 
     @Override
@@ -106,8 +92,13 @@ public class CloneCommand extends MultiverseCommand {
         
         Command.broadcastCommandMessage(sender, String.format("Copying data for world '%s'...", oldWorldName));
         try {
-        	copy(oldWorldFile, newWorldFile);
+        	FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
+        	deleteUID(newWorldFile);
         } catch (IOException e) {
+            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            e.printStackTrace();
+            return;
+        } catch (NullPointerException e) {
             Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
             e.printStackTrace();
             return;
