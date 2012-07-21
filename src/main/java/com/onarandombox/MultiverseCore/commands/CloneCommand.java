@@ -54,8 +54,8 @@ public class CloneCommand extends MultiverseCommand {
     }
     
     private void deleteUID(File worldFolder) throws IOException {
-    	File uidFile = new File(worldFolder, "uid.dat");
-    	uidFile.delete();
+        File uidFile = new File(worldFolder, "uid.dat");
+        uidFile.delete();
     }
 
     @Override
@@ -86,14 +86,14 @@ public class CloneCommand extends MultiverseCommand {
         
         // Make sure the new world doesn't exist outside of multiverse.
         if (newWorldFile.exists()) {
-        	sender.sendMessage(String.format("Something called '%s' already exists.", newWorldName));
-        	return;
+            sender.sendMessage(String.format("Something called '%s' already exists.", newWorldName));
+            return;
         }
         
         Command.broadcastCommandMessage(sender, String.format("Copying data for world '%s'...", oldWorldName));
         try {
-        	FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
-        	deleteUID(newWorldFile);
+            FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
+            deleteUID(newWorldFile);
         } catch (IOException e) {
             Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
             e.printStackTrace();
@@ -121,12 +121,12 @@ public class CloneCommand extends MultiverseCommand {
                 MVWorld oldWorld = (MVWorld) this.worldManager.getMVWorld(oldWorldName);
                 newWorld.copyValues(oldWorld);
                 try {
-                	// don't keep the alias the same -- that would be useless
-                	newWorld.setPropertyValue("alias", newWorldName);
+                    // don't keep the alias the same -- that would be useless
+                    newWorld.setPropertyValue("alias", newWorldName);
                	} catch (PropertyDoesNotExistException e) {
-               		// this should never happen
-               		sender.sendMessage("Property 'alias' somehow doesn't exist");
-               		throw new RuntimeException(e);
+               	    // this should never happen
+               	    sender.sendMessage("Property 'alias' somehow doesn't exist");
+               	    throw new RuntimeException(e);
                	}
                 Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
             } else {
