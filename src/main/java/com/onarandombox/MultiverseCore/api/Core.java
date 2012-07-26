@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import buscript.Buscript;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
@@ -222,4 +223,11 @@ public interface Core {
      * @return The configuration.
      */
     MultiverseCoreConfig getMVConfig();
+
+    /**
+     * Gets the buscript object for Multiverse.  This is what handles Javascript processing.
+     *
+     * @return The Multiverse buscript object.
+     */
+    Buscript getScriptAPI();
 }

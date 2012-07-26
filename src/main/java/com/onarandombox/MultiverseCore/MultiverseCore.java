@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
+import buscript.Buscript;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
@@ -42,6 +43,7 @@ import com.onarandombox.MultiverseCore.commands.PurgeCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
+import com.onarandombox.MultiverseCore.commands.ScriptCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.commands.SpawnCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
@@ -196,6 +198,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private HashMap<String, MVPlayerSession> playerSessions;
     private GenericBank bank = null;
     private AllPay banker;
+    private Buscript buscript;
     private int pluginCount;
     private DestinationFactory destFactory;
     //private SpoutInterface spoutInterface = null;
@@ -303,6 +306,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.log(Level.INFO, "Spout integration enabled.");
         }
         */
+        initializeBuscript();
+    }
+
+    /**
+     * Initializes the buscript javascript library
+     */
+    private void initializeBuscript() {
+        buscript = new Buscript(this);
+        // Add global variable "multiverse" to javascript environment
+        buscript.getGlobalScope().put("multiverse", buscript.getGlobalScope(), this);
     }
 
     private void initializeDestinationFactory() {
@@ -671,6 +684,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));
+        this.commandHandler.registerCommand(new ScriptCommand(this));
     }
 
     /**
@@ -1121,5 +1135,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Deprecated
     public static MultiverseCoreConfiguration getStaticConfig() {
         return MultiverseCoreConfiguration.getInstance();
+    }
+
+    @Override
+    public Buscript getScriptAPI() {
+        return buscript;
     }
 }

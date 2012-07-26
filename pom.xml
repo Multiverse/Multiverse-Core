@@ -152,6 +152,7 @@
                                     <include>me.main__.util:SerializationConfig</include>
                                     <include>com.fernferret.allpay:AllPay</include>
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
+                                    <include>com.dumptruckman.minecraft:buscript</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -166,6 +167,10 @@
                                 <relocation>
                                     <pattern>com.pneumaticraft.commandhandler</pattern>
                                     <shadedPattern>com.pneumaticraft.commandhandler.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>buscript</pattern>
+                                    <shadedPattern>buscript.multiverse</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -221,6 +226,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of CommandHandler Dependency -->
+        <!-- Start of Buscript Dependency -->
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>buscript</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of Buscript Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

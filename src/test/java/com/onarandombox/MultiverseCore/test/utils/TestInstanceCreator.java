@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
+import buscript.Buscript;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -80,6 +81,8 @@ public class TestInstanceCreator {
             when(mockPluginManager.getPlugins()).thenReturn(plugins);
             when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
             when(mockPluginManager.getPermission(anyString())).thenReturn(null);
+            // Tell Buscript Vault is not available.
+            when(mockPluginManager.getPermission("Vault")).thenReturn(null);
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
             File worldNormalFile = new File(core.getServerFolder(), "world");
@@ -177,6 +180,13 @@ public class TestInstanceCreator {
             Field serverfield = JavaPlugin.class.getDeclaredField("server");
             serverfield.setAccessible(true);
             serverfield.set(core, mockServer);
+
+            // Set buscript
+            Buscript buscript = PowerMockito.spy(new Buscript(core));
+            Field buscriptfield = MultiverseCore.class.getDeclaredField("buscript");
+            buscriptfield.setAccessible(true);
+            buscriptfield.set(core, buscript);
+            when(buscript.getPlugin()).thenReturn(core);
 
             // Set worldManager
             WorldManager wm = PowerMockito.spy(new WorldManager(core));
