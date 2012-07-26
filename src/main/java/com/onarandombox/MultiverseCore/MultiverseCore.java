@@ -104,7 +104,7 @@ import java.util.logging.Logger;
  * The implementation of the Multiverse-{@link Core}.
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private static final int PROTOCOL = 16;
+    private static final int PROTOCOL = 17;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
