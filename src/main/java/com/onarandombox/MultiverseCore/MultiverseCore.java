@@ -1017,6 +1017,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
+     * NOT deprecated for the time as queued commands use this.
+     * However, this is not in the API and other plugins should therefore not use it.
+     *
+     * @param oldName   World to copy
+     * @param newName   World to create
+     * @param generator The Custom generator plugin to use.
+     * @return True if success, false if fail.
+     */
+    public Boolean cloneWorld(String oldName, String newName, String generator) {
+        return this.worldManager.cloneWorld(oldName, newName, generator);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

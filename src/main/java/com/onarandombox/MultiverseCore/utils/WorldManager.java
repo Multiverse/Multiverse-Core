@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
@@ -38,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -81,6 +83,86 @@ public class WorldManager implements MVWorldManager {
         } else {
             this.plugin.log(Level.WARNING, "Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean cloneWorld(String oldName, String newName, String generator) {
+        // Make sure we don't already know about the new world.
+        if (this.isMVWorld(newName)) {
+            return false;
+        }
+        // Make sure the old world is actually a world!
+        if (this.getUnloadedWorlds().contains(oldName) || !this.isMVWorld(oldName)) {
+            return false;
+        }
+
+        final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
+        final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
+        
+        // Make sure the new world doesn't exist outside of multiverse.
+        if (newWorldFile.exists()) {
+            return false;
+        }
+        
+        unloadWorld(oldName);
+        
+        removePlayersFromWorld(oldName);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Copying data for world '").append(oldName).append("'...");
+        this.plugin.log(Level.INFO, builder.toString());
+        try {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
+                }
+            });
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                // do nothing
+            }
+            File uidFile = new File(newWorldFile, "uid.dat");
+            uidFile.delete();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        }
+        this.plugin.log(Level.INFO, "Kind of copied stuff");
+        
+        WorldCreator worldCreator = new WorldCreator(newName);
+        this.plugin.log(Level.INFO, "Started to copy settings");
+        worldCreator.copy(this.getMVWorld(oldName).getCBWorld());
+        this.plugin.log(Level.INFO, "Copied lots of settings");
+
+        boolean useSpawnAdjust = this.getMVWorld(oldName).getAdjustSpawn();
+        this.plugin.log(Level.INFO, "Copied more settings");
+
+        Environment environment = worldCreator.environment();
+        this.plugin.log(Level.INFO, "Copied most settings");
+        if (newWorldFile.exists()) {
+            this.plugin.log(Level.INFO, "Succeeded at copying stuff");
+            if (this.addWorld(newName, environment, null, null, null, generator, useSpawnAdjust)) {
+                // getMVWorld() doesn't actually return an MVWorld
+                this.plugin.log(Level.INFO, "Succeeded at importing stuff");
+                MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
+                MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
+                newWorld.copyValues(oldWorld);
+                try {
+                    // don't keep the alias the same -- that would be useless
+                    newWorld.setPropertyValue("alias", newName);
+               	} catch (PropertyDoesNotExistException e) {
+               	    // this should never happen
+               	    throw new RuntimeException(e);
+               	}
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

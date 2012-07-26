@@ -60,81 +60,12 @@ public class CloneCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        String oldWorldName = args.get(0);
-        String newWorldName = args.get(1);
-
-        // Make sure we don't already know about the new world.
-        if (this.worldManager.isMVWorld(newWorldName)) {
-            sender.sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
-                    + " already knows about '" + ChatColor.AQUA + newWorldName + ChatColor.WHITE + "'!");
-            return;
-        }
-        
-        // Make sure the old world is actually a world!
-        if (this.worldManager.getUnloadedWorlds().contains(oldWorldName)) {
-            sender.sendMessage("That world exists, but it is unloaded!");
-            sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, oldWorldName));
-            return;
-        } else if (!this.worldManager.isMVWorld(oldWorldName)) {
-            sender.sendMessage("You must enter a" + ChatColor.LIGHT_PURPLE + " world" + ChatColor.WHITE + " to clone!");
-            return;
-        }
-
-        File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldWorldName);
-        
-        File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newWorldName);
-        
-        // Make sure the new world doesn't exist outside of multiverse.
-        if (newWorldFile.exists()) {
-            sender.sendMessage(String.format("Something called '%s' already exists.", newWorldName));
-            return;
-        }
-        
-        Command.broadcastCommandMessage(sender, String.format("Copying data for world '%s'...", oldWorldName));
-        try {
-            FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
-            deleteUID(newWorldFile);
-        } catch (IOException e) {
-            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
-            e.printStackTrace();
-            return;
-        } catch (NullPointerException e) {
-            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
-            e.printStackTrace();
-            return;
-        }
-        
-        WorldCreator worldCreator = new WorldCreator(newWorldName);
-        worldCreator.copy(this.worldManager.getMVWorld(oldWorldName).getCBWorld());
-
-        String generator = CommandHandler.getFlag("-g", args);
-        boolean useSpawnAdjust = this.worldManager.getMVWorld(oldWorldName).getAdjustSpawn();
-
-        Environment environment = worldCreator.environment();
-
-        if (newWorldFile.exists()) {
-            Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", newWorldName));
-            if (this.worldManager.addWorld(newWorldName, environment, null, null, null, generator, useSpawnAdjust)) {
-                Command.broadcastCommandMessage(sender, "Copying settings...");
-                // getMVWorld() doesn't actually return an MVWorld
-                MVWorld newWorld = (MVWorld) this.worldManager.getMVWorld(newWorldName);
-                MVWorld oldWorld = (MVWorld) this.worldManager.getMVWorld(oldWorldName);
-                newWorld.copyValues(oldWorld);
-                try {
-                    // don't keep the alias the same -- that would be useless
-                    newWorld.setPropertyValue("alias", newWorldName);
-               	} catch (PropertyDoesNotExistException e) {
-               	    // this should never happen
-               	    sender.sendMessage("Property 'alias' somehow doesn't exist");
-               	    throw new RuntimeException(e);
-               	}
-                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            } else {
-                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
-            }
-        } else {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage("Couldn't copy the world files.  Go complain to somebody.");
-        }
+        Class<?>[] paramTypes = {String.class, String.class, String.class};
+        List<Object> objectArgs = new ArrayList<Object>();
+        objectArgs.add(args.get(0));
+        objectArgs.add(args.get(1));
+        objectArgs.add(CommandHandler.getFlag("-g", args));
+        this.plugin.getCommandHandler().queueCommand(sender, "mvclone", "cloneWorld", objectArgs,
+                paramTypes, ChatColor.GREEN + "World Cloned!", ChatColor.RED + "World could NOT be cloned!");
     }
 }
