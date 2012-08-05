@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -49,7 +50,7 @@ public class MVPlayerListener implements Listener {
      * @param event The Event that was fired.
      */
     @EventHandler
-    public void playerChat(PlayerChatEvent event) {
+    public void playerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
         }
