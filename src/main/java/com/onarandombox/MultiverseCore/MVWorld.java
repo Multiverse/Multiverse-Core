@@ -60,7 +60,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
-    private static Map<String, String> propertyAliases;
+    private static final Map<String, String> propertyAliases;
 
     static {
         propertyAliases = new HashMap<String, String>();
@@ -350,6 +350,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     }
 
+    private final Object propertyLock = new Object();
+
     // --------------------------------------------------------------
     // Begin properties
     @Property(description = "Sorry, 'hidden' must either be: true or false.")
@@ -637,25 +639,27 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     protected void setDefaults() {
-        this.hidden = false;
-        this.alias = new String();
-        this.color = EnglishChatColor.WHITE;
-        this.style = EnglishChatStyle.NORMAL;
-        this.scale = getDefaultScale(environment);
-        this.respawnWorld = new String();
-        this.allowWeather = true;
-        this.spawning = new SpawnSettings();
-        this.entryfee = new EntryFee();
-        this.hunger = true;
-        this.autoHeal = true;
-        this.adjustSpawn = true;
-        this.portalForm = AllowedPortalType.ALL;
-        this.gameMode = GameMode.SURVIVAL;
-        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
-        this.autoLoad = true;
-        this.bedRespawn = true;
-        this.worldBlacklist = new ArrayList<String>();
-        this.generator = null;
+        synchronized (propertyLock) {
+            this.hidden = false;
+            this.alias = new String();
+            this.color = EnglishChatColor.WHITE;
+            this.style = EnglishChatStyle.NORMAL;
+            this.scale = getDefaultScale(environment);
+            this.respawnWorld = new String();
+            this.allowWeather = true;
+            this.spawning = new SpawnSettings();
+            this.entryfee = new EntryFee();
+            this.hunger = true;
+            this.autoHeal = true;
+            this.adjustSpawn = true;
+            this.portalForm = AllowedPortalType.ALL;
+            this.gameMode = GameMode.SURVIVAL;
+            this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
+            this.autoLoad = true;
+            this.bedRespawn = true;
+            this.worldBlacklist = new ArrayList<String>();
+            this.generator = null;
+        }
     }
 
     /**
@@ -713,20 +717,22 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public String getColoredWorldString() {
-        if (alias.length() == 0) {
-            alias = this.getName();
+        synchronized (propertyLock) {
+            if (alias.length() == 0) {
+                alias = this.getName();
+            }
+
+            if ((color == null) || (color.getColor() == null)) {
+                this.setPropertyValueUnchecked("color", EnglishChatColor.WHITE);
+            }
+
+            StringBuilder nameBuilder = new StringBuilder().append(color.getColor());
+            if (style.getColor() != null)
+                nameBuilder.append(style.getColor());
+            nameBuilder.append(alias).append(ChatColor.WHITE).toString();
+
+            return nameBuilder.toString();
         }
-
-        if ((color == null) || (color.getColor() == null)) {
-            this.setPropertyValueUnchecked("color", EnglishChatColor.WHITE);
-        }
-
-        StringBuilder nameBuilder = new StringBuilder().append(color.getColor());
-        if (style.getColor() != null)
-            nameBuilder.append(style.getColor());
-        nameBuilder.append(alias).append(ChatColor.WHITE).toString();
-
-        return nameBuilder.toString();
     }
 
     /**
@@ -937,10 +943,12 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public String getAlias() {
-        if (this.alias == null || this.alias.length() == 0) {
-            return this.name;
+        synchronized (propertyLock) {
+            if (this.alias == null || this.alias.length() == 0) {
+                return this.name;
+            }
+            return this.alias;
         }
-        return this.alias;
     }
 
     /**
@@ -1022,7 +1030,9 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public boolean isHidden() {
-        return this.hidden;
+        synchronized (propertyLock) {
+            return this.hidden;
+        }
     }
 
     /**
@@ -1081,7 +1091,9 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public ChatColor getColor() {
-        return this.color.getColor();
+        synchronized (propertyLock) {
+            return this.color.getColor();
+        }
     }
 
     /**
@@ -1385,7 +1397,9 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public ChatColor getStyle() {
-        return style.getColor();
+        synchronized (propertyLock) {
+            return style.getColor();
+        }
     }
 
     /**
