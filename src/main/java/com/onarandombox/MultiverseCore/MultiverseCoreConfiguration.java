@@ -78,7 +78,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     public void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
-        setPrefixChat(true);
+        prefixchat = true;
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;

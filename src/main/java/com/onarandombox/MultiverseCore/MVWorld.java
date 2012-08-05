@@ -639,27 +639,25 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     protected void setDefaults() {
-        synchronized (propertyLock) {
-            this.hidden = false;
-            this.alias = new String();
-            this.color = EnglishChatColor.WHITE;
-            this.style = EnglishChatStyle.NORMAL;
-            this.scale = getDefaultScale(environment);
-            this.respawnWorld = new String();
-            this.allowWeather = true;
-            this.spawning = new SpawnSettings();
-            this.entryfee = new EntryFee();
-            this.hunger = true;
-            this.autoHeal = true;
-            this.adjustSpawn = true;
-            this.portalForm = AllowedPortalType.ALL;
-            this.gameMode = GameMode.SURVIVAL;
-            this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
-            this.autoLoad = true;
-            this.bedRespawn = true;
-            this.worldBlacklist = new ArrayList<String>();
-            this.generator = null;
-        }
+        this.hidden = false;
+        this.alias = new String();
+        this.color = EnglishChatColor.WHITE;
+        this.style = EnglishChatStyle.NORMAL;
+        this.scale = getDefaultScale(environment);
+        this.respawnWorld = new String();
+        this.allowWeather = true;
+        this.spawning = new SpawnSettings();
+        this.entryfee = new EntryFee();
+        this.hunger = true;
+        this.autoHeal = true;
+        this.adjustSpawn = true;
+        this.portalForm = AllowedPortalType.ALL;
+        this.gameMode = GameMode.SURVIVAL;
+        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
+        this.autoLoad = true;
+        this.bedRespawn = true;
+        this.worldBlacklist = new ArrayList<String>();
+        this.generator = null;
     }
 
     /**
