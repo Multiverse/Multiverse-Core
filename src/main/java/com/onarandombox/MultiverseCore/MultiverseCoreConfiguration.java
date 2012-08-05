@@ -38,6 +38,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         return instance;
     }
 
+    private final Object propertyLock = new Object();
+
     @Property
     private boolean enforceaccess;
     @Property
@@ -76,7 +78,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     public void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
-        prefixchat = true;
+        setPrefixChat(true);
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
@@ -122,7 +124,9 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getPrefixChat() {
-        return this.prefixchat;
+        synchronized (propertyLock) {
+            return this.prefixchat;
+        }
     }
 
     /**
@@ -130,7 +134,9 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public void setPrefixChat(boolean prefixChat) {
-        this.prefixchat = prefixChat;
+        synchronized (propertyLock) {
+            this.prefixchat = prefixChat;
+        }
     }
 
     /**
