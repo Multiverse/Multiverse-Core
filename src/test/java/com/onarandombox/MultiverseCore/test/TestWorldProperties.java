@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -68,7 +69,7 @@ public class TestWorldProperties {
     private ThunderChangeEvent thunderChangeOffEvent;
     private ThunderChangeEvent thunderChangeOnEvent;
     private Player mockPlayer;
-    private PlayerChatEvent playerChatEvent;
+    private AsyncPlayerChatEvent playerChatEvent;
     private Player mockNewPlayer;
     private PlayerJoinEvent playerNewJoinEvent;
     private PlayerJoinEvent playerJoinEvent;
@@ -344,7 +345,7 @@ public class TestWorldProperties {
         when(mockPlayer.getWorld()).thenReturn(mvWorld.getCBWorld());
         when(mockPlayer.hasPlayedBefore()).thenReturn(true);
         when(mockPlayer.hasPermission("multiverse.access.world")).thenReturn(true);
-        playerChatEvent = PowerMockito.mock(PlayerChatEvent.class);
+        playerChatEvent = PowerMockito.mock(AsyncPlayerChatEvent.class);
         when(playerChatEvent.getPlayer()).thenReturn(mockPlayer);
         when(playerChatEvent.getFormat()).thenReturn("format");
         // player join
