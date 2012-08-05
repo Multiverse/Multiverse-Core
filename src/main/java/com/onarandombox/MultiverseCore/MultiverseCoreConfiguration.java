@@ -75,7 +75,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
-    public void setDefaults() {
+    protected void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
         prefixchat = true;
