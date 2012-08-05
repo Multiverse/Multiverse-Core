@@ -55,7 +55,7 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class,
-        WeatherChangeEvent.class, ThunderChangeEvent.class, PlayerChatEvent.class,
+        WeatherChangeEvent.class, ThunderChangeEvent.class, AsyncPlayerChatEvent.class,
         PlayerJoinEvent.class, PlayerRespawnEvent.class, EntityRegainHealthEvent.class,
         FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class })
 public class TestWorldProperties {
