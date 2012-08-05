@@ -45,10 +45,10 @@ import java.util.logging.Logger;
  * Public facing API to add/remove Multiverse worlds.
  */
 public class WorldManager implements MVWorldManager {
-    private MultiverseCore plugin;
-    private WorldPurger worldPurger;
+    private final MultiverseCore plugin;
+    private final WorldPurger worldPurger;
+    private final Map<String, MultiverseWorld> worlds;
     private Map<String, MVWorld> worldsFromTheConfig;
-    private Map<String, MultiverseWorld> worlds;
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
     private String firstSpawn;
@@ -225,7 +225,9 @@ public class WorldManager implements MVWorldManager {
         }
 
         // set generator (special case because we can't read it from org.bukkit.World)
-        this.worlds.get(name).setGenerator(generator);
+        synchronized (worlds) {
+            this.worlds.get(name).setGenerator(generator);
+        }
 
         this.saveWorldsConfig();
         return true;
@@ -304,23 +306,25 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean unloadWorld(String name) {
-        if (this.worlds.containsKey(name)) {
-            if (this.unloadWorldFromBukkit(name, true)) {
-                this.worlds.remove(name);
-                this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
+        synchronized (worlds) {
+            if (this.worlds.containsKey(name)) {
+                if (this.unloadWorldFromBukkit(name, true)) {
+                    this.worlds.remove(name);
+                    this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
 
-                this.worldsFromTheConfig.get(name).tearDown();
+                    this.worldsFromTheConfig.get(name).tearDown();
 
-                return true;
+                    return true;
+                } else {
+                    this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
+                }
+            } else if (this.plugin.getServer().getWorld(name) != null) {
+                this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
+                this.plugin.log(Level.WARNING, "To let Multiverse know about it, use:");
+                this.plugin.log(Level.WARNING, String.format("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString()));
             } else {
-                this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
+                this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
             }
-        } else if (this.plugin.getServer().getWorld(name) != null) {
-            this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
-            this.plugin.log(Level.WARNING, "To let Multiverse know about it, use:");
-            this.plugin.log(Level.WARNING, String.format("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString()));
-        } else {
-            this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
         }
         return false;
     }
@@ -331,8 +335,10 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean loadWorld(String name) {
         // Check if the World is already loaded
-        if (this.worlds.containsKey(name)) {
-            return true;
+        synchronized (worlds) {
+            if (this.worlds.containsKey(name)) {
+                return true;
+            }
         }
 
         // Check that the world is in the config
@@ -367,8 +373,10 @@ public class WorldManager implements MVWorldManager {
         String worldName = creator.name();
         if (!worldsFromTheConfig.containsKey(worldName))
             throw new IllegalArgumentException("That world doesn't exist!");
-        if (worlds.containsKey(worldName))
-            throw new IllegalArgumentException("That world is already loaded!");
+        synchronized (worlds) {
+            if (worlds.containsKey(worldName))
+                throw new IllegalArgumentException("That world is already loaded!");
+        }
         MVWorld mvworld = worldsFromTheConfig.get(worldName);
         World cbworld;
         try {
@@ -380,7 +388,9 @@ public class WorldManager implements MVWorldManager {
         }
         mvworld.init(cbworld, plugin);
         this.worldPurger.purgeWorld(mvworld);
-        this.worlds.put(worldName, mvworld);
+        synchronized (worlds) {
+            this.worlds.put(worldName, mvworld);
+        }
         return true;
     }
 
@@ -477,7 +487,9 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public Collection<MultiverseWorld> getMVWorlds() {
-        return this.worlds.values();
+        synchronized (worlds) {
+            return this.worlds.values();
+        }
     }
 
     /**
@@ -485,8 +497,10 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public MultiverseWorld getMVWorld(String name) {
-        if (this.worlds.containsKey(name)) {
-            return this.worlds.get(name);
+        synchronized (worlds) {
+            if (this.worlds.containsKey(name)) {
+                return this.worlds.get(name);
+            }
         }
         return this.getMVWorldByAlias(name);
     }
@@ -509,9 +523,11 @@ public class WorldManager implements MVWorldManager {
      * @return A {@link MVWorld} or null.
      */
     private MultiverseWorld getMVWorldByAlias(String alias) {
-        for (MultiverseWorld w : this.worlds.values()) {
-            if (w.getAlias().equalsIgnoreCase(alias)) {
-                return w;
+        synchronized (worlds) {
+            for (MultiverseWorld w : this.worlds.values()) {
+                if (w.getAlias().equalsIgnoreCase(alias)) {
+                    return w;
+                }
             }
         }
         return null;
@@ -522,7 +538,9 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean isMVWorld(String name) {
-        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+        synchronized (worlds) {
+            return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+        }
     }
 
     /**
@@ -540,9 +558,11 @@ public class WorldManager implements MVWorldManager {
      * @return True if the world exists, false if not.
      */
     private boolean isMVWorldAlias(String alias) {
-        for (MultiverseWorld w : this.worlds.values()) {
-            if (w.getAlias().equalsIgnoreCase(alias)) {
-                return true;
+        synchronized (worlds) {
+            for (MultiverseWorld w : this.worlds.values()) {
+                if (w.getAlias().equalsIgnoreCase(alias)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -589,28 +609,34 @@ public class WorldManager implements MVWorldManager {
             // Remove all world permissions.
             Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
             Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
-            for (MultiverseWorld w : this.worlds.values()) {
-                // Remove this world from the master list
-                if (allAccess != null) {
-                    allAccess.getChildren().remove(w.getAccessPermission().getName());
+            synchronized (worlds) {
+                for (MultiverseWorld w : this.worlds.values()) {
+                    // Remove this world from the master list
+                    if (allAccess != null) {
+                        allAccess.getChildren().remove(w.getAccessPermission().getName());
+                    }
+                    if (allExempt != null) {
+                        allExempt.getChildren().remove(w.getAccessPermission().getName());
+                    }
+                    this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
+                    this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
+                    // Special namespace for gamemodes
+                    this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
                 }
-                if (allExempt != null) {
-                    allExempt.getChildren().remove(w.getAccessPermission().getName());
-                }
-                this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
-                this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
-                // Special namespace for gamemodes
-                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
             }
             // Recalc the all permission
             this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
             this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allExempt);
-            this.worlds.clear();
+            synchronized (worlds) {
+                this.worlds.clear();
+            }
         }
 
         for (Map.Entry<String, MVWorld> entry : worldsFromTheConfig.entrySet()) {
-            if (worlds.containsKey(entry.getKey()))
-                continue;
+            synchronized (worlds) {
+                if (worlds.containsKey(entry.getKey()))
+                    continue;
+            }
             if (!entry.getValue().getAutoLoad())
                 continue;
 
@@ -676,9 +702,11 @@ public class WorldManager implements MVWorldManager {
                 String worldName = key.replaceAll(String.valueOf(SEPARATOR), ".");
                 if (this.worldsFromTheConfig.containsKey(worldName)) {
                     // Object-Recycling :D
-                    MVWorld oldMVWorld = (MVWorld) this.worlds.get(worldName);
-                    oldMVWorld.copyValues((MVWorld) obj);
-                    newWorldsFromTheConfig.put(worldName, oldMVWorld);
+                    synchronized (worlds) {
+                        MVWorld oldMVWorld = (MVWorld) this.worlds.get(worldName);
+                        oldMVWorld.copyValues((MVWorld) obj);
+                        newWorldsFromTheConfig.put(worldName, oldMVWorld);
+                    }
                 } else {
                     // we have to use a new one
                     World cbworld = this.plugin.getServer().getWorld(worldName);
@@ -696,7 +724,9 @@ public class WorldManager implements MVWorldManager {
             }
         }
         this.worldsFromTheConfig = newWorldsFromTheConfig;
-        this.worlds.keySet().retainAll(this.worldsFromTheConfig.keySet());
+        synchronized (worlds) {
+            this.worlds.keySet().retainAll(this.worldsFromTheConfig.keySet());
+        }
         return this.configWorlds;
     }
 
@@ -733,7 +763,9 @@ public class WorldManager implements MVWorldManager {
     @Override
     public List<String> getUnloadedWorlds() {
         List<String> allNames = new ArrayList<String>(this.worldsFromTheConfig.keySet());
-        allNames.removeAll(worlds.keySet());
+        synchronized (worlds) {
+            allNames.removeAll(worlds.keySet());
+        }
         return allNames;
     }
 
