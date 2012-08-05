@@ -29,6 +29,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -39,6 +41,7 @@ public class MVPlayerListener implements Listener {
     private MVWorldManager worldManager;
     private PermissionTools pt;
 
+    private final Map<String, String> playerWorld = new HashMap<String, String>();
 
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
@@ -57,7 +60,14 @@ public class MVPlayerListener implements Listener {
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
         if (plugin.getMVConfig().getPrefixChat()) {
-            String world = event.getPlayer().getWorld().getName();
+            String world;
+            synchronized (playerWorld) {
+                world = playerWorld.get(event.getPlayer().getName());
+                if (world == null) {
+                    world = event.getPlayer().getWorld().getName();
+                    playerWorld.put(event.getPlayer().getName(), world);
+                }
+            }
             String prefix = "";
             // If we're not a MV world, don't do anything
             if (!this.worldManager.isMVWorld(world)) {
@@ -144,6 +154,9 @@ public class MVPlayerListener implements Listener {
         }
         // Handle the Players GameMode setting for the new world.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        synchronized (playerWorld) {
+            playerWorld.put(p.getName(), p.getWorld().getName());
+        }
     }
 
     /**
@@ -154,6 +167,9 @@ public class MVPlayerListener implements Listener {
     public void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        synchronized (playerWorld) {
+            playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
+        }
     }
 
     /**
