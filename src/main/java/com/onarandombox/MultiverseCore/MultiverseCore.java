@@ -187,14 +187,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Configurations
     private FileConfiguration multiverseConfig = null;
 
-    private MVWorldManager worldManager = new WorldManager(this);
+    private final MVWorldManager worldManager = new WorldManager(this);
 
     // Setup the block/player/entity listener.
-    private MVPlayerListener playerListener = new MVPlayerListener(this);
-    private MVEntityListener entityListener = new MVEntityListener(this);
-    private MVPluginListener pluginListener = new MVPluginListener(this);
-    private MVWeatherListener weatherListener = new MVWeatherListener(this);
-    private MVPortalListener portalListener = new MVPortalListener(this);
+    private final MVPlayerListener playerListener = new MVPlayerListener(this);
+    private final MVEntityListener entityListener = new MVEntityListener(this);
+    private final MVPluginListener pluginListener = new MVPluginListener(this);
+    private final MVWeatherListener weatherListener = new MVWeatherListener(this);
+    private final MVPortalListener portalListener = new MVPortalListener(this);
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
