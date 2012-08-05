@@ -113,6 +113,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
     private MultiverseCoreConfiguration config;
+    private final Object configLock = new Object();
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -293,9 +294,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.anchorManager.loadAnchors();
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        this.worldManager.setFirstSpawnWorld(config.getFirstSpawnWorld());
+        this.worldManager.setFirstSpawnWorld(getMVConfig().getFirstSpawnWorld());
         try {
-            config.setFirstSpawnWorld(this.worldManager.getFirstSpawnWorld().getName());
+            getMVConfig().setFirstSpawnWorld(this.worldManager.getFirstSpawnWorld().getName());
         } catch (NullPointerException e) {
             // A test that had no worlds loaded was being run. This should never happen in production
         }
@@ -361,12 +362,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } catch (Exception e) {
             // We're just thinking "no risk no fun" and therefore have to catch and forget this exception
         } finally {
-            config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
+            synchronized (configLock) {
+                config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
+            }
         }
         this.migrateWorldConfig();
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 
-        this.messaging.setCooldown(config.getMessageCooldown());
+        this.messaging.setCooldown(getMVConfig().getMessageCooldown());
 
         // Remove old values.
         this.multiverseConfig.set("enforcegamemodes", null);
@@ -385,42 +388,42 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private void migrate22Values() {
         if (this.multiverseConfig.isSet("worldnameprefix")) {
             this.log(Level.INFO, "Migrating 'worldnameprefix'...");
-            this.config.setPrefixChat(this.multiverseConfig.getBoolean("worldnameprefix"));
+            this.getMVConfig().setPrefixChat(this.multiverseConfig.getBoolean("worldnameprefix"));
             this.multiverseConfig.set("worldnameprefix", null);
         }
         if (this.multiverseConfig.isSet("firstspawnworld")) {
             this.log(Level.INFO, "Migrating 'firstspawnworld'...");
-            this.config.setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld"));
+            this.getMVConfig().setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld"));
             this.multiverseConfig.set("firstspawnworld", null);
         }
         if (this.multiverseConfig.isSet("enforceaccess")) {
             this.log(Level.INFO, "Migrating 'enforceaccess'...");
-            this.config.setEnforceAccess(this.multiverseConfig.getBoolean("enforceaccess"));
+            this.getMVConfig().setEnforceAccess(this.multiverseConfig.getBoolean("enforceaccess"));
             this.multiverseConfig.set("enforceaccess", null);
         }
         if (this.multiverseConfig.isSet("displaypermerrors")) {
             this.log(Level.INFO, "Migrating 'displaypermerrors'...");
-            this.config.setDisplayPermErrors(this.multiverseConfig.getBoolean("displaypermerrors"));
+            this.getMVConfig().setDisplayPermErrors(this.multiverseConfig.getBoolean("displaypermerrors"));
             this.multiverseConfig.set("displaypermerrors", null);
         }
         if (this.multiverseConfig.isSet("teleportintercept")) {
             this.log(Level.INFO, "Migrating 'teleportintercept'...");
-            this.config.setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
+            this.getMVConfig().setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
             this.multiverseConfig.set("teleportintercept", null);
         }
         if (this.multiverseConfig.isSet("firstspawnoverride")) {
             this.log(Level.INFO, "Migrating 'firstspawnoverride'...");
-            this.config.setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
+            this.getMVConfig().setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
             this.multiverseConfig.set("firstspawnoverride", null);
         }
         if (this.multiverseConfig.isSet("messagecooldown")) {
             this.log(Level.INFO, "Migrating 'messagecooldown'...");
-            this.config.setMessageCooldown(this.multiverseConfig.getInt("messagecooldown"));
+            this.getMVConfig().setMessageCooldown(this.multiverseConfig.getInt("messagecooldown"));
             this.multiverseConfig.set("messagecooldown", null);
         }
         if (this.multiverseConfig.isSet("debug")) {
             this.log(Level.INFO, "Migrating 'debug'...");
-            this.config.setGlobalDebug(this.multiverseConfig.getInt("debug"));
+            this.getMVConfig().setGlobalDebug(this.multiverseConfig.getInt("debug"));
             this.multiverseConfig.set("debug", null);
         }
         if (this.multiverseConfig.isSet("version")) {
@@ -709,7 +712,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (this.playerSessions.containsKey(player.getName())) {
             return this.playerSessions.get(player.getName());
         } else {
-            this.playerSessions.put(player.getName(), new MVPlayerSession(player, config));
+            this.playerSessions.put(player.getName(), new MVPlayerSession(player, getMVConfig()));
             return this.playerSessions.get(player.getName());
         }
     }
@@ -744,7 +747,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
-        return this.commandHandler.locateAndRunCommand(sender, allArgs, config.getDisplayPermErrors());
+        return this.commandHandler.locateAndRunCommand(sender, allArgs, getMVConfig().getDisplayPermErrors());
     }
 
     /**
@@ -993,7 +996,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public boolean saveMVConfig() {
         try {
-            this.multiverseConfig.set("multiverse-configuration", config);
+            this.multiverseConfig.set("multiverse-configuration", getMVConfig());
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
             return true;
         } catch (IOException e) {
@@ -1138,7 +1141,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public MultiverseCoreConfig getMVConfig() {
-        return config;
+        synchronized (configLock) {
+            return config;
+        }
     }
 
     /**
