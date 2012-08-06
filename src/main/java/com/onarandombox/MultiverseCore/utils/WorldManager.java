@@ -101,14 +101,14 @@ public class WorldManager implements MVWorldManager {
 
         final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
         final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
-        
+
         // Make sure the new world doesn't exist outside of multiverse.
         if (newWorldFile.exists()) {
             return false;
         }
-        
+
         unloadWorld(oldName);
-        
+
         removePlayersFromWorld(oldName);
 
         StringBuilder builder = new StringBuilder();
@@ -116,6 +116,7 @@ public class WorldManager implements MVWorldManager {
         this.plugin.log(Level.INFO, builder.toString());
         try {
             Thread t = new Thread(new Runnable() {
+                @Override
                 public void run() {
                     FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
                 }
@@ -133,7 +134,7 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
         this.plugin.log(Level.INFO, "Kind of copied stuff");
-        
+
         WorldCreator worldCreator = new WorldCreator(newName);
         this.plugin.log(Level.INFO, "Started to copy settings");
         worldCreator.copy(this.getMVWorld(oldName).getCBWorld());
@@ -322,6 +323,8 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
                 this.plugin.log(Level.WARNING, "To let Multiverse know about it, use:");
                 this.plugin.log(Level.WARNING, String.format("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString()));
+            } else if (this.worldsFromTheConfig.containsKey(name)) {
+                return true; // it's already unloaded
             } else {
                 this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
             }
@@ -377,6 +380,13 @@ public class WorldManager implements MVWorldManager {
             if (worlds.containsKey(worldName))
                 throw new IllegalArgumentException("That world is already loaded!");
         }
+
+        if (!new File(this.plugin.getServer().getWorldContainer(), worldName).exists()) {
+            this.plugin.log(Level.WARNING, "WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
+            this.plugin.log(Level.WARNING, "Use '/mv remove' to remove it from the config!");
+            return false;
+        }
+
         MVWorld mvworld = worldsFromTheConfig.get(worldName);
         World cbworld;
         try {
