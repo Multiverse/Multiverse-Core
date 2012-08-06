@@ -220,7 +220,7 @@ public class WorldManager implements MVWorldManager {
         }
         this.plugin.log(Level.INFO, builder.toString());
 
-        if (!doLoad(c)) {
+        if (!doLoad(c, true)) {
             this.plugin.log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
             return false;
         }
@@ -359,6 +359,10 @@ public class WorldManager implements MVWorldManager {
     }
 
     private boolean doLoad(String name) {
+        return doLoad(name, false);
+    }
+
+    private boolean doLoad(String name, boolean ignoreExists) {
         if (!worldsFromTheConfig.containsKey(name))
             throw new IllegalArgumentException("That world doesn't exist!");
 
@@ -369,10 +373,10 @@ public class WorldManager implements MVWorldManager {
         if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
             creator.generator(world.getGenerator());
 
-        return doLoad(creator);
+        return doLoad(creator, ignoreExists);
     }
 
-    private boolean doLoad(WorldCreator creator) {
+    private boolean doLoad(WorldCreator creator, boolean ignoreExists) {
         String worldName = creator.name();
         if (!worldsFromTheConfig.containsKey(worldName))
             throw new IllegalArgumentException("That world doesn't exist!");
@@ -381,7 +385,7 @@ public class WorldManager implements MVWorldManager {
                 throw new IllegalArgumentException("That world is already loaded!");
         }
 
-        if (!new File(this.plugin.getServer().getWorldContainer(), worldName).exists()) {
+        if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists()) {
             this.plugin.log(Level.WARNING, "WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
             this.plugin.log(Level.WARNING, "Use '/mv remove' to remove it from the config!");
             return false;
