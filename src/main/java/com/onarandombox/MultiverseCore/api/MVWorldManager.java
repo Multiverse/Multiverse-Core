@@ -256,4 +256,16 @@ public interface MVWorldManager {
      * @return The {@link MultiverseWorld} new players should spawn in.
      */
     MultiverseWorld getFirstSpawnWorld();
+
+    /**
+     * Regenerates a world.
+     *
+     * @param name Name of the world to regenerate
+     * @param useNewSeed If a new seed should be used
+     * @param randomSeed IF the new seed should be random
+     * @param seed The seed of the world.
+     *
+     * @return True if success, false if fail.
+     */
+    boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
 }

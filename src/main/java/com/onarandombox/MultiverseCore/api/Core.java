@@ -129,7 +129,10 @@ public interface Core {
      * @param seed The seed of the world.
      *
      * @return True if success, false if fail.
+     *
+     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String)} instead.
      */
+    @Deprecated
     Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
 
     /**

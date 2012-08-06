@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.Location;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
@@ -36,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -781,6 +783,46 @@ public class WorldManager implements MVWorldManager {
             allNames.removeAll(worlds.keySet());
         }
         return allNames;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed) {
+        MultiverseWorld world = this.getMVWorld(name);
+        if (world == null)
+            return false;
+
+        List<Player> ps = world.getCBWorld().getPlayers();
+
+        if (useNewSeed) {
+            long theSeed;
+
+            if (randomSeed) {
+                theSeed = new Random().nextLong();
+            } else {
+                try {
+                    theSeed = Long.parseLong(seed);
+                } catch (NumberFormatException e) {
+                    theSeed = seed.hashCode();
+                }
+            }
+
+            world.setSeed(theSeed);
+        }
+
+        if (this.deleteWorld(name, false)) {
+            this.doLoad(name, true);
+            SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
+            Location newSpawn = world.getSpawnLocation();
+            // Send all players that were in the old world, BACK to it!
+            for (Player p : ps) {
+                teleporter.safelyTeleport(null, p, newSpawn, true);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

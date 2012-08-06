@@ -1048,36 +1048,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
+     * @deprecated This is deprecated!
      */
     @Override
+    @Deprecated
     public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
-        MultiverseWorld world = this.worldManager.getMVWorld(name);
-        if (world == null) {
-            return false;
-        }
-
-        List<Player> ps = world.getCBWorld().getPlayers();
-
-        if (useNewSeed) {
-            // Set the worldseed.
-            if (randomSeed) {
-                Random random = new Random();
-                Long newseed = random.nextLong();
-                seed = newseed.toString();
-            }
-            ((WorldManager) this.worldManager).getConfigWorlds().set("worlds." + name + ".seed", seed);
-        }
-        if (this.worldManager.deleteWorld(name, false)) {
-            this.worldManager.loadWorlds(false);
-            SafeTTeleporter teleporter = this.getSafeTTeleporter();
-            Location newSpawn = this.getServer().getWorld(name).getSpawnLocation();
-            // Send all players that were in the old world, BACK to it!
-            for (Player p : ps) {
-                teleporter.safelyTeleport(null, p, newSpawn, true);
-            }
-            return true;
-        }
-        return false;
+        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed);
     }
 
     /**
