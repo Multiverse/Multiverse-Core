@@ -158,10 +158,10 @@ public class WorldManager implements MVWorldManager {
                 try {
                     // don't keep the alias the same -- that would be useless
                     newWorld.setPropertyValue("alias", newName);
-               	} catch (PropertyDoesNotExistException e) {
-               	    // this should never happen
-               	    throw new RuntimeException(e);
-               	}
+                } catch (PropertyDoesNotExistException e) {
+                    // this should never happen
+                    throw new RuntimeException(e);
+                }
                 return true;
             }
         }

@@ -45,10 +45,15 @@ public class FileUtils {
         }
     }
 
+    private static final int COPY_BLOCK_SIZE = 1024;
+
     /**
-     * Helper method to copy the world-folder
+     * Helper method to copy the world-folder.
+     * @param source Source-File
+     * @param target Target-File
+     * @param log A logger that logs the operation
      *
-     * @returns if it had success
+     * @return if it had success
      */
     public static boolean copyFolder(File source, File target, Logger log) {
         InputStream in = null;
@@ -64,26 +69,22 @@ public class FileUtils {
                 for (String child : children) {
                     copyFolder(new File(source, child), new File(target, child), log);
                 }
-            }
-            else {
+            } else {
                 in = new FileInputStream(source);
                 out = new FileOutputStream(target);
 
-                byte[] buf = new byte[1024];
+                byte[] buf = new byte[COPY_BLOCK_SIZE];
                 int len;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
                 }
             }
             return true;
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             log.warning("Exception while copying file: " + e.getMessage());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.warning("Exception while copying file: " + e.getMessage());
-        }
-        finally {
+        } finally {
             if (in != null) {
                 try {
                     in.close();

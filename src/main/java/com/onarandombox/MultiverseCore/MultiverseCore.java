@@ -17,7 +17,6 @@ import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
@@ -97,7 +96,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -312,7 +310,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Initializes the buscript javascript library
+     * Initializes the buscript javascript library.
      */
     private void initializeBuscript() {
         buscript = new Buscript(this);
@@ -435,11 +433,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     /**
      * Migrate the worlds.yml to SerializationConfig.
      */
-    private void migrateWorldConfig() {
+    private void migrateWorldConfig() { // SUPPRESS CHECKSTYLE: MethodLength
         FileConfiguration wconf = YamlConfiguration
                 .loadConfiguration(new File(getDataFolder(), "worlds.yml"));
 
-        if (!wconf.isConfigurationSection("worlds")) {// empty config
+        if (!wconf.isConfigurationSection("worlds")) { // empty config
             this.log(Level.FINE, "No worlds to migrate!");
             return;
         }

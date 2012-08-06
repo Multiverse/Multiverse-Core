@@ -35,7 +35,8 @@ public class CloneCommand extends MultiverseCommand {
         this.addCommandExample("/mv clone " + ChatColor.GOLD + "world" + ChatColor.GREEN + " world_backup");
         this.addCommandExample("/mv clone " + ChatColor.GOLD + "skyblock_pristine" + ChatColor.GREEN + " skyblock");
         this.addCommandExample("To clone a world that uses a generator:");
-        this.addCommandExample("/mv clone " + ChatColor.GOLD + "CleanRoom" + ChatColor.GREEN + " CleanRoomCopy" + ChatColor.DARK_AQUA + " -g CleanRoomGenerator");
+        this.addCommandExample("/mv clone " + ChatColor.GOLD + "CleanRoom"
+                + ChatColor.GREEN + " CleanRoomCopy" + ChatColor.DARK_AQUA + " -g CleanRoomGenerator");
         this.setPermission("multiverse.core.clone", "Clones a world.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }

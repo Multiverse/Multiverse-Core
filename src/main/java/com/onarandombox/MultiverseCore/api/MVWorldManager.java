@@ -65,7 +65,6 @@ public interface MVWorldManager {
      *
      * @param oldName            Name of world to be copied
      * @param newName            Name of world to be created
-     * @param env                Environment Type
      * @param generator          The Custom generator plugin to use.
      * @return True if the world is copied successfully, false if not.
      */

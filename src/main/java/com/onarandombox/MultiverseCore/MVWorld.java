@@ -60,23 +60,23 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
-    private static final Map<String, String> propertyAliases;
+    private static final Map<String, String> PROPERTY_ALIASES;
 
     static {
-        propertyAliases = new HashMap<String, String>();
-        propertyAliases.put("curr", "currency");
-        propertyAliases.put("scaling", "scale");
-        propertyAliases.put("aliascolor", "color");
-        propertyAliases.put("heal", "autoHeal");
-        propertyAliases.put("storm", "allowWeather");
-        propertyAliases.put("weather", "allowWeather");
-        propertyAliases.put("spawnmemory", "keepSpawnInMemory");
-        propertyAliases.put("memory", "keepSpawnInMemory");
-        propertyAliases.put("mode", "gameMode");
-        propertyAliases.put("diff", "difficulty");
-        propertyAliases.put("spawnlocation", "spawn");
-        propertyAliases.put("animals", "spawning.animals.spawn");
-        propertyAliases.put("monsters", "spawning.monsters.spawn");
+        PROPERTY_ALIASES = new HashMap<String, String>();
+        PROPERTY_ALIASES.put("curr", "currency");
+        PROPERTY_ALIASES.put("scaling", "scale");
+        PROPERTY_ALIASES.put("aliascolor", "color");
+        PROPERTY_ALIASES.put("heal", "autoHeal");
+        PROPERTY_ALIASES.put("storm", "allowWeather");
+        PROPERTY_ALIASES.put("weather", "allowWeather");
+        PROPERTY_ALIASES.put("spawnmemory", "keepSpawnInMemory");
+        PROPERTY_ALIASES.put("memory", "keepSpawnInMemory");
+        PROPERTY_ALIASES.put("mode", "gameMode");
+        PROPERTY_ALIASES.put("diff", "difficulty");
+        PROPERTY_ALIASES.put("spawnlocation", "spawn");
+        PROPERTY_ALIASES.put("animals", "spawning.animals.spawn");
+        PROPERTY_ALIASES.put("monsters", "spawning.monsters.spawn");
     }
     /*
      * We have to use setCBWorld(), setPlugin() and initPerms() to prepare this object for use.
@@ -447,7 +447,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private boolean bedRespawn;
     @Property
     private List<String> worldBlacklist;
-    @SuppressWarnings("unused") // it IS used!
     @Property(serializor = TimePropertySerializor.class, virtualType = Long.class,
             description = "Set the time to whatever you want! (Will NOT freeze time)")
     private VirtualProperty<Long> time = new VirtualProperty<Long>() {
@@ -666,7 +665,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      * @see SerializationConfig
      */
     protected static Map<String, String> getAliases() {
-        return propertyAliases;
+        return PROPERTY_ALIASES;
     }
 
     private static double getDefaultScale(Environment environment) {
