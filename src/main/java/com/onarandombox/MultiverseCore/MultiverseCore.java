@@ -745,7 +745,17 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
         allArgs.add(0, command.getName());
-        return this.commandHandler.locateAndRunCommand(sender, allArgs, getMVConfig().getDisplayPermErrors());
+        try {
+            return this.commandHandler.locateAndRunCommand(sender, allArgs, getMVConfig().getDisplayPermErrors());
+        } catch (Exception e) {
+            e.printStackTrace();
+            sender.sendMessage(ChatColor.RED + "An internal error occurred when attempting to perform this command.");
+            if (sender.isOp())
+                sender.sendMessage(ChatColor.RED + "Details were printed to the server console and logs, please add that to your bug report.");
+            else
+                sender.sendMessage(ChatColor.RED + "Try again and contact the server owner or an admin if this problem persists.");
+            return true;
+        }
     }
 
     /**
