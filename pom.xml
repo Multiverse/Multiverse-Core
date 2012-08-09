@@ -20,6 +20,10 @@
             <id>Bukkit Official</id>
             <url>http://repo.bukkit.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>mcstats</id>
+            <url>http://repo.mcstats.org/content/repositories/snapshots</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -174,6 +178,7 @@
                                     <include>com.fernferret.allpay:AllPay</include>
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:buscript</include>
+                                    <include>org.mcstats:metrics</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -192,6 +197,10 @@
                                 <relocation>
                                     <pattern>buscript</pattern>
                                     <shadedPattern>buscript.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>org.mcstats.multiverse</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -256,6 +265,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of Buscript Dependency -->
+        <!-- Start of Metrics Dependency -->
+        <dependency>
+            <groupId>org.mcstats</groupId>
+            <artifactId>metrics</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of Metrics Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
