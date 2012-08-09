@@ -349,7 +349,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
                 if (w.getEnvironment() == env)
                     count++;
-            System.out.println(String.format("Tracking %d worlds of type %s", count, env));
+            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, env));
             return count;
         }
     }
@@ -373,7 +373,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
                 if (w.getGenerator().equals(gen))
                     count++;
-            System.out.println(String.format("Tracking %d worlds of type %s", count, gen));
+            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, gen));
             return count;
         }
     }
@@ -382,11 +382,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         try {
             Metrics m = new Metrics(this);
 
-
             Metrics.Graph envGraph = m.createGraph("worlds_by_env");
             for (Environment env : Environment.values())
                 envGraph.addPlotter(new EnvironmentPlotter(this, env));
-
 
             m.addCustomData(new Metrics.Plotter("Loaded worlds") {
                 @Override
@@ -412,10 +410,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 genGraph.addPlotter(new GeneratorPlotter(this, gen));
 
             m.start();
-            System.out.println("Metrics have run!");
+            log(Level.FINE, "Metrics have run!");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log(Level.WARNING, "There was an issue while enabling metrics: " + e.getMessage());
         }
     }
 
