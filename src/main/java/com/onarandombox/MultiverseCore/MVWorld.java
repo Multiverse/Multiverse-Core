@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -350,7 +351,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     }
 
-    private final Object propertyLock = new Object();
+    private final ReentrantLock propertyLock = new ReentrantLock();
 
     // --------------------------------------------------------------
     // Begin properties
@@ -714,7 +715,13 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public String getColoredWorldString() {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            plugin.log(Level.FINEST, "propertyLock is locked when attempting to get ColoredWorldString on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Getting ColoredWorldString on thread: " + thread);
             if (alias.length() == 0) {
                 alias = this.getName();
             }
@@ -729,6 +736,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
             nameBuilder.append(alias).append(ChatColor.WHITE).toString();
 
             return nameBuilder.toString();
+        } finally {
+            propertyLock.unlock();
         }
     }
 
@@ -940,11 +949,19 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public String getAlias() {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            plugin.log(Level.FINEST, "propertyLock is locked when attempting to get alias on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Getting alias on thread: " + thread);
             if (this.alias == null || this.alias.length() == 0) {
                 return this.name;
             }
             return this.alias;
+        } finally {
+            propertyLock.unlock();
         }
     }
 
@@ -1027,8 +1044,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public boolean isHidden() {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            plugin.log(Level.FINEST, "propertyLock is locked when attempting to get hidden on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Getting hidden on thread: " + thread);
             return this.hidden;
+        } finally {
+            propertyLock.unlock();
         }
     }
 
@@ -1088,8 +1113,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public ChatColor getColor() {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            plugin.log(Level.FINEST, "propertyLock is locked when attempting to get color on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Getting color on thread: " + thread);
             return this.color.getColor();
+        } finally {
+            propertyLock.unlock();
         }
     }
 
@@ -1394,8 +1427,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public ChatColor getStyle() {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            plugin.log(Level.FINEST, "propertyLock is locked when attempting to get style on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Getting style on thread: " + thread);
             return style.getColor();
+        } finally {
+            propertyLock.unlock();
         }
     }
 

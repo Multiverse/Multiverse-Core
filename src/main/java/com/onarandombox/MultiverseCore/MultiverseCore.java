@@ -101,6 +101,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,7 +117,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
     private MultiverseCoreConfiguration config;
-    private final Object configLock = new Object();
+    private final ReentrantLock configLock = new ReentrantLock();
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -458,8 +459,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } catch (Exception e) {
             // We're just thinking "no risk no fun" and therefore have to catch and forget this exception
         } finally {
-            synchronized (configLock) {
-                config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
+            Thread thread = Thread.currentThread();
+            if (configLock.isLocked()) {
+                //log(Level.FINER, "configLock is locked when attempting to set config variable on thread: " + thread);
+            }
+            configLock.lock();
+            try {
+                //log(Level.FINER, "Setting config on thread: " + thread);
+                config = ((wantedConfig == null) ? new MultiverseCoreConfiguration(this) : wantedConfig);
+            } finally {
+                configLock.unlock();
             }
         }
         this.migrateWorldConfig();
@@ -1223,8 +1232,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public MultiverseCoreConfig getMVConfig() {
-        synchronized (configLock) {
+        Thread thread = Thread.currentThread();
+        if (configLock.isLocked()) {
+            log(Level.FINEST, "configLock is locked when attempting to get config on thread: " + thread);
+        }
+        configLock.lock();
+        try {
+            log(Level.FINEST, "Getting config on thread: " + thread);
             return config;
+        } finally {
+            configLock.unlock();
         }
     }
 

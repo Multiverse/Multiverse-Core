@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 /**
@@ -40,6 +41,7 @@ public class MVPlayerListener implements Listener {
     private MVWorldManager worldManager;
     private PermissionTools pt;
 
+    private final ReentrantLock worldsLock = new ReentrantLock();
     private final Map<String, String> playerWorld = new HashMap<String, String>();
 
     public MVPlayerListener(MultiverseCore plugin) {
@@ -60,12 +62,20 @@ public class MVPlayerListener implements Listener {
         // If not we do nothing, if so we need to check if the World has an Alias.
         if (plugin.getMVConfig().getPrefixChat()) {
             String world;
-            synchronized (playerWorld) {
+            Thread thread = Thread.currentThread();
+            if (worldsLock.isLocked()) {
+                plugin.log(Level.FINEST, "worldsLock is locked when attempting to handle player chat on thread: " + thread);
+            }
+            worldsLock.lock();
+            try {
+                plugin.log(Level.FINEST, "Handling player chat on thread: " + thread);
                 world = playerWorld.get(event.getPlayer().getName());
                 if (world == null) {
                     world = event.getPlayer().getWorld().getName();
                     playerWorld.put(event.getPlayer().getName(), world);
                 }
+            } finally {
+                worldsLock.unlock();
             }
             String prefix = "";
             // If we're not a MV world, don't do anything
@@ -153,8 +163,16 @@ public class MVPlayerListener implements Listener {
         }
         // Handle the Players GameMode setting for the new world.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
-        synchronized (playerWorld) {
+        Thread thread = Thread.currentThread();
+        if (worldsLock.isLocked()) {
+            plugin.log(Level.FINEST, "worldsLock is locked when attempting to cache player world on thread: " + thread);
+        }
+        worldsLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Caching player world on thread: " + thread);
             playerWorld.put(p.getName(), p.getWorld().getName());
+        } finally {
+            worldsLock.unlock();
         }
     }
 
@@ -166,8 +184,16 @@ public class MVPlayerListener implements Listener {
     public void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
-        synchronized (playerWorld) {
+        Thread thread = Thread.currentThread();
+        if (worldsLock.isLocked()) {
+            plugin.log(Level.FINEST, "worldsLock is locked when attempting to cache player world on thread: " + thread);
+        }
+        worldsLock.lock();
+        try {
+            plugin.log(Level.FINEST, "Caching player world on thread: " + thread);
             playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
+        } finally {
+            worldsLock.unlock();
         }
     }
 

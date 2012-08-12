@@ -6,6 +6,8 @@ import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 
 /**
  * Our configuration.
@@ -38,7 +40,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         return instance;
     }
 
-    private final Object propertyLock = new Object();
+    private final ReentrantLock propertyLock = new ReentrantLock();
 
     @Property
     private boolean enforceaccess;
@@ -61,15 +63,19 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private int teleportcooldown;
 
-    public MultiverseCoreConfiguration() {
+    public MultiverseCoreConfiguration(MultiverseCore core) {
         super();
+        this.core = core;
         MultiverseCoreConfiguration.setInstance(this);
     }
 
-    public MultiverseCoreConfiguration(Map<String, Object> values) {
+    public MultiverseCoreConfiguration(MultiverseCore core, Map<String, Object> values) {
         super(values);
+        this.core = core;
         MultiverseCoreConfiguration.setInstance(this);
     }
+
+    private MultiverseCore core;
 
     /**
      * {@inheritDoc}
@@ -124,8 +130,16 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getPrefixChat() {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            core.log(Level.FINEST, "propertyLock is locked when attempting to get prefixchat on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            core.log(Level.FINEST, "Getting prefixchat on thread: " + thread);
             return this.prefixchat;
+        } finally {
+            propertyLock.unlock();
         }
     }
 
@@ -134,8 +148,16 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public void setPrefixChat(boolean prefixChat) {
-        synchronized (propertyLock) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            core.log(Level.FINEST, "propertyLock is locked when attempting to set prefixchat on thread: " + thread);
+        }
+        propertyLock.lock();
+        try {
+            core.log(Level.FINEST, "Setting prefixchat on thread: " + thread);
             this.prefixchat = prefixChat;
+        } finally {
+            propertyLock.unlock();
         }
     }
 
