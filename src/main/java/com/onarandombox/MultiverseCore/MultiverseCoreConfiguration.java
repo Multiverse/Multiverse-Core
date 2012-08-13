@@ -63,19 +63,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private int teleportcooldown;
 
-    public MultiverseCoreConfiguration(MultiverseCore core) {
+    public MultiverseCoreConfiguration() {
         super();
-        this.core = core;
         MultiverseCoreConfiguration.setInstance(this);
     }
 
-    public MultiverseCoreConfiguration(MultiverseCore core, Map<String, Object> values) {
+    public MultiverseCoreConfiguration(Map<String, Object> values) {
         super(values);
-        this.core = core;
         MultiverseCoreConfiguration.setInstance(this);
     }
-
-    private MultiverseCore core;
 
     /**
      * {@inheritDoc}
@@ -100,10 +96,18 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean setConfigProperty(String property, String value) {
+        Thread thread = Thread.currentThread();
+        if (propertyLock.isLocked()) {
+            MultiverseCore.staticLog(Level.FINEST, "propertyLock is locked when attempting to set a config property on thread: " + thread);
+        }
+        propertyLock.lock();
         try {
+            MultiverseCore.staticLog(Level.FINEST, "Setting a config proprerty on thread: " + thread);
             return this.setProperty(property, value, true);
         } catch (NoSuchPropertyException e) {
             return false;
+        } finally {
+            propertyLock.unlock();
         }
     }
 
@@ -132,11 +136,11 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     public boolean getPrefixChat() {
         Thread thread = Thread.currentThread();
         if (propertyLock.isLocked()) {
-            core.log(Level.FINEST, "propertyLock is locked when attempting to get prefixchat on thread: " + thread);
+            MultiverseCore.staticLog(Level.FINEST, "propertyLock is locked when attempting to get prefixchat on thread: " + thread);
         }
         propertyLock.lock();
         try {
-            core.log(Level.FINEST, "Getting prefixchat on thread: " + thread);
+            MultiverseCore.staticLog(Level.FINEST, "Getting prefixchat on thread: " + thread);
             return this.prefixchat;
         } finally {
             propertyLock.unlock();
@@ -150,11 +154,11 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     public void setPrefixChat(boolean prefixChat) {
         Thread thread = Thread.currentThread();
         if (propertyLock.isLocked()) {
-            core.log(Level.FINEST, "propertyLock is locked when attempting to set prefixchat on thread: " + thread);
+            MultiverseCore.staticLog(Level.FINEST, "propertyLock is locked when attempting to set prefixchat on thread: " + thread);
         }
         propertyLock.lock();
         try {
-            core.log(Level.FINEST, "Setting prefixchat on thread: " + thread);
+            MultiverseCore.staticLog(Level.FINEST, "Setting prefixchat on thread: " + thread);
             this.prefixchat = prefixChat;
         } finally {
             propertyLock.unlock();

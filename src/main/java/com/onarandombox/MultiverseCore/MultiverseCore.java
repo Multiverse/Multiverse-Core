@@ -456,8 +456,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         MultiverseCoreConfiguration wantedConfig = null;
         try {
             wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
-        } catch (Exception e) {
-            // We're just thinking "no risk no fun" and therefore have to catch and forget this exception
+        } catch (Exception ignore) {
         } finally {
             Thread thread = Thread.currentThread();
             if (configLock.isLocked()) {
@@ -466,7 +465,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             configLock.lock();
             try {
                 //log(Level.FINER, "Setting config on thread: " + thread);
-                config = ((wantedConfig == null) ? new MultiverseCoreConfiguration(this) : wantedConfig);
+                config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
             } finally {
                 configLock.unlock();
             }
