@@ -891,11 +891,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     public static void staticLog(Level level, String msg) {
         if (level == Level.FINE && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 1) {
-            staticDebugLog(Level.INFO, msg);
+            staticDebugLog(level, msg);
         } else if (level == Level.FINER && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 2) {
-            staticDebugLog(Level.INFO, msg);
+            staticDebugLog(level, msg);
         } else if (level == Level.FINEST && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 3) {
-            staticDebugLog(Level.INFO, msg);
+            staticDebugLog(level, msg);
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             String message = LOG_TAG + " " + msg;
             LOGGER.log(level, message);

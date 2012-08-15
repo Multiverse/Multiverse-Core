@@ -79,11 +79,11 @@ public class DebugLog extends Logger {
      * @param msg the message.
      */
     @Override
-    public void log(Level level, String msg) {
+    public void log(final Level level, final String msg) {
         if (MultiverseCoreConfiguration.isSet() && MultiverseCoreConfiguration.getInstance().getGlobalDebug() > 0) {
             // only redirect to standardLog if it's lower than INFO so we don't log that twice!
             if ((level.intValue() < Level.INFO.intValue()) && (standardLog != null)) {
-                standardLog.log(level, prefix + msg);
+                standardLog.log(Level.INFO, prefix + msg);
             }
 
             super.log(level, prefix + msg);
