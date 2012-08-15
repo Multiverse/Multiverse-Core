@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -37,59 +36,17 @@ import java.util.logging.Level;
  * Multiverse's {@link Listener} for players.
  */
 public class MVPlayerListener implements Listener {
-    private MultiverseCore plugin;
-    private MVWorldManager worldManager;
-    private PermissionTools pt;
+    private final MultiverseCore plugin;
+    private final MVWorldManager worldManager;
+    private final PermissionTools pt;
 
-    private final ReentrantLock worldsLock = new ReentrantLock();
-    private final Map<String, String> playerWorld = new HashMap<String, String>();
+    final ReentrantLock worldsLock = new ReentrantLock();
+    final Map<String, String> playerWorld = new HashMap<String, String>();
 
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
         worldManager = plugin.getMVWorldManager();
         pt = new PermissionTools(plugin);
-    }
-    /**
-     * This method is called when a player wants to chat.
-     * @param event The Event that was fired.
-     */
-    @EventHandler
-    public void playerChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        // Check whether the Server is set to prefix the chat with the World name.
-        // If not we do nothing, if so we need to check if the World has an Alias.
-        if (plugin.getMVConfig().getPrefixChat()) {
-            String world;
-            Thread thread = Thread.currentThread();
-            if (worldsLock.isLocked()) {
-                plugin.log(Level.FINEST, "worldsLock is locked when attempting to handle player chat on thread: " + thread);
-            }
-            worldsLock.lock();
-            try {
-                plugin.log(Level.FINEST, "Handling player chat on thread: " + thread);
-                world = playerWorld.get(event.getPlayer().getName());
-                if (world == null) {
-                    world = event.getPlayer().getWorld().getName();
-                    playerWorld.put(event.getPlayer().getName(), world);
-                }
-            } finally {
-                worldsLock.unlock();
-            }
-            String prefix = "";
-            // If we're not a MV world, don't do anything
-            if (!this.worldManager.isMVWorld(world)) {
-                return;
-            }
-            MultiverseWorld mvworld = this.worldManager.getMVWorld(world);
-            if (mvworld.isHidden()) {
-                return;
-            }
-            prefix = mvworld.getColoredWorldString();
-            String format = event.getFormat();
-            event.setFormat("[" + prefix + "]" + format);
-        }
     }
 
     /**

@@ -47,6 +47,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private boolean prefixchat;
     @Property
+    private boolean useasyncchat;
+    @Property
     private boolean teleportintercept;
     @Property
     private boolean firstspawnoverride;
@@ -80,6 +82,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     protected void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
+        useasyncchat = true;
         prefixchat = true;
         teleportintercept = true;
         firstspawnoverride = true;
@@ -291,5 +294,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setTeleportCooldown(int teleportCooldown) {
         this.teleportcooldown = teleportCooldown;
+    }
+
+    @Override
+    public void setUseAsyncChat(boolean useAsyncChat) {
+        this.useasyncchat = useAsyncChat;
+    }
+
+    @Override
+    public boolean getUseAsyncChat() {
+        return this.useasyncchat;
     }
 }
