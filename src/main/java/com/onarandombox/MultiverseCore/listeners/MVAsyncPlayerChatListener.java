@@ -32,9 +32,9 @@ public class MVAsyncPlayerChatListener implements MVChatListener<AsyncPlayerChat
     }
 
     /**
-     * This method is called when a player wants to chat.
-     * @param event The Event that was fired.
+     * {@inheritDoc}
      */
+    @Override
     @EventHandler
     public void playerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
@@ -45,19 +45,19 @@ public class MVAsyncPlayerChatListener implements MVChatListener<AsyncPlayerChat
         if (plugin.getMVConfig().getPrefixChat()) {
             String world;
             Thread thread = Thread.currentThread();
-            if (playerListener.worldsLock.isLocked()) {
+            if (playerListener.getWorldsLock().isLocked()) {
                 plugin.log(Level.FINEST, "worldsLock is locked when attempting to handle player chat on thread: " + thread);
             }
-            playerListener.worldsLock.lock();
+            playerListener.getWorldsLock().lock();
             try {
                 plugin.log(Level.FINEST, "Handling player chat on thread: " + thread);
-                world = playerListener.playerWorld.get(event.getPlayer().getName());
+                world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
                 if (world == null) {
                     world = event.getPlayer().getWorld().getName();
-                    playerListener.playerWorld.put(event.getPlayer().getName(), world);
+                    playerListener.getPlayerWorld().put(event.getPlayer().getName(), world);
                 }
             } finally {
-                playerListener.worldsLock.unlock();
+                playerListener.getWorldsLock().unlock();
             }
             String prefix = "";
             // If we're not a MV world, don't do anything

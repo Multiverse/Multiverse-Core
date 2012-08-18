@@ -40,13 +40,27 @@ public class MVPlayerListener implements Listener {
     private final MVWorldManager worldManager;
     private final PermissionTools pt;
 
-    final ReentrantLock worldsLock = new ReentrantLock();
-    final Map<String, String> playerWorld = new HashMap<String, String>();
+    private final ReentrantLock worldsLock = new ReentrantLock();
+    private final Map<String, String> playerWorld = new HashMap<String, String>();
 
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
         worldManager = plugin.getMVWorldManager();
         pt = new PermissionTools(plugin);
+    }
+
+    /**
+     * @return the worldsLock
+     */
+    public ReentrantLock getWorldsLock() {
+        return worldsLock;
+    }
+
+    /**
+     * @return the playerWorld-map
+     */
+    public Map<String, String> getPlayerWorld() {
+        return playerWorld;
     }
 
     /**
@@ -299,6 +313,7 @@ public class MVPlayerListener implements Listener {
         // Remove the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
             new Runnable() {
+                @Override
                 public void run() {
                     player.teleport(plugin.getMVWorldManager().getFirstSpawnWorld().getSpawnLocation());
                 }
@@ -328,6 +343,7 @@ public class MVPlayerListener implements Listener {
         if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
             this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
                 new Runnable() {
+                    @Override
                     public void run() {
                         // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
                         if (player.getWorld() == world.getCBWorld()) {
