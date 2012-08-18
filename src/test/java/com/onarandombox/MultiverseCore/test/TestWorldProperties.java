@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
+import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.Bukkit;
@@ -167,10 +168,10 @@ public class TestWorldProperties {
 
         // call player chat event
         core.getMVConfig().setPrefixChat(true);
-        core.getChatListener().playerChat(playerChatEvent);
+        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
         core.getMVConfig().setPrefixChat(false);
-        core.getChatListener().playerChat(playerChatEvent);
+        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 
         // call player join events
@@ -261,15 +262,15 @@ public class TestWorldProperties {
 
         // call player chat event
         core.getMVConfig().setPrefixChat(true);
-        core.getChatListener().playerChat(playerChatEvent);
+        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         // never because it's hidden!
         verify(playerChatEvent, never()).setFormat(
                 "[" + mvWorld.getColoredWorldString() + "]" + "format");
         mvWorld.setHidden(false);
-        core.getChatListener().playerChat(playerChatEvent);
+        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
         core.getMVConfig().setPrefixChat(false);
-        core.getChatListener().playerChat(playerChatEvent);
+        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
         mvWorld.setHidden(true); // reset hidden-state
 
