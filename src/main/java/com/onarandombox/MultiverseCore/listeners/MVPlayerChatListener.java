@@ -7,27 +7,20 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import java.util.logging.Level;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerChatEvent;
 
-import java.util.logging.Level;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 
 /**
  * Multiverse's {@link org.bukkit.event.Listener} for players.
  */
-public class MVPlayerChatListener implements MVChatListener<PlayerChatEvent> {
-
-    private final MultiverseCore plugin;
-    private final MVWorldManager worldManager;
-    private final MVPlayerListener playerListener;
-
+@SuppressWarnings("deprecation") // this exists only for downwards compatibility
+public class MVPlayerChatListener extends MVChatListener {
     public MVPlayerChatListener(MultiverseCore plugin, MVPlayerListener playerListener) {
-        this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
-        this.playerListener = playerListener;
+        super(plugin, playerListener);
         plugin.log(Level.FINE, "Registered PlayerChatEvent listener.");
     }
 
@@ -35,43 +28,8 @@ public class MVPlayerChatListener implements MVChatListener<PlayerChatEvent> {
      * This method is called when a player wants to chat.
      * @param event The Event that was fired.
      */
-    @Override
     @EventHandler
     public void playerChat(PlayerChatEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        // Check whether the Server is set to prefix the chat with the World name.
-        // If not we do nothing, if so we need to check if the World has an Alias.
-        if (plugin.getMVConfig().getPrefixChat()) {
-            String world;
-            Thread thread = Thread.currentThread();
-            if (playerListener.getWorldsLock().isLocked()) {
-                plugin.log(Level.FINEST, "worldsLock is locked when attempting to handle player chat on thread: " + thread);
-            }
-            playerListener.getWorldsLock().lock();
-            try {
-                plugin.log(Level.FINEST, "Handling player chat on thread: " + thread);
-                world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
-                if (world == null) {
-                    world = event.getPlayer().getWorld().getName();
-                    playerListener.getPlayerWorld().put(event.getPlayer().getName(), world);
-                }
-            } finally {
-                playerListener.getWorldsLock().unlock();
-            }
-            String prefix = "";
-            // If we're not a MV world, don't do anything
-            if (!this.worldManager.isMVWorld(world)) {
-                return;
-            }
-            MultiverseWorld mvworld = this.worldManager.getMVWorld(world);
-            if (mvworld.isHidden()) {
-                return;
-            }
-            prefix = mvworld.getColoredWorldString();
-            String format = event.getFormat();
-            event.setFormat("[" + prefix + "]" + format);
-        }
+        this.playerChat(new NormalChatEvent(event));
     }
 }
