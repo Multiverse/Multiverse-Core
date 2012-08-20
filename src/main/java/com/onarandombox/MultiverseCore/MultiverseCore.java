@@ -383,7 +383,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         public int getValue() {
             int count = 0;
             for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (w.getGenerator().equals(gen))
+                if (gen.equals(w.getGenerator()))
                     count++;
             core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, gen));
             return count;
