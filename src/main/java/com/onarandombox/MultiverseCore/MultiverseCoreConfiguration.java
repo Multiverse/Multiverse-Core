@@ -6,8 +6,6 @@ import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 
 /**
  * Our configuration.
@@ -40,30 +38,30 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         return instance;
     }
 
-    private final ReentrantLock propertyLock = new ReentrantLock();
+    //private final ReentrantLock propertyLock = new ReentrantLock();
 
     @Property
-    private boolean enforceaccess;
+    private volatile boolean enforceaccess;
     @Property
-    private boolean prefixchat;
+    private volatile boolean prefixchat;
     @Property
-    private boolean useasyncchat;
+    private volatile boolean useasyncchat;
     @Property
-    private boolean teleportintercept;
+    private volatile boolean teleportintercept;
     @Property
-    private boolean firstspawnoverride;
+    private volatile boolean firstspawnoverride;
     @Property
-    private boolean displaypermerrors;
+    private volatile boolean displaypermerrors;
     @Property
-    private int globaldebug;
+    private volatile int globaldebug;
     @Property
-    private int messagecooldown;
+    private volatile int messagecooldown;
     @Property
-    private double version;
+    private volatile double version;
     @Property
-    private String firstspawnworld;
+    private volatile String firstspawnworld;
     @Property
-    private int teleportcooldown;
+    private volatile int teleportcooldown;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -99,18 +97,10 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean setConfigProperty(String property, String value) {
-        Thread thread = Thread.currentThread();
-        if (propertyLock.isLocked()) {
-            MultiverseCore.staticLog(Level.FINEST, "propertyLock is locked when attempting to set a config property on thread: " + thread);
-        }
-        propertyLock.lock();
         try {
-            MultiverseCore.staticLog(Level.FINEST, "Setting a config proprerty on thread: " + thread);
             return this.setProperty(property, value, true);
         } catch (NoSuchPropertyException e) {
             return false;
-        } finally {
-            propertyLock.unlock();
         }
     }
 
@@ -137,17 +127,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public boolean getPrefixChat() {
-        Thread thread = Thread.currentThread();
-        if (propertyLock.isLocked()) {
-            MultiverseCore.staticLog(Level.FINEST, "propertyLock is locked when attempting to get prefixchat on thread: " + thread);
-        }
-        propertyLock.lock();
-        try {
-            MultiverseCore.staticLog(Level.FINEST, "Getting prefixchat on thread: " + thread);
-            return this.prefixchat;
-        } finally {
-            propertyLock.unlock();
-        }
+        return this.prefixchat;
     }
 
     /**
@@ -155,17 +135,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      */
     @Override
     public void setPrefixChat(boolean prefixChat) {
-        Thread thread = Thread.currentThread();
-        if (propertyLock.isLocked()) {
-            MultiverseCore.staticLog(Level.FINEST, "propertyLock is locked when attempting to set prefixchat on thread: " + thread);
-        }
-        propertyLock.lock();
-        try {
-            MultiverseCore.staticLog(Level.FINEST, "Setting prefixchat on thread: " + thread);
-            this.prefixchat = prefixChat;
-        } finally {
-            propertyLock.unlock();
-        }
+        this.prefixchat = prefixChat;
     }
 
     /**
