@@ -104,7 +104,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -119,8 +118,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     private AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
-    private MultiverseCoreConfiguration config;
-    private final ReentrantLock configLock = new ReentrantLock();
+    private volatile MultiverseCoreConfiguration config;
+    //private final ReentrantLock configLock = new ReentrantLock();
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -469,12 +468,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
         } catch (Exception ignore) {
         } finally {
-            configLock.lock();
-            try {
-                config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
-            } finally {
-                configLock.unlock();
-            }
+            config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
         }
         this.migrateWorldConfig();
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
@@ -1246,17 +1240,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public MultiverseCoreConfig getMVConfig() {
-        Thread thread = Thread.currentThread();
-        if (configLock.isLocked()) {
-            log(Level.FINEST, "configLock is locked when attempting to get config on thread: " + thread);
-        }
-        configLock.lock();
-        try {
-            log(Level.FINEST, "Getting config on thread: " + thread);
-            return config;
-        } finally {
-            configLock.unlock();
-        }
+        return config;
     }
 
     /**
