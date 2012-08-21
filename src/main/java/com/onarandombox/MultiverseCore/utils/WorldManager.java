@@ -15,9 +15,9 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
-import org.bukkit.Location;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
@@ -811,6 +811,7 @@ public class WorldManager implements MVWorldManager {
             Object obj = this.configWorlds.get(path);
             if ((obj != null) && (obj instanceof MVWorld)) {
                 String worldName = key.replaceAll(String.valueOf(SEPARATOR), ".");
+                MVWorld mvWorld = null;
                 if (this.worldsFromTheConfig.containsKey(worldName)) {
                     // Object-Recycling :D
                     Thread thread = Thread.currentThread();
@@ -820,20 +821,24 @@ public class WorldManager implements MVWorldManager {
                     worldsLock.lock();
                     try {
                         plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-                        MVWorld oldMVWorld = (MVWorld) this.worlds.get(worldName);
-                        oldMVWorld.copyValues((MVWorld) obj);
-                        newWorldsFromTheConfig.put(worldName, oldMVWorld);
+                        // TODO Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
+                        mvWorld = (MVWorld) this.worlds.get(worldName);
+                        if (mvWorld != null) {
+                            mvWorld.copyValues((MVWorld) obj);
+                        }
                     } finally {
                         worldsLock.unlock();
                     }
-                } else {
+                }
+                if (mvWorld == null) {
                     // we have to use a new one
                     World cbworld = this.plugin.getServer().getWorld(worldName);
-                    MVWorld mvworld = (MVWorld) obj;
-                    if (cbworld != null)
-                        mvworld.init(cbworld, this.plugin);
-                    newWorldsFromTheConfig.put(worldName, mvworld);
+                    mvWorld = (MVWorld) obj;
+                    if (cbworld != null) {
+                        mvWorld.init(cbworld, this.plugin);
+                    }
                 }
+                newWorldsFromTheConfig.put(worldName, mvWorld);
             } else if (this.configWorlds.isConfigurationSection(path)) {
                 ConfigurationSection section = this.configWorlds.getConfigurationSection(path);
                 Set<String> subkeys = section.getKeys(false);
