@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +50,6 @@ import java.util.logging.Logger;
 public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
     private final WorldPurger worldPurger;
-    private final ReentrantLock worldsLock = new ReentrantLock();
     private final Map<String, MultiverseWorld> worlds;
     private Map<String, MVWorld> worldsFromTheConfig;
     private FileConfiguration configWorlds = null;
@@ -60,7 +59,7 @@ public class WorldManager implements MVWorldManager {
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
         this.worldsFromTheConfig = new HashMap<String, MVWorld>();
-        this.worlds = new HashMap<String, MultiverseWorld>();
+        this.worlds = new ConcurrentHashMap<String, MultiverseWorld>();
         this.worldPurger = new SimpleWorldPurger(plugin);
     }
 
@@ -230,17 +229,7 @@ public class WorldManager implements MVWorldManager {
         }
 
         // set generator (special case because we can't read it from org.bukkit.World)
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            this.worlds.get(name).setGenerator(generator);
-        } finally {
-            worldsLock.unlock();
-        }
+        this.worlds.get(name).setGenerator(generator);
 
         this.saveWorldsConfig();
         return true;
@@ -319,35 +308,25 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean unloadWorld(String name) {
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            if (this.worlds.containsKey(name)) {
-                if (this.unloadWorldFromBukkit(name, true)) {
-                    this.worlds.remove(name);
-                    this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
+        if (this.worlds.containsKey(name)) {
+            if (this.unloadWorldFromBukkit(name, true)) {
+                this.worlds.remove(name);
+                this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
 
-                    this.worldsFromTheConfig.get(name).tearDown();
+                this.worldsFromTheConfig.get(name).tearDown();
 
-                    return true;
-                } else {
-                    this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
-                }
-            } else if (this.plugin.getServer().getWorld(name) != null) {
-                this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
-                this.plugin.log(Level.WARNING, "To let Multiverse know about it, use:");
-                this.plugin.log(Level.WARNING, String.format("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString()));
-            } else if (this.worldsFromTheConfig.containsKey(name)) {
-                return true; // it's already unloaded
+                return true;
             } else {
-                this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
+                this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
             }
-        } finally {
-            worldsLock.unlock();
+        } else if (this.plugin.getServer().getWorld(name) != null) {
+            this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
+            this.plugin.log(Level.WARNING, "To let Multiverse know about it, use:");
+            this.plugin.log(Level.WARNING, String.format("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString()));
+        } else if (this.worldsFromTheConfig.containsKey(name)) {
+            return true; // it's already unloaded
+        } else {
+            this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
         }
         return false;
     }
@@ -358,18 +337,8 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean loadWorld(String name) {
         // Check if the World is already loaded
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            if (this.worlds.containsKey(name)) {
-                return true;
-            }
-        } finally {
-            worldsLock.unlock();
+        if (this.worlds.containsKey(name)) {
+            return true;
         }
 
         // Check that the world is in the config
@@ -408,18 +377,8 @@ public class WorldManager implements MVWorldManager {
         String worldName = creator.name();
         if (!worldsFromTheConfig.containsKey(worldName))
             throw new IllegalArgumentException("That world doesn't exist!");
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            if (worlds.containsKey(worldName))
-                throw new IllegalArgumentException("That world is already loaded!");
-        } finally {
-            worldsLock.unlock();
-        }
+        if (worlds.containsKey(worldName))
+            throw new IllegalArgumentException("That world is already loaded!");
 
         if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists()) {
             this.plugin.log(Level.WARNING, "WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
@@ -438,16 +397,7 @@ public class WorldManager implements MVWorldManager {
         }
         mvworld.init(cbworld, plugin);
         this.worldPurger.purgeWorld(mvworld);
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            this.worlds.put(worldName, mvworld);
-        } finally {
-            worldsLock.unlock();
-        }
+        this.worlds.put(worldName, mvworld);
         return true;
     }
 
@@ -544,17 +494,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public Collection<MultiverseWorld> getMVWorlds() {
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            return this.worlds.values();
-        } finally {
-            worldsLock.unlock();
-        }
+        return this.worlds.values();
     }
 
     /**
@@ -562,18 +502,9 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public MultiverseWorld getMVWorld(String name) {
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            if (this.worlds.containsKey(name)) {
-                return this.worlds.get(name);
-            }
-        } finally {
-            worldsLock.unlock();
+        MultiverseWorld world = this.worlds.get(name);
+        if (world != null) {
+            return world;
         }
         return this.getMVWorldByAlias(name);
     }
@@ -596,20 +527,10 @@ public class WorldManager implements MVWorldManager {
      * @return A {@link MVWorld} or null.
      */
     private MultiverseWorld getMVWorldByAlias(String alias) {
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            for (MultiverseWorld w : this.worlds.values()) {
-                if (w.getAlias().equalsIgnoreCase(alias)) {
-                    return w;
-                }
+        for (MultiverseWorld w : this.worlds.values()) {
+            if (w.getAlias().equalsIgnoreCase(alias)) {
+                return w;
             }
-        } finally {
-            worldsLock.unlock();
         }
         return null;
     }
@@ -619,17 +540,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean isMVWorld(final String name) {
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            return (this.worlds.containsKey(name) || isMVWorldAlias(name));
-        } finally {
-            worldsLock.unlock();
-        }
+        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
     }
 
     /**
@@ -647,20 +558,10 @@ public class WorldManager implements MVWorldManager {
      * @return True if the world exists, false if not.
      */
     private boolean isMVWorldAlias(final String alias) {
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            for (MultiverseWorld w : this.worlds.values()) {
-                if (w.getAlias().equalsIgnoreCase(alias)) {
-                    return true;
-                }
+        for (MultiverseWorld w : this.worlds.values()) {
+            if (w.getAlias().equalsIgnoreCase(alias)) {
+                return true;
             }
-        } finally {
-            worldsLock.unlock();
         }
         return false;
     }
@@ -706,47 +607,28 @@ public class WorldManager implements MVWorldManager {
             // Remove all world permissions.
             Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
             Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
-            Thread thread = Thread.currentThread();
-            if (worldsLock.isLocked()) {
-                plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-            }
-            worldsLock.lock();
-            try {
-                plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-                for (MultiverseWorld w : this.worlds.values()) {
-                    // Remove this world from the master list
-                    if (allAccess != null) {
-                        allAccess.getChildren().remove(w.getAccessPermission().getName());
-                    }
-                    if (allExempt != null) {
-                        allExempt.getChildren().remove(w.getAccessPermission().getName());
-                    }
-                    this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
-                    this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
-                    // Special namespace for gamemodes
-                    this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
+            for (MultiverseWorld w : this.worlds.values()) {
+                // Remove this world from the master list
+                if (allAccess != null) {
+                    allAccess.getChildren().remove(w.getAccessPermission().getName());
                 }
-                // Recalc the all permission
-                this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
-                this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allExempt);
-                this.worlds.clear();
-            } finally {
-                worldsLock.unlock();
+                if (allExempt != null) {
+                    allExempt.getChildren().remove(w.getAccessPermission().getName());
+                }
+                this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
+                this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
+                // Special namespace for gamemodes
+                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
             }
+            // Recalc the all permission
+            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
+            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allExempt);
+            this.worlds.clear();
         }
 
         for (Map.Entry<String, MVWorld> entry : worldsFromTheConfig.entrySet()) {
-            Thread thread = Thread.currentThread();
-            if (worldsLock.isLocked()) {
-                plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-            }
-            worldsLock.lock();
-            try {
-                plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-                if (worlds.containsKey(entry.getKey()))
-                    continue;
-            } finally {
-                worldsLock.unlock();
+            if (worlds.containsKey(entry.getKey())) {
+                continue;
             }
             if (!entry.getValue().getAutoLoad())
                 continue;
@@ -814,20 +696,10 @@ public class WorldManager implements MVWorldManager {
                 MVWorld mvWorld = null;
                 if (this.worldsFromTheConfig.containsKey(worldName)) {
                     // Object-Recycling :D
-                    Thread thread = Thread.currentThread();
-                    if (worldsLock.isLocked()) {
-                        plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-                    }
-                    worldsLock.lock();
-                    try {
-                        plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-                        // TODO Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
-                        mvWorld = (MVWorld) this.worlds.get(worldName);
-                        if (mvWorld != null) {
-                            mvWorld.copyValues((MVWorld) obj);
-                        }
-                    } finally {
-                        worldsLock.unlock();
+                    // TODO Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
+                    mvWorld = (MVWorld) this.worlds.get(worldName);
+                    if (mvWorld != null) {
+                        mvWorld.copyValues((MVWorld) obj);
                     }
                 }
                 if (mvWorld == null) {
@@ -848,17 +720,7 @@ public class WorldManager implements MVWorldManager {
             }
         }
         this.worldsFromTheConfig = newWorldsFromTheConfig;
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            this.worlds.keySet().retainAll(this.worldsFromTheConfig.keySet());
-        } finally {
-            worldsLock.unlock();
-        }
+        this.worlds.keySet().retainAll(this.worldsFromTheConfig.keySet());
         return this.configWorlds;
     }
 
@@ -895,17 +757,7 @@ public class WorldManager implements MVWorldManager {
     @Override
     public List<String> getUnloadedWorlds() {
         List<String> allNames = new ArrayList<String>(this.worldsFromTheConfig.keySet());
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to access worlds on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Accessing worlds on thread: " + thread);
-            allNames.removeAll(worlds.keySet());
-        } finally {
-            worldsLock.unlock();
-        }
+        allNames.removeAll(worlds.keySet());
         return allNames;
     }
 
