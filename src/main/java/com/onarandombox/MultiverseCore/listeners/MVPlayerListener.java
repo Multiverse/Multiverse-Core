@@ -27,9 +27,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -40,20 +39,12 @@ public class MVPlayerListener implements Listener {
     private final MVWorldManager worldManager;
     private final PermissionTools pt;
 
-    private final ReentrantLock worldsLock = new ReentrantLock();
-    private final Map<String, String> playerWorld = new HashMap<String, String>();
+    private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
         worldManager = plugin.getMVWorldManager();
         pt = new PermissionTools(plugin);
-    }
-
-    /**
-     * @return the worldsLock
-     */
-    public ReentrantLock getWorldsLock() {
-        return worldsLock;
     }
 
     /**
@@ -134,17 +125,7 @@ public class MVPlayerListener implements Listener {
         }
         // Handle the Players GameMode setting for the new world.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to cache player world on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Caching player world on thread: " + thread);
-            playerWorld.put(p.getName(), p.getWorld().getName());
-        } finally {
-            worldsLock.unlock();
-        }
+        playerWorld.put(p.getName(), p.getWorld().getName());
     }
 
     /**
@@ -155,17 +136,7 @@ public class MVPlayerListener implements Listener {
     public void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
-        Thread thread = Thread.currentThread();
-        if (worldsLock.isLocked()) {
-            plugin.log(Level.FINEST, "worldsLock is locked when attempting to cache player world on thread: " + thread);
-        }
-        worldsLock.lock();
-        try {
-            plugin.log(Level.FINEST, "Caching player world on thread: " + thread);
-            playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
-        } finally {
-            worldsLock.unlock();
-        }
+        playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
     }
 
     /**

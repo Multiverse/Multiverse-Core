@@ -345,6 +345,7 @@ public class TestWorldProperties {
         when(mockPlayer.getWorld()).thenReturn(mvWorld.getCBWorld());
         when(mockPlayer.hasPlayedBefore()).thenReturn(true);
         when(mockPlayer.hasPermission("multiverse.access.world")).thenReturn(true);
+        when(mockPlayer.getName()).thenReturn("MultiverseMan");
         playerChatEvent = PowerMockito.mock(AsyncPlayerChatEvent.class);
         when(playerChatEvent.getPlayer()).thenReturn(mockPlayer);
         when(playerChatEvent.getFormat()).thenReturn("format");
