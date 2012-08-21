@@ -38,8 +38,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         return instance;
     }
 
-    //private final ReentrantLock propertyLock = new ReentrantLock();
-
     @Property
     private volatile boolean enforceaccess;
     @Property

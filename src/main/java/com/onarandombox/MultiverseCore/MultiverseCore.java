@@ -119,7 +119,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
     private volatile MultiverseCoreConfiguration config;
-    //private final ReentrantLock configLock = new ReentrantLock();
 
     /**
      * This method is used to find out who is teleporting a player.
