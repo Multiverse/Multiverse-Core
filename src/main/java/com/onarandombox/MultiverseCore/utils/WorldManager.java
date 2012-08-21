@@ -502,6 +502,9 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public MultiverseWorld getMVWorld(String name) {
+        if (name == null) {
+            return null;
+        }
         MultiverseWorld world = this.worlds.get(name);
         if (world != null) {
             return world;
