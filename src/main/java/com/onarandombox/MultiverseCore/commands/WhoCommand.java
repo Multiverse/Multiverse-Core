@@ -92,16 +92,12 @@ public class WhoCommand extends MultiverseCommand {
 
     private static String buildPlayerString(MultiverseWorld world, Player viewer) {
         List<Player> players = world.getCBWorld().getPlayers();
-        if (players.size() == 0) {
-            return "No players found.";
-        } else {
-            StringBuilder playerBuilder = new StringBuilder();
-            for (Player player : players) {
-                if ((viewer == null) || viewer.canSee(player))
-                        playerBuilder.append(player.getDisplayName()).append(", ");
-            }
-            String bString = playerBuilder.toString();
-            return bString.substring(0, bString.length() - 2);
+        StringBuilder playerBuilder = new StringBuilder();
+        for (Player player : players) {
+            if ((viewer == null) || viewer.canSee(player))
+                playerBuilder.append(player.getDisplayName()).append(", ");
         }
+        String bString = playerBuilder.toString();
+        return (bString.length() == 0) ? "No players found." : bString.substring(0, bString.length() - 2);
     }
 }
