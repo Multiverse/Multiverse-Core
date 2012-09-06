@@ -308,6 +308,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
         this.saveMVConfig();
         // Register async or sync player chat according to config
+        try {
+            Class.forName("org.bukkit.event.player.AsyncPlayerChatEvent");
+        } catch (ClassNotFoundException e) {
+            getMVConfig().setUseAsyncChat(false);
+        }
         if (getMVConfig().getUseAsyncChat()) {
             this.chatListener = new MVAsyncPlayerChatListener(this, this.playerListener);
         } else {
