@@ -66,6 +66,16 @@ public class SimpleWorldPurger implements WorldPurger {
      * {@inheritDoc}
      */
     @Override
+    public boolean shouldWeKillThisCreature(MultiverseWorld world, Entity e) {
+        ArrayList<String> allMobs = new ArrayList<String>(world.getAnimalList());
+        allMobs.addAll(world.getMonsterList());
+        return this.shouldWeKillThisCreature(e, allMobs, !world.canAnimalsSpawn(), !world.canMonstersSpawn());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void purgeWorld(MultiverseWorld mvworld, List<String> thingsToKill,
             boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
         if (mvworld == null) {
@@ -80,54 +90,67 @@ public class SimpleWorldPurger implements WorldPurger {
         boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
         boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
         for (Entity e : world.getEntities()) {
-            boolean negate = false;
-            boolean specified = false;
-            if (e instanceof Squid || e instanceof Animals) {
-                // it's an animal
-                if (specifiedAnimals && !negateAnimals) {
-                    this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all animals: " + e);
-                    e.remove();
-                    entitiesKilled++;
-                    continue;
-                }
-                if (specifiedAnimals)
-                    specified = true;
-                negate = negateAnimals;
-            } else if (e instanceof Monster || e instanceof Ghast || e instanceof Slime) {
-                // it's a monster
-                if (specifiedMonsters && !negateMonsters) {
-                    this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all monsters: " + e);
-                    e.remove();
-                    entitiesKilled++;
-                    continue;
-                }
-                if (specifiedMonsters)
-                    specified = true;
-                negate = negateMonsters;
-            }
-            for (String s : thingsToKill) {
-                EntityType type = EntityType.fromName(s);
-                if (type != null && type.equals(e.getType())) {
-                    specified = true;
-                    if (!negate) {
-                        this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);
-                        e.remove();
-                        entitiesKilled++;
-                        continue;
-                    }
-                    break;
-                }
-            }
-            if (!specified && negate) {
-                this.plugin.log(Level.FINEST, "Removing an entity because it was NOT specified and we ARE negating: " + e);
+            if (killDecision(e, thingsToKill, negateAnimals, negateMonsters, specifiedAnimals, specifiedMonsters)) {
                 e.remove();
                 entitiesKilled++;
-                continue;
             }
         }
         if (sender != null) {
             sender.sendMessage(entitiesKilled + " entities purged from the world '" + world.getName() + "'");
         }
+    }
+
+    private boolean killDecision(Entity e, List<String> thingsToKill, boolean negateAnimals,
+            boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
+        boolean negate = false;
+        boolean specified = false;
+        if (e instanceof Squid || e instanceof Animals) {
+            // it's an animal
+            if (specifiedAnimals && !negateAnimals) {
+                this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all animals: " + e);
+                return true;
+            }
+            if (specifiedAnimals)
+                specified = true;
+            negate = negateAnimals;
+        } else if (e instanceof Monster || e instanceof Ghast || e instanceof Slime) {
+            // it's a monster
+            if (specifiedMonsters && !negateMonsters) {
+                this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all monsters: " + e);
+                return true;
+            }
+            if (specifiedMonsters)
+                specified = true;
+            negate = negateMonsters;
+        }
+        for (String s : thingsToKill) {
+            EntityType type = EntityType.fromName(s);
+            if (type != null && type.equals(e.getType())) {
+                specified = true;
+                if (!negate) {
+                    this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);
+                    return true;
+                }
+                break;
+            }
+        }
+        if (!specified && negate) {
+            this.plugin.log(Level.FINEST, "Removing an entity because it was NOT specified and we ARE negating: " + e);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean shouldWeKillThisCreature(Entity e, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
+        boolean specifiedAll = thingsToKill.contains("ALL");
+        boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
+        boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
+        return this.killDecision(e, thingsToKill, negateAnimals, negateMonsters, specifiedAnimals, specifiedMonsters);
     }
 
     /**
