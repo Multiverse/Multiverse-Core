@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
@@ -34,7 +35,11 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "otherthing");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething " + ChatColor.RED + "-d");
         this.addCommandExample("/mv anchors ");
-        this.setPermission("multiverse.core.anchor", "Allows management of Anchor Destinations.", PermissionDefault.OP);
+        this.setPermission("multiverse.core.anchor.list", "Allows a player to list all anchors.", PermissionDefault.OP);
+        this.addAdditonalPermission(new Permission("multiverse.core.anchor.create",
+                "Allows a player to create anchors.", PermissionDefault.OP));
+        this.addAdditonalPermission(new Permission("multiverse.core.anchor.delete",
+                "Allows a player to delete anchors.", PermissionDefault.OP));
         this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
@@ -49,6 +54,11 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
     }
 
     private void showList(CommandSender sender, List<String> args) {
+        if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.list", true)) {
+            sender.sendMessage(ChatColor.RED + "You don't have the permission to list anchors!");
+            return;
+        }
+
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ Multiverse Anchor List ]====");
         Player p = null;
         if (sender instanceof Player) {
@@ -105,10 +115,14 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             return;
         }
         if (args.size() == 2 && args.get(1).equalsIgnoreCase("-d")) {
-            if (this.plugin.getAnchorManager().deleteAnchor(args.get(0))) {
-                sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.RED + "deleted!");
+            if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.delete", true)) {
+                sender.sendMessage(ChatColor.RED + "You don't have the permission to delete anchors!");
             } else {
-                sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "deleted!");
+                if (this.plugin.getAnchorManager().deleteAnchor(args.get(0))) {
+                    sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.RED + "deleted!");
+                } else {
+                    sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "deleted!");
+                }
             }
             return;
         }
@@ -118,13 +132,16 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             return;
         }
 
-        Player player = (Player) sender;
-        if (this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), player.getLocation())) {
-            sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.GREEN + "created!");
+        if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.create", true)) {
+            sender.sendMessage(ChatColor.RED + "You don't have the permission to create anchors!");
         } else {
-            sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "created!");
+            Player player = (Player) sender;
+            if (this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), player.getLocation())) {
+                sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.GREEN + "created!");
+            } else {
+                sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "created!");
+            }
         }
-
     }
 
     @Override

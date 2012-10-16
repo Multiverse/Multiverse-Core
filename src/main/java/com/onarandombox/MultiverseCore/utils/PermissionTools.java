@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import java.util.logging.Level;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -15,6 +14,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+
+import java.util.logging.Level;
 
 /**
  * Utility-class for permissions.
@@ -134,6 +135,10 @@ public class PermissionTools {
 
         // Only check payments if it's a different world:
         if (!toWorld.equals(fromWorld)) {
+            // Don't bother checking economy stuff if it doesn't even cost to enter.
+            if (toWorld.getPrice() == 0D) {
+                return true;
+            }
             // If the player does not have to pay, return now.
             if (this.plugin.getMVPerms().hasPermission(teleporter, toWorld.getExemptPermission().getName(), true)) {
                 return true;

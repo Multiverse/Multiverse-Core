@@ -48,8 +48,8 @@ public class DebugCommand extends MultiverseCommand {
                     sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE
                             + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
                 }
-
             }
+            plugin.saveMVConfigs();
         }
         this.displayDebugMode(sender);
     }

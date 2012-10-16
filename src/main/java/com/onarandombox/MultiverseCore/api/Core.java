@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import buscript.Buscript;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
@@ -128,7 +129,10 @@ public interface Core {
      * @param seed The seed of the world.
      *
      * @return True if success, false if fail.
+     *
+     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String)} instead.
      */
+    @Deprecated
     Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
 
     /**
@@ -222,4 +226,11 @@ public interface Core {
      * @return The configuration.
      */
     MultiverseCoreConfig getMVConfig();
+
+    /**
+     * Gets the buscript object for Multiverse.  This is what handles Javascript processing.
+     *
+     * @return The Multiverse buscript object.
+     */
+    Buscript getScriptAPI();
 }

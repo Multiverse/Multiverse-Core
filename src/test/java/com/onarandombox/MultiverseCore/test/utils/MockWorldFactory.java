@@ -39,6 +39,7 @@ public class MockWorldFactory {
 
     private static void registerWorld(World world) {
         createdWorlds.put(world.getName(), world);
+        new File(TestInstanceCreator.worldsDirectory, world.getName()).mkdir();
     }
 
     private static World basics(String world, World.Environment env, WorldType type) {
@@ -213,6 +214,8 @@ public class MockWorldFactory {
     }
 
     public static void clearWorlds() {
+        for (String name : createdWorlds.keySet())
+            new File(TestInstanceCreator.worldsDirectory, name).delete();
         createdWorlds.clear();
     }
 }

@@ -7,18 +7,15 @@
 
 package com.onarandombox.MultiverseCore.test.utils;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import buscript.Buscript;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
+import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
+import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.utils.FileUtils;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import junit.framework.Assert;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -37,15 +34,17 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockGateway;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import java.io.File;
+import java.lang.reflect.Field;
 import com.onarandombox.MultiverseCore.localization.MessageProvider;
 import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
-import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
-import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
-import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.utils.FileUtils;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
     private MultiverseCore core;
@@ -64,6 +63,12 @@ public class TestInstanceCreator {
             MockGateway.MOCK_STANDARD_METHODS = false;
 
             core = PowerMockito.spy(new MultiverseCore());
+            PowerMockito.doAnswer(new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) throws Throwable {
+                    return null; // don't run metrics in tests
+                }
+            }).when(core, "setupMetrics");
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
@@ -85,6 +90,8 @@ public class TestInstanceCreator {
             when(mockPluginManager.getPlugins()).thenReturn(plugins);
             when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
             when(mockPluginManager.getPermission(anyString())).thenReturn(null);
+            // Tell Buscript Vault is not available.
+            when(mockPluginManager.getPermission("Vault")).thenReturn(null);
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
             File worldNormalFile = new File(core.getServerFolder(), "world");
@@ -183,6 +190,13 @@ public class TestInstanceCreator {
             serverfield.setAccessible(true);
             serverfield.set(core, mockServer);
 
+            // Set buscript
+            Buscript buscript = PowerMockito.spy(new Buscript(core));
+            Field buscriptfield = MultiverseCore.class.getDeclaredField("buscript");
+            buscriptfield.setAccessible(true);
+            buscriptfield.set(core, buscript);
+            when(buscript.getPlugin()).thenReturn(core);
+
             // Set worldManager
             WorldManager wm = PowerMockito.spy(new WorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
@@ -264,6 +278,8 @@ public class TestInstanceCreator {
             Assert.fail(e.getMessage());
             return false;
         }
+
+        core.onDisable();
 
         FileUtils.deleteFolder(serverDirectory);
         MockWorldFactory.clearWorlds();

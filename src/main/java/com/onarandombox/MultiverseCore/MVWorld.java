@@ -9,15 +9,15 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.configuration.EntryFee;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
+import com.onarandombox.MultiverseCore.enums.EnglishChatStyle;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.IllegalPropertyValueException;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
@@ -26,7 +26,6 @@ import me.main__.util.SerializationConfig.SerializationConfig;
 import me.main__.util.SerializationConfig.Serializor;
 import me.main__.util.SerializationConfig.ValidateAllWith;
 import me.main__.util.SerializationConfig.VirtualProperty;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -61,6 +60,24 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
+    private static final Map<String, String> PROPERTY_ALIASES;
+
+    static {
+        PROPERTY_ALIASES = new HashMap<String, String>();
+        PROPERTY_ALIASES.put("curr", "currency");
+        PROPERTY_ALIASES.put("scaling", "scale");
+        PROPERTY_ALIASES.put("aliascolor", "color");
+        PROPERTY_ALIASES.put("heal", "autoHeal");
+        PROPERTY_ALIASES.put("storm", "allowWeather");
+        PROPERTY_ALIASES.put("weather", "allowWeather");
+        PROPERTY_ALIASES.put("spawnmemory", "keepSpawnInMemory");
+        PROPERTY_ALIASES.put("memory", "keepSpawnInMemory");
+        PROPERTY_ALIASES.put("mode", "gameMode");
+        PROPERTY_ALIASES.put("diff", "difficulty");
+        PROPERTY_ALIASES.put("spawnlocation", "spawn");
+        PROPERTY_ALIASES.put("animals", "spawning.animals.spawn");
+        PROPERTY_ALIASES.put("monsters", "spawning.monsters.spawn");
+    }
     /*
      * We have to use setCBWorld(), setPlugin() and initPerms() to prepare this object for use.
      */
@@ -70,7 +87,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
 
     private MultiverseCore plugin; // Hold the Plugin Instance.
 
-    private Reference<World> world = new WeakReference<World>(null); // A reference to the World Instance.
+    private volatile Reference<World> world = new WeakReference<World>(null); // A reference to the World Instance.
     private String name; // The Worlds Name, EG its folder name.
 
     /**
@@ -336,13 +353,15 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     // --------------------------------------------------------------
     // Begin properties
     @Property(description = "Sorry, 'hidden' must either be: true or false.")
-    private boolean hidden;
+    private volatile boolean hidden;
     @Property(description = "Alias must be a valid string.")
-    private String alias;
+    private volatile String alias;
     @Property(serializor = EnumPropertySerializor.class, description = "Sorry, 'color' must be a valid color-name.")
-    private EnglishChatColor color;
+    private volatile EnglishChatColor color;
+    @Property(serializor = EnumPropertySerializor.class, description = "Sorry, 'style' must be a valid style-name.")
+    private volatile EnglishChatStyle style;
     @Property(description = "Sorry, 'pvp' must either be: true or false.", virtualType = Boolean.class, persistVirtual = true)
-    private VirtualProperty<Boolean> pvp = new VirtualProperty<Boolean>() {
+    private volatile VirtualProperty<Boolean> pvp = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
             world.get().setPVP(newValue);
@@ -354,14 +373,14 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     };
     @Property(validator = ScalePropertyValidator.class, description = "Scale must be a positive double value. ex: 2.3")
-    private double scale;
+    private volatile double scale;
     @Property(validator = RespawnWorldPropertyValidator.class, description = "You must set this to the NAME not alias of a world.")
-    private String respawnWorld;
+    private volatile String respawnWorld;
     @Property(validator = AllowWeatherPropertyValidator.class, description = "Sorry, this must either be: true or false.")
-    private boolean allowWeather;
+    private volatile boolean allowWeather;
     @Property(serializor = DifficultyPropertySerializor.class, virtualType = Difficulty.class, persistVirtual = true,
             description = "Difficulty must be set as one of the following: peaceful easy normal hard")
-    private VirtualProperty<Difficulty> difficulty = new VirtualProperty<Difficulty>() {
+    private volatile VirtualProperty<Difficulty> difficulty = new VirtualProperty<Difficulty>() {
         @Override
         public void set(Difficulty newValue) {
             world.get().setDifficulty(newValue);
@@ -373,22 +392,22 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     };
     @Property(validator = SpawningPropertyValidator.class, description = "Sorry, 'animals' must either be: true or false.")
-    private SpawnSettings spawning;
+    private volatile SpawnSettings spawning;
     @Property
-    private EntryFee entryfee;
+    private volatile EntryFee entryfee;
     @Property(description = "Sorry, 'hunger' must either be: true or false.")
-    private boolean hunger;
+    private volatile boolean hunger;
     @Property(description = "Sorry, 'autoheal' must either be: true or false.")
-    private boolean autoHeal;
+    private volatile boolean autoHeal;
     @Property(description = "Sorry, 'adjustspawn' must either be: true or false.")
-    private boolean adjustSpawn;
+    private volatile boolean adjustSpawn;
     @Property(serializor = EnumPropertySerializor.class, description = "Allow portal forming must be NONE, ALL, NETHER or END.")
-    private AllowedPortalType portalForm;
+    private volatile AllowedPortalType portalForm;
     @Property(serializor = GameModePropertySerializor.class, validator = GameModePropertyValidator.class,
             description = "GameMode must be set as one of the following: survival creative")
-    private GameMode gameMode;
+    private volatile GameMode gameMode;
     @Property(description = "Sorry, this must either be: true or false.", virtualType = Boolean.class, persistVirtual = true)
-    private VirtualProperty<Boolean> keepSpawnInMemory = new VirtualProperty<Boolean>() {
+    private volatile VirtualProperty<Boolean> keepSpawnInMemory = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
             world.get().setKeepSpawnInMemory(newValue);
@@ -400,10 +419,10 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     };
     @Property
-    private SpawnLocation spawnLocation;
+    private volatile SpawnLocation spawnLocation;
     @Property(validator = SpawnLocationPropertyValidator.class, virtualType = Location.class,
             description = "There is no help available for this variable. Go bug Rigby90 about it.")
-    private VirtualProperty<Location> spawn = new VirtualProperty<Location>() {
+    private volatile VirtualProperty<Location> spawn = new VirtualProperty<Location>() {
         @Override
         public void set(Location newValue) {
             if (getCBWorld() != null)
@@ -421,15 +440,14 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     };
     @Property(description = "Set this to false ONLY if you don't want this world to load itself on server restart.")
-    private boolean autoLoad;
+    private volatile boolean autoLoad;
     @Property(description = "If a player dies in this world, shoudld they go to their bed?")
-    private boolean bedRespawn;
+    private volatile boolean bedRespawn;
     @Property
-    private List<String> worldBlacklist;
-    @SuppressWarnings("unused") // it IS used!
+    private volatile List<String> worldBlacklist;
     @Property(serializor = TimePropertySerializor.class, virtualType = Long.class,
             description = "Set the time to whatever you want! (Will NOT freeze time)")
-    private VirtualProperty<Long> time = new VirtualProperty<Long>() {
+    private volatile VirtualProperty<Long> time = new VirtualProperty<Long>() {
         @Override
         public void set(Long newValue) {
             world.get().setTime(newValue);
@@ -441,11 +459,11 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     };
     @Property
-    private Environment environment;
+    private volatile Environment environment;
     @Property
-    private long seed;
+    private volatile long seed;
     @Property
-    private String generator;
+    private volatile String generator;
     // End of properties
     // --------------------------------------------------------------
 
@@ -621,6 +639,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.hidden = false;
         this.alias = new String();
         this.color = EnglishChatColor.WHITE;
+        this.style = EnglishChatStyle.NORMAL;
         this.scale = getDefaultScale(environment);
         this.respawnWorld = new String();
         this.allowWeather = true;
@@ -644,19 +663,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      * @see SerializationConfig
      */
     protected static Map<String, String> getAliases() {
-        Map<String, String> aliases = new HashMap<String, String>();
-        aliases.put("curr", "currency");
-        aliases.put("scaling", "scale");
-        aliases.put("aliascolor", "color");
-        aliases.put("heal", "autoHeal");
-        aliases.put("storm", "allowWeather");
-        aliases.put("weather", "allowWeather");
-        aliases.put("spawnmemory", "keepSpawnInMemory");
-        aliases.put("memory", "keepSpawnInMemory");
-        aliases.put("mode", "gameMode");
-        aliases.put("diff", "difficulty");
-        aliases.put("spawnlocation", "spawn");
-        return aliases;
+        return PROPERTY_ALIASES;
     }
 
     private static double getDefaultScale(Environment environment) {
@@ -708,10 +715,17 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         if (alias.length() == 0) {
             alias = this.getName();
         }
+
         if ((color == null) || (color.getColor() == null)) {
             this.setPropertyValueUnchecked("color", EnglishChatColor.WHITE);
         }
-        return color.getColor() + alias + ChatColor.WHITE;
+
+        StringBuilder nameBuilder = new StringBuilder().append(color.getColor());
+        if (style.getColor() != null)
+            nameBuilder.append(style.getColor());
+        nameBuilder.append(alias).append(ChatColor.WHITE).toString();
+
+        return nameBuilder.toString();
     }
 
     /**
@@ -1363,6 +1377,22 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     @Override
     public void allowPortalMaking(AllowedPortalType portalType) {
         this.setPropertyValueUnchecked("portalForm", portalType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ChatColor getStyle() {
+        return style.getColor();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setStyle(String style) {
+        return this.setPropertyUnchecked("style", style);
     }
 
     @Override
