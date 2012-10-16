@@ -1,10 +1,12 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
+import com.onarandombox.MultiverseCore.configuration.LocaleSerializor;
+
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
-
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -60,6 +62,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile String firstspawnworld;
     @Property
     private volatile int teleportcooldown;
+    @Property(serializor = LocaleSerializor.class)
+    private volatile Locale locale;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -272,5 +276,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public boolean getUseAsyncChat() {
         return this.useasyncchat;
+    }
+
+    @Override
+    public Locale getLocale() {
+        return locale;
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

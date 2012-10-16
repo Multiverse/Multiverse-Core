@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.api;
 
+import java.util.Locale;
+
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
@@ -145,4 +147,16 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @return useasyncchat.
      */
     boolean getUseAsyncChat();
+
+    /**
+     * Sets the locale.
+     * @param locale The new value.
+     */
+    void setLocale(Locale locale);
+
+    /**
+     * Gets the locale.
+     * @return locale
+     */
+    Locale getLocale();
 }

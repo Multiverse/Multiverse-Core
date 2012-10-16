@@ -298,7 +298,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
         // Setup & Load our Configuration files.
         loadConfigs();
         try {
-            this.messageProvider.setLocale(new Locale(multiverseConfig.getString("locale", "en")));
+            this.messageProvider.setLocale(this.config.getLocale());
         } catch (IllegalArgumentException e) {
             this.log(Level.SEVERE, e.getMessage());
             this.getServer().getPluginManager().disablePlugin(this);
