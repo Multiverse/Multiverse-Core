@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -20,8 +21,16 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
     private static final String LOCALIZATION_FOLDER_NAME = "localization";
 
     // Regex 1: replace all single & with the section char
-    private static final String FORMAT_PATTERN_1 = "([^&])(&)([^&])";
-    private static final String FORMAT_REPL_1 = "$1\u00A7$3";
+    private static final String FORMAT_PATTERN_1;
+    private static final String FORMAT_REPL_1;
+    static {
+        StringBuilder formatBuilder = new StringBuilder("([^&])&([");
+        for (ChatColor c : ChatColor.values())
+            formatBuilder.append(c.getChar());
+        FORMAT_PATTERN_1 = formatBuilder.append("])").toString();
+
+        FORMAT_REPL_1 = new StringBuilder().append("$1").append(ChatColor.COLOR_CHAR).append("$2").toString();
+    }
 
     // Regex 2: replace all double & with single &
     private static final String FORMAT_PATTERN_2 = "&&";

@@ -21,6 +21,7 @@ import java.util.logging.LogRecord;
 public class MVTestLogFormatter extends Formatter {
     private static final DateFormat df = new SimpleDateFormat("HH:mm:ss");
 
+    @Override
     public String format(LogRecord record) {
         StringBuilder ret = new StringBuilder();
 

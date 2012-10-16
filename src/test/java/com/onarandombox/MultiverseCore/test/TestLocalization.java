@@ -109,6 +109,7 @@ public class TestLocalization {
         assertFalse(new File(TestInstanceCreator.pluginDirectory, "en.yml").exists());
         assertTrue(new File("src/main/resources/localization/en.yml").exists());
         doAnswer(new Answer<InputStream>() {
+            @Override
             public InputStream answer(InvocationOnMock invocation) throws Throwable {
                 try {
                     return new FileInputStream("src/main/resources/" + (String) invocation.getArguments()[0]);
@@ -165,6 +166,7 @@ public class TestLocalization {
         assertTrue(file.exists());
         assertTrue(new File("src/main/resources/localization/en.yml").exists());
         doAnswer(new Answer<InputStream>() {
+            @Override
             public InputStream answer(InvocationOnMock invocation) throws Throwable {
                 try {
                     return new FileInputStream("src/main/resources/" + (String) invocation.getArguments()[0]);

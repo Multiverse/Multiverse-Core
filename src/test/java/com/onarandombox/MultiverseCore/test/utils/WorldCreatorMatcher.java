@@ -28,6 +28,7 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
         this.careAboutGenerators = doICare;
     }
 
+    @Override
     public boolean matches(Object creator) {
         Util.log("Checking world creators.");
         if (creator == null) {
