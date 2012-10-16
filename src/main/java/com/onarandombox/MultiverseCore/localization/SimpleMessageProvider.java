@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.localization;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
@@ -97,32 +98,44 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         InputStream filestream = null;
 
         try {
-            filestream = new FileInputStream(new File(core.getDataFolder(), l.getLanguage() + ".yml"));
-        } catch (FileNotFoundException e) {
-        }
+            try {
+                filestream = new FileInputStream(new File(core.getDataFolder(), l.getLanguage()  + ".yml"));
+            } catch (FileNotFoundException e) {
+            }
+            try {
+                resstream = core.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME)
+                        .append("/").append(l.getLanguage()).append(".yml").toString());
+            } catch (Exception e) {
+            }
+            if ((resstream == null) && (filestream == null))
+                throw new NoSuchLocalizationException(l);
+            messages.put(l, new HashMap<MultiverseMessage, String>(
+                    MultiverseMessage.values().length));
+            FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
+            FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
+            for (MultiverseMessage m : MultiverseMessage.values()) {
+                String value = m.getDefault();
 
-        try {
-            resstream = core.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME).append("/")
-                    .append(l.getLanguage()).append(".yml").toString());
-        } catch (Exception e) {
-        }
+                if (resconfig != null)
+                    value = resconfig.getString(m.toString(), value);
+                if (fileconfig != null)
+                    value = fileconfig.getString(m.toString(), value);
 
-        if ((resstream == null) && (filestream == null))
-            throw new NoSuchLocalizationException(l);
-
-        messages.put(l, new HashMap<MultiverseMessage, String>(MultiverseMessage.values().length));
-
-        FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
-        FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
-        for (MultiverseMessage m : MultiverseMessage.values()) {
-            String value = m.getDefault();
-
-            if (resconfig != null)
-                value = resconfig.getString(m.toString(), value);
-            if (fileconfig != null)
-                value = fileconfig.getString(m.toString(), value);
-
-            messages.get(l).put(m, value);
+                messages.get(l).put(m, value);
+            }
+        } finally {
+            if (filestream != null)
+                try {
+                    filestream.close();
+                } catch (IOException e) {
+                    // silently discard
+                }
+            if (resstream != null)
+                try {
+                    resstream.close();
+                } catch (IOException e) {
+                    // silently discard
+                }
         }
     }
 
