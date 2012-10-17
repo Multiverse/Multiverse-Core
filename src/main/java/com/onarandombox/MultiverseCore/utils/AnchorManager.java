@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +17,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,10 +50,10 @@ public class AnchorManager {
             //world:x,y,z:pitch:yaw
             Location anchorLocation = plugin.getLocationManipulation().stringToLocation(anchorsSection.getString(key, ""));
             if (anchorLocation != null) {
-                MultiverseCore.staticLog(Level.INFO, "Loading anchor:  '" + key + "'...");
+                Logging.info("Loading anchor:  '%s'...", key);
                 this.anchors.put(key, anchorLocation);
             } else {
-                MultiverseCore.staticLog(Level.WARNING, "The location for anchor '" + key + "' is INVALID.");
+                Logging.warning("The location for anchor '%s' is INVALID.", key);
             }
 
         }

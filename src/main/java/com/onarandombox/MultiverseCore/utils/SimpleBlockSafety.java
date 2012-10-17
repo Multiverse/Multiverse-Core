@@ -7,17 +7,14 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
-
-import java.util.logging.Level;
 
 /**
  * The default-implementation of {@link BlockSafety}.
@@ -67,28 +64,26 @@ public class SimpleBlockSafety implements BlockSafety {
 
         if (isSolidBlock(world.getBlockAt(actual).getType())
                 || isSolidBlock(upOne.getBlock().getType())) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here (Actual)? ("
-                + actual.getBlock().getType() + ")[" + isSolidBlock(actual.getBlock().getType()) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Error Here (upOne)? ("
-                + upOne.getBlock().getType() + ")[" + isSolidBlock(upOne.getBlock().getType()) + "]");
+            Logging.finer("Error Here (Actual)? (%s)[%s]", actual.getBlock().getType(),
+                    isSolidBlock(actual.getBlock().getType()));
+            Logging.finer("Error Here (upOne)? (%s)[%s]", upOne.getBlock().getType(),
+                    isSolidBlock(upOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here (downOne)? ("
-                + downOne.getBlock().getType() + ")[" + isSolidBlock(downOne.getBlock().getType()) + "]");
+            Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(), isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            MultiverseCore.staticLog(Level.FINER, "There's fire below! ("
-                + actual.getBlock().getType() + ")[" + isSolidBlock(actual.getBlock().getType()) + "]");
+            Logging.finer("There's fire below! (%s)[%s]", actual.getBlock().getType(), isSolidBlock(actual.getBlock().getType()));
             return false;
         }
 
         if (isBlockAboveAir(actual)) {
-            MultiverseCore.staticLog(Level.FINER, "Is block above air [" + isBlockAboveAir(actual) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Has 2 blocks of water below [" + this.hasTwoBlocksofWaterBelow(actual) + "]");
+            Logging.finer("Is block above air [%s]", isBlockAboveAir(actual));
+            Logging.finer("Has 2 blocks of water below [%s]", this.hasTwoBlocksofWaterBelow(actual));
             return this.hasTwoBlocksofWaterBelow(actual);
         }
         return true;

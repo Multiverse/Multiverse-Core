@@ -179,6 +179,7 @@
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:buscript</include>
                                     <include>org.mcstats:metrics</include>
+                                    <include>com.dumptruckman.minecraft:Logging</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -201,6 +202,10 @@
                                 <relocation>
                                     <pattern>org.mcstats</pattern>
                                     <shadedPattern>org.mcstats.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.dumptruckman.minecraft.util.Logging</pattern>
+                                    <shadedPattern>com.onarandombox.MultiverseCore.utils.CoreLogging</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -274,6 +279,15 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of Metrics Dependency -->
+        <!-- Start of Logging Dependency -->
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Logging</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of Logging Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

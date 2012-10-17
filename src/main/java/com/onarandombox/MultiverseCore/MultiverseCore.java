@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore;
 
 import buscript.Buscript;
+import com.dumptruckman.minecraft.util.Logging;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
@@ -69,7 +70,6 @@ import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
-import com.onarandombox.MultiverseCore.utils.DebugLog;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
@@ -105,7 +105,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -141,7 +140,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @param teleportee The name of the player that was teleported.
      */
     public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
-        staticLog(Level.FINEST, "Adding mapping '" + teleporter + "' => '" + teleportee + "' to teleport queue");
+        Logging.finest( "Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
         teleportQueue.put(teleportee, teleporter);
     }
 
@@ -176,10 +175,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public int getProtocolVersion() {
         return MultiverseCore.PROTOCOL;
     }
-
-    // Useless stuff to keep us going.
-    private static final Logger LOGGER = Logger.getLogger("Minecraft");
-    private static DebugLog debugLog;
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
@@ -226,9 +221,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
-        debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
-        debugLog.setStandardLogger(LOGGER);
-        SerializationConfig.initLogging(debugLog);
+        Logging.init(this);
+        SerializationConfig.initLogging(Logging.getLogger());
         // Setup our BlockSafety
         this.blockSafety = new SimpleBlockSafety(this);
         // Setup our LocationManipulation
@@ -806,7 +800,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public void onDisable() {
         this.saveMVConfigs();
-        debugLog.close();
+        Logging.close();
         this.banker = null;
         this.bank = null;
         log(Level.INFO, "- Disabled");
@@ -873,7 +867,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void log(Level level, String msg) {
-        staticLog(level, msg);
+        Logging.log(level, msg, false);
     }
 
     /**
@@ -881,30 +875,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      *
      * @param level The Log-{@link Level}.
      * @param msg The message to log.
+     *
+     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
+     * messages will appear to originate from Multiverse-Core.
      */
+    @Deprecated
     public static void staticLog(Level level, String msg) {
-        if (level == Level.FINE && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 1) {
-            staticDebugLog(level, msg);
-        } else if (level == Level.FINER && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 2) {
-            staticDebugLog(level, msg);
-        } else if (level == Level.FINEST && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 3) {
-            staticDebugLog(level, msg);
-        } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            String message = LOG_TAG + " " + msg;
-            LOGGER.log(level, message);
-            debugLog.log(level, message);
-        }
+        Logging.log(level, msg, false);
     }
 
     /**
-     * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the
+     * Print messages to the Debug Log, if the servers in Debug Mode then we also want to print the messages to the
      * standard Server Console.
      *
      * @param level The Log-{@link Level}
      * @param msg The message
+     *
+     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
+     * messages will appear to originate from Multiverse-Core.
      */
+    @Deprecated
     public static void staticDebugLog(Level level, String msg) {
-        debugLog.log(level, msg);
+        Logging.log(level, msg, false);
     }
 
     /**
