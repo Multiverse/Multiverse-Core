@@ -10,6 +10,8 @@ package com.onarandombox.MultiverseCore.utils;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -208,11 +210,10 @@ public class PermissionTools {
         // Actual checks
         if (toWorld != null) {
             if (!this.plugin.getMVPerms().canEnterWorld(teleporterPlayer, toWorld)) {
-                if (teleportee.equals(teleporter)) {
-                    teleporter.sendMessage("You don't have access to go here...");
-                } else {
-                    teleporter.sendMessage("You can't send " + teleportee.getName() + " here...");
-                }
+                if (teleportee.equals(teleporter))
+                    this.plugin.getMessaging().sendMessage(teleporter, MultiverseMessage.PERMS_NOACCESS_SELF);
+                else
+                    this.plugin.getMessaging().sendMessage(teleporter, MultiverseMessage.PERMS_NOACCESS_OTHER, teleportee.getName());
 
                 return false;
             }
@@ -223,12 +224,10 @@ public class PermissionTools {
         }
         if (fromWorld != null) {
             if (fromWorld.getWorldBlacklist().contains(toWorld.getName())) {
-                if (teleportee.equals(teleporter)) {
-                    teleporter.sendMessage("You don't have access to go to " + toWorld.getColoredWorldString() + " from " + fromWorld.getColoredWorldString());
-                } else {
-                    teleporter.sendMessage("You don't have access to send " + teleportee.getName() + " from "
-                         + fromWorld.getColoredWorldString() + " to " + toWorld.getColoredWorldString());
-                }
+                if (teleportee.equals(teleporter))
+                    this.plugin.getMessaging().sendMessage(teleporter, MultiverseMessage.PERMS_NOACCESS_BLACKLIST_SELF, toWorld.getColoredWorldString(), fromWorld.getColoredWorldString());
+                else
+                    this.plugin.getMessaging().sendMessage(teleporter, MultiverseMessage.PERMS_NOACCESS_BLACKLIST_OTHER, teleportee.getName(), fromWorld.getColoredWorldString(), toWorld.getColoredWorldString());
                 return false;
             }
         }

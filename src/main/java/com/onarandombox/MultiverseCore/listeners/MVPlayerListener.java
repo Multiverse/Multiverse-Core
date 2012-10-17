@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -119,7 +120,7 @@ public class MVPlayerListener implements Listener {
             this.plugin.log(Level.FINER, "Player joined AGAIN!");
             if (this.plugin.getMVConfig().getEnforceAccess() // check this only if we're enforcing access!
                     && !this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
-                p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
+                this.plugin.getMessaging().sendMessage(p, MultiverseMessage.LISTENER_PLAYER_LOSTACCESSPERM);
                 this.sendPlayerToDefaultWorld(p);
             }
         }

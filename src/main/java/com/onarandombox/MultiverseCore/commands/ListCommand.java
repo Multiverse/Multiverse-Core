@@ -24,19 +24,18 @@ import java.util.List;
  * Displays a listing of all worlds that a player can enter.
  */
 public class ListCommand extends PaginatedCoreCommand<String> {
-
     private MessageProvider provider;
 
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
         provider = plugin.getMessageProvider();
-        this.setName(provider.getMessage(MultiverseMessage.LIST_NAME));
+        this.setName(provider.getMessage(MultiverseMessage.CMD_LIST_NAME));
         this.setCommandUsage("/mv list");
         this.setArgRange(0, 2);
         this.addKey("mvlist");
         this.addKey("mvl");
         this.addKey("mv list");
-        this.setPermission("multiverse.core.list.worlds", provider.getMessage(MultiverseMessage.LIST_DESC), PermissionDefault.OP);
+        this.setPermission("multiverse.core.list.worlds", provider.getMessage(MultiverseMessage.CMD_LIST_DESC), PermissionDefault.OP);
         this.setItemsPerPage(8); // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
 
@@ -71,7 +70,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         }
         for (String name : this.plugin.getMVWorldManager().getUnloadedWorlds()) {
             if (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + name, true)) {
-                worldList.add(ChatColor.GRAY + name + " - " + provider.getMessage(MultiverseMessage.GENERIC_UNLOADED));
+                worldList.add(ChatColor.GRAY + name + " - " + "UNLOADED");
             }
         }
         return worldList;
@@ -96,7 +95,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ " + this.provider.getMessage(MultiverseMessage.LIST_TITLE) + " ]====");
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ " + this.provider.getMessage(MultiverseMessage.CMD_LIST_TITLE) + " ]====");
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
@@ -109,7 +108,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
         if (filterObject.getFilter().length() > 0) {
             availableWorlds = this.getFilteredItems(availableWorlds, filterObject.getFilter());
             if (availableWorlds.size() == 0) {
-                sender.sendMessage(ChatColor.RED + provider.getMessage(MultiverseMessage.GENERIC_SORRY) + " " + ChatColor.WHITE + provider.getMessage(MultiverseMessage.LIST_NO_MATCH) + " " + ChatColor.AQUA + filterObject.getFilter());
+                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + provider.getMessage(MultiverseMessage.CMD_LIST_NO_MATCH) + " " + ChatColor.AQUA + filterObject.getFilter());
                 return;
             }
         }
@@ -127,7 +126,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
             filterObject.setPage(totalPages);
         }
 
-        sender.sendMessage(ChatColor.AQUA + " " + provider.getMessage(MultiverseMessage.GENERIC_PAGE) + " " + filterObject.getPage() + " " + provider.getMessage(MultiverseMessage.GENERIC_OF) + " " + totalPages);
+        sender.sendMessage(ChatColor.AQUA + " Page " + filterObject.getPage() + " of " + totalPages);
 
         this.showPage(filterObject.getPage(), sender, availableWorlds);
     }

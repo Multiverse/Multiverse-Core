@@ -266,7 +266,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      */
     @Override
     public void onEnable() {
-        this.messaging = new MVMessaging();
+        this.messaging = new MVMessaging(this);
         this.banker = new AllPay(this, LOG_TAG + " ");
         // Output a little snippet to show it's enabled.
         this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + getAuthors());
@@ -308,7 +308,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
         } else {
-            this.log(Level.SEVERE, this.getMessageProvider().getMessage(MultiverseMessage.ERROR_LOAD));
+            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
         this.anchorManager.loadAnchors();
 
@@ -863,7 +863,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!this.isEnabled()) {
-            sender.sendMessage(this.getMessageProvider().getMessage(MultiverseMessage.GENERIC_PLUGIN_DISABLED));
+            this.messaging.sendMessage(sender, MultiverseMessage.CH_PLUGIN_DISABLED);
             return true;
         }
         ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
@@ -872,11 +872,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
             return this.commandHandler.locateAndRunCommand(sender, allArgs, getMVConfig().getDisplayPermErrors());
         } catch (Exception e) {
             e.printStackTrace();
-            sender.sendMessage(ChatColor.RED + "An internal error occurred when attempting to perform this command.");
-            if (sender.isOp())
-                sender.sendMessage(ChatColor.RED + "Details were printed to the server console and logs, please add that to your bug report.");
-            else
-                sender.sendMessage(ChatColor.RED + "Try again and contact the server owner or an admin if this problem persists.");
+            this.messaging.sendMessage(sender, MultiverseMessage.CH_INTERNAL_ERROR);
+            this.messaging.sendMessage(sender, sender.isOp() ? MultiverseMessage.CH_ADMIN_DEBUG : MultiverseMessage.CH_USER_DEBUG);
             return true;
         }
     }
@@ -970,8 +967,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      * @param worldName The name of the invalid world
      */
     public void showNotMVWorldMessage(CommandSender sender, String worldName) {
-        sender.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
-        sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
+        // TODO remove this method because we can now send this message in one line
+        this.messaging.sendMessage(sender, MultiverseMessage.GENERIC_NOT_MV_WORLD, worldName);
     }
 
     /**

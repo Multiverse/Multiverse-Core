@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import org.bukkit.command.CommandSender;
 
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
+
 /**
  * Multiverse-messaging.
  */
@@ -13,6 +15,27 @@ public interface MultiverseMessaging {
      * @param milliseconds The new message-cooldown in milliseconds.
      */
     void setCooldown(int milliseconds);
+
+    /**
+     * Sends a message to the specified sender if the cooldown has passed.
+     *
+     * @param sender         The person/console to send the message to.
+     * @param message        The message to send.
+     * @param formatArgs     Format arguments for the message.
+     * @return true if the message was sent, false if not.
+     */
+    boolean sendMessage(CommandSender sender, MultiverseMessage message, Object...formatArgs);
+
+    /**
+     * Sends a message to the specified sender if the cooldown has passed.
+     *
+     * @param sender         The person/console to send the message to.
+     * @param message        The message to send.
+     * @param ignoreCooldown If true this message will always be sent. Useful for things like menus
+     * @param formatArgs     Format arguments for the message.
+     * @return true if the message was sent, false if not.
+     */
+    boolean sendMessage(CommandSender sender, MultiverseMessage message, boolean ignoreCooldown, Object... formatArgs);
 
     /**
      * Sends a message to the specified sender if the cooldown has passed.

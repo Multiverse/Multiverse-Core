@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.onarandombox.MultiverseCore.utils.DebugLog;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
@@ -106,7 +107,7 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!this.isEnabled()) {
-            sender.sendMessage("This plugin is Disabled!");
+            this.core.getMessaging().sendMessage(sender, MultiverseMessage.CH_PLUGIN_DISABLED);
             return true;
         }
 

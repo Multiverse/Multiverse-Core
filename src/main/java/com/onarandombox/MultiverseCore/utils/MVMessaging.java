@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
+import com.onarandombox.MultiverseCore.localization.MessageProviding;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,10 +22,12 @@ import java.util.Map;
  * The default-implementation of {@link MultiverseMessaging}.
  */
 public class MVMessaging implements MultiverseMessaging {
+    private final MessageProviding msgProviding;
     private Map<String, Long> sentList;
     private int cooldown;
 
-    public MVMessaging() {
+    public MVMessaging(MessageProviding msgProviding) {
+        this.msgProviding = msgProviding;
         this.sentList = new HashMap<String, Long>();
         this.cooldown = 5000; // SUPPRESS CHECKSTYLE: MagicNumberCheck
     }
@@ -50,7 +54,6 @@ public class MVMessaging implements MultiverseMessaging {
     @Override
     public boolean sendMessages(CommandSender sender, String[] messages, boolean ignoreCooldown) {
         if (!(sender instanceof Player) || ignoreCooldown) {
-
             sendMessages(sender, messages);
             return true;
         }
@@ -89,5 +92,21 @@ public class MVMessaging implements MultiverseMessaging {
     @Override
     public int getCooldown() {
         return cooldown;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean sendMessage(CommandSender sender, MultiverseMessage message, Object... args) {
+        return this.sendMessage(sender, message, true, args); // TODO what is a good default value?
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean sendMessage(CommandSender sender, MultiverseMessage message, boolean ignoreCooldown, Object...args) {
+        return this.sendMessage(sender, this.msgProviding.getMessageProvider().getMessage(message, args), ignoreCooldown);
     }
 }

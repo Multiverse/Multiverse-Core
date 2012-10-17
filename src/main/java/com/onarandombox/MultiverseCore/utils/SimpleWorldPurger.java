@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -95,9 +96,8 @@ public class SimpleWorldPurger implements WorldPurger {
                 entitiesKilled++;
             }
         }
-        if (sender != null) {
-            sender.sendMessage(entitiesKilled + " entities purged from the world '" + world.getName() + "'");
-        }
+        if (sender != null)
+            this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.PURGER_ENTITIESKILLED, entitiesKilled, world.getName());
     }
 
     private boolean killDecision(Entity e, List<String> thingsToKill, boolean negateAnimals,
