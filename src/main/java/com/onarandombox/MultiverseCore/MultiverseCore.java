@@ -800,10 +800,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public void onDisable() {
         this.saveMVConfigs();
-        Logging.close();
         this.banker = null;
         this.bank = null;
         log(Level.INFO, "- Disabled");
+        Logging.shutdown();
     }
 
     /**
@@ -867,7 +867,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void log(Level level, String msg) {
-        Logging.log(level, msg, false);
+        Logging.logStatic(level, msg);
     }
 
     /**
@@ -881,7 +881,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Deprecated
     public static void staticLog(Level level, String msg) {
-        Logging.log(level, msg, false);
+        Logging.logStatic(level, msg);
     }
 
     /**
@@ -896,7 +896,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Deprecated
     public static void staticDebugLog(Level level, String msg) {
-        Logging.log(level, msg, false);
+        Logging.logStatic(level, msg);
     }
 
     /**
