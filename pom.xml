@@ -209,7 +209,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>com.dumptruckman.minecraft.util.DebugLog</pattern>
-                                    <shadedPattern>com.onarandombox.MultiverseCore.utils.DebugLog</shadedPattern>
+                                    <shadedPattern>com.onarandombox.MultiverseCore.utils.DebugFileLogger</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
