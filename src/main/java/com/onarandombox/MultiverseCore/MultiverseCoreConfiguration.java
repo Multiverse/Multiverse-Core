@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
@@ -198,6 +199,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setGlobalDebug(int globalDebug) {
         this.globaldebug = globalDebug;
+        Logging.setDebugLevel(globalDebug);
     }
 
     /**
