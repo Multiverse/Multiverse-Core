@@ -207,6 +207,10 @@
                                     <pattern>com.dumptruckman.minecraft.util.Logging</pattern>
                                     <shadedPattern>com.onarandombox.MultiverseCore.utils.CoreLogging</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.dumptruckman.minecraft.util.DebugLog</pattern>
+                                    <shadedPattern>com.onarandombox.MultiverseCore.utils.DebugLog</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -283,7 +287,7 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Logging</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
