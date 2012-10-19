@@ -288,6 +288,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         if (this.multiverseConfig != null) {
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
+            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
