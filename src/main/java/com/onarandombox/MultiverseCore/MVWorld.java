@@ -39,6 +39,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONObject;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -1397,11 +1398,13 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
 
     @Override
     public String toString() {
-        StringBuilder toStringBuilder = new StringBuilder();
-        toStringBuilder.append(this.getClass().getSimpleName());
-        toStringBuilder.append('@');
-        toStringBuilder.append(this.hashCode());
-        toStringBuilder.append(" (Name: '").append(this.getName()).append("')");
-        return toStringBuilder.toString();
+        final JSONObject jsonData = new JSONObject();
+        jsonData.put("Name", getName());
+        jsonData.put("Env", getEnvironment().toString());
+        jsonData.put("Type", getWorldType().toString());
+        jsonData.put("Gen", getGenerator());
+        final JSONObject topLevel = new JSONObject();
+        topLevel.put(getClass().getSimpleName() + "@" + hashCode(), jsonData);
+        return topLevel.toString();
     }
 }
