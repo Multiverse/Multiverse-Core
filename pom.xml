@@ -185,6 +185,7 @@
                                     <include>com.dumptruckman.minecraft:buscript</include>
                                     <include>org.mcstats:metrics</include>
                                     <include>com.dumptruckman.minecraft:Logging</include>
+                                    <include>com.fernferret.allpay:AllPay</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
