@@ -15,7 +15,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class WhoCommand extends MultiverseCommand {
         }
 
         final Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
-        final List<Player> visiblePlayers = new ArrayList<Player>(onlinePlayers.length);
+        final Collection<Player> visiblePlayers = new HashSet<Player>(onlinePlayers.length);
         for (final Player player : onlinePlayers) {
             if (p == null || p.canSee(player)) {
                 visiblePlayers.add(player);
@@ -100,7 +101,7 @@ public class WhoCommand extends MultiverseCommand {
         return;
     }
 
-    private static String buildPlayerString(MultiverseWorld world, Player viewer, final List<Player> visiblePlayers) {
+    private static String buildPlayerString(MultiverseWorld world, Player viewer, final Collection<Player> visiblePlayers) {
         // Retrieve the players in this world
         List<Player> players = world.getCBWorld().getPlayers();
         StringBuilder playerBuilder = new StringBuilder();
