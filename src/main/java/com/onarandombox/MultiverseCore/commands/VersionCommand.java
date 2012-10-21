@@ -53,7 +53,13 @@ public class VersionCommand extends MultiverseCommand {
         buffer.append("[Multiverse-Core] Bukkit Version: ").append(this.plugin.getServer().getVersion()).append('\n');
         buffer.append("[Multiverse-Core] Loaded Worlds: ").append(this.plugin.getMVWorldManager().getMVWorlds()).append('\n');
         buffer.append("[Multiverse-Core] Multiverse Plugins Loaded: ").append(this.plugin.getPluginCount()).append('\n');
-        buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getBank().getEconUsed()).append('\n');
+        final boolean usingVault = this.plugin.getVaultEconomy() != null;
+        buffer.append("[Multiverse-Core] Using Vault: ").append(usingVault).append('\n');
+        if (usingVault) {
+            buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getVaultEconomy().getName()).append('\n');
+        } else {
+            buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getBank().getEconUsed()).append('\n');
+        }
         buffer.append("[Multiverse-Core] Permissions Plugin: ").append(this.plugin.getMVPerms().getType()).append('\n');
         buffer.append("[Multiverse-Core] Dumping Config Values: (version ")
                 .append(this.plugin.getMVConfig().getVersion()).append(")").append('\n');
