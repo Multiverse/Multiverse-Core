@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,8 +74,17 @@ public class WhoCommand extends MultiverseCommand {
             }
         }
 
+        final Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
+        final List<Player> visiblePlayers = new ArrayList<Player>();
+        for (final Player player : onlinePlayers) {
+            if (p == null || p.canSee(player)) {
+                visiblePlayers.add(player);
+            }
+        }
+
         // multiworld mode
-        sender.sendMessage(ChatColor.AQUA + "--- Worlds and their players ---");
+        sender.sendMessage(ChatColor.AQUA + "--- Worlds and their players --- "
+                + visiblePlayers.size() + "/" + plugin.getServer().getMaxPlayers());
         boolean shownOne = false;
         for (MultiverseWorld world : this.worldManager.getMVWorlds()) {
             if (this.plugin.getMVPerms().canEnterWorld(p, world)) { // only show world if the player can access it
