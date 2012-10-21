@@ -24,6 +24,7 @@ import java.util.List;
 public class WhoCommand extends MultiverseCommand {
 
     private MVWorldManager worldManager;
+    private List<Player> visiblePlayers;
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);
@@ -51,6 +52,14 @@ public class WhoCommand extends MultiverseCommand {
             showAll = false;
         }
 
+        final Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
+        this.visiblePlayers = new ArrayList<Player>();
+        for (final Player player : onlinePlayers) {
+            if (p == null || p.canSee(player)) {
+                visiblePlayers.add(player);
+            }
+        }
+
         if (args.size()  == 1) {
             if (args.get(0).equalsIgnoreCase("--all") || args.get(0).equalsIgnoreCase("-a")) {
                 showAll = true;
@@ -69,16 +78,8 @@ public class WhoCommand extends MultiverseCommand {
 
                 sender.sendMessage(String.format("%s--- Players in %s%s ---", ChatColor.AQUA,
                         world.getColoredWorldString(), ChatColor.AQUA));
-                sender.sendMessage(buildPlayerString(world, p));
+                sender.sendMessage(this.buildPlayerString(world, p));
                 return;
-            }
-        }
-
-        final Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
-        final List<Player> visiblePlayers = new ArrayList<Player>();
-        for (final Player player : onlinePlayers) {
-            if (p == null || p.canSee(player)) {
-                visiblePlayers.add(player);
             }
         }
 
@@ -100,11 +101,14 @@ public class WhoCommand extends MultiverseCommand {
         return;
     }
 
-    private static String buildPlayerString(MultiverseWorld world, Player viewer) {
+    private String buildPlayerString(MultiverseWorld world, Player viewer) {
+        // Retrieve the players in this world
         List<Player> players = world.getCBWorld().getPlayers();
         StringBuilder playerBuilder = new StringBuilder();
         for (Player player : players) {
-            if ((viewer == null) || viewer.canSee(player))
+            // If the viewer is the console or the viewier is allowed to see the player, show them.
+            // Make sure we're also ONLY showing online players.
+            if (((viewer == null) || viewer.canSee(player)) && this.visiblePlayers.contains(player) )
                 playerBuilder.append(player.getDisplayName()).append(", ");
         }
         String bString = playerBuilder.toString();
