@@ -160,14 +160,22 @@ public class PermissionTools {
                 if (!plugin.getVaultEconomy().has(teleporterPlayer.getName(), toWorld.getPrice())) {
                     return false;
                 } else if (pay) {
-                    plugin.getVaultEconomy().withdrawPlayer(teleporterPlayer.getName(), toWorld.getPrice());
+                    if (toWorld.getPrice() < 0D) {
+                        plugin.getVaultEconomy().depositPlayer(teleporterPlayer.getName(), toWorld.getPrice() * -1D);
+                    } else {
+                        plugin.getVaultEconomy().withdrawPlayer(teleporterPlayer.getName(), toWorld.getPrice());
+                    }
                 }
             } else {
                 GenericBank bank = plugin.getBank();
                 if (!bank.hasEnough(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
                     return false;
                 } else if (pay) {
-                    bank.give(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
+                    if (toWorld.getPrice() < 0D) {
+                        bank.give(teleporterPlayer, toWorld.getPrice() * -1D, toWorld.getCurrency());
+                    } else {
+                        bank.take(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
+                    }
                 }
             }
         }
