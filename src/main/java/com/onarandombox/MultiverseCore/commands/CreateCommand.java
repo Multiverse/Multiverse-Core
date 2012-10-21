@@ -18,6 +18,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -88,7 +90,19 @@ public class CreateCommand extends MultiverseCommand {
             EnvironmentCommand.showWorldTypes(sender);
             return;
         }
-
+        // Determine if the generator is valid. #918
+        if (generator != null) {
+            List<String> genarray = new ArrayList<String>(Arrays.asList(generator.split(":")));
+            if (genarray.size() < 2) {
+                // If there was only one arg specified, pad with another empty one.
+                genarray.add("");
+            }
+            if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), "test") == null) {
+                // We have an invalid generator.
+                Command.broadcastCommandMessage(sender, "Invalid generator! '" + generator + "'. " + ChatColor.RED + "Aborting world creation.");
+                return;
+            }
+        }
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
         if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
