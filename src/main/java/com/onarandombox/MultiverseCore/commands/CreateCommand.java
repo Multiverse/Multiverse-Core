@@ -67,7 +67,12 @@ public class CreateCommand extends MultiverseCommand {
             }
         }
 
-        if (worldFile.exists() || this.worldManager.isMVWorld(worldName)) {
+        if (this.worldManager.isMVWorld(worldName)) {
+            sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD +ChatColor.UNDERLINE + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
+            return;
+        }
+
+        if (worldFile.exists()) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
             return;
