@@ -78,6 +78,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         PROPERTY_ALIASES.put("spawnlocation", "spawn");
         PROPERTY_ALIASES.put("animals", "spawning.animals.spawn");
         PROPERTY_ALIASES.put("monsters", "spawning.monsters.spawn");
+        PROPERTY_ALIASES.put("animalsrate", "spawning.animals.spawnrate");
+        PROPERTY_ALIASES.put("monstersrate", "spawning.monsters.spawnrate");
     }
     /*
      * We have to use setCBWorld(), setPlugin() and initPerms() to prepare this object for use.
@@ -232,6 +234,12 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
                 allowMonsters = canMonstersSpawn();
             } else {
                 allowMonsters = true;
+            }
+            if (MVWorld.this.spawning.getAnimalSettings().getSpawnRate() != -1) {
+                world.get().setTicksPerAnimalSpawns(MVWorld.this.spawning.getAnimalSettings().getSpawnRate());
+            }
+            if (MVWorld.this.spawning.getMonsterSettings().getSpawnRate() != -1) {
+                world.get().setTicksPerMonsterSpawns(MVWorld.this.spawning.getMonsterSettings().getSpawnRate());
             }
             world.get().setSpawnFlags(allowMonsters, allowAnimals);
             plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(MVWorld.this);
