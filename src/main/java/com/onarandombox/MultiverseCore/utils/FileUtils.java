@@ -44,6 +44,27 @@ public class FileUtils {
             return false;
         }
     }
+    
+    /**
+     * Used to delete the contents of a folder, without deleting the folder itself
+     * 
+     * @param file The folder whose contents to delete.
+     * @return true if the contents were successfully deleted
+     */
+    public static boolean deleteFolderContents(File file) {
+        if (file.exists()) {
+            boolean ret = true;
+            // If the file exists, and it has more than one file in it.
+            if (file.isDirectory()) {
+                for (File f : file.listFiles()) {
+                    ret = ret && deleteFolder(f);
+                }
+            }
+            return ret;
+        } else {
+            return false;
+        }
+    }
 
     private static final int COPY_BLOCK_SIZE = 1024;
 
