@@ -405,7 +405,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteWorld(String name, boolean removeFromConfig) {
+    public boolean deleteWorld(String name, boolean removeFromConfig, boolean deleteWorldFolder) {
         World world = this.plugin.getServer().getWorld(name);
         if (world == null) {
             // We can only delete loaded worlds
@@ -433,15 +433,15 @@ public class WorldManager implements MVWorldManager {
         try {
             File worldFile = world.getWorldFolder();
             plugin.log(Level.FINER, "deleteWorld(): worldFile: " + worldFile.getAbsolutePath());
-            boolean deletedWorld = FileUtils.deleteFolder(worldFile);
-            if (deletedWorld) {
+            if (deleteWorldFolder ? FileUtils.deleteFolder(worldFile) : FileUtils.deleteFolderContents(worldFile)) {
                 this.plugin.log(Level.INFO, "World " + name + " was DELETED.");
+                return true;
             } else {
                 this.plugin.log(Level.SEVERE, "World " + name + " was NOT deleted.");
                 this.plugin.log(Level.SEVERE, "Are you sure the folder " + name + " exists?");
                 this.plugin.log(Level.SEVERE, "Please check your file permissions on " + name);
+                return false;
             }
-            return deletedWorld;
         } catch (Throwable e) {
             this.plugin.log(Level.SEVERE, "Hrm, something didn't go as planned. Here's an exception for ya.");
             this.plugin.log(Level.SEVERE, "You can go politely explain your situation in #multiverse on esper.net");
@@ -450,6 +450,14 @@ public class WorldManager implements MVWorldManager {
             this.plugin.log(Level.SEVERE, e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean deleteWorld(String name, boolean removeFromConfig) {
+        return this.deleteWorld(name, removeFromConfig, true);
     }
 
     /**
@@ -791,7 +799,7 @@ public class WorldManager implements MVWorldManager {
             world.setSeed(theSeed);
         }
 
-        if (this.deleteWorld(name, false)) {
+        if (this.deleteWorld(name, false, false)) {
             this.doLoad(name, true);
             SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             Location newSpawn = world.getSpawnLocation();
