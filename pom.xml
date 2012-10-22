@@ -248,7 +248,7 @@
         <dependency>
             <groupId>me.main__.util</groupId>
             <artifactId>SerializationConfig</artifactId>
-            <version>1.6b</version>
+            <version>1.6c</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
