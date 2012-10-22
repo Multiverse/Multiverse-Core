@@ -12,7 +12,7 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @param value The value.
      * @return True on success, false if the operation failed.
      */
-    boolean setProperty(String property, String value);
+    boolean setConfigProperty(String property, String value);
 
     /**
      * Sets portalCooldown.
@@ -133,4 +133,16 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @return enforceAccess.
      */
     boolean getEnforceAccess();
+
+    /**
+     * Sets useasyncchat.
+     * @param useAsyncChat The new value.
+     */
+    void setUseAsyncChat(boolean useAsyncChat);
+
+    /**
+     * Gets useasyncchat.
+     * @return useasyncchat.
+     */
+    boolean getUseAsyncChat();
 }

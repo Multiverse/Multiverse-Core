@@ -202,3 +202,12 @@ commands:
     description: Regenerates a world Multiverse already knows about.
     usage: |
             /<command> {WORLD}
+  mvscript:
+    description: Runs a script from the Multiverse scripts directory.
+    usage: |
+            /<command> {script} [target]
+  mvclone:
+    description: World clone command
+    usage: |
+            /<command> <world> <environment>
+            /<command> creative grieftastic -- Creates a world called 'grieftastic' exactly identical to the world 'creative'.

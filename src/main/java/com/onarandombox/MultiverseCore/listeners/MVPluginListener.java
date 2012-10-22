@@ -16,7 +16,6 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 
 import java.util.Arrays;
-import java.util.logging.Level;
 
 /**
  * Multiverse's Plugin {@link Listener}.
@@ -35,11 +34,16 @@ public class MVPluginListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void pluginEnable(PluginEnableEvent event) {
+        if (plugin.getVaultEconomy() != null) {
+            // Don't hook 2 economy plugins.
+            return;
+        }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
         if (Arrays.asList(AllPay.getValidEconPlugins()).contains(event.getPlugin().getDescription().getName())) {
             this.plugin.setBank(this.plugin.getBanker().loadEconPlugin());
         }
 
+        /*
         if (event.getPlugin().getDescription().getName().equals("Spout")) {
             this.plugin.setSpout();
             this.plugin.log(Level.INFO, "Spout integration enabled.");
@@ -49,6 +53,7 @@ public class MVPluginListener implements Listener {
             this.plugin.setDynmap();
             this.plugin.log(Level.INFO, "Dynmap integration enabled.");
         }
+        */
     }
 
     /**

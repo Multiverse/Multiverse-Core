@@ -7,11 +7,19 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import buscript.Buscript;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
-import com.onarandombox.MultiverseCore.utils.*;
+import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
+import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
+import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
+import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -35,8 +43,17 @@ public interface Core {
      * Gets the Banking system that Multiverse-Core has hooked into.
      *
      * @return A {@link GenericBank} that can be used for payments.
+     * @deprecated Now using vault, see {@link #getVaultEconomy}
      */
+    @Deprecated
     GenericBank getBank();
+
+    /**
+     * Returns the Vault economy system if Vault is present and has an economy system enabled.
+     *
+     * @return The vault economy system or null if not configured.
+     */
+    Economy getVaultEconomy();
 
     /**
      * Reloads the Multiverse Configuration files:
@@ -128,21 +145,28 @@ public interface Core {
      * @param seed The seed of the world.
      *
      * @return True if success, false if fail.
+     *
+     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String)} instead.
      */
+    @Deprecated
     Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
 
     /**
      * Sets the {@link GenericBank}-Bank AllPay is using.
      *
      * @param bank The new {@link GenericBank}
+     * @deprecated Now using vault, see {@link #getVaultEconomy}
      */
+    @Deprecated
     void setBank(GenericBank bank);
 
     /**
      * Gets this plugin's {@link AllPay}-Banker.
      *
      * @return An {@link AllPay}-Banker
+     * @deprecated Now using vault, see {@link #getVaultEconomy}
      */
+    @Deprecated
     AllPay getBanker();
 
     /**
@@ -222,4 +246,11 @@ public interface Core {
      * @return The configuration.
      */
     MultiverseCoreConfig getMVConfig();
+
+    /**
+     * Gets the buscript object for Multiverse.  This is what handles Javascript processing.
+     *
+     * @return The Multiverse buscript object.
+     */
+    Buscript getScriptAPI();
 }

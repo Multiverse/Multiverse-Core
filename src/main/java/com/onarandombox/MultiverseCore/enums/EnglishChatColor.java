@@ -11,49 +11,33 @@ import org.bukkit.ChatColor;
 
 /**
  * A regular {@link ChatColor} represented by an english string.
+ * @see ChatColor
  */
 public enum EnglishChatColor {
-    /*
-     * I know. this is quite ugly.
-     */
-    /** AQUA. */
-    AQUA("AQUA", ChatColor.AQUA),
-    /** BLACK. */
-    BLACK("BLACK", ChatColor.BLACK),
-    /** BLUE. */
-    BLUE("BLUE", ChatColor.BLUE),
-    /** DARKAQUA. */
-    DARKAQUA("DARKAQUA", ChatColor.DARK_AQUA),
-    /** DARKBLUE. */
-    DARKBLUE("DARKBLUE", ChatColor.DARK_BLUE),
-    /** DARKGRAY. */
-    DARKGRAY("DARKGRAY", ChatColor.DARK_GRAY),
-    /** DARKGREEN. */
-    DARKGREEN("DARKGREEN", ChatColor.DARK_GREEN),
-    /** DARKPURPLE. */
-    DARKPURPLE("DARKPURPLE", ChatColor.DARK_PURPLE),
-    /** DARKRED. */
-    DARKRED("DARKRED", ChatColor.DARK_RED),
-    /** GOLD. */
-    GOLD("GOLD", ChatColor.GOLD),
-    /** GRAY. */
-    GRAY("GRAY", ChatColor.GRAY),
-    /** GREEN. */
-    GREEN("GREEN", ChatColor.GREEN),
-    /** LIGHTPURPLE. */
-    LIGHTPURPLE("LIGHTPURPLE", ChatColor.LIGHT_PURPLE),
-    /** RED. */
-    RED("RED", ChatColor.RED),
-    /** YELLOW. */
-    YELLOW("YELLOW", ChatColor.YELLOW),
-    /** WHITE. */
-    WHITE("WHITE", ChatColor.WHITE);
-    private ChatColor color;
-    private String text;
+    // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
+    AQUA(ChatColor.AQUA),
+    BLACK(ChatColor.BLACK),
+    BLUE(ChatColor.BLUE),
+    DARKAQUA(ChatColor.DARK_AQUA),
+    DARKBLUE(ChatColor.DARK_BLUE),
+    DARKGRAY(ChatColor.DARK_GRAY),
+    DARKGREEN(ChatColor.DARK_GREEN),
+    DARKPURPLE(ChatColor.DARK_PURPLE),
+    DARKRED(ChatColor.DARK_RED),
+    GOLD(ChatColor.GOLD),
+    GRAY(ChatColor.GRAY),
+    GREEN(ChatColor.GREEN),
+    LIGHTPURPLE(ChatColor.LIGHT_PURPLE),
+    RED(ChatColor.RED),
+    YELLOW(ChatColor.YELLOW),
+    WHITE(ChatColor.WHITE);
+    // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
-    EnglishChatColor(String name, ChatColor color) {
+    private final ChatColor color;
+    //private final String text;
+
+    EnglishChatColor(ChatColor color) {
         this.color = color;
-        this.text = name;
     }
 
     /**
@@ -61,7 +45,7 @@ public enum EnglishChatColor {
      * @return The text.
      */
     public String getText() {
-        return this.text;
+        return this.name();
     }
 
     /**
@@ -92,11 +76,20 @@ public enum EnglishChatColor {
     public static EnglishChatColor fromString(String text) {
         if (text != null) {
             for (EnglishChatColor c : EnglishChatColor.values()) {
-                if (text.equalsIgnoreCase(c.text)) {
+                if (text.equalsIgnoreCase(c.name())) {
                     return c;
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * Looks if the given-color name is a valid color.
+     * @param aliasColor A color-name.
+     * @return True if the name is a valid color, false if it isn't.
+     */
+    public static boolean isValidAliasColor(String aliasColor) {
+        return (EnglishChatColor.fromString(aliasColor) != null);
     }
 }

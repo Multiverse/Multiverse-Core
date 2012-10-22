@@ -102,22 +102,24 @@ public class ModifySetCommand extends MultiverseCommand {
             return;
         }
 
-        if ((property.equalsIgnoreCase("aliascolor") || property.equalsIgnoreCase("color")) && !world.isValidAliasColor(value)) {
+        if ((property.equalsIgnoreCase("aliascolor") || property.equalsIgnoreCase("color")) && !EnglishChatColor.isValidAliasColor(value)) {
             sender.sendMessage(value + " is not a valid color. Please pick one of the following:");
             sender.sendMessage(EnglishChatColor.getAllColors());
             return;
         }
         try {
-            if (world.setProperty(property, value, sender)) {
+            if (world.setPropertyValue(property, value)) {
                 sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property
                         + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
+                if (!plugin.saveWorldConfig()) {
+                    sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+                }
             } else {
-                sender.sendMessage(world.getProperty(property, Object.class).getHelp());
+                sender.sendMessage(ChatColor.RED + world.getPropertyHelp(property));
             }
         } catch (PropertyDoesNotExistException e) {
             sender.sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + property + ChatColor.RED + "'");
-            // TODO: Display the list
-            sender.sendMessage(ChatColor.GOLD + "For a full list of thingys, see our wiki.");
+            sender.sendMessage("Valid world-properties: " + world.getAllPropertyNames());
         }
     }
 }

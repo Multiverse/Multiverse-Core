@@ -51,7 +51,7 @@ public class ConfigCommand extends MultiverseCommand {
             sender.sendMessage(message);
             return;
         }
-        if (!this.plugin.getMVConfig().setProperty(args.get(0).toLowerCase(), args.get(1))) {
+        if (!this.plugin.getMVConfig().setConfigProperty(args.get(0).toLowerCase(), args.get(1))) {
             sender.sendMessage(String.format("%sSetting '%s' to '%s' failed!", ChatColor.RED, args.get(0).toLowerCase(), args.get(1)));
             return;
         }

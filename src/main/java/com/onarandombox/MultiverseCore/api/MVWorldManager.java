@@ -61,6 +61,16 @@ public interface MVWorldManager {
                      String generator, boolean useSpawnAdjust);
 
     /**
+     * Make a copy of a world.
+     *
+     * @param oldName            Name of world to be copied
+     * @param newName            Name of world to be created
+     * @param generator          The Custom generator plugin to use.
+     * @return True if the world is copied successfully, false if not.
+     */
+    boolean cloneWorld(String oldName, String newName, String generator);
+
+    /**
      * Remove the world from the Multiverse list, from the
      * config and deletes the folder.
      *
@@ -245,4 +255,16 @@ public interface MVWorldManager {
      * @return The {@link MultiverseWorld} new players should spawn in.
      */
     MultiverseWorld getFirstSpawnWorld();
+
+    /**
+     * Regenerates a world.
+     *
+     * @param name Name of the world to regenerate
+     * @param useNewSeed If a new seed should be used
+     * @param randomSeed IF the new seed should be random
+     * @param seed The seed of the world.
+     *
+     * @return True if success, false if fail.
+     */
+    boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
 }

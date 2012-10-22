@@ -1,11 +1,12 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.Map;
-
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
-
+import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
+
+import java.util.Map;
 
 /**
  * Our configuration.
@@ -22,6 +23,13 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     }
 
     /**
+     * @return True if the static instance of config is set.
+     */
+    public static boolean isSet() {
+        return instance != null;
+    }
+
+    /**
      * Gets the statically saved instance.
      * @return The statically saved instance.
      */
@@ -32,25 +40,27 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     }
 
     @Property
-    private boolean enforceaccess;
+    private volatile boolean enforceaccess;
     @Property
-    private boolean prefixchat;
+    private volatile boolean prefixchat;
     @Property
-    private boolean teleportintercept;
+    private volatile boolean useasyncchat;
     @Property
-    private boolean firstspawnoverride;
+    private volatile boolean teleportintercept;
     @Property
-    private boolean displaypermerrors;
+    private volatile boolean firstspawnoverride;
     @Property
-    private int globaldebug;
+    private volatile boolean displaypermerrors;
     @Property
-    private int messagecooldown;
+    private volatile int globaldebug;
     @Property
-    private double version;
+    private volatile int messagecooldown;
     @Property
-    private String firstspawnworld;
+    private volatile double version;
     @Property
-    private int teleportcooldown;
+    private volatile String firstspawnworld;
+    @Property
+    private volatile int teleportcooldown;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -66,9 +76,10 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
-    public void setDefaults() {
+    protected void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
+        useasyncchat = true;
         prefixchat = true;
         teleportintercept = true;
         firstspawnoverride = true;
@@ -78,6 +89,18 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         teleportcooldown = 1000;
         this.version = 2.9;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setConfigProperty(String property, String value) {
+        try {
+            return this.setProperty(property, value, true);
+        } catch (NoSuchPropertyException e) {
+            return false;
+        }
     }
 
     // And here we go:
@@ -176,6 +199,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setGlobalDebug(int globalDebug) {
         this.globaldebug = globalDebug;
+        Logging.setDebugLevel(globalDebug);
     }
 
     /**
@@ -240,5 +264,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setTeleportCooldown(int teleportCooldown) {
         this.teleportcooldown = teleportCooldown;
+    }
+
+    @Override
+    public void setUseAsyncChat(boolean useAsyncChat) {
+        this.useasyncchat = useAsyncChat;
+    }
+
+    @Override
+    public boolean getUseAsyncChat() {
+        return this.useasyncchat;
     }
 }

@@ -81,9 +81,13 @@ public class ModifyAddCommand extends MultiverseCommand {
             return;
         }
 
+        // TODO fix this
         if (world.addToVariable(property, value)) {
             sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA
                     + value + ChatColor.WHITE + " was " + ChatColor.GREEN + "added to " + ChatColor.GREEN + property);
+            if (!plugin.saveWorldConfig()) {
+                sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+            }
         } else {
             sender.sendMessage(value + " could not be added to " + property);
         }

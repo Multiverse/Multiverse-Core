@@ -53,8 +53,8 @@ public class EnvironmentCommand extends MultiverseCommand {
      */
     public static void showWorldTypes(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid World Types are:");
-        sender.sendMessage(String.format("%sNORMAL%,s %sFLAT %sor %sVERSION_1_1",
-                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, ChatColor.GOLD));
+        sender.sendMessage(String.format("%sNORMAL%s, %sFLAT, %sLARGEBIOMES %sor %sVERSION_1_1",
+                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, ChatColor.RED, ChatColor.WHITE, ChatColor.GOLD));
     }
 
     @Override
@@ -75,6 +75,9 @@ public class EnvironmentCommand extends MultiverseCommand {
             type = "NORMAL";
         if (type.equalsIgnoreCase("flat"))
             type = "FLAT";
+        if (type.equalsIgnoreCase("largebiomes")) {
+            type = "LARGE_BIOMES";
+        }
         try {
             // Now that we've converted a potentially unfriendly value
             // to a friendly one, get it from the ENUM!

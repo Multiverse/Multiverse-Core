@@ -7,10 +7,14 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -21,10 +25,10 @@ import java.util.logging.Logger;
 /**
  * The Multiverse debug-logger.
  */
-public class DebugLog {
-
+public class DebugLog extends Logger {
     private FileHandler fh;
-    private Logger log;
+    private Logger standardLog = null;
+    private String prefix = "[MVCore-Debug] ";
 
     /**
      * Creates a new debug logger.
@@ -33,16 +37,16 @@ public class DebugLog {
      * @param file   The file to log to.
      */
     public DebugLog(String logger, String file) {
-        this.log = Logger.getLogger(logger);
-
+        super(logger, null);
         try {
             this.fh = new FileHandler(file, true);
-            this.log.setUseParentHandlers(false);
-            for (Handler handler : this.log.getHandlers()) {
-                this.log.removeHandler(handler);
+            this.setUseParentHandlers(false);
+            List<Handler> toRemove = Arrays.asList(this.getHandlers());
+            for (Handler handler : toRemove) {
+                this.removeHandler(handler);
             }
-            this.log.addHandler(this.fh);
-            this.log.setLevel(Level.ALL);
+            this.addHandler(this.fh);
+            this.setLevel(Level.ALL);
             this.fh.setFormatter(new LogFormatter());
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -52,13 +56,38 @@ public class DebugLog {
     }
 
     /**
+     * Sets the log-tag.
+     * @param tag The new tag.
+     */
+    public void setTag(String tag) {
+        this.prefix = tag + " ";
+    }
+
+    /**
+     * Specifies the logger to use to send debug messages to as the debug logger itself only sends messages to a file.
+     *
+     * @param logger Logger to send debug messages to.
+     */
+    public void setStandardLogger(Logger logger) {
+        this.standardLog = logger;
+    }
+
+    /**
      * Log a message at a certain level.
      *
      * @param level The log-{@link Level}.
      * @param msg the message.
      */
-    public void log(Level level, String msg) {
-        this.log.log(level, msg);
+    @Override
+    public void log(final Level level, final String msg) {
+        if (MultiverseCoreConfiguration.isSet() && MultiverseCoreConfiguration.getInstance().getGlobalDebug() > 0) {
+            // only redirect to standardLog if it's lower than INFO so we don't log that twice!
+            if ((level.intValue() < Level.INFO.intValue()) && (standardLog != null)) {
+                standardLog.log(Level.INFO, prefix + msg);
+            }
+
+            super.log(level, prefix + msg);
+        }
     }
 
     /**

@@ -75,10 +75,14 @@ public class ModifyClearCommand extends MultiverseCommand {
             sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/cgB2B");
             return;
         }
+        // TODO fix this
         if (world.clearList(property)) {
             sender.sendMessage(property + " was cleared. It contains 0 values now.");
             sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + property + ChatColor.WHITE + " was "
                     + ChatColor.GREEN + "CLEARED" + ChatColor.WHITE + ". It contains " + ChatColor.LIGHT_PURPLE + "0" + ChatColor.WHITE + " values now.");
+            if (!plugin.saveWorldConfig()) {
+                sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+            }
         } else {
             sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.GOLD + property
                     + ChatColor.WHITE + " was " + ChatColor.GOLD + "NOT" + ChatColor.WHITE + " cleared.");

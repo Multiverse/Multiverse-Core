@@ -169,6 +169,35 @@ public class TestWorldStuff {
     }
 
     @Test
+    public void testWorldCreateInvalidGenerator() {
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null
+        assertNotNull(plugin);
+
+        // Make sure Core is enabled
+        assertTrue(plugin.isEnabled());
+
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
+
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Create the world
+        String[] normalArgs = new String[]{ "create", "newworld", "normal", "-g", "BogusGen"};
+        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+
+        // This command should halt, not creating any worlds
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Verify
+        verify(mockCommandSender).sendMessage("Invalid generator! 'BogusGen'. " + ChatColor.RED + "Aborting world creation.");
+    }
+
+    @Test
     public void testNullWorld() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
@@ -235,13 +264,13 @@ public class TestWorldStuff {
         // Now fail one.
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "mode", "fish", "world" });
         try {
-            verify(mockCommandSender).sendMessage(mainWorld.getProperty("mode", Object.class).getHelp());
+            verify(mockCommandSender).sendMessage(ChatColor.RED + mainWorld.getPropertyHelp("mode"));
         } catch (PropertyDoesNotExistException e) {
             fail("Mode property did not exist.");
         }
 
         plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "blah", "fish", "world" });
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '"+ChatColor.GRAY+ "blah" + ChatColor.RED + "'");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'");
     }
 
     private void createInitialWorlds(Plugin plugin, Command command) {
