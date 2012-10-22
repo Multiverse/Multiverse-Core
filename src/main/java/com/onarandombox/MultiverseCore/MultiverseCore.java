@@ -124,7 +124,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
 
     private AnchorManager anchorManager = new AnchorManager(this);
-    private MultiverseCoreConfiguration config;
     private DynmapConnector dynmapConnecter;
     private volatile MultiverseCoreConfiguration config;
 
@@ -1328,6 +1327,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
     public void setDynmap() {
         this.dynmapConnecter = new DynmapConnector(this.getServer().getPluginManager().getPlugin("dynmap"), this);
+    }
 
     @Override
     public Buscript getScriptAPI() {

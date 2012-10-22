@@ -286,15 +286,15 @@
         <!-- Start DynMap Dependency -->
         <dependency>
             <groupId>org.dynmap</groupId>
-            <artifactId>DynmapCore</artifactId>
-            <version>0.34.1</version>
+            <artifactId>DynmapCoreAPI</artifactId>
+            <version>1.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.dynmap</groupId>
             <artifactId>dynmap</artifactId>
-            <version>0.34.1</version>
+            <version>1.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
