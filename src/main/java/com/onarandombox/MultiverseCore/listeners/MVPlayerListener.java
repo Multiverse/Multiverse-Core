@@ -9,8 +9,10 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.Location;
@@ -64,31 +66,16 @@ public class MVPlayerListener implements Listener {
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
-        if (mvWorld == null) {
+        if (mvWorld == null)
             return;
-        }
 
+        MVDestination redest = mvWorld.getRespawnDestination();
+        if (!(redest instanceof InvalidDestination))
+            event.setRespawnLocation(redest.getLocation(event.getPlayer()));
+        else
+            event.setRespawnLocation(world.getSpawnLocation());
 
-        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-            this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
-            return;
-        }
-
-        // Get the instance of the World the player should respawn at.
-        MultiverseWorld respawnWorld = null;
-        if (this.worldManager.isMVWorld(mvWorld.getRespawnToWorld())) {
-            respawnWorld = this.worldManager.getMVWorld(mvWorld.getRespawnToWorld());
-        }
-
-        // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
-        // NOW: We'll always handle it to get more accurate spawns
-        if (respawnWorld != null) {
-            world = respawnWorld.getCBWorld();
-        }
-        // World has been set to the appropriate world
-        Location respawnLocation = getMostAccurateRespawnLocation(world);
-
-        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
+        MVRespawnEvent respawnEvent = new MVRespawnEvent(event.getRespawnLocation(), event.getPlayer(), "compatability");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
     }

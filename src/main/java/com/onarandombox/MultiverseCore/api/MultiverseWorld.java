@@ -530,7 +530,9 @@ public interface MultiverseWorld {
      * Gets the world players will respawn in if they die in this one.
      *
      * @return A world that exists on the server.
+     * @deprecated This is now deprecated. Use {@link #getRespawnDestination()} instead.
      */
+    @Deprecated
     World getRespawnToWorld();
 
     /**
@@ -539,7 +541,9 @@ public interface MultiverseWorld {
      *
      * @param respawnWorld The name of a world that exists on the server.
      * @return True if respawnWorld existed, false if not.
+     * @deprecated This is now deprecated. Use {@link #setRespawnDestination(MVDestination)} instead.
      */
+    @Deprecated
     boolean setRespawnToWorld(String respawnWorld);
 
     /**
@@ -608,7 +612,9 @@ public interface MultiverseWorld {
      * bed or follow the normal respawn pattern.
      *
      * @return True if players dying in this world should respawn at their bed.
+     * @deprecated This is now deprecated. Use {@link #getRespawnDestination()} instead.
      */
+    @Deprecated
     boolean getBedRespawn();
 
     /**
@@ -618,7 +624,9 @@ public interface MultiverseWorld {
      * True is default.
      *
      * @param autoLoad True if players dying in this world respawn at their bed.
+     * @deprecated This is now deprecated. Use {@link #setRespawnDestination(MVDestination)} instead.
      */
+    @Deprecated
     void setBedRespawn(boolean autoLoad);
 
     /**
@@ -653,6 +661,19 @@ public interface MultiverseWorld {
      * @return The type of portals that are allowed.
      */
     AllowedPortalType getAllowedPortals();
+
+    /**
+     * Gets the {@link MVDestination} where players are sent if they die and respawn in this world.
+     * @return The respawn destination.
+     */
+    MVDestination getRespawnDestination();
+
+    /**
+     * Sets the {@link MVDestination} where players are sent if they die and respawn in this world.
+     * @param dest The new respawn destination.
+     * @return True if the destination was set, false if not.
+     */
+    boolean setRespawnDestination(MVDestination dest);
 
     // properties that are not "getter+setter" style
     /**

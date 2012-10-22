@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
  * A bed-{@link MVDestination}.
  */
 public class BedDestination implements MVDestination {
+    public static final String STRING = "b:playerbed";
 
     private boolean isValid;
     private Location knownBedLoc;
@@ -120,6 +121,6 @@ public class BedDestination implements MVDestination {
 
     @Override
     public String toString() {
-        return "b:playerbed";
+        return STRING;
     }
 }

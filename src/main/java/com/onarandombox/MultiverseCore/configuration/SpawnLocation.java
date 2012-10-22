@@ -82,6 +82,24 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
         return serialized;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Location other = (Location) obj;
+
+        return /* (this.getWorld() == other.getWorld() || (this.getWorld() != null && this.getWorld().equals(other.getWorld())))
+                && */ (Double.doubleToLongBits(this.getX()) == Double.doubleToLongBits(other.getX()))
+                && (Double.doubleToLongBits(this.getY()) == Double.doubleToLongBits(other.getY()))
+                && (Double.doubleToLongBits(this.getZ()) == Double.doubleToLongBits(other.getZ()))
+                && (Float.floatToIntBits(this.getPitch()) == Float.floatToIntBits(other.getPitch()))
+                && (Float.floatToIntBits(this.getYaw()) == Float.floatToIntBits(other.getYaw()));
+    }
+
     /**
      * Let Bukkit be able to deserialize this.
      * @param args The map.

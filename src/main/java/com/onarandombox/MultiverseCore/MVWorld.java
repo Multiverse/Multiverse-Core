@@ -8,12 +8,18 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MVStaticDestination;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.configuration.DestinationSerializor;
 import com.onarandombox.MultiverseCore.configuration.EntryFee;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
+import com.onarandombox.MultiverseCore.destination.BedDestination;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
+import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.enums.EnglishChatStyle;
@@ -104,19 +110,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
                 plugin.log(Level.FINE, "Someone tried to set a scale <= 0, aborting!");
                 throw new ChangeDeniedException();
             }
-            return super.validateChange(property, newValue, oldValue, object);
-        }
-    }
-
-    /**
-     * Validates the respawnWorld-property.
-     */
-    private final class RespawnWorldPropertyValidator extends WorldPropertyValidator<String> {
-        @Override
-        public String validateChange(String property, String newValue, String oldValue,
-                MVWorld object) throws ChangeDeniedException {
-            if (!plugin.getMVWorldManager().isMVWorld(newValue))
-                throw new ChangeDeniedException();
             return super.validateChange(property, newValue, oldValue, object);
         }
     }
@@ -383,8 +376,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     };
     @Property(validator = ScalePropertyValidator.class, description = "Scale must be a positive double value. ex: 2.3")
     private volatile double scale;
-    @Property(validator = RespawnWorldPropertyValidator.class, description = "You must set this to the NAME not alias of a world.")
-    private volatile String respawnWorld;
     @Property(validator = AllowWeatherPropertyValidator.class, description = "Sorry, this must either be: true or false.")
     private volatile boolean allowWeather;
     @Property(serializor = DifficultyPropertySerializor.class, virtualType = Difficulty.class, persistVirtual = true,
@@ -448,10 +439,10 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
             return spawnLocation;
         }
     };
+    @Property(serializor = DestinationSerializor.class)
+    private volatile MVDestination respawnDestination;
     @Property(description = "Set this to false ONLY if you don't want this world to load itself on server restart.")
     private volatile boolean autoLoad;
-    @Property(description = "If a player dies in this world, shoudld they go to their bed?")
-    private volatile boolean bedRespawn;
     @Property
     private volatile List<String> worldBlacklist;
     @Property(serializor = TimePropertySerializor.class, virtualType = Long.class,
@@ -650,7 +641,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.color = EnglishChatColor.WHITE;
         this.style = EnglishChatStyle.NORMAL;
         this.scale = getDefaultScale(environment);
-        this.respawnWorld = new String();
         this.allowWeather = true;
         this.spawning = new SpawnSettings();
         this.entryfee = new EntryFee();
@@ -661,9 +651,9 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.gameMode = GameMode.SURVIVAL;
         this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
         this.autoLoad = true;
-        this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
         this.generator = null;
+        this.respawnDestination = new InvalidDestination();
     }
 
     /**
@@ -1108,7 +1098,11 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public World getRespawnToWorld() {
-        return this.plugin.getServer().getWorld(respawnWorld);
+        if (this.getRespawnDestination() instanceof MVStaticDestination)
+            return ((MVStaticDestination)this.getRespawnDestination()).getLocation().getWorld();
+        else if (this.getRespawnDestination() instanceof WorldDestination)
+            return ((WorldDestination)this.getRespawnDestination()).getWorld().getCBWorld();
+        else throw new UnsupportedOperationException("The current respawnDestination doesn't support this!");
     }
 
     /**
@@ -1116,8 +1110,10 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public boolean setRespawnToWorld(String respawnToWorld) {
-        if (!this.plugin.getMVWorldManager().isMVWorld(respawnToWorld)) return false;
-        return this.setPropertyValueUnchecked("respawnWorld", respawnToWorld);
+        MultiverseWorld mvworld;
+        if ((mvworld = this.plugin.getMVWorldManager().getMVWorld(respawnToWorld)) == null)
+            return false;
+        return this.setRespawnDestination(new WorldDestination(mvworld));
     }
 
     /**
@@ -1330,7 +1326,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public void setBedRespawn(boolean respawn) {
-        this.setPropertyValueUnchecked("bedRespawn", respawn);
+        this.setRespawnDestination(respawn ? this.plugin.getDestFactory().getDestination(BedDestination.STRING) : new InvalidDestination());
     }
 
     /**
@@ -1338,7 +1334,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public boolean getBedRespawn() {
-        return this.bedRespawn;
+        return this.getRespawnDestination() instanceof BedDestination;
     }
 
     /**
@@ -1402,6 +1398,22 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     @Override
     public boolean setStyle(String style) {
         return this.setPropertyUnchecked("style", style);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MVDestination getRespawnDestination() {
+        return this.respawnDestination;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setRespawnDestination(MVDestination dest) {
+        return this.setPropertyValueUnchecked("respawnDestination", dest);
     }
 
     @Override

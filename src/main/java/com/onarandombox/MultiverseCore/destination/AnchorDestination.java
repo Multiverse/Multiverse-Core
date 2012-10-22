@@ -9,6 +9,8 @@ package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MVStaticDestination;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * An anchor-{@link MVDestination}.
  */
-public class AnchorDestination implements MVDestination {
+public class AnchorDestination implements MVStaticDestination {
     private boolean isValid;
     private Location location;
     private MultiverseCore plugin;
@@ -64,8 +66,16 @@ public class AnchorDestination implements MVDestination {
      * {@inheritDoc}
      */
     @Override
-    public Location getLocation(Entity e) {
+    public Location getLocation() {
         return this.location;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Location getLocation(Entity e) {
+        return this.getLocation();
     }
 
     /**
