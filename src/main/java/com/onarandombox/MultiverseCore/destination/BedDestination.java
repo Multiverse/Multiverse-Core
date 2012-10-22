@@ -7,7 +7,9 @@
 
 package com.onarandombox.MultiverseCore.destination;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,6 +23,7 @@ public class BedDestination implements MVDestination {
 
     private boolean isValid;
     private Location knownBedLoc;
+    private MultiverseCore plugin;
 
     /**
      * {@inheritDoc}
@@ -46,7 +49,10 @@ public class BedDestination implements MVDestination {
     @Override
     public Location getLocation(Entity entity) {
         if (entity instanceof Player) {
-            this.knownBedLoc = ((Player) entity).getBedSpawnLocation();
+            this.knownBedLoc = this.plugin.getBlockSafety().getSafeBedSpawn(((Player) entity).getBedSpawnLocation());
+            if (this.knownBedLoc == null) {
+                ((Player) entity).sendMessage("Your bed was " + ChatColor.RED + "invalid or blocked" + ChatColor.RESET + ". Sorry.");
+            }
             return this.knownBedLoc;
         }
         return null;
@@ -65,7 +71,7 @@ public class BedDestination implements MVDestination {
      */
     @Override
     public void setDestination(JavaPlugin plugin, String destination) {
-        // Not needed.
+        this.plugin = (MultiverseCore) plugin;
     }
 
     /**

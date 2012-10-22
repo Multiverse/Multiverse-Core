@@ -76,6 +76,10 @@ public class MVPermissions implements PermissionsInterface {
      * @return Whether the {@link CommandSender} can travel to the specified {@link Location}.
      */
     public boolean canTravelFromLocation(CommandSender sender, Location location) {
+        // Now The Bed destination can return null now.
+        if (location == null) {
+            return false;
+        }
         if (!(sender instanceof Player)) {
             return true;
         }

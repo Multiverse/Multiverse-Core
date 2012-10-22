@@ -36,6 +36,13 @@ public interface BlockSafety {
     boolean playerCanSpawnHereSafely(Location l);
 
     /**
+     * Gets a safe bed spawn location OR null if the bed is invalid.
+     * @param l The location of the bead head (block with the pillow on it).
+     * @return Safe location around the bed or null if no location was found.
+     */
+    Location getSafeBedSpawn(Location l);
+
+    /**
      * Gets the location of the top block at the specified {@link Location}.
      * @param l Any {@link Location}.
      * @return The {@link Location} of the top-block.

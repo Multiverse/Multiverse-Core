@@ -13,14 +13,24 @@ import com.onarandombox.MultiverseCore.api.Core;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.material.Bed;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * The default-implementation of {@link BlockSafety}.
  */
 public class SimpleBlockSafety implements BlockSafety {
     private final Core plugin;
+    private final static Set<BlockFace> AROUND_BLOCK = new HashSet<BlockFace>(){{ add(BlockFace.NORTH); add(BlockFace.NORTH_EAST);
+            add(BlockFace.EAST); add(BlockFace.SOUTH_EAST);
+            add(BlockFace.SOUTH); add(BlockFace.SOUTH_WEST);
+            add(BlockFace.WEST); add(BlockFace.NORTH_WEST); }};
 
     public SimpleBlockSafety(Core plugin) {
         this.plugin = plugin;
@@ -88,6 +98,63 @@ public class SimpleBlockSafety implements BlockSafety {
         }
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Location getSafeBedSpawn(Location l) {
+        // The passed location, may be null (if the bed is invalid)
+        if (l == null) {
+            return null;
+        }
+        final Location trySpawn = this.getSafeSpawnAroundABlock(l);
+        if (trySpawn != null) {
+            return trySpawn;
+        }
+        Location otherBlock = this.findOtherBedPiece(l);
+        if (otherBlock == null) {
+            return null;
+        }
+        // Now we have 2 locations, check around each, if the type is bed, skip it.
+        return this.getSafeSpawnAroundABlock(otherBlock);
+    }
+
+    /**
+     * Find a safe spawn around a location. (N,S,E,W,NE,NW,SE,SW)
+     * @param l Location to check around
+     * @return A safe location, or none if it wasn't found.
+     */
+    private Location getSafeSpawnAroundABlock(Location l) {
+        Iterator<BlockFace> checkblock = AROUND_BLOCK.iterator();
+        while(checkblock.hasNext()) {
+            final BlockFace face = checkblock.next();
+            if (this.playerCanSpawnHereSafely(l.getBlock().getRelative(face).getLocation())) {
+                // Don't forget to center the player.
+                return l.getBlock().getRelative(face).getLocation().add(.5, 0, .5);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find the other bed block.
+     * @param checkLoc The location to check for the other piece at
+     * @return The location of the other bed piece, or null if it was a jacked up bed.
+     */
+    private Location findOtherBedPiece(Location checkLoc) {
+        if (checkLoc.getBlock().getType() != Material.BED_BLOCK) {
+            return null;
+        }
+        // Construct a bed object at this location
+        final Bed b = new Bed(Material.BED_BLOCK, checkLoc.getBlock().getData());
+        if (b.isHeadOfBed()) {
+            return checkLoc.getBlock().getRelative(b.getFacing().getOppositeFace()).getLocation();
+        }
+        // We shouldn't ever be looking at the foot, but here's the code for it.
+        return checkLoc.getBlock().getRelative(b.getFacing()).getLocation();
+    }
+
 
     /**
      * {@inheritDoc}
