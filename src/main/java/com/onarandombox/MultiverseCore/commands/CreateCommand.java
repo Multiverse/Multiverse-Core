@@ -68,7 +68,8 @@ public class CreateCommand extends MultiverseCommand {
         }
 
         if (this.worldManager.isMVWorld(worldName)) {
-            sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD +ChatColor.UNDERLINE + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
+            sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
+                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
             return;
         }
 
