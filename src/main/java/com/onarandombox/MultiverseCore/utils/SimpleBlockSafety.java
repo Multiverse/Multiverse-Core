@@ -18,7 +18,7 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.material.Bed;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -27,11 +27,18 @@ import java.util.Set;
  */
 public class SimpleBlockSafety implements BlockSafety {
     private final Core plugin;
-    private static final Set<BlockFace> AROUND_BLOCK = new HashSet<BlockFace>() { {
-            add(BlockFace.NORTH); add(BlockFace.NORTH_EAST); add(BlockFace.EAST); add(BlockFace.SOUTH_EAST);
-            add(BlockFace.SOUTH); add(BlockFace.SOUTH_WEST); add(BlockFace.WEST); add(BlockFace.NORTH_WEST);
-        }
-    };
+    private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
+
+    static {
+        AROUND_BLOCK.add(BlockFace.NORTH);
+        AROUND_BLOCK.add(BlockFace.NORTH_EAST);
+        AROUND_BLOCK.add(BlockFace.EAST);
+        AROUND_BLOCK.add(BlockFace.SOUTH_EAST);
+        AROUND_BLOCK.add(BlockFace.SOUTH);
+        AROUND_BLOCK.add(BlockFace.SOUTH_WEST);
+        AROUND_BLOCK.add(BlockFace.WEST);
+        AROUND_BLOCK.add(BlockFace.NORTH_WEST);
+    }
 
     public SimpleBlockSafety(Core plugin) {
         this.plugin = plugin;
