@@ -59,15 +59,14 @@ public class SubSpawnSettings extends SerializationConfig {
     public List<String> getExceptions() {
         return exceptions;
     }
-    
+
     /**
-     * 
-     * @param The new spawn rate
+     * @param rate The new spawn rate
      */
     public void setSpawnRate(int rate) {
         this.spawnrate = rate;
     }
-    
+
     /**
      * @return The spawn rate
      */

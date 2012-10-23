@@ -147,7 +147,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
      * @param teleportee The name of the player that was teleported.
      */
     public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
-        Logging.finest( "Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
+        Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
         teleportQueue.put(teleportee, teleporter);
     }
 
@@ -251,6 +251,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
     /**
      * {@inheritDoc}
+     * @deprecated Now using Vault.
      */
     @Override
     @Deprecated
@@ -349,7 +350,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
     private boolean setupVaultEconomy() {
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
             final RegisteredServiceProvider<Economy> economyProvider
-                    = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             if (economyProvider != null) {
                 Logging.fine("Vault economy enabled.");
                 vaultEco = economyProvider.getProvider();
@@ -1045,6 +1046,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
     /**
      * {@inheritDoc}
+     * @deprecated Now using Vault.
      */
     @Override
     @Deprecated
@@ -1054,6 +1056,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
     /**
      * {@inheritDoc}
+     * @deprecated Now using Vault.
      */
     @Override
     @Deprecated

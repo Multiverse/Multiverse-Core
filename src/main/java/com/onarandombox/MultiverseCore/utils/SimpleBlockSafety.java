@@ -27,10 +27,11 @@ import java.util.Set;
  */
 public class SimpleBlockSafety implements BlockSafety {
     private final Core plugin;
-    private final static Set<BlockFace> AROUND_BLOCK = new HashSet<BlockFace>(){{ add(BlockFace.NORTH); add(BlockFace.NORTH_EAST);
-            add(BlockFace.EAST); add(BlockFace.SOUTH_EAST);
-            add(BlockFace.SOUTH); add(BlockFace.SOUTH_WEST);
-            add(BlockFace.WEST); add(BlockFace.NORTH_WEST); }};
+    private static final Set<BlockFace> AROUND_BLOCK = new HashSet<BlockFace>() {{
+            add(BlockFace.NORTH); add(BlockFace.NORTH_EAST); add(BlockFace.EAST); add(BlockFace.SOUTH_EAST);
+            add(BlockFace.SOUTH); add(BlockFace.SOUTH_WEST); add(BlockFace.WEST); add(BlockFace.NORTH_WEST);
+        }
+    };
 
     public SimpleBlockSafety(Core plugin) {
         this.plugin = plugin;

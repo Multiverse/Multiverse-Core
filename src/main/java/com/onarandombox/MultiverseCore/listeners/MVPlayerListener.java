@@ -324,7 +324,7 @@ public class MVPlayerListener implements Listener {
                             Logging.finest("To World: %s", world);
                             player.setGameMode(world.getGameMode());
                         } else {
-                           Logging.fine("The gamemode was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'", player.getName(), player.getWorld().getName(), world.getName());
+                            Logging.fine("The gamemode was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'", player.getName(), player.getWorld().getName(), world.getName());
                         }
                     }
                 }, 1L);

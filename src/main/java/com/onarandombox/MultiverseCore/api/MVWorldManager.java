@@ -89,9 +89,9 @@ public interface MVWorldManager {
      * @return True if success, false if failure.
      */
     boolean deleteWorld(String name, boolean removeConfig);
-    
+
     /**
-     * 
+     *
      * @param name The name of the world to remove
      * @param removeFromConfig If true(default), we'll remove the entries from the
      *                         config. If false, they'll stay and the world may come back.

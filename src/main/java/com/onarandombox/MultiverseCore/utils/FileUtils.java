@@ -44,10 +44,10 @@ public class FileUtils {
             return false;
         }
     }
-    
+
     /**
-     * Used to delete the contents of a folder, without deleting the folder itself
-     * 
+     * Used to delete the contents of a folder, without deleting the folder itself.
+     *
      * @param file The folder whose contents to delete.
      * @return true if the contents were successfully deleted
      */
