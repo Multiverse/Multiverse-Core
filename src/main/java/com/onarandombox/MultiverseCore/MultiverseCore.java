@@ -67,8 +67,11 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
+import com.onarandombox.MultiverseCore.localization.LazyLocaleMessageProvider;
+import com.onarandombox.MultiverseCore.localization.LocalizationLoadingException;
 import com.onarandombox.MultiverseCore.localization.MessageProvider;
 import com.onarandombox.MultiverseCore.localization.MessageProviding;
+import com.onarandombox.MultiverseCore.localization.NoSuchLocalizationException;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
@@ -310,7 +313,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         // Setup & Load our Configuration files.
         loadConfigs();
         try {
-            this.messageProvider.setLocale((this.config.getLocale() == null) ? Locale.getDefault() : this.config.getLocale());
+            Locale l = (this.config.getLocale() == null) ? Locale.getDefault() : this.config.getLocale();
+            if (this.messageProvider instanceof LazyLocaleMessageProvider)
+                ((LazyLocaleMessageProvider)this.messageProvider).loadLocale(l);
+            this.messageProvider.setLocale(l);
+        } catch (NoSuchLocalizationException e) {
+            if (this.config.getLocale() != null)
+                this.log(Level.SEVERE, String.format(
+                        "Multiverse couldn't find any translations for the selected locale '%s'. '%s' will be used instead.",
+                        this.config.getLocale(), this.messageProvider.getLocale()));
+        } catch (LocalizationLoadingException e) {
+            this.log(Level.SEVERE, String.format("Failed to load the selected locale '%s'. '%s' will be used instead.",
+                    this.config.getLocale(), this.messageProvider.getLocale()));
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
             this.log(Level.SEVERE, e.getMessage());
             this.getServer().getPluginManager().disablePlugin(this);
