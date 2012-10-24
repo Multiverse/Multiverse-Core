@@ -24,7 +24,9 @@ import java.util.logging.Logger;
 
 /**
  * The Multiverse debug-logger.
+ * @deprecated Deprecated in favor of new Logging lib.  See {@link com.dumptruckman.minecraft.util.Logging}.
  */
+@Deprecated
 public class DebugLog extends Logger {
     private FileHandler fh;
     private Logger standardLog = null;

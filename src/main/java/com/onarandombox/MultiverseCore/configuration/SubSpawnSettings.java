@@ -17,6 +17,8 @@ public class SubSpawnSettings extends SerializationConfig {
     @Property
     private boolean spawn;
     @Property
+    private int spawnrate;
+    @Property
     private List<String> exceptions;
 
     public SubSpawnSettings() {
@@ -34,6 +36,7 @@ public class SubSpawnSettings extends SerializationConfig {
     public void setDefaults() {
         spawn = true;
         exceptions = new ArrayList<String>();
+        spawnrate = -1;
     }
 
     /**
@@ -51,9 +54,23 @@ public class SubSpawnSettings extends SerializationConfig {
     }
 
     /**
-     * @return the exceptions
+     * @return The exceptions
      */
     public List<String> getExceptions() {
         return exceptions;
+    }
+
+    /**
+     * @param rate The new spawn rate
+     */
+    public void setSpawnRate(int rate) {
+        this.spawnrate = rate;
+    }
+
+    /**
+     * @return The spawn rate
+     */
+    public int getSpawnRate() {
+        return this.spawnrate;
     }
 }

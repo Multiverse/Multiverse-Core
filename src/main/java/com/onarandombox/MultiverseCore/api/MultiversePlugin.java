@@ -50,7 +50,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
         }
         this.setCore(theCore);
 
-        // Turn on Logging
         this.getServer().getLogger().info(String.format("%s - Version %s enabled - By %s",
                 this.getDescription().getName(), this.getDescription().getVersion(), getAuthors()));
         getDataFolder().mkdirs();
@@ -60,7 +59,7 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        debugLog = new DebugLog("Multiverse-Adventure", getDataFolder() + File.separator + "debug.log");
+        debugLog = new DebugLog(this.getDescription().getName(), getDataFolder() + File.separator + "debug.log");
         debugLog.setTag(String.format("[%s-Debug]", this.getDescription().getName()));
 
         this.onPluginEnable();

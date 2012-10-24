@@ -34,6 +34,10 @@ public class MVPluginListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void pluginEnable(PluginEnableEvent event) {
+        if (plugin.getVaultEconomy() != null) {
+            // Don't hook 2 economy plugins.
+            return;
+        }
         // Let AllPay handle all econ plugin loadings, only go for econ plugins we support
         if (Arrays.asList(AllPay.getValidEconPlugins()).contains(event.getPlugin().getDescription().getName())) {
             this.plugin.setBank(this.plugin.getBanker().loadEconPlugin());

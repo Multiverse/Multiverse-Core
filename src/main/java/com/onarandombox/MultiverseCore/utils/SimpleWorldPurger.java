@@ -18,6 +18,7 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Golem;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
@@ -104,7 +105,7 @@ public class SimpleWorldPurger implements WorldPurger {
             boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
         boolean negate = false;
         boolean specified = false;
-        if (e instanceof Squid || e instanceof Animals) {
+        if (e instanceof Golem || e instanceof Squid || e instanceof Animals) {
             // it's an animal
             if (specifiedAnimals && !negateAnimals) {
                 this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all animals: " + e);

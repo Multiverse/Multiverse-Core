@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.configuration.LocaleSerializor;
 
@@ -202,6 +203,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setGlobalDebug(int globalDebug) {
         this.globaldebug = globalDebug;
+        Logging.setDebugLevel(globalDebug);
     }
 
     /**

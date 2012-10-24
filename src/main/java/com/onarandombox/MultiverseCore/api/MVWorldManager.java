@@ -91,6 +91,17 @@ public interface MVWorldManager {
     boolean deleteWorld(String name, boolean removeConfig);
 
     /**
+     *
+     * @param name The name of the world to remove
+     * @param removeFromConfig If true(default), we'll remove the entries from the
+     *                         config. If false, they'll stay and the world may come back.
+     * @param deleteWorldFolder If true the world folder will be completely deleted. If false
+     *                          only the contents of the world folder will be deleted
+     * @return True if success, false if failure.
+     */
+    boolean deleteWorld(String name, boolean removeFromConfig, boolean deleteWorldFolder);
+
+    /**
      * Unload a world from Multiverse.
      *
      * @param name Name of the world to unload

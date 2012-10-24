@@ -168,6 +168,7 @@ public class TestWorldProperties {
 
         // call player chat event
         core.getMVConfig().setPrefixChat(true);
+        com.onarandombox.MultiverseCore.listeners.MVChatListener mvcl = core.getChatListener();
         ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
         core.getMVConfig().setPrefixChat(false);

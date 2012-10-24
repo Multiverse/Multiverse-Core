@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -319,16 +320,13 @@ public class MVPlayerListener implements Listener {
                     public void run() {
                         // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
                         if (player.getWorld() == world.getCBWorld()) {
-                            MultiverseCore.staticLog(Level.FINE, "Handling gamemode for player: "
-                                    + player.getName() + ", Changing to " + world.getGameMode().toString());
-                            MultiverseCore.staticLog(Level.FINEST, "From World: " + player.getWorld());
-                            MultiverseCore.staticLog(Level.FINEST, "To World: " + world);
+                            Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
+                            Logging.finest("From World: %s", player.getWorld());
+                            Logging.finest("To World: %s", world);
                             player.setGameMode(world.getGameMode());
                         } else {
-                            MultiverseCore.staticLog(Level.FINE, "The gamemode was NOT changed for player '"
-                                    + player.getName() + "' because he is now in world '"
-                                    + player.getWorld().getName() + "' instead of world '"
-                                    + world.getName() +"'");
+                            Logging.fine("The gamemode was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'",
+                                    player.getName(), player.getWorld().getName(), world.getName());
                         }
                     }
                 }, 1L);

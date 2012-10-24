@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore;
 
 import buscript.Buscript;
+import com.dumptruckman.minecraft.util.Logging;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
@@ -73,7 +74,6 @@ import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.onarandombox.MultiverseCore.localization.SimpleMessageProvider;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
-import com.onarandombox.MultiverseCore.utils.DebugLog;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
@@ -83,6 +83,8 @@ import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -93,7 +95,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -110,13 +117,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
  */
-public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, MessageProviding {
-    private static final int PROTOCOL = 17;
+public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listener, MessageProviding {
+    private static final int PROTOCOL = 18;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
@@ -147,7 +153,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      * @param teleportee The name of the player that was teleported.
      */
     public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
-        staticLog(Level.FINEST, "Adding mapping '" + teleporter + "' => '" + teleportee + "' to teleport queue");
+        Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
         teleportQueue.put(teleportee, teleporter);
     }
 
@@ -183,10 +189,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
         return MultiverseCore.PROTOCOL;
     }
 
-    // Useless stuff to keep us going.
-    private static final Logger LOGGER = Logger.getLogger("Minecraft");
-    private static DebugLog debugLog;
-
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
 
@@ -210,6 +212,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
+    private Economy vaultEco = null;
     private GenericBank bank = null;
     private AllPay banker;
     private Buscript buscript;
@@ -232,9 +235,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
-        debugLog = new DebugLog("Multiverse-Core", getDataFolder() + File.separator + "debug.log");
-        debugLog.setStandardLogger(LOGGER);
-        SerializationConfig.initLogging(debugLog);
+        Logging.init(this);
+        SerializationConfig.initLogging(Logging.getLogger());
         // Setup our BlockSafety
         this.blockSafety = new SimpleBlockSafety(this);
         // Setup our LocationManipulation
@@ -255,10 +257,20 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
 
     /**
      * {@inheritDoc}
+     * @deprecated Now using Vault.
      */
     @Override
+    @Deprecated
     public GenericBank getBank() {
         return this.bank;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Economy getVaultEconomy() {
+        return vaultEco;
     }
 
     /**
@@ -298,7 +310,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
         // Setup & Load our Configuration files.
         loadConfigs();
         try {
-            this.messageProvider.setLocale(this.config.getLocale());
+            this.messageProvider.setLocale((this.config.getLocale() == null) ? Locale.getDefault() : this.config.getLocale());
         } catch (IllegalArgumentException e) {
             this.log(Level.SEVERE, e.getMessage());
             this.getServer().getPluginManager().disablePlugin(this);
@@ -307,6 +319,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
         if (this.multiverseConfig != null) {
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
+            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
@@ -342,6 +355,43 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
 
         this.initializeBuscript();
         this.setupMetrics();
+        // Listen out for vault.
+        getServer().getPluginManager().registerEvents(this, this);
+        this.setupVaultEconomy();
+    }
+
+    private boolean setupVaultEconomy() {
+        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+            final RegisteredServiceProvider<Economy> economyProvider
+                = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+            if (economyProvider != null) {
+                Logging.fine("Vault economy enabled.");
+                vaultEco = economyProvider.getProvider();
+            } else {
+                Logging.finer("Vault economy not detected.");
+                vaultEco = null;
+            }
+        } else {
+            Logging.finer("Vault was not found.");
+            vaultEco = null;
+        }
+
+        return (vaultEco != null);
+    }
+
+    @EventHandler
+    private void vaultEnabled(PluginEnableEvent event) {
+        if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
+            setupVaultEconomy();
+        }
+    }
+
+    @EventHandler
+    private void vaultDisabled(PluginDisableEvent event) {
+        if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
+            Logging.fine("Vault economy disabled");
+            setupVaultEconomy();
+        }
     }
 
     /**
@@ -819,10 +869,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
     @Override
     public void onDisable() {
         this.saveMVConfigs();
-        debugLog.close();
         this.banker = null;
         this.bank = null;
         log(Level.INFO, "- Disabled");
+        Logging.shutdown();
     }
 
     /**
@@ -883,7 +933,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      */
     @Override
     public void log(Level level, String msg) {
-        staticLog(level, msg);
+        Logging.log(level, msg);
     }
 
     /**
@@ -891,30 +941,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
      *
      * @param level The Log-{@link Level}.
      * @param msg The message to log.
+     *
+     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
+     * messages will appear to originate from Multiverse-Core.
      */
+    @Deprecated
     public static void staticLog(Level level, String msg) {
-        if (level == Level.FINE && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 1) {
-            staticDebugLog(level, msg);
-        } else if (level == Level.FINER && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 2) {
-            staticDebugLog(level, msg);
-        } else if (level == Level.FINEST && MultiverseCoreConfiguration.getInstance().getGlobalDebug() >= 3) {
-            staticDebugLog(level, msg);
-        } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            String message = LOG_TAG + " " + msg;
-            LOGGER.log(level, message);
-            debugLog.log(level, message);
-        }
+        Logging.log(level, msg);
     }
 
     /**
-     * Print messages to the Debug Log, if the servers in Debug Mode then we also wan't to print the messages to the
+     * Print messages to the Debug Log, if the servers in Debug Mode then we also want to print the messages to the
      * standard Server Console.
      *
      * @param level The Log-{@link Level}
      * @param msg   The message
+     *
+     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
+     * messages will appear to originate from Multiverse-Core.
      */
+    @Deprecated
     public static void staticDebugLog(Level level, String msg) {
-        debugLog.log(level, msg);
+        Logging.log(level, msg);
     }
 
     /**
@@ -1008,16 +1056,20 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Messag
 
     /**
      * {@inheritDoc}
+     * @deprecated Now using Vault.
      */
     @Override
+    @Deprecated
     public AllPay getBanker() {
         return this.banker;
     }
 
     /**
      * {@inheritDoc}
+     * @deprecated Now using Vault.
      */
     @Override
+    @Deprecated
     public void setBank(GenericBank bank) {
         this.bank = bank;
     }

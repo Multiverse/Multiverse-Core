@@ -7,23 +7,38 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.material.Bed;
 
-import java.util.logging.Level;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * The default-implementation of {@link BlockSafety}.
  */
 public class SimpleBlockSafety implements BlockSafety {
     private final Core plugin;
+    private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
+
+    static {
+        AROUND_BLOCK.add(BlockFace.NORTH);
+        AROUND_BLOCK.add(BlockFace.NORTH_EAST);
+        AROUND_BLOCK.add(BlockFace.EAST);
+        AROUND_BLOCK.add(BlockFace.SOUTH_EAST);
+        AROUND_BLOCK.add(BlockFace.SOUTH);
+        AROUND_BLOCK.add(BlockFace.SOUTH_WEST);
+        AROUND_BLOCK.add(BlockFace.WEST);
+        AROUND_BLOCK.add(BlockFace.NORTH_WEST);
+    }
 
     public SimpleBlockSafety(Core plugin) {
         this.plugin = plugin;
@@ -67,32 +82,87 @@ public class SimpleBlockSafety implements BlockSafety {
 
         if (isSolidBlock(world.getBlockAt(actual).getType())
                 || isSolidBlock(upOne.getBlock().getType())) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here (Actual)? ("
-                + actual.getBlock().getType() + ")[" + isSolidBlock(actual.getBlock().getType()) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Error Here (upOne)? ("
-                + upOne.getBlock().getType() + ")[" + isSolidBlock(upOne.getBlock().getType()) + "]");
+            Logging.finer("Error Here (Actual)? (%s)[%s]", actual.getBlock().getType(),
+                    isSolidBlock(actual.getBlock().getType()));
+            Logging.finer("Error Here (upOne)? (%s)[%s]", upOne.getBlock().getType(),
+                    isSolidBlock(upOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            MultiverseCore.staticLog(Level.FINER, "Error Here (downOne)? ("
-                + downOne.getBlock().getType() + ")[" + isSolidBlock(downOne.getBlock().getType()) + "]");
+            Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(), isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            MultiverseCore.staticLog(Level.FINER, "There's fire below! ("
-                + actual.getBlock().getType() + ")[" + isSolidBlock(actual.getBlock().getType()) + "]");
+            Logging.finer("There's fire below! (%s)[%s]", actual.getBlock().getType(), isSolidBlock(actual.getBlock().getType()));
             return false;
         }
 
         if (isBlockAboveAir(actual)) {
-            MultiverseCore.staticLog(Level.FINER, "Is block above air [" + isBlockAboveAir(actual) + "]");
-            MultiverseCore.staticLog(Level.FINER, "Has 2 blocks of water below [" + this.hasTwoBlocksofWaterBelow(actual) + "]");
+            Logging.finer("Is block above air [%s]", isBlockAboveAir(actual));
+            Logging.finer("Has 2 blocks of water below [%s]", this.hasTwoBlocksofWaterBelow(actual));
             return this.hasTwoBlocksofWaterBelow(actual);
         }
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Location getSafeBedSpawn(Location l) {
+        // The passed location, may be null (if the bed is invalid)
+        if (l == null) {
+            return null;
+        }
+        final Location trySpawn = this.getSafeSpawnAroundABlock(l);
+        if (trySpawn != null) {
+            return trySpawn;
+        }
+        Location otherBlock = this.findOtherBedPiece(l);
+        if (otherBlock == null) {
+            return null;
+        }
+        // Now we have 2 locations, check around each, if the type is bed, skip it.
+        return this.getSafeSpawnAroundABlock(otherBlock);
+    }
+
+    /**
+     * Find a safe spawn around a location. (N,S,E,W,NE,NW,SE,SW)
+     * @param l Location to check around
+     * @return A safe location, or none if it wasn't found.
+     */
+    private Location getSafeSpawnAroundABlock(Location l) {
+        Iterator<BlockFace> checkblock = AROUND_BLOCK.iterator();
+        while (checkblock.hasNext()) {
+            final BlockFace face = checkblock.next();
+            if (this.playerCanSpawnHereSafely(l.getBlock().getRelative(face).getLocation())) {
+                // Don't forget to center the player.
+                return l.getBlock().getRelative(face).getLocation().add(.5, 0, .5);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find the other bed block.
+     * @param checkLoc The location to check for the other piece at
+     * @return The location of the other bed piece, or null if it was a jacked up bed.
+     */
+    private Location findOtherBedPiece(Location checkLoc) {
+        if (checkLoc.getBlock().getType() != Material.BED_BLOCK) {
+            return null;
+        }
+        // Construct a bed object at this location
+        final Bed b = new Bed(Material.BED_BLOCK, checkLoc.getBlock().getData());
+        if (b.isHeadOfBed()) {
+            return checkLoc.getBlock().getRelative(b.getFacing().getOppositeFace()).getLocation();
+        }
+        // We shouldn't ever be looking at the foot, but here's the code for it.
+        return checkLoc.getBlock().getRelative(b.getFacing()).getLocation();
+    }
+
 
     /**
      * {@inheritDoc}

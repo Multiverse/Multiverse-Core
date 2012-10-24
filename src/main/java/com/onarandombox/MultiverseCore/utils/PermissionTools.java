@@ -145,17 +145,40 @@ public class PermissionTools {
             if (this.plugin.getMVPerms().hasPermission(teleporter, toWorld.getExemptPermission().getName(), true)) {
                 return true;
             }
-            GenericBank bank = plugin.getBank();
-            String errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency())
-                    + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
-            if (teleportee.equals(teleporter)) {
-                errString = "You need " + bank.getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency())
-                        + " to enter " + toWorld.getColoredWorldString();
+            final boolean usingVault;
+            final String formattedAmount;
+            if (toWorld.getCurrency() <= 0 && plugin.getVaultEconomy() != null) {
+                usingVault = true;
+                formattedAmount = plugin.getVaultEconomy().format(toWorld.getPrice());
+            } else {
+                usingVault = false;
+                formattedAmount = this.plugin.getBank().getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
             }
-            if (!bank.hasEnough(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
-                return false;
-            } else if (pay) {
-                bank.give(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
+            String errString = "You need " + formattedAmount + " to send " + teleportee + " to " + toWorld.getColoredWorldString();
+            if (teleportee.equals(teleporter)) {
+                errString = "You need " + formattedAmount + " to enter " + toWorld.getColoredWorldString();
+            }
+            if (usingVault) {
+                if (!plugin.getVaultEconomy().has(teleporterPlayer.getName(), toWorld.getPrice())) {
+                    return false;
+                } else if (pay) {
+                    if (toWorld.getPrice() < 0D) {
+                        plugin.getVaultEconomy().depositPlayer(teleporterPlayer.getName(), toWorld.getPrice() * -1D);
+                    } else {
+                        plugin.getVaultEconomy().withdrawPlayer(teleporterPlayer.getName(), toWorld.getPrice());
+                    }
+                }
+            } else {
+                GenericBank bank = plugin.getBank();
+                if (!bank.hasEnough(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency(), errString)) {
+                    return false;
+                } else if (pay) {
+                    if (toWorld.getPrice() < 0D) {
+                        bank.give(teleporterPlayer, toWorld.getPrice() * -1D, toWorld.getCurrency());
+                    } else {
+                        bank.take(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
+                    }
+                }
             }
         }
         return true;
