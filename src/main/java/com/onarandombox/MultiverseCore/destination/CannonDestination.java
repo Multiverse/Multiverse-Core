@@ -9,6 +9,8 @@ package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MVStaticDestination;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * A cannon-{@link MVDestination}.
  */
-public class CannonDestination implements MVDestination {
+public class CannonDestination implements MVStaticDestination {
     private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
     private boolean isValid;
     private Location location;
@@ -96,8 +98,16 @@ public class CannonDestination implements MVDestination {
      * {@inheritDoc}
      */
     @Override
-    public Location getLocation(Entity e) {
+    public Location getLocation() {
         return this.location;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Location getLocation(Entity e) {
+        return this.getLocation();
     }
 
     /**

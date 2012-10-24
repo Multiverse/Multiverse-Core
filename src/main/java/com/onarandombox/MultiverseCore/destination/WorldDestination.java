@@ -25,6 +25,11 @@ public class WorldDestination implements MVDestination {
     private float yaw = -1;
     private String direction = "";
 
+    public WorldDestination() {} // for DestinationFactory
+    public WorldDestination(MultiverseWorld world) {
+        this.world = world;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -170,4 +175,10 @@ public class WorldDestination implements MVDestination {
         return true;
     }
 
+    /**
+     * @return The world.
+     */
+    public MultiverseWorld getWorld() {
+        return world;
+    }
 }
