@@ -5,9 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -37,14 +40,14 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
     private static final String FORMAT_PATTERN_2 = "&&";
     private static final String FORMAT_REPL_2 = "&";
 
-    private final HashMap<Locale, HashMap<MultiverseMessage, String>> messages;
+    private final Map<Locale, Map<MultiverseMessage, String>> messages;
     private final MultiverseCore core;
 
     private Locale locale = DEFAULT_LOCALE;
 
     public SimpleMessageProvider(MultiverseCore core) {
         this.core = core;
-        messages = new HashMap<Locale, HashMap<MultiverseMessage, String>>();
+        messages = new ConcurrentHashMap<Locale, Map<MultiverseMessage, String>>();
 
         try {
             loadLocale(locale);
@@ -109,8 +112,8 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
             }
             if ((resstream == null) && (filestream == null))
                 throw new NoSuchLocalizationException(l);
-            messages.put(l, new HashMap<MultiverseMessage, String>(
-                    MultiverseMessage.values().length));
+
+            Map<MultiverseMessage, String> stringsMap = new HashMap<MultiverseMessage, String>();
             FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
             FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
             for (MultiverseMessage m : MultiverseMessage.values()) {
@@ -121,8 +124,10 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
                 if (fileconfig != null)
                     value = fileconfig.getString(m.toString(), value);
 
-                messages.get(l).put(m, value);
+                stringsMap.put(m, value);
             }
+
+            messages.put(l, Collections.unmodifiableMap(stringsMap));
         } finally {
             if (filestream != null)
                 try {
