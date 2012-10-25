@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -114,9 +115,7 @@ public class WorldManager implements MVWorldManager {
 
         removePlayersFromWorld(oldName);
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("Copying data for world '").append(oldName).append("'...");
-        this.plugin.log(Level.INFO, builder.toString());
+        Logging.config("Copying data for world '%s'", oldName);
         try {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -136,23 +135,23 @@ public class WorldManager implements MVWorldManager {
             e.printStackTrace();
             return false;
         }
-        this.plugin.log(Level.INFO, "Kind of copied stuff");
+        Logging.fine("Kind of copied stuff");
 
         WorldCreator worldCreator = new WorldCreator(newName);
-        this.plugin.log(Level.INFO, "Started to copy settings");
+        Logging.fine("Started to copy settings");
         worldCreator.copy(this.getMVWorld(oldName).getCBWorld());
-        this.plugin.log(Level.INFO, "Copied lots of settings");
+        Logging.fine("Copied lots of settings");
 
         boolean useSpawnAdjust = this.getMVWorld(oldName).getAdjustSpawn();
-        this.plugin.log(Level.INFO, "Copied more settings");
+        Logging.fine("Copied more settings");
 
         Environment environment = worldCreator.environment();
-        this.plugin.log(Level.INFO, "Copied most settings");
+        Logging.fine("Copied most settings");
         if (newWorldFile.exists()) {
-            this.plugin.log(Level.INFO, "Succeeded at copying stuff");
+            Logging.fine("Succeeded at copying stuff");
             if (this.addWorld(newName, environment, null, null, null, generator, useSpawnAdjust)) {
                 // getMVWorld() doesn't actually return an MVWorld
-                this.plugin.log(Level.INFO, "Succeeded at importing stuff");
+                Logging.fine("Succeeded at importing stuff");
                 MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
                 MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
                 newWorld.copyValues(oldWorld);
@@ -221,7 +220,7 @@ public class WorldManager implements MVWorldManager {
         if (generator != null) {
             builder.append(" & generator: ").append(generator);
         }
-        this.plugin.log(Level.INFO, builder.toString());
+        Logging.info(builder.toString());
 
         if (!doLoad(c, true)) {
             this.plugin.log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
@@ -262,12 +261,12 @@ public class WorldManager implements MVWorldManager {
         }
         if (this.worldsFromTheConfig.containsKey(name)) {
             this.worldsFromTheConfig.remove(name);
-            this.plugin.log(Level.INFO, "World '" + name + "' was removed from config.yml");
+            Logging.info("World '%s' was removed from config.yml", name);
 
             this.saveWorldsConfig();
             return true;
         } else {
-            this.plugin.log(Level.INFO, "World '" + name + "' was already removed from config.yml");
+            Logging.info("World '%s' was already removed from config.yml", name);
         }
         return false;
     }
@@ -311,22 +310,22 @@ public class WorldManager implements MVWorldManager {
         if (this.worlds.containsKey(name)) {
             if (this.unloadWorldFromBukkit(name, true)) {
                 this.worlds.remove(name);
-                this.plugin.log(Level.INFO, "World '" + name + "' was unloaded from memory.");
+                Logging.info("World '%s' was unloaded from memory.", name);
 
                 this.worldsFromTheConfig.get(name).tearDown();
 
                 return true;
             } else {
-                this.plugin.log(Level.WARNING, "World '" + name + "' could not be unloaded. Is it a default world?");
+                Logging.warning("World '%s' could not be unloaded. Is it a default world?", name);
             }
         } else if (this.plugin.getServer().getWorld(name) != null) {
-            this.plugin.log(Level.WARNING, "Hmm Multiverse does not know about this world but it's loaded in memory.");
-            this.plugin.log(Level.WARNING, "To let Multiverse know about it, use:");
-            this.plugin.log(Level.WARNING, String.format("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString()));
+            Logging.warning("Hmm Multiverse does not know about this world but it's loaded in memory.");
+            Logging.warning("To let Multiverse know about it, use:");
+            Logging.warning("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString());
         } else if (this.worldsFromTheConfig.containsKey(name)) {
             return true; // it's already unloaded
         } else {
-            this.plugin.log(Level.INFO, "Multiverse does not know about " + name + " and it's not loaded by Bukkit.");
+            Logging.info("Multiverse does not know about '%s' and it's not loaded by Bukkit.", name);
         }
         return false;
     }
@@ -434,20 +433,20 @@ public class WorldManager implements MVWorldManager {
             File worldFile = world.getWorldFolder();
             plugin.log(Level.FINER, "deleteWorld(): worldFile: " + worldFile.getAbsolutePath());
             if (deleteWorldFolder ? FileUtils.deleteFolder(worldFile) : FileUtils.deleteFolderContents(worldFile)) {
-                this.plugin.log(Level.INFO, "World " + name + " was DELETED.");
+                Logging.info("World '%s' was DELETED.", name);
                 return true;
             } else {
-                this.plugin.log(Level.SEVERE, "World " + name + " was NOT deleted.");
-                this.plugin.log(Level.SEVERE, "Are you sure the folder " + name + " exists?");
-                this.plugin.log(Level.SEVERE, "Please check your file permissions on " + name);
+                Logging.info("World '%s' was NOT deleted.", name);
+                Logging.severe("Are you sure the folder %s exists?", name);
+                Logging.severe("Please check your file permissions on '%s'", name);
                 return false;
             }
         } catch (Throwable e) {
-            this.plugin.log(Level.SEVERE, "Hrm, something didn't go as planned. Here's an exception for ya.");
-            this.plugin.log(Level.SEVERE, "You can go politely explain your situation in #multiverse on esper.net");
-            this.plugin.log(Level.SEVERE, "But from here, it looks like your folder is oddly named.");
-            this.plugin.log(Level.SEVERE, "This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
-            this.plugin.log(Level.SEVERE, e.getMessage());
+            Logging.severe("Hrm, something didn't go as planned. Here's an exception for ya.");
+            Logging.severe("You can go politely explain your situation in #multiverse on esper.net");
+            Logging.severe("But from here, it looks like your folder is oddly named.");
+            Logging.severe("This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
+            Logging.severe(e.getMessage());
             return false;
         }
     }
@@ -649,7 +648,7 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Simple Output to the Console to show how many Worlds were loaded.
-        this.plugin.log(Level.INFO, count + " - World(s) loaded.");
+        Logging.config("%s - World(s) loaded.", count);
         this.saveWorldsConfig();
     }
 

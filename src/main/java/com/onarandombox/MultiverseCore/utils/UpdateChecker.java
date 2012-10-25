@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -87,7 +89,7 @@ public class UpdateChecker {
             int compare = v1.compareTo(v2);
 
             if (compare > 0) {
-                log.info("[" + this.name + "]" + " - Update Available (" + version + ")");
+                Logging.info("[%s] - Update Available (%s)", this.name, version);
             }
 
             rd.close();

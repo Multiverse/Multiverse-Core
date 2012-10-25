@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
@@ -631,16 +632,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
             if (newSpawn != null) {
-                this.plugin.log(Level.INFO, String.format("New Spawn for '%s' is located at: %s",
-                        this.getName(), plugin.getLocationManipulation().locationToString(newSpawn)));
+                Logging.info("New Spawn for '%s' is located at: %s",
+                        this.getName(), plugin.getLocationManipulation().locationToString(newSpawn));
                 return newSpawn;
             } else {
                 // If it's a standard end world, let's check in a better place:
                 Location newerSpawn;
                 newerSpawn = bs.getTopBlock(new Location(w, 0, 0, 0));
                 if (newerSpawn != null) {
-                    this.plugin.log(Level.INFO, String.format("New Spawn for '%s' is located at: %s",
-                            this.getName(), plugin.getLocationManipulation().locationToString(newerSpawn)));
+                    Logging.info("New Spawn for '%s' is located at: %s",
+                            this.getName(), plugin.getLocationManipulation().locationToString(newerSpawn));
                     return newerSpawn;
                 } else {
                     this.plugin.log(Level.SEVERE, "Safe spawn NOT found!!!");

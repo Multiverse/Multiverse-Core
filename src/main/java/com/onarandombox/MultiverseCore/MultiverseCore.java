@@ -47,6 +47,7 @@ import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.ScriptCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
+import com.onarandombox.MultiverseCore.commands.SilentCommand;
 import com.onarandombox.MultiverseCore.commands.SpawnCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
@@ -274,8 +275,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
     public void onEnable() {
         this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
-        // Output a little snippet to show it's enabled.
-        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + getAuthors());
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
@@ -304,9 +303,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         // Setup & Load our Configuration files.
         loadConfigs();
         if (this.multiverseConfig != null) {
+            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+            Logging.setShowingConfig(!getMVConfig().getSilentStart());
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
-            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
@@ -345,6 +345,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         // Listen out for vault.
         getServer().getPluginManager().registerEvents(this, this);
         this.setupVaultEconomy();
+
+        // Output a little snippet to show it's enabled.
+        Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
     }
 
     private boolean setupVaultEconomy() {
@@ -545,47 +548,47 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
      */
     private void migrate22Values() {
         if (this.multiverseConfig.isSet("worldnameprefix")) {
-            this.log(Level.INFO, "Migrating 'worldnameprefix'...");
+            Logging.config("Migrating 'worldnameprefix'...");
             this.getMVConfig().setPrefixChat(this.multiverseConfig.getBoolean("worldnameprefix"));
             this.multiverseConfig.set("worldnameprefix", null);
         }
         if (this.multiverseConfig.isSet("firstspawnworld")) {
-            this.log(Level.INFO, "Migrating 'firstspawnworld'...");
+            Logging.config("Migrating 'firstspawnworld'...");
             this.getMVConfig().setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld"));
             this.multiverseConfig.set("firstspawnworld", null);
         }
         if (this.multiverseConfig.isSet("enforceaccess")) {
-            this.log(Level.INFO, "Migrating 'enforceaccess'...");
+            Logging.config("Migrating 'enforceaccess'...");
             this.getMVConfig().setEnforceAccess(this.multiverseConfig.getBoolean("enforceaccess"));
             this.multiverseConfig.set("enforceaccess", null);
         }
         if (this.multiverseConfig.isSet("displaypermerrors")) {
-            this.log(Level.INFO, "Migrating 'displaypermerrors'...");
+            Logging.config("Migrating 'displaypermerrors'...");
             this.getMVConfig().setDisplayPermErrors(this.multiverseConfig.getBoolean("displaypermerrors"));
             this.multiverseConfig.set("displaypermerrors", null);
         }
         if (this.multiverseConfig.isSet("teleportintercept")) {
-            this.log(Level.INFO, "Migrating 'teleportintercept'...");
+            Logging.config("Migrating 'teleportintercept'...");
             this.getMVConfig().setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
             this.multiverseConfig.set("teleportintercept", null);
         }
         if (this.multiverseConfig.isSet("firstspawnoverride")) {
-            this.log(Level.INFO, "Migrating 'firstspawnoverride'...");
+            Logging.config("Migrating 'firstspawnoverride'...");
             this.getMVConfig().setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
             this.multiverseConfig.set("firstspawnoverride", null);
         }
         if (this.multiverseConfig.isSet("messagecooldown")) {
-            this.log(Level.INFO, "Migrating 'messagecooldown'...");
+            Logging.config("Migrating 'messagecooldown'...");
             this.getMVConfig().setMessageCooldown(this.multiverseConfig.getInt("messagecooldown"));
             this.multiverseConfig.set("messagecooldown", null);
         }
         if (this.multiverseConfig.isSet("debug")) {
-            this.log(Level.INFO, "Migrating 'debug'...");
+            Logging.config("Migrating 'debug'...");
             this.getMVConfig().setGlobalDebug(this.multiverseConfig.getInt("debug"));
             this.multiverseConfig.set("debug", null);
         }
         if (this.multiverseConfig.isSet("version")) {
-            this.log(Level.INFO, "Migrating 'version'...");
+            Logging.config("Migrating 'version'...");
             this.multiverseConfig.set("version", null);
         }
     }
@@ -845,6 +848,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
+        this.commandHandler.registerCommand(new SilentCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
@@ -858,7 +862,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         this.saveMVConfigs();
         this.banker = null;
         this.bank = null;
-        log(Level.INFO, "- Disabled");
         Logging.shutdown();
     }
 

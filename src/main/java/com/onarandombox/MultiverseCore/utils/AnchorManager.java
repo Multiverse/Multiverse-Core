@@ -50,7 +50,7 @@ public class AnchorManager {
             //world:x,y,z:pitch:yaw
             Location anchorLocation = plugin.getLocationManipulation().stringToLocation(anchorsSection.getString(key, ""));
             if (anchorLocation != null) {
-                Logging.info("Loading anchor:  '%s'...", key);
+                Logging.config("Loading anchor:  '%s'...", key);
                 this.anchors.put(key, anchorLocation);
             } else {
                 Logging.warning("The location for anchor '%s' is INVALID.", key);
