@@ -54,6 +54,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile int globaldebug;
     @Property
+    private volatile boolean silentstart;
+    @Property
     private volatile int messagecooldown;
     @Property
     private volatile double version;
@@ -88,6 +90,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         messagecooldown = 5000;
         teleportcooldown = 1000;
         this.version = 2.9;
+        silentstart = false;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -274,5 +277,16 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public boolean getUseAsyncChat() {
         return this.useasyncchat;
+    }
+
+    @Override
+    public void setSilentStart(boolean silentStart) {
+        Logging.setShowingConfig(!silentStart);
+        this.silentstart = silentStart;
+    }
+
+    @Override
+    public boolean getSilentStart() {
+        return silentstart;
     }
 }
