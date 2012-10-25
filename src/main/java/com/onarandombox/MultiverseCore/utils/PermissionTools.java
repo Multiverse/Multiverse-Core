@@ -257,6 +257,25 @@ public class PermissionTools {
         }
         return true;
     }
+    
+    public boolean playerCanBypassPlayerLimit(MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
+        
+        if (teleporter == null) {
+            teleporter = teleportee;
+        }
+        
+        if (!(teleporter instanceof Player)) {
+            return true;  
+        }
+        
+        MVPermissions perms = plugin.getMVPerms();
+        if (perms.hasPermission(teleportee, "mv.bypass.playerlimit." + toWorld.getName(), false)) {
+            return true;
+        } else {
+            teleporter.sendMessage("The world " + toWorld.getColoredWorldString() + " is full");
+            return false;
+        }
+    }
 
     /**
      * Checks to see if a player should bypass game mode restrictions.

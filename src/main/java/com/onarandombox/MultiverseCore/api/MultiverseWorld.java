@@ -620,6 +620,22 @@ public interface MultiverseWorld {
      * @param autoLoad True if players dying in this world respawn at their bed.
      */
     void setBedRespawn(boolean autoLoad);
+    
+    /**
+     * Sets the player limit for this world after which players without an override
+     * permission node will not be allowed in. A value of -1 or less signifies no limit
+     * 
+     * @param limit The new limit
+     */
+    void setPlayerLimit(int limit);
+
+    /**
+     * Gets the player limit for this world after which players without an override
+     * permission node will not be allowed in. A value of -1 or less signifies no limit
+     * 
+     * @return The player limit
+     */
+    int getPlayerLimit();
 
     /**
      * Same as {@link #getTime()}, but returns a string.
