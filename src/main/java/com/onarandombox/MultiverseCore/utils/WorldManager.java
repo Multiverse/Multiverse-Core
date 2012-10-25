@@ -436,7 +436,7 @@ public class WorldManager implements MVWorldManager {
                 Logging.info("World '%s' was DELETED.", name);
                 return true;
             } else {
-                Logging.info("World '%s' was NOT deleted.", name);
+                Logging.severe("World '%s' was NOT deleted.", name);
                 Logging.severe("Are you sure the folder %s exists?", name);
                 Logging.severe("Please check your file permissions on '%s'", name);
                 return false;
