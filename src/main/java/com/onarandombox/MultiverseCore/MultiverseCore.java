@@ -77,11 +77,10 @@ import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -92,12 +91,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -117,7 +111,7 @@ import java.util.logging.Level;
 /**
  * The implementation of the Multiverse-{@link Core}.
  */
-public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listener {
+public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final int PROTOCOL = 18;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
@@ -207,7 +201,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
-    private Economy vaultEco = null;
+    private VaultHandler vaultHandler;
     private GenericBank bank = null;
     private AllPay banker;
     private Buscript buscript;
@@ -260,12 +254,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         return this.bank;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Economy getVaultEconomy() {
-        return vaultEco;
+    public VaultHandler getVaultHandler() {
+        return vaultHandler;
     }
 
     /**
@@ -342,46 +333,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
         this.initializeBuscript();
         this.setupMetrics();
-        // Listen out for vault.
-        getServer().getPluginManager().registerEvents(this, this);
-        this.setupVaultEconomy();
+
+        this.vaultHandler = new VaultHandler(this);
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
-    }
-
-    private boolean setupVaultEconomy() {
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-            final RegisteredServiceProvider<Economy> economyProvider
-                = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-            if (economyProvider != null) {
-                Logging.fine("Vault economy enabled.");
-                vaultEco = economyProvider.getProvider();
-            } else {
-                Logging.finer("Vault economy not detected.");
-                vaultEco = null;
-            }
-        } else {
-            Logging.finer("Vault was not found.");
-            vaultEco = null;
-        }
-
-        return (vaultEco != null);
-    }
-
-    @EventHandler
-    private void vaultEnabled(PluginEnableEvent event) {
-        if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
-            setupVaultEconomy();
-        }
-    }
-
-    @EventHandler
-    private void vaultDisabled(PluginDisableEvent event) {
-        if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
-            Logging.fine("Vault economy disabled");
-            setupVaultEconomy();
-        }
     }
 
     /**

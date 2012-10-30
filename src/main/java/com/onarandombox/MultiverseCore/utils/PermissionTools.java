@@ -145,9 +145,9 @@ public class PermissionTools {
             }
             final boolean usingVault;
             final String formattedAmount;
-            if (toWorld.getCurrency() <= 0 && plugin.getVaultEconomy() != null) {
+            if (toWorld.getCurrency() <= 0 && plugin.getVaultHandler().getEconomy() != null) {
                 usingVault = true;
-                formattedAmount = plugin.getVaultEconomy().format(toWorld.getPrice());
+                formattedAmount = plugin.getVaultHandler().getEconomy().format(toWorld.getPrice());
             } else {
                 usingVault = false;
                 formattedAmount = this.plugin.getBank().getFormattedAmount(teleporterPlayer, toWorld.getPrice(), toWorld.getCurrency());
@@ -157,13 +157,13 @@ public class PermissionTools {
                 errString = "You need " + formattedAmount + " to enter " + toWorld.getColoredWorldString();
             }
             if (usingVault) {
-                if (!plugin.getVaultEconomy().has(teleporterPlayer.getName(), toWorld.getPrice())) {
+                if (!plugin.getVaultHandler().getEconomy().has(teleporterPlayer.getName(), toWorld.getPrice())) {
                     return false;
                 } else if (pay) {
                     if (toWorld.getPrice() < 0D) {
-                        plugin.getVaultEconomy().depositPlayer(teleporterPlayer.getName(), toWorld.getPrice() * -1D);
+                        plugin.getVaultHandler().getEconomy().depositPlayer(teleporterPlayer.getName(), toWorld.getPrice() * -1D);
                     } else {
-                        plugin.getVaultEconomy().withdrawPlayer(teleporterPlayer.getName(), toWorld.getPrice());
+                        plugin.getVaultHandler().getEconomy().withdrawPlayer(teleporterPlayer.getName(), toWorld.getPrice());
                     }
                 }
             } else {
