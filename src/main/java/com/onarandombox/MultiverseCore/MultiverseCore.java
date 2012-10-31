@@ -266,6 +266,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void onEnable() {
         this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
+        this.vaultHandler = new VaultHandler(this);
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
@@ -333,8 +334,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         this.initializeBuscript();
         this.setupMetrics();
-
-        this.vaultHandler = new VaultHandler(this);
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
