@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -68,20 +69,18 @@ public class CreateCommand extends MultiverseCommand {
         }
 
         if (this.worldManager.isMVWorld(worldName)) {
-            sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
-                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CREATE_WORLDEXISTS, worldName);
             return;
         }
 
         if (worldFile.exists()) {
-            sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
-            sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CREATE_FILEEXISTS);
             return;
         }
 
         Environment environment = EnvironmentCommand.getEnvFromString(env);
         if (environment == null) {
-            sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CREATE_INVALIDENV);
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
@@ -92,7 +91,7 @@ public class CreateCommand extends MultiverseCommand {
         }
         WorldType type = EnvironmentCommand.getWorldTypeFromString(typeString);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + "That is not a valid World Type.");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CREATE_INVALIDTYPE);
             EnvironmentCommand.showWorldTypes(sender);
             return;
         }
@@ -105,16 +104,16 @@ public class CreateCommand extends MultiverseCommand {
             }
             if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), "test") == null) {
                 // We have an invalid generator.
-                sender.sendMessage("Invalid generator! '" + generator + "'. " + ChatColor.RED + "Aborting world creation.");
+                this.messaging.sendMessage(sender, MultiverseMessage.CMD_CREATE_INVALIDGEN, generator);
                 return;
             }
         }
-        Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
+        Command.broadcastCommandMessage(sender, this.plugin.getMessageProvider().getMessage(MultiverseMessage.CMD_CREATE_START, worldName));
 
         if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
-            Command.broadcastCommandMessage(sender, "Complete!");
+            Command.broadcastCommandMessage(sender, this.plugin.getMessageProvider().getMessage(MultiverseMessage.CMD_CREATE_COMPLETE));
         } else {
-            Command.broadcastCommandMessage(sender, "FAILED.");
+            Command.broadcastCommandMessage(sender, this.plugin.getMessageProvider().getMessage(MultiverseMessage.CMD_CREATE_FAILED));
         }
     }
 }

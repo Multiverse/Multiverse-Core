@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -39,15 +40,12 @@ public class CheckCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         Player p = this.plugin.getServer().getPlayer(args.get(0));
         if (p == null) {
-            sender.sendMessage("Could not find player " + ChatColor.GREEN + args.get(0));
-            sender.sendMessage("Are they online?");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CHECK_NOSUCHPLAYER, args.get(0));
             return;
         }
         MVDestination dest = this.plugin.getDestFactory().getDestination(args.get(1));
         if (dest instanceof InvalidDestination) {
-            sender.sendMessage(String.format("You asked if '%s' could go to %s%s%s,",
-                    args.get(0), ChatColor.GREEN, args.get(0), ChatColor.WHITE));
-            sender.sendMessage("but I couldn't find a Destination of that name? Did you type it correctly?");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CHECK_NOSUCHDEST);
             return;
         }
 

@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -50,8 +51,7 @@ public class CloneCommand extends MultiverseCommand {
         objectArgs.add(CommandHandler.getFlag("-g", args));
         if (!this.worldManager.isMVWorld(args.get(0))) {
             // If no world was found, we can't clone.
-            sender.sendMessage("Sorry, Multiverse doesn't know about world " + args.get(0) + ", so we can't clone it!");
-            sender.sendMessage("Check the " + ChatColor.GREEN + "/mv list" + ChatColor.WHITE + " command to verify it is listed.");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CLONE_NOSUCHWORLD, args.get(0));
             return;
         }
         this.plugin.getCommandHandler().queueCommand(sender, "mvclone", "cloneWorld", objectArgs,

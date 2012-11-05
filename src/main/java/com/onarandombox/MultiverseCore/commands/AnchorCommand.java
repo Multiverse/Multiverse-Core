@@ -8,6 +8,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,11 +57,11 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
 
     private void showList(CommandSender sender, List<String> args) {
         if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.list", true)) {
-            sender.sendMessage(ChatColor.RED + "You don't have the permission to list anchors!");
+            this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_NOLISTPERM);
             return;
         }
 
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ Multiverse Anchor List ]====");
+        this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_LISTHEADER);
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
@@ -72,13 +74,12 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         if (filterObject.getFilter().length() > 0) {
             availableAnchors = this.getFilteredItems(availableAnchors, filterObject.getFilter());
             if (availableAnchors.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE
-                        + "No anchors matched your filter: " + ChatColor.AQUA + filterObject.getFilter());
+                this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_NOMATCH, filterObject.getFilter());
                 return;
             }
         } else {
             if (availableAnchors.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "Sorry... " + ChatColor.WHITE + "No anchors were defined.");
+                this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_NODEF);
                 return;
             }
         }
@@ -99,7 +100,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             filterObject.setPage(1);
         }
 
-        sender.sendMessage(ChatColor.AQUA + " Page " + filterObject.getPage() + " of " + totalPages);
+        this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_PAGEHEADER, filterObject.getPage(), totalPages);
 
         this.showPage(filterObject.getPage(), sender, availableAnchors);
     }
@@ -115,33 +116,24 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             return;
         }
         if (args.size() == 2 && args.get(1).equalsIgnoreCase("-d")) {
-            if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.delete", true)) {
-                sender.sendMessage(ChatColor.RED + "You don't have the permission to delete anchors!");
-            } else {
-                if (this.plugin.getAnchorManager().deleteAnchor(args.get(0))) {
-                    sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.RED + "deleted!");
-                } else {
-                    sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "deleted!");
-                }
-            }
+            if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.delete", true))
+                this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_NODELPERM);
+            else
+                this.plugin.getMessaging().sendMessage(sender, this.plugin.getAnchorManager().deleteAnchor(args.get(0))
+                        ? MultiverseMessage.CMD_ANCHOR_DELSUCCESS : MultiverseMessage.CMD_ANCHOR_DELFAIL, args.get(0));
             return;
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to create Anchors.");
+            this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_CONSOLECREATE);
             return;
         }
 
-        if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.create", true)) {
-            sender.sendMessage(ChatColor.RED + "You don't have the permission to create anchors!");
-        } else {
-            Player player = (Player) sender;
-            if (this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), player.getLocation())) {
-                sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.GREEN + "created!");
-            } else {
-                sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "created!");
-            }
-        }
+        if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.create", true))
+            this.plugin.getMessaging().sendMessage(sender, MultiverseMessage.CMD_ANCHOR_NOCREATEPERM);
+        else
+            this.plugin.getMessaging().sendMessage(sender, this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), ((Player) sender).getLocation())
+                    ? MultiverseMessage.CMD_ANCHOR_CREATESUCCESS : MultiverseMessage.CMD_ANCHOR_CREATEFAIL, args.get(0));
     }
 
     @Override

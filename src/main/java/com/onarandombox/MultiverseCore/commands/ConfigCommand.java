@@ -8,6 +8,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -52,7 +54,7 @@ public class ConfigCommand extends MultiverseCommand {
             return;
         }
         if (!this.plugin.getMVConfig().setConfigProperty(args.get(0).toLowerCase(), args.get(1))) {
-            sender.sendMessage(String.format("%sSetting '%s' to '%s' failed!", ChatColor.RED, args.get(0).toLowerCase(), args.get(1)));
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CONFIG_SETFAIL, args.get(0), args.get(1));
             return;
         }
 
@@ -63,10 +65,10 @@ public class ConfigCommand extends MultiverseCommand {
         }
 
         if (this.plugin.saveMVConfigs()) {
-            sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CLONE_SUCCESS);
             this.plugin.loadConfigs();
         } else {
-            sender.sendMessage(ChatColor.RED + "FAIL!" + ChatColor.WHITE + " Check your console for details!");
+            this.messaging.sendMessage(sender, MultiverseMessage.CMD_CONFIG_FAIL);
         }
     }
 }
