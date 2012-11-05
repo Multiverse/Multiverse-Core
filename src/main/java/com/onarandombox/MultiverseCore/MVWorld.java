@@ -511,6 +511,11 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     }
 
+    void setPluginAndWorld(MultiverseCore plugin, String name) {
+        this.plugin = plugin;
+        this.name = name;
+    }
+
     /**
      * {@inheritDoc}
      */

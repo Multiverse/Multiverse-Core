@@ -574,6 +574,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 this.log(Level.FINE, "Migrating: " + entry.getKey());
                 // we have to migrate this
                 MVWorld world = new MVWorld(Collections.EMPTY_MAP);
+                world.setPluginAndWorld(this, entry.getKey());
                 ConfigurationSection section = (ConfigurationSection) entry.getValue();
 
                 // migrate animals and monsters
