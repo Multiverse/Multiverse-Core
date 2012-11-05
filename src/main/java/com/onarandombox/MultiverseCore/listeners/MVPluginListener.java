@@ -34,7 +34,7 @@ public class MVPluginListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void pluginEnable(PluginEnableEvent event) {
-        if (plugin.getVaultEconomy() != null) {
+        if (plugin.getVaultHandler().getEconomy() != null) {
             // Don't hook 2 economy plugins.
             return;
         }

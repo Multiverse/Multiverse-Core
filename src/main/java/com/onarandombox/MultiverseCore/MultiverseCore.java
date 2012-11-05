@@ -47,6 +47,7 @@ import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.ScriptCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
+import com.onarandombox.MultiverseCore.commands.SilentCommand;
 import com.onarandombox.MultiverseCore.commands.SpawnCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
@@ -83,11 +84,10 @@ import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
@@ -98,12 +98,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -124,7 +119,7 @@ import java.util.logging.Level;
 /**
  * The implementation of the Multiverse-{@link Core}.
  */
-public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listener, MessageProviding {
+public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, MessageProviding {
     private static final int PROTOCOL = 18;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
@@ -215,7 +210,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
-    private Economy vaultEco = null;
+    private VaultHandler vaultHandler;
     private GenericBank bank = null;
     private AllPay banker;
     private Buscript buscript;
@@ -268,12 +263,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         return this.bank;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Economy getVaultEconomy() {
-        return vaultEco;
+    public VaultHandler getVaultHandler() {
+        return vaultHandler;
     }
 
     /**
@@ -283,8 +275,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
     public void onEnable() {
         this.messaging = new MVMessaging(this);
         this.banker = new AllPay(this, LOG_TAG + " ");
-        // Output a little snippet to show it's enabled.
-        this.log(Level.INFO, "- Version " + this.getDescription().getVersion() + " (API v" + PROTOCOL + ") Enabled - By " + getAuthors());
+        this.vaultHandler = new VaultHandler(this);
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
@@ -332,9 +323,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
             return;
         }
         if (this.multiverseConfig != null) {
+            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+            Logging.setShowingConfig(!getMVConfig().getSilentStart());
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
-            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
         } else {
             this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
         }
@@ -370,43 +362,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
 
         this.initializeBuscript();
         this.setupMetrics();
-        // Listen out for vault.
-        getServer().getPluginManager().registerEvents(this, this);
-        this.setupVaultEconomy();
-    }
 
-    private boolean setupVaultEconomy() {
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-            final RegisteredServiceProvider<Economy> economyProvider
-                = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-            if (economyProvider != null) {
-                Logging.fine("Vault economy enabled.");
-                vaultEco = economyProvider.getProvider();
-            } else {
-                Logging.finer("Vault economy not detected.");
-                vaultEco = null;
-            }
-        } else {
-            Logging.finer("Vault was not found.");
-            vaultEco = null;
-        }
-
-        return (vaultEco != null);
-    }
-
-    @EventHandler
-    private void vaultEnabled(PluginEnableEvent event) {
-        if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
-            setupVaultEconomy();
-        }
-    }
-
-    @EventHandler
-    private void vaultDisabled(PluginDisableEvent event) {
-        if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
-            Logging.fine("Vault economy disabled");
-            setupVaultEconomy();
-        }
+        // Output a little snippet to show it's enabled.
+        Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
     }
 
     /**
@@ -573,47 +531,47 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
      */
     private void migrate22Values() {
         if (this.multiverseConfig.isSet("worldnameprefix")) {
-            this.log(Level.INFO, "Migrating 'worldnameprefix'...");
+            Logging.config("Migrating 'worldnameprefix'...");
             this.getMVConfig().setPrefixChat(this.multiverseConfig.getBoolean("worldnameprefix"));
             this.multiverseConfig.set("worldnameprefix", null);
         }
         if (this.multiverseConfig.isSet("firstspawnworld")) {
-            this.log(Level.INFO, "Migrating 'firstspawnworld'...");
+            Logging.config("Migrating 'firstspawnworld'...");
             this.getMVConfig().setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld"));
             this.multiverseConfig.set("firstspawnworld", null);
         }
         if (this.multiverseConfig.isSet("enforceaccess")) {
-            this.log(Level.INFO, "Migrating 'enforceaccess'...");
+            Logging.config("Migrating 'enforceaccess'...");
             this.getMVConfig().setEnforceAccess(this.multiverseConfig.getBoolean("enforceaccess"));
             this.multiverseConfig.set("enforceaccess", null);
         }
         if (this.multiverseConfig.isSet("displaypermerrors")) {
-            this.log(Level.INFO, "Migrating 'displaypermerrors'...");
+            Logging.config("Migrating 'displaypermerrors'...");
             this.getMVConfig().setDisplayPermErrors(this.multiverseConfig.getBoolean("displaypermerrors"));
             this.multiverseConfig.set("displaypermerrors", null);
         }
         if (this.multiverseConfig.isSet("teleportintercept")) {
-            this.log(Level.INFO, "Migrating 'teleportintercept'...");
+            Logging.config("Migrating 'teleportintercept'...");
             this.getMVConfig().setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
             this.multiverseConfig.set("teleportintercept", null);
         }
         if (this.multiverseConfig.isSet("firstspawnoverride")) {
-            this.log(Level.INFO, "Migrating 'firstspawnoverride'...");
+            Logging.config("Migrating 'firstspawnoverride'...");
             this.getMVConfig().setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
             this.multiverseConfig.set("firstspawnoverride", null);
         }
         if (this.multiverseConfig.isSet("messagecooldown")) {
-            this.log(Level.INFO, "Migrating 'messagecooldown'...");
+            Logging.config("Migrating 'messagecooldown'...");
             this.getMVConfig().setMessageCooldown(this.multiverseConfig.getInt("messagecooldown"));
             this.multiverseConfig.set("messagecooldown", null);
         }
         if (this.multiverseConfig.isSet("debug")) {
-            this.log(Level.INFO, "Migrating 'debug'...");
+            Logging.config("Migrating 'debug'...");
             this.getMVConfig().setGlobalDebug(this.multiverseConfig.getInt("debug"));
             this.multiverseConfig.set("debug", null);
         }
         if (this.multiverseConfig.isSet("version")) {
-            this.log(Level.INFO, "Migrating 'version'...");
+            Logging.config("Migrating 'version'...");
             this.multiverseConfig.set("version", null);
         }
     }
@@ -873,6 +831,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new DebugCommand(this));
+        this.commandHandler.registerCommand(new SilentCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
@@ -886,7 +845,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core, Listen
         this.saveMVConfigs();
         this.banker = null;
         this.bank = null;
-        log(Level.INFO, "- Disabled");
         Logging.shutdown();
     }
 

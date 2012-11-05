@@ -159,4 +159,18 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @return locale
      */
     Locale getLocale();
+
+    /**
+     * Sets whether to suppress startup messages.
+     *
+     * @param silentStart true to suppress messages.
+     */
+    void setSilentStart(boolean silentStart);
+
+    /**
+     * Whether we are suppressing startup messages.
+     *
+     * @return true if we are suppressing startup messages.
+     */
+    boolean getSilentStart();
 }

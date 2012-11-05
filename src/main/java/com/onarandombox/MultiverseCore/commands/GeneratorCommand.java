@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.localization.MultiverseMessage;
 
@@ -17,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Returns a list of loaded generator plugins.
@@ -39,7 +39,7 @@ public class GeneratorCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        this.plugin.log(Level.INFO, "PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
+        Logging.info("PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
         Plugin[] plugins = this.plugin.getServer().getPluginManager().getPlugins();
         List<String> generators = new ArrayList<String>();
         for (Plugin p : plugins) {

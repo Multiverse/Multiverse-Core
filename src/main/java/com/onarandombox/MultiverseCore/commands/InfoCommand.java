@@ -125,8 +125,8 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
         if (world.getPrice() > 0) {
             final String formattedAmount;
-            if (world.getCurrency() <= 0 && plugin.getVaultEconomy() != null) {
-                formattedAmount = plugin.getVaultEconomy().format(world.getPrice());
+            if (world.getCurrency() <= 0 && plugin.getVaultHandler().getEconomy() != null) {
+                formattedAmount = plugin.getVaultHandler().getEconomy().format(world.getPrice());
             } else {
                 formattedAmount = this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency());
             }

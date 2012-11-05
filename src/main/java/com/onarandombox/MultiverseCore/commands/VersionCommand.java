@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.utils.webpaste.BitlyURLShortener;
@@ -21,7 +22,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Dumps version info to the console.
@@ -53,10 +53,10 @@ public class VersionCommand extends MultiverseCommand {
         buffer.append("[Multiverse-Core] Bukkit Version: ").append(this.plugin.getServer().getVersion()).append('\n');
         buffer.append("[Multiverse-Core] Loaded Worlds: ").append(this.plugin.getMVWorldManager().getMVWorlds()).append('\n');
         buffer.append("[Multiverse-Core] Multiverse Plugins Loaded: ").append(this.plugin.getPluginCount()).append('\n');
-        final boolean usingVault = this.plugin.getVaultEconomy() != null;
+        final boolean usingVault = plugin.getVaultHandler().getEconomy() != null;
         buffer.append("[Multiverse-Core] Using Vault: ").append(usingVault).append('\n');
         if (usingVault) {
-            buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getVaultEconomy().getName()).append('\n');
+            buffer.append("[Multiverse-Core] Economy being used: ").append(plugin.getVaultHandler().getEconomy().getName()).append('\n');
         } else {
             buffer.append("[Multiverse-Core] Economy being used: ").append(this.plugin.getBank().getEconUsed()).append('\n');
         }
@@ -81,7 +81,7 @@ public class VersionCommand extends MultiverseCommand {
         final String data = versionEvent.getVersionInfo();
         String[] lines = data.split("\n");
         for (String line : lines) {
-            this.plugin.log(Level.INFO, line);
+            Logging.info(line);
         }
 
         this.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(this.plugin, new Runnable() {
@@ -98,7 +98,7 @@ public class VersionCommand extends MultiverseCommand {
                     }
 
                     sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
-                    plugin.log(Level.INFO, "Version info dumped here: " + pasteUrl);
+                    Logging.info("Version info dumped here: %s", pasteUrl);
                 }
             }
         });
