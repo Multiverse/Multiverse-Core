@@ -82,6 +82,8 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -641,10 +643,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
                 // migrate gamemode
                 if (section.isString("gamemode")) {
-                    try {
-                        world.setPropertyValue("gamemode", section.getString("gamemode"));
-                    } catch (PropertyDoesNotExistException e) {
-                        throw new RuntimeException("Who forgot to update the migrator?", e);
+                    final GameMode gameMode = GameMode.valueOf(section.getString("gamemode").toUpperCase());
+                    if (gameMode != null) {
+                        world.setGameMode(gameMode);
                     }
                 }
 
@@ -727,6 +728,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                         spawnLoc.setZ(spawnSect.getDouble("z"));
 
                     world.setSpawnLocation(spawnLoc);
+                }
+
+                // migrate difficulty
+                if (section.isString("difficulty")) {
+                    final Difficulty difficulty = Difficulty.valueOf(section.getString("difficulty").toUpperCase());
+                    if (difficulty != null) {
+                        world.setDifficulty(difficulty);
+                    }
+                }
+
+                // migrate keepspawninmemory
+                if (section.isBoolean("keepspawninmemory")) {
+                    world.setKeepSpawnInMemory(section.getBoolean("keepspawninmemory"));
                 }
 
                 newValues.put(entry.getKey(), world);

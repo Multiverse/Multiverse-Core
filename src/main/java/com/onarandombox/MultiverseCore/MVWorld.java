@@ -42,8 +42,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,7 +90,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
 
     private MultiverseCore plugin; // Hold the Plugin Instance.
 
-    private volatile Reference<World> world = new WeakReference<World>(null); // A reference to the World Instance.
     private String name; // The Worlds Name, EG its folder name.
 
     /**
@@ -212,8 +209,11 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         public Boolean validateChange(String property, Boolean newValue, Boolean oldValue,
                 MVWorld object) throws ChangeDeniedException {
             if (!newValue) {
-                world.get().setStorm(false);
-                world.get().setThundering(false);
+                final World world = getCBWorld();
+                if (world != null) {
+                    world.setStorm(false);
+                    world.setThundering(false);
+                }
             }
             return super.validateChange(property, newValue, oldValue, object);
         }
@@ -237,13 +237,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
             } else {
                 allowMonsters = true;
             }
-            if (MVWorld.this.spawning.getAnimalSettings().getSpawnRate() != -1) {
-                world.get().setTicksPerAnimalSpawns(MVWorld.this.spawning.getAnimalSettings().getSpawnRate());
+            final World world = getCBWorld();
+            if (world != null) {
+                if (MVWorld.this.spawning.getAnimalSettings().getSpawnRate() != -1) {
+                    world.setTicksPerAnimalSpawns(MVWorld.this.spawning.getAnimalSettings().getSpawnRate());
+                }
+                if (MVWorld.this.spawning.getMonsterSettings().getSpawnRate() != -1) {
+                    world.setTicksPerMonsterSpawns(MVWorld.this.spawning.getMonsterSettings().getSpawnRate());
+                }
+                world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            if (MVWorld.this.spawning.getMonsterSettings().getSpawnRate() != -1) {
-                world.get().setTicksPerMonsterSpawns(MVWorld.this.spawning.getMonsterSettings().getSpawnRate());
-            }
-            world.get().setSpawnFlags(allowMonsters, allowAnimals);
             plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(MVWorld.this);
             return super.validateChange(property, newValue, oldValue, object);
         }
@@ -375,12 +378,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private volatile VirtualProperty<Boolean> pvp = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
-            world.get().setPVP(newValue);
+            final World world = getCBWorld();
+            if (world != null) {
+                world.setPVP(newValue);
+            }
         }
 
         @Override
         public Boolean get() {
-            return world.get().getPVP();
+            final World world = getCBWorld();
+            return world != null ? world.getPVP() : null;
         }
     };
     @Property(validator = ScalePropertyValidator.class, description = "Scale must be a positive double value. ex: 2.3")
@@ -394,12 +401,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private volatile VirtualProperty<Difficulty> difficulty = new VirtualProperty<Difficulty>() {
         @Override
         public void set(Difficulty newValue) {
-            world.get().setDifficulty(newValue);
+            final World world = getCBWorld();
+            if (world != null) {
+                world.setDifficulty(newValue);
+            }
         }
 
         @Override
         public Difficulty get() {
-            return world.get().getDifficulty();
+            final World world = getCBWorld();
+            return world != null ? world.getDifficulty() : null;
         }
     };
     @Property(validator = SpawningPropertyValidator.class, description = "Sorry, 'animals' must either be: true or false.")
@@ -421,12 +432,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private volatile VirtualProperty<Boolean> keepSpawnInMemory = new VirtualProperty<Boolean>() {
         @Override
         public void set(Boolean newValue) {
-            world.get().setKeepSpawnInMemory(newValue);
+            final World world = getCBWorld();
+            if (world != null) {
+                world.setKeepSpawnInMemory(newValue);
+            }
         }
 
         @Override
         public Boolean get() {
-            return world.get().getKeepSpawnInMemory();
+            final World world = getCBWorld();
+            return world != null ? world.getKeepSpawnInMemory() : null;
         }
     };
     @Property
@@ -461,12 +476,16 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     private volatile VirtualProperty<Long> time = new VirtualProperty<Long>() {
         @Override
         public void set(Long newValue) {
-            world.get().setTime(newValue);
+            final World world = getCBWorld();
+            if (world != null) {
+                world.setTime(newValue);
+            }
         }
 
         @Override
         public Long get() {
-            return world.get().getTime();
+            final World world = getCBWorld();
+            return world != null ? world.getTime() : null;
         }
     };
     @Property
@@ -554,8 +573,6 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     public void init(World cbWorld, MultiverseCore thePlugin) {
         this.plugin = thePlugin;
 
-        // Weak reference so the CB-World can be unloaded even if this object still exists!
-        this.world = new WeakReference<World>(cbWorld);
         this.environment = cbWorld.getEnvironment();
         this.seed = cbWorld.getSeed();
         this.name = cbWorld.getName();
@@ -670,7 +687,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         this.adjustSpawn = true;
         this.portalForm = AllowedPortalType.ALL;
         this.gameMode = GameMode.SURVIVAL;
-        this.spawnLocation = (world != null) ? new SpawnLocation(world.get().getSpawnLocation()) : new NullLocation();
+        this.spawnLocation = (getCBWorld() != null) ? new SpawnLocation(getCBWorld().getSpawnLocation()) : new NullLocation();
         this.autoLoad = true;
         this.bedRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
@@ -725,7 +742,14 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
      */
     @Override
     public World getCBWorld() {
-        return this.world.get();
+        if (name == null) {
+            return null;
+        }
+        final World world = plugin.getServer().getWorld(name);
+        if (world == null) {
+            Logging.severe("Lost reference to bukkit world '%s'", name);
+        }
+        return world;
     }
 
     /**
@@ -884,7 +908,8 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     @Override
     public WorldType getWorldType() {
         // This variable is not settable in-game, therefore does not get a property.
-        return world.get().getWorldType();
+        final World world = getCBWorld();
+        return world != null ? world.getWorldType() : null;
     }
 
     /**
