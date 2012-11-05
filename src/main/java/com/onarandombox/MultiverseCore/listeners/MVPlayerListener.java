@@ -193,7 +193,7 @@ public class MVPlayerListener implements Listener {
                     + "' don't have the FUNDS required to enter it.");
             return;
         }
-        
+
         // Check if player is allowed to enter the world if we're enforcing permissions
         if (plugin.getMVConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
@@ -208,7 +208,7 @@ public class MVPlayerListener implements Listener {
             this.plugin.log(Level.FINE, "Player '" + teleportee.getName()
                     + "' was allowed to go to '" + toWorld.getAlias() + "' because enforceaccess is off.");
         }
-        
+
         // Does a limit actually exist?
         if (toWorld.getPlayerLimit() > -1) {
             // Are there equal or more people on the world than the limit?
@@ -224,7 +224,7 @@ public class MVPlayerListener implements Listener {
                 }
             }
         }
-        
+
         // By this point anything cancelling the event has returned on the method, meaning the teleport is a success \o/
         this.stateSuccess(teleportee.getName(), toWorld.getAlias());
     }

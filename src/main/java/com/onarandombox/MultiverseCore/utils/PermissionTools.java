@@ -257,17 +257,24 @@ public class PermissionTools {
         }
         return true;
     }
-    
+
+    /**
+     * Checks to see if a player can bypass the player limit.
+     *
+     * @param toWorld The world travelling to.
+     * @param teleporter The player that initiated the teleport.
+     * @param teleportee The player travelling.
+     * @return True if they can bypass the player limit.
+     */
     public boolean playerCanBypassPlayerLimit(MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
-        
         if (teleporter == null) {
             teleporter = teleportee;
         }
-        
+
         if (!(teleporter instanceof Player)) {
-            return true;  
+            return true;
         }
-        
+
         MVPermissions perms = plugin.getMVPerms();
         if (perms.hasPermission(teleportee, "mv.bypass.playerlimit." + toWorld.getName(), false)) {
             return true;

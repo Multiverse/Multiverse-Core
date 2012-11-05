@@ -589,7 +589,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
 
         this.exempt = new Permission("multiverse.exempt." + this.getName(),
                 "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
-        
+
         this.limitbypassperm = new Permission("mv.bypass.playerlimit." + this.getName(),
                 "A player who can enter this world regardless of wether its full", PermissionDefault.OP);
         try {
@@ -934,7 +934,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     public void setGenerator(String generator) {
         this.setPropertyValueUnchecked("generator", generator);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -942,7 +942,7 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
     public int getPlayerLimit() {
         return this.playerLimit;
     }
-    
+
     /**
      * {@inheritDoc}
      */
