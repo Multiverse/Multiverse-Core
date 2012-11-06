@@ -511,6 +511,11 @@ public class MVWorld extends SerializationConfig implements MultiverseWorld {
         }
     }
 
+    /**
+     * This initializes the {@code plugin} and {@code name} fields.
+     * @param plugin The plugin.
+     * @param name The world's name.
+     */
     void setPluginAndWorld(MultiverseCore plugin, String name) {
         this.plugin = plugin;
         this.name = name;
