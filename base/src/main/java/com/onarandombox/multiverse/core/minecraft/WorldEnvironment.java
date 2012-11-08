@@ -1,4 +1,10 @@
 package com.onarandombox.multiverse.core.minecraft;
 
-public class WorldEnvironment {
+public enum WorldEnvironment {
+
+    ;
+
+    public static WorldEnvironment getFromString(String name) {
+        return null;
+    }
 }
