@@ -9,6 +9,7 @@ import com.onarandombox.multiverse.core.api.Core;
 import com.onarandombox.multiverse.core.api.MVPerms;
 import com.onarandombox.multiverse.core.api.MultiverseWorld;
 import com.onarandombox.multiverse.core.minecraft.WorldEnvironment;
+import com.onarandombox.multiverse.core.util.Language;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.util.List;
 )
 public class ImportCommand extends MultiverseCommand {
 
-    public static final Message IMPORT = new Message("command.import.help",
+    public static final Message IMPORT_HELP = new Message("command.import.help",
             "Imports a world into the server from a folder with the given name.",
             "The folder must exist in the location where worlds are normally located and must contain Minecraft world data.",
             "You must specify a world environment such as NORMAL or NETHER.",
@@ -48,9 +49,6 @@ public class ImportCommand extends MultiverseCommand {
 
     public static final Message NO_POTENTIAL_WORLDS = new Message("command.import.no_potential_worlds",
             "&cNo potential worlds found. Sorry!");
-
-    public static final Message ALREADY_MV_WORLD = new Message("command.import.already_mv_world",
-            "&aMultiverse&f already knows about '&b%s&f'!");
 
     public static final Message INVALID_ENVIRONMENT = new Message("command.import.invalid_environment",
             "&cThat is not a valid environment.");
@@ -71,7 +69,7 @@ public class ImportCommand extends MultiverseCommand {
 
     @Override
     public Message getHelp() {
-        return IMPORT;
+        return IMPORT_HELP;
     }
 
     @Override
@@ -95,7 +93,7 @@ public class ImportCommand extends MultiverseCommand {
 
         // Make sure we don't already know about this world.
         if (core.getMVWorldManager().isMVWorld(worldName)) {
-            core.getMessager().message(sender, ALREADY_MV_WORLD, worldName);
+            core.getMessager().message(sender, Language.WORLD_ALREADY_EXISTS, worldName);
             return true;
         }
 
