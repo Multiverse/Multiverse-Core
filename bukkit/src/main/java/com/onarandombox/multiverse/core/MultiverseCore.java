@@ -11,6 +11,10 @@ import java.io.IOException;
  */
 public class MultiverseCore extends AbstractBukkitPlugin<CoreConfig> implements Core {
 
+    public MultiverseCore() {
+        this.setPermissionName("multiverse.core");
+    }
+
     @Override
     public String getCommandPrefix() {
         return "mv";

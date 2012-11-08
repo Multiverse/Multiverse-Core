@@ -9,4 +9,11 @@ import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
  * This is the class you should cast your plugin to.
  */
 public interface Core extends PluginBase<CoreConfig> {
+
+    /**
+     * Gets the primary class responsible for managing Multiverse Worlds.
+     *
+     * @return {@link WorldManager}.
+     */
+    WorldManager getMVWorldManager();
 }
