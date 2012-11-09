@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.onarandombox</groupId>
+        <groupId>com.mvplugin</groupId>
         <artifactId>MultiverseCore</artifactId>
         <version>3.0-SNAPSHOT</version>
     </parent>
@@ -227,11 +227,18 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.mvplugin</groupId>
+            <artifactId>MultiverseCore-API</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <!-- Base Dependency -->
         <dependency>
-            <groupId>com.onarandombox</groupId>
+            <groupId>com.mvplugin</groupId>
             <artifactId>MultiverseCore-Base</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

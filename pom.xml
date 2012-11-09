@@ -1,40 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.onarandombox</groupId>
-    <artifactId>MultiverseCore</artifactId>
-    <version>3.0-SNAPSHOT</version>
-    <name>Multiverse-Core</name>
-    <url>http://ci.onarandombox.org</url>
-    <description>World Management Plugin</description>
-    <packaging>pom</packaging>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mvplugin</groupId>
+	<artifactId>MultiverseCore</artifactId>
+	<version>3.0-SNAPSHOT</version>
+	<name>Multiverse-Core</name>
+	<url>http://ci.onarandombox.org</url>
+	<description>World Management Plugin</description>
+	<packaging>pom</packaging>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.number>LOCAL</project.build.number>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.number>LOCAL</project.build.number>
+	</properties>
 
-    <!-- Modules -->
-    <modules>
-        <module>base</module>
-        <module>bukkit</module>
-    </modules>
+	<!-- Modules -->
+	<modules>
+		<module>base</module>
+		<module>bukkit</module>
+		<module>api</module>
+	</modules>
 
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
-    </ciManagement>
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://ci.onarandombox.com</url>
+	</ciManagement>
 
-    <distributionManagement>
-        <repository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
-        </repository>
-    </distributionManagement>
-    
-    <scm>
-        <connection>scm:git:git://github.com/multiverse/Multiverse-Core.git</connection>
-        <url>https://github.com/multiverse/Multiverse-Core</url>
-        <developerConnection>scm:git:git@github.com:multiverse/Multiverse-Core.git</developerConnection>
-    </scm>
+	<distributionManagement>
+		<repository>
+			<id>OnARandomBox</id>
+			<url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+		</repository>
+	</distributionManagement>
+
+	<scm>
+		<connection>scm:git:git://github.com/multiverse/Multiverse-Core.git</connection>
+		<url>https://github.com/multiverse/Multiverse-Core</url>
+		<developerConnection>scm:git:git@github.com:multiverse/Multiverse-Core.git</developerConnection>
+	</scm>
 </project>
