@@ -1,4 +1,8 @@
 package com.onarandombox.multiverse.core.minecraft;
 
-public class Difficulty {
+public enum Difficulty {
+	PEACEFUL,
+	EASY,
+	NORMAL,
+	HARD
 }
