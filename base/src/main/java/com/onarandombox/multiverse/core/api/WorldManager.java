@@ -5,6 +5,8 @@ import com.onarandombox.multiverse.core.minecraft.Generator;
 import com.onarandombox.multiverse.core.minecraft.WorldEnvironment;
 import com.onarandombox.multiverse.core.minecraft.WorldType;
 
+import java.io.IOException;
+
 /**
  * Multiverse 2 World Manager API
  * <p>
@@ -12,6 +14,17 @@ import com.onarandombox.multiverse.core.minecraft.WorldType;
  * functions that your heart desires!
  */
 public interface WorldManager {
+
+    /**
+     * Gets an existing WorldProperties object or creates a new one based on the name.
+     *
+     * TODO explain that they should use getWorld() in general.
+     *
+     * @param worldName The name of the world to get properties for.
+     * @return The world properties for the given world name.
+     * @throws IOException In case there are any issues accessing the persistence for the world properties.
+     */
+    WorldProperties getWorldProperties(final String worldName) throws IOException;
 
     /**
      * Add a new World to the Multiverse Setup.
@@ -145,7 +158,7 @@ public interface WorldManager {
      * @param name The name or alias of the world to get.
      * @return A {@link MultiverseWorld} or null.
      */
-    //TODO MultiverseWorld getMVWorld(String name);
+    //TODO W getMVWorld(String name);
 
     /**
      * Checks to see if the given name is a valid {@link MultiverseWorld}.
