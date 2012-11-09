@@ -15,6 +15,7 @@ import com.onarandombox.multiverse.core.minecraft.WorldEnvironment;
 import com.onarandombox.multiverse.core.minecraft.WorldType;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The API for a Multiverse Handled World.
@@ -30,6 +31,15 @@ public interface MultiverseWorld {
      * @return The name of the world as a String.
      */
     String getName();
+
+    /**
+     * Gets the UUID for this world.
+     *
+     * This is what Minecraft uses to keep tracks of worlds.
+     *
+     * @return The UUID for this world.
+     */
+    UUID getWorldUID();
 
     /**
      * Gets the type of this world. As of 1.2 this will be:
