@@ -3,7 +3,6 @@ package com.onarandombox.multiverse.core;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.onarandombox.multiverse.core.api.Core;
 import com.onarandombox.multiverse.core.api.CoreConfig;
-import com.onarandombox.multiverse.core.api.WorldManager;
 
 import java.io.IOException;
 
@@ -12,13 +11,22 @@ import java.io.IOException;
  */
 public class MultiverseCore extends AbstractBukkitPlugin<CoreConfig> implements Core {
 
+    private static final String COMMAND_PREFIX = "mv";
+
+    private BukkitWorldManager worldManager;
+
     public MultiverseCore() {
         this.setPermissionName("multiverse.core");
     }
 
     @Override
+    protected void onPluginLoad() {
+        worldManager = new BukkitWorldManager(this);
+    }
+
+    @Override
     public String getCommandPrefix() {
-        return "mv";
+        return COMMAND_PREFIX;
     }
 
     @Override
@@ -32,7 +40,7 @@ public class MultiverseCore extends AbstractBukkitPlugin<CoreConfig> implements 
     }
 
     @Override
-    public WorldManager getMVWorldManager() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public BukkitWorldManager getMVWorldManager() {
+        return this.worldManager;
     }
 }
