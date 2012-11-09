@@ -13,7 +13,7 @@ import java.io.IOException;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
-public interface WorldManager {
+public interface WorldManager<W extends MultiverseWorld> {
 
     /**
      * Gets an existing WorldProperties object or creates a new one based on the name.

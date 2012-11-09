@@ -11,15 +11,15 @@ import com.onarandombox.multiverse.core.util.Language;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class AbstractWorldManager implements WorldManager {
+abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldManager<W> {
 
     protected final Core core;
 
-    private final Map<String, MultiverseWorld> worldMap;
+    private final Map<String, W> worldMap;
 
     AbstractWorldManager(final Core core) {
         this.core = core;
-        worldMap = new HashMap<String, MultiverseWorld>();
+        worldMap = new HashMap<String, W>();
     }
 
     @Override
@@ -52,16 +52,36 @@ abstract class AbstractWorldManager implements WorldManager {
             generator = null;
         }
 
-        createWorld(name, env, seed, type, generateStructures, generator, true);
+        W mvWorld = createWorld(name, env, seed, type, generateStructures, generator);
+        mvWorld.setAdjustSpawn(useSpawnAdjust);
+
+        this.worldMap.put(name, mvWorld);
 
         return true;
     }
 
-    protected abstract MultiverseWorld createWorld(String name,
-                                                   WorldEnvironment env,
-                                                   Long seed,
-                                                   WorldType type,
-                                                   Boolean generateStructures,
-                                                   String generator,
-                                                   boolean useSpawnAdjust) throws WorldCreationException;
+    /**
+     * Creates a {@link W} with the given properties.
+     *
+     * If a Minecraft world is already loaded with this name, null will be returned.  If a Minecraft world already
+     * exists but it not loaded, it will be loaded instead.
+     *
+     * @param name The name for the world.  May not be null.
+     * @param env The environment for the world.  May not be null.
+     * @param seed The seed for the world.  Null means a random seed will be used if creating a new Minecraft world.
+     * @param type The world type for the world.  Null means the Minecraft default will be used if creating a new
+     *             Minecraft world or, if loading a world, the loaded world's type will be used.
+     * @param generateStructures Whether or not to generate structures for the world.  Null means the Minecraft default
+     *                           will be used if creating a new world or, if loading a world, the loaded world's
+     *                           setting will be used.
+     * @param generator The name of the generator for the world.  Null may be used to specify no generator.
+     * @return A new {@link W} or null if a Minecraft world by this name is already loaded.
+     * @throws WorldCreationException If any problems occured while trying to create the world.
+     */
+    protected abstract W createWorld(String name,
+                                     WorldEnvironment env,
+                                     Long seed,
+                                     WorldType type,
+                                     Boolean generateStructures,
+                                     String generator) throws WorldCreationException;
 }
