@@ -1,16 +1,43 @@
 package com.onarandombox.multiverse.core.minecraft;
 
-public interface PlayerPosition {
+public class PlayerPosition {
 
-    String getWorld();
+    private final double x, y, z;
+    private final float pitch, yaw;
+    private final String world;
 
-    float getPitch();
+    PlayerPosition(final String world, final double x,
+                   final double y, final double z,
+                   final float pitch, final float yaw) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.pitch = pitch;
+        this.yaw = yaw;
+    }
 
-    float getYaw();
+    public String getWorld() {
+        return world;
+    }
 
-    double getX();
+    public float getPitch() {
+        return pitch;
+    }
 
-    double getY();
+    public float getYaw() {
+        return this.yaw;
+    }
 
-    double getZ();
+    public double getX() {
+        return this.x;
+    }
+
+    public double getY() {
+        return this.y;
+    }
+
+    public double getZ() {
+        return this.z;
+    }
 }
