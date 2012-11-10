@@ -149,12 +149,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.mvplugin</groupId>
-            <artifactId>MultiverseCore-API</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <!-- Start of PluginBase Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
