@@ -19,7 +19,6 @@
 	<modules>
 		<module>base</module>
 		<module>bukkit</module>
-		<module>api</module>
 	</modules>
 
 	<ciManagement>

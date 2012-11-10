@@ -229,7 +229,7 @@
     <dependencies>
         <dependency>
             <groupId>com.mvplugin</groupId>
-            <artifactId>MultiverseCore-API</artifactId>
+            <artifactId>MultiverseCore-Base</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
