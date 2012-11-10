@@ -1,7 +1,7 @@
 package com.mvplugin.integration;
 
-import com.mvplugin.MVCore;
+import com.mvplugin.MultiverseCore;
 
 public interface Bootstrap {
-    MVCore getPlugin(APICollection api);
+    MultiverseCore getPlugin(APICollection api);
 }

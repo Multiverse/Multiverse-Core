@@ -1,7 +1,7 @@
 package com.mvplugin.impl;
 
 import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
-import com.mvplugin.MVCore;
+import com.mvplugin.MultiverseCore;
 import com.mvplugin.MultiverseWorld;
 import com.mvplugin.WorldCreationException;
 import com.mvplugin.WorldManager;
@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class BaseWorldManager implements WorldManager {
-    protected final MVCore core;
+    protected final MultiverseCore core;
     private WorldAPI creator;
 
     private final Map<String, MultiverseWorld> worldMap;
 
-    protected BaseWorldManager(final MVCore core, final WorldAPI creator) {
+    protected BaseWorldManager(final MultiverseCore core, final WorldAPI creator) {
         this.core = core;
         this.creator = creator;
         this.worldMap = new HashMap<String, MultiverseWorld>();

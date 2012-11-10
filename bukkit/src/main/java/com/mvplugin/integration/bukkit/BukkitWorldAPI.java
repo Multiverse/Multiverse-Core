@@ -1,7 +1,7 @@
 package com.mvplugin.integration.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
-import com.mvplugin.MVCore;
+import com.mvplugin.MultiverseCore;
 import com.mvplugin.WorldCreationException;
 import com.mvplugin.WorldManager.WorldCreationSettings;
 import com.mvplugin.integration.WorldAPI;
@@ -16,10 +16,10 @@ import java.io.File;
 import java.util.concurrent.Callable;
 
 public class BukkitWorldAPI implements WorldAPI {
-    private final MVCore plugin;
+    private final MultiverseCore plugin;
     private final File worldsFolder;
 
-    public BukkitWorldAPI(MVCore plugin, File worldsFolder) {
+    public BukkitWorldAPI(MultiverseCore plugin, File worldsFolder) {
         this.plugin = plugin;
         this.worldsFolder = worldsFolder;
     }

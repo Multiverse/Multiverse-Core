@@ -1,8 +1,7 @@
 package com.mvplugin.integration.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.mvplugin.MVCore;
-import com.mvplugin.WorldManager;
+import com.mvplugin.MultiverseCore;
 import com.mvplugin.integration.APICollection;
 import com.mvplugin.integration.Bootstrap;
 
@@ -15,7 +14,7 @@ import java.io.IOException;
 public class MVCoreBukkitIntegration extends AbstractBukkitPlugin<CoreConfig> {
     private static final String COMMAND_PREFIX = "mv";
 
-    private MVCore plugin;
+    private MultiverseCore plugin;
 
     public MVCoreBukkitIntegration() {
         this.setPermissionName("multiverse.core");
@@ -43,7 +42,7 @@ public class MVCoreBukkitIntegration extends AbstractBukkitPlugin<CoreConfig> {
         return false;
     }
 
-    public MVCore getImplementation() {
+    public MultiverseCore getImplementation() {
         return this.plugin;
     }
 }
