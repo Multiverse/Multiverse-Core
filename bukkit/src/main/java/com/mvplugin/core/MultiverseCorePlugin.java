@@ -8,8 +8,8 @@ import java.io.IOException;
 /**
  * The primary Bukkit plugin implementation of Multiverse-Core.
  */
-// TODO: Some magic that automatically hooks up abstract base libs because we can't know what libs the base uses
 public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> implements MultiverseCore {
+
     private static final String COMMAND_PREFIX = "mv";
 
     private BukkitWorldManager worldManager;
