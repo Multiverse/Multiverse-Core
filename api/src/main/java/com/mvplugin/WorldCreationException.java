@@ -1,6 +1,6 @@
 package com.mvplugin;
 
-import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
 
 public class WorldCreationException extends MultiverseException {
 

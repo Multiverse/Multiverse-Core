@@ -1,7 +1,6 @@
 package com.mvplugin.integration.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
-import com.mvplugin.impl.CoreConfig;
 
 import java.io.File;
 import java.io.IOException;

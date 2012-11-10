@@ -1,17 +1,16 @@
 package com.mvplugin.integration.bukkit;
 
-import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
 import com.mvplugin.MVCore;
 import com.mvplugin.WorldCreationException;
 import com.mvplugin.WorldManager.WorldCreationSettings;
 import com.mvplugin.integration.WorldAPI;
 import com.mvplugin.integration.bukkit.util.BukkitLanguage;
 import com.mvplugin.integration.bukkit.util.Convert;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.WorldCreator;
+import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
 import java.util.concurrent.Callable;

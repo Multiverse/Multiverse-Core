@@ -1,4 +1,4 @@
-package com.mvplugin.impl;
+package com.mvplugin.integration.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 
