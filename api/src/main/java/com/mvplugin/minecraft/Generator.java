@@ -1,4 +1,4 @@
 package com.mvplugin.minecraft;
 
-public class Generator {
+public interface Generator {
 }

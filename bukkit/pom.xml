@@ -234,14 +234,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- Base Dependency -->
-        <dependency>
-            <groupId>com.mvplugin</groupId>
-            <artifactId>MultiverseCore-Base</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- PluginBase Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>

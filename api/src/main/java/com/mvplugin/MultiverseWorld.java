@@ -16,6 +16,7 @@ import com.mvplugin.minecraft.WorldType;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 /**
  * The API for a Multiverse Handled World.
@@ -510,4 +511,8 @@ public interface MultiverseWorld {
      * @return A List of world names.
      */
     List<String> getWorldBlacklist();
+
+    // TODO this workaround, simply stated, sucks. there has to be a better way.
+    Callable<?> getAPISpecificObjectCallable();
+    void setAPISpecificObjectCallable(Callable<?> apiObject);
 }

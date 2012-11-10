@@ -9,12 +9,14 @@ import com.mvplugin.minecraft.WorldEnvironment;
 import com.mvplugin.minecraft.WorldType;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 
-public abstract class AbstractMultiverseWorld implements MultiverseWorld {
-
+public class BaseMultiverseWorld implements MultiverseWorld {
     private final WorldProperties worldProperties;
+    private Callable<?> apiObject;
 
-    protected AbstractMultiverseWorld(final WorldProperties worldProperties) {
+    protected BaseMultiverseWorld(final WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
     }
 
@@ -321,5 +323,27 @@ public abstract class AbstractMultiverseWorld implements MultiverseWorld {
     @Override
     public List<String> getWorldBlacklist() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public UUID getWorldUID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public Callable<?> getAPISpecificObjectCallable() {
+        return this.apiObject;
+    }
+
+    @Override
+    public void setAPISpecificObjectCallable(Callable<?> apiObject) {
+        this.apiObject = apiObject;
     }
 }
