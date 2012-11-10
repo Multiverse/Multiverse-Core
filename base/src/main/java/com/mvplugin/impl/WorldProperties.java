@@ -1,6 +1,6 @@
 package com.mvplugin.impl;
 
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;

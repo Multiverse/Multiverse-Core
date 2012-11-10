@@ -1,6 +1,6 @@
 package com.mvplugin.impl.util;
 
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 
 public class Language {
 

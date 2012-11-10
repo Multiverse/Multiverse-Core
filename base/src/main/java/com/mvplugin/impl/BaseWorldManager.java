@@ -1,6 +1,6 @@
 package com.mvplugin.impl;
 
-import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
 import com.mvplugin.MVCore;
 import com.mvplugin.MultiverseWorld;
 import com.mvplugin.WorldCreationException;
