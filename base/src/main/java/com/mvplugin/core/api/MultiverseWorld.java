@@ -42,6 +42,17 @@ public interface MultiverseWorld {
     UUID getWorldUID();
 
     /**
+     * Returns the WorldProperties object that contains the backing for all the values of a Multiverse World.
+     *
+     * All of these properties are generally gettable and settable via the MultiverseWorld class.  Specific uses for
+     * the returned object may be to set properties in a different way and to perform more complex actions related
+     * to properties.
+     *
+     * @return The properties for this world.
+     */
+    WorldProperties getWorldProperties();
+
+    /**
      * Gets the type of this world. As of 1.2 this will be:
      * FLAT, NORMAL or VERSION_1_1
      * <p>
