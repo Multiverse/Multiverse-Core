@@ -289,11 +289,6 @@ public interface WorldManager {
     List<String> getUnloadedWorlds();
 
     /**
-     * This method populates an internal list and needs to be called after multiverse initialization.
-     */
-    //TODO void getDefaultWorldGenerators();
-
-    /**
      * Saves the world config to disk.
      *
      * @return True if success, false if fail.

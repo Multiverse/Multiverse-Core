@@ -1,6 +1,5 @@
 package com.mvplugin.core;
 
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import com.mvplugin.core.api.WorldProperties;
 
@@ -13,7 +12,7 @@ import java.io.IOException;
  */
 class YamlWorldProperties extends YamlProperties implements WorldProperties {
 
-    YamlWorldProperties(BukkitPlugin plugin, File configFile) throws IOException {
-        super(plugin, false, true, configFile, WorldProperties.class);
+    YamlWorldProperties(File configFile) throws IOException {
+        super(false, true, configFile, WorldProperties.class);
     }
 }

@@ -16,11 +16,11 @@ import java.util.Map;
 abstract class AbstractWorldManager implements WorldManager {
 
     protected final MultiverseCore core;
-    private final Map<String, MultiverseWorld> worldMap;
+    protected final Map<String, MultiverseWorld> worldsMap;
 
     protected AbstractWorldManager(final MultiverseCore core) {
         this.core = core;
-        this.worldMap = new HashMap<String, MultiverseWorld>();
+        this.worldsMap = new HashMap<String, MultiverseWorld>();
     }
 
     @Override
@@ -60,12 +60,12 @@ abstract class AbstractWorldManager implements WorldManager {
 
     @Override
     public MultiverseWorld addWorld(WorldCreationSettings settings) throws WorldCreationException {
-        if (this.worldMap.containsKey(settings.name())) {
+        if (this.worldsMap.containsKey(settings.name())) {
             throw new WorldCreationException(new BundledMessage(Language.WORLD_ALREADY_EXISTS, settings.name()));
         }
         MultiverseWorld mvWorld = createWorld(settings);
         mvWorld.setAdjustSpawn(settings.adjustSpawn());
-        this.worldMap.put(settings.name(), mvWorld);
+        this.worldsMap.put(settings.name(), mvWorld);
         return mvWorld;
     }
 
@@ -102,11 +102,11 @@ abstract class AbstractWorldManager implements WorldManager {
 
     @Override
     public boolean isMVWorld(final String name) {
-        return this.worldMap.containsKey(name);
+        return this.worldsMap.containsKey(name);
     }
 
     @Override
     public Collection<MultiverseWorld> getMVWorlds() {
-        return Collections.unmodifiableCollection(this.worldMap.values());
+        return Collections.unmodifiableCollection(this.worldsMap.values());
     }
 }

@@ -16,6 +16,10 @@ public final class Convert {
         return WorldType.valueOf(t.name());
     }
 
+    public static com.mvplugin.core.minecraft.WorldType fromBukkit(WorldType t) {
+        return com.mvplugin.core.minecraft.WorldType.valueOf(t.name());
+    }
+
     public static Environment toBukkit(WorldEnvironment e) {
         return Environment.valueOf(e.name());
     }

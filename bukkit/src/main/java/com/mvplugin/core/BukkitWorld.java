@@ -2,6 +2,8 @@ package com.mvplugin.core;
 
 import com.mvplugin.core.api.BukkitMultiverseWorld;
 import com.mvplugin.core.api.WorldProperties;
+import com.mvplugin.core.minecraft.WorldType;
+import com.mvplugin.core.util.Convert;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -11,11 +13,13 @@ class BukkitWorld extends AbstractMultiverseWorld implements BukkitMultiverseWor
 
     private final String name;
     private final UUID worldUID;
+    private final WorldType worldType;
 
     BukkitWorld(final World world, final WorldProperties worldProperties) {
         super(worldProperties);
         this.name = world.getName();
         this.worldUID = world.getUID();
+        this.worldType = Convert.fromBukkit(world.getWorldType());
     }
 
     @Override
@@ -26,6 +30,11 @@ class BukkitWorld extends AbstractMultiverseWorld implements BukkitMultiverseWor
     @Override
     public UUID getWorldUID() {
         return this.worldUID;
+    }
+
+    @Override
+    public WorldType getWorldType() {
+        return worldType;
     }
 
     @Override

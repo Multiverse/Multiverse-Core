@@ -12,6 +12,7 @@ import java.io.IOException;
  */
 public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> implements MultiverseCore {
 
+    private static final int PROTOCOL = 19;
     private static final String COMMAND_PREFIX = "mv";
 
     private BukkitWorldManager worldManager;
@@ -22,13 +23,16 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
 
     @Override
     protected void onPluginLoad() {
-        worldManager = new BukkitWorldManager(this);
         getCommandHandler().registerCommand(ImportCommand.class);
     }
 
     @Override
     public void onPluginEnable() {
+        worldManager = new BukkitWorldManager(this);
+    }
 
+    protected void onReloadConfig() {
+        worldManager = new BukkitWorldManager(this);
     }
 
     @Override
@@ -47,7 +51,20 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
     }
 
     @Override
-    public BukkitWorldManager getMVWorldManager() {
+    public BukkitWorldManager getWorldManager() {
         return this.worldManager;
+    }
+
+    @Override
+    public MultiverseCore getCore() {
+        return this;
+    }
+
+    @Override
+    public void setCore(MultiverseCore core) { }
+
+    @Override
+    public int getProtocolVersion() {
+        return PROTOCOL;
     }
 }

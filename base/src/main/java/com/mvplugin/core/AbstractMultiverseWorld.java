@@ -7,7 +7,6 @@ import com.mvplugin.core.minecraft.GameMode;
 import com.mvplugin.core.minecraft.PlayerPosition;
 import com.mvplugin.core.minecraft.PortalType;
 import com.mvplugin.core.minecraft.WorldEnvironment;
-import com.mvplugin.core.minecraft.WorldType;
 
 import java.util.List;
 
@@ -20,18 +19,13 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     }
 
     @Override
-    public WorldType getWorldType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public WorldEnvironment getEnvironment() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.ENVIRONMENT);
     }
 
     @Override
-    public void setEnvironment(WorldEnvironment environment) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setEnvironment(final WorldEnvironment environment) {
+        getProperties().set(WorldProperties.ENVIRONMENT, environment);
     }
 
     @Override
@@ -261,12 +255,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean getAdjustSpawn() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.ADJUST_SPAWN);
     }
 
     @Override
-    public void setAdjustSpawn(boolean adjust) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAdjustSpawn(final boolean adjust) {
+        getProperties().set(WorldProperties.ADJUST_SPAWN, adjust);
     }
 
     @Override

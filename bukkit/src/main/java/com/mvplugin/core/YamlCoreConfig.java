@@ -12,6 +12,6 @@ import java.io.IOException;
 class YamlCoreConfig extends YamlProperties implements CoreConfig {
 
     public YamlCoreConfig(MultiverseCorePlugin plugin) throws IOException {
-        super(plugin, true, true, new File(plugin.getDataFolder(), "config.yml"), CoreConfig.class);
+        super(true, true, new File(plugin.getDataFolder(), "config.yml"), CoreConfig.class);
     }
 }

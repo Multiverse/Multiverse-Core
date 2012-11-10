@@ -93,7 +93,7 @@ public class ImportCommand extends MultiverseCommand {
         }
 
         // Make sure we don't already know about this world.
-        if (core.getMVWorldManager().isMVWorld(worldName)) {
+        if (core.getWorldManager().isMVWorld(worldName)) {
             core.getMessager().message(sender, Language.WORLD_ALREADY_EXISTS, worldName);
             return true;
         }
@@ -114,7 +114,7 @@ public class ImportCommand extends MultiverseCommand {
         if (worldFile.exists() && env != null) {
             core.getMessager().messageAndLog(sender, STARTING_IMPORT, worldName);
             try {
-                core.getMVWorldManager().addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust);
+                core.getWorldManager().addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust);
                 core.getMessager().messageAndLog(sender, IMPORT_COMPLETE);
             } catch (WorldCreationException e) {
                 core.getMessager().messageAndLog(sender, IMPORT_FAILED);
@@ -164,12 +164,12 @@ public class ImportCommand extends MultiverseCommand {
         }
         File[] files = worldFolder.listFiles();
         String worldList = "";
-        Collection<MultiverseWorld> worlds = core.getMVWorldManager().getMVWorlds();
+        Collection<MultiverseWorld> worlds = core.getWorldManager().getMVWorlds();
         List<String> worldStrings = new ArrayList<String>();
         for (MultiverseWorld world : worlds) {
             worldStrings.add(world.getName());
         }
-        for (String world : core.getMVWorldManager().getUnloadedWorlds()) {
+        for (String world : core.getWorldManager().getUnloadedWorlds()) {
             worldStrings.add(world);
         }
         ChatColor currColor = ChatColor.WHITE;
