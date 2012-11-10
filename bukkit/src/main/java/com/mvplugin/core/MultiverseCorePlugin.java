@@ -23,7 +23,7 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
 
     @Override
     protected void onPluginLoad() {
-        getCommandHandler().registerCommand(ImportCommand.class);
+
     }
 
     @Override
@@ -33,6 +33,11 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
 
     protected void onReloadConfig() {
         worldManager = new BukkitWorldManager(this);
+    }
+
+    @Override
+    protected void registerCommands() {
+        registerCommand(ImportCommand.class);
     }
 
     @Override
