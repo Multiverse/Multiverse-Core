@@ -50,7 +50,7 @@ public interface MultiverseWorld {
      *
      * @return The properties for this world.
      */
-    WorldProperties getWorldProperties();
+    WorldProperties getProperties();
 
     /**
      * Gets the type of this world. As of 1.2 this will be:
@@ -460,9 +460,9 @@ public interface MultiverseWorld {
      * <p>
      * True is default.
      *
-     * @param autoLoad True if players dying in this world respawn at their bed.
+     * @param bedRespawn True if players dying in this world respawn at their bed.
      */
-    void setBedRespawn(boolean autoLoad);
+    void setBedRespawn(boolean bedRespawn);
 
     /**
      * Sets the player limit for this world after which players without an override
@@ -521,4 +521,6 @@ public interface MultiverseWorld {
      * @return A List of world names.
      */
     List<String> getWorldBlacklist();
+
+    void save();
 }

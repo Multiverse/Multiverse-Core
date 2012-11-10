@@ -3,7 +3,7 @@ package com.mvplugin.core.api;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 
-public interface MVPerms {
+public interface Perms {
 
     Perm ALL_MULTIVERSE = PermFactory.newPerm("multiverse.*").child(Perm.ALL).build();
 

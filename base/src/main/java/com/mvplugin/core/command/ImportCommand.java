@@ -5,8 +5,8 @@ import com.dumptruckman.minecraft.pluginbase.messaging.ChatColor;
 import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
-import com.mvplugin.core.api.MVPerms;
 import com.mvplugin.core.api.MultiverseWorld;
+import com.mvplugin.core.api.Perms;
 import com.mvplugin.core.minecraft.WorldEnvironment;
 import com.mvplugin.core.util.Language;
 import com.sk89q.minecraft.util.commands.CommandContext;
@@ -63,7 +63,7 @@ public class ImportCommand extends MultiverseCommand {
 
     @Override
     public Perm getPerm() {
-        return MVPerms.CMD_IMPORT;
+        return Perms.CMD_IMPORT;
     }
 
     @Override

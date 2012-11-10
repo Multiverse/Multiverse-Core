@@ -10,11 +10,10 @@ import com.mvplugin.core.minecraft.WorldEnvironment;
 import com.mvplugin.core.minecraft.WorldType;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 abstract class AbstractMultiverseWorld implements MultiverseWorld {
+
     private final WorldProperties worldProperties;
-    private Callable<?> apiObject;
 
     protected AbstractMultiverseWorld(final WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
@@ -47,26 +46,26 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public long getSeed() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SEED);
     }
 
     @Override
     public void setSeed(long seed) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        getProperties().set(WorldProperties.SEED, seed);
     }
 
     @Override
     public String getGenerator() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.GENERATOR);
     }
 
     @Override
-    public void setGenerator(String generator) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setGenerator(final String generator) {
+        getProperties().set(WorldProperties.GENERATOR, generator != null ? generator : "");
     }
 
     @Override
-    public WorldProperties getWorldProperties() {
+    public WorldProperties getProperties() {
         return worldProperties;
     }
 
@@ -77,12 +76,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public String getAlias() {
-        return getWorldProperties().get(WorldProperties.ALIAS);
+        return getProperties().get(WorldProperties.ALIAS);
     }
 
     @Override
     public void setAlias(final String alias) {
-        getWorldProperties().set(WorldProperties.ALIAS, alias);
+        getProperties().set(WorldProperties.ALIAS, alias != null ? alias : "");
     }
 
     @Override
@@ -152,12 +151,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean isHidden() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.HIDDEN);
     }
 
     @Override
-    public void setHidden(boolean hidden) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setHidden(final boolean hidden) {
+        getProperties().set(WorldProperties.HIDDEN, hidden);
     }
 
     @Override
@@ -192,12 +191,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean getHunger() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.HUNGER);
     }
 
     @Override
-    public void setHunger(boolean hungerEnabled) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setHunger(final boolean hungerEnabled) {
+        getProperties().set(WorldProperties.HUNGER, hungerEnabled);
     }
 
     @Override
@@ -272,32 +271,32 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean getAutoLoad() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.AUTO_LOAD);
     }
 
     @Override
-    public void setAutoLoad(boolean autoLoad) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAutoLoad(final boolean autoLoad) {
+        getProperties().set(WorldProperties.AUTO_LOAD, autoLoad);
     }
 
     @Override
     public boolean getBedRespawn() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.BED_RESPAWN);
     }
 
     @Override
-    public void setBedRespawn(boolean autoLoad) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setBedRespawn(final boolean bedRespawn) {
+        getProperties().set(WorldProperties.BED_RESPAWN, bedRespawn);
     }
 
     @Override
-    public void setPlayerLimit(int limit) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setPlayerLimit(final int limit) {
+        getProperties().set(WorldProperties.PLAYER_LIMIT, limit);
     }
 
     @Override
     public int getPlayerLimit() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.PLAYER_LIMIT);
     }
 
     @Override
@@ -322,6 +321,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public List<String> getWorldBlacklist() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.BLACK_LIST);
+    }
+
+    @Override
+    public void save() {
+        getProperties().flush();
     }
 }
