@@ -6,7 +6,12 @@ public enum WorldEnvironment {
     THE_END
     ;
 
-    public static WorldEnvironment getFromString(String name) {
+    public static WorldEnvironment getFromString(final String name) {
+        for (final WorldEnvironment env : WorldEnvironment.values()) {
+            if (name.equalsIgnoreCase(env.toString())) {
+                return env;
+            }
+        }
         return null;
     }
 }

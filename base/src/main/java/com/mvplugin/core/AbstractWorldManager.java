@@ -8,10 +8,12 @@ import com.mvplugin.core.minecraft.WorldEnvironment;
 import com.mvplugin.core.minecraft.WorldType;
 import com.mvplugin.core.util.Language;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldManager<W> {
+abstract class AbstractWorldManager implements WorldManager {
 
     protected final MultiverseCore core;
     private final Map<String, MultiverseWorld> worldMap;
@@ -22,12 +24,12 @@ abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldM
     }
 
     @Override
-    public W addWorld(String name, WorldEnvironment env, String seedString, WorldType type, Boolean generateStructures, String generator) throws WorldCreationException {
+    public MultiverseWorld addWorld(String name, WorldEnvironment env, String seedString, WorldType type, Boolean generateStructures, String generator) throws WorldCreationException {
         return this.addWorld(name, env, seedString, type, generateStructures, generator, true);
     }
 
     @Override
-    public W addWorld(String name,
+    public MultiverseWorld addWorld(String name,
                       WorldEnvironment env,
                       String seedString,
                       WorldType type,
@@ -47,7 +49,7 @@ abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldM
         settings.generateStructures(generateStructures);
 
         // TODO: Use the fancy kind with the commandSender | dumptruckman has no idea what this means..
-        if (!generator.isEmpty()) {
+        if (generator != null && !generator.isEmpty()) {
             settings.generator(generator);
         }
 
@@ -57,18 +59,18 @@ abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldM
     }
 
     @Override
-    public W addWorld(WorldCreationSettings settings) throws WorldCreationException {
+    public MultiverseWorld addWorld(WorldCreationSettings settings) throws WorldCreationException {
         if (this.worldMap.containsKey(settings.name())) {
             throw new WorldCreationException(new BundledMessage(Language.WORLD_ALREADY_EXISTS, settings.name()));
         }
-        W mvWorld = createWorld(settings);
+        MultiverseWorld mvWorld = createWorld(settings);
         mvWorld.setAdjustSpawn(settings.adjustSpawn());
         this.worldMap.put(settings.name(), mvWorld);
         return mvWorld;
     }
 
     /**
-     * Creates a {@link W} with the given properties.
+     * Creates a world with the given properties.
      *
      * If a Minecraft world is already loaded with this name, null will be returned.  If a Minecraft world already
      * exists but it not loaded, it will be loaded instead.
@@ -87,7 +89,7 @@ abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldM
      */
 
     /**
-     * Creates a {@link W} with the given properties.
+     * Creates a world with the given properties.
      *
      * If a Minecraft world is already loaded with this name, null will be returned.  If a Minecraft world already
      * exists but it not loaded, it will be loaded instead.
@@ -96,5 +98,15 @@ abstract class AbstractWorldManager<W extends MultiverseWorld> implements WorldM
      * @return
      * @throws WorldCreationException
      */
-    protected abstract W createWorld(WorldCreationSettings settings) throws WorldCreationException;
+    protected abstract MultiverseWorld createWorld(WorldCreationSettings settings) throws WorldCreationException;
+
+    @Override
+    public boolean isMVWorld(final String name) {
+        return this.worldMap.containsKey(name);
+    }
+
+    @Override
+    public Collection<MultiverseWorld> getMVWorlds() {
+        return Collections.unmodifiableCollection(this.worldMap.values());
+    }
 }

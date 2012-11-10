@@ -6,6 +6,8 @@ import com.mvplugin.core.minecraft.WorldEnvironment;
 import com.mvplugin.core.minecraft.WorldType;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Multiverse 2 World Manager API
@@ -13,7 +15,7 @@ import java.io.IOException;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
-public interface WorldManager <W extends MultiverseWorld> {
+public interface WorldManager {
 
     public class WorldCreationSettings {
 
@@ -116,7 +118,7 @@ public interface WorldManager <W extends MultiverseWorld> {
      * @return The new world.
      * @throws WorldCreationException If world creation fails.
      */
-    W addWorld(String name,
+    MultiverseWorld addWorld(String name,
                WorldEnvironment env,
                String seedString,
                WorldType type,
@@ -138,7 +140,7 @@ public interface WorldManager <W extends MultiverseWorld> {
      * @return The new world.
      * @throws WorldCreationException If world creation fails.
      */
-    W addWorld(String name,
+    MultiverseWorld addWorld(String name,
                WorldEnvironment env,
                String seedString,
                WorldType type,
@@ -152,7 +154,7 @@ public interface WorldManager <W extends MultiverseWorld> {
      * @return The new world.
      * @throws WorldCreationException If world creation fails.
      */
-    W addWorld(WorldCreationSettings settings) throws WorldCreationException;
+    MultiverseWorld addWorld(WorldCreationSettings settings) throws WorldCreationException;
 
     /**
      * Make a copy of a world.
@@ -234,7 +236,7 @@ public interface WorldManager <W extends MultiverseWorld> {
      *
      * @return A list of {@link MultiverseWorld}.
      */
-    //TODO Collection<MultiverseWorld> getMVWorlds();
+    Collection<MultiverseWorld> getMVWorlds();
 
 
     /**
@@ -252,7 +254,7 @@ public interface WorldManager <W extends MultiverseWorld> {
      * @param name The name or alias of the world to check.
      * @return True if the world exists, false if not.
      */
-    //TODO boolean isMVWorld(String name);
+    boolean isMVWorld(String name);
 
     /**
      * Load the Worlds & Settings from the configuration file.
@@ -284,7 +286,7 @@ public interface WorldManager <W extends MultiverseWorld> {
      *
      * @return A List of worlds as strings.
      */
-    //TODO List<String> getUnloadedWorlds();
+    List<String> getUnloadedWorlds();
 
     /**
      * This method populates an internal list and needs to be called after multiverse initialization.

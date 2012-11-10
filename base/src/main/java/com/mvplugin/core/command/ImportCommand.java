@@ -5,6 +5,8 @@ import com.dumptruckman.minecraft.pluginbase.messaging.ChatColor;
 import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
+import com.mvplugin.core.WorldCreationException;
+import com.mvplugin.core.api.MultiverseCore;
 import com.mvplugin.core.api.MultiverseWorld;
 import com.mvplugin.core.api.Perms;
 import com.mvplugin.core.minecraft.WorldEnvironment;
@@ -72,7 +74,7 @@ public class ImportCommand extends MultiverseCommand {
     }
 
     @Override
-    public boolean runCommand(MVCore core, BasePlayer sender, CommandContext context) {
+    public boolean runCommand(MultiverseCore core, BasePlayer sender, CommandContext context) {
         final String worldName = context.getString(0);
 
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
@@ -111,10 +113,12 @@ public class ImportCommand extends MultiverseCommand {
 
         if (worldFile.exists() && env != null) {
             core.getMessager().messageAndLog(sender, STARTING_IMPORT, worldName);
-            if (core.getMVWorldManager().addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust)) {
+            try {
+                core.getMVWorldManager().addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust);
                 core.getMessager().messageAndLog(sender, IMPORT_COMPLETE);
-            } else {
+            } catch (WorldCreationException e) {
                 core.getMessager().messageAndLog(sender, IMPORT_FAILED);
+                core.getMessager().messageAndLog(sender, e.getBundledMessage().getMessage(), e.getBundledMessage().getArgs());
             }
         } else if (env == null) {
             core.getMessager().message(sender, IMPORT_FAILED);
@@ -153,7 +157,7 @@ public class ImportCommand extends MultiverseCommand {
         return false;
     }
 
-    private String getPotentialWorlds(final MVCore core) {
+    private String getPotentialWorlds(final MultiverseCore core) {
         final File worldFolder = core.getServerInterface().getWorldContainer();
         if (worldFolder == null) {
             return "";

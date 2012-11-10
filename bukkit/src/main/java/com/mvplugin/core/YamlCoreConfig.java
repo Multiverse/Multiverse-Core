@@ -1,6 +1,7 @@
 package com.mvplugin.core;
 
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
+import com.mvplugin.core.api.CoreConfig;
 
 import java.io.File;
 import java.io.IOException;

@@ -177,6 +177,17 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
+                                    <include>com.mvplugin:MultiverseCore-Base</include>
+                                    <include>com.dumptruckman.minecraft:BukkitPlugin</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.dumptruckman.minecraft.pluginbase</pattern>
+                                    <shadedPattern>com.mvplugin.pluginbase</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <!--
                                     <include>me.main__.util:SerializationConfig</include>
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:buscript</include>
@@ -219,6 +230,7 @@
                                     <shadedPattern>org.mcstats.multiverse</shadedPattern>
                                 </relocation>
                             </relocations>
+                            -->
                         </configuration>
                     </execution>
                 </executions>

@@ -1,4 +1,4 @@
 name: Multiverse-Core
-main: com.onarandombox.MultiverseCore.MultiverseCore
+main: com.mvplugin.core.MultiverseCorePlugin
 authors: ['Rigby', 'fernferret', 'lithium3141', 'main--', 'dumptruckman']
 version: maven-version-number

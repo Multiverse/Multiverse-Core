@@ -1,7 +1,9 @@
 package com.mvplugin.core;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
+import com.mvplugin.core.api.CoreConfig;
 import com.mvplugin.core.api.MultiverseCore;
+import com.mvplugin.core.command.ImportCommand;
 
 import java.io.IOException;
 
@@ -21,6 +23,12 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
     @Override
     protected void onPluginLoad() {
         worldManager = new BukkitWorldManager(this);
+        getCommandHandler().registerCommand(ImportCommand.class);
+    }
+
+    @Override
+    public void onPluginEnable() {
+
     }
 
     @Override
