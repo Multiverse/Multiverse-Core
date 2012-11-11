@@ -148,43 +148,6 @@ public interface MultiverseWorld {
      */
     void setAlias(String alias);
 
-    /**
-     * Gets the color that this world's name/alias will display as.
-     *
-     * @return The color of this world.
-     */
-    String getColor();
-
-    /**
-     * Sets the color that this world's name/alias will display as.
-     *
-     * @param color A valid color name.
-     * @return True if the color was set, false if not.
-     */
-    boolean setColor(String color);
-
-    /**
-     * Gets the style that this world's name/alias will display as.
-     *
-     * @return The style of this world. {@code null} for "normal" style.
-     */
-    String getStyle();
-
-    /**
-     * Sets the style that this world's name/alias will display as.
-     *
-     * @param style A valid style name.
-     * @return True if the style was set, false if not.
-     */
-    boolean setStyle(String style);
-
-    /**
-     * Returns a very nicely colored string (using Alias and Color if they are set).
-     *
-     * @return A nicely colored string.
-     */
-    String getColoredWorldString();
-
     // animals&monster stuff
     /**
      * Gets whether or not animals are allowed to spawn in this world.
@@ -248,20 +211,39 @@ public interface MultiverseWorld {
     void setPVPMode(boolean pvpMode);
 
     /**
-     * Gets whether or not this world will display in chat, mvw and mvl regardless if a user has the
+     * Gets whether or not this world will display in mv who and mv list regardless if a user has the
      * access permissions to go to this world.
      *
      * @return True if the world will be hidden, false if not.
+     * @see {@link #getPrefixChat()}
      */
     boolean isHidden();
 
     /**
-     * Sets whether or not this world will display in chat, mvw and mvl regardless if a user has the
+     * Sets whether or not this world will display in mv who and mv list regardless if a user has the
      * access permissions to go to this world.
      *
      * @param hidden Set
      */
     void setHidden(boolean hidden);
+
+    /**
+     * Gets whether or not this world will display it's name/alias as a prefix in chat.
+     *
+     * If the global configuration setting for prefixChat is false, this setting has no effect.
+     *
+     * @return True if the world name/alias will be used as a prefix in chat, false if not.
+     */
+    boolean getPrefixChat();
+
+    /**
+     * Sets whether or not this world will display it's name/alias as a prefix in chat.
+     *
+     * If the global configuration setting for prefixChat is false, this setting has no effect.
+     *
+     * @param prefixChat True if the world name/alias will be used as a prefix in chat, false if not.
+     */
+    void setPrefixChat(boolean prefixChat);
 
     /**
      * Gets whether weather is enabled in this world.

@@ -30,12 +30,13 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public Difficulty getDifficulty() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.DIFFICULTY);
     }
 
     @Override
-    public boolean setDifficulty(Difficulty difficulty) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean setDifficulty(final Difficulty difficulty) {
+        // TODO Validate?
+        return getProperties().set(WorldProperties.DIFFICULTY, difficulty);
     }
 
     @Override
@@ -79,31 +80,6 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     }
 
     @Override
-    public String getColor() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean setColor(String color) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getStyle() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean setStyle(String style) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getColoredWorldString() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public boolean canAnimalsSpawn() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -135,12 +111,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean isPVPEnabled() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.PVP);
     }
 
     @Override
-    public void setPVPMode(boolean pvpMode) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setPVPMode(final boolean pvpMode) {
+        getProperties().set(WorldProperties.PVP, pvpMode);
     }
 
     @Override
@@ -154,33 +130,43 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     }
 
     @Override
-    public boolean isWeatherEnabled() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean getPrefixChat() {
+        return getProperties().get(WorldProperties.PREFIX_CHAT);
     }
 
     @Override
-    public void setEnableWeather(boolean enableWeather) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setPrefixChat(final boolean prefixChat) {
+        getProperties().set(WorldProperties.PREFIX_CHAT, prefixChat);
+    }
+
+    @Override
+    public boolean isWeatherEnabled() {
+        return getProperties().get(WorldProperties.ALLOW_WEATHER);
+    }
+
+    @Override
+    public void setEnableWeather(final boolean enableWeather) {
+        getProperties().set(WorldProperties.ALLOW_WEATHER, enableWeather);
     }
 
     @Override
     public boolean isKeepingSpawnInMemory() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.KEEP_SPAWN);
     }
 
     @Override
-    public void setKeepSpawnInMemory(boolean keepSpawnInMemory) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setKeepSpawnInMemory(final boolean keepSpawnInMemory) {
+        getProperties().set(WorldProperties.KEEP_SPAWN, keepSpawnInMemory);
     }
 
     @Override
     public PlayerPosition getSpawnLocation() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SPAWN_LOCATION);
     }
 
     @Override
-    public void setSpawnLocation(PlayerPosition spawnLocation) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setSpawnLocation(final PlayerPosition spawnLocation) {
+        getProperties().set(WorldProperties.SPAWN_LOCATION, spawnLocation);
     }
 
     @Override
@@ -195,62 +181,65 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public GameMode getGameMode() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.GAME_MODE);
     }
 
     @Override
-    public boolean setGameMode(GameMode gameMode) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean setGameMode(final GameMode gameMode) {
+        // Todo validate?
+        return getProperties().set(WorldProperties.GAME_MODE, gameMode);
     }
 
     @Override
     public double getPrice() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.ENTRY_FEE).get(WorldProperties.EntryFee.AMOUNT);
     }
 
     @Override
-    public void setPrice(double price) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setPrice(final double price) {
+        getProperties().get(WorldProperties.ENTRY_FEE).set(WorldProperties.EntryFee.AMOUNT, price);
     }
 
     @Override
     public int getCurrency() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.ENTRY_FEE).get(WorldProperties.EntryFee.CURRENCY);
     }
 
     @Override
-    public void setCurrency(int item) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setCurrency(final int item) {
+        getProperties().get(WorldProperties.ENTRY_FEE).set(WorldProperties.EntryFee.CURRENCY, item);
     }
 
     @Override
     public String getRespawnToWorld() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.RESPAWN_WORLD);
     }
 
     @Override
-    public boolean setRespawnToWorld(String respawnWorld) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean setRespawnToWorld(final String respawnWorld) {
+        // TODO validation?
+        return getProperties().set(WorldProperties.RESPAWN_WORLD, respawnWorld);
     }
 
     @Override
     public double getScaling() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SCALE);
     }
 
     @Override
-    public boolean setScaling(double scaling) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean setScaling(final double scaling) {
+        // TODO validation?
+        return getProperties().set(WorldProperties.SCALE, scaling);
     }
 
     @Override
     public boolean getAutoHeal() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.AUTO_HEAL);
     }
 
     @Override
-    public void setAutoHeal(boolean heal) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAutoHeal(final boolean heal) {
+        getProperties().set(WorldProperties.AUTO_HEAL, heal);
     }
 
     @Override
@@ -294,23 +283,13 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     }
 
     @Override
-    public String getTime() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean setTime(String timeAsString) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void allowPortalMaking(PortalType type) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void allowPortalMaking(final PortalType type) {
+        getProperties().set(WorldProperties.PORTAL_FORM, type);
     }
 
     @Override
     public PortalType getAllowedPortals() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.PORTAL_FORM);
     }
 
     @Override

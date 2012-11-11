@@ -6,7 +6,7 @@ public class PlayerPosition {
     private final float pitch, yaw;
     private final String world;
 
-    PlayerPosition(final String world, final double x,
+    protected PlayerPosition(final String world, final double x,
                    final double y, final double z,
                    final float pitch, final float yaw) {
         this.world = world;
