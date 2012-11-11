@@ -175,8 +175,12 @@
 
     <distributionManagement>
         <repository>
-            <id>OnARandomBox</id>
+            <id>multiverse</id>
             <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
         </repository>
+        <snapshotRepository>
+            <id>multiverse-snapshots</id>
+            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshot</url>
+        </snapshotRepository>
     </distributionManagement>
 </project>
