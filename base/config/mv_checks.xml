@@ -1,0 +1,143 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Multiverse 2 Copyright (c) the Multiverse Team 2011.                      ~
+  ~ Multiverse 2 is licensed under the BSD License.                           ~
+  ~ For more information please check the README.md file included             ~
+  ~ with this project.                                                        ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
+<module name="Checker">
+    <module name="JavadocPackage">
+        <property name="allowLegacy" value="true"/>
+    </module>
+    <module name="NewlineAtEndOfFile" />
+    <module name="Translation"/>
+    <module name="FileLength"/>
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="message" value="Line has trailing spaces."/>
+        <property name="format" value="\s+$"/>
+    </module>
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat" value="SUPPRESS CHECKSTYLE: (\w+)"/>
+        <property name="checkFormat" value="$1"/>
+    </module>
+    <module name="SuppressionCommentFilter">
+           <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: (\w+)"/>
+           <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: (\w+)"/>
+           <property name="checkFormat" value="$1"/>
+    </module>
+    <module name="SuppressionCommentFilter">
+           <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: ALL"/>
+           <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: ALL"/>
+    </module>
+    <module name="TreeWalker">
+        <!-- Make suppression possible -->
+        <module name="FileContentsHolder"/>
+        <!-- Actual checks -->
+        <module name="LineLength">
+            <property name="max" value="160"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="scope" value="package"/><!-- We don't need javadoc for private methods -->
+            <property name="tokens" value="METHOD_DEF"/><!-- We don't need javadoc for constructors -->
+        </module>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable">
+            <property name="scope" value="package"/><!-- We don't need javadoc for private variables -->
+        </module>
+        <module name="JavadocStyle"/>
+        <module name="WriteTag">
+            <property name="tag" value="@author"/>
+            <property name="tagFormat" value="\S"/>
+            <property name="severity" value="ignore"/>
+            <property name="tagSeverity" value="warning"/>
+        </module>
+        <module name="ConstantName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+        <module name="AvoidStarImport">
+            <property name="severity" value="warning"/>
+            <property name="excludes" value="com.onarandombox.MultiverseCore.utils,com.onarandombox.MultiverseCore.configuration,com.onarandombox.MultiverseCore.commands,com.onarandombox.MultiverseCore.destination"/>
+        </module>
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="true"/>
+        </module>
+        <module name="MethodLength">
+            <property name="severity" value="warning"/>
+            <property name="countEmpty" value="false"/>
+        </module>
+        <module name="ParameterNumber"/>
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter">
+            <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+        </module>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock">
+            <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_IF,LITERAL_FOR,LITERAL_TRY,LITERAL_WHILE,INSTANCE_INIT,STATIC_INIT"/>
+        </module>
+        <module name="LeftCurly"/>
+        <module name="RightCurly"/>
+        <module name="DoubleCheckedLocking"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF"/><!-- We don't care if parameters hide fields. -->
+        </module>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1, 0, 0.5, 1, 2, 3"/>
+        </module>
+        <module name="MissingSwitchDefault"/>
+        <module name="RedundantThrows"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <!-- Don't like errors for `final` missing
+        <module name="DesignForExtension"/>
+        <module name="FinalClass"/>
+        -->
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
+        <module name="ArrayTypeStyle"/>
+        <!-- Don't like errors for `final` missing
+        <module name="FinalParameters"/>
+        -->
+        <module name="TodoComment">
+            <property name="severity" value="info"/>
+        </module>
+        <module name="UpperEll"/>
+        <module name="Indentation"/>
+        <module name="MissingDeprecated"/>
+        <module name="MissingOverride"/>
+    </module>
+</module>
