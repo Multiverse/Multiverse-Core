@@ -26,16 +26,16 @@
 		<url>http://ci.onarandombox.com</url>
 	</ciManagement>
 
-	<distributionManagement>
-		<repository>
-			<id>multiverse</id>
-			<url>http://repo.onarandombox.com/content/repositories/multiverse</url>
-		</repository>
+    <distributionManagement>
+        <repository>
+            <id>thirdparty</id>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty</url>
+        </repository>
         <snapshotRepository>
-            <id>multiverse-snapshots</id>
-            <url>http://repo.onarandombox.com/content/repositories/bukkit-thirdparty/</url>
+            <id>thirdparty-dev</id>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev/</url>
         </snapshotRepository>
-	</distributionManagement>
+    </distributionManagement>
 
 	<scm>
 		<connection>scm:git:git://github.com/multiverse/Multiverse-Core.git</connection>
