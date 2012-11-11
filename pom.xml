@@ -33,7 +33,7 @@
 		</repository>
         <snapshotRepository>
             <id>multiverse-snapshots</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshot</url>
+            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots</url>
         </snapshotRepository>
 	</distributionManagement>
 
