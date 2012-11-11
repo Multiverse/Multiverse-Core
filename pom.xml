@@ -28,11 +28,11 @@
 
     <distributionManagement>
         <repository>
-            <id>thirdparty</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty</url>
+            <id>OnARandomBox</id>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty/</url>
         </repository>
         <snapshotRepository>
-            <id>thirdparty-dev</id>
+            <id>OnARandomBox</id>
             <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev/</url>
         </snapshotRepository>
     </distributionManagement>
