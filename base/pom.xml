@@ -180,7 +180,7 @@
         </repository>
         <snapshotRepository>
             <id>multiverse-snapshots</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots</url>
+            <url>http://repo.onarandombox.com/content/repositories/bukkit-thirdparty/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
