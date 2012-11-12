@@ -1,12 +1,14 @@
 package com.mvplugin.core.minecraft;
 
-public class PlayerPosition {
+public final class PlayerPosition {
+
+    public static final PlayerPosition NULL_LOCATION = new PlayerPosition("", 0, 0, 0, 0, 0);
 
     private final double x, y, z;
     private final float pitch, yaw;
     private final String world;
 
-    protected PlayerPosition(final String world, final double x,
+    public PlayerPosition(final String world, final double x,
                    final double y, final double z,
                    final float pitch, final float yaw) {
         this.world = world;

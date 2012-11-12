@@ -81,32 +81,44 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean canAnimalsSpawn() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SPAWNING)
+                .get(WorldProperties.Spawning.ANIMALS)
+                .get(WorldProperties.Spawning.Animals.SPAWN);
     }
 
     @Override
-    public void setAllowAnimalSpawn(boolean allowAnimalSpawn) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAllowAnimalSpawn(final boolean allowAnimalSpawn) {
+        getProperties().get(WorldProperties.SPAWNING)
+                .get(WorldProperties.Spawning.ANIMALS)
+                .set(WorldProperties.Spawning.Animals.SPAWN, allowAnimalSpawn);
     }
 
     @Override
     public List<String> getAnimalList() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SPAWNING)
+                .get(WorldProperties.Spawning.ANIMALS)
+                .get(WorldProperties.Spawning.Animals.EXCEPTIONS);
     }
 
     @Override
     public boolean canMonstersSpawn() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SPAWNING)
+                .get(WorldProperties.Spawning.MONSTERS)
+                .get(WorldProperties.Spawning.Monsters.SPAWN);
     }
 
     @Override
-    public void setAllowMonsterSpawn(boolean allowMonsterSpawn) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAllowMonsterSpawn(final boolean allowMonsterSpawn) {
+        getProperties().get(WorldProperties.SPAWNING)
+                .get(WorldProperties.Spawning.MONSTERS)
+                .set(WorldProperties.Spawning.Monsters.SPAWN, allowMonsterSpawn);
     }
 
     @Override
     public List<String> getMonsterList() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getProperties().get(WorldProperties.SPAWNING)
+                .get(WorldProperties.Spawning.ANIMALS)
+                .get(WorldProperties.Spawning.Monsters.EXCEPTIONS);
     }
 
     @Override

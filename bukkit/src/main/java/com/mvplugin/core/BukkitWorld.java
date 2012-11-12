@@ -45,4 +45,14 @@ class BukkitWorld extends AbstractMultiverseWorld implements BukkitMultiverseWor
         }
         return world;
     }
+
+    @Override
+    public String getTime() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean setTime(String timeAsString) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
