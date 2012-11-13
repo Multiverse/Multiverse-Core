@@ -5,15 +5,13 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.test;
+package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
-import com.onarandombox.MultiverseCore.test.utils.TestInstanceCreator;
+import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -300,7 +298,8 @@ public class TestWorldProperties {
         assertTrue(core.saveMVConfigs());
         // change a value here
         FileConfiguration config = YamlConfiguration.loadConfiguration(new File(core.getDataFolder(), "worlds.yml"));
-        MVWorld worldObj = (MVWorld) config.get("worlds.world");
+        WorldProperties worldObj = (WorldProperties) config.get("worlds.world");
+        System.out.println(worldObj.setColor("GREEN"));
         assertTrue(worldObj.setColor("GREEN"));
         config.set("worlds.world", worldObj);
         config.save(new File(core.getDataFolder(), "worlds.yml"));

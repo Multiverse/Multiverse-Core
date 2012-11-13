@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.WorldProperties;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
@@ -52,14 +53,14 @@ public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
-    private Map<String, MVWorld> worldsFromTheConfig;
+    private Map<String, WorldProperties> worldsFromTheConfig;
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
     private String firstSpawn;
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
-        this.worldsFromTheConfig = new HashMap<String, MVWorld>();
+        this.worldsFromTheConfig = new HashMap<String, WorldProperties>();
         this.worlds = new ConcurrentHashMap<String, MultiverseWorld>();
         this.worldPurger = new SimpleWorldPurger(plugin);
     }
@@ -207,8 +208,10 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Important: doLoad() needs the MVWorld-object in worldsFromTheConfig
-        if (!worldsFromTheConfig.containsKey(name))
-            worldsFromTheConfig.put(name, new MVWorld(useSpawnAdjust));
+        if (!worldsFromTheConfig.containsKey(name)) {
+            WorldProperties props = new WorldProperties(useSpawnAdjust);
+            worldsFromTheConfig.put(name, props);
+        }
 
         StringBuilder builder = new StringBuilder();
         builder.append("Loading World & Settings - '").append(name).append("'");
@@ -362,7 +365,7 @@ public class WorldManager implements MVWorldManager {
         if (!worldsFromTheConfig.containsKey(name))
             throw new IllegalArgumentException("That world doesn't exist!");
 
-        MVWorld world = worldsFromTheConfig.get(name);
+        WorldProperties world = worldsFromTheConfig.get(name);
         WorldCreator creator = WorldCreator.name(name);
 
         creator.environment(world.getEnvironment()).seed(world.getSeed());
@@ -385,7 +388,7 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        MVWorld mvworld = worldsFromTheConfig.get(worldName);
+        WorldProperties mvworld = worldsFromTheConfig.get(worldName);
         World cbworld;
         try {
             cbworld = creator.createWorld();
@@ -394,9 +397,9 @@ public class WorldManager implements MVWorldManager {
             brokenWorld(worldName);
             return false;
         }
-        mvworld.init(cbworld, plugin);
-        this.worldPurger.purgeWorld(mvworld);
-        this.worlds.put(worldName, mvworld);
+        MVWorld world = new MVWorld(plugin, cbworld, mvworld);
+        this.worldPurger.purgeWorld(world);
+        this.worlds.put(worldName, world);
         return true;
     }
 
@@ -636,7 +639,7 @@ public class WorldManager implements MVWorldManager {
             this.worlds.clear();
         }
 
-        for (Map.Entry<String, MVWorld> entry : worldsFromTheConfig.entrySet()) {
+        for (Map.Entry<String, WorldProperties> entry : worldsFromTheConfig.entrySet()) {
             if (worlds.containsKey(entry.getKey())) {
                 continue;
             }
@@ -696,31 +699,23 @@ public class WorldManager implements MVWorldManager {
         // load world-objects
         Stack<String> worldKeys = new Stack<String>();
         worldKeys.addAll(this.configWorlds.getConfigurationSection("worlds").getKeys(false));
-        Map<String, MVWorld> newWorldsFromTheConfig = new HashMap<String, MVWorld>();
+        Map<String, WorldProperties> newWorldsFromTheConfig = new HashMap<String, WorldProperties>();
         while (!worldKeys.isEmpty()) {
             String key = worldKeys.pop();
             String path = "worlds" + SEPARATOR + key;
             Object obj = this.configWorlds.get(path);
-            if ((obj != null) && (obj instanceof MVWorld)) {
+            if ((obj != null) && (obj instanceof WorldProperties)) {
                 String worldName = key.replaceAll(String.valueOf(SEPARATOR), ".");
-                MVWorld mvWorld = null;
+                WorldProperties props = (WorldProperties) obj;
                 if (this.worldsFromTheConfig.containsKey(worldName)) {
                     // Object-Recycling :D
                     // TODO Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
-                    mvWorld = (MVWorld) this.worlds.get(worldName);
+                    MVWorld mvWorld = (MVWorld) this.worlds.get(worldName);
                     if (mvWorld != null) {
-                        mvWorld.copyValues((MVWorld) obj);
+                        mvWorld.copyValues((WorldProperties) obj);
                     }
                 }
-                if (mvWorld == null) {
-                    // we have to use a new one
-                    World cbworld = this.plugin.getServer().getWorld(worldName);
-                    mvWorld = (MVWorld) obj;
-                    if (cbworld != null) {
-                        mvWorld.init(cbworld, this.plugin);
-                    }
-                }
-                newWorldsFromTheConfig.put(worldName, mvWorld);
+                newWorldsFromTheConfig.put(worldName, props);
             } else if (this.configWorlds.isConfigurationSection(path)) {
                 ConfigurationSection section = this.configWorlds.getConfigurationSection(path);
                 Set<String> subkeys = section.getKeys(false);
@@ -742,7 +737,7 @@ public class WorldManager implements MVWorldManager {
         try {
             this.configWorlds.options().pathSeparator(SEPARATOR);
             this.configWorlds.set("worlds", null);
-            for (Map.Entry<String, ? extends MultiverseWorld> entry : worldsFromTheConfig.entrySet()) {
+            for (Map.Entry<String, WorldProperties> entry : worldsFromTheConfig.entrySet()) {
                 this.configWorlds.set("worlds" + SEPARATOR + entry.getKey(), entry.getValue());
             }
             this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));

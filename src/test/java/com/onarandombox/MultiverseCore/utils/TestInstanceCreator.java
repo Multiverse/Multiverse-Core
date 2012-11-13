@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.test.utils;
+package com.onarandombox.MultiverseCore.utils;
 
 import buscript.Buscript;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -13,8 +13,6 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.utils.FileUtils;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -61,7 +61,6 @@ import com.onarandombox.MultiverseCore.destination.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
-import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -80,6 +79,7 @@ import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
+import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
@@ -222,7 +222,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Register our config
         SerializationConfig.registerAll(MultiverseCoreConfiguration.class);
         // Register our world
-        SerializationConfig.registerAll(MVWorld.class);
+        SerializationConfig.registerAll(WorldProperties.class);
         // Create our DataFolder
         getDataFolder().mkdirs();
         // Setup our Debug Log
@@ -567,14 +567,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         boolean wasChanged = false;
         Map<String, Object> newValues = new LinkedHashMap<String, Object>(values.size());
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            if (entry.getValue() instanceof MVWorld) {
+            if (entry.getValue() instanceof WorldProperties) {
                 // fine
                 newValues.put(entry.getKey(), entry.getValue());
             } else if (entry.getValue() instanceof ConfigurationSection) {
                 this.log(Level.FINE, "Migrating: " + entry.getKey());
                 // we have to migrate this
-                MVWorld world = new MVWorld(Collections.EMPTY_MAP);
-                world.setPluginAndWorld(this, entry.getKey());
+                WorldProperties world = new WorldProperties(Collections.EMPTY_MAP);
                 ConfigurationSection section = (ConfigurationSection) entry.getValue();
 
                 // migrate animals and monsters
@@ -669,7 +668,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 if (section.isString("portalform")) {
                     try {
                         world.setPropertyValue("portalform", section.getString("portalform"));
-                    } catch (PropertyDoesNotExistException e) {
+                    } catch (NoSuchPropertyException e) {
                         throw new RuntimeException("Who forgot to update the migrator?", e);
                     }
                 }
@@ -678,7 +677,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 if (section.isString("environment")) {
                     try {
                         world.setPropertyValue("environment", section.getString("environment"));
-                    } catch (PropertyDoesNotExistException e) {
+                    } catch (NoSuchPropertyException e) {
                         throw new RuntimeException("Who forgot to update the migrator?", e);
                     }
                 }

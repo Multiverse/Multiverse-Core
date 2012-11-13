@@ -30,14 +30,14 @@ public interface MVPlugin extends LoggablePlugin {
     /**
      * Gets the reference to MultiverseCore.
      *
-     * @return A valid {@link MultiverseCore}.
+     * @return A valid {@link com.onarandombox.MultiverseCore}.
      */
     MultiverseCore getCore();
 
     /**
      * Sets the reference to MultiverseCore.
      *
-     * @param core A valid {@link MultiverseCore}.
+     * @param core A valid {@link com.onarandombox.MultiverseCore}.
      */
     void setCore(MultiverseCore core);
 

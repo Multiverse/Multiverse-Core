@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.test.utils;
+package com.onarandombox.MultiverseCore.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

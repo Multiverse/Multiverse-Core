@@ -5,16 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.test.utils;
-
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+package com.onarandombox.MultiverseCore.utils;
 
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
@@ -25,6 +16,15 @@ import org.bukkit.block.Block;
 import org.bukkit.generator.ChunkGenerator;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import static org.mockito.Mockito.*;
 
 public class MockWorldFactory {
 
