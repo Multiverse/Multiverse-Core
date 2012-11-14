@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
@@ -26,7 +27,6 @@ import org.bukkit.entity.Squid;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Utility class that removes animals from worlds that don't belong there.
@@ -133,7 +133,7 @@ public class SimpleWorldPurger implements WorldPurger {
         if (e instanceof Golem || e instanceof Squid || e instanceof Animals) {
             // it's an animal
             if (specifiedAnimals && !negateAnimals) {
-                this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all animals: " + e);
+                Logging.finest("Removing an entity because I was told to remove all animals in world %s: %s", e.getWorld().getName(), e);
                 return true;
             }
             if (specifiedAnimals)
@@ -142,7 +142,7 @@ public class SimpleWorldPurger implements WorldPurger {
         } else if (e instanceof Monster || e instanceof Ghast || e instanceof Slime) {
             // it's a monster
             if (specifiedMonsters && !negateMonsters) {
-                this.plugin.log(Level.FINEST, "Removing an entity because I was told to remove all monsters: " + e);
+                Logging.finest("Removing an entity because I was told to remove all monsters in world %s: %s", e.getWorld().getName(), e);
                 return true;
             }
             if (specifiedMonsters)
@@ -154,14 +154,14 @@ public class SimpleWorldPurger implements WorldPurger {
             if (type != null && type.equals(e.getType())) {
                 specified = true;
                 if (!negate) {
-                    this.plugin.log(Level.FINEST, "Removing an entity because it WAS specified and we are NOT negating: " + e);
+                    Logging.finest("Removing an entity because it WAS specified and we are NOT negating in world %s: %s", e.getWorld().getName(), e);
                     return true;
                 }
                 break;
             }
         }
         if (!specified && negate) {
-            this.plugin.log(Level.FINEST, "Removing an entity because it was NOT specified and we ARE negating: " + e);
+            Logging.finest("Removing an entity because it was NOT specified and we ARE negating in world %s: %s", e.getWorld().getName(), e);
             return true;
         }
 
