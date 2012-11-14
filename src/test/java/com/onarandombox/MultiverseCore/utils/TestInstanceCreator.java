@@ -36,6 +36,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -113,6 +114,19 @@ public class TestInstanceCreator {
                     String arg;
                     try {
                         arg = (String) invocation.getArguments()[0];
+                    } catch (Exception e) {
+                        return null;
+                    }
+                    return MockWorldFactory.getWorld(arg);
+                }
+            });
+
+            when(mockServer.getWorld(any(UUID.class))).thenAnswer(new Answer<World>() {
+                @Override
+                public World answer(InvocationOnMock invocation) throws Throwable {
+                    UUID arg;
+                    try {
+                        arg = (UUID) invocation.getArguments()[0];
                     } catch (Exception e) {
                         return null;
                     }

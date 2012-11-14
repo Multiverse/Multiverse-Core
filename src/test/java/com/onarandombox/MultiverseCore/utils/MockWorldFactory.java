@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 import static org.mockito.Mockito.*;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
 public class MockWorldFactory {
 
     private static final Map<String, World> createdWorlds = new HashMap<String, World>();
+    private static final Map<UUID, World> worldUIDS = new HashMap<UUID, World>();
 
     private static final Map<World, Boolean> pvpStates = new WeakHashMap<World, Boolean>();
     private static final Map<World, Boolean> keepSpawnInMemoryStates = new WeakHashMap<World, Boolean>();
@@ -39,6 +41,7 @@ public class MockWorldFactory {
 
     private static void registerWorld(World world) {
         createdWorlds.put(world.getName(), world);
+        worldUIDS.put(world.getUID(), world);
         new File(TestInstanceCreator.worldsDirectory, world.getName()).mkdir();
     }
 
@@ -132,6 +135,7 @@ public class MockWorldFactory {
                 return mockBlock;
             }
         });
+        when(mockWorld.getUID()).thenReturn(UUID.randomUUID());
         return mockWorld;
     }
 
@@ -203,6 +207,10 @@ public class MockWorldFactory {
         return createdWorlds.get(name);
     }
 
+    public static World getWorld(UUID worldUID) {
+        return worldUIDS.get(worldUID);
+    }
+
     public static List<World> getWorlds() {
         // we have to invert the order!
         ArrayList<World> myList = new ArrayList<World>(createdWorlds.values());
@@ -217,5 +225,6 @@ public class MockWorldFactory {
         for (String name : createdWorlds.keySet())
             new File(TestInstanceCreator.worldsDirectory, name).delete();
         createdWorlds.clear();
+        worldUIDS.clear();
     }
 }

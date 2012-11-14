@@ -496,10 +496,7 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public World getCBWorld() {
-        if (name == null) {
-            return null;
-        }
-        final World world = plugin.getServer().getWorld(name);
+        final World world = plugin.getServer().getWorld(worldUID);
         if (world == null) {
             Logging.severe("Lost reference to bukkit world '%s'", name);
         }

@@ -299,7 +299,6 @@ public class TestWorldProperties {
         // change a value here
         FileConfiguration config = YamlConfiguration.loadConfiguration(new File(core.getDataFolder(), "worlds.yml"));
         WorldProperties worldObj = (WorldProperties) config.get("worlds.world");
-        System.out.println(worldObj.setColor("GREEN"));
         assertTrue(worldObj.setColor("GREEN"));
         config.set("worlds.world", worldObj);
         config.save(new File(core.getDataFolder(), "worlds.yml"));
