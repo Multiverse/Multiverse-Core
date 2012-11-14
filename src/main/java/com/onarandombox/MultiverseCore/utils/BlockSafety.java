@@ -73,28 +73,28 @@ public class BlockSafety {
 
         if (this.isSolidBlock(world.getBlockAt(actual).getType())
                 || this.isSolidBlock(upOne.getBlock().getType())) {
-            Logging.finer("Error Here (Actual)? (%s)[%s]", actual.getBlock().getType(),
+            Logging.finest("Error Here (Actual)? (%s)[%s]", actual.getBlock().getType(),
                     this.isSolidBlock(actual.getBlock().getType()));
-            Logging.finer("Error Here (upOne)? (%s)[%s]", upOne.getBlock().getType(),
+            Logging.finest("Error Here (upOne)? (%s)[%s]", upOne.getBlock().getType(),
                     this.isSolidBlock(upOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
-            Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(),
+            Logging.finest("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(),
                     this.isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
-            Logging.finer("There's fire below! (%s)[%s]", actual.getBlock().getType(),
+            Logging.finest("There's fire below! (%s)[%s]", actual.getBlock().getType(),
                     this.isSolidBlock(actual.getBlock().getType()));
             return false;
         }
 
         if (isBlockAboveAir(actual)) {
-            Logging.finer("Is block above air [%s]", isBlockAboveAir(actual));
-            Logging.finer("Has 2 blocks of water below [%s]", this.hasTwoBlocksofWaterBelow(actual));
+            Logging.finest("Is block above air [%s]", isBlockAboveAir(actual));
+            Logging.finest("Has 2 blocks of water below [%s]", this.hasTwoBlocksofWaterBelow(actual));
             return this.hasTwoBlocksofWaterBelow(actual);
         }
         return true;
