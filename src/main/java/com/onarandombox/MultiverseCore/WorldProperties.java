@@ -335,6 +335,8 @@ public class WorldProperties extends SerializationConfig {
     private static double getDefaultScale(Environment environment) {
         if (environment == Environment.NETHER) {
             return 8.0; // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        } else if (environment == Environment.THE_END) {
+            return 16.0; // SUPPRESS CHECKSTYLE: MagicNumberCheck
         }
         return 1.0;
     }
