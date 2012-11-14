@@ -299,6 +299,9 @@ public class MVPlayerListener implements Listener {
                     + "' was allowed to go to '" + event.getTo().getWorld().getName()
                     + "' because enforceaccess is off.");
         }
+        if (!plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+            event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
+        }
     }
 
     private void sendPlayerToDefaultWorld(final Player player) {

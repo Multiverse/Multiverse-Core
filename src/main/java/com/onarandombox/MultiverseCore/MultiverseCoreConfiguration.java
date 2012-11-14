@@ -63,6 +63,10 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile String firstspawnworld;
     @Property
     private volatile int teleportcooldown;
+    @Property
+    private volatile boolean defaultportalsearch;
+    @Property
+    private volatile int portalsearchradius;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -91,6 +95,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         teleportcooldown = 1000;
         this.version = 2.9;
         silentstart = false;
+        defaultportalsearch = false;
+        portalsearchradius = 16;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -288,5 +294,25 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public boolean getSilentStart() {
         return silentstart;
+    }
+
+    @Override
+    public void setUseDefaultPortalSearch(boolean useDefaultPortalSearch) {
+        defaultportalsearch = useDefaultPortalSearch;
+    }
+
+    @Override
+    public boolean isUsingDefaultPortalSearch() {
+        return defaultportalsearch;
+    }
+
+    @Override
+    public void setPortalSearchRadius(int searchRadius) {
+        this.portalsearchradius = searchRadius;
+    }
+
+    @Override
+    public int getPortalSearchRadius() {
+        return portalsearchradius;
     }
 }
