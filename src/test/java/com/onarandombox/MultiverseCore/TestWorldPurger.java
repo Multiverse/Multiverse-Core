@@ -111,10 +111,13 @@ public class TestWorldPurger {
     }
 
     private void createAnimals() {
+        World world = mvWorld.getCBWorld();
         sheep = mock(Sheep.class);
         when(sheep.getType()).thenReturn(EntityType.SHEEP);
+        when(sheep.getWorld()).thenReturn(world);
         zombie = mock(Zombie.class);
         when(zombie.getType()).thenReturn(EntityType.ZOMBIE);
+        when(zombie.getWorld()).thenReturn(world);
         when(cbworld.getEntities()).thenReturn(Arrays.asList((Entity) sheep, (Entity) zombie));
     }
 }
