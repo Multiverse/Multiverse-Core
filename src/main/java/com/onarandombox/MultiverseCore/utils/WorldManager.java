@@ -311,12 +311,10 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean unloadWorld(String name) {
         if (this.worlds.containsKey(name)) {
+            this.worldsFromTheConfig.get(name).cacheVirtualProperties();
             if (this.unloadWorldFromBukkit(name, true)) {
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from memory.", name);
-
-                this.worldsFromTheConfig.get(name).tearDown();
-
                 return true;
             } else {
                 Logging.warning("World '%s' could not be unloaded. Is it a default world?", name);

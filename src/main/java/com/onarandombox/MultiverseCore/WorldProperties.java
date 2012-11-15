@@ -297,7 +297,7 @@ public class WorldProperties extends SerializationConfig {
     /**
      * This prepares the MVWorld for unloading.
      */
-    public void tearDown() {
+    public void cacheVirtualProperties() {
         try {
             this.buildVPropChanges();
         } catch (IllegalStateException e) {

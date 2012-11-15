@@ -374,17 +374,6 @@ public class MVWorld implements MultiverseWorld {
     }
 
     /**
-     * This prepares the MVWorld for unloading.
-     */
-    public void tearDown() {
-        try {
-            this.props.tearDown();
-        } catch (IllegalStateException e) {
-            // do nothing
-        }
-    }
-
-    /**
      * Initializes permissions.
      */
     private void initPerms() {
