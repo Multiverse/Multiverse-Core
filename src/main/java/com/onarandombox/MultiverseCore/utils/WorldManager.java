@@ -358,10 +358,10 @@ public class WorldManager implements MVWorldManager {
     }
 
     private boolean doLoad(String name) {
-        return doLoad(name, false);
+        return doLoad(name, false, null);
     }
 
-    private boolean doLoad(String name, boolean ignoreExists) {
+    private boolean doLoad(String name, boolean ignoreExists, WorldType type) {
         if (!worldsFromTheConfig.containsKey(name))
             throw new IllegalArgumentException("That world doesn't exist!");
 
@@ -369,6 +369,9 @@ public class WorldManager implements MVWorldManager {
         WorldCreator creator = WorldCreator.name(name);
 
         creator.environment(world.getEnvironment()).seed(world.getSeed());
+        if (type != null) {
+            creator.type(type);
+        }
         if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
             creator.generator(world.getGenerator());
 
@@ -792,9 +795,10 @@ public class WorldManager implements MVWorldManager {
 
             world.setSeed(theSeed);
         }
+        WorldType type = world.getWorldType();
 
         if (this.deleteWorld(name, false, false)) {
-            this.doLoad(name, true);
+            this.doLoad(name, true, type);
             SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             Location newSpawn = world.getSpawnLocation();
             // Send all players that were in the old world, BACK to it!
