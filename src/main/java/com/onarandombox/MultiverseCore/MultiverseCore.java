@@ -11,6 +11,7 @@ import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.fernferret.allpay.AllPay;
 import com.fernferret.allpay.GenericBank;
+import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
@@ -667,7 +668,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // migrate portalform
                 if (section.isString("portalform")) {
                     try {
-                        world.setPropertyValue("portalform", section.getString("portalform"));
+                        world.setProperty("portalform", section.getString("portalform"), true);
                     } catch (NoSuchPropertyException e) {
                         throw new RuntimeException("Who forgot to update the migrator?", e);
                     }
@@ -676,7 +677,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // migrate environment
                 if (section.isString("environment")) {
                     try {
-                        world.setPropertyValue("environment", section.getString("environment"));
+                        world.setProperty("environment", section.getString("environment"), true);
                     } catch (NoSuchPropertyException e) {
                         throw new RuntimeException("Who forgot to update the migrator?", e);
                     }
@@ -715,7 +716,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // migrate spawn
                 if (section.isConfigurationSection("spawn")) {
                     ConfigurationSection spawnSect = section.getConfigurationSection("spawn");
-                    Location spawnLoc = world.getSpawnLocation();
+                    Location spawnLoc = new NullLocation();
                     if (spawnSect.isDouble("yaw"))
                         spawnLoc.setYaw((float) spawnSect.getDouble("yaw"));
                     if (spawnSect.isDouble("pitch"))
