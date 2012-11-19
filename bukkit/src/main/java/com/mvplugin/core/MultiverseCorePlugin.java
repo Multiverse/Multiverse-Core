@@ -1,6 +1,7 @@
 package com.mvplugin.core;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.mvplugin.core.api.CoreConfig;
 import com.mvplugin.core.api.MultiverseCore;
 import com.mvplugin.core.command.ImportCommand;
@@ -9,9 +10,10 @@ import com.mvplugin.core.util.PropertyDescriptions;
 import java.io.IOException;
 
 /**
- * The primary Bukkit plugin implementation of Multiverse-Core.
+ * The primary Bukkit plugin implementation of Multiverse-Core.  See {@link MultiverseCore} for a more detailed
+ * external api javadocs.
  */
-public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> implements MultiverseCore {
+public class MultiverseCorePlugin extends AbstractBukkitPlugin implements MultiverseCore {
 
     private static final int PROTOCOL = 19;
     private static final String COMMAND_PREFIX = "mv";
@@ -32,6 +34,7 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
         worldManager = new BukkitWorldManager(this);
     }
 
+    @Override
     protected void onReloadConfig() {
         worldManager = new BukkitWorldManager(this);
     }
@@ -47,8 +50,18 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin<CoreConfig> imple
     }
 
     @Override
-    protected CoreConfig newConfigInstance() throws IOException {
+    protected Properties getNewConfig() throws IOException {
         return new YamlCoreConfig(this);
+    }
+
+    @Override
+    public CoreConfig config() {
+        return (CoreConfig) super.config();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public CoreConfig getMVConfig() {
+        return config();
     }
 
     @Override

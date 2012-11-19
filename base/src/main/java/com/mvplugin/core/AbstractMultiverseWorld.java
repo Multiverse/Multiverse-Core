@@ -1,5 +1,6 @@
 package com.mvplugin.core;
 
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValueException;
 import com.mvplugin.core.api.MultiverseWorld;
 import com.mvplugin.core.api.WorldProperties;
 import com.mvplugin.core.minecraft.Difficulty;
@@ -25,7 +26,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setEnvironment(final WorldEnvironment environment) {
-        getProperties().set(WorldProperties.ENVIRONMENT, environment);
+        try {
+            getProperties().set(WorldProperties.ENVIRONMENT, environment);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -36,7 +41,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     @Override
     public boolean setDifficulty(final Difficulty difficulty) {
         // TODO Validate?
-        return getProperties().set(WorldProperties.DIFFICULTY, difficulty);
+        try {
+            return getProperties().set(WorldProperties.DIFFICULTY, difficulty);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -46,7 +56,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setSeed(long seed) {
-        getProperties().set(WorldProperties.SEED, seed);
+        try {
+            getProperties().set(WorldProperties.SEED, seed);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -56,7 +70,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setGenerator(final String generator) {
-        getProperties().set(WorldProperties.GENERATOR, generator != null ? generator : "");
+        try {
+            getProperties().set(WorldProperties.GENERATOR, generator != null ? generator : "");
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -76,7 +94,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setAlias(final String alias) {
-        getProperties().set(WorldProperties.ALIAS, alias != null ? alias : "");
+        try {
+            getProperties().set(WorldProperties.ALIAS, alias != null ? alias : "");
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -88,9 +110,13 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setAllowAnimalSpawn(final boolean allowAnimalSpawn) {
-        getProperties().get(WorldProperties.SPAWNING)
-                .get(WorldProperties.Spawning.ANIMALS)
-                .set(WorldProperties.Spawning.Animals.SPAWN, allowAnimalSpawn);
+        try {
+            getProperties().get(WorldProperties.SPAWNING)
+                    .get(WorldProperties.Spawning.ANIMALS)
+                    .set(WorldProperties.Spawning.Animals.SPAWN, allowAnimalSpawn);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -109,9 +135,13 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setAllowMonsterSpawn(final boolean allowMonsterSpawn) {
-        getProperties().get(WorldProperties.SPAWNING)
-                .get(WorldProperties.Spawning.MONSTERS)
-                .set(WorldProperties.Spawning.Monsters.SPAWN, allowMonsterSpawn);
+        try {
+            getProperties().get(WorldProperties.SPAWNING)
+                    .get(WorldProperties.Spawning.MONSTERS)
+                    .set(WorldProperties.Spawning.Monsters.SPAWN, allowMonsterSpawn);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -128,7 +158,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setPVPMode(final boolean pvpMode) {
-        getProperties().set(WorldProperties.PVP, pvpMode);
+        try {
+            getProperties().set(WorldProperties.PVP, pvpMode);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -138,7 +172,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setHidden(final boolean hidden) {
-        getProperties().set(WorldProperties.HIDDEN, hidden);
+        try {
+            getProperties().set(WorldProperties.HIDDEN, hidden);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -148,7 +186,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setPrefixChat(final boolean prefixChat) {
-        getProperties().set(WorldProperties.PREFIX_CHAT, prefixChat);
+        try {
+            getProperties().set(WorldProperties.PREFIX_CHAT, prefixChat);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -158,7 +200,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setEnableWeather(final boolean enableWeather) {
-        getProperties().set(WorldProperties.ALLOW_WEATHER, enableWeather);
+        try {
+            getProperties().set(WorldProperties.ALLOW_WEATHER, enableWeather);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -168,7 +214,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setKeepSpawnInMemory(final boolean keepSpawnInMemory) {
-        getProperties().set(WorldProperties.KEEP_SPAWN, keepSpawnInMemory);
+        try {
+            getProperties().set(WorldProperties.KEEP_SPAWN, keepSpawnInMemory);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -178,7 +228,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setSpawnLocation(final PlayerPosition spawnLocation) {
-        getProperties().set(WorldProperties.SPAWN_LOCATION, spawnLocation);
+        try {
+            getProperties().set(WorldProperties.SPAWN_LOCATION, spawnLocation);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -188,7 +242,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setHunger(final boolean hungerEnabled) {
-        getProperties().set(WorldProperties.HUNGER, hungerEnabled);
+        try {
+            getProperties().set(WorldProperties.HUNGER, hungerEnabled);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -199,7 +257,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     @Override
     public boolean setGameMode(final GameMode gameMode) {
         // Todo validate?
-        return getProperties().set(WorldProperties.GAME_MODE, gameMode);
+        try {
+            return getProperties().set(WorldProperties.GAME_MODE, gameMode);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return false;
     }
 
     @Override
@@ -209,7 +272,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setPrice(final double price) {
-        getProperties().get(WorldProperties.ENTRY_FEE).set(WorldProperties.EntryFee.AMOUNT, price);
+        try {
+            getProperties().get(WorldProperties.ENTRY_FEE).set(WorldProperties.EntryFee.AMOUNT, price);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -219,7 +286,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setCurrency(final int item) {
-        getProperties().get(WorldProperties.ENTRY_FEE).set(WorldProperties.EntryFee.CURRENCY, item);
+        try {
+            getProperties().get(WorldProperties.ENTRY_FEE).set(WorldProperties.EntryFee.CURRENCY, item);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -230,7 +301,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     @Override
     public boolean setRespawnToWorld(final String respawnWorld) {
         // TODO validation?
-        return getProperties().set(WorldProperties.RESPAWN_WORLD, respawnWorld);
+        try {
+            return getProperties().set(WorldProperties.RESPAWN_WORLD, respawnWorld);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return false;
     }
 
     @Override
@@ -241,7 +317,12 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
     @Override
     public boolean setScaling(final double scaling) {
         // TODO validation?
-        return getProperties().set(WorldProperties.SCALE, scaling);
+        try {
+            return getProperties().set(WorldProperties.SCALE, scaling);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return false;
     }
 
     @Override
@@ -251,7 +332,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setAutoHeal(final boolean heal) {
-        getProperties().set(WorldProperties.AUTO_HEAL, heal);
+        try {
+            getProperties().set(WorldProperties.AUTO_HEAL, heal);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -261,7 +346,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setAdjustSpawn(final boolean adjust) {
-        getProperties().set(WorldProperties.ADJUST_SPAWN, adjust);
+        try {
+            getProperties().set(WorldProperties.ADJUST_SPAWN, adjust);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -271,7 +360,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setAutoLoad(final boolean autoLoad) {
-        getProperties().set(WorldProperties.AUTO_LOAD, autoLoad);
+        try {
+            getProperties().set(WorldProperties.AUTO_LOAD, autoLoad);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -281,12 +374,20 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void setBedRespawn(final boolean bedRespawn) {
-        getProperties().set(WorldProperties.BED_RESPAWN, bedRespawn);
+        try {
+            getProperties().set(WorldProperties.BED_RESPAWN, bedRespawn);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
     public void setPlayerLimit(final int limit) {
-        getProperties().set(WorldProperties.PLAYER_LIMIT, limit);
+        try {
+            getProperties().set(WorldProperties.PLAYER_LIMIT, limit);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
@@ -296,7 +397,11 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld {
 
     @Override
     public void allowPortalMaking(final PortalType type) {
-        getProperties().set(WorldProperties.PORTAL_FORM, type);
+        try {
+            getProperties().set(WorldProperties.PORTAL_FORM, type);
+        } catch (PropertyValueException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
