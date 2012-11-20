@@ -2,6 +2,8 @@ package com.mvplugin.core;
 
 import com.mvplugin.core.api.BukkitMultiverseWorld;
 import com.mvplugin.core.api.WorldProperties;
+import com.mvplugin.core.api.WorldProperties.Spawning.Animals;
+import com.mvplugin.core.minecraft.PlayerPosition;
 import com.mvplugin.core.minecraft.WorldType;
 import com.mvplugin.core.util.Convert;
 import org.bukkit.Bukkit;
@@ -23,6 +25,28 @@ class BukkitWorld extends AbstractMultiverseWorld implements BukkitMultiverseWor
     }
 
     @Override
+    protected void update(Object obj) {
+        if (obj == WorldProperties.DIFFICULTY) {
+            getBukkitWorld().setDifficulty(Convert.toBukkit(getDifficulty()));
+        } else if (obj == WorldProperties.ALLOW_WEATHER) {
+            if (!isWeatherEnabled()) {
+                final World world = getBukkitWorld();
+                world.setWeatherDuration(0);
+                world.setStorm(false);
+                world.setThunderDuration(0);
+                world.setThundering(false);
+            }
+        } else if (obj == WorldProperties.PVP) {
+            getBukkitWorld().setPVP(isPVPEnabled());
+        } else if (obj == WorldProperties.SPAWN_LOCATION) {
+            final PlayerPosition pos = getSpawnLocation();
+            getBukkitWorld().setSpawnLocation((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
+        } else if (obj == Animals.SPAWN_RATE) {
+            //getBukkitWorld().set
+        }
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
@@ -41,7 +65,7 @@ class BukkitWorld extends AbstractMultiverseWorld implements BukkitMultiverseWor
     public World getBukkitWorld() {
         final World world = Bukkit.getWorld(worldUID);
         if (world == null) {
-            throw new NullPointerException("Multiverse lost track of Bukkit world '" + this.name + "'");
+            throw new IllegalStateException("Multiverse lost track of Bukkit world '" + this.name + "'");
         }
         return world;
     }

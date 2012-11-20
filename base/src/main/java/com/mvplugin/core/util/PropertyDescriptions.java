@@ -111,4 +111,11 @@ public class PropertyDescriptions {
 
     public static final Message MONSTERS_SPAWN_EXCEPTIONS = new Message("world_properties.descriptions.monsters.exceptions",
             "The monsters exceptions property defines what monsters are exempt from the monsters spawn property.");
+
+
+    public static final Message INVALID_SCALE = new Message("world_properties.validation.scale",
+            "Scale must be a number higher than 0!");
+
+    public static final Message INVALID_RESPAWN_WORLD = new Message("world_properties.validation.respawnWorld",
+            "Respawn world must be a world known to Multiverse!");
 }

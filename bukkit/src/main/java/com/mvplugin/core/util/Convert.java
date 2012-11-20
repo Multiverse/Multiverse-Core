@@ -1,7 +1,10 @@
 package com.mvplugin.core.util;
 
+import com.mvplugin.core.minecraft.PlayerPosition;
 import com.mvplugin.core.minecraft.WorldEnvironment;
 import org.bukkit.Difficulty;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 
@@ -22,5 +25,9 @@ public final class Convert {
 
     public static Environment toBukkit(WorldEnvironment e) {
         return Environment.valueOf(e.name());
+    }
+
+    public static Location toBukkit(PlayerPosition position, World world) {
+        return new Location(world, position.getX(), position.getY(), position.getZ());
     }
 }

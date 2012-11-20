@@ -1,9 +1,12 @@
 package com.mvplugin.core.api;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.mvplugin.core.WorldCreationException;
 import com.mvplugin.core.minecraft.Generator;
 import com.mvplugin.core.minecraft.WorldEnvironment;
 import com.mvplugin.core.minecraft.WorldType;
+import com.mvplugin.core.util.PropertyDescriptions;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -328,4 +331,23 @@ public interface WorldManager {
      * @return True if success, false if fail.
      */
     //TODO boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
+
+    class RespawnWorldValidator implements PropertyValidator<String> {
+
+        private final WorldManager worldManager;
+
+        public RespawnWorldValidator(WorldManager worldManager) {
+            this.worldManager = worldManager;
+        }
+
+        @Override
+        public boolean isValid(String s) {
+            return worldManager.isMVWorld(s);
+        }
+
+        @Override
+        public Message getInvalidMessage() {
+            return PropertyDescriptions.INVALID_RESPAWN_WORLD;
+        }
+    }
 }

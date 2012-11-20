@@ -1,10 +1,12 @@
 package com.mvplugin.core.api;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import com.mvplugin.core.minecraft.Difficulty;
 import com.mvplugin.core.minecraft.GameMode;
@@ -93,7 +95,20 @@ public interface WorldProperties extends Properties {
             .comment("The scale property represents the scaling of worlds when using Multiverse-NetherPortals.")
             .comment("Setting this value will have no effect on anything but Multiverse-NetherPortals.")
             .description(PropertyDescriptions.SCALE)
+            .validator(new ScaleValidator())
             .build();
+
+    class ScaleValidator implements PropertyValidator<Double> {
+        @Override
+        public boolean isValid(Double scale) {
+            return scale > 0D;
+        }
+
+        @Override
+        public Message getInvalidMessage() {
+            return PropertyDescriptions.INVALID_SCALE;
+        }
+    }
 
     SimpleProperty<String> RESPAWN_WORLD = PropertyFactory.newProperty(String.class, "respawnWorld", "")
             .comment("The respawnWorld property is the world you will respawn to if you die in this world.")

@@ -123,7 +123,9 @@ public class BukkitWorldManager extends AbstractWorldManager {
     }
 
     private WorldProperties getWorldProperties(final File file) throws IOException {
-        return new YamlWorldProperties(file);
+        final YamlWorldProperties worldProperties = new YamlWorldProperties(file);
+        worldProperties.setPropertyValidator(WorldProperties.RESPAWN_WORLD, new RespawnWorldValidator(this));
+        return worldProperties;
     }
 
     @Override

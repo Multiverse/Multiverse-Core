@@ -2,6 +2,7 @@ package com.mvplugin.core;
 
 import com.mvplugin.core.api.MultiverseWorld;
 import com.mvplugin.core.api.WorldProperties;
+import com.mvplugin.core.api.WorldProperties.Spawning;
 import com.mvplugin.core.minecraft.Difficulty;
 import com.mvplugin.core.minecraft.GameMode;
 import com.mvplugin.core.minecraft.PlayerPosition;
@@ -9,6 +10,7 @@ import com.mvplugin.core.minecraft.PortalType;
 import com.mvplugin.core.minecraft.WorldEnvironment;
 
 import java.util.List;
+import java.util.Observable;
 import java.util.Observer;
 
 abstract class AbstractMultiverseWorld implements MultiverseWorld, Observer {
@@ -18,7 +20,16 @@ abstract class AbstractMultiverseWorld implements MultiverseWorld, Observer {
     protected AbstractMultiverseWorld(final WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
         worldProperties.addObserver(this);
+        worldProperties.get(WorldProperties.SPAWNING).get(Spawning.ANIMALS).addObserver(this);
+        worldProperties.get(WorldProperties.SPAWNING).get(Spawning.MONSTERS).addObserver(this);
     }
+
+    @Override
+    public final void update(Observable o, Object arg) {
+        update(arg);
+    }
+
+    protected abstract void update(Object property);
 
     @Override
     public WorldEnvironment getEnvironment() {
