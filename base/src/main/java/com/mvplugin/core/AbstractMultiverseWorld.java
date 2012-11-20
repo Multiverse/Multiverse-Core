@@ -9,13 +9,15 @@ import com.mvplugin.core.minecraft.PortalType;
 import com.mvplugin.core.minecraft.WorldEnvironment;
 
 import java.util.List;
+import java.util.Observer;
 
-abstract class AbstractMultiverseWorld implements MultiverseWorld {
+abstract class AbstractMultiverseWorld implements MultiverseWorld, Observer {
 
     private final WorldProperties worldProperties;
 
     protected AbstractMultiverseWorld(final WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
+        worldProperties.addObserver(this);
     }
 
     @Override
