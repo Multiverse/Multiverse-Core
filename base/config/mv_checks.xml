@@ -1,19 +1,21 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Multiverse 2 Copyright (c) the Multiverse Team 2011.                      ~
+  ~ Multiverse 2 Copyright (c) the Multiverse Team 2012.                      ~
   ~ Multiverse 2 is licensed under the BSD License.                           ~
   ~ For more information please check the README.md file included             ~
   ~ with this project.                                                        ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <!DOCTYPE module PUBLIC
-    "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
-    "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
 <module name="Checker">
     <module name="JavadocPackage">
         <property name="allowLegacy" value="true"/>
     </module>
-    <module name="NewlineAtEndOfFile" />
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="info"/>
+    </module>
     <module name="Translation"/>
     <module name="FileLength"/>
     <module name="FileTabCharacter">
@@ -28,20 +30,20 @@
         <property name="checkFormat" value="$1"/>
     </module>
     <module name="SuppressionCommentFilter">
-           <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: (\w+)"/>
-           <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: (\w+)"/>
-           <property name="checkFormat" value="$1"/>
+        <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: (\w+)"/>
+        <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: (\w+)"/>
+        <property name="checkFormat" value="$1"/>
     </module>
     <module name="SuppressionCommentFilter">
-           <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: ALL"/>
-           <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: ALL"/>
+        <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: ALL"/>
+        <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: ALL"/>
     </module>
     <module name="TreeWalker">
         <!-- Make suppression possible -->
         <module name="FileContentsHolder"/>
         <!-- Actual checks -->
         <module name="LineLength">
-            <property name="max" value="160"/>
+            <property name="max" value="120"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="JavadocMethod">
@@ -69,17 +71,13 @@
         <module name="TypeName"/>
         <module name="AvoidStarImport">
             <property name="severity" value="warning"/>
-            <property name="excludes" value="com.onarandombox.MultiverseCore.utils,com.onarandombox.MultiverseCore.configuration,com.onarandombox.MultiverseCore.commands,com.onarandombox.MultiverseCore.destination"/>
         </module>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports">
             <property name="processJavadoc" value="true"/>
         </module>
-        <module name="MethodLength">
-            <property name="severity" value="warning"/>
-            <property name="countEmpty" value="false"/>
-        </module>
+        <module name="MethodLength"/>
         <module name="ParameterNumber"/>
         <module name="EmptyForIteratorPad"/>
         <module name="MethodParamPad"/>
@@ -119,19 +117,16 @@
         <module name="RedundantThrows"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
-        <!-- Don't like errors for `final` missing
         <module name="DesignForExtension"/>
         <module name="FinalClass"/>
-        -->
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier">
+            <property name="packageAllowed" value="true"/>
             <property name="protectedAllowed" value="true"/>
         </module>
         <module name="ArrayTypeStyle"/>
-        <!-- Don't like errors for `final` missing
         <module name="FinalParameters"/>
-        -->
         <module name="TodoComment">
             <property name="severity" value="info"/>
         </module>
@@ -139,5 +134,7 @@
         <module name="Indentation"/>
         <module name="MissingDeprecated"/>
         <module name="MissingOverride"/>
+
     </module>
 </module>
+
