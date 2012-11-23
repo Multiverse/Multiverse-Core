@@ -64,6 +64,9 @@ public class SetSpawnCommand extends MultiverseCommand {
                     foundWorld.setAdjustSpawn(false);
                 }
                 sender.sendMessage("Spawn was set to: " + plugin.getLocationManipulation().strCoords(p.getLocation()));
+                if (!plugin.saveWorldConfig()) {
+                    sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+                }
             } else {
                 w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
                 sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully (Pitch/Yaws).");

@@ -66,21 +66,19 @@ public class MVWorld implements MultiverseWorld {
         this.props = properties;
 
         setupProperties();
+
+        if (!fixSpawn) {
+            props.setAdjustSpawn(false);
+        }
+
         // Setup spawn separately so we can use the validator with the world spawn value..
         final SpawnLocationPropertyValidator spawnValidator = new SpawnLocationPropertyValidator();
-        final Location worldSpawnLocation = readSpawnFromWorld(world);
         this.props.setValidator("spawn", spawnValidator);
+        this.props.spawnLocation.setWorld(world);
         if (this.props.spawnLocation instanceof NullLocation) {
-            final SpawnLocation newLoc = new SpawnLocation(worldSpawnLocation);
+            final SpawnLocation newLoc = new SpawnLocation(readSpawnFromWorld(world));
             this.props.spawnLocation = newLoc;
             world.setSpawnLocation(newLoc.getBlockX(), newLoc.getBlockY(), newLoc.getBlockZ());
-        } else {
-            this.props.spawnLocation.setWorld(world);
-            if (plugin.getBlockSafety().playerCanSpawnHereSafely(this.props.spawnLocation)) {
-                final SpawnLocation newLoc = new SpawnLocation(worldSpawnLocation);
-                this.props.spawnLocation = newLoc;
-                world.setSpawnLocation(newLoc.getBlockX(), newLoc.getBlockY(), newLoc.getBlockZ());
-            }
         }
 
         this.props.environment = world.getEnvironment();
@@ -89,10 +87,6 @@ public class MVWorld implements MultiverseWorld {
         this.initPerms();
 
         this.props.flushChanges();
-
-        if (!fixSpawn) {
-            props.setAdjustSpawn(false);
-        }
 
         validateProperties();
     }
