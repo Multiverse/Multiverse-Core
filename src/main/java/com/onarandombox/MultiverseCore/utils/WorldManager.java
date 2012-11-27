@@ -209,7 +209,7 @@ public class WorldManager implements MVWorldManager {
 
         // Important: doLoad() needs the MVWorld-object in worldsFromTheConfig
         if (!worldsFromTheConfig.containsKey(name)) {
-            WorldProperties props = new WorldProperties(useSpawnAdjust);
+            WorldProperties props = new WorldProperties(useSpawnAdjust, env);
             worldsFromTheConfig.put(name, props);
         }
 

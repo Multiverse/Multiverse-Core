@@ -62,11 +62,12 @@ public class WorldProperties extends SerializationConfig {
         super();
     }
 
-    public WorldProperties(boolean fixSpawn) {
+    public WorldProperties(final boolean fixSpawn, final Environment environment) {
         super();
         if (!fixSpawn) {
             this.adjustSpawn = false;
         }
+        setScaling(getDefaultScale(environment));
     }
 
     void setMVWorld(MVWorld world) {
@@ -314,7 +315,7 @@ public class WorldProperties extends SerializationConfig {
         this.alias = new String();
         this.color = EnglishChatColor.WHITE;
         this.style = EnglishChatStyle.NORMAL;
-        this.scale = getDefaultScale(environment);
+        this.scale = 1D;
         this.respawnWorld = new String();
         this.allowWeather = true;
         this.spawning = new SpawnSettings();
