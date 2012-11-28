@@ -123,6 +123,7 @@ public class InfoCommand extends MultiverseCommand {
         Location spawn = world.getSpawnLocation();
         message.add(new FancyMessage("Spawn Location: ", plugin.getLocationManipulation().strCoords(spawn), colors));
         message.add(new FancyMessage("World Scale: ", world.getScaling() + "", colors));
+        message.add(new FancyMessage("World Seed: ", world.getSeed() + "", colors));
         if (world.getPrice() > 0) {
             final String formattedAmount;
             if (world.getCurrency() <= 0 && plugin.getVaultHandler().getEconomy() != null) {
