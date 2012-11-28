@@ -74,8 +74,8 @@ public class TestDebugMode {
 
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
-
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
+
         Assert.assertEquals(3, core.getMVConfig().getGlobalDebug());
     }
 }
