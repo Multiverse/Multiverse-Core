@@ -50,31 +50,6 @@ public class TestDebugMode {
     }
 
     @Test
-    public void testInfo() {
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        Core core = (Core) plugin;
-
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Make a fake server folder to fool MV into thinking a world folder exists.
-        File serverDirectory = new File(creator.getCore().getServerFolder(), "world");
-        serverDirectory.mkdirs();
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
-        String[] createArgs = {"create", "default", "normal","-s","pokemon"};
-        String[] infoArgs = {"info", "default"};
-        plugin.onCommand(mockCommandSender, mockCommand, "", createArgs);
-        plugin.onCommand(mockCommandSender, mockCommand, "", infoArgs);
-    }
-
-    @Test
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
