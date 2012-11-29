@@ -10,8 +10,9 @@ import com.mvplugin.core.util.PropertyDescriptions;
 import java.io.IOException;
 
 /**
- * The primary Bukkit plugin implementation of Multiverse-Core.  See {@link MultiverseCore} for a more detailed
- * external api javadocs.
+ * The primary Bukkit plugin implementation of Multiverse-Core.
+ *
+ * See {@link MultiverseCore} for a more detailed external api javadocs.
  */
 public class MultiverseCorePlugin extends AbstractBukkitPlugin implements MultiverseCore {
 
@@ -56,7 +57,7 @@ public class MultiverseCorePlugin extends AbstractBukkitPlugin implements Multiv
 
     @Override
     public CoreConfig config() {
-        return (CoreConfig) super.config();    //To change body of overridden methods use File | Settings | File Templates.
+        return (CoreConfig) super.config();
     }
 
     @Override
