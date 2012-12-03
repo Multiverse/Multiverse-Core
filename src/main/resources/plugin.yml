@@ -215,3 +215,20 @@ commands:
     description: Reduces startup messages
     usage: |
             /<command> [true|false]
+  
+  mvgamerule:
+    description: Sets a gamerule.
+    usage: |
+            /<command> {RULE} {VALUE} [WORLD]
+  mvrule:
+    description: Sets a gamerule.
+    usage: |
+            /<command> {RULE} {VALUE} [WORLD]
+  mvgamerules:
+    description: Lists the gamerules.
+    usage: |
+            /<command> [WORLD]
+  mvrules:
+    description: Lists the gamerules.
+    usage: |
+            /<command> [WORLD]

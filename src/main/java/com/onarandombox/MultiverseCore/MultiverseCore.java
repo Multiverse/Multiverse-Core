@@ -31,6 +31,8 @@ import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commands.GameruleCommand;
+import com.onarandombox.MultiverseCore.commands.GamerulesCommand;
 import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
 import com.onarandombox.MultiverseCore.commands.HelpCommand;
 import com.onarandombox.MultiverseCore.commands.ImportCommand;
@@ -823,6 +825,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
+        this.commandHandler.registerCommand(new GameruleCommand(this));
+        this.commandHandler.registerCommand(new GamerulesCommand(this));
     }
 
     /**
