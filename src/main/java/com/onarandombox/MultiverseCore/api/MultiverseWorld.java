@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -685,4 +684,18 @@ public interface MultiverseWorld {
      * @return All property names, with alternating colors.
      */
     String getAllPropertyNames();
+
+    /**
+     * Whether or not players are allowed to fly in this world.
+     *
+     * @return True if players allowed to fly in this world.
+     */
+    boolean getAllowFlight();
+
+    /**
+     * Sets whether or not players are allowed to fly in this world.
+     *
+     * @param allowFlight True to allow flight in this world.
+     */
+    void setAllowFlight(final boolean allowFlight);
 }

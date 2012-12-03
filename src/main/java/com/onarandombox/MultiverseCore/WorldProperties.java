@@ -52,6 +52,9 @@ public class WorldProperties extends SerializationConfig {
         PROPERTY_ALIASES.put("monsters", "spawning.monsters.spawn");
         PROPERTY_ALIASES.put("animalsrate", "spawning.animals.spawnrate");
         PROPERTY_ALIASES.put("monstersrate", "spawning.monsters.spawnrate");
+        PROPERTY_ALIASES.put("flight", "allowFlight");
+        PROPERTY_ALIASES.put("fly", "allowFlight");
+        PROPERTY_ALIASES.put("allowfly", "allowFlight");
     }
 
     public WorldProperties(Map<String, Object> values) {
@@ -280,6 +283,8 @@ public class WorldProperties extends SerializationConfig {
     private volatile String generator;
     @Property
     private volatile int playerLimit;
+    @Property
+    private volatile boolean allowFlight;
     // End of properties
     // --------------------------------------------------------------
 
@@ -331,6 +336,7 @@ public class WorldProperties extends SerializationConfig {
         this.worldBlacklist = new ArrayList<String>();
         this.generator = null;
         this.playerLimit = -1;
+        this.allowFlight = true;
     }
 
     private static double getDefaultScale(Environment environment) {
@@ -615,5 +621,13 @@ public class WorldProperties extends SerializationConfig {
 
     public boolean setStyle(String style) {
         return this.setPropertyUnchecked("style", style);
+    }
+
+    public boolean getAllowFlight() {
+        return this.allowFlight;
+    }
+
+    public void setAllowFlight(final boolean allowFlight) {
+        this.setPropertyValueUnchecked("allowFlight", allowFlight);
     }
 }

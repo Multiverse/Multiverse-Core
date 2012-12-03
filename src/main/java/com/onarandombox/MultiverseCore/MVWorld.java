@@ -286,7 +286,7 @@ public class MVWorld implements MultiverseWorld {
             for (Player p : plugin.getServer().getWorld(getName()).getPlayers()) {
                 plugin.log(Level.FINER, String.format("Setting %s's GameMode to %s",
                         p.getName(), newValue.toString()));
-                plugin.getPlayerListener().handleGameMode(p, MVWorld.this);
+                plugin.getPlayerListener().handleGameModeAndFlight(p, MVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);
         }
@@ -1186,6 +1186,22 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public boolean setStyle(String style) {
         return this.props.setStyle(style);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getAllowFlight() {
+        return this.props.getAllowFlight();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAllowFlight(final boolean allowFlight) {
+        this.props.setAllowFlight(allowFlight);
     }
 
     @Override

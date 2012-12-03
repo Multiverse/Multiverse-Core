@@ -13,6 +13,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -125,7 +126,7 @@ public class MVPlayerListener implements Listener {
             }
         }
         // Handle the Players GameMode setting for the new world.
-        this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
         playerWorld.put(p.getName(), p.getWorld().getName());
     }
 
@@ -136,7 +137,7 @@ public class MVPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
-        this.handleGameMode(event.getPlayer(), event.getPlayer().getWorld());
+        this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
         playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
     }
 
@@ -316,13 +317,13 @@ public class MVPlayerListener implements Listener {
     }
 
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
-    private void handleGameMode(Player player, World world) {
+    private void handleGameModeAndFlight(Player player, World world) {
 
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
-            this.handleGameMode(player, mvWorld);
+            this.handleGameModeAndFlight(player, mvWorld);
         } else {
-            this.plugin.log(Level.FINER, "Not handling gamemode for world '" + world.getName()
+            this.plugin.log(Level.FINER, "Not handling gamemode and flight for world '" + world.getName()
                     + "' not managed by Multiverse.");
         }
     }
@@ -332,7 +333,7 @@ public class MVPlayerListener implements Listener {
      * @param player The {@link Player}.
      * @param world The world the player is in.
      */
-    public void handleGameMode(final Player player, final MultiverseWorld world) {
+    public void handleGameModeAndFlight(final Player player, final MultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         if (!this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
@@ -354,6 +355,17 @@ public class MVPlayerListener implements Listener {
                 }, 1L);
         } else {
             this.plugin.log(Level.FINE, "Player: " + player.getName() + " is IMMUNE to gamemode changes!");
+        }
+        // TODO need a override permission for this
+        if (player.getAllowFlight() && !world.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
+            player.setAllowFlight(false);
+            if (player.isFlying()) {
+                player.setFlying(false);
+            }
+        } else if (world.getAllowFlight()) {
+            if (player.getGameMode() == GameMode.CREATIVE) {
+                player.setAllowFlight(true);
+            }
         }
     }
 }
