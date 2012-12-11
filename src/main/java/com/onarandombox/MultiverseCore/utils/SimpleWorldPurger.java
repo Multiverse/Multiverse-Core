@@ -35,8 +35,16 @@ public class SimpleWorldPurger implements WorldPurger {
 
     private MultiverseCore plugin;
 
+    private Class<Entity> ambientClass = null;
+
     public SimpleWorldPurger(MultiverseCore plugin) {
         this.plugin = plugin;
+        try {
+            Class entityClass = Class.forName("org.bukkit.entity.Ambient");
+            if (Entity.class.isAssignableFrom(entityClass)) {
+                ambientClass = entityClass;
+            }
+        } catch (ClassNotFoundException ignore) { }
     }
 
     /**
@@ -130,7 +138,8 @@ public class SimpleWorldPurger implements WorldPurger {
             boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
         boolean negate = false;
         boolean specified = false;
-        if (e instanceof Golem || e instanceof Squid || e instanceof Animals) {
+        if (e instanceof Golem || e instanceof Squid || e instanceof Animals
+                || (ambientClass != null && ambientClass.isInstance(e))) {
             // it's an animal
             if (specifiedAnimals && !negateAnimals) {
                 Logging.finest("Removing an entity because I was told to remove all animals in world %s: %s", e.getWorld().getName(), e);
