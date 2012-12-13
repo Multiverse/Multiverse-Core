@@ -301,7 +301,9 @@ public class MVPlayerListener implements Listener {
                     + "' because enforceaccess is off.");
         }
         if (!plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
+            if (event.getPortalTravelAgent() != null) {
+                event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
+            }
         }
     }
 
