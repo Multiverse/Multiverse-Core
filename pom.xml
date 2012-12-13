@@ -26,10 +26,10 @@
             <url>http://repo.mcstats.org/content/repositories/snapshots</url>
         </repository>
         <!-- Required for Vault -->
-        <repository>
+        <!--repository>
             <id>herocraft</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-        </repository>
+        </repository-->
     </repositories>
 
     <pluginRepositories>
@@ -264,7 +264,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.19-SNAPSHOT</version>
+            <version>1.2.20</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
