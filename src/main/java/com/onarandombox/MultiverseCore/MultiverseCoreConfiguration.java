@@ -1,12 +1,10 @@
 package com.onarandombox.MultiverseCore;
 
-import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
-import me.main__.util.SerializationConfig.NoSuchPropertyException;
-import me.main__.util.SerializationConfig.Property;
-import me.main__.util.SerializationConfig.SerializationConfig;
+import com.dumptruckman.minecraft.util.*;
+import com.onarandombox.MultiverseCore.api.*;
+import me.main__.util.SerializationConfig.*;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Our configuration.
@@ -96,7 +94,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         this.version = 2.9;
         silentstart = false;
         defaultportalsearch = false;
-        portalsearchradius = 16;
+        portalsearchradius = 128;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
