@@ -370,8 +370,15 @@ public class WorldManager implements MVWorldManager {
         if (type != null) {
             creator.type(type);
         }
-        if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
-            creator.generator(world.getGenerator());
+        if ((world.getGenerator() != null) && (!world.getGenerator().equals("null"))) {
+            try {
+                creator.generator(world.getGenerator());
+            } catch (Throwable t) {
+                Logging.warning("Failed to set the generator for world '%s' to '%s': %s", name, world.getGenerator(), t);
+                Logging.warning("World '%s' was NOT loaded!", name);
+                return false;
+            }
+        }
 
         return doLoad(creator, ignoreExists);
     }
