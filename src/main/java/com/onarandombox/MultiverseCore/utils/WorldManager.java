@@ -375,7 +375,7 @@ public class WorldManager implements MVWorldManager {
                 creator.generator(world.getGenerator());
             } catch (Throwable t) {
                 Logging.warning("Failed to set the generator for world '%s' to '%s': %s", name, world.getGenerator(), t);
-                Logging.warning("World '%s' was NOT loaded!", name);
+                Logging.warning("This is a bug in the generator plugin, NOT a bug in Multiverse!", name);
                 return false;
             }
         }
