@@ -8,7 +8,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.destination.CustomTeleporterDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
@@ -156,7 +158,9 @@ public class TeleportCommand extends MultiverseCommand {
             this.messaging.sendMessage(teleporter, "Sorry Boss, I tried everything, but just couldn't teleport ya there!", false);
             return;
         }
-        TeleportResult result = this.playerTeleporter.safelyTeleport(teleporter, teleportee, d);
+        Teleporter teleportObject = (d instanceof CustomTeleporterDestination) ?
+                ((CustomTeleporterDestination)d).getTeleporter() : this.playerTeleporter;
+        TeleportResult result = teleportObject.teleport(teleporter, teleportee, d);
         if (result == TeleportResult.FAIL_UNSAFE) {
             this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName()
                     + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
