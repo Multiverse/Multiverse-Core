@@ -1234,6 +1234,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void setBlockSafety(BlockSafety bs) {
+        if (bs == null) {
+            throw new NullPointerException("block safety may not be null.");
+        }
         this.blockSafety = bs;
     }
 
