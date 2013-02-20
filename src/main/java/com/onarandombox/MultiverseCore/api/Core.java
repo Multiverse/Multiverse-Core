@@ -19,7 +19,6 @@ import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.pneumaticraft.commandhandler.CommandHandler;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 /**
@@ -28,15 +27,6 @@ import org.bukkit.entity.Player;
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
 public interface Core {
-
-    /**
-     * Gets the Multiverse config file.
-     *
-     * @return The Multiverse config file.
-     * @deprecated Don't modify the config-file manually!
-     */
-    @Deprecated
-    FileConfiguration getMVConfiguration();
 
     /**
      * Gets the Banking system that Multiverse-Core has hooked into.

@@ -242,16 +242,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public FileConfiguration getMVConfiguration() {
-        return this.multiverseConfig;
-    }
-
-    /**
-     * {@inheritDoc}
      * @deprecated Now using Vault.
      */
     @Override
