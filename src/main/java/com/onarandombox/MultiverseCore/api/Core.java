@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
 import com.fernferret.allpay.AllPay;
-import com.fernferret.allpay.GenericBank;
+import com.fernferret.allpay.commons.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;

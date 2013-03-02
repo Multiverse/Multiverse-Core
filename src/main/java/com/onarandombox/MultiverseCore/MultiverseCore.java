@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore;
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.fernferret.allpay.AllPay;
-import com.fernferret.allpay.GenericBank;
+import com.fernferret.allpay.commons.GenericBank;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;

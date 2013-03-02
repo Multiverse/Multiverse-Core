@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.fernferret.allpay.GenericBank;
+import com.fernferret.allpay.commons.GenericBank;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.command.CommandSender;
