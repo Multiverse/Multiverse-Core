@@ -21,6 +21,10 @@ public class MVMapListener implements Listener {
         this.plugin = plugin;
     }
 
+    /**
+     * This method is called when a map is initialized.
+     * @param event The event that was fired.
+     */
     @EventHandler
     public void mapInitialize(final MapInitializeEvent event) {
         for (final Player player : Bukkit.getOnlinePlayers()) {

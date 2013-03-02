@@ -50,7 +50,7 @@ public class MVWorld implements MultiverseWorld {
     private final MultiverseCore plugin; // Hold the Plugin Instance.
     private final String name; // The Worlds Name, EG its folder name.
     private final UUID worldUID;
-    final WorldProperties props;
+    private final WorldProperties props;
 
     public MVWorld(MultiverseCore plugin, World world, WorldProperties properties) {
         this(plugin, world, properties, true);
@@ -470,10 +470,18 @@ public class MVWorld implements MultiverseWorld {
         this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allWorlds);
     }
 
+    /**
+     * Copies all properties from another {@link MVWorld} object.
+     * @param other The other world object.
+     */
     public void copyValues(MVWorld other) {
         props.copyValues(other.props);
     }
 
+    /**
+     * Copies all properties from a {@link WorldProperties} object.
+     * @param other The world properties object.
+     */
     public void copyValues(WorldProperties other) {
         props.copyValues(other);
     }
