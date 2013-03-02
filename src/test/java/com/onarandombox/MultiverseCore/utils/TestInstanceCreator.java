@@ -76,6 +76,7 @@ public class TestInstanceCreator {
             when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
             doReturn(pdf).when(core).getDescription();
             doReturn(true).when(core).isEnabled();
+            doReturn(Util.logger).when(core).getLogger();
             core.setServerFolder(serverDirectory);
 
             // Add Core to the list of loaded plugins
