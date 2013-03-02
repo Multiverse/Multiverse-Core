@@ -104,7 +104,6 @@
         </module>
         <module name="LeftCurly"/>
         <module name="RightCurly"/>
-        <module name="DoubleCheckedLocking"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField">
