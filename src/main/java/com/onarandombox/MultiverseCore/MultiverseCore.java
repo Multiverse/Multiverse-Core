@@ -80,6 +80,7 @@ import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
@@ -218,6 +219,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
     private SafeTTeleporter safeTTeleporter;
+    private UnsafeCallWrapper unsafeCallWrapper;
 
     private File serverFolder = new File(System.getProperty("user.dir"));
 
@@ -238,6 +240,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.locationManipulation = new SimpleLocationManipulation();
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
+        this.unsafeCallWrapper = new UnsafeCallWrapper(this);
     }
 
     /**
@@ -1284,5 +1287,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public Buscript getScriptAPI() {
         return buscript;
+    }
+
+    public UnsafeCallWrapper getUnsafeCallWrapper() {
+        return this.unsafeCallWrapper;
     }
 }

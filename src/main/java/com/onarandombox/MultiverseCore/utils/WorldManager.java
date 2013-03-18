@@ -251,7 +251,7 @@ public class WorldManager implements MVWorldManager {
         if (myPlugin == null) {
             return null;
         } else {
-            return UnsafeCallWrapper.wrap(new Callable<ChunkGenerator>() {
+            return plugin.getUnsafeCallWrapper().wrap(new Callable<ChunkGenerator>() {
                 @Override
                 public ChunkGenerator call() throws Exception {
                     return myPlugin.getDefaultWorldGenerator(worldName, generatorID);
@@ -379,7 +379,7 @@ public class WorldManager implements MVWorldManager {
 
         boolean generatorSuccess = true;
         if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
-            generatorSuccess = null != UnsafeCallWrapper.wrap(new Callable<Object>() {
+            generatorSuccess = null != plugin.getUnsafeCallWrapper().wrap(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     creator.generator(world.getGenerator());
