@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -241,16 +242,21 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName) {
+    public ChunkGenerator getChunkGenerator(String generator, final String generatorID, final String worldName) {
         if (generator == null) {
             return null;
         }
 
-        Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
+        final Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
         if (myPlugin == null) {
             return null;
         } else {
-            return myPlugin.getDefaultWorldGenerator(worldName, generatorID);
+            return UnsafeCallWrapper.wrap(new Callable<ChunkGenerator>() {
+                @Override
+                public ChunkGenerator call() throws Exception {
+                    return myPlugin.getDefaultWorldGenerator(worldName, generatorID);
+                }
+            }, myPlugin.getName(), "Failed to get the default chunk generator: %s");
         }
     }
 
@@ -363,24 +369,25 @@ public class WorldManager implements MVWorldManager {
         if (!worldsFromTheConfig.containsKey(name))
             throw new IllegalArgumentException("That world doesn't exist!");
 
-        WorldProperties world = worldsFromTheConfig.get(name);
-        WorldCreator creator = WorldCreator.name(name);
+        final WorldProperties world = worldsFromTheConfig.get(name);
+        final WorldCreator creator = WorldCreator.name(name);
 
         creator.environment(world.getEnvironment()).seed(world.getSeed());
         if (type != null) {
             creator.type(type);
         }
-        if ((world.getGenerator() != null) && (!world.getGenerator().equals("null"))) {
-            try {
-                creator.generator(world.getGenerator());
-            } catch (Throwable t) {
-                Logging.warning("Failed to set the generator for world '%s' to '%s': %s", name, world.getGenerator(), t);
-                Logging.warning("This is a bug in the generator plugin, NOT a bug in Multiverse!", name);
-                return false;
-            }
-        }
 
-        return doLoad(creator, ignoreExists);
+        boolean generatorSuccess = true;
+        if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
+            generatorSuccess = null != UnsafeCallWrapper.wrap(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    creator.generator(world.getGenerator());
+                    return new Object();
+                }
+            }, "the generator plugin", "Failed to set the generator for world '%s' to '%s': %s", name, world.getGenerator());
+
+        return generatorSuccess && doLoad(creator, ignoreExists);
     }
 
     private boolean doLoad(WorldCreator creator, boolean ignoreExists) {
