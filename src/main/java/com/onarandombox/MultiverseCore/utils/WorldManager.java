@@ -185,6 +185,14 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                             String generator, boolean useSpawnAdjust) {
+        return this.addWorld(name, env, seedString, type, generateStructures, generator, generateStructures, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures, String generator, boolean useSpawnAdjust, boolean load) {
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
@@ -226,13 +234,15 @@ public class WorldManager implements MVWorldManager {
         }
         Logging.info(builder.toString());
 
-        if (!doLoad(c, true)) {
-            this.plugin.log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
-            return false;
+        if (load) {
+            if (!doLoad(c, true)) {
+                this.plugin.log(Level.SEVERE, "Failed to Create/Load the world '" + name + "'");
+                return false;
+            }
+            // set generator (special case because we can't read it from org.bukkit.World)
+            this.worlds.get(name).setGenerator(generator);
         }
 
-        // set generator (special case because we can't read it from org.bukkit.World)
-        this.worlds.get(name).setGenerator(generator);
 
         this.saveWorldsConfig();
         return true;
@@ -265,8 +275,21 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean removeWorldFromConfig(String name) {
-        if (!unloadWorld(name)) {
-            return false;
+        return removeWorldFromConfig(name, true);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeWorldFromConfig(String name, boolean unload) {
+        if (unload) {
+            if (!unloadWorld(name)) {
+                return false;
+            }
+        } else {
+            // If the world is loaded, forget we know about it.
+            worlds.remove(name);
         }
         if (this.worldsFromTheConfig.containsKey(name)) {
             this.worldsFromTheConfig.remove(name);

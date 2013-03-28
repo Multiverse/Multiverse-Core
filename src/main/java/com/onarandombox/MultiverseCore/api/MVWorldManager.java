@@ -54,11 +54,29 @@ public interface MVWorldManager {
      * @param type               The Type of the world to be made.
      * @param generateStructures If true, this world will get NPC villages.
      * @param generator          The Custom generator plugin to use.
-     * @param useSpawnAdjust If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
+     * @param useSpawnAdjust     If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
      * @return True if the world is added, false if not.
      */
     boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                      String generator, boolean useSpawnAdjust);
+
+    /**
+     * Add a new World to the Multiverse Setup.
+     *
+     * @param name               World Name
+     * @param env                Environment Type
+     * @param seedString         The seed in the form of a string.
+     *                             If the seed is a Long,
+     *                             it will be interpreted as such.
+     * @param type               The Type of the world to be made.
+     * @param generateStructures If true, this world will get NPC villages.
+     * @param generator          The Custom generator plugin to use.
+     * @param useSpawnAdjust     If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
+     * @param load               If true, load the world if it is not already loaded.
+     * @return True if the world is added, false if not.
+     */
+    boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
+                     String generator, boolean useSpawnAdjust, boolean load);
 
     /**
      * Make a copy of a world.
@@ -252,6 +270,15 @@ public interface MVWorldManager {
      * @return True if success, false if failure.
      */
     boolean removeWorldFromConfig(String name);
+
+    /**
+     * Remove the world from the Multiverse list and from the config.
+     *
+     * @param name The name of the world to remove
+     * @param unload If true, and the world is loaded, attempt to unload it.
+     * @return True if success, false if failure.
+     */
+    boolean removeWorldFromConfig(String name, boolean unload);
 
     /**
      * Sets the initial spawn world for new players.
