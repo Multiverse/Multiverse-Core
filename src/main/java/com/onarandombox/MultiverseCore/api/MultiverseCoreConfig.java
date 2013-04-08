@@ -121,6 +121,18 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @return prefixChat.
      */
     boolean getPrefixChat();
+    
+    /**
+     * Sets prefixChatFormat.
+     * @param prefixChatFormat The new value.
+     */
+    void setPrefixChatFormat(String prefixChatFormat);
+
+    /**
+     * Gets prefixChatFormat.
+     * @return prefixChatFormat.
+     */
+    String getPrefixChatFormat();
 
     /**
      * Sets enforceAccess.
