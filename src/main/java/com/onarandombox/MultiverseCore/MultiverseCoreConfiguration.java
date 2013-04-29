@@ -42,6 +42,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile boolean prefixchat;
     @Property
+    private volatile String prefixchatformat;
+    @Property
     private volatile boolean useasyncchat;
     @Property
     private volatile boolean teleportintercept;
@@ -85,6 +87,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         enforceaccess = false;
         useasyncchat = true;
         prefixchat = true;
+        prefixchatformat = "[%world%]%chat%";
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
@@ -142,6 +145,22 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setPrefixChat(boolean prefixChat) {
         this.prefixchat = prefixChat;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getPrefixChatFormat() {
+        return this.prefixchatformat;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setPrefixChatFormat(String prefixChatFormat) {
+        this.prefixchatformat = prefixChatFormat;
     }
 
     /**
