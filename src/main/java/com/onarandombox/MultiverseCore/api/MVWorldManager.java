@@ -110,6 +110,15 @@ public interface MVWorldManager {
     boolean unloadWorld(String name);
 
     /**
+     * Unload a world from Multiverse with option to prevent calling unloadWorld in Bukkit.
+     *
+     * @param name Name of the world to unload
+     * @param unloadBukkit True if Bukkit world should be unloaded
+     * @return True if the world was unloaded, false if not.
+     */
+    boolean unloadWorld(String name, boolean unloadBukkit);
+
+    /**
      * Loads the world. Only use this if the world has been
      * unloaded with {@link #unloadWorld(String)}.
      *
