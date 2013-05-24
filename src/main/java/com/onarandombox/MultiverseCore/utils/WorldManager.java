@@ -316,9 +316,21 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean unloadWorld(String name) {
+        return this.unloadWorld(name, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean unloadWorld(String name, boolean unloadBukkit) {
         if (this.worlds.containsKey(name)) {
             this.worldsFromTheConfig.get(name).cacheVirtualProperties();
-            if (this.unloadWorldFromBukkit(name, true)) {
+            if (unloadBukkit && this.unloadWorldFromBukkit(name, true)) {
+                this.worlds.remove(name);
+                Logging.info("World '%s' was unloaded from memory.", name);
+                return true;
+            } else if (!unloadBukkit){
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from memory.", name);
                 return true;
@@ -397,7 +409,7 @@ public class WorldManager implements MVWorldManager {
         if (worlds.containsKey(worldName))
             throw new IllegalArgumentException("That world is already loaded!");
 
-        if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists()) {
+        if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists() && !new File(this.plugin.getServer().getWorldContainer().getParent(), worldName).exists()) {
             this.plugin.log(Level.WARNING, "WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
             this.plugin.log(Level.WARNING, "Use '/mv remove' to remove it from the config!");
             return false;

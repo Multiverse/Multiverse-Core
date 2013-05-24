@@ -73,6 +73,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
@@ -204,6 +205,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private final MVPluginListener pluginListener = new MVPluginListener(this);
     private final MVWeatherListener weatherListener = new MVWeatherListener(this);
     private final MVPortalListener portalListener = new MVPortalListener(this);
+    private final MVWorldListener worldListener = new MVWorldListener(this);
     private MVChatListener chatListener;
 
     // HashMap to contain information relating to the Players.
@@ -459,6 +461,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvents(this.pluginListener, this);
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
+        pm.registerEvents(this.worldListener, this);
         pm.registerEvents(new MVMapListener(this), this);
     }
 
