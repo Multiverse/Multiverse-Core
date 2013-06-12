@@ -9,8 +9,11 @@ package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +24,8 @@ import org.bukkit.util.Vector;
  */
 public class BedDestination implements MVDestination {
 
+	public static final String OLD_BED_STRING = "b:playerbed";
+	private String playername = "";
     private boolean isValid;
     private Location knownBedLoc;
     private MultiverseCore plugin;
@@ -38,8 +43,18 @@ public class BedDestination implements MVDestination {
      */
     @Override
     public boolean isThisType(JavaPlugin plugin, String destination) {
-        String[] split = destination.split(":");
-        this.isValid = split.length >= 1 && split.length <= 2 && split[0].equals(this.getIdentifier());
+    	boolean backwardsCompat = (destination == OLD_BED_STRING);
+    	
+    	String[] split = destination.split(":");
+        boolean validFormat = split.length >= 1 && split.length <= 2 && split[0].equals(this.getIdentifier());
+        
+        OfflinePlayer p = Bukkit.getOfflinePlayer(split[1]);
+        boolean validPlayer = (p != null);
+        
+        if(validFormat && validPlayer) this.playername = p.getName();
+
+        this.isValid = backwardsCompat || (validFormat && validPlayer);
+        
         return this.isValid;
     }
 
@@ -49,9 +64,13 @@ public class BedDestination implements MVDestination {
     @Override
     public Location getLocation(Entity entity) {
         if (entity instanceof Player) {
-            this.knownBedLoc = this.plugin.getBlockSafety().getSafeBedSpawn(((Player) entity).getBedSpawnLocation());
-            if (this.knownBedLoc == null) {
-                ((Player) entity).sendMessage("Your bed was " + ChatColor.RED + "invalid or blocked" + ChatColor.RESET + ". Sorry.");
+        	if (this.playername.isEmpty()){
+        		this.knownBedLoc = this.plugin.getBlockSafety().getSafeBedSpawn(((Player) entity).getBedSpawnLocation());
+        	}else{
+        		this.knownBedLoc = this.plugin.getBlockSafety().getSafeBedSpawn(Bukkit.getOfflinePlayer(this.playername).getBedSpawnLocation());
+        	}
+        	if (this.knownBedLoc == null) {
+                ((Player) entity).sendMessage("The bed was " + ChatColor.RED + "invalid or blocked" + ChatColor.RESET + ". Sorry.");
             }
             return this.knownBedLoc;
         }
@@ -120,6 +139,11 @@ public class BedDestination implements MVDestination {
 
     @Override
     public String toString() {
-        return "b:playerbed";
+    	if(this.playername.isEmpty()) {
+    		return "b:playerbed";
+    	}else{
+    		return "b:"+this.playername;
+    	}
+    	
     }
 }
