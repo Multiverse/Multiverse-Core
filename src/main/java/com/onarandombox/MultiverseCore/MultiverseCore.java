@@ -244,6 +244,21 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
+        this.messaging = new MVMessaging();
+
+        // Call the Function to load all the Worlds and setup the HashMap
+        // When called with null, it tries to load ALL
+        // this function will be called every time a plugin registers a new envtype with MV
+        // Setup & Load our Configuration files.
+        loadConfigs();
+        if (this.multiverseConfig != null) {
+            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+            Logging.setShowingConfig(!getMVConfig().getSilentStart());
+            this.worldManager.loadDefaultWorlds();
+            this.worldManager.loadWorlds(true);
+        } else {
+            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
+        }
     }
 
     /**
@@ -266,7 +281,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void onEnable() {
-        this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
         this.vaultHandler = new VaultHandler(this);
         // Load the defaultWorldGenerators
@@ -291,19 +305,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Start the Update Checker
         // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
 
-        // Call the Function to load all the Worlds and setup the HashMap
-        // When called with null, it tries to load ALL
-        // this function will be called every time a plugin registers a new envtype with MV
-        // Setup & Load our Configuration files.
-        loadConfigs();
-        if (this.multiverseConfig != null) {
-            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
-            Logging.setShowingConfig(!getMVConfig().getSilentStart());
-            this.worldManager.loadDefaultWorlds();
-            this.worldManager.loadWorlds(true);
-        } else {
-            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
-        }
         this.anchorManager.loadAnchors();
 
         // Now set the firstspawnworld (after the worlds are loaded):
