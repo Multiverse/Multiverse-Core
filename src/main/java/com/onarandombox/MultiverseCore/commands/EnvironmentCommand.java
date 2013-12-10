@@ -71,12 +71,14 @@ public class EnvironmentCommand extends MultiverseCommand {
      */
     public static WorldType getWorldTypeFromString(String type) {
         // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (type.equalsIgnoreCase("normal"))
+        if (type.equalsIgnoreCase("normal")) {
             type = "NORMAL";
-        if (type.equalsIgnoreCase("flat"))
+        } else if (type.equalsIgnoreCase("flat")) {
             type = "FLAT";
-        if (type.equalsIgnoreCase("largebiomes")) {
+        } else if (type.equalsIgnoreCase("largebiomes")) {
             type = "LARGE_BIOMES";
+        } else if (type.equalsIgnoreCase("amplified")) {
+            type = "AMPLIFIED";
         }
         try {
             // Now that we've converted a potentially unfriendly value
