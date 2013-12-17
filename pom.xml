@@ -22,9 +22,9 @@
         </repository>
         <!-- Required for Metrics -->
         <repository>
-            <id>mcstats</id>
-            <url>http://repo.mcstats.org/content/repositories/snapshots</url>
-        </repository>
+        <id>Plugin Metrics</id>
+        <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
         <!-- Required for Vault -->
         <!--repository>
             <id>herocraft</id>
@@ -73,8 +73,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -258,7 +258,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.5-R0.2</version>
+            <version>1.7.2-R0.1-SNAPSHOT</version>
             <!-- If you want the lates, use this -->
             <!-- <version>LATEST</version> -->
             <type>jar</type>
@@ -317,12 +317,11 @@
         <!-- End of Buscript Dependency -->
         <!-- Start of Metrics Dependency -->
         <dependency>
-            <groupId>org.mcstats</groupId>
-            <artifactId>metrics</artifactId>
-            <version>1.2-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+        <groupId>org.mcstats.MOD</groupId>
+        <artifactId>metrics</artifactId>
+        <version>R6</version>
+        <scope>compile</scope>
+    </dependency>
         <!-- End of Metrics Dependency -->
         <!-- Start of Logging Dependency -->
         <dependency>
