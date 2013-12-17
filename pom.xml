@@ -22,9 +22,9 @@
         </repository>
         <!-- Required for Metrics -->
         <repository>
-            <id>mcstats</id>
-            <url>http://repo.mcstats.org/content/repositories/snapshots</url>
-        </repository>
+        <id>Plugin Metrics</id>
+        <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
         <!-- Required for Vault -->
         <!--repository>
             <id>herocraft</id>
@@ -292,7 +292,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.20</version>
+            <version>1.2.27</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -317,12 +317,12 @@
         <!-- End of Buscript Dependency -->
         <!-- Start of Metrics Dependency -->
         <dependency>
-            <groupId>org.mcstats</groupId>
-            <artifactId>metrics</artifactId>
-            <version>1.2-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+        <groupId>org.mcstats.bukkit</groupId>
+        <artifactId>metrics</artifactId>
+        <version>R6</version>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
         <!-- End of Metrics Dependency -->
         <!-- Start of Logging Dependency -->
         <dependency>
