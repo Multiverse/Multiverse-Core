@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
-
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -287,4 +286,6 @@ public interface MVWorldManager {
      * @return True if success, false if fail.
      */
     boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
+
+    boolean isKeepingSpawnInMemory(World world);
 }

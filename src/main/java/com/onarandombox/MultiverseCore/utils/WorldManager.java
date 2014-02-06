@@ -710,6 +710,11 @@ public class WorldManager implements MVWorldManager {
 
     private static final char SEPARATOR = '\uF8FF';
 
+    public boolean isKeepingSpawnInMemory(World world) {
+        WorldProperties properties = worldsFromTheConfig.get(world.getName());
+        return properties == null || properties.isKeepingSpawnInMemory();
+    }
+
     /**
      * {@inheritDoc}
      */

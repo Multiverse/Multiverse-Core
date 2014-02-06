@@ -73,6 +73,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
@@ -266,6 +267,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void onEnable() {
+        getServer().getPluginManager().registerEvents(new MVWorldInitListener(this), this);
+
         this.messaging = new MVMessaging();
         this.banker = new AllPay(this, LOG_TAG + " ");
         this.vaultHandler = new VaultHandler(this);
