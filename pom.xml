@@ -258,7 +258,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.5-R0.2</version>
+            <version>1.7.2-R0.2</version>
             <!-- If you want the lates, use this -->
             <!-- <version>LATEST</version> -->
             <type>jar</type>
