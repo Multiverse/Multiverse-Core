@@ -22,8 +22,8 @@
         </repository>
         <!-- Required for Metrics -->
         <repository>
-            <id>mcstats</id>
-            <url>http://repo.mcstats.org/content/repositories/snapshots</url>
+            <id>Plugin Metrics</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
         <!-- Required for Vault -->
         <!--repository>
@@ -317,9 +317,9 @@
         <!-- End of Buscript Dependency -->
         <!-- Start of Metrics Dependency -->
         <dependency>
-            <groupId>org.mcstats</groupId>
+            <groupId>org.mcstats.bukkit</groupId>
             <artifactId>metrics</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>R6</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
