@@ -9,7 +9,7 @@ import com.onarandombox.MultiverseCore.enums.TeleportResult;
 /**
  * Used to safely teleport people.
  */
-public interface SafeTTeleporter {
+public interface SafeTTeleporter extends Teleporter {
 
     /**
      * Gets the next safe location around the given location.

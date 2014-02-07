@@ -30,7 +30,6 @@ import java.util.logging.Level;
  * The default-implementation of {@link SafeTTeleporter}.
  */
 public class SimpleSafeTTeleporter implements SafeTTeleporter {
-
     private MultiverseCore plugin;
 
     public SimpleSafeTTeleporter(MultiverseCore plugin) {
@@ -331,4 +330,8 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         return blockB;
     }
 
+    @Override
+    public TeleportResult teleport(final CommandSender teleporter, final Player teleportee, final MVDestination destination) {
+        return this.safelyTeleport(teleporter, teleportee, destination);
+    }
 }
