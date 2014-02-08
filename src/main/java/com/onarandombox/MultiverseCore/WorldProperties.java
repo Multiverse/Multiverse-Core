@@ -41,7 +41,9 @@ public class WorldProperties extends SerializationConfig {
 
     static {
         PROPERTY_ALIASES = new HashMap<String, String>();
-        PROPERTY_ALIASES.put("curr", "currency");
+        PROPERTY_ALIASES.put("curr", "entryfee.currency");
+        PROPERTY_ALIASES.put("currency", "entryfee.currency");
+        PROPERTY_ALIASES.put("price", "entryfee.amount");
         PROPERTY_ALIASES.put("scaling", "scale");
         PROPERTY_ALIASES.put("aliascolor", "color");
         PROPERTY_ALIASES.put("heal", "autoHeal");
