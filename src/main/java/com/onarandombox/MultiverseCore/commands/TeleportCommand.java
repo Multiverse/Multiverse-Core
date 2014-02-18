@@ -174,7 +174,7 @@ public class TeleportCommand extends MultiverseCommand {
             if (!teleportee.equals(teleporter)) {
                 player = teleportee.getName();
             }
-            String message = String.format("%sMultiverse %sdid not teleport %s%s%sto %s%s%sbecause it was unsafe.",
+            String message = String.format("%sMultiverse %sdid not teleport %s%s %sto %s%s %sbecause it was unsafe.",
                     ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, player, ChatColor.WHITE, ChatColor.DARK_AQUA, d.getName(), ChatColor.WHITE);
             this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items,
                     paramTypes, message, "Would you like to try anyway?", "", "", UNSAFE_TELEPORT_EXPIRE_DELAY);
