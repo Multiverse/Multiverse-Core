@@ -176,8 +176,12 @@ public class MVPlayerListener implements Listener {
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
-        if (fromWorld == null || toWorld == null)
+        if (toWorld == null) {
+            this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' is teleporting to world '"
+                    + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
+                    + "actions will be taken by Multiverse-Core.");
             return;
+        }
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Teleporting to the same world.
             this.plugin.log(Level.FINER, "Player '" + teleportee.getName() + "' is teleporting to the same world.");
