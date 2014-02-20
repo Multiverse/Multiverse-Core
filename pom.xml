@@ -301,7 +301,7 @@
         <dependency>
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>
-            <version>7</version>
+            <version>8</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
