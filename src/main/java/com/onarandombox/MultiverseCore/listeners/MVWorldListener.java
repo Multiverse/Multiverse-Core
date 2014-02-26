@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,10 +51,16 @@ public class MVWorldListener implements Listener {
      */
     @EventHandler
     public void loadWorld(WorldLoadEvent event) {
-        if (event.getWorld() instanceof World) {
-            World world = (World) event.getWorld();
-            if (world != null && this.plugin.getMVWorldManager().getUnloadedWorlds().contains(world.getName())) {
+        World world = event.getWorld();
+        if (world != null) {
+            if (this.plugin.getMVWorldManager().getUnloadedWorlds().contains(world.getName())) {
                 this.plugin.getMVWorldManager().loadWorld(world.getName());
+            }
+            MultiverseWorld mvWorld = plugin.getMVWorldManager().getMVWorld(world);
+            if (mvWorld != null) {
+                // This is where we can temporarily fix those pesky property issues!
+                world.setPVP(mvWorld.isPVPEnabled());
+                world.setDifficulty(mvWorld.getDifficulty());
             }
         }
     }
