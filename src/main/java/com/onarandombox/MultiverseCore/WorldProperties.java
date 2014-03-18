@@ -536,7 +536,11 @@ public class WorldProperties extends SerializationConfig {
         if (keepSpawnInMemory == null) {
             return keepSpawnFallback;
         }
-        return this.keepSpawnInMemory.get();
+        try {
+            return this.keepSpawnInMemory.get();
+        } catch (IllegalStateException e) {
+            return keepSpawnFallback;
+        }
     }
 
     public void setKeepSpawnInMemory(boolean value) {
