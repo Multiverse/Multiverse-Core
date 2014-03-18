@@ -43,4 +43,8 @@ public enum AllowedPortalType {
     public PortalType getActualPortalType() {
         return this.type;
     }
+
+    public boolean isPortalAllowed(PortalType portalType) {
+        return this != NONE && (getActualPortalType() == portalType || this == ALL);
+    }
 }

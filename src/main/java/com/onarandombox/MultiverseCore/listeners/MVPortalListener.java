@@ -9,14 +9,16 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+
+import java.util.logging.Level;
 
 /**
  * A custom listener for portal related events.
@@ -39,9 +41,9 @@ public class MVPortalListener implements Listener {
         if (event.isCancelled() || event.getBlocks().size() == 0) {
             return;
         }
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getBlocks().get(0).getWorld());
+        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getEntity().getWorld());
         // We have to do it like this due to a bug in 1.1-R3
-        if (cancelPortalEvent(world, event.getPortalType())) {
+        if (!world.getAllowedPortals().isPortalAllowed(event.getPortalType())) {
             event.setCancelled(true);
         }
     }
@@ -50,36 +52,35 @@ public class MVPortalListener implements Listener {
      * This is called when a portal is created as the result of another world being linked.
      * @param event The event where a portal was formed due to a world link
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void portalForm(PortalCreateEvent event) {
-        if (event.isCancelled() || event.getBlocks().size() == 0) {
-            return;
-        }
-        // There's no type attribute (as of 1.1-R1), so we have to iterate.
-        for (Block b : event.getBlocks()) {
-            if (b.getType() == Material.PORTAL) {
-                MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(b.getWorld());
-                if (cancelPortalEvent(world, PortalType.NETHER)) {
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-        }
-        // If We're here, then the Portal was an Ender type:
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getBlocks().get(0).getWorld());
-        if (cancelPortalEvent(world, PortalType.ENDER)) {
+        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
+        if (!world.getAllowedPortals().isPortalAllowed(PortalType.NETHER)) {
+            plugin.log(Level.FINE, "Cancelling creation of nether portal because portalForm disallows.");
             event.setCancelled(true);
         }
     }
 
-    private static boolean cancelPortalEvent(MultiverseWorld world, PortalType type) {
-        if (world.getAllowedPortals() == AllowedPortalType.NONE) {
-            return true;
-        } else if (world.getAllowedPortals() != AllowedPortalType.ALL) {
-            if (type != world.getAllowedPortals().getActualPortalType()) {
-                return true;
-            }
+    /**
+     * This method will prevent ender portals from being created in worlds where they are not allowed due to portalForm.
+     *
+     * @param event The player interact event.
+     */
+    @EventHandler(ignoreCancelled = true)
+    public void portalForm(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
         }
-        return false;
+        if (event.getClickedBlock().getType() != Material.ENDER_PORTAL_FRAME) {
+            return;
+        }
+        if (event.getItem() == null || event.getItem().getType() != Material.EYE_OF_ENDER) {
+            return;
+        }
+        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
+        if (!world.getAllowedPortals().isPortalAllowed(PortalType.ENDER)) {
+            plugin.log(Level.FINE, "Cancelling creation of ender portal because portalForm disallows.");
+            event.setCancelled(true);
+        }
     }
 }
