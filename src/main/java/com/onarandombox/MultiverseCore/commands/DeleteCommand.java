@@ -27,7 +27,7 @@ public class DeleteCommand extends MultiverseCommand {
         this.setArgRange(1, 1);
         this.addKey("mvdelete");
         this.addKey("mv delete");
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "MyWorld");
+        this.addCommandExample("/mv delete " + ChatColor.GOLD + "MyWorld");
         this.setPermission("multiverse.core.delete", "Deletes a world on your server. " + ChatColor.RED + "PERMANENTLY.", PermissionDefault.OP);
     }
 
