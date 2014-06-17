@@ -106,7 +106,7 @@ public class ImportCommand extends MultiverseCommand {
                 sender.sendMessage(ChatColor.AQUA + "====[ These look like worlds ]====");
                 sender.sendMessage(worldList);
             } else {
-                sender.sendMessage(ChatColor.RED + "Sorry, but no potential worlds were found.");
+                sender.sendMessage(ChatColor.RED + "No potential worlds found. Sorry!");
             }
             return;
         }
@@ -155,7 +155,7 @@ public class ImportCommand extends MultiverseCommand {
         } else {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             String worldList = this.getPotentialWorlds();
-            sender.sendMessage(ChatColor.RED + "That world folder does not exist. These look like worlds to me:");
+            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
             sender.sendMessage(worldList);
         }
     }
