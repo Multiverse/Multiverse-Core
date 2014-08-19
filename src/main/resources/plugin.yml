@@ -2,6 +2,7 @@ name: Multiverse-Core
 main: com.onarandombox.MultiverseCore.MultiverseCore
 authors: ['Rigby', 'fernferret', 'lithium3141', 'main--']
 version: maven-version-number
+load: STARTUP
 commands:
   mv:
     description: Generic Multiverse Command
