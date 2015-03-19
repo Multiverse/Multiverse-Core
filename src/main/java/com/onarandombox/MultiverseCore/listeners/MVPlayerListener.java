@@ -161,6 +161,12 @@ public class MVPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
+        if (event.getTo() == null) {
+            // For some reason, since Spigot 1.8.3, an errant teleport event with no destination may fire from nether portal
+            this.plugin.log(Level.FINE, "No destination set, teleportation request cancelled.");
+            event.setCancelled(true);
+            return;
+        }
         Player teleportee = event.getPlayer();
         CommandSender teleporter = null;
         String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
