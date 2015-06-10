@@ -184,11 +184,7 @@ public class ExactDestination implements MVDestination {
      * @param location The {@link Location}.
      */
     public void setDestination(Location location) {
-        if (location != null) {
-            this.location = location;
-            this.isValid = true;
-        }
-        this.isValid = false;
+        this.isValid = (this.location = location) != null;
     }
 
     /**
