@@ -187,8 +187,9 @@ public class ExactDestination implements MVDestination {
         if (location != null) {
             this.location = location;
             this.isValid = true;
-        }
+        }else{
         this.isValid = false;
+		}
     }
 
     /**
