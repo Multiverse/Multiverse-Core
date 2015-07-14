@@ -368,9 +368,9 @@ public class WorldManager implements MVWorldManager {
     }
 
     private void brokenWorld(String name) {
-        this.plugin.log(Level.SEVERE, "The world '" + name + "' could NOT be loaded because it contains errors!");
-        this.plugin.log(Level.SEVERE, "Try using Chukster to repair your world! '" + name + "'");
-        this.plugin.log(Level.SEVERE, "http://forums.bukkit.org/threads/admin-chunkster.8186/");
+        this.plugin.log(Level.SEVERE, "The world '" + name + "' could NOT be loaded because it contains errors and is probably corrupt!");
+        this.plugin.log(Level.SEVERE, "Try using Minecraft Region Fixer to repair your world! '" + name + "'");
+        this.plugin.log(Level.SEVERE, "https://github.com/Fenixin/Minecraft-Region-Fixer");
     }
 
     private boolean doLoad(String name) {
