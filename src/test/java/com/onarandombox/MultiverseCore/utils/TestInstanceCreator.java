@@ -41,6 +41,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
@@ -59,7 +62,21 @@ public class TestInstanceCreator {
 
             MockGateway.MOCK_STANDARD_METHODS = false;
 
-            core = PowerMockito.spy(new MultiverseCore());
+            TestPluginLoader pluginLoader = new TestPluginLoader();
+
+            // Initialize the Mock server.
+            mockServer = mock(Server.class);
+            when(mockServer.getName()).thenReturn("TestBukkit");
+            Logger.getLogger("Minecraft").setParent(Util.logger);
+            when(mockServer.getLogger()).thenReturn(Util.logger);
+            when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
+
+            // Return a fake PDF file.
+            PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
+                    "com.onarandombox.MultiverseCore.MultiverseCore"));
+            when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
+
+            core = PowerMockito.spy(new MultiverseCore(pluginLoader, mockServer, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
             PowerMockito.doAnswer(new Answer<Void>() {
                 @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -70,11 +87,6 @@ public class TestInstanceCreator {
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
 
-            // Return a fake PDF file.
-            PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
-                    "com.onarandombox.MultiverseCore.MultiverseCore"));
-            when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
-            doReturn(pdf).when(core).getDescription();
             doReturn(true).when(core).isEnabled();
             doReturn(Util.logger).when(core).getLogger();
             core.setServerFolder(serverDirectory);
@@ -101,12 +113,7 @@ public class TestInstanceCreator {
             Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
             worldSkylandsFile.mkdirs();
 
-            // Initialize the Mock server.
-            mockServer = mock(Server.class);
-            when(mockServer.getName()).thenReturn("TestBukkit");
-            Logger.getLogger("Minecraft").setParent(Util.logger);
-            when(mockServer.getLogger()).thenReturn(Util.logger);
-            when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
+
 
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
