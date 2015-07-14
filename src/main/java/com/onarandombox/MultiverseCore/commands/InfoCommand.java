@@ -125,13 +125,13 @@ public class InfoCommand extends MultiverseCommand {
         message.add(new FancyMessage("World Scale: ", String.valueOf(world.getScaling()), colors));
         message.add(new FancyMessage("World Seed: ", String.valueOf(world.getSeed()), colors));
         if (world.getPrice() > 0) {
-            final String formattedAmount;
-            if (world.getCurrency() <= 0 && plugin.getVaultHandler().getEconomy() != null) {
-                formattedAmount = plugin.getVaultHandler().getEconomy().format(world.getPrice());
-            } else {
-                formattedAmount = this.plugin.getBank().getFormattedAmount(p, world.getPrice(), world.getCurrency());
-            }
-            message.add(new FancyMessage("Price to enter this world: ", formattedAmount, colors));
+            message.add(new FancyMessage("Price to enter this world: ",
+                    plugin.getEconomist().formatPrice(world.getPrice(), world.getCurrency()),
+                    colors));
+        } else if (world.getPrice() < 0) {
+            message.add(new FancyMessage("Reward for entering this world: ",
+                    plugin.getEconomist().formatPrice(-world.getPrice(), world.getCurrency()),
+                    colors));
         } else {
             message.add(new FancyMessage("Price to enter this world: ", ChatColor.GREEN + "FREE!", colors));
         }

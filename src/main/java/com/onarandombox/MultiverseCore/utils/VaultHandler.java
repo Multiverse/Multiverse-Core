@@ -56,9 +56,18 @@ public class VaultHandler implements Listener {
         private void vaultDisabled(PluginDisableEvent event) {
             if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {
                 Logging.fine("Vault economy disabled");
-                setupVaultEconomy();
+                economy = null;
             }
         }
+    }
+
+    /**
+     * Checks whether Vault is in use and has an economy system enabled.
+     *
+     * @return true if vault is in use and has an economy system enabled.
+     */
+    public boolean hasEconomy() {
+        return economy != null;
     }
 
     /**

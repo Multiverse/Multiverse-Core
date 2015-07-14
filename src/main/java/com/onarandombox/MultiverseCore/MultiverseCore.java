@@ -9,8 +9,6 @@ package com.onarandombox.MultiverseCore;
 
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
-import com.fernferret.allpay.AllPay;
-import com.fernferret.allpay.commons.GenericBank;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
@@ -70,12 +68,12 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVMapListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
-import com.onarandombox.MultiverseCore.listeners.MVPluginListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
@@ -92,6 +90,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -101,6 +100,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
@@ -130,6 +131,19 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
     private volatile MultiverseCoreConfiguration config;
+
+    public MultiverseCore() {
+        super();
+    }
+
+    /**
+     * This is for unit testing.
+     * @deprecated
+     */
+    @Deprecated
+    public MultiverseCore(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, server, description, dataFolder, file);
+    }
 
     /**
      * This method is used to find out who is teleporting a player.
@@ -204,7 +218,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Setup the block/player/entity listener.
     private final MVPlayerListener playerListener = new MVPlayerListener(this);
     private final MVEntityListener entityListener = new MVEntityListener(this);
-    private final MVPluginListener pluginListener = new MVPluginListener(this);
     private final MVWeatherListener weatherListener = new MVWeatherListener(this);
     private final MVPortalListener portalListener = new MVPortalListener(this);
     private final MVWorldListener worldListener = new MVWorldListener(this);
@@ -212,9 +225,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
-    private VaultHandler vaultHandler;
-    private GenericBank bank = null;
-    private AllPay banker;
+    private MVEconomist economist;
     private Buscript buscript;
     private int pluginCount;
     private DestinationFactory destFactory;
@@ -247,19 +258,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
     }
 
-    /**
-     * {@inheritDoc}
-     * @deprecated Now using Vault.
-     */
-    @Override
-    @Deprecated
-    public GenericBank getBank() {
-        return this.bank;
-    }
 
     @Override
+    @Deprecated
     public VaultHandler getVaultHandler() {
-        return vaultHandler;
+        return getEconomist().getVaultHandler();
+    }
+
+    public MVEconomist getEconomist() {
+        return economist;
     }
 
     /**
@@ -270,16 +277,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getServer().getPluginManager().registerEvents(new MVWorldInitListener(this), this);
 
         this.messaging = new MVMessaging();
-        this.banker = new AllPay(this, LOG_TAG + " ");
-        this.vaultHandler = new VaultHandler(this);
+        this.economist = new MVEconomist(this);
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
-
-        this.bank = this.banker.loadEconPlugin();
 
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
@@ -462,7 +466,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this.playerListener, this);
         pm.registerEvents(this.entityListener, this);
-        pm.registerEvents(this.pluginListener, this);
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
         pm.registerEvents(this.worldListener, this);
@@ -845,8 +848,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public void onDisable() {
         this.saveMVConfigs();
-        this.banker = null;
-        this.bank = null;
         Logging.shutdown();
     }
 
@@ -1030,26 +1031,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public void decrementPluginCount() {
         this.pluginCount -= 1;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated Now using Vault.
-     */
-    @Override
-    @Deprecated
-    public AllPay getBanker() {
-        return this.banker;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated Now using Vault.
-     */
-    @Override
-    @Deprecated
-    public void setBank(GenericBank bank) {
-        this.bank = bank;
     }
 
     /**

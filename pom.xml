@@ -185,14 +185,9 @@
                                     <include>com.dumptruckman.minecraft:buscript</include>
                                     <include>org.mcstats.bukkit:metrics</include>
                                     <include>com.dumptruckman.minecraft:Logging</include>
-                                    <include>com.fernferret.allpay:AllPay</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
-                                <relocation>
-                                    <pattern>com.fernferret.allpay</pattern>
-                                    <shadedPattern>com.fernferret.allpay.multiverse</shadedPattern>
-                                </relocation>
                                 <relocation>
                                     <pattern>me.main__.util</pattern>
                                     <shadedPattern>me.main__.util.multiverse</shadedPattern>
@@ -282,13 +277,6 @@
         </dependency>
         <!-- End of SerializationConfig Dependency -->
         <!-- Start of Economy Dependency -->
-        <dependency>
-            <groupId>com.fernferret.allpay</groupId>
-            <artifactId>AllPay</artifactId>
-            <version>13</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>

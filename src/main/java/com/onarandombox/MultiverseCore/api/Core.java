@@ -8,10 +8,9 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
-import com.fernferret.allpay.AllPay;
-import com.fernferret.allpay.commons.GenericBank;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
@@ -29,21 +28,22 @@ import org.bukkit.entity.Player;
 public interface Core {
 
     /**
-     * Gets the Banking system that Multiverse-Core has hooked into.
-     *
-     * @return A {@link GenericBank} that can be used for payments.
-     * @deprecated Now using vault, see {@link VaultHandler#getEconomy}
-     */
-    @Deprecated
-    GenericBank getBank();
-
-    /**
      * Returns the Vault handler used by Multiverse.  The returned object will have all methods necessary for
      * interfacing with Vault.
      *
      * @return the Vault handler for Multiverse.
+     * @deprecated we are now using {@link #getEconomist()} for all economy needs.
      */
+    @Deprecated
     VaultHandler getVaultHandler();
+
+    /**
+     * Retrieves Multiverse's friendly economist. The economist can be used for dealing with economies without
+     * worrying about any of the messy details.
+     *
+     * @return the economy manager for Multiverse.
+     */
+    MVEconomist getEconomist();
 
     /**
      * Reloads the Multiverse Configuration files:
@@ -108,7 +108,7 @@ public interface Core {
     /**
      * Gets the primary class responsible for managing Multiverse Worlds.
      *
-     * @return {@link WorldManager}.
+     * @return {@link MVWorldManager}.
      */
     MVWorldManager getMVWorldManager();
 
@@ -140,24 +140,6 @@ public interface Core {
      */
     @Deprecated
     Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
-
-    /**
-     * Sets the {@link GenericBank}-Bank AllPay is using.
-     *
-     * @param bank The new {@link GenericBank}
-     * @deprecated Now using vault, see {@link VaultHandler#getEconomy}
-     */
-    @Deprecated
-    void setBank(GenericBank bank);
-
-    /**
-     * Gets this plugin's {@link AllPay}-Banker.
-     *
-     * @return An {@link AllPay}-Banker
-     * @deprecated Now using vault, see {@link VaultHandler#getEconomy}
-     */
-    @Deprecated
-    AllPay getBanker();
 
     /**
      * Decrements the number of plugins that have specifically hooked into core.
