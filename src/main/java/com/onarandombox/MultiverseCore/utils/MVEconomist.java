@@ -123,7 +123,13 @@ public class MVEconomist {
         return vaultHandler;
     }
 
-    private static boolean isItemCurrency(int currency) {
+    /**
+     * Determines if the currency type given represents an item currency.
+     *
+     * @param currency the type of currency. A value greater than -1 indicates the material type used for currency.
+     * @return true if currency is greater than -1.
+     */
+    public static boolean isItemCurrency(int currency) {
         return currency >= 0;
     }
 
@@ -197,7 +203,7 @@ public class MVEconomist {
             } else if (price < 0D) {
                 player.sendMessage(String.format("%s%s%s %s",
                         ChatColor.DARK_GREEN, getFormattedPrice((price * -1), item),
-                        ChatColor.WHITE, "has been added to your account."));
+                        ChatColor.WHITE, "has been added to your inventory."));
             }
         }
     }

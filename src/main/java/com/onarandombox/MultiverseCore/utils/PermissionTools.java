@@ -155,6 +155,7 @@ public class PermissionTools {
                     } else {
                         economist.withdraw(teleporterPlayer, price, currency);
                     }
+                    sendTeleportPaymentMessage(economist, teleporterPlayer, teleportee, toWorld.getColoredWorldString(), price, currency);
                 }
             } else {
                 if (teleportee.equals(teleporter)) {
@@ -162,12 +163,21 @@ public class PermissionTools {
                             "You need " + formattedAmount + " to enter " + toWorld.getColoredWorldString()));
                 } else {
                     teleporterPlayer.sendMessage(economist.getNSFMessage(currency,
-                            "You need " + formattedAmount + " to send " + teleportee + " to " + toWorld.getColoredWorldString()));
+                            "You need " + formattedAmount + " to send " + teleportee.getName() + " to " + toWorld.getColoredWorldString()));
                 }
                 return false;
             }
         }
         return true;
+    }
+
+    private void sendTeleportPaymentMessage (MVEconomist economist, Player teleporterPlayer, Player teleportee, String toWorld, double price, int currency) {
+        price = Math.abs(price);
+        if (teleporterPlayer.equals(teleportee)) {
+            teleporterPlayer.sendMessage("You were " + (price > 0D ? "charged " : "given ") + economist.formatPrice(price, currency) + " for teleporting to " + toWorld);
+        } else {
+            teleporterPlayer.sendMessage("You were " + (price > 0D ? "charged " : "given ") + economist.formatPrice(price, currency) + " for teleporting " + teleportee.getName() + " to " + toWorld);
+        }
     }
 
 
