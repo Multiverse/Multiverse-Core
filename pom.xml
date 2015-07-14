@@ -17,12 +17,12 @@
             <url>http://repo.onarandombox.com/content/groups/public</url>
         </repository>
         <repository>
-            <id>Bukkit Official</id>
-            <url>http://repo.bukkit.org/content/repositories/public</url>
+            <id>spigot</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <!-- Required for Metrics -->
         <repository>
-            <id>Plugin Metrics</id>
+            <id>plugin-metrics</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
         <!-- Required for Vault -->
@@ -258,7 +258,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.2-R0.2</version>
+            <version>1.8.7-R0.1-SNAPSHOT</version>
             <!-- If you want the lates, use this -->
             <!-- <version>LATEST</version> -->
             <type>jar</type>
