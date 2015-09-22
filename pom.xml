@@ -20,16 +20,6 @@
             <id>spigot</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
-        <!-- Required for Metrics -->
-        <repository>
-            <id>plugin-metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
-        <!-- Required for Vault -->
-        <!--repository>
-            <id>herocraft</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-        </repository-->
     </repositories>
 
     <pluginRepositories>
