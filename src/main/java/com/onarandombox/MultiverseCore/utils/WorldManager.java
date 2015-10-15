@@ -109,10 +109,10 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        boolean needsLoading = Bukkit.getWorld(oldName) == null;
+        boolean needsLoading = this.plugin.getServer().getWorld(oldName) == null;
         if (needsLoading) {
             if (this.loadWorld(oldName)) {
-                Bukkit.getWorld(oldName).setAutoSave(false);
+                this.plugin.getServer().getWorld(oldName).setAutoSave(false);
             } else {
                 throw new IllegalStateException("Unable to load world!");
             }
@@ -124,7 +124,7 @@ public class WorldManager implements MVWorldManager {
         WorldCreator worldCreator = new WorldCreator(newName);
         worldCreator.copy(oldWorld.getCBWorld());
         boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
-        String generator = oldWorld.getGenerator();
+        Environment environment = oldWorld.getEnvironment();
 
         Logging.config("Copying data for world '%s'", oldName);
 
@@ -156,7 +156,7 @@ public class WorldManager implements MVWorldManager {
         Logging.fine("Kind of copied stuff");
 
         if (needsLoading) {
-            unloadWorld(oldWorld.getCBWorld());
+            unloadWorld(oldWorld.getName());
         } else if (autosave) {
             oldWorld.getCBWorld().setAutoSave(true);
         }
@@ -167,7 +167,6 @@ public class WorldManager implements MVWorldManager {
                 // getMVWorld() doesn't actually return an MVWorld
                 Logging.fine("Succeeded at importing stuff");
                 MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
-                MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
                 newWorld.copyValues(oldWorld);
                 try {
                     // don't keep the alias the same -- that would be useless
