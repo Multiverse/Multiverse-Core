@@ -7,30 +7,6 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.WorldProperties;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.api.WorldPurger;
-import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
-import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.Plugin;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -45,7 +21,30 @@ import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
+
+import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.WorldProperties;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -93,15 +92,35 @@ public class WorldManager implements MVWorldManager {
 
     /**
      * {@inheritDoc}
+     * @deprecated Use {@link #cloneWorld(String, String)} instead.
      */
     @Override
+    @Deprecated
     public boolean cloneWorld(String oldName, String newName, String generator) {
-        // Make sure we don't already know about the new world.
-        if (this.isMVWorld(newName)) {
-            return false;
+        return this.cloneWorld(oldName, newName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean cloneWorld(String oldName, String newName) {
+        // Make sure we already know about the old world and that we don't
+        // already know about the new world.
+        if (!this.worldsFromTheConfig.containsKey(oldName)) {
+            for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
+                if (oldName.equals(entry.getValue().getAlias())) {
+                    oldName = entry.getKey();
+                    break;
+                }
+            }
+            if (!this.worldsFromTheConfig.containsKey(oldName)) {
+                Logging.warning("Old world '%s' does not exist", oldName);
+                return false;
+            }
         }
-        // Make sure the old world is actually a world!
-        if (this.getUnloadedWorlds().contains(oldName) || !this.isMVWorld(oldName)) {
+        if (this.isMVWorld(newName)) {
+            Logging.warning("New world '%s' already exists", newName);
             return false;
         }
 
@@ -110,63 +129,80 @@ public class WorldManager implements MVWorldManager {
 
         // Make sure the new world doesn't exist outside of multiverse.
         if (newWorldFile.exists()) {
+            Logging.warning("File for new world '%s' already exists", newName);
             return false;
         }
 
-        unloadWorld(oldName);
-
-        removePlayersFromWorld(oldName);
-
-        Logging.config("Copying data for world '%s'", oldName);
-        try {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
-                }
-            });
-            t.start();
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                // do nothing
+        // Load the old world... but just the metadata.
+        boolean wasJustLoaded = false;
+        boolean wasLoadSpawn = false;
+        if (this.plugin.getServer().getWorld(oldName) == null) {
+            wasJustLoaded = true;
+            WorldProperties props = this.worldsFromTheConfig.get(oldName);
+            wasLoadSpawn = props.isKeepingSpawnInMemory();
+            if (wasLoadSpawn) {
+                // No chunks please.
+                props.setKeepSpawnInMemory(false);
             }
-            File uidFile = new File(newWorldFile, "uid.dat");
-            uidFile.delete();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+            if (!this.loadWorld(oldName)) {
+                return false;
+            }
+            this.plugin.getServer().getWorld(oldName).setAutoSave(false);
+        }
+        
+        // Grab a bit of metadata from the old world.
+        MVWorld oldWorld = (MVWorld) getMVWorld(oldName);
+        Environment environment = oldWorld.getEnvironment();
+        String seedString = oldWorld.getSeed() + "";
+        WorldType worldType = oldWorld.getWorldType();
+        Boolean generateStructures = oldWorld.getCBWorld().canGenerateStructures();
+        String generator = oldWorld.getGenerator();
+        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
+        
+        // Don't need the loaded world anymore.
+        if (wasJustLoaded) {
+            this.unloadWorld(oldName, true);
+            oldWorld = null;
+            if (wasLoadSpawn) {
+                this.worldsFromTheConfig.get(oldName).setKeepSpawnInMemory(true);
+            }
+        }
+
+        boolean wasAutoSave = false;
+        if (oldWorld != null && oldWorld.getCBWorld().isAutoSave()) {
+            wasAutoSave = true;
+            Logging.config("Saving world '%s'", oldName);
+            oldWorld.getCBWorld().setAutoSave(false);
+            oldWorld.getCBWorld().save();
+        }
+        Logging.config("Copying files for world '%s'", oldName);
+        if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, Logging.getLogger())) {
+            Logging.warning("Failed to copy files for world '%s', see the log info", newName);
             return false;
         }
-        Logging.fine("Kind of copied stuff");
+        if (oldWorld != null && wasAutoSave) {
+            oldWorld.getCBWorld().setAutoSave(true);
+        }
 
-        WorldCreator worldCreator = new WorldCreator(newName);
-        Logging.fine("Started to copy settings");
-        worldCreator.copy(this.getMVWorld(oldName).getCBWorld());
-        Logging.fine("Copied lots of settings");
+        File uidFile = new File(newWorldFile, "uid.dat");
+        if (uidFile.exists() && !uidFile.delete()) {
+            Logging.warning("Failed to delete unique ID file for world '%s'", newName);
+            return false;
+        }
 
-        boolean useSpawnAdjust = this.getMVWorld(oldName).getAdjustSpawn();
-        Logging.fine("Copied more settings");
-
-        Environment environment = worldCreator.environment();
-        Logging.fine("Copied most settings");
         if (newWorldFile.exists()) {
-            Logging.fine("Succeeded at copying stuff");
-            if (this.addWorld(newName, environment, null, null, null, generator, useSpawnAdjust)) {
+            Logging.fine("Succeeded at copying files");
+            if (this.addWorld(newName, environment, seedString, worldType, generateStructures, generator, useSpawnAdjust)) {
                 // getMVWorld() doesn't actually return an MVWorld
-                Logging.fine("Succeeded at importing stuff");
+                Logging.fine("Succeeded at importing world");
                 MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
-                MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
-                newWorld.copyValues(oldWorld);
-                try {
-                    // don't keep the alias the same -- that would be useless
-                    newWorld.setPropertyValue("alias", newName);
-                } catch (PropertyDoesNotExistException e) {
-                    // this should never happen
-                    throw new RuntimeException(e);
-                }
+                newWorld.copyValues(this.worldsFromTheConfig.get(oldName));
+                // don't keep the alias the same -- that would be useless
+                newWorld.setAlias(null);
                 return true;
             }
         }
+        Logging.warning("Failed to copy files for world '%s', see the log info", newName);
         return false;
     }
 
@@ -846,4 +882,17 @@ public class WorldManager implements MVWorldManager {
     public FileConfiguration getConfigWorlds() {
         return this.configWorlds;
     }
+
+	@Override
+	public boolean hasUnloadedWorld(String name, boolean includeLoaded) {
+		if (getMVWorld(name) != null) {
+			return includeLoaded;
+		}
+		for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
+			if (name.equals(entry.getKey()) || name.equals(entry.getValue().getAlias())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

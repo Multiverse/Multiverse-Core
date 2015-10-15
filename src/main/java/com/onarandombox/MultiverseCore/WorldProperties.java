@@ -374,7 +374,7 @@ public class WorldProperties extends SerializationConfig {
         this.flushPendingVPropChanges();
     }
 
-    String getAlias() {
+    public String getAlias() {
         return this.alias;
     }
 
