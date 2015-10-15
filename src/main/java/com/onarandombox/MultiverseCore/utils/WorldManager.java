@@ -100,10 +100,6 @@ public class WorldManager implements MVWorldManager {
         if (this.isMVWorld(newName)) {
             return false;
         }
-        // Make sure the old world is actually a world!
-        if (this.getUnloadedWorlds().contains(oldName) || !this.isMVWorld(oldName)) {
-            return false;
-        }
 
         final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
         final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
@@ -113,11 +109,31 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        unloadWorld(oldName);
+        boolean needsLoading = Bukkit.getWorld(oldName) == null;
+        if (needsLoading) {
+            if (this.loadWorld(oldName)) {
+                Bukkit.getWorld(oldName).setAutoSave(false);
+            } else {
+                throw new IllegalStateException("Unable to load world!");
+            }
+        } else if (!this.isMVWorld(oldName)) {
+            throw new IllegalStateException("Source world is not imported!");
+        }
 
-        removePlayersFromWorld(oldName);
+        MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
+        WorldCreator worldCreator = new WorldCreator(newName);
+        worldCreator.copy(oldWorld.getCBWorld());
+        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
+        String generator = oldWorld.getGenerator();
 
         Logging.config("Copying data for world '%s'", oldName);
+
+        boolean autosave = oldWorld.getCBWorld().isAutoSave();
+        if (autosave) {
+            oldWorld.getCBWorld().setAutoSave(false);
+            oldWorld.getCBWorld().save();
+        }
+
         try {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -139,16 +155,12 @@ public class WorldManager implements MVWorldManager {
         }
         Logging.fine("Kind of copied stuff");
 
-        WorldCreator worldCreator = new WorldCreator(newName);
-        Logging.fine("Started to copy settings");
-        worldCreator.copy(this.getMVWorld(oldName).getCBWorld());
-        Logging.fine("Copied lots of settings");
+        if (needsLoading) {
+            unloadWorld(oldWorld.getCBWorld());
+        } else if (autosave) {
+            oldWorld.getCBWorld().setAutoSave(true);
+        }
 
-        boolean useSpawnAdjust = this.getMVWorld(oldName).getAdjustSpawn();
-        Logging.fine("Copied more settings");
-
-        Environment environment = worldCreator.environment();
-        Logging.fine("Copied most settings");
         if (newWorldFile.exists()) {
             Logging.fine("Succeeded at copying stuff");
             if (this.addWorld(newName, environment, null, null, null, generator, useSpawnAdjust)) {
