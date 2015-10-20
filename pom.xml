@@ -315,6 +315,12 @@
             <version>1.0.9</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.bukkit</groupId>
+            		<artifactId>craftbukkit</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <!-- End of Logging Dependency -->
         <!-- Start of Test Dependencies -->
