@@ -45,7 +45,6 @@ import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -109,29 +108,27 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        boolean wasAutoSave = false;
-        if (this.plugin.getServer().getWorld(oldName) != null && oldWorld.getCBWorld().isAutoSave()) {
-            wasAutoSave = true;
-            oldWorld.getCBWorld().setAutoSave(false);
-            oldWorld.getCBWorld().save();
-        }
-
         MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
         boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
         Environment environment = oldWorld.getEnvironment();
 
+        boolean wasAutoSave = false;
+        if (this.plugin.getServer().getWorld(oldName) != null && oldWorld.getCBWorld().isAutoSave()) {
+            wasAutoSave = true;
+            Logging.config("Saving world '%s'", oldName);
+            oldWorld.getCBWorld().setAutoSave(false);
+            oldWorld.getCBWorld().save();
+        }
+
         Logging.config("Copying files for world '%s'", oldName);
-        try {
-            FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
-            
-            File uidFile = new File(newWorldFile, "uid.dat");
-            if (uidFile.exists()) {
-                uidFile.delete();
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, Logging.getLogger())) {
+        	return false;
+        }
+        File uidFile = new File(newWorldFile, "uid.dat");
+        if (uidFile.exists() && !uidFile.delete()) {
             return false;
         }
+        
         if (wasAutoSave) {
             oldWorld.getCBWorld().setAutoSave(true);
         }
