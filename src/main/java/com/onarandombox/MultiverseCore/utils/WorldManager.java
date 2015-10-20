@@ -96,8 +96,8 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean cloneWorld(String oldName, String newName, String generator) {
-        // Make sure we don't already know about the new world.
-        if (this.isMVWorld(newName)) {
+        // Make sure we already know about the old world and that we don't already know about the new world.
+        if (!this.isMVWorld(oldName) ||this.isMVWorld(newName)) {
             return false;
         }
 
@@ -109,63 +109,38 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        boolean needsLoading = this.plugin.getServer().getWorld(oldName) == null;
-        if (needsLoading) {
-            if (this.loadWorld(oldName)) {
-                this.plugin.getServer().getWorld(oldName).setAutoSave(false);
-            } else {
-                throw new IllegalStateException("Unable to load world!");
-            }
-        } else if (!this.isMVWorld(oldName)) {
-            throw new IllegalStateException("Source world is not imported!");
-        }
-
-        MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
-        WorldCreator worldCreator = new WorldCreator(newName);
-        worldCreator.copy(oldWorld.getCBWorld());
-        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
-        Environment environment = oldWorld.getEnvironment();
-
-        Logging.config("Copying data for world '%s'", oldName);
-
-        boolean autosave = oldWorld.getCBWorld().isAutoSave();
-        if (autosave) {
+        boolean wasAutoSave = false;
+        if (this.plugin.getServer().getWorld(oldName) != null && oldWorld.getCBWorld().isAutoSave()) {
+            wasAutoSave = true;
             oldWorld.getCBWorld().setAutoSave(false);
             oldWorld.getCBWorld().save();
         }
 
+        MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
+        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
+        Environment environment = oldWorld.getEnvironment();
+
+        Logging.config("Copying files for world '%s'", oldName);
         try {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
-                }
-            });
-            t.start();
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                // do nothing
-            }
+            FileUtils.copyFolder(oldWorldFile, newWorldFile, Logger.getLogger("Minecraft"));
+            
             File uidFile = new File(newWorldFile, "uid.dat");
-            uidFile.delete();
+            if (uidFile.exists()) {
+                uidFile.delete();
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
             return false;
         }
-        Logging.fine("Kind of copied stuff");
-
-        if (needsLoading) {
-            unloadWorld(oldWorld.getName());
-        } else if (autosave) {
+        if (wasAutoSave) {
             oldWorld.getCBWorld().setAutoSave(true);
         }
 
         if (newWorldFile.exists()) {
-            Logging.fine("Succeeded at copying stuff");
+            Logging.fine("Succeeded at copying files");
             if (this.addWorld(newName, environment, null, null, null, generator, useSpawnAdjust)) {
                 // getMVWorld() doesn't actually return an MVWorld
-                Logging.fine("Succeeded at importing stuff");
+                Logging.fine("Succeeded at importing world");
                 MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
                 newWorld.copyValues(oldWorld);
                 try {
