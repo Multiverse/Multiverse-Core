@@ -7,15 +7,17 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import java.io.*;
-import java.util.*;
+import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
+import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.generator.ChunkGenerator;
 
-import org.bukkit.*;
-import org.bukkit.World.*;
-import org.bukkit.configuration.file.*;
-import org.bukkit.generator.*;
-
-import com.onarandombox.MultiverseCore.utils.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Multiverse 2 World Manager API
@@ -38,7 +40,7 @@ public interface MVWorldManager {
      * @return True if the world is added, false if not.
      */
     boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
-            String generator);
+                     String generator);
 
     /**
      * Add a new World to the Multiverse Setup.
@@ -55,7 +57,7 @@ public interface MVWorldManager {
      * @return True if the world is added, false if not.
      */
     boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
-            String generator, boolean useSpawnAdjust);
+                     String generator, boolean useSpawnAdjust);
 
     /**
      * Make a copy of a world.
