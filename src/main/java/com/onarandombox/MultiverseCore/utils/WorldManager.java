@@ -7,26 +7,44 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.*;
-
-import org.bukkit.*;
-import org.bukkit.World.*;
-import org.bukkit.configuration.*;
-import org.bukkit.configuration.file.*;
-import org.bukkit.entity.*;
-import org.bukkit.generator.*;
-import org.bukkit.permissions.*;
-import org.bukkit.plugin.*;
-
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.*;
-import com.onarandombox.MultiverseCore.api.*;
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.WorldProperties;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.event.*;
-import com.onarandombox.MultiverseCore.exceptions.*;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -68,8 +86,7 @@ public class WorldManager implements MVWorldManager {
                 }
             }
         } else {
-            this.plugin.log(Level.WARNING,
-                    "Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
+            this.plugin.log(Level.WARNING, "Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
     }
 
@@ -163,7 +180,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
-            String generator) {
+                            String generator) {
         return this.addWorld(name, env, seedString, type, generateStructures, generator, true);
     }
 
@@ -172,7 +189,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
-            String generator, boolean useSpawnAdjust) {
+                            String generator, boolean useSpawnAdjust) {
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
@@ -219,8 +236,7 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        // set generator (special case because we can't read it from
-        // org.bukkit.World)
+        // set generator (special case because we can't read it from org.bukkit.World)
         this.worlds.get(name).setGenerator(generator);
 
         this.saveWorldsConfig();
@@ -274,7 +290,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public void setFirstSpawnWorld(String world) {
-        if (world == null && this.plugin.getServer().getWorlds().size() > 0) {
+        if ((world == null) && (this.plugin.getServer().getWorlds().size() > 0)) {
             this.firstSpawn = this.plugin.getServer().getWorlds().get(0).getName();
         } else {
             this.firstSpawn = world;
@@ -289,8 +305,7 @@ public class WorldManager implements MVWorldManager {
         MultiverseWorld world = this.getMVWorld(this.firstSpawn);
         if (world == null) {
             // If the spawn world was unloaded, get the default world
-            this.plugin.log(Level.WARNING,
-                    "The world specified as the spawn world (" + this.firstSpawn + ") did not exist!!");
+            this.plugin.log(Level.WARNING, "The world specified as the spawn world (" + this.firstSpawn + ") did not exist!!");
             try {
                 return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
             } catch (IndexOutOfBoundsException e) {
@@ -320,7 +335,7 @@ public class WorldManager implements MVWorldManager {
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from memory.", name);
                 return true;
-            } else if (!unloadBukkit) {
+            } else if (!unloadBukkit){
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from memory.", name);
                 return true;
@@ -330,8 +345,7 @@ public class WorldManager implements MVWorldManager {
         } else if (this.plugin.getServer().getWorld(name) != null) {
             Logging.warning("Hmm Multiverse does not know about this world but it's loaded in memory.");
             Logging.warning("To let Multiverse know about it, use:");
-            Logging.warning("/mv import %s %s", name,
-                    this.plugin.getServer().getWorld(name).getEnvironment().toString());
+            Logging.warning("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString());
         } else if (this.worldsFromTheConfig.containsKey(name)) {
             return true; // it's already unloaded
         } else {
@@ -359,8 +373,7 @@ public class WorldManager implements MVWorldManager {
     }
 
     private void brokenWorld(String name) {
-        this.plugin.log(Level.SEVERE,
-                "The world '" + name + "' could NOT be loaded because it contains errors and is probably corrupt!");
+        this.plugin.log(Level.SEVERE, "The world '" + name + "' could NOT be loaded because it contains errors and is probably corrupt!");
         this.plugin.log(Level.SEVERE, "Try using Minecraft Region Fixer to repair your world! '" + name + "'");
         this.plugin.log(Level.SEVERE, "https://github.com/Fenixin/Minecraft-Region-Fixer");
     }
@@ -370,9 +383,8 @@ public class WorldManager implements MVWorldManager {
     }
 
     private boolean doLoad(String name, boolean ignoreExists, WorldType type) {
-        if (!worldsFromTheConfig.containsKey(name)) {
+        if (!worldsFromTheConfig.containsKey(name))
             throw new IllegalArgumentException("That world doesn't exist!");
-        }
 
         final WorldProperties world = worldsFromTheConfig.get(name);
         final WorldCreator creator = WorldCreator.name(name);
@@ -383,33 +395,27 @@ public class WorldManager implements MVWorldManager {
         }
 
         boolean generatorSuccess = true;
-        if (world.getGenerator() != null && !world.getGenerator().equals("null")) {
+        if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
             generatorSuccess = null != plugin.getUnsafeCallWrapper().wrap(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     creator.generator(world.getGenerator());
                     return new Object();
                 }
-            }, "the generator plugin", "Failed to set the generator for world '%s' to '%s': %s", name,
-                    world.getGenerator());
-        }
+            }, "the generator plugin", "Failed to set the generator for world '%s' to '%s': %s", name, world.getGenerator());
 
         return generatorSuccess && doLoad(creator, ignoreExists);
     }
 
     private boolean doLoad(WorldCreator creator, boolean ignoreExists) {
         String worldName = creator.name();
-        if (!worldsFromTheConfig.containsKey(worldName)) {
+        if (!worldsFromTheConfig.containsKey(worldName))
             throw new IllegalArgumentException("That world doesn't exist!");
-        }
-        if (worlds.containsKey(worldName)) {
+        if (worlds.containsKey(worldName))
             throw new IllegalArgumentException("That world is already loaded!");
-        }
 
-        if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists()
-                && !new File(this.plugin.getServer().getWorldContainer().getParent(), worldName).exists()) {
-            this.plugin.log(Level.WARNING,
-                    "WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
+        if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists() && !new File(this.plugin.getServer().getWorldContainer().getParent(), worldName).exists()) {
+            this.plugin.log(Level.WARNING, "WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
             this.plugin.log(Level.WARNING, "Use '/mv remove' to remove it from the config!");
             return false;
         }
@@ -474,8 +480,7 @@ public class WorldManager implements MVWorldManager {
             Logging.severe("Hrm, something didn't go as planned. Here's an exception for ya.");
             Logging.severe("You can go politely explain your situation in #multiverse on esper.net");
             Logging.severe("But from here, it looks like your folder is oddly named.");
-            Logging.severe(
-                    "This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
+            Logging.severe("This world has been removed from Multiverse-Core so your best bet is to go delete the folder by hand. Sorry.");
             Logging.severe(e.getMessage());
             return false;
         }
@@ -500,11 +505,8 @@ public class WorldManager implements MVWorldManager {
     /**
      * Unload a world from Bukkit.
      *
-     * @param name
-     *            Name of the world to unload
-     * @param safely
-     *            Perform this safely. Set to True to save world files before
-     *            unloading.
+     * @param name   Name of the world to unload
+     * @param safely Perform this safely. Set to True to save world files before unloading.
      * @return True if the world was unloaded, false if not.
      */
     private boolean unloadWorldFromBukkit(String name, boolean safely) {
@@ -523,8 +525,7 @@ public class WorldManager implements MVWorldManager {
             List<Player> ps = w.getPlayers();
             SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             for (Player p : ps) {
-                // We're removing players forcefully from a world, they'd BETTER
-                // spawn safely.
+                // We're removing players forcefully from a world, they'd BETTER spawn safely.
                 teleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);
             }
         }
@@ -565,11 +566,9 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
-     * Returns a {@link MVWorld} if it exists, and null if it does not. This
-     * will search ONLY alias.
+     * Returns a {@link MVWorld} if it exists, and null if it does not. This will search ONLY alias.
      *
-     * @param alias
-     *            The alias of the world to get.
+     * @param alias The alias of the world to get.
      * @return A {@link MVWorld} or null.
      */
     private MultiverseWorld getMVWorldByAlias(String alias) {
@@ -586,7 +585,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean isMVWorld(final String name) {
-        return this.worlds.containsKey(name) || isMVWorldAlias(name);
+        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
     }
 
     /**
@@ -600,8 +599,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * This method ONLY checks the alias of each world.
      *
-     * @param alias
-     *            The alias of the world to check.
+     * @param alias The alias of the world to check.
      * @return True if the world exists, false if not.
      */
     private boolean isMVWorldAlias(final String alias) {
@@ -627,8 +625,7 @@ public class WorldManager implements MVWorldManager {
                 if (this.defaultGens.containsKey(name)) {
                     generator = this.defaultGens.get(name);
                 }
-                this.addWorld(name, w.getEnvironment(), String.valueOf(w.getSeed()), w.getWorldType(),
-                        w.canGenerateStructures(), generator);
+                this.addWorld(name, w.getEnvironment(), String.valueOf(w.getSeed()), w.getWorldType(), w.canGenerateStructures(), generator);
             }
         }
     }
@@ -678,13 +675,11 @@ public class WorldManager implements MVWorldManager {
             if (worlds.containsKey(entry.getKey())) {
                 continue;
             }
-            if (!entry.getValue().getAutoLoad()) {
+            if (!entry.getValue().getAutoLoad())
                 continue;
-            }
 
-            if (doLoad(entry.getKey())) {
+            if (doLoad(entry.getKey()))
                 count++;
-            }
         }
 
         // Simple Output to the Console to show how many Worlds were loaded.
@@ -702,7 +697,6 @@ public class WorldManager implements MVWorldManager {
 
     /**
      * {@inheritDoc}
-     * 
      * @deprecated This is deprecated!
      */
     @Override
@@ -721,7 +715,6 @@ public class WorldManager implements MVWorldManager {
 
     private static final char SEPARATOR = '\uF8FF';
 
-    @Override
     public boolean isKeepingSpawnInMemory(World world) {
         WorldProperties properties = worldsFromTheConfig.get(world.getName());
         return properties == null || properties.isKeepingSpawnInMemory();
@@ -748,13 +741,12 @@ public class WorldManager implements MVWorldManager {
             String key = worldKeys.pop();
             String path = "worlds" + SEPARATOR + key;
             Object obj = this.configWorlds.get(path);
-            if (obj != null && obj instanceof WorldProperties) {
+            if ((obj != null) && (obj instanceof WorldProperties)) {
                 String worldName = key.replaceAll(String.valueOf(SEPARATOR), ".");
                 WorldProperties props = (WorldProperties) obj;
                 if (this.worldsFromTheConfig.containsKey(worldName)) {
                     // Object-Recycling :D
-                    // TODO Why is is checking worldsFromTheConfig and then
-                    // getting from worlds? So confused... (DTM)
+                    // TODO Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
                     MVWorld mvWorld = (MVWorld) this.worlds.get(worldName);
                     if (mvWorld != null) {
                         mvWorld.copyValues((WorldProperties) obj);
@@ -817,9 +809,8 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed) {
         MultiverseWorld world = this.getMVWorld(name);
-        if (world == null) {
+        if (world == null)
             return false;
-        }
 
         List<Player> ps = world.getCBWorld().getPlayers();
 
@@ -854,11 +845,8 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
-     * Gets the {@link FileConfiguration} that this {@link WorldManager} is
-     * using.
-     * 
-     * @return The {@link FileConfiguration} that this {@link WorldManager} is
-     *         using.
+     * Gets the {@link FileConfiguration} that this {@link WorldManager} is using.
+     * @return The {@link FileConfiguration} that this {@link WorldManager} is using.
      */
     public FileConfiguration getConfigWorlds() {
         return this.configWorlds;
