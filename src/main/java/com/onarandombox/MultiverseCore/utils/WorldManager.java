@@ -94,19 +94,15 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean cloneWorld(String oldName, String newName) {
-        if (!this.isMVWorld(oldName)) {
-            Logging.warning("Unknown old world %s", oldName);
-            return false;
-        }
-        return cloneWorld(oldName, newName, worldsFromTheConfig.get(oldName).getGenerator());
+    public boolean cloneWorld(String oldName, String newName, String generator) {
+        return this.cloneWorld(oldName, newName);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean cloneWorld(String oldName, String newName, String generator) {
+    public boolean cloneWorld(String oldName, String newName) {
         // Make sure we already know about the old world and that we don't
         // already know about the new world.
         if (!this.isMVWorld(oldName)) {
@@ -128,8 +124,12 @@ public class WorldManager implements MVWorldManager {
         }
 
         MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
-        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
         Environment environment = oldWorld.getEnvironment();
+        String seedString = oldWorld.getSeed() + "";
+        WorldType worldType = oldWorld.getWorldType();
+        Boolean generateStructures = null; // TODO actually get a value for this?
+        String generator = oldWorld.getGenerator();
+        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
 
         boolean wasAutoSave = false;
         if (this.plugin.getServer().getWorld(oldName) != null && oldWorld.getCBWorld().isAutoSave()) {
@@ -156,7 +156,7 @@ public class WorldManager implements MVWorldManager {
 
         if (newWorldFile.exists()) {
             Logging.fine("Succeeded at copying files");
-            if (this.addWorld(newName, environment, null, null, null, generator, useSpawnAdjust)) {
+            if (this.addWorld(newName, environment, seedString, worldType, generateStructures, generator, useSpawnAdjust)) {
                 // getMVWorld() doesn't actually return an MVWorld
                 Logging.fine("Succeeded at importing world");
                 MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
