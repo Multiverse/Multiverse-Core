@@ -300,6 +300,12 @@
             <version>R6</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- End of Metrics Dependency -->
         <!-- Start of Logging Dependency -->
