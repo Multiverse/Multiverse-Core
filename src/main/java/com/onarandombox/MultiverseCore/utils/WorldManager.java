@@ -107,7 +107,7 @@ public class WorldManager implements MVWorldManager {
     public boolean cloneWorld(String oldName, String newName) {
         // Make sure we already know about the old world and that we don't
         // already know about the new world.
-        if (!this.isMVWorld(oldName)) {
+        if (!this.isMVWorld(oldName) && !this.getUnloadedWorlds().contains(oldName)) {
             Logging.warning("Old world '%s' does not exist", oldName);
             return false;
         }

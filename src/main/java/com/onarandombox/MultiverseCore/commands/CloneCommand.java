@@ -40,7 +40,7 @@ public class CloneCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String oldName = args.get(0);
-		if (!this.worldManager.isMVWorld(oldName)) {
+		if (!this.worldManager.isMVWorld(oldName) && !this.worldManager.getUnloadedWorlds().contains(oldName)) {
             // If no world was found, we can't clone.
             sender.sendMessage("Sorry, Multiverse doesn't know about world " + oldName + ", so we can't clone it!");
             sender.sendMessage("Check the " + ChatColor.GREEN + "/mv list" + ChatColor.WHITE + " command to verify it is listed.");
