@@ -92,8 +92,10 @@ public class WorldManager implements MVWorldManager {
 
     /**
      * {@inheritDoc}
+     * @deprecated Use {@link #cloneWorld(String, String)} instead.
      */
     @Override
+    @Deprecated
     public boolean cloneWorld(String oldName, String newName, String generator) {
         return this.cloneWorld(oldName, newName);
     }
