@@ -126,15 +126,18 @@ public class WorldManager implements MVWorldManager {
         }
 
         MVWorld oldWorld = (MVWorld) this.getMVWorld(oldName);
+        boolean isLoaded = this.plugin.getServer().getWorld(oldName) != null;
+
         Environment environment = oldWorld.getEnvironment();
         String seedString = oldWorld.getSeed() + "";
         WorldType worldType = oldWorld.getWorldType();
-        Boolean generateStructures = null; // TODO actually get a value for this?
+        // TODO get a value when the world isn't loaded?
+        Boolean generateStructures = isLoaded ? oldWorld.getCBWorld().canGenerateStructures() : null;
         String generator = oldWorld.getGenerator();
         boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
 
         boolean wasAutoSave = false;
-        if (this.plugin.getServer().getWorld(oldName) != null && oldWorld.getCBWorld().isAutoSave()) {
+        if (isLoaded && oldWorld.getCBWorld().isAutoSave()) {
             wasAutoSave = true;
             Logging.config("Saving world '%s'", oldName);
             oldWorld.getCBWorld().setAutoSave(false);
