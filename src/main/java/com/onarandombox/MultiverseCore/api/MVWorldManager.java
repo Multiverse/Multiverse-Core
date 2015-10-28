@@ -302,4 +302,16 @@ public interface MVWorldManager {
     boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
 
     boolean isKeepingSpawnInMemory(World world);
+    
+    /**
+     * Checks whether Multiverse knows about a provided unloaded world. This
+     * method will check the parameter against the alias mappings.
+     *
+     * @param name The name of the unloaded world
+     * @param includeLoaded The value to return if the world is loaded
+     *
+     * @return True if the world exists and is unloaded. False if the world
+     * does not exist. {@code includeLoaded} if the world exists and is loaded.
+     */
+    boolean hasUnloadedWorld(String name, boolean includeLoaded);
 }
