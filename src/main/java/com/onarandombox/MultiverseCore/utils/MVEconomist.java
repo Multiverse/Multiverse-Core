@@ -72,7 +72,7 @@ public class MVEconomist {
         if (amount <= 0D) {
             return true;
         } else if (isUsingVault(currency)) {
-            return getVaultHandler().getEconomy().has(player.getName(), amount);
+            return getVaultHandler().getEconomy().has(player, amount);
         } else {
             return ItemEconomy.hasEnough(player, amount, currency);
         }
@@ -99,7 +99,7 @@ public class MVEconomist {
      */
     public void deposit(Player player, double amount, int currency) {
         if (isUsingVault(currency)) {
-            getVaultHandler().getEconomy().depositPlayer(player.getName(), amount);
+            getVaultHandler().getEconomy().depositPlayer(player, amount);
         } else {
             ItemEconomy.deposit(player, amount, currency);
         }
@@ -115,7 +115,7 @@ public class MVEconomist {
      */
     public void withdraw(Player player, double amount, int currency) {
         if (isUsingVault(currency)) {
-            getVaultHandler().getEconomy().withdrawPlayer(player.getName(), amount);
+            getVaultHandler().getEconomy().withdrawPlayer(player, amount);
         } else {
             ItemEconomy.withdraw(player, amount, currency);
         }
@@ -146,9 +146,9 @@ public class MVEconomist {
             throw new IllegalStateException("getBalance is only available when using an economy plugin with Vault");
         }
         if (world != null) {
-            return getVaultHandler().getEconomy().getBalance(player.getName(), world.getName());
+            return getVaultHandler().getEconomy().getBalance(player, world.getName());
         } else {
-            return getVaultHandler().getEconomy().getBalance(player.getName());
+            return getVaultHandler().getEconomy().getBalance(player);
         }
     }
 
@@ -177,11 +177,11 @@ public class MVEconomist {
             throw new IllegalStateException("getBalance is only available when using an economy plugin with Vault");
         }
         if (world != null) {
-            getVaultHandler().getEconomy().withdrawPlayer(player.getName(), world.getName(), getBalance(player, world));
-            getVaultHandler().getEconomy().depositPlayer(player.getName(), world.getName(), amount);
+            getVaultHandler().getEconomy().withdrawPlayer(player, world.getName(), getBalance(player, world));
+            getVaultHandler().getEconomy().depositPlayer(player, world.getName(), amount);
         } else {
-            getVaultHandler().getEconomy().withdrawPlayer(player.getName(), getBalance(player));
-            getVaultHandler().getEconomy().depositPlayer(player.getName(), amount);
+            getVaultHandler().getEconomy().withdrawPlayer(player, getBalance(player));
+            getVaultHandler().getEconomy().depositPlayer(player, amount);
         }
     }
 
