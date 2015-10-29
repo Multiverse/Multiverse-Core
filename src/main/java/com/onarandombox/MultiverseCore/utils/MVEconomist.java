@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -21,6 +22,15 @@ public class MVEconomist {
 
     private boolean isUsingVault(int currency) {
         return !isItemCurrency(currency) && getVaultHandler().hasEconomy();
+    }
+
+    /**
+     * Checks if an economy plugin is in use.
+     *
+     * @return true if an economy plugin is detected by Vault.
+     */
+    public boolean isUsingEconomyPlugin() {
+        return getVaultHandler().hasEconomy();
     }
 
     /**
@@ -108,6 +118,70 @@ public class MVEconomist {
             getVaultHandler().getEconomy().withdrawPlayer(player.getName(), amount);
         } else {
             ItemEconomy.withdraw(player, amount, currency);
+        }
+    }
+
+    /**
+     * Returns the economy balance of the given player.
+     *
+     * @param player the player to get the balance for.
+     * @return the economy balance of the given player.
+     * @throws IllegalStateException thrown if this is used when no economy plugin is available.
+     */
+    public double getBalance(Player player) throws IllegalStateException {
+        return getBalance(player, null);
+    }
+
+    /**
+     * Returns the economy balance of the given player in the given world. If the economy plugin does not have world
+     * specific balances then the global balance will be returned.
+     *
+     * @param player the player to get the balance for.
+     * @param world the world to get the balance for.
+     * @return the economy balance of the given player in the given world.
+     * @throws IllegalStateException thrown if this is used when no economy plugin is available.
+     */
+    public double getBalance(Player player, World world) throws IllegalStateException {
+        if (!isUsingEconomyPlugin()) {
+            throw new IllegalStateException("getBalance is only available when using an economy plugin with Vault");
+        }
+        if (world != null) {
+            return getVaultHandler().getEconomy().getBalance(player.getName(), world.getName());
+        } else {
+            return getVaultHandler().getEconomy().getBalance(player.getName());
+        }
+    }
+
+    /**
+     * Sets the economy balance for the given player.
+     *
+     * @param player the player to set the balance for.
+     * @param amount the amount to set the player's balance to.
+     * @throws IllegalStateException thrown if this is used when no economy plugin is available.
+     */
+    public void setBalance(Player player, double amount) throws IllegalStateException {
+        setBalance(player, null, amount);
+    }
+
+    /**
+     * Sets the economy balance for the given player in the given world. If the economy plugin does not have world
+     * specific balances then the global balance will be set.
+     *
+     * @param player the player to set the balance for.
+     * @param world the world to get the balance for.
+     * @param amount the amount to set the player's balance to.
+     * @throws IllegalStateException thrown if this is used when no economy plugin is available.
+     */
+    public void setBalance(Player player, World world, double amount) throws IllegalStateException {
+        if (!isUsingEconomyPlugin()) {
+            throw new IllegalStateException("getBalance is only available when using an economy plugin with Vault");
+        }
+        if (world != null) {
+            getVaultHandler().getEconomy().withdrawPlayer(player.getName(), world.getName(), getBalance(player, world));
+            getVaultHandler().getEconomy().depositPlayer(player.getName(), world.getName(), amount);
+        } else {
+            getVaultHandler().getEconomy().withdrawPlayer(player.getName(), getBalance(player));
+            getVaultHandler().getEconomy().depositPlayer(player.getName(), amount);
         }
     }
 
