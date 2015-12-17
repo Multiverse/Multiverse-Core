@@ -749,7 +749,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
                 // migrate difficulty
                 if (section.isString("difficulty")) {
-                    final Difficulty difficulty = Difficulty.valueOf(section.getString("difficulty").toUpperCase());
+                    Difficulty difficulty;
+                    try {
+                        difficulty = Difficulty.valueOf(section.getString("difficulty").toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        this.log(Level.WARNING, "Could not parse difficulty: " + section.getString("difficulty"));
+                        this.log(Level.WARNING, "Setting world " + entry.getKey() + " difficulty to NORMAL");
+                        difficulty = Difficulty.NORMAL;
+                    }
                     if (difficulty != null) {
                         world.setDifficulty(difficulty);
                     }
