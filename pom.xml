@@ -12,6 +12,11 @@
     </properties>
 
     <repositories>
+      <!-- Spigot -->
+    <repository>
+        <id>spigot-repo</id>
+        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
         <repository>
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public</url>
@@ -243,17 +248,14 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- Bukkit Dependency -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.8.7-R0.1-SNAPSHOT</version>
-            <!-- If you want the lates, use this -->
-            <!-- <version>LATEST</version> -->
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- Bukkit Dependency -->
+    <!--Spigot API-->
+    <dependency>
+           <groupId>org.spigotmc</groupId>
+           <artifactId>spigot-api</artifactId>
+           <version>1.8.8-R0.1-SNAPSHOT</version>
+           <scope>provided</scope>
+    </dependency>
+        <!--Spigot API-->
         <!-- Start of Spout (disabled because we aren't using it)
         <dependency>
             <groupId>org.getspout</groupId>
