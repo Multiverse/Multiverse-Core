@@ -221,6 +221,9 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                             String generator, boolean useSpawnAdjust) {
+        if (name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("logs")) {
+            return false;
+        }
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
