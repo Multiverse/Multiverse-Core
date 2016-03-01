@@ -414,17 +414,18 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         try {
             Metrics m = new Metrics(this);
 
-            Metrics.Graph envGraph = m.createGraph("worlds_by_env");
+            Metrics.Graph envGraph = m.createGraph("Worlds by environment");
             for (Environment env : Environment.values())
                 envGraph.addPlotter(new EnvironmentPlotter(this, env));
 
-            m.addCustomData(new Metrics.Plotter("Loaded worlds") {
+            Metrics.Graph loadedWorldsGraph = m.createGraph("Worlds by environment");
+            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Loaded worlds") {
                 @Override
                 public int getValue() {
                     return getMVWorldManager().getMVWorlds().size();
                 }
             });
-            m.addCustomData(new Metrics.Plotter("Total number of worlds") {
+            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Total number of worlds") {
                 @Override
                 public int getValue() {
                     return getMVWorldManager().getMVWorlds().size()
@@ -437,13 +438,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 gens.add(w.getGenerator());
             gens.remove(null);
             gens.remove("null");
-            Metrics.Graph genGraph = m.createGraph("custom_gens");
+            Metrics.Graph genGraph = m.createGraph("Custom Generators");
             for (String gen : gens)
                 genGraph.addPlotter(new GeneratorPlotter(this, gen));
 
             m.start();
             log(Level.FINE, "Metrics have run!");
-        } catch (IOException e) {
+        } catch (Exception e) {
             log(Level.WARNING, "There was an issue while enabling metrics: " + e.getMessage());
         }
     }
