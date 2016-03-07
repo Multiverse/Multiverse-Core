@@ -77,7 +77,7 @@ public class ModifyAddCommand extends MultiverseCommand {
 
         if (!ModifyCommand.validateAction(Action.Add, property)) {
             sender.sendMessage("Sorry, you can't ADD to " + property);
-            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/4W8cY");
+            sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/OMGwzx");
             return;
         }
 

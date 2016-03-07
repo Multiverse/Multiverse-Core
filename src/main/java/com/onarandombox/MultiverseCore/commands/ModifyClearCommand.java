@@ -72,7 +72,7 @@ public class ModifyClearCommand extends MultiverseCommand {
 
         if (!ModifyCommand.validateAction(Action.Clear, property)) {
             sender.sendMessage("Sorry, you can't use CLEAR with " + property);
-            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/cgB2B");
+            sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/q1h01S");
             return;
         }
         // TODO fix this
