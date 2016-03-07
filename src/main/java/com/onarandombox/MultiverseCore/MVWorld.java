@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
+import com.onarandombox.MultiverseCore.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
@@ -246,10 +247,10 @@ public class MVWorld implements MultiverseWorld {
     /**
      * Used to apply the spawning-property.
      */
-    private final class SpawningPropertyValidator extends WorldPropertyValidator<Boolean> {
+    private final class SpawningPropertyValidator extends WorldPropertyValidator<SpawnSettings> {
         @Override
-        public Boolean validateChange(String property, Boolean newValue, Boolean oldValue,
-                MVWorld object) throws ChangeDeniedException {
+        public SpawnSettings validateChange(String property, SpawnSettings newValue, SpawnSettings oldValue,
+                                      MVWorld object) throws ChangeDeniedException {
             boolean allowMonsters, allowAnimals;
             if (getAnimalList().isEmpty()) {
                 allowAnimals = canAnimalsSpawn();
