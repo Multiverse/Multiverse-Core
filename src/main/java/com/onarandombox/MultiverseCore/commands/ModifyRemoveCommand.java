@@ -78,7 +78,7 @@ public class ModifyRemoveCommand extends MultiverseCommand {
 
         if (!ModifyCommand.validateAction(Action.Remove, property)) {
             sender.sendMessage("Sorry, you can't REMOVE anything from" + property);
-            sender.sendMessage("Please visit our Github Wiki for more information: http://goo.gl/4W8cY");
+            sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/OMGwzx");
             return;
         }
         // TODO fix this
