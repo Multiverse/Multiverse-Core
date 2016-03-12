@@ -155,7 +155,7 @@ public class VersionCommand extends MultiverseCommand {
             Logging.info(line);
         }
 
-        this.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(this.plugin, new Runnable() {
+        BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
                 if (args.size() == 1) {
@@ -177,7 +177,10 @@ public class VersionCommand extends MultiverseCommand {
                     Logging.info("Version info dumped here: %s", pasteUrl);
                 }
             }
-        });
+        };
+
+        // Run the log posting operation asynchronously, since we don't know how long it will take.
+        logPoster.runTaskAsynchronously(this.plugin);
     }
 
     /**
