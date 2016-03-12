@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * An interface to a web-based text-pasting service. Classes implementing this
@@ -25,6 +26,14 @@ public interface PasteService {
     String encodeData(String data);
 
     /**
+     * Encode the given Map data into a format suitable for transmission in an HTTP request.
+     *
+     * @param data The raw data to encode.
+     * @return A URL-encoded string.
+     */
+    String encodeData(Map<String, String> data);
+
+    /**
      * Get the URL to which this paste service sends new pastes.
      *
      * @return The URL that will be accessed to complete the paste.
@@ -42,4 +51,13 @@ public interface PasteService {
      */
     String postData(String encodedData, URL url) throws PasteFailedException;
 
+    /**
+     * Does this service support uploading multiple files.
+     *
+     * Newer services like gist support multi-file which allows us to upload configs
+     * in addition to the standard logs.
+     *
+     * @return True if this service supports multiple file upload.
+     */
+    boolean supportsMultiFile();
 }

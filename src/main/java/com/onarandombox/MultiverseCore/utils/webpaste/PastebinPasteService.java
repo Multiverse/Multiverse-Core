@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * Pastes to {@code pastebin.com}.
@@ -50,6 +51,11 @@ public class PastebinPasteService implements PasteService {
         }
     }
 
+    @Override
+    public String encodeData(Map<String, String> data) {
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -85,5 +91,10 @@ public class PastebinPasteService implements PasteService {
                 } catch (IOException ignore) { }
             }
         }
+    }
+
+    @Override
+    public boolean supportsMultiFile() {
+        return false;
     }
 }

@@ -14,5 +14,9 @@ public enum PasteServiceType {
     /**
      * @see PastiePasteService
      */
-    PASTIE
+    PASTIE,
+    /**
+     * @see GithubPasteService
+     */
+    GITHUB
 }
