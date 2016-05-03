@@ -383,11 +383,11 @@
     </dependencies>
     <distributionManagement>
         <repository>
-            <id>multiverse</id>
+            <id>OnARandomBox</id>
             <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
         </repository>
         <snapshotRepository>
-            <id>multiverse-snapshots</id>
+            <id>OnARandomBox</id>
             <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
