@@ -27,7 +27,7 @@ import java.util.logging.Level;
 /**
  * Utility class that removes animals from worlds that don't belong there.
  *
- * @deprecated Use instead: {@link WorldPurger} and {@link SimpleWorldPurger}.
+ * @deprecated Use instead: {@link com.onarandombox.MultiverseCore.api.WorldPurger} and {@link SimpleWorldPurger}.
  */
 @Deprecated
 public class PurgeWorlds {

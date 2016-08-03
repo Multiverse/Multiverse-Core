@@ -22,9 +22,9 @@ public class FancyMessage implements FancyText {
      * Allows easy creation of an alternating colored list.
      * TODO: Documentation! Why does CheckStyle just ignore this?
      *
-     * @param title
-     * @param message
-     * @param scheme
+     * @param title The title
+     * @param message The message
+     * @param scheme The scheme
      */
     public FancyMessage(String title, String message, FancyColorScheme scheme) {
         this.title = title;
