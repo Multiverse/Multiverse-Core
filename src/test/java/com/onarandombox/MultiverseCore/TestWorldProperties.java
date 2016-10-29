@@ -47,6 +47,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -104,12 +105,19 @@ public class TestWorldProperties {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
+        assertThat(core.getServer().getWorlds().size(), is(1));
+        assertThat(core.getServer().getWorlds().get(0).getName(), is("world"));
+
         // Import a second world
         String[] netherArgs = new String[] { "import", "world_nether", "nether" };
         core.onCommand(mockCommandSender, mockCommand, "", netherArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage(
                 ChatColor.GREEN + "Complete!");
+
+        assertThat(core.getServer().getWorlds().size(), is(2));
+        assertThat(core.getServer().getWorlds().get(0).getName(), is("world"));
+        assertThat(core.getServer().getWorlds().get(1).getName(), is("world_nether"));
 
         // ////////////////////////////////////////////////
         // let's set some world-properties

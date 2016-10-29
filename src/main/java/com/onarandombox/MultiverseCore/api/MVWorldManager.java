@@ -199,7 +199,7 @@ public interface MVWorldManager {
     boolean isMVWorld(World world);
 
     /**
-     * Load the Worlds & Settings from the configuration file.
+     * Load the Worlds &amp; Settings from the configuration file.
      *
      * @param forceLoad If set to true, this will perform a total
      *                  reset and not just load new worlds.
@@ -207,7 +207,7 @@ public interface MVWorldManager {
     void loadWorlds(boolean forceLoad);
 
     /**
-     * Loads the Worlds & Settings for any worlds that bukkit loaded before us.
+     * Loads the Worlds &amp; Settings for any worlds that bukkit loaded before us.
      * <p>
      * This way people will _always_ have some worlds in the list.
      */

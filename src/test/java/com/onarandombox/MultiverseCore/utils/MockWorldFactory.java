@@ -20,6 +20,7 @@ import org.mockito.stubbing.Answer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 public class MockWorldFactory {
 
-    private static final Map<String, World> createdWorlds = new HashMap<String, World>();
+    private static final Map<String, World> createdWorlds = new LinkedHashMap<>();
     private static final Map<UUID, World> worldUIDS = new HashMap<UUID, World>();
 
     private static final Map<World, Boolean> pvpStates = new WeakHashMap<World, Boolean>();
@@ -213,12 +214,7 @@ public class MockWorldFactory {
 
     public static List<World> getWorlds() {
         // we have to invert the order!
-        ArrayList<World> myList = new ArrayList<World>(createdWorlds.values());
-        List<World> retList = new ArrayList<World>();
-        for (int i = (myList.size() - 1); i >= 0; i--) {
-            retList.add(myList.get(i));
-        }
-        return retList;
+        return new ArrayList<World>(createdWorlds.values());
     }
 
     public static void clearWorlds() {
