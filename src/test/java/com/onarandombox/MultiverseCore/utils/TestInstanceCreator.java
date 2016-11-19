@@ -43,6 +43,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
@@ -61,7 +62,7 @@ public class TestInstanceCreator {
     public boolean setUp() {
         try {
             pluginDirectory.mkdirs();
-            Assert.assertTrue(pluginDirectory.exists());
+            assertTrue(pluginDirectory.exists());
 
             MockGateway.MOCK_STANDARD_METHODS = false;
 
