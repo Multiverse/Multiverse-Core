@@ -230,7 +230,7 @@ public class MVPermissions implements PermissionsInterface {
      *
      * @param sender       Who is requesting the permission.
      * @param node         The permission node in string format; multiverse.core.list.worlds for example.
-     * @param isOpRequired @Deprecated. This is not used for anything anymore.
+     * @param isOpRequired deprecated This is not used for anything anymore.
      * @return True if they have that permission or any parent.
      */
     @Override
