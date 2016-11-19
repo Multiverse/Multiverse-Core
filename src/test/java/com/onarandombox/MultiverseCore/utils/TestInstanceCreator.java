@@ -25,12 +25,15 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockGateway;
+import org.powermock.reflect.Whitebox;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -62,10 +65,10 @@ public class TestInstanceCreator {
 
             MockGateway.MOCK_STANDARD_METHODS = false;
 
-            TestPluginLoader pluginLoader = new TestPluginLoader();
-
             // Initialize the Mock server.
             mockServer = mock(Server.class);
+            JavaPluginLoader mockPluginLoader = PowerMock.createMock(JavaPluginLoader.class);
+            Whitebox.setInternalState(mockPluginLoader, "server", mockServer);
             when(mockServer.getName()).thenReturn("TestBukkit");
             Logger.getLogger("Minecraft").setParent(Util.logger);
             when(mockServer.getLogger()).thenReturn(Util.logger);
@@ -75,8 +78,7 @@ public class TestInstanceCreator {
             PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
                     "com.onarandombox.MultiverseCore.MultiverseCore"));
             when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
-
-            core = PowerMockito.spy(new MultiverseCore(pluginLoader, mockServer, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
+            core = PowerMockito.spy(new MultiverseCore(mockPluginLoader, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
             PowerMockito.doAnswer(new Answer<Void>() {
                 @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {

@@ -104,6 +104,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.mcstats.Metrics;
 
 import java.io.*;
@@ -137,16 +138,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * This is for unit testing.
-     * @deprecated
-     * @param loader deprecated
-     * @param server deprecated
-     * @param description deprecated
-     * @param dataFolder deprecated
-     * @param file deprecated
+     * @param loader The PluginLoader to use.
+     * @param description The Description file to use.
+     * @param dataFolder The folder that other datafiles can be found in.
+     * @param file The location of the plugin.
      */
-    @Deprecated
-    public MultiverseCore(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, server, description, dataFolder, file);
+    public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
     }
 
     /**

@@ -37,6 +37,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,7 @@ import static org.mockito.Mockito.*;
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class,
         WeatherChangeEvent.class, ThunderChangeEvent.class, AsyncPlayerChatEvent.class,
         PlayerJoinEvent.class, PlayerRespawnEvent.class, EntityRegainHealthEvent.class,
-        FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class })
+        FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class, JavaPluginLoader.class })
 public class TestWorldProperties {
     private TestInstanceCreator creator;
     private MultiverseCore core;
