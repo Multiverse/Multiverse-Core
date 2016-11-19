@@ -19,6 +19,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -104,12 +105,24 @@ public class TestWorldProperties {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
+        assertEquals(core.getServer().getWorlds().size(), 1);
+        assertEquals(core.getServer().getWorlds().get(0).getName(), "world");
+        assertEquals(core.getServer().getWorlds().get(0).getEnvironment(), World.Environment.NORMAL);
+        assertEquals(core.getServer().getWorlds().get(0).getWorldType(), WorldType.NORMAL);
+
+
         // Import a second world
         String[] netherArgs = new String[] { "import", "world_nether", "nether" };
         core.onCommand(mockCommandSender, mockCommand, "", netherArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage(
                 ChatColor.GREEN + "Complete!");
+
+        assertEquals(core.getServer().getWorlds().size(), 2);
+        assertEquals(core.getServer().getWorlds().get(0).getName(), "world");
+        assertEquals(core.getServer().getWorlds().get(1).getName(), "world_nether");
+        assertEquals(core.getServer().getWorlds().get(1).getEnvironment(), World.Environment.NETHER);
+        assertEquals(core.getServer().getWorlds().get(1).getWorldType(), WorldType.NORMAL);
 
         // ////////////////////////////////////////////////
         // let's set some world-properties
