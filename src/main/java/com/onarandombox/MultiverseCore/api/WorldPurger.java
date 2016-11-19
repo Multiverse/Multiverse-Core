@@ -17,7 +17,7 @@ public interface WorldPurger {
     void purgeWorlds(List<MultiverseWorld> worlds);
 
     /**
-     * Convenience method for {@link #purgeWorld(CommandSender, MultiverseWorld, List, boolean, boolean)} that takes the settings from the world-config.
+     * Convenience method for {@link #purgeWorld(MultiverseWorld, java.util.List, boolean, boolean)} that takes the settings from the world-config.
      *
      * @param world The {@link MultiverseWorld}.
      */
