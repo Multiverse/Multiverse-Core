@@ -208,6 +208,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private CommandHandler commandHandler;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
+    public  static final String PLAYER_LOCATION_DATA = "player_location_data";
 
     // Multiverse Permissions Handler
     private MVPermissions ph;
