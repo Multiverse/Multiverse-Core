@@ -10,20 +10,16 @@ package com.onarandombox.MultiverseCore.destination;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.onarandombox.MultiverseCore.utils.MVPlayerLocation;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.Location;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 
 /** A factory class that will create destinations from specific strings. */
 public class DestinationFactory {
@@ -59,85 +55,10 @@ public class DestinationFactory {
 
         if (idenChar.equals("") && player != null && this.plugin.getMVWorldManager().isMVWorld(destination)) {
             // handle special case
-            String playerID = player.getUniqueId().toString();
-            File f = new File(this.plugin.getDataFolder(), MultiverseCore.PLAYER_LOCATION_DATA
-                + File.separator + destination + File.separator + playerID + ".yaml");
-            if (f.isFile()) {
-                YamlConfiguration yc = new YamlConfiguration();
-                try {
-                    yc.load(f);
-                } catch (Exception e) {
-                    this.plugin.log(Level.SEVERE, "Failed to load saved location of player '"
-                        + player.getName() + "' (" + playerID + ") in world '" + destination
-                        + "': " + e.getMessage() + ".");
-                    yc = null;
-                    // fall through to use world spawn location
-                }
-                if (yc != null) {
-                    try {
-                        if (! yc.isSet("schema"))
-                            throw new DataFormatException("missing schema node");
-                        Object schema = yc.get("schema");
-                        if (! Integer.class.isInstance(schema))
-                            throw new DataFormatException("invalid schema version: "
-                                + schema.toString());
-                        if ((Integer) schema != 1)
-                            throw new DataFormatException("invalid schema version: "
-                                + schema.toString());
-
-                        if (! yc.isSet("x"))
-                            throw new DataFormatException("missing x location");
-                        Object x = yc.get("x");
-                        if (! Double.class.isInstance(x))
-                            throw new DataFormatException("invalid data for x location: "
-                                + x.toString());
-
-                        if (! yc.isSet("y"))
-                            throw new DataFormatException("missing y location");
-                        Object y = yc.get("y");
-                        if (! Double.class.isInstance(y))
-                            throw new DataFormatException("invalid data for y location: "
-                                + y.toString());
-
-                        if (! yc.isSet("z"))
-                            throw new DataFormatException("missing z location");
-                        Object z = yc.get("z");
-                        if (! Double.class.isInstance(z))
-                            throw new DataFormatException("invalid data for z location: "
-                                + z.toString());
-
-                        if (! yc.isSet("yaw"))
-                            throw new DataFormatException("missing yaw");
-                        Object yaw = yc.get("yaw");
-                        if (! Double.class.isInstance(yaw))
-                            throw new DataFormatException("invalid data for yaw: "
-                                + yaw.toString());
-
-                        if (! yc.isSet("pitch"))
-                            throw new DataFormatException("missing pitch");
-                        Object pitch = yc.get("pitch");
-                        if (! Double.class.isInstance(pitch))
-                            throw new DataFormatException("invalid data for pitch: "
-                                + pitch.toString());
-
-                        MVDestination mydest = new ExactDestination();
-                        ((ExactDestination) mydest).setDestination(new Location(
-                            this.plugin.getMVWorldManager().getMVWorld(destination).getCBWorld(),
-                            ((Double) x).doubleValue(), ((Double) y).doubleValue(), ((Double) z).doubleValue(),
-                            ((Double) yaw).floatValue(), ((Double) pitch).floatValue()));
-                        return mydest;
-
-                    } catch (DataFormatException e) {
-                        this.plugin.log(Level.SEVERE, "Failed to parse saved location of player '"
-                            + player.getName() + "' (" + playerID + ") in world '" + destination
-                            + "': " + e.getMessage() + ".");
-                        // fall through to use world spawn location
-                    }
-                }
-            } else {
-                this.plugin.log(Level.FINE, "No saved location for player '" + player.getName()
-                    + "' (" + playerID + ") in world '" + destination + "' found.");
-            }
+            MVDestination lastDestination = MVPlayerLocation.getPlayerLastLocation(player, destination);
+            if (lastDestination != null)
+                return lastDestination;
+            // fall through to use world spawn location
         }
 
         if (this.destList.containsKey(idenChar)) {

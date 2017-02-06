@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.MVPlayerLocation;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
@@ -18,7 +19,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +30,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -49,47 +48,6 @@ public class MVPlayerListener implements Listener {
         this.plugin = plugin;
         worldManager = plugin.getMVWorldManager();
         pt = new PermissionTools(plugin);
-    }
-
-    private void savePlayerLocation(Player player, Location location, String action) {
-        String world    = location.getWorld().getName();
-        String playerID = player.getUniqueId().toString();
-
-        this.plugin.log(Level.FINE, "Player '" + player.getName()
-                + "' (" + playerID + ") was in world '" + world + "' at "
-                + Double.toString(location.getX()) + ", "
-                + Double.toString(location.getY()) + ", "
-                + Double.toString(location.getZ()) + ", "
-                + Double.toString(location.getYaw()) + ", "
-                + Double.toString(location.getPitch()) + " before " + action + ".");
-
-        YamlConfiguration yc = new YamlConfiguration();
-        yc.set("schema", 1);
-        yc.set("world", world);
-        yc.set("player", playerID);
-        yc.set("x", location.getX());
-        yc.set("y", location.getY());
-        yc.set("z", location.getZ());
-        yc.set("yaw", location.getYaw());
-        yc.set("pitch", location.getPitch());
-
-        File d = new File(this.plugin.getDataFolder(),
-            MultiverseCore.PLAYER_LOCATION_DATA + File.separator + world);
-
-        try {
-            d.mkdirs();
-        } catch (Exception e) {
-            this.plugin.log(Level.SEVERE, "Failed to create directory '"
-                + d.toString() + "': " + e.getMessage());
-        }
-
-        try {
-            yc.save(new File(d, playerID + ".yaml"));
-        } catch (Exception e) {
-            this.plugin.log(Level.SEVERE, "Failed to save location of player '"
-                + player.getName() + "' in world '" + world + "': "
-                + e.getMessage());
-        }
     }
 
     /**
@@ -192,7 +150,7 @@ public class MVPlayerListener implements Listener {
     public void playerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         this.plugin.removePlayerSession(player);
-        savePlayerLocation(player, player.getLocation(), "quitting");
+        MVPlayerLocation.savePlayerLocation(player, player.getLocation(), "quitting");
     }
 
     /**
@@ -287,7 +245,7 @@ public class MVPlayerListener implements Listener {
     public void playerTeleportMonitor(PlayerTeleportEvent event) {
 
         if (! event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            savePlayerLocation(event.getPlayer(), event.getFrom(), "teleporting");
+            MVPlayerLocation.savePlayerLocation(event.getPlayer(), event.getFrom(), "teleporting");
         }
     }
 

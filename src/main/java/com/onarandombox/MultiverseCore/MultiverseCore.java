@@ -76,6 +76,7 @@ import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.MVPlayerLocation;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
@@ -208,7 +209,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private CommandHandler commandHandler;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
-    public  static final String PLAYER_LOCATION_DATA = "player_location_data";
 
     // Multiverse Permissions Handler
     private MVPermissions ph;
@@ -259,6 +259,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
+        // Set up MVPlayerLocation
+        MVPlayerLocation.init(this);
     }
 
 
