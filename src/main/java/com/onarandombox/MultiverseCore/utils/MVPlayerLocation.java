@@ -96,54 +96,48 @@ public class MVPlayerLocation {
             try {
                 if (! yc.isSet("schema"))
                     throw new DataFormatException("missing schema node");
-                Object schema = yc.get("schema");
-                if (! Integer.class.isInstance(schema))
+                if (! yc.isInt("schema"))
                     throw new DataFormatException("invalid schema version: "
-                        + schema.toString());
-                if ((Integer) schema != 1)
+                        + yc.get("schema").toString());
+                if (yc.getInt("schema") != 1)
                     throw new DataFormatException("invalid schema version: "
-                        + schema.toString());
+                        + yc.get("schema").toString());
 
                 if (! yc.isSet("x"))
                     throw new DataFormatException("missing x location");
-                Object x = yc.get("x");
-                if (! Double.class.isInstance(x))
+                if (! yc.isDouble("x"))
                     throw new DataFormatException("invalid data for x location: "
-                        + x.toString());
+                        + yc.get("x").toString());
 
                 if (! yc.isSet("y"))
                     throw new DataFormatException("missing y location");
-                Object y = yc.get("y");
-                if (! Double.class.isInstance(y))
+                if (! yc.isDouble("y"))
                     throw new DataFormatException("invalid data for y location: "
-                        + y.toString());
+                        + yc.get("y").toString());
 
                 if (! yc.isSet("z"))
                     throw new DataFormatException("missing z location");
-                Object z = yc.get("z");
-                if (! Double.class.isInstance(z))
+                if (! yc.isDouble("z"))
                     throw new DataFormatException("invalid data for z location: "
-                        + z.toString());
+                        + yc.get("z").toString());
 
                 if (! yc.isSet("yaw"))
                     throw new DataFormatException("missing yaw");
-                Object yaw = yc.get("yaw");
-                if (! Double.class.isInstance(yaw))
+                if (! yc.isDouble("yaw"))
                     throw new DataFormatException("invalid data for yaw: "
-                        + yaw.toString());
+                        + yc.get("yaw").toString());
 
                 if (! yc.isSet("pitch"))
                     throw new DataFormatException("missing pitch");
-                Object pitch = yc.get("pitch");
-                if (! Double.class.isInstance(pitch))
+                if (! yc.isDouble("pitch"))
                     throw new DataFormatException("invalid data for pitch: "
-                        + pitch.toString());
+                        + yc.get("pitch").toString());
 
                 MVDestination mydest = new ExactDestination();
                 ((ExactDestination) mydest).setDestination(new Location(
                     plugin.getMVWorldManager().getMVWorld(world).getCBWorld(),
-                    ((Double) x).doubleValue(), ((Double) y).doubleValue(), ((Double) z).doubleValue(),
-                    ((Double) yaw).floatValue(), ((Double) pitch).floatValue()));
+                    yc.getDouble("x"), yc.getDouble("y"), yc.getDouble("z"),
+                    (float) yc.getDouble("yaw"), (float) yc.getDouble("pitch")));
                 return mydest;
 
             } catch (DataFormatException e) {
