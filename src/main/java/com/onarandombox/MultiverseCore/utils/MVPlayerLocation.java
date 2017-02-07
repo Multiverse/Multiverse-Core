@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.logging.Level;
-import java.util.zip.DataFormatException;
 
 public class MVPlayerLocation {
 
@@ -27,6 +26,12 @@ public class MVPlayerLocation {
 
     public static void init(MultiverseCore p) {
         plugin = p;
+    }
+
+    private static class InvalidData extends Exception {
+	public InvalidData(String msg) {
+	    super(msg);
+	}
     }
 
     public static void savePlayerLocation(Player player, Location location, String action) {
@@ -95,42 +100,42 @@ public class MVPlayerLocation {
             }
             try {
                 if (! yc.isSet("schema"))
-                    throw new DataFormatException("missing schema node");
+                    throw new InvalidData("missing schema node");
                 if (! yc.isInt("schema"))
-                    throw new DataFormatException("invalid schema version: "
+                    throw new InvalidData("invalid schema version: "
                         + yc.get("schema").toString());
                 if (yc.getInt("schema") != 1)
-                    throw new DataFormatException("invalid schema version: "
+                    throw new InvalidData("invalid schema version: "
                         + yc.get("schema").toString());
 
                 if (! yc.isSet("x"))
-                    throw new DataFormatException("missing x location");
+                    throw new InvalidData("missing x location");
                 if (! yc.isDouble("x"))
-                    throw new DataFormatException("invalid data for x location: "
+                    throw new InvalidData("invalid data for x location: "
                         + yc.get("x").toString());
 
                 if (! yc.isSet("y"))
-                    throw new DataFormatException("missing y location");
+                    throw new InvalidData("missing y location");
                 if (! yc.isDouble("y"))
-                    throw new DataFormatException("invalid data for y location: "
+                    throw new InvalidData("invalid data for y location: "
                         + yc.get("y").toString());
 
                 if (! yc.isSet("z"))
-                    throw new DataFormatException("missing z location");
+                    throw new InvalidData("missing z location");
                 if (! yc.isDouble("z"))
-                    throw new DataFormatException("invalid data for z location: "
+                    throw new InvalidData("invalid data for z location: "
                         + yc.get("z").toString());
 
                 if (! yc.isSet("yaw"))
-                    throw new DataFormatException("missing yaw");
+                    throw new InvalidData("missing yaw");
                 if (! yc.isDouble("yaw"))
-                    throw new DataFormatException("invalid data for yaw: "
+                    throw new InvalidData("invalid data for yaw: "
                         + yc.get("yaw").toString());
 
                 if (! yc.isSet("pitch"))
-                    throw new DataFormatException("missing pitch");
+                    throw new InvalidData("missing pitch");
                 if (! yc.isDouble("pitch"))
-                    throw new DataFormatException("invalid data for pitch: "
+                    throw new InvalidData("invalid data for pitch: "
                         + yc.get("pitch").toString());
 
                 MVDestination mydest = new ExactDestination();
@@ -140,7 +145,7 @@ public class MVPlayerLocation {
                     (float) yc.getDouble("yaw"), (float) yc.getDouble("pitch")));
                 return mydest;
 
-            } catch (DataFormatException e) {
+            } catch (InvalidData e) {
                 plugin.log(Level.SEVERE, "Failed to parse saved location of player '"
                     + player.getName() + "' (" + playerID + ") in world '" + world
                     + "': " + e.getMessage() + ".");
