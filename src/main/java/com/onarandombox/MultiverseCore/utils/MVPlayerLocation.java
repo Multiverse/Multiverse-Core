@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.ExactDestination;
 import org.bukkit.Location;
@@ -29,9 +30,9 @@ public class MVPlayerLocation {
     }
 
     private static class InvalidData extends Exception {
-	public InvalidData(String msg) {
-	    super(msg);
-	}
+        public InvalidData(String msg) {
+            super(msg);
+        }
     }
 
     public static void savePlayerLocation(Player player, Location location, String action) {
@@ -78,15 +79,17 @@ public class MVPlayerLocation {
         }
     }
 
-    public static MVDestination getPlayerLastLocation(Player player, String world) {
-        String playerID = player.getUniqueId().toString();
+    public static Location getPlayerLastLocation(Player player, MultiverseWorld world) {
+        String playerID;
         File   file;
 
-        if (plugin == null)
+        if (plugin == null || player.getUniqueId() == null)
             return null;
 
+        playerID = player.getUniqueId().toString();
+
         file = new File(plugin.getDataFolder(), PLAYER_LOCATION_DATA
-            + File.separator + world + File.separator + playerID + ".yaml");
+            + File.separator + world.getName() + File.separator + playerID + ".yaml");
 
         if (file.isFile()) {
             YamlConfiguration yc = new YamlConfiguration();
@@ -94,7 +97,7 @@ public class MVPlayerLocation {
                 yc.load(file);
             } catch (Exception e) {
                 plugin.log(Level.SEVERE, "Failed to load saved location of player '"
-                    + player.getName() + "' (" + playerID + ") in world '" + world
+                    + player.getName() + "' (" + playerID + ") in world '" + world.getName()
                     + "': " + e.getMessage() + ".");
                 return null;
             }
@@ -138,22 +141,18 @@ public class MVPlayerLocation {
                     throw new InvalidData("invalid data for pitch: "
                         + yc.get("pitch").toString());
 
-                MVDestination mydest = new ExactDestination();
-                ((ExactDestination) mydest).setDestination(new Location(
-                    plugin.getMVWorldManager().getMVWorld(world).getCBWorld(),
+                return new Location(world.getCBWorld(),
                     yc.getDouble("x"), yc.getDouble("y"), yc.getDouble("z"),
-                    (float) yc.getDouble("yaw"), (float) yc.getDouble("pitch")));
-                return mydest;
-
+                    (float) yc.getDouble("yaw"), (float) yc.getDouble("pitch"));
             } catch (InvalidData e) {
                 plugin.log(Level.SEVERE, "Failed to parse saved location of player '"
-                    + player.getName() + "' (" + playerID + ") in world '" + world
+                    + player.getName() + "' (" + playerID + ") in world '" + world.getName()
                     + "': " + e.getMessage() + ".");
                 return null;
             }
         } else {
             plugin.log(Level.FINE, "No saved location for player '" + player.getName()
-                + "' (" + playerID + ") in world '" + world + "' found.");
+                + "' (" + playerID + ") in world '" + world.getName() + "' found.");
             return null;
         }
     }

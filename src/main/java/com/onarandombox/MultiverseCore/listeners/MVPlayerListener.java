@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.destination.LastLocationDestination;
 import com.onarandombox.MultiverseCore.utils.MVPlayerLocation;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
@@ -122,7 +123,7 @@ public class MVPlayerListener implements Listener {
             this.plugin.log(Level.FINER, "Player joined AGAIN!");
             if (this.plugin.getMVConfig().getEnforceAccess() // check this only if we're enforcing access!
                     && !this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
-                p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
+                p.sendMessage("[MV] - Sorry, you can't be in world '" + p.getWorld().getName() + "' anymore!");
                 this.sendPlayerToDefaultWorld(p);
             }
         }
@@ -149,8 +150,12 @@ public class MVPlayerListener implements Listener {
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        if (this.plugin.getMVPerms().hasPermission(player, "multiverse.teleport.self."
+                + LastLocationDestination.getID(), true)
+                || this.plugin.getMVPerms().hasPermission(player, "multiverse.save.lastlocations", true)) {
+            MVPlayerLocation.savePlayerLocation(player, player.getLocation(), "quitting");
+        }
         this.plugin.removePlayerSession(player);
-        MVPlayerLocation.savePlayerLocation(player, player.getLocation(), "quitting");
     }
 
     /**
@@ -243,9 +248,13 @@ public class MVPlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerTeleportMonitor(PlayerTeleportEvent event) {
-
+        Player player = event.getPlayer();
         if (! event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            MVPlayerLocation.savePlayerLocation(event.getPlayer(), event.getFrom(), "teleporting");
+            if (this.plugin.getMVPerms().hasPermission(player, "multiverse.teleport.self."
+                    + LastLocationDestination.getID(), true)
+                    || this.plugin.getMVPerms().hasPermission(player, "multiverse.save.lastlocations", true)) {
+                MVPlayerLocation.savePlayerLocation(player, player.getLocation(), "quitting");
+            }
         }
     }
 
@@ -330,7 +339,9 @@ public class MVPlayerListener implements Listener {
             new Runnable() {
                 @Override
                 public void run() {
-                    player.teleport(plugin.getMVWorldManager().getFirstSpawnWorld().getSpawnLocation());
+                    LastLocationDestination destination = new LastLocationDestination();
+                    destination.setDestination(plugin, plugin.getMVWorldManager().getFirstSpawnWorld().getName());
+                    player.teleport(destination.getLocation(player));
                 }
             }, 1L);
     }

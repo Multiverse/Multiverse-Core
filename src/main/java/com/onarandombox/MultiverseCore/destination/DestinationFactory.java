@@ -10,9 +10,9 @@ package com.onarandombox.MultiverseCore.destination;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.utils.MVPlayerLocation;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -39,26 +39,55 @@ public class DestinationFactory {
     }
 
     /**
-     * Gets a new destination from a string and possibly for a player.
+     * Gets a new destination from a string.
      * Returns a new InvalidDestination if the string could not be parsed.
      *
      * @param destination The destination in string format.
-     * @param player The player.
      *
      * @return A non-null MVDestination
      */
-    public MVDestination getDestination(String destination, Player player) {
+    public MVDestination getDestination(String destination) {
+        return this.getDestination(destination, null, null);
+    }
+
+    /**
+     * Gets a new destination from a string.
+     * Returns a new InvalidDestination if the string could not be parsed.
+     *
+     * @param destination The destination in string format.
+     * @param sender The instigator.
+     * @param victim The player who is being affected.
+     *
+     * @return A non-null MVDestination
+     */
+    public MVDestination getDestination(String destination, CommandSender sender, Player victim) {
         String idenChar = "";
         if (destination.split(":").length > 1) {
             idenChar = destination.split(":")[0];
         }
 
-        if (idenChar.equals("") && player != null && this.plugin.getMVWorldManager().isMVWorld(destination)) {
-            // handle special case
-            MVDestination lastDestination = MVPlayerLocation.getPlayerLastLocation(player, destination);
-            if (lastDestination != null)
-                return lastDestination;
-            // fall through to use world spawn location
+        if (sender != null && victim != null && idenChar.equals("")) {
+            LastLocationDestination mydest = new LastLocationDestination();
+
+            if (!(sender instanceof Player)) {
+                // console is omnipotent
+                mydest.setDestination(this.plugin, destination);
+                return (MVDestination) mydest;
+            }
+
+            if (sender.equals(victim)) {
+                if (this.plugin.getMVPerms().hasPermission(sender, "multiverse.teleport.self."
+                        + mydest.getIdentifier(), true)) {
+                    mydest.setDestination(this.plugin, destination);
+                    return (MVDestination) mydest;
+                }
+            } else {
+                if (this.plugin.getMVPerms().hasPermission(sender, "multiverse.teleport.other."
+                        + mydest.getIdentifier(), true)) {
+                    mydest.setDestination(this.plugin, destination);
+                    return (MVDestination) mydest;
+                }
+            }
         }
 
         if (this.destList.containsKey(idenChar)) {
@@ -75,18 +104,6 @@ public class DestinationFactory {
             }
         }
         return new InvalidDestination();
-    }
-
-    /**
-     * Gets a new destination from a string.
-     * Returns a new InvalidDestination if the string could not be parsed.
-     *
-     * @param destination The destination in string format.
-     *
-     * @return A non-null MVDestination
-     */
-    public MVDestination getDestination(String destination) {
-        return getDestination(destination, null);
     }
 
     /**
