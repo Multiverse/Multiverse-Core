@@ -819,7 +819,9 @@ public class WorldManager implements MVWorldManager {
             this.configWorlds.options().pathSeparator(SEPARATOR);
             this.configWorlds.set("worlds", null);
             for (Map.Entry<String, WorldProperties> entry : worldsFromTheConfig.entrySet()) {
-                this.configWorlds.set("worlds" + SEPARATOR + entry.getKey(), entry.getValue());
+                if (!entry.getKey().isEmpty()) {
+                    this.configWorlds.set("worlds" + SEPARATOR + entry.getKey(), entry.getValue());
+                }
             }
             this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
             return true;
