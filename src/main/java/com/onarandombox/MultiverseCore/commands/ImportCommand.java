@@ -95,10 +95,15 @@ public class ImportCommand extends MultiverseCommand {
         }
         return worldList;
     }
+    
+    private String trimWorldName(String userInput) {
+        // Removes relative paths.
+        return userInput.replaceAll("^[./\\\\]+", "");
+    }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        String worldName = args.get(0);
+        String worldName = trimWorldName(args.get(0));
 
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
             String worldList = this.getPotentialWorlds();
@@ -112,7 +117,7 @@ public class ImportCommand extends MultiverseCommand {
         }
         // Since we made an exception for the list, we have to make sure they have at least 2 params:
         // Note the exception is --list, which is covered above.
-        if (args.size() == 1) {
+        if (args.size() == 1 || worldName.length() < 1) {
             this.showHelp(sender);
             return;
         }
