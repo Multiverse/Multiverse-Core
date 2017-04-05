@@ -33,7 +33,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         this.addKey("mvanchors");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "otherthing");
-        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething " + ChatColor.RED + "-d");
+        this.addCommandExample("/mv anchor " + ChatColor.PURPLE + "awesomething " + ChatColor.YELLOW + "-d");
         this.addCommandExample("/mv anchors ");
         this.setPermission("multiverse.core.anchor.list", "Allows a player to list all anchors.", PermissionDefault.OP);
         this.addAdditonalPermission(new Permission("multiverse.core.anchor.create",
