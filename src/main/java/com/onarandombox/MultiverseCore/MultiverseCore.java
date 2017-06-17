@@ -356,7 +356,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private void initializeBuscript() {
         buscript = new Buscript(this);
         // Add global variable "multiverse" to javascript environment
-        buscript.getGlobalScope().put("multiverse", buscript.getGlobalScope(), this);
+        buscript.setScriptVariable("multiverse", this);
     }
 
     /**
