@@ -131,11 +131,6 @@ public class ImportCommand extends MultiverseCommand {
 
         File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
 
-        if (!checkIfIsWorld(worldFile)) {
-            sender.sendMessage(ChatColor.RED + "Sorry, but that does not look like a world!");
-            return;
-        }
-
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
         for (String s : args) {
