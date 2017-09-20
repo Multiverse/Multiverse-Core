@@ -51,6 +51,7 @@ public class ModifySetCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "heal " + ChatColor.RED + "true");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "adjustspawn " + ChatColor.RED + "false");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "spawn");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "spawn" + ChatColor.RED + "world:0,64,0:90:270");
         this.setPermission("multiverse.core.modify.set", "Modify various aspects of worlds. See the help wiki for how to use this command properly. "
                 + "If you do not include a world, the current world will be used.", PermissionDefault.OP);
     }
@@ -58,19 +59,9 @@ public class ModifySetCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         // Special case for spawn:
-        if (args.size() == 1) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("You must be a player to set the" + ChatColor.GREEN + " spawn");
-                return;
-            }
-            if (args.get(0).equalsIgnoreCase("spawn")) {
-                SetSpawnCommand c = new SetSpawnCommand(this.plugin);
-                c.setWorldSpawn(sender);
-
-            } else {
-                sender.sendMessage("Spawn is the only param with no" + ChatColor.GREEN + " VALUE");
-                sender.sendMessage("Type " + ChatColor.GREEN + "/mv modify ?" + ChatColor.WHITE + " For help.");
-            }
+        if (args.size() > 0 && args.get(0).equalsIgnoreCase("spawn")) {
+            SetSpawnCommand c = new SetSpawnCommand(this.plugin);
+            c.setWorldSpawn(sender, args.size() > 1 ? args.get(1) : null);
             return;
         }
         // We NEED a world from the command line

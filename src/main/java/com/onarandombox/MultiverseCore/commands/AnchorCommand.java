@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -25,7 +26,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
     public AnchorCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Create, Delete and Manage Anchor Destinations.");
-        this.setCommandUsage("/mv anchor " + ChatColor.GREEN + "{name}" + ChatColor.GOLD + " [-d]");
+        this.setCommandUsage("/mv anchor " + ChatColor.GREEN + "{name}" + ChatColor.GOLD + " [-d] [WORLD:X,Y,Z[:PITCH[:YAW]]]");
         this.setArgRange(0, 2);
         this.addKey("mv anchor");
         this.addKey("mv anchors");
@@ -33,6 +34,9 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         this.addKey("mvanchors");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "otherthing");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething awesomeworld:23,42,-1337");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething awesomeworld:23,42,-1337:90");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething awesomeworld:23,42,-1337:90:0");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething " + ChatColor.RED + "-d");
         this.addCommandExample("/mv anchors ");
         this.setPermission("multiverse.core.anchor.list", "Allows a player to list all anchors.", PermissionDefault.OP);
@@ -127,16 +131,24 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
             return;
         }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to create Anchors.");
-            return;
-        }
-
         if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.create", true)) {
             sender.sendMessage(ChatColor.RED + "You don't have the permission to create anchors!");
         } else {
-            Player player = (Player) sender;
-            if (this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), player.getLocation())) {
+            Location target;
+            if (args.size() == 2) {
+                target = plugin.getLocationManipulation().stringToLocation(args.get(1));
+                if (target == null) {
+                    sender.sendMessage(ChatColor.RED + args.get(1) + ChatColor.WHITE + " is not a valid location! Location format is world:x,y,z[:pitch[:yaw]]");
+                    return;
+                }
+            } else if (sender instanceof Player) {
+                target = ((Player) sender).getLocation();
+            } else {
+                sender.sendMessage("Use /mv anchor {name} {world:x,y,z[:pitch[:yaw]]} to set the anchor from the console!");
+                return;
+            }
+
+            if (this.plugin.getAnchorManager().saveAnchorLocation(args.get(0), target)) {
                 sender.sendMessage("Anchor '" + args.get(0) + "' was successfully " + ChatColor.GREEN + "created!");
             } else {
                 sender.sendMessage("Anchor '" + args.get(0) + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "created!");
