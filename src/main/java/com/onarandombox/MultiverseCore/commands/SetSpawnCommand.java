@@ -9,11 +9,14 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -26,7 +29,7 @@ public class SetSpawnCommand extends MultiverseCommand {
     public SetSpawnCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Set World Spawn");
-        this.setCommandUsage("/mv setspawn [WORLD:X,Y,Z[:PITCH[:YAW]]]");
+        this.setCommandUsage("/mv setspawn [DESTINATION]");
         this.setArgRange(0, 1);
         this.addKey("mvsetspawn");
         this.addKey("mvss");
@@ -34,9 +37,11 @@ public class SetSpawnCommand extends MultiverseCommand {
         this.addKey("mv setspawn");
         this.addKey("mvset spawn");
         this.addCommandExample("/mv set spawn");
-        this.addCommandExample("/mv set spawn world:0,64,0");
-        this.addCommandExample("/mv set spawn world:0,64,0:90");
-        this.addCommandExample("/mv set spawn world:0,64,0:90:270");
+        this.addCommandExample("/mv set spawn e:world:0,64,0");
+        this.addCommandExample("/mv set spawn e:world:0,64,0:90");
+        this.addCommandExample("/mv set spawn e:world:0,64,0:90:270");
+        this.addCommandExample("/mv set spawn pl:player");
+        this.addCommandExample("/mv set spawn a:anchor");
         this.setPermission("multiverse.core.spawn.set", "Sets the spawn for the current world.", PermissionDefault.OP);
     }
 
@@ -55,15 +60,44 @@ public class SetSpawnCommand extends MultiverseCommand {
     protected void setWorldSpawn(CommandSender sender, String locationString) {
         Location l;
         if (locationString != null) {
-            l = plugin.getLocationManipulation().stringToLocation(locationString);
-            if (l == null) {
-                sender.sendMessage(ChatColor.RED + locationString + ChatColor.WHITE + " is not a valid location! Location format is world:x,y,z[:pitch[:yaw]]");
+            MVDestination d = this.plugin.getDestFactory().getDestination(locationString);
+    
+            if (d instanceof InvalidDestination) {
+                sender.sendMessage(ChatColor.RED + locationString + ChatColor.WHITE + " is not a valid destination!");
                 return;
+            }
+    
+            if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.spawn.set." + d.getIdentifier(), true)) {
+                sender.sendMessage(new String[] {
+                        ChatColor.WHITE + "You don't have the permission to set spawns with " + ChatColor.RED + d.getType() + ChatColor.WHITE + "Destinations!",
+                        ChatColor.RED + "(multiverse.core.spawn.set." + d.getIdentifier() + ")"
+                });
+                return;
+            }
+    
+            if (!this.plugin.getMVPerms().canEnterDestination(sender, d)) {
+                sender.sendMessage(ChatColor.RED + "You don't have the permission to access this destination!");
+                return;
+            }
+    
+            if (!d.isValid()) {
+                sender.sendMessage(ChatColor.RED + locationString + ChatColor.WHITE + " is not a valid " + ChatColor.RED + d.getType() + ChatColor.WHITE + "Destination!");
+                return;
+            }
+    
+            if (sender instanceof Entity) {
+                l = d.getLocation((Entity) sender);
+            } else {
+                l = d.getLocation(null);
+                if (l == null) {
+                    sender.sendMessage("The destination " + ChatColor.RED + d.toString() + ChatColor.WHITE + " can only be used by an entity!");
+                    return;
+                }
             }
         } else if (sender instanceof Player) {
             l = ((Player) sender).getLocation();
         } else {
-            sender.sendMessage("Append the spawn location in the format world:x,y,z[:pitch[:yaw]] to set the spawn from the console!");
+            sender.sendMessage("Append the destination string to set the spawn from the console!");
             return;
         }
 

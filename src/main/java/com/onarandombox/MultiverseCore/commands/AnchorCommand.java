@@ -8,9 +8,13 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.destination.DestinationFactory;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -26,7 +30,7 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
     public AnchorCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Create, Delete and Manage Anchor Destinations.");
-        this.setCommandUsage("/mv anchor " + ChatColor.GREEN + "{name}" + ChatColor.GOLD + " [-d] [WORLD:X,Y,Z[:PITCH[:YAW]]]");
+        this.setCommandUsage("/mv anchor " + ChatColor.GREEN + "{name}" + ChatColor.GOLD + " [-d] [DESTINATION]");
         this.setArgRange(0, 2);
         this.addKey("mv anchor");
         this.addKey("mv anchors");
@@ -34,9 +38,11 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         this.addKey("mvanchors");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "otherthing");
-        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething awesomeworld:23,42,-1337");
-        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething awesomeworld:23,42,-1337:90");
-        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething awesomeworld:23,42,-1337:90:0");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething w:awesomeworld");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething pl:awesomeplayer");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething e:awesomeworld:23,42,-1337");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething e:awesomeworld:23,42,-1337:90");
+        this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething e:awesomeworld:23,42,-1337:90:0");
         this.addCommandExample("/mv anchor " + ChatColor.GREEN + "awesomething " + ChatColor.RED + "-d");
         this.addCommandExample("/mv anchors ");
         this.setPermission("multiverse.core.anchor.list", "Allows a player to list all anchors.", PermissionDefault.OP);
@@ -136,15 +142,44 @@ public class AnchorCommand extends PaginatedCoreCommand<String> {
         } else {
             Location target;
             if (args.size() == 2) {
-                target = plugin.getLocationManipulation().stringToLocation(args.get(1));
-                if (target == null) {
-                    sender.sendMessage(ChatColor.RED + args.get(1) + ChatColor.WHITE + " is not a valid location! Location format is world:x,y,z[:pitch[:yaw]]");
+                MVDestination d = this.plugin.getDestFactory().getDestination(args.get(1));
+                
+                if (d instanceof InvalidDestination) {
+                    sender.sendMessage(ChatColor.RED + args.get(1) + ChatColor.WHITE + " is not a valid destination!");
                     return;
+                }
+    
+                if (!this.plugin.getMVPerms().hasPermission(sender, "multiverse.core.anchor.create." + d.getIdentifier(), true)) {
+                    sender.sendMessage(new String[] {
+                            ChatColor.WHITE + "You don't have the permission to create anchors with " + ChatColor.RED + d.getType() + ChatColor.WHITE + "Destinations!",
+                            ChatColor.RED + "(multiverse.core.anchor.create." + d.getIdentifier() + ")"
+                    });
+                    return;
+                }
+                
+                if (!this.plugin.getMVPerms().canEnterDestination(sender, d)) {
+                    sender.sendMessage(ChatColor.RED + "You don't have the permission to access this destination!");
+                    return;
+                }
+                
+                if (!d.isValid()) {
+                    sender.sendMessage(ChatColor.RED + args.get(1) + ChatColor.WHITE + " is not a valid " + ChatColor.RED + d.getType() + ChatColor.WHITE + "Destination!");
+                    return;
+                }
+                
+                if (sender instanceof Entity) {
+                    target = d.getLocation((Entity) sender);
+                } else {
+                    target = d.getLocation(null);
+                    if (target == null) {
+                        sender.sendMessage("The destination " + ChatColor.RED + d.toString() + ChatColor.WHITE + " can only be used by an entity!");
+                        return;
+                    }
                 }
             } else if (sender instanceof Player) {
                 target = ((Player) sender).getLocation();
             } else {
-                sender.sendMessage("Use /mv anchor {name} {world:x,y,z[:pitch[:yaw]]} to set the anchor from the console!");
+                sender.sendMessage("Use /mv anchor {name} {DESTINATION} to set the anchor from the console!");
                 return;
             }
 
