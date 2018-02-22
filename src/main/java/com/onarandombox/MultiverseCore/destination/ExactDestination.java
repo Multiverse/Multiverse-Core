@@ -21,9 +21,10 @@ import java.util.List;
  * An exact {@link MVDestination}.
  */
 public class ExactDestination implements MVDestination {
-    private final String coordRegex = "(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*),(-?[\\d]+\\.?[\\d]*)";
+    private final String coordRegex = "(-?[\\d]+\\.?[\\d]*|~-?[\\d]+\\.?[\\d]*|~),(-?[\\d]+\\.?[\\d]*|~-?[\\d]+\\.?[\\d]*|~),(-?[\\d]+\\.?[\\d]*|~-?[\\d]+\\.?[\\d]*|~)";
     private boolean isValid;
     private Location location;
+    private boolean relativeX, relativeY, relativeZ;
 
     /**
      * {@inheritDoc}
@@ -88,7 +89,20 @@ public class ExactDestination implements MVDestination {
      */
     @Override
     public Location getLocation(Entity e) {
-        return this.location;
+        Location loc = this.location.clone();
+        if (relativeX || relativeY || relativeZ) {
+            Location eLoc = e.getLocation();
+            loc.add(relativeX ? eLoc.getX() : 0, relativeY ? eLoc.getY() : 0, relativeZ ? eLoc.getZ() : 0);
+            // Since the location is relative, it makes sense to use the entity's pitch and yaw unless those were
+            // specified in the destination.
+            if (loc.getPitch() == 0) {
+                loc.setPitch(eLoc.getPitch());
+            }
+            if (loc.getYaw() == 0) {
+                loc.setYaw(eLoc.getYaw());
+            }
+        }
+        return loc;
     }
 
     /**
@@ -134,11 +148,42 @@ public class ExactDestination implements MVDestination {
         double[] coords = new double[3];
         String[] coordString = parsed.get(2).split(",");
         for (int i = 0; i < 3; i++) {
-            try {
-                coords[i] = Double.parseDouble(coordString[i]);
-            } catch (NumberFormatException e) {
-                this.isValid = false;
-                return;
+            String[] relSplit = coordString[i].split("~");
+            boolean relative = false;
+            if (relSplit.length == 0) {
+                // coord is "~" form
+                relative = true;
+                coords[i] = 0;
+            } else if (relSplit.length == 1) {
+                // coord is "123" form
+                try {
+                    coords[i] = Double.parseDouble(relSplit[0]);
+                } catch (NumberFormatException e) {
+                    this.isValid = false;
+                    return;
+                }
+            } else {
+                // coord is "~123" form
+                relative = true;
+                try {
+                    coords[i] = Double.parseDouble(relSplit[1]);
+                } catch (NumberFormatException e) {
+                    this.isValid = false;
+                    return;
+                }
+            }
+            if (relative) {
+                switch (i) {
+                    case 0:
+                        relativeX = true;
+                        break;
+                    case 1:
+                        relativeY = true;
+                        break;
+                    case 2:
+                        relativeZ = true;
+                        break;
+                }
             }
         }
         this.location.setX(coords[0]);
