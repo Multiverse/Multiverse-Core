@@ -67,6 +67,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile boolean defaultportalsearch;
     @Property
     private volatile int portalsearchradius;
+    @Property
+    private volatile boolean autopurge;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -98,6 +100,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         silentstart = false;
         defaultportalsearch = false;
         portalsearchradius = 128;
+        autopurge = true;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -331,5 +334,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public int getPortalSearchRadius() {
         return portalsearchradius;
+    }
+
+    @Override
+    public boolean isAutoPurgeEnabled() {
+        return autopurge;
+    }
+
+    @Override
+    public void setAutoPurgeEnabled(boolean autopurge) {
+        this.autopurge = autopurge;
     }
 }
