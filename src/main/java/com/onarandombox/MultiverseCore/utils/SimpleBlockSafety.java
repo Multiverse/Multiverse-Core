@@ -92,7 +92,7 @@ public class SimpleBlockSafety implements BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA) { // || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType().toString().equalsIgnoreCase("STATIONARY_LAVA")) {
             Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(), isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
@@ -288,10 +288,10 @@ public class SimpleBlockSafety implements BlockSafety {
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if (oneBelow.getBlock().getType() == Material.WATER) { // || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+        if (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType().toString().equalsIgnoreCase("STATIONARY_WATER")) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
-            return (oneBelow.getBlock().getType() == Material.WATER); // || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
+            return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType().toString().equalsIgnoreCase("STATIONARY_WATER"));
         }
         if (oneBelow.getBlock().getType() != Material.AIR) {
             return false;

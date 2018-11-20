@@ -85,7 +85,7 @@ public class BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == XMaterial.LAVA.parseMaterial() || downOne.getBlock().getType() == XMaterial.fromString("STATIONARY_LAVA").parseMaterial()) {
+        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType().toString().equalsIgnoreCase("STATIONARY_LAVA")) {
             Logging.finest("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(),
                     this.isSolidBlock(downOne.getBlock().getType()));
             return false;
