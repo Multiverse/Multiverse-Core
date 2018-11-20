@@ -90,7 +90,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -101,7 +100,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -638,8 +636,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // migrate entryfee
                 if (section.isConfigurationSection("entryfee")) {
                     ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
-                    if (feeSection.isInt("currency"))
-                        world.setCurrency(feeSection.getInt("currency"));
+                    if (feeSection.isString("currency"))
+                        world.setCurrency(feeSection.getString("currency").toUpperCase());
 
                     if (feeSection.isDouble("amount"))
                         world.setPrice(feeSection.getDouble("amount"));

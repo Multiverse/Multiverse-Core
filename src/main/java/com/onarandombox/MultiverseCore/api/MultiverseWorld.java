@@ -504,7 +504,7 @@ public interface MultiverseWorld {
     /**
      * Sets the price for entry to this world.
      * You can think of this like an amount.
-     * The type can be set with {@link #setCurrency(int)}
+     * The type can be set with {@link #setCurrency(String)}
      *
      * @param price The Amount of money/item to enter the world.
      */
@@ -515,15 +515,15 @@ public interface MultiverseWorld {
      *
      * @return The Type of currency that will be used when users enter this world.
      */
-    int getCurrency();
+    String getCurrency();
 
     /**
      * Sets the type of item that will be required given the price is not 0.
-     * Use -1 to use an AllPay economy, or any valid itemid
+     * Use -1 to use an AllPay economy, or any valid Material
      *
      * @param item The Type of currency that will be used when users enter this world.
      */
-    void setCurrency(int item);
+    void setCurrency(String item);
 
     /**
      * Gets the world players will respawn in if they die in this one.

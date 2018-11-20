@@ -9,6 +9,8 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.XMaterial;
+
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.event.EventHandler;
@@ -71,10 +73,10 @@ public class MVPortalListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-        if (event.getClickedBlock().getType() != Material.ENDER_PORTAL_FRAME) {
+        if (event.getClickedBlock().getType() != XMaterial.END_PORTAL_FRAME.parseMaterial()) {
             return;
         }
-        if (event.getItem() == null || event.getItem().getType() != Material.EYE_OF_ENDER) {
+        if (event.getItem() == null || event.getItem().getType() != XMaterial.ENDER_EYE.parseMaterial()) {
             return;
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());

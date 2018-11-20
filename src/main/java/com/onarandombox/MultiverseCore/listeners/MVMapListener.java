@@ -1,6 +1,8 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.utils.XMaterial;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,8 +30,8 @@ public class MVMapListener implements Listener {
     @EventHandler
     public void mapInitialize(final MapInitializeEvent event) {
         for (final Player player : Bukkit.getOnlinePlayers()) {
-            if ((player.getItemInHand().getType() == Material.MAP
-                    || player.getItemInHand().getType() == Material.EMPTY_MAP)
+            if ((player.getItemInHand().getType() == XMaterial.MAP.parseMaterial()
+                    || player.getItemInHand().getType() == XMaterial.FILLED_MAP.parseMaterial())
                     && player.getItemInHand().getDurability() == event.getMap().getId()) {
                 final Location playerLoc = player.getLocation();
                 final MapView map = event.getMap();

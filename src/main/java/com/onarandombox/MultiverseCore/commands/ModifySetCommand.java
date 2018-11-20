@@ -13,6 +13,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
@@ -40,7 +41,7 @@ public class ModifySetCommand extends MultiverseCommand {
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "monsters " + ChatColor.RED + "false");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "alias " + ChatColor.RED + "MyWorld");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "color " + ChatColor.RED + "green");
-        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "curr " + ChatColor.RED + "3");
+        this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "curr " + ChatColor.RED + "COAL");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "price " + ChatColor.RED + "5");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "scale " + ChatColor.RED + "1.2");
         this.addCommandExample("/mvm " + ChatColor.GOLD + "set " + ChatColor.GREEN + "memory " + ChatColor.RED + "true");
@@ -107,6 +108,11 @@ public class ModifySetCommand extends MultiverseCommand {
             sender.sendMessage(EnglishChatColor.getAllColors());
             return;
         }
+        
+        if (property.equalsIgnoreCase("currency") && !value.equals("-1") && Material.getMaterial(value.toUpperCase()) == null) {
+        	sender.sendMessage(value + " is not a valid Material.");
+        	return;
+        } 
         try {
             if (world.setPropertyValue(property, value)) {
                 sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + property

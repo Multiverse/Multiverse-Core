@@ -18,8 +18,11 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.material.Bed;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -89,13 +92,18 @@ public class SimpleBlockSafety implements BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+        if (downOne.getBlock().getType() == Material.LAVA) { // || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
             Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(), isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
 
         if (downOne.getBlock().getType() == Material.FIRE) {
             Logging.finer("There's fire below! (%s)[%s]", actual.getBlock().getType(), isSolidBlock(actual.getBlock().getType()));
+            return false;
+        }
+        
+        if (downOne.getBlock().getType() == XMaterial.MAGMA_BLOCK.parseMaterial()) {
+            Logging.finer("There's magma below! (%s)[%s]", actual.getBlock().getType(), isSolidBlock(actual.getBlock().getType()));
             return false;
         }
 
@@ -151,11 +159,11 @@ public class SimpleBlockSafety implements BlockSafety {
      * @return The location of the other bed piece, or null if it was a jacked up bed.
      */
     private Location findOtherBedPiece(Location checkLoc) {
-        if (checkLoc.getBlock().getType() != Material.BED_BLOCK) {
+    	if (!(checkLoc.getBlock().getState().getData() instanceof Bed)) {
             return null;
         }
         // Construct a bed object at this location
-        final Bed b = new Bed(Material.BED_BLOCK, checkLoc.getBlock().getData());
+        final Bed b = new Bed(XMaterial.RED_BED.parseMaterial(), checkLoc.getBlock().getData());
         if (b.isHeadOfBed()) {
             return checkLoc.getBlock().getRelative(b.getFacing().getOppositeFace()).getLocation();
         }
@@ -200,18 +208,39 @@ public class SimpleBlockSafety implements BlockSafety {
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      */
     private static boolean isSolidBlock(Material type) {
+    	List<Material> validMaterials = new ArrayList<>();
+        Collections.addAll(validMaterials, XMaterial.CAVE_AIR.parseMaterial(), XMaterial.WALL_TORCH.parseMaterial(),
+                XMaterial.ACACIA_TRAPDOOR.parseMaterial(), XMaterial.BIRCH_TRAPDOOR.parseMaterial(), XMaterial.DARK_OAK_TRAPDOOR.parseMaterial(),
+                XMaterial.JUNGLE_TRAPDOOR.parseMaterial(), XMaterial.OAK_TRAPDOOR.parseMaterial(), XMaterial.SPRUCE_TRAPDOOR.parseMaterial(),
+                XMaterial.ACACIA_PRESSURE_PLATE.parseMaterial(), XMaterial.BIRCH_PRESSURE_PLATE.parseMaterial(), XMaterial.DARK_OAK_PRESSURE_PLATE.parseMaterial(),
+                XMaterial.JUNGLE_PRESSURE_PLATE.parseMaterial(), XMaterial.OAK_PRESSURE_PLATE.parseMaterial(), XMaterial.SPRUCE_PRESSURE_PLATE.parseMaterial(),
+                XMaterial.STONE_PRESSURE_PLATE.parseMaterial(), XMaterial.LIGHT_WEIGHTED_PRESSURE_PLATE.parseMaterial(), XMaterial.HEAVY_WEIGHTED_PRESSURE_PLATE.parseMaterial(),
+                XMaterial.RAIL.parseMaterial(), XMaterial.REDSTONE_TORCH.parseMaterial(), XMaterial.REDSTONE_WALL_TORCH.parseMaterial(),
+                XMaterial.ACACIA_SAPLING.parseMaterial(), XMaterial.BIRCH_SAPLING.parseMaterial(), XMaterial.DARK_OAK_SAPLING.parseMaterial(),
+                XMaterial.JUNGLE_SAPLING.parseMaterial(), XMaterial.OAK_SAPLING.parseMaterial(), XMaterial.SPRUCE_SAPLING.parseMaterial(),
+                XMaterial.ACACIA_BUTTON.parseMaterial(), XMaterial.BIRCH_BUTTON.parseMaterial(), XMaterial.DARK_OAK_BUTTON.parseMaterial(),
+                XMaterial.JUNGLE_BUTTON.parseMaterial(), XMaterial.OAK_BUTTON.parseMaterial(), XMaterial.SPRUCE_BUTTON.parseMaterial(),
+                XMaterial.GRASS.parseMaterial(), XMaterial.NETHER_PORTAL.parseMaterial(), XMaterial.SUGAR_CANE.parseMaterial(),
+                XMaterial.ALLIUM.parseMaterial(), XMaterial.AZURE_BLUET.parseMaterial(), XMaterial.BLUE_ORCHID.parseMaterial(),
+                XMaterial.POPPY.parseMaterial(), XMaterial.DANDELION.parseMaterial(), XMaterial.OXEYE_DAISY.parseMaterial(),
+                XMaterial.RED_TULIP.parseMaterial(), XMaterial.ORANGE_TULIP.parseMaterial(), XMaterial.PINK_TULIP.parseMaterial(),
+                XMaterial.WHITE_TULIP.parseMaterial(), XMaterial.BLUE_CARPET.parseMaterial(), XMaterial.BLACK_CARPET.parseMaterial(),
+                XMaterial.RED_CARPET.parseMaterial(), XMaterial.ORANGE_CARPET.parseMaterial(), XMaterial.YELLOW_CARPET.parseMaterial(),
+                XMaterial.GREEN_CARPET.parseMaterial(), XMaterial.CYAN_CARPET.parseMaterial(), XMaterial.WHITE_CARPET.parseMaterial(),
+                XMaterial.PURPLE_CARPET.parseMaterial(), XMaterial.PINK_CARPET.parseMaterial(), XMaterial.GRAY_CARPET.parseMaterial(),
+                XMaterial.LIGHT_GRAY_CARPET.parseMaterial(), XMaterial.BROWN_CARPET.parseMaterial(), XMaterial.MAGENTA_CARPET.parseMaterial(),
+                XMaterial.LIGHT_BLUE_CARPET.parseMaterial(), XMaterial.LIME_CARPET.parseMaterial(), 
+                XMaterial.SIGN.parseMaterial(), XMaterial.WALL_SIGN.parseMaterial(), XMaterial.WATER.parseMaterial());
+        
+        if (validMaterials.contains(type)) {
+        	return false;
+        }
         switch (type) {
             case AIR:
                 return false;
             case SNOW:
                 return false;
-            case TRAP_DOOR:
-                return false;
             case TORCH:
-                return false;
-            case YELLOW_FLOWER:
-                return false;
-            case RED_ROSE:
                 return false;
             case RED_MUSHROOM:
                 return false;
@@ -221,41 +250,15 @@ public class SimpleBlockSafety implements BlockSafety {
                 return false;
             case REDSTONE_WIRE:
                 return false;
-            case RAILS:
-                return false;
             case POWERED_RAIL:
                 return false;
-            case REDSTONE_TORCH_ON:
-                return false;
-            case REDSTONE_TORCH_OFF:
-                return false;
             case DEAD_BUSH:
-                return false;
-            case SAPLING:
                 return false;
             case STONE_BUTTON:
                 return false;
             case LEVER:
                 return false;
-            case LONG_GRASS:
-                return false;
-            case PORTAL:
-                return false;
-            case STONE_PLATE:
-                return false;
-            case WOOD_PLATE:
-                return false;
-            case SEEDS:
-                return false;
-            case SUGAR_CANE_BLOCK:
-                return false;
             case WALL_SIGN:
-                return false;
-            case SIGN_POST:
-                return false;
-            case WOODEN_DOOR:
-                return false;
-            case STATIONARY_WATER:
                 return false;
             case WATER:
                 return false;
@@ -270,7 +273,7 @@ public class SimpleBlockSafety implements BlockSafety {
     @Override
     public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
-        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
+        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == XMaterial.RAIL.parseMaterial());
     }
 
     /**
@@ -285,10 +288,10 @@ public class SimpleBlockSafety implements BlockSafety {
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+        if (oneBelow.getBlock().getType() == Material.WATER) { // || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
-            return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
+            return (oneBelow.getBlock().getType() == Material.WATER); // || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
         }
         if (oneBelow.getBlock().getType() != Material.AIR) {
             return false;

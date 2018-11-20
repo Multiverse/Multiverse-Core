@@ -29,11 +29,6 @@
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
-        <!-- Has a copy of metrics R8-SNAPSHOT !-->
-        <repository>
-            <id>elmakers-repo</id>
-            <url>http://maven.elmakers.com/repository/</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -265,7 +260,7 @@
         <dependency>
            <groupId>org.spigotmc</groupId>
            <artifactId>spigot-api</artifactId>
-           <version>1.12-R0.1-SNAPSHOT</version>
+           <version>1.13.2-R0.1-SNAPSHOT</version>
            <scope>compile</scope>
         </dependency>
         <!--Spigot API-->

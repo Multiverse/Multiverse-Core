@@ -943,7 +943,7 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public int getCurrency() {
+    public String getCurrency() {
         return this.props.getCurrency();
     }
 
@@ -951,7 +951,7 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public void setCurrency(int currency) {
+    public void setCurrency(String currency) {
         this.props.setCurrency(currency);
     }
 
