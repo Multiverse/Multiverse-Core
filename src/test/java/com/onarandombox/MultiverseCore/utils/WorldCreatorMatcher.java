@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import org.bukkit.WorldCreator;
 import org.mockito.ArgumentMatcher;
 
-public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
+public class WorldCreatorMatcher implements ArgumentMatcher<WorldCreator> {
     private WorldCreator worldCreator;
     private boolean careAboutSeeds = false;
     private boolean careAboutGenerators = false;
@@ -28,23 +28,23 @@ public class WorldCreatorMatcher extends ArgumentMatcher<WorldCreator> {
         this.careAboutGenerators = doICare;
     }
 
-    public boolean matches(Object creator) {
+    public boolean matches(WorldCreator creator) {
         Util.log("Checking world creators.");
         if (creator == null) {
             Util.log("The given creator was null, but I was checking: " + this.worldCreator.name());
             return false;
         }
-        Util.log("Checking Names...(" + ((WorldCreator) creator).name() + ") vs (" + this.worldCreator.name() + ")");
-        Util.log("Checking Envs...(" + ((WorldCreator) creator).environment() + ") vs (" + this.worldCreator.environment() + ")");
-        if (!((WorldCreator) creator).name().equals(this.worldCreator.name())) {
+        Util.log("Checking Names...(" + creator.name() + ") vs (" + this.worldCreator.name() + ")");
+        Util.log("Checking Envs...(" + creator.environment() + ") vs (" + this.worldCreator.environment() + ")");
+        if (!creator.name().equals(this.worldCreator.name())) {
             return false;
-        } else if (!((WorldCreator) creator).environment().equals(this.worldCreator.environment())) {
+        } else if (!creator.environment().equals(this.worldCreator.environment())) {
             Util.log("Checking Environments...");
             return false;
-        } else if (careAboutSeeds && ((WorldCreator) creator).seed() != this.worldCreator.seed()) {
+        } else if (careAboutSeeds && creator.seed() != this.worldCreator.seed()) {
             Util.log("Checking Seeds...");
             return false;
-        } else if (careAboutGenerators && !((WorldCreator) creator).generator().equals(this.worldCreator.generator())) {
+        } else if (careAboutGenerators && !creator.generator().equals(this.worldCreator.generator())) {
             Util.log("Checking Gens...");
             return false;
         }

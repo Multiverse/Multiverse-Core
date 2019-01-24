@@ -45,6 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -60,6 +61,7 @@ import static org.mockito.Mockito.*;
         WeatherChangeEvent.class, ThunderChangeEvent.class, AsyncPlayerChatEvent.class,
         PlayerJoinEvent.class, PlayerRespawnEvent.class, EntityRegainHealthEvent.class,
         FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class, JavaPluginLoader.class })
+@PowerMockIgnore("javax.script.*")
 public class TestWorldProperties {
     private TestInstanceCreator creator;
     private MultiverseCore core;
