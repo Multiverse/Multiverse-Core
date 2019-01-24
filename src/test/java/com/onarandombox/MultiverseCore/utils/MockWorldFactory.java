@@ -178,6 +178,7 @@ public class MockWorldFactory {
                 return mockBlock;
             }
         });
+        when(mockWorld.getUID()).thenReturn(UUID.randomUUID());
         return mockWorld;
     }
 

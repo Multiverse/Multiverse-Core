@@ -27,7 +27,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.easymock.PowerMock;
@@ -44,11 +44,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doAnswer;
 
 public class TestInstanceCreator {
     private MultiverseCore core;
@@ -116,8 +120,6 @@ public class TestInstanceCreator {
             Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
             worldSkylandsFile.mkdirs();
 
-
-
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
                 @Override
@@ -154,7 +156,7 @@ public class TestInstanceCreator {
 
             when(mockServer.getPluginManager()).thenReturn(mockPluginManager);
 
-            when(mockServer.createWorld(Matchers.isA(WorldCreator.class))).thenAnswer(
+            when(mockServer.createWorld(ArgumentMatchers.isA(WorldCreator.class))).thenAnswer(
                     new Answer<World>() {
                         @Override
                         public World answer(InvocationOnMock invocation) throws Throwable {
@@ -254,9 +256,9 @@ public class TestInstanceCreator {
             when(commandSender.getServer()).thenReturn(mockServer);
             when(commandSender.getName()).thenReturn("MockCommandSender");
             when(commandSender.isPermissionSet(anyString())).thenReturn(true);
-            when(commandSender.isPermissionSet(Matchers.isA(Permission.class))).thenReturn(true);
+            when(commandSender.isPermissionSet(ArgumentMatchers.isA(Permission.class))).thenReturn(true);
             when(commandSender.hasPermission(anyString())).thenReturn(true);
-            when(commandSender.hasPermission(Matchers.isA(Permission.class))).thenReturn(true);
+            when(commandSender.hasPermission(ArgumentMatchers.isA(Permission.class))).thenReturn(true);
             when(commandSender.addAttachment(core)).thenReturn(null);
             when(commandSender.isOp()).thenReturn(true);
 

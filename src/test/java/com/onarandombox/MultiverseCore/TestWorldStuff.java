@@ -28,8 +28,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -41,6 +43,7 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class,
         PluginDescriptionFile.class, JavaPluginLoader.class })
+@PowerMockIgnore("javax.script.*")
 public class TestWorldStuff {
 
     private TestInstanceCreator creator;
@@ -170,7 +173,7 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Complete!");
 
         WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("newworld"));
-        verify(mockServer).createWorld(Matchers.argThat(matcher));
+        verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
     }
 
     @Test
@@ -233,7 +236,7 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Complete!");
 
         WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("nullworld"));
-        verify(mockServer).createWorld(Matchers.argThat(matcher));
+        verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
     }
 
     @Test
