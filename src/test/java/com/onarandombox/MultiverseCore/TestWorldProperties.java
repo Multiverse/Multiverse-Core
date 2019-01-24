@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.Command;
@@ -151,7 +152,7 @@ public class TestWorldProperties {
         assertEquals(Difficulty.NORMAL, mvWorld.getDifficulty());
         assertTrue(mvWorld.canAnimalsSpawn());
         assertTrue(mvWorld.canMonstersSpawn());
-        assertEquals(-1, mvWorld.getCurrency());
+        assertNull(mvWorld.getCurrency());
         assertEquals(0, mvWorld.getPrice(), 0);
         assertTrue(mvWorld.getHunger());
         assertTrue(mvWorld.getAutoHeal());
@@ -233,8 +234,8 @@ public class TestWorldProperties {
         assertEquals(false, mvWorld.canAnimalsSpawn());
         mvWorld.setAllowMonsterSpawn(false);
         assertEquals(false, mvWorld.canMonstersSpawn());
-        mvWorld.setCurrency(1);
-        assertEquals(1, mvWorld.getCurrency());
+        mvWorld.setCurrency(Material.STONE);
+        assertEquals(Material.STONE, mvWorld.getCurrency());
         mvWorld.setPrice(1D);
         assertEquals(1D, mvWorld.getPrice(), 0);
         mvWorld.setHunger(false);
@@ -332,7 +333,7 @@ public class TestWorldProperties {
         assertEquals(Difficulty.PEACEFUL, mvWorld.getDifficulty());
         assertEquals(false, mvWorld.canAnimalsSpawn());
         assertEquals(false, mvWorld.canMonstersSpawn());
-        assertEquals(1, mvWorld.getCurrency());
+        assertEquals(Material.STONE, mvWorld.getCurrency());
         assertEquals(1D, mvWorld.getPrice(), 0);
         assertEquals(false, mvWorld.getHunger());
         assertEquals(false, mvWorld.getAutoHeal());

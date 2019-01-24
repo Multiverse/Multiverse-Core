@@ -71,10 +71,10 @@ public class MVPortalListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-        if (event.getClickedBlock().getType() != Material.ENDER_PORTAL_FRAME) {
+        if (event.getClickedBlock().getType() != Material.END_PORTAL_FRAME) {
             return;
         }
-        if (event.getItem() == null || event.getItem().getType() != Material.EYE_OF_ENDER) {
+        if (event.getItem() == null || event.getItem().getType() != Material.ENDER_EYE) {
             return;
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());

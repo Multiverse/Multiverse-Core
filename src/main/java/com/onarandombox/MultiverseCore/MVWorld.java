@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -33,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
 import java.util.Collections;
@@ -943,7 +945,7 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public int getCurrency() {
+    public Material getCurrency() {
         return this.props.getCurrency();
     }
 
@@ -951,7 +953,7 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public void setCurrency(int currency) {
+    public void setCurrency(@Nullable Material currency) {
         this.props.setCurrency(currency);
     }
 

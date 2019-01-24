@@ -14,9 +14,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.material.Bed;
 
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -89,7 +90,7 @@ public class SimpleBlockSafety implements BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+        if (downOne.getBlock().getType() == Material.LAVA) {
             Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(), isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
@@ -151,12 +152,13 @@ public class SimpleBlockSafety implements BlockSafety {
      * @return The location of the other bed piece, or null if it was a jacked up bed.
      */
     private Location findOtherBedPiece(Location checkLoc) {
-        if (checkLoc.getBlock().getType() != Material.BED_BLOCK) {
+        BlockData data = checkLoc.getBlock().getBlockData();
+        if (!(data instanceof Bed)) {
             return null;
         }
-        // Construct a bed object at this location
-        final Bed b = new Bed(Material.BED_BLOCK, checkLoc.getBlock().getData());
-        if (b.isHeadOfBed()) {
+        Bed b = (Bed) data;
+
+        if (b.getPart() == Bed.Part.HEAD) {
             return checkLoc.getBlock().getRelative(b.getFacing().getOppositeFace()).getLocation();
         }
         // We shouldn't ever be looking at the foot, but here's the code for it.
@@ -199,69 +201,8 @@ public class SimpleBlockSafety implements BlockSafety {
     /*
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      */
-    private static boolean isSolidBlock(Material type) {
-        switch (type) {
-            case AIR:
-                return false;
-            case SNOW:
-                return false;
-            case TRAP_DOOR:
-                return false;
-            case TORCH:
-                return false;
-            case YELLOW_FLOWER:
-                return false;
-            case RED_ROSE:
-                return false;
-            case RED_MUSHROOM:
-                return false;
-            case BROWN_MUSHROOM:
-                return false;
-            case REDSTONE:
-                return false;
-            case REDSTONE_WIRE:
-                return false;
-            case RAILS:
-                return false;
-            case POWERED_RAIL:
-                return false;
-            case REDSTONE_TORCH_ON:
-                return false;
-            case REDSTONE_TORCH_OFF:
-                return false;
-            case DEAD_BUSH:
-                return false;
-            case SAPLING:
-                return false;
-            case STONE_BUTTON:
-                return false;
-            case LEVER:
-                return false;
-            case LONG_GRASS:
-                return false;
-            case PORTAL:
-                return false;
-            case STONE_PLATE:
-                return false;
-            case WOOD_PLATE:
-                return false;
-            case SEEDS:
-                return false;
-            case SUGAR_CANE_BLOCK:
-                return false;
-            case WALL_SIGN:
-                return false;
-            case SIGN_POST:
-                return false;
-            case WOODEN_DOOR:
-                return false;
-            case STATIONARY_WATER:
-                return false;
-            case WATER:
-                return false;
-            default:
-                return true;
-        }
+    public static boolean isSolidBlock(Material type) {
+        return type.isSolid();
     }
 
     /**
@@ -270,7 +211,10 @@ public class SimpleBlockSafety implements BlockSafety {
     @Override
     public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
-        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
+        return (currentBlock == Material.POWERED_RAIL
+                || currentBlock == Material.DETECTOR_RAIL
+                || currentBlock == Material.RAIL
+                || currentBlock == Material.ACTIVATOR_RAIL);
     }
 
     /**
@@ -285,10 +229,10 @@ public class SimpleBlockSafety implements BlockSafety {
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+        if (oneBelow.getBlock().getType() == Material.WATER) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
-            return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
+            return (oneBelow.getBlock().getType() == Material.WATER);
         }
         if (oneBelow.getBlock().getType() != Material.AIR) {
             return false;

@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -145,7 +146,7 @@ public class PermissionTools {
             }
 
             final MVEconomist economist = plugin.getEconomist();
-            final int currency = toWorld.getCurrency();
+            final Material currency = toWorld.getCurrency();
             final String formattedAmount = economist.formatPrice(price, currency);
 
             if (economist.isPlayerWealthyEnough(teleporterPlayer, price, currency)) {
@@ -171,7 +172,7 @@ public class PermissionTools {
         return true;
     }
 
-    private void sendTeleportPaymentMessage (MVEconomist economist, Player teleporterPlayer, Player teleportee, String toWorld, double price, int currency) {
+    private void sendTeleportPaymentMessage (MVEconomist economist, Player teleporterPlayer, Player teleportee, String toWorld, double price, Material currency) {
         price = Math.abs(price);
         if (teleporterPlayer.equals(teleportee)) {
             teleporterPlayer.sendMessage("You were " + (price > 0D ? "charged " : "given ") + economist.formatPrice(price, currency) + " for teleporting to " + toWorld);

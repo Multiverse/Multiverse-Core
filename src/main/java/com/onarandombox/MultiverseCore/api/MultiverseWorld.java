@@ -13,10 +13,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -511,19 +513,21 @@ public interface MultiverseWorld {
     void setPrice(double price);
 
     /**
-     * Gets the Type of currency that will be used when users enter this world.
+     * Gets the type of currency that will be used when users enter this world. A value of null indicates a non-item
+     * based currency is used.
      *
-     * @return The Type of currency that will be used when users enter this world.
+     * @return The type of currency that will be used when users enter this world.
      */
-    int getCurrency();
+    @Nullable
+    Material getCurrency();
 
     /**
      * Sets the type of item that will be required given the price is not 0.
-     * Use -1 to use an AllPay economy, or any valid itemid
+     * Use a value of null to specify a non-item based currency.
      *
      * @param item The Type of currency that will be used when users enter this world.
      */
-    void setCurrency(int item);
+    void setCurrency(@Nullable Material item);
 
     /**
      * Gets the world players will respawn in if they die in this one.

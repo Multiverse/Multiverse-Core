@@ -84,12 +84,14 @@ import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
+import de.themoep.idconverter.IdMappings;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -638,8 +640,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // migrate entryfee
                 if (section.isConfigurationSection("entryfee")) {
                     ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
-                    if (feeSection.isInt("currency"))
-                        world.setCurrency(feeSection.getInt("currency"));
+                    if (feeSection.isInt("currency")) {
+                        int oldCurrencyItemId = feeSection.getInt("currency", -1);
+                        if (oldCurrencyItemId >= 0) {
+                            String flatteningType = IdMappings.getById(Integer.toString(oldCurrencyItemId))
+                                    .getFlatteningType();
+                            world.setCurrency(Material.matchMaterial(flatteningType));
+                        }
+                        world.setCurrency(null);
+                    }
 
                     if (feeSection.isDouble("amount"))
                         world.setPrice(feeSection.getDouble("amount"));
@@ -883,17 +892,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.playerSessions.put(player.getName(), new MVPlayerSession(player, getMVConfig()));
             return this.playerSessions.get(player.getName());
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public com.onarandombox.MultiverseCore.utils.SafeTTeleporter getTeleporter() {
-        return new com.onarandombox.MultiverseCore.utils.SafeTTeleporter(this);
     }
 
     /**

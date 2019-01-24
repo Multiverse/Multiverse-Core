@@ -29,7 +29,7 @@ public class MVMapListener implements Listener {
     public void mapInitialize(final MapInitializeEvent event) {
         for (final Player player : Bukkit.getOnlinePlayers()) {
             if ((player.getItemInHand().getType() == Material.MAP
-                    || player.getItemInHand().getType() == Material.EMPTY_MAP)
+                    || player.getItemInHand().getType() == Material.FILLED_MAP)
                     && player.getItemInHand().getDurability() == event.getMap().getId()) {
                 final Location playerLoc = player.getLocation();
                 final MapView map = event.getMap();

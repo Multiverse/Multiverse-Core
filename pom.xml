@@ -29,6 +29,10 @@
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
+        <repository>
+            <id>minebench-repo</id>
+            <url>https://repo.minebench.de/</url>
+        </repository>
         <!-- Has a copy of metrics R8-SNAPSHOT !-->
         <repository>
             <id>elmakers-repo</id>
@@ -250,6 +254,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>se.eris</groupId>
+                <artifactId>notnull-instrumenter-maven-plugin</artifactId>
+                <version>0.6.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>instrument</goal>
+                            <goal>tests-instrument</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -263,9 +280,9 @@
         </dependency>
         <!--Spigot API-->
         <dependency>
-           <groupId>org.spigotmc</groupId>
-           <artifactId>spigot-api</artifactId>
-           <version>1.12-R0.1-SNAPSHOT</version>
+           <groupId>org.bukkit</groupId>
+           <artifactId>bukkit</artifactId>
+           <version>1.13.2-R0.1-SNAPSHOT</version>
            <scope>compile</scope>
         </dependency>
         <!--Spigot API-->
@@ -355,6 +372,13 @@
             <version>1.3.8</version>
         </dependency>
         <!-- End of JSON dependency -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>16.0.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -387,6 +411,11 @@
             <artifactId>easymock</artifactId>
             <version>3.4</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.themoep.idconverter</groupId>
+            <artifactId>mappings</artifactId>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <!-- End of Test Dependencies -->
     </dependencies>

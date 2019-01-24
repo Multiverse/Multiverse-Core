@@ -8,6 +8,7 @@ import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.enums.EnglishChatStyle;
+import de.themoep.idconverter.IdMappings;
 import me.main__.util.SerializationConfig.IllegalPropertyValueException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
@@ -18,8 +19,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -261,7 +264,7 @@ public class WorldProperties extends SerializationConfig {
     @Property(description = "Sorry, 'animals' must either be: true or false.")
     private volatile SpawnSettings spawning;
     @Property
-    private volatile EntryFee entryfee;
+    volatile EntryFee entryfee;
     @Property(description = "Sorry, 'hunger' must either be: true or false.")
     private volatile boolean hunger;
     @Property(description = "Sorry, 'autoheal' must either be: true or false.")
@@ -496,11 +499,11 @@ public class WorldProperties extends SerializationConfig {
         return this.setPropertyValueUnchecked("respawnWorld", respawnToWorld);
     }
 
-    public int getCurrency() {
+    public Material getCurrency() {
         return this.entryfee.getCurrency();
     }
 
-    public void setCurrency(int currency) {
+    public void setCurrency(@Nullable Material currency) {
         this.setPropertyValueUnchecked("entryfee.currency", currency);
     }
 

@@ -292,19 +292,19 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     public Location findPortalBlockNextTo(Location l) {
         Block b = l.getWorld().getBlockAt(l);
         Location foundLocation = null;
-        if (b.getType() == Material.PORTAL) {
+        if (b.getType() == Material.NETHER_PORTAL) {
             return l;
         }
-        if (b.getRelative(BlockFace.NORTH).getType() == Material.PORTAL) {
+        if (b.getRelative(BlockFace.NORTH).getType() == Material.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.NORTH).getLocation(), foundLocation);
         }
-        if (b.getRelative(BlockFace.SOUTH).getType() == Material.PORTAL) {
+        if (b.getRelative(BlockFace.SOUTH).getType() == Material.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.SOUTH).getLocation(), foundLocation);
         }
-        if (b.getRelative(BlockFace.EAST).getType() == Material.PORTAL) {
+        if (b.getRelative(BlockFace.EAST).getType() == Material.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.EAST).getLocation(), foundLocation);
         }
-        if (b.getRelative(BlockFace.WEST).getType() == Material.PORTAL) {
+        if (b.getRelative(BlockFace.WEST).getType() == Material.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.WEST).getLocation(), foundLocation);
         }
         return foundLocation;
