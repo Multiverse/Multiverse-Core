@@ -197,6 +197,7 @@
                                     <include>org.mcstats.bukkit:metrics</include>
                                     <include>com.dumptruckman.minecraft:Logging</include>
                                     <include>org.codehaus.jettison:jettison</include>
+                                    <include>de.themoep.idconverter:mappings</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -227,6 +228,10 @@
                                 <relocation>
                                     <pattern>org.codehaus.jettison.json</pattern>
                                     <shadedPattern>org.codehaus.jettison.json.multiverse</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>de.themoep.idconverter</pattern>
+                                    <shadedPattern>de.themoep.idconverter.multiverse</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
