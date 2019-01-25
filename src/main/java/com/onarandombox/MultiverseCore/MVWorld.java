@@ -282,7 +282,9 @@ public class MVWorld implements MultiverseWorld {
                 }
                 world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(MVWorld.this);
+            if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+                plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(MVWorld.this);
+            }
             return super.validateChange(property, newValue, oldValue, object);
         }
     }

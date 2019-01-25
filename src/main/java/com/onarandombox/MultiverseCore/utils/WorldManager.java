@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.WorldProperties;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -474,7 +475,9 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
         MVWorld world = new MVWorld(plugin, cbworld, mvworld);
-        this.worldPurger.purgeWorld(world);
+        if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+            this.worldPurger.purgeWorld(world);
+        }
         this.worlds.put(worldName, world);
         return true;
     }
