@@ -199,4 +199,18 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @return The portal search radius.
      */
     int getPortalSearchRadius();
+
+    /**
+     * Gets whether or not the automatic purge of entities is enabled.
+     *
+     * @return True if automatic purge is enabled.
+     */
+    boolean isAutoPurgeEnabled();
+
+    /**
+     * Sets whether or not the automatic purge of entities is enabled.
+     *
+     * @param autopurge True if automatic purge should be enabled.
+     */
+    void setAutoPurgeEnabled(boolean autopurge);
 }
