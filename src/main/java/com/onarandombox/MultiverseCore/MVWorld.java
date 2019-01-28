@@ -607,29 +607,6 @@ public class MVWorld implements MultiverseWorld {
 
     /**
      * {@inheritDoc}
-     *
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public <T> com.onarandombox.MultiverseCore.configuration.MVConfigProperty<T> getProperty(String property,
-            Class<T> expected) throws PropertyDoesNotExistException {
-        throw new UnsupportedOperationException("'MVConfigProperty<T> getProperty(String,Class<T>)' is no longer supported!");
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public boolean setProperty(String name, String value, CommandSender sender) throws PropertyDoesNotExistException {
-        return this.setPropertyValue(name, value);
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public String getPropertyValue(String property) throws PropertyDoesNotExistException {

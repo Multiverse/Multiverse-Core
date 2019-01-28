@@ -156,37 +156,6 @@ public interface MultiverseWorld {
     boolean setPropertyValue(String property, String value) throws PropertyDoesNotExistException;
 
     /**
-     * Gets the actual MVConfigProperty from this world.
-     * It will throw a PropertyDoesNotExistException if the property is not found.
-     *
-     * @param property The name of a world property to get.
-     * @param expected The type of the expected property. Use Object.class if this doesn't matter for you.
-     * @param <T> The type of the expected property.
-     *
-     * @return A valid MVWorldProperty.
-     *
-     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
-     * @deprecated We don't use {@link com.onarandombox.MultiverseCore.configuration.MVConfigProperty} any longer!
-     */
-    @Deprecated
-    <T> com.onarandombox.MultiverseCore.configuration.MVConfigProperty<T> getProperty(String property, Class<T> expected) throws PropertyDoesNotExistException;
-
-    // old config
-    /**
-     * Adds the property to the given value.
-     * It will throw a PropertyDoesNotExistException if the property is not found.
-     *
-     * @param property The name of a world property to set.
-     * @param value    A value in string representation, it will be parsed to the correct type.
-     * @param sender   The sender who wants this value to be set.
-     * @return True if the value was set, false if not.
-     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
-     * @deprecated Use {@link #setPropertyValue(String, String)} instead.
-     */
-    @Deprecated
-    boolean setProperty(String property, String value, CommandSender sender) throws PropertyDoesNotExistException;
-
-    /**
      * Adds a value to the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
      *
      * @param property The name of a {@link com.onarandombox.MultiverseCore.enums.AddProperties} to add a value to.
