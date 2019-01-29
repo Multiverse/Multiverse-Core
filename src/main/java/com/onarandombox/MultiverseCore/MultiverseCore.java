@@ -643,11 +643,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                     if (feeSection.isInt("currency")) {
                         int oldCurrencyItemId = feeSection.getInt("currency", -1);
                         if (oldCurrencyItemId >= 0) {
-                            String flatteningType = IdMappings.getById(Integer.toString(oldCurrencyItemId))
-                                    .getFlatteningType();
-                            world.setCurrency(Material.matchMaterial(flatteningType));
+                            IdMappings.Mapping mapping = IdMappings.getById(Integer.toString(oldCurrencyItemId));
+                            if (mapping != null) {
+                                world.setCurrency(Material.matchMaterial(mapping.getFlatteningType()));
+                            } else {
+                                world.setCurrency(null);
+                            }
+                        } else {
+                            world.setCurrency(null);
                         }
-                        world.setCurrency(null);
                     }
 
                     if (feeSection.isDouble("amount"))
