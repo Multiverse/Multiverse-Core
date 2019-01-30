@@ -77,6 +77,7 @@ import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
+import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
@@ -84,15 +85,12 @@ import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
-import de.themoep.idconverter.IdMappings;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -103,7 +101,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -641,17 +638,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 if (section.isConfigurationSection("entryfee")) {
                     ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
                     if (feeSection.isInt("currency")) {
-                        int oldCurrencyItemId = feeSection.getInt("currency", -1);
-                        if (oldCurrencyItemId >= 0) {
-                            IdMappings.Mapping mapping = IdMappings.getById(Integer.toString(oldCurrencyItemId));
-                            if (mapping != null) {
-                                world.setCurrency(Material.matchMaterial(mapping.getFlatteningType()));
-                            } else {
-                                world.setCurrency(null);
-                            }
-                        } else {
-                            world.setCurrency(null);
-                        }
+                        world.setCurrency(MaterialConverter.convertConfigType(feeSection, "currency"));
                     }
 
                     if (feeSection.isDouble("amount"))
