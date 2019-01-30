@@ -36,7 +36,7 @@ public class MaterialConverter {
         if (mapping != null) {
             return Material.matchMaterial(mapping.getFlatteningType());
         } else {
-            return Material.matchMaterial(value);
+            return Material.matchMaterial(value != null ? value : "");
         }
     }
 }
