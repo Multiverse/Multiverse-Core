@@ -288,7 +288,7 @@
            <groupId>org.bukkit</groupId>
            <artifactId>bukkit</artifactId>
            <version>1.13.2-R0.1-SNAPSHOT</version>
-           <scope>compile</scope>
+           <scope>provided</scope>
         </dependency>
         <!--Spigot API-->
         <!-- Start of Spout (disabled because we aren't using it)
