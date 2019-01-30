@@ -230,7 +230,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private Buscript buscript;
     private int pluginCount;
     private DestinationFactory destFactory;
-    //private SpoutInterface spoutInterface = null;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -334,13 +333,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.chatListener = new MVPlayerChatListener(this, this.playerListener);
         }
         getServer().getPluginManager().registerEvents(this.chatListener, this);
-        /*
-        // Check to see if spout was already loaded (most likely):
-        if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
-            this.setSpout();
-            this.log(Level.INFO, "Spout integration enabled.");
-        }
-        */
 
         this.initializeBuscript();
         this.setupMetrics();
@@ -1082,25 +1074,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         this.serverFolder = newServerFolder;
     }
-
-    /*
-    /**
-     * Initializes Spout.
-     * /
-    public void setSpout() {
-        this.spoutInterface = new SpoutInterface();
-        this.commandHandler.registerCommand(new SpoutCommand(this));
-    }
-
-    /**
-     * Gets our {@link SpoutInterface}.
-     *
-     * @return The {@link SpoutInterface} we're using.
-     * /
-    public SpoutInterface getSpout() {
-        return this.spoutInterface;
-    }
-    */
 
     /**
      * {@inheritDoc}
