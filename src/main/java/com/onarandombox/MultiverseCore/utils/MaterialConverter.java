@@ -1,0 +1,38 @@
+package com.onarandombox.MultiverseCore.utils;
+
+import de.themoep.idconverter.IdMappings;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+
+/**
+ * A tool for converting values which may be an old type ID to a Material.
+ */
+public class MaterialConverter {
+
+    /**
+     * Converts the value in the given config at the given path from a numeric id or flattened material name to a
+     * Material.
+     *
+     * @param config The config with the value to convert.
+     * @param path The path of the value in the config.
+     * @return The converted Material type or null if no matching type.
+     */
+    public static Material convertConfigType(ConfigurationSection config, String path) {
+        return convertTypeString(config.getString(path));
+    }
+
+    /**
+     * Converts a string representing a numeric id or flattened material name to a Material.
+     *
+     * @param value The value to convert.
+     * @return The converted Material type or null if no matching type.
+     */
+    public static Material convertTypeString(String value) {
+        IdMappings.Mapping mapping = IdMappings.getById(value);
+        if (mapping != null) {
+            return Material.matchMaterial(mapping.getFlatteningType());
+        } else {
+            return Material.matchMaterial(value);
+        }
+    }
+}

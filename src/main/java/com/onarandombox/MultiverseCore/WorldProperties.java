@@ -8,7 +8,6 @@ import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.enums.EnglishChatStyle;
-import de.themoep.idconverter.IdMappings;
 import me.main__.util.SerializationConfig.IllegalPropertyValueException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;

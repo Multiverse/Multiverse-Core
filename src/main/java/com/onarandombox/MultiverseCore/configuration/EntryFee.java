@@ -2,8 +2,7 @@ package com.onarandombox.MultiverseCore.configuration;
 
 import java.util.Map;
 
-import de.themoep.idconverter.IdMappings;
-import me.main__.util.SerializationConfig.IllegalPropertyValueException;
+import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 
@@ -78,12 +77,8 @@ public class EntryFee extends SerializationConfig {
         }
 
         @Override
-        public Material deserialize(Object o, Class<Material> aClass) throws IllegalPropertyValueException {
-            IdMappings.Mapping mapping = IdMappings.getById(o.toString());
-            if (mapping != null) {
-                return Material.matchMaterial(mapping.getFlatteningType());
-            }
-            return Material.matchMaterial(o.toString());
+        public Material deserialize(Object o, Class<Material> aClass) {
+            return MaterialConverter.convertTypeString(o.toString());
         }
     }
 }
