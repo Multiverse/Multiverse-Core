@@ -32,7 +32,7 @@ public class MaterialConverter {
      */
     @Nullable
     public static Material convertTypeString(@Nullable String value) {
-        IdMappings.Mapping mapping = IdMappings.getById(value);
+        IdMappings.Mapping mapping = IdMappings.getById(value != null ? value : "");
         if (mapping != null) {
             return Material.matchMaterial(mapping.getFlatteningType());
         } else {
