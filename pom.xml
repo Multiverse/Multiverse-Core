@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onarandombox.multiversecore</groupId>
     <artifactId>Multiverse-Core</artifactId>
-    <version>2.7.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
@@ -283,14 +283,12 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!--Spigot API-->
         <dependency>
            <groupId>org.bukkit</groupId>
            <artifactId>bukkit</artifactId>
            <version>1.13.2-R0.1-SNAPSHOT</version>
            <scope>provided</scope>
         </dependency>
-        <!--Spigot API-->
         <!-- Start of Spout (disabled because we aren't using it)
         <dependency>
             <groupId>org.getspout</groupId>
