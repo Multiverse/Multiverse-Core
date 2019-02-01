@@ -1,7 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,24 +31,18 @@ public class GithubPasteService implements PasteService {
 
     @Override
     public String encodeData(Map<String, String> files) {
-        JSONObject root = new JSONObject();
-        String result = "";
-        try {
-            root.put("description", "Multiverse-Core Debug Info");
-            root.put("public", !this.isPrivate);
-            JSONObject fileList = new JSONObject();
-            for (Map.Entry<String, String> entry : files.entrySet())
-            {
-                JSONObject fileObject = new JSONObject();
-                fileObject.put("content", entry.getValue());
-                fileList.put(entry.getKey(), fileObject);
-            }
-            root.put("files", fileList);
-            result = root.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        JsonObject root = new JsonObject();
+        root.add("description", new JsonPrimitive("Multiverse-Core Debug Info"));
+        root.add("public", new JsonPrimitive(!this.isPrivate));
+        JsonObject fileList = new JsonObject();
+        for (Map.Entry<String, String> entry : files.entrySet())
+        {
+            JsonObject fileObject = new JsonObject();
+            fileObject.add("content", new JsonPrimitive(entry.getValue()));
+            fileList.add(entry.getKey(), fileObject);
         }
-        return result;
+        root.add("files", fileList);
+        return root.toString();
     }
 
     @Override
@@ -80,8 +75,7 @@ public class GithubPasteService implements PasteService {
             while ((line = rd.readLine()) != null) {
                 responseString.append(line);
             }
-            JSONObject response = new JSONObject(responseString.toString());
-            return response.get("html_url").toString();
+            return new JsonParser().parse(responseString.toString()).getAsJsonObject().get("html_url").getAsString();
         } catch (Exception e) {
             throw new PasteFailedException(e);
         } finally {
