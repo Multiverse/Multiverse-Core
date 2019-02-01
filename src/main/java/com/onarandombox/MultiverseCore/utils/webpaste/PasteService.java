@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * Services that provide a distinction between "public" and "private" pastes
  * should implement a custom constructor that specifies which kind the PasteService
- * instance is submitting; an example of this is the PastiePasteService class.
+ * instance is submitting; an example of this is the PastebinPasteService class.
  */
 public interface PasteService {
 

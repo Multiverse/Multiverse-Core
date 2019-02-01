@@ -160,10 +160,7 @@ public class VersionCommand extends MultiverseCommand {
             public void run() {
                 if (args.size() == 1) {
                     String pasteUrl;
-                    if (args.get(0).equalsIgnoreCase("-p")) {
-                        // private post to pastie
-                        pasteUrl = postToService(PasteServiceType.PASTIE, true, data, files);
-                    } else if (args.get(0).equalsIgnoreCase("-b")) {
+                    if (args.get(0).equalsIgnoreCase("-b")) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
                     } else if (args.get(0).equalsIgnoreCase("-g")) {
