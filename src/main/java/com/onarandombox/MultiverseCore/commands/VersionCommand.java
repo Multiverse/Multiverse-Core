@@ -18,6 +18,7 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -170,7 +171,9 @@ public class VersionCommand extends MultiverseCommand {
                         return;
                     }
 
-                    sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
+                    if (!(sender instanceof ConsoleCommandSender)) {
+                        sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
+                    }
                     Logging.info("Version info dumped here: %s", pasteUrl);
                 }
             }
