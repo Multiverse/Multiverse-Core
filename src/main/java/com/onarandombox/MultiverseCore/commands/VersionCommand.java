@@ -36,7 +36,7 @@ public class VersionCommand extends MultiverseCommand {
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Multiverse Version");
-        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[pbg]");
+        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bh]");
         this.setArgRange(0, 1);
         this.addKey("mv version");
         this.addKey("mvv");
@@ -163,6 +163,9 @@ public class VersionCommand extends MultiverseCommand {
                     if (args.get(0).equalsIgnoreCase("-b")) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
+                    } else if (args.get(0).equalsIgnoreCase("-h")) {
+                        // private post to pastebin
+                        pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
                     } else {
                         return;
                     }
