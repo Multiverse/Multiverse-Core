@@ -33,6 +33,11 @@
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
         </repository>
+        <!-- Has a copy of metrics R8-SNAPSHOT !-->
+        <repository>
+            <id>elmakers-repo</id>
+            <url>http://maven.elmakers.com/repository/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -168,15 +173,15 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-              				<failOnError>false</failOnError>
-            			</configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -185,32 +190,24 @@
                         </goals>
                         <configuration>
                             <artifactSet>
-                                <includes>
-                                    <include>me.main__.util:SerializationConfig</include>
-                                    <include>com.pneumaticraft.commandhandler:CommandHandler</include>
-                                    <include>com.dumptruckman.minecraft:buscript</include>
-                                    <include>org.mcstats.bukkit:metrics</include>
-                                    <include>com.dumptruckman.minecraft:Logging</include>
-                                    <include>org.codehaus.jettison:jettison</include>
-                                    <include>de.themoep.idconverter:mappings</include>
-                                </includes>
+                                <excludes>commons-io:commons-io</excludes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>me.main__.util</pattern>
-                                    <shadedPattern>me.main__.util.multiverse</shadedPattern>
+                                    <shadedPattern>com.onarandombox.serializationconfig</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.pneumaticraft.commandhandler.multiverse</shadedPattern>
+                                    <shadedPattern>com.onarandombox.commandhandler</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>buscript</pattern>
-                                    <shadedPattern>buscript.multiverse</shadedPattern>
+                                    <shadedPattern>com.onarandombox.buscript</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mcstats</pattern>
-                                    <shadedPattern>org.mcstats.multiverse</shadedPattern>
+                                    <shadedPattern>com.onarandombox.mcstats</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.dumptruckman.minecraft.util.Logging</pattern>
@@ -221,12 +218,12 @@
                                     <shadedPattern>com.onarandombox.MultiverseCore.utils.DebugFileLogger</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.codehaus.jettison.json</pattern>
-                                    <shadedPattern>org.codehaus.jettison.json.multiverse</shadedPattern>
+                                    <pattern>org.codehaus.jettison</pattern>
+                                    <shadedPattern>com.onarandombox.jettison</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>de.themoep.idconverter</pattern>
-                                    <shadedPattern>de.themoep.idconverter.multiverse</shadedPattern>
+                                    <shadedPattern>com.onarandombox.idconverter</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -246,7 +243,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.apache.commons</pattern>
-                                    <shadedPattern>org.apache.commons.multiverse</shadedPattern>
+                                    <shadedPattern>com.onarandombox.commons</shadedPattern>
                                 </relocation>
                             </relocations>
                             <minimizeJar>true</minimizeJar>
@@ -275,8 +272,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
            <groupId>org.bukkit</groupId>
@@ -289,8 +284,6 @@
             <groupId>me.main__.util</groupId>
             <artifactId>SerializationConfig</artifactId>
             <version>1.7</version>
-            <type>jar</type>
-            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.bukkit</groupId>
@@ -304,8 +297,7 @@
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.5</version>
-            <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- End of Economy Dependency -->
         <!-- Start of CommandHandler Dependency -->
@@ -313,26 +305,16 @@
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>
             <version>10</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
-        <!-- End of CommandHandler Dependency -->
-        <!-- Start of Buscript Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>buscript</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
-        <!-- End of Buscript Dependency -->
-        <!-- Start of Metrics Dependency -->
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>
             <artifactId>metrics</artifactId>
             <version>R6</version>
-            <type>jar</type>
-            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.bukkit</groupId>
@@ -340,40 +322,34 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- End of Metrics Dependency -->
-        <!-- Start of Logging Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Logging</artifactId>
             <version>1.1.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
-        <!-- End of Logging Dependency -->
-        <!-- Start of JSON dependency -->
+        <!-- JSON dependency -->
         <dependency>
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
             <version>1.3.8</version>
         </dependency>
-        <!-- End of JSON dependency -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>16.0.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.themoep.idconverter</groupId>
             <artifactId>mappings</artifactId>
             <version>1.2-SNAPSHOT</version>
         </dependency>
+
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -402,7 +378,6 @@
             <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- End of Test Dependencies -->
     </dependencies>
     <distributionManagement>
         <repository>
