@@ -163,9 +163,6 @@ public class VersionCommand extends MultiverseCommand {
                     if (args.get(0).equalsIgnoreCase("-b")) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
-                    } else if (args.get(0).equalsIgnoreCase("-g")) {
-                        // private post to github
-                        pasteUrl = postToService(PasteServiceType.GITHUB, true, data, files);
                     } else {
                         return;
                     }
