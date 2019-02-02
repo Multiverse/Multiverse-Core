@@ -11,7 +11,11 @@ import com.dumptruckman.minecraft.util.Logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * File-utilities.
@@ -28,8 +32,8 @@ public class FileUtils {
      * @return true if the folder was successfully deleted.
      */
     public static boolean deleteFolder(File file) {
-        try {
-            org.apache.commons.io.FileUtils.deleteDirectory(file);
+        try (Stream<Path> files = Files.walk(file.toPath())) {
+            files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
             return true;
         } catch (IOException e) {
             Logging.warning(e.getMessage());
@@ -44,16 +48,17 @@ public class FileUtils {
      * @return true if the contents were successfully deleted
      */
     public static boolean deleteFolderContents(File file) {
-        try {
-            org.apache.commons.io.FileUtils.cleanDirectory(file);
+        try (Stream<Path> files = Files.walk(file.toPath())){
+            files.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .filter(f -> !f.equals(file))
+                    .forEach(File::delete);
             return true;
         } catch (IOException e) {
             Logging.warning(e.getMessage());
             return false;
         }
     }
-
-    private static final int COPY_BLOCK_SIZE = 1024;
 
     /**
      * Helper method to copy the world-folder.
@@ -64,8 +69,16 @@ public class FileUtils {
      * @return if it had success
      */
     public static boolean copyFolder(File source, File target, Logger log) {
-        try {
-            org.apache.commons.io.FileUtils.copyDirectory(source, target);
+        Path sourcePath = source.toPath();
+        Path destPath = target.toPath();
+        try (Stream<Path> files = Files.walk(source.toPath())) {
+            files.forEachOrdered(src -> {
+                try {
+                    Files.copy(src, sourcePath.resolve(destPath.relativize(src)));
+                } catch (IOException e) {
+                    log.warning(e.getMessage());
+                }
+            });
             return true;
         } catch (IOException e) {
             log.warning(e.getMessage());
