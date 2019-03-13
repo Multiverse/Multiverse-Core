@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
+import org.bukkit.Bukkit;
 
 /**
  * Sets the spawn for a world.
@@ -27,7 +28,7 @@ public class SetSpawnCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Set World Spawn");
         this.setCommandUsage("/mv setspawn");
-        this.setArgRange(0, 0);
+        this.setArgRange(0, 6);
         this.addKey("mvsetspawn");
         this.addKey("mvss");
         this.addKey("mv set spawn");
@@ -39,7 +40,15 @@ public class SetSpawnCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        setWorldSpawn(sender);
+        if (args.isEmpty()) {
+            setWorldSpawn(sender);
+        } else if (args.size() == 4) {
+            setWorldSpawn(sender, args.get(0), args.get(1), args.get(2), args.get(3));
+        } else if (args.size() == 6) {
+            setWorldSpawn(sender, args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
+        } else {
+            sender.sendMessage("Use no arguments for your current location, or world/x/y/z, or world/x/y/z/yaw/pitch!");
+        }
     }
 
     /**
@@ -52,28 +61,57 @@ public class SetSpawnCommand extends MultiverseCommand {
             Player p = (Player) sender;
             Location l = p.getLocation();
             World w = p.getWorld();
-            MultiverseWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
-            if (foundWorld != null) {
-                foundWorld.setSpawnLocation(p.getLocation());
-                BlockSafety bs = this.plugin.getBlockSafety();
-                if (!bs.playerCanSpawnHereSafely(p.getLocation()) && foundWorld.getAdjustSpawn()) {
-                    sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
-                    sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
-                    sender.sendMessage("If you want this turned back on just do:");
-                    sender.sendMessage(ChatColor.AQUA + "/mvm set adjustspawn true " + foundWorld.getAlias());
-                    foundWorld.setAdjustSpawn(false);
-                }
-                sender.sendMessage("Spawn was set to: " + plugin.getLocationManipulation().strCoords(p.getLocation()));
-                if (!plugin.saveWorldConfig()) {
-                    sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
-                }
-            } else {
-                w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
-                sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully (Pitch/Yaws).");
-            }
-
+            setWorldSpawn(sender, w, l);
         } else {
             sender.sendMessage("You cannot use this command from the console.");
+        }
+    }
+    
+    protected void setWorldSpawn(CommandSender sender, String world, String x, String y, String z) {
+        setWorldSpawn(sender, world, x, y, z, "0", "0");
+    }
+
+    protected void setWorldSpawn(CommandSender sender, String world, String x, String y, String z, String yaw, String pitch) {
+        double dx, dy, dz;
+        float fpitch, fyaw;
+        World bukkitWorld = Bukkit.getWorld(world);
+        if (bukkitWorld == null) {
+            sender.sendMessage("World "+world+" is unknown!");
+            return;
+        }
+        try {
+            dx=Double.parseDouble(x);
+            dy=Double.parseDouble(y);
+            dz=Double.parseDouble(z);
+            fpitch=Float.parseFloat(pitch);
+            fyaw=Float.parseFloat(yaw);
+        } catch (NumberFormatException ex) {
+            sender.sendMessage("All coordinates must be numeric");
+            return;
+        }
+        Location l=new Location(bukkitWorld, dx, dy, dz, fyaw, fpitch);
+        setWorldSpawn(sender, bukkitWorld, l);
+    }
+
+    private void setWorldSpawn(CommandSender sender, World w, Location l) {
+        MultiverseWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
+        if (foundWorld != null) {
+            foundWorld.setSpawnLocation(l);
+            BlockSafety bs = this.plugin.getBlockSafety();
+            if (!bs.playerCanSpawnHereSafely(l) && foundWorld.getAdjustSpawn()) {
+                sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
+                sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
+                sender.sendMessage("If you want this turned back on just do:");
+                sender.sendMessage(ChatColor.AQUA + "/mvm set adjustspawn true " + foundWorld.getAlias());
+                foundWorld.setAdjustSpawn(false);
+            }
+            sender.sendMessage("Spawn was set to: " + plugin.getLocationManipulation().strCoords(l));
+            if (!plugin.saveWorldConfig()) {
+                sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+            }
+        } else {
+            w.setSpawnLocation(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+            sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set. Please import it to set the spawn fully (Pitch/Yaws).");
         }
     }
 }
