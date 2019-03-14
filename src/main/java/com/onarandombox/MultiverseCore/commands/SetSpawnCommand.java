@@ -38,6 +38,11 @@ public class SetSpawnCommand extends MultiverseCommand {
         this.setPermission("multiverse.core.spawn.set", "Sets the spawn for the current world.", PermissionDefault.OP);
     }
 
+    /**
+     * Dispatches the user's command depending on the number of parameters
+     * @param sender The player who executes the command, may be console as well.
+     * @param args Command line parameters
+     */
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.isEmpty()) {
@@ -52,9 +57,9 @@ public class SetSpawnCommand extends MultiverseCommand {
     }
 
     /**
-     * Does the actual spawn-setting-work.
-     *
-     * @param sender The {@link CommandSender} that's setting the spawn.
+     * Set the world spawn when no parameters are given
+     * @param sender The {@link CommandSender} who executes the command. 
+     *               Everything not a {@link Player}, e.g. console, gets rejected, as we can't get coordinates from there.
      */
     protected void setWorldSpawn(CommandSender sender) {
         if (sender instanceof Player) {
@@ -63,36 +68,61 @@ public class SetSpawnCommand extends MultiverseCommand {
             World w = p.getWorld();
             setWorldSpawn(sender, w, l);
         } else {
-            sender.sendMessage("You cannot use this command from the console.");
+            sender.sendMessage("You need to give coordinates to use this command from the console!");
         }
     }
     
+    /**
+     * Set the world spawn when 4 parameters are given
+     * @param sender The {@link CommandSender} who executes the command
+     * @param world The world to set the spawn in
+     * @param x X-coordinate to set the spawn to (as a {@link String} as it's from the command line, gets parsed into a double)
+     * @param y Y-coordinate to set the spawn to (as a {@link String} as it's from the command line, gets parsed into a double)
+     * @param z Z-coordinate to set the spawn to (as a {@link String} as it's from the command line, gets parsed into a double)
+     */
     protected void setWorldSpawn(CommandSender sender, String world, String x, String y, String z) {
         setWorldSpawn(sender, world, x, y, z, "0", "0");
     }
 
+    /**
+     * Set the world spawn when 6 parameters are given
+     * @param sender The {@link CommandSender} who executes the command
+     * @param world The world to set the spawn in
+     * @param x X-coordinate to set the spawn to (as a {@link String} as it's from the command line, gets parsed into a double)
+     * @param y Y-coordinate to set the spawn to (as a {@link String} as it's from the command line, gets parsed into a double)
+     * @param z Z-coordinate to set the spawn to (as a {@link String} as it's from the command line, gets parsed into a double)
+     * @param yaw Yaw a newly spawned player should look at (as a {@link String} as it's from the command line, gets parsed into a float)
+     * @param pitch Pitch a newly spawned player should look at (as a {@link String} as it's from the command line, gets parsed into a float)
+     */
     protected void setWorldSpawn(CommandSender sender, String world, String x, String y, String z, String yaw, String pitch) {
         double dx, dy, dz;
         float fpitch, fyaw;
         World bukkitWorld = Bukkit.getWorld(world);
         if (bukkitWorld == null) {
-            sender.sendMessage("World "+world+" is unknown!");
+            sender.sendMessage("World " + world + " is unknown!");
             return;
         }
         try {
-            dx=Double.parseDouble(x);
-            dy=Double.parseDouble(y);
-            dz=Double.parseDouble(z);
-            fpitch=Float.parseFloat(pitch);
-            fyaw=Float.parseFloat(yaw);
+            dx = Double.parseDouble(x);
+            dy = Double.parseDouble(y);
+            dz = Double.parseDouble(z);
+            fpitch = Float.parseFloat(pitch);
+            fyaw = Float.parseFloat(yaw);
         } catch (NumberFormatException ex) {
             sender.sendMessage("All coordinates must be numeric");
             return;
         }
-        Location l=new Location(bukkitWorld, dx, dy, dz, fyaw, fpitch);
+        Location l = new Location(bukkitWorld, dx, dy, dz, fyaw, fpitch);
         setWorldSpawn(sender, bukkitWorld, l);
     }
 
+    /**
+     * Does the actual spawn-setting-work.
+     *
+     * @param sender The {@link CommandSender} that's setting the spawn.
+     * @param w The {@link World} to set the spawn in
+     * @param l The {@link Location} to set the spawn to
+     */
     private void setWorldSpawn(CommandSender sender, World w, Location l) {
         MultiverseWorld foundWorld = this.plugin.getMVWorldManager().getMVWorld(w.getName());
         if (foundWorld != null) {
