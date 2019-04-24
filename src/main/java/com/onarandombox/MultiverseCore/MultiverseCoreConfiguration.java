@@ -64,8 +64,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile int teleportcooldown;
     @Property
-    private volatile boolean defaultportalsearch;
-    @Property
     private volatile int portalsearchradius;
     @Property
     private volatile boolean autopurge;
@@ -98,7 +96,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         teleportcooldown = 1000;
         this.version = 2.9;
         silentstart = false;
-        defaultportalsearch = false;
         portalsearchradius = 128;
         autopurge = true;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
@@ -314,16 +311,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public boolean getSilentStart() {
         return silentstart;
-    }
-
-    @Override
-    public void setUseDefaultPortalSearch(boolean useDefaultPortalSearch) {
-        defaultportalsearch = useDefaultPortalSearch;
-    }
-
-    @Override
-    public boolean isUsingDefaultPortalSearch() {
-        return defaultportalsearch;
     }
 
     @Override
