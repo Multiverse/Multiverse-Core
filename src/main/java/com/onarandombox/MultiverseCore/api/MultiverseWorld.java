@@ -475,7 +475,7 @@ public interface MultiverseWorld {
     /**
      * Sets the price for entry to this world.
      * You can think of this like an amount.
-     * The type can be set with {@link #setCurrency(int)}
+     * The type can be set with {@link #setCurrency(Material)}
      *
      * @param price The Amount of money/item to enter the world.
      */
