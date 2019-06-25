@@ -344,6 +344,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
+
+        getLogger().info("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+        getLogger().info("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
     }
 
     /**
