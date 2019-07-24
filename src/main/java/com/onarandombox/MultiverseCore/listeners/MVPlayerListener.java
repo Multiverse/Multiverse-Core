@@ -311,7 +311,7 @@ public class MVPlayerListener implements Listener {
                     event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
                 }
             } catch (ClassNotFoundException ignore) {
-                plugin.log(Level.WARNING, "TravelAgent not available for PlayerPortalEvent for " + event.getPlayer().getName());
+                plugin.log(Level.FINE, "TravelAgent not available for PlayerPortalEvent for " + event.getPlayer().getName());
             }
 
         }
