@@ -2,7 +2,9 @@ package com.onarandombox.MultiverseCore;
 
 import com.dumptruckman.minecraft.util.*;
 import com.onarandombox.MultiverseCore.api.*;
+import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import me.main__.util.SerializationConfig.*;
+import org.bukkit.Bukkit;
 
 import java.util.*;
 
@@ -229,6 +231,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     public void setGlobalDebug(int globalDebug) {
         this.globaldebug = globalDebug;
         Logging.setDebugLevel(globalDebug);
+        Bukkit.getPluginManager().callEvent(new MVDebugModeEvent(globalDebug));
     }
 
     /**

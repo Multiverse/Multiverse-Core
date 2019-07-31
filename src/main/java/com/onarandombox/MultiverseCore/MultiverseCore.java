@@ -78,6 +78,7 @@ import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
+import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
@@ -309,7 +310,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup & Load our Configuration files.
         loadConfigs();
         if (this.multiverseConfig != null) {
-            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
             Logging.setShowingConfig(!getMVConfig().getSilentStart());
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
@@ -516,6 +516,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Old Config Format
         this.migrate22Values();
         this.saveMVConfigs();
+
+        int level = Logging.getDebugLevel();
+        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+        if (level != Logging.getDebugLevel()) {
+            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
+        }
     }
 
     /**
