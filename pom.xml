@@ -275,7 +275,7 @@
         <dependency>
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>
-            <version>10</version>
+            <version>11</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
