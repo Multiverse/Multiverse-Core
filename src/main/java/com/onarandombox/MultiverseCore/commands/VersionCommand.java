@@ -16,12 +16,15 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
+import com.pneumaticraft.commandhandler.CommandHandler;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.StringUtil;
 
 import java.io.*;
 import java.util.HashMap;
@@ -37,8 +40,8 @@ public class VersionCommand extends MultiverseCommand {
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Multiverse Version");
-        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bh]");
-        this.setArgRange(0, 1);
+        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bh] [--include-plugin-list]");
+        this.setArgRange(0, 2);
         this.addKey("mv version");
         this.addKey("mvv");
         this.addKey("mvversion");
@@ -149,22 +152,31 @@ public class VersionCommand extends MultiverseCommand {
         final Map<String, String> files = this.getVersionFiles();
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
 
+        String versionInfo = versionEvent.getVersionInfo();
+
+        if (CommandHandler.hasFlag("--include-plugin-list", args)) {
+            versionInfo = versionInfo + "\nPlugins: " + getPluginList();
+        }
+
+        final String data = versionInfo;
+
         // log to console
-        final String data = versionEvent.getVersionInfo();
         String[] lines = data.split("\n");
         for (String line : lines) {
-            Logging.info(line);
+            if (!line.isEmpty()) {
+                Logging.info(line);
+            }
         }
 
         BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
-                if (args.size() == 1) {
+                if (args.size() > 0) {
                     String pasteUrl;
-                    if (args.get(0).equalsIgnoreCase("-b")) {
+                    if (CommandHandler.hasFlag("-b", args)) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
-                    } else if (args.get(0).equalsIgnoreCase("-h")) {
+                    } else if (CommandHandler.hasFlag("-h", args)) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
                     } else {
@@ -207,5 +219,9 @@ public class VersionCommand extends MultiverseCommand {
             System.out.print(e);
             return "Error posting to service";
         }
+    }
+
+    private String getPluginList() {
+        return StringUtils.join(plugin.getServer().getPluginManager().getPlugins(), ", ");
     }
 }
