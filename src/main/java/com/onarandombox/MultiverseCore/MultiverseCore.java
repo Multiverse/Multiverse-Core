@@ -177,11 +177,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         teleportQueue.put(teleportee, teleporter);
     }
 
-    @Override
-    public String toString() {
-        return "The Multiverse-Core Plugin";
-    }
-
     /**
      * {@inheritDoc}
      * @deprecated This is now deprecated, nobody needs it any longer.
