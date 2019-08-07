@@ -69,16 +69,8 @@ public class FileUtils {
      * @return if it had success
      */
     public static boolean copyFolder(File source, File target, Logger log) {
-        Path sourcePath = source.toPath();
-        Path destPath = target.toPath();
-        try (Stream<Path> files = Files.walk(source.toPath())) {
-            files.forEachOrdered(src -> {
-                try {
-                    Files.copy(src, sourcePath.resolve(destPath.relativize(src)));
-                } catch (IOException e) {
-                    log.warning(e.getMessage());
-                }
-            });
+        try {
+            org.apache.commons.io.FileUtils.copyDirectory(source, target);
             return true;
         } catch (IOException e) {
             log.warning(e.getMessage());
