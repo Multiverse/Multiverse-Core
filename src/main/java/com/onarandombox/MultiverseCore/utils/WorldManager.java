@@ -199,7 +199,7 @@ public class WorldManager implements MVWorldManager {
                 MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
                 newWorld.copyValues(this.worldsFromTheConfig.get(oldName));
                 // don't keep the alias the same -- that would be useless
-                newWorld.setAlias(null);
+                newWorld.setAlias(newName);
                 return true;
             }
         }
