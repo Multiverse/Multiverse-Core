@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.WorldCreatorMatcher;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
@@ -99,6 +100,10 @@ public class TestWorldStuff {
 
     @Test
     public void testWorldImport() {
+        MockWorldFactory.createWorldDirectory("world");
+        MockWorldFactory.createWorldDirectory("world_nether");
+        MockWorldFactory.createWorldDirectory("world_the_end");
+
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
 
@@ -282,6 +287,9 @@ public class TestWorldStuff {
     }
 
     private void createInitialWorlds(Plugin plugin, Command command) {
+        MockWorldFactory.createWorldDirectory("world");
+        MockWorldFactory.createWorldDirectory("world_nether");
+        MockWorldFactory.createWorldDirectory("world_the_end");
         plugin.onCommand(mockCommandSender, command, "", new String[]{ "import", "world", "normal" });
         plugin.onCommand(mockCommandSender, command, "", new String[]{ "import", "world_nether", "nether" });
         plugin.onCommand(mockCommandSender, command, "", new String[]{ "import", "world_the_end", "end" });
