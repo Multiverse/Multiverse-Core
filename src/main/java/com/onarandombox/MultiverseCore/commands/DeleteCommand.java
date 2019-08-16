@@ -33,9 +33,13 @@ public class DeleteCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        String worldName = args.get(0);
+
         Class<?>[] paramTypes = {String.class};
         List<Object> objectArgs = new ArrayList<Object>(args);
-        this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
-                paramTypes, ChatColor.GREEN + "World Deleted!", ChatColor.RED + "World could NOT be deleted!");
+        this.plugin.getCommandHandler()
+                   .queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
+                                 paramTypes, ChatColor.GREEN + "World '" + worldName + "' Deleted!",
+                                 ChatColor.RED + "World '" + worldName + "' could NOT be deleted!");
     }
 }

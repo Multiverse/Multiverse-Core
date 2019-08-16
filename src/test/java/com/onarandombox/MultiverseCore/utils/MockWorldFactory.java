@@ -18,6 +18,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,17 @@ public class MockWorldFactory {
     private static void registerWorld(World world) {
         createdWorlds.put(world.getName(), world);
         worldUIDS.put(world.getUID(), world);
-        new File(TestInstanceCreator.worldsDirectory, world.getName()).mkdir();
+        createWorldDirectory(world.getName());
+    }
+
+    public static void createWorldDirectory(String worldName) {
+        File worldFolder = new File(TestInstanceCreator.worldsDirectory, worldName);
+        worldFolder.mkdir();
+        try {
+            new File(worldFolder, "level.dat").createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static World basics(String world, World.Environment env, WorldType type) {

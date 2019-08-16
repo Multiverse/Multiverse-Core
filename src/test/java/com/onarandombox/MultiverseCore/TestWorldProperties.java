@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
+import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.Bukkit;
@@ -90,6 +91,8 @@ public class TestWorldProperties {
         assertTrue(creator.setUp());
         core = creator.getCore();
         mockCommandSender = creator.getCommandSender();
+        MockWorldFactory.createWorldDirectory("world");
+        MockWorldFactory.createWorldDirectory("world_nether");
     }
 
     @After

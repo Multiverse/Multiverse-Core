@@ -57,7 +57,7 @@ public class ImportCommand extends MultiverseCommand {
             File[] files = worldFolder.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File file, String name) {
-                    return name.equalsIgnoreCase("level.dat");
+                    return name.toLowerCase().endsWith(".dat");
                 }
             });
             if (files != null && files.length > 0) {
@@ -147,21 +147,25 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 
-        if (worldFile.exists() && env != null) {
-            Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
-            if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust))
-                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            else
-                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+        if (!worldFile.exists()) {
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            String worldList = this.getPotentialWorlds();
+            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
+            sender.sendMessage(worldList);
+        } else if (!checkIfIsWorld(worldFile)) {
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            sender.sendMessage(String.format("'%s' does not appear to be a world. It is lacking a .dat file.",
+                                             worldName));
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world environment did not exist.");
             sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
         } else {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            String worldList = this.getPotentialWorlds();
-            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
-            sender.sendMessage(worldList);
+            Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
+            if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust))
+                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
+            else
+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
         }
     }
 }
