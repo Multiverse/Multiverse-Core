@@ -7,15 +7,21 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import com.dumptruckman.minecraft.util.Logging;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import com.dumptruckman.minecraft.util.Logging;
 
 /**
  * File-utilities.
@@ -69,20 +75,42 @@ public class FileUtils {
      * @return if it had success
      */
     public static boolean copyFolder(File source, File target, Logger log) {
-        Path sourcePath = source.toPath();
-        Path destPath = target.toPath();
-        try (Stream<Path> files = Files.walk(source.toPath())) {
-            files.forEachOrdered(src -> {
-                try {
-                    Files.copy(src, sourcePath.resolve(destPath.relativize(src)));
-                } catch (IOException e) {
-                    log.warning(e.getMessage());
-                }
-            });
+        Path sourceDir = source.toPath();
+        Path targetDir = target.toPath();
+
+        try {
+            Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir));
             return true;
         } catch (IOException e) {
-            log.warning(e.getMessage());
+            log.log(Level.WARNING, "Unable to copy directory", e);
             return false;
+        }
+    }
+
+    private static class CopyDirFileVisitor extends SimpleFileVisitor<Path> {
+
+        private final Path sourceDir;
+        private final Path targetDir;
+
+        private CopyDirFileVisitor(Path sourceDir, Path targetDir) {
+            this.sourceDir = sourceDir;
+            this.targetDir = targetDir;
+        }
+
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            Path newDir = targetDir.resolve(sourceDir.relativize(dir));
+            if (!Files.isDirectory(newDir)) {
+                Files.createDirectory(newDir);
+            }
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Path targetFile = targetDir.resolve(sourceDir.relativize(file));
+            Files.copy(file, targetFile, COPY_ATTRIBUTES);
+            return FileVisitResult.CONTINUE;
         }
     }
 }
