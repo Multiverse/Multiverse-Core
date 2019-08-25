@@ -71,17 +71,6 @@ public interface Core {
     MVPlayerSession getPlayerSession(Player player);
 
     /**
-     * Gets the instantiated Safe-T-Teleporter for performing
-     * safe teleports.
-     *
-     * @return A non-null {@link SafeTTeleporter}.
-     *
-     * @deprecated Use {@link #getSafeTTeleporter()} instead.
-     */
-    @Deprecated
-    com.onarandombox.MultiverseCore.utils.SafeTTeleporter getTeleporter();
-
-    /**
      * Multiverse uses an advanced permissions setup, this object
      * simplifies getting/setting permissions.
      *

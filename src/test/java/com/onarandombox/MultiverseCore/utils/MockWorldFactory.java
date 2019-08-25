@@ -126,7 +126,6 @@ public class MockWorldFactory {
                 }
 
                 when(mockBlock.getType()).thenReturn(blockType);
-                when(mockBlock.getTypeId()).thenReturn(blockType.getId());
                 when(mockBlock.getWorld()).thenReturn(loc.getWorld());
                 when(mockBlock.getX()).thenReturn(loc.getBlockX());
                 when(mockBlock.getY()).thenReturn(loc.getBlockY());
@@ -170,7 +169,6 @@ public class MockWorldFactory {
                 Material blockType = Material.AIR;
 
                 when(mockBlock.getType()).thenReturn(blockType);
-                when(mockBlock.getTypeId()).thenReturn(blockType.getId());
                 when(mockBlock.getWorld()).thenReturn(loc.getWorld());
                 when(mockBlock.getX()).thenReturn(loc.getBlockX());
                 when(mockBlock.getY()).thenReturn(loc.getBlockY());
