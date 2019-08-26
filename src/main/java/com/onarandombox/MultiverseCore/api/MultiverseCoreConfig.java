@@ -213,4 +213,18 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @param autopurge True if automatic purge should be enabled.
      */
     void setAutoPurgeEnabled(boolean autopurge);
+
+    /**
+     * Gets whether or not the donation/patreon messages are shown.
+     *
+     * @return True if donation/patreon messages should be shown.
+     */
+    boolean isShowingDonateMessage();
+
+    /**
+     * Sets whether or not the donation/patreon messages are shown.
+     *
+     * @param idonotwanttodonate True if donation/patreon messages should be shown.
+     */
+    void setShowDonateMessage(boolean idonotwanttodonate);
 }

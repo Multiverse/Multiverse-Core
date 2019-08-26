@@ -1,12 +1,14 @@
 package com.onarandombox.MultiverseCore;
 
-import com.dumptruckman.minecraft.util.*;
-import com.onarandombox.MultiverseCore.api.*;
-import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
-import me.main__.util.SerializationConfig.*;
-import org.bukkit.Bukkit;
+import java.util.Map;
 
-import java.util.*;
+import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
+import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
+import me.main__.util.SerializationConfig.NoSuchPropertyException;
+import me.main__.util.SerializationConfig.Property;
+import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bukkit.Bukkit;
 
 /**
  * Our configuration.
@@ -71,6 +73,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile int portalsearchradius;
     @Property
     private volatile boolean autopurge;
+    @Property
+    private volatile boolean idonotwanttodonate;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -103,6 +107,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         defaultportalsearch = false;
         portalsearchradius = 128;
         autopurge = true;
+        idonotwanttodonate = false;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -347,5 +352,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setAutoPurgeEnabled(boolean autopurge) {
         this.autopurge = autopurge;
+    }
+
+    @Override
+    public boolean isShowingDonateMessage() {
+        return !idonotwanttodonate;
+    }
+
+    @Override
+    public void setShowDonateMessage(boolean showDonateMessage) {
+        this.idonotwanttodonate = !showDonateMessage;
     }
 }
