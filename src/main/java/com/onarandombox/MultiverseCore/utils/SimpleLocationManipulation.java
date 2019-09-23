@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -52,7 +53,7 @@ public class SimpleLocationManipulation implements LocationManipulation {
         if (location == null) {
             return "";
         }
-        return String.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
+        return String.format(Locale.ENGLISH, "%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
                 location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
