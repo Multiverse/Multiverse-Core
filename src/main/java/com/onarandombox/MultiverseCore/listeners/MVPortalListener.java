@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,6 +49,7 @@ public class MVPortalListener implements Listener {
 
     /**
      * This is called when a portal is created as the result of another world being linked.
+     *
      * @param event The event where a portal was formed due to a world link
      */
     @EventHandler(ignoreCancelled = true)
@@ -68,13 +68,13 @@ public class MVPortalListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void portalForm(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.hasBlock()) {
             return;
         }
-        if (event.getClickedBlock().getType() != Material.END_PORTAL_FRAME) {
+        if (!event.getClickedBlock().getType().toString().equalsIgnoreCase("END_PORTAL_FRAME") && !event.getClickedBlock().getType().toString().equalsIgnoreCase("ENDER_PORTAL_FRAME")) {
             return;
         }
-        if (event.getItem() == null || event.getItem().getType() != Material.ENDER_EYE) {
+        if (event.getItem() == null || (!event.getItem().getType().toString().equalsIgnoreCase("EYE_OF_ENDER") && !event.getItem().getType().toString().equalsIgnoreCase("ENDER_EYE"))) {
             return;
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
