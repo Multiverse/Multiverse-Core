@@ -8,135 +8,91 @@ commands:
   mv:
     description: Generic Multiverse Command
     usage: /<command>
+    permission: multiverse.core.use
   mvcreate:
+    aliases: [ mvc ]
     description: World create command
     usage: |
             /<command> <world> <environment>
             /<command> creative normal -- Creates a world called 'creative' with a NORMAL environment.
             /<command> hellworld nether -- Creates a world called 'hellworld' with a NETHER environment.
-  mvc:
-    description: World create command
-    usage: |
-            /<command> <world> <environment>
-            /<command> creative normal -- Creates a world called 'creative' with a NORMAL environment.
-            /<command> hellworld nether -- Creates a world called 'hellworld' with a NETHER environment.
+    permission: multiverse.core.create
   mvimport:
+    aliases: [ mvim ]
     description: World import command
     usage: |
             /<command> <world> <environment>
             /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
             /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
-  mvim:
-    description: World import command
-    usage: |
-            /<command> <world> <environment>
-            /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
-            /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
+    permission: multiverse.core.import
   mvremove:
     description: World remove command
     usage: |
             /<command> <world>
+    permission: multiverse.core.remove
   mvdelete:
     description: World delete command
     usage: |
             /<command> <world>
+    permission: multiverse.core.delete
   mvunload:
     description: World unload command
     usage: |
             /<command> <world>
+    permission: multiverse.core.unload
   mvmodify:
+    alises: [ mvm, mvmset, mvmadd, mvmremove, mvmclear ]
     description: Modify the settings of an existing world
     usage: |
             /<command> <world> <option>:<value>
             /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
-  mvmset:
-    description: Modify the settings of an existing world
-    usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
-  mvmadd:
-    description: Modify the settings of an existing world
-    usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
-  mvmremove:
-    description: Modify the settings of an existing world
-    usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
-  mvmclear:
-    description: Modify the settings of an existing world
-    usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
-  mvm:
-    description: Modify the settings of an existing world
-    usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+    permission: multiverse.core.modify
   mvtp:
     description: Command to teleport between Worlds
     usage: |
             /<command> <world>[:spawn]
             Example: /<command> creative - Teleports you to the relevant location in the 'creative' world.
             Example: /<command> creative:spawn - Teleports you to the spawn of the 'creative' world.
+    permission: multiverse.teleport.self
   mvlist:
+    alises: [ mvl ]
     description: Print list of loaded Worlds
     usage: |
             /<command> [environment]
             Example: /<command> NETHER - Shows all NETHER Worlds.
             Example: /<command> NORMAL - Shows all NORMAL Worlds.
-  mvl:
-    description: Print list of loaded Worlds
-    usage: |
-            /<command> [environment]
-            Example: /<command> NETHER - Shows all NETHER Worlds.
-            Example: /<command> NORMAL - Shows all NORMAL Worlds.
+    permission: multiverse.core.list.worlds
   mvsetspawn:
+    aliases: [ mvset, mvss ]
     description: Set the spawn area for a particular world
     usage: /<command> -- Sets the spawn area of the current world to your location.
-  mvset:
-    description: Set the spawn area for a particular world
-    usage: /<command> -- Sets the spawn area of the current world to your location.
-  mvss:
-    description: Set the spawn area for a particular world
-    usage: /<command> -- Sets the spawn area of the current world to your location.
+    permission: multiverse.core.spawn.set
   mvspawn:
+    aliases: [ mvs ]
     description: Teleport to the spawn area
     usage: /<command> -- Teleports you to the spawn area of your current world.
-  mvs:
-    description: Teleport to the spawn area
-    usage: /<command> -- Teleports you to the spawn area of your current world.
+    permission: multiverse.core.spawn.self
   mvcoord:
+    aliases: [ mvco ]
     description: Display World, Coordinates, Direction & Compression for a world.
     usage: |
             /<command> [world]
             /<command> -- Shows the relevant coordinates in your current world.
             /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
-  mvc:
-    description: Display World, Coordinates, Direction & Compression for a world.
-    usage: |
-            /<command> [world]
-            /<command> -- Shows the relevant coordinates in your current world.
-            /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
+    permission: multiverse.core.coord
   mvwho:
+    alises: [ mvw ]
     description: Display online users per world.
     usage: |
             /<command> [world]
             /<command> -- Shows who is online in each world.
             /<command> creative -- Shows who is online in the 'creative' world.
-  mvw:
-    description: Display online users per world.
-    usage: |
-            /<command> [world]
-            /<command> -- Shows who is online in each world.
-            /<command> creative -- Shows who is online in the 'creative' world.
+    permission: multiverse.core.list.who
   mvreload:
+    alises: [ mvr ]
     description: Reload Configuration files.
     usage: /<command>
-  mvr:
-    description: Reload Configuration files.
-    usage: /<command>
+    permission: multiverse.core.reload
   mvpurge:
     description: Purge the targetted world of creatures.
     usage: |
@@ -144,93 +100,224 @@ commands:
             /<command> -- Purges the players world of all creatures.
             /<command> creative * -- Purges the creative world of all Creatures.
             /<command> creative creeper -- Purges the creative world of all CREEPERS.
+    permission: multiverse.core.purge
   mvconfirm:
     description: Confirms sensitive decisions like deleting a world.
     usage: |
             /<command>
+    permission: multiverse.core.confirm
   mvinfo:
+    aliases: [ mvi ]
     description: Gets world info.
     usage: |
             /<command> [world]
-  mvi:
-    description: Gets world info.
-    usage: |
-            /<command> [world]
+    permission: multiverse.core.info
   mvenv:
     description: Tells the user all possible environment types.
     usage: |
             /<command>
-  mvv:
-    description: Prints out version info.
-    usage: |
-            /<command>
+    permission: multiverse.core.list.environments
   mvversion:
+    aliases: [ mvv ]
     description: Prints out version info.
     usage: |
             /<command>
-  mvco:
-    description: Displays the player's coordinates.
-    usage: |
-            /<command>
-  mvh:
-    description: Displays the Multiverse Help.
-    usage: |
-            /<command>
-  mvsearch:
-    description: Displays the Multiverse Help.
-    usage: |
-            /<command>
+    permission: multiverse.core.version
   mvhelp:
+    aliases: [ mvh, mvsearch ]
     description: Displays the Multiverse Help.
     usage: |
             /<command>
+    permission: multiverse.help
   mvdebug:
     description: Turns on debugging.
     usage: |
             /<command>
+    permission: multiverse.core.debug
   mvgenerators:
+    aliases: [ mvgens ]
     description: Displays all found world generators.
     usage: |
             /<command>
-  mvgens:
-    description: Displays all found world generators.
-    usage: |
-            /<command>
+    permission: multiverse.core.generator
   mvload:
     description: Loads a world into Multiverse.
     usage: |
             /<command> {WORLD}
+    permission: multiverse.core.load
   mvregen:
     description: Regenerates a world Multiverse already knows about.
     usage: |
             /<command> {WORLD}
+    permission: multiverse.core.regen
   mvscript:
     description: Runs a script from the Multiverse scripts directory.
     usage: |
             /<command> {script} [target]
+    permission: multiverse.script
   mvclone:
     description: World clone command
     usage: |
             /<command> <world> <environment>
             /<command> creative grieftastic -- Creates a world called 'grieftastic' exactly identical to the world 'creative'.
+    permission: multiverse.core.clone
   mvsilent:
     description: Reduces startup messages
     usage: |
-            /<command> [true|false]
-  
+            /<command> [true|false]  
+    permission: multiverse.core.silent
   mvgamerule:
+    aliases: [ mvrule ]
     description: Sets a gamerule.
     usage: |
             /<command> {RULE} {VALUE} [WORLD]
-  mvrule:
-    description: Sets a gamerule.
-    usage: |
-            /<command> {RULE} {VALUE} [WORLD]
+    permission: multiverse.core.gamerule.set
   mvgamerules:
+    aliases: [ mvrules ]
     description: Lists the gamerules.
     usage: |
             /<command> [WORLD]
-  mvrules:
+    permission: multiverse.core.gamerule.list
+
+permissions:
+  multiverse.core.use:
+    description: Generic Multiverse Command
+    default: op
+  multiverse.core.create:
+    description: World create command
+    default: op
+  multiverse.core.import:
+    description: World import command
+    default: op
+  multiverse.core.remove:
+    description: World remove command
+    default: op
+  multiverse.core.delete:
+    description: World delete command
+    default: op
+  multiverse.core.unload:
+    description: World unload command
+    default: op
+  multiverse.core.modify:
+    description: Modify the settings of an existing world
+    default: op
+  multiverse.teleport.self:
+    description: Command to teleport between Worlds
+    default: op
+  multiverse.teleport.self.w:
+    description: Command to teleport between Worlds (world)
+    default: op
+  multiverse.teleport.self.p:
+    description: Command to teleport between Worlds (portal)
+    default: op
+  multiverse.teleport.self.a:
+    description: Command to teleport between Worlds (anchor)
+    default: op
+  multiverse.teleport.self.e:
+    description: Command to teleport between Worlds (exact)
+    default: op
+  multiverse.teleport.self.pl:
+    description: Command to teleport between Worlds (player)
+    default: op
+  multiverse.teleport.self.ca:
+    description: Command to teleport between Worlds (cannon)
+    default: op
+  multiverse.teleport.self.b:
+    description: Command to teleport between Worlds (bed)
+    default: op
+  multiverse.teleport.other:
+    description: Command to teleport others between Worlds
+    default: op
+  multiverse.teleport.other.w:
+    description: Command to teleport between Worlds (world)
+    default: op
+  multiverse.teleport.other.p:
+    description: Command to teleport between Worlds (portal)
+    default: op
+  multiverse.teleport.other.a:
+    description: Command to teleport between Worlds (anchor)
+    default: op
+  multiverse.teleport.other.e:
+    description: Command to teleport between Worlds (exact)
+    default: op
+  multiverse.teleport.other.pl:
+    description: Command to teleport between Worlds (player)
+    default: op
+  multiverse.teleport.other.ca:
+    description: Command to teleport between Worlds (cannon)
+    default: op
+  multiverse.teleport.other.b:
+    description: Command to teleport between Worlds (bed)
+    default: op
+  multiverse.core.list.worlds:
+    description: Print list of loaded Worlds
+    default: op
+  multiverse.core.spawn.set:
+    description: Set the spawn area for a particular world
+    default: op
+  multiverse.core.spawn.self:
+    description: Teleport self to the spawn area
+    default: op
+  multiverse.core.spawn.other:
+    description: Teleport others to the spawn area
+    default: op
+  multiverse.core.coord:
+    description: Display World, Coordinates, Direction & Compression for a world.
+    default: op
+  multiverse.core.list.who:
+    description: Display online users per world.
+    default: op
+  multiverse.core.reload:
+    description: Reload Configuration files.
+    default: op
+  multiverse.core.purge:
+    description: Purge the targetted world of creatures.
+    default: op
+  multiverse.core.confirm:
+    description: Confirms sensitive decisions like deleting a world.
+    default: op
+  multiverse.core.info:
+    description: Gets world info.
+    default: op
+  multiverse.core.list.environments:
+    description: Tells the user all possible environment types.
+    default: op
+  multiverse.core.version:
+    description: Prints out version info.
+    default: op
+  multiverse.help:
+    description: Displays the Multiverse Help.
+    default: op
+  multiverse.core.debug:
+    description: Turns on debugging.
+    default: op
+  multiverse.core.generator:
+    description: Displays all found world generators.
+    default: op
+  multiverse.core.load:
+    description: Loads a world into Multiverse.
+    default: op
+  multiverse.core.regen:
+    description: Regenerates a world Multiverse already knows about.
+    default: op
+  multiverse.script:
+    description: Runs a script from the Multiverse scripts directory.
+    default: op
+  multiverse.core.clone:
+    description: World clone command
+    default: op
+  multiverse.core.silent:
+    description: Reduces startup messages
+    default: op
+  multiverse.core.gamerule.set:
+    description: Sets a gamerule.
+    default: op
+  multiverse.gamerule.list:
     description: Lists the gamerules.
-    usage: |
-            /<command> [WORLD]
+    default: op
+  multiverse.core.sleep:
+    default: op
+  multiverse.core.spout:
+    default: op
+  multiverse.core.anchor:
+    default: op
