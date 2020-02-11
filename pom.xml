@@ -19,7 +19,7 @@
         </repository>
         <repository>
             <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public</url>
+            <url>https://repo.onarandombox.com/content/groups/public</url>
         </repository>
         <repository>
             <id>spigot</id>
@@ -27,7 +27,7 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>minebench-repo</id>
@@ -36,7 +36,7 @@
         <!-- Has a copy of metrics R8-SNAPSHOT !-->
         <repository>
             <id>elmakers-repo</id>
-            <url>http://maven.elmakers.com/repository/</url>
+            <url>https://maven.elmakers.com/repository/</url>
         </repository>
     </repositories>
 
@@ -44,7 +44,7 @@
         <pluginRepository>
             <id>doodleproject-repo</id>
             <name>DoodleProject Maven 2 Repository</name>
-            <url>http://doodleproject.sourceforge.net/maven2/release</url>
+            <url>https://doodleproject.sourceforge.net/maven2/release</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -353,11 +353,11 @@
     <distributionManagement>
         <repository>
             <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+            <url>https://repo.onarandombox.com/content/repositories/multiverse</url>
         </repository>
         <snapshotRepository>
             <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
+            <url>https://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
