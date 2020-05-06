@@ -62,6 +62,11 @@ public class GameruleCommand extends MultiverseCommand {
             world = p.getWorld();
         } else {
             world = Bukkit.getWorld(args.get(2));
+            if (world == null) {
+                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(2)
+                    + ChatColor.WHITE + " does not exist.");
+                return;
+            }
         }
 
         if (world.setGameRuleValue(gameRule, value)) {
