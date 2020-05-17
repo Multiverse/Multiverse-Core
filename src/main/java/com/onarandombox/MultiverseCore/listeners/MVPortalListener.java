@@ -14,7 +14,6 @@ import org.bukkit.PortalType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
@@ -32,28 +31,13 @@ public class MVPortalListener implements Listener {
     }
 
     /**
-     * This is called when an entity creates a portal.
+     * This is called when a portal is created.
      *
-     * @param event The event where an entity created a portal.
-     */
-    @EventHandler
-    public void entityPortalCreate(EntityCreatePortalEvent event) {
-        if (event.isCancelled() || event.getBlocks().size() == 0) {
-            return;
-        }
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getEntity().getWorld());
-        // We have to do it like this due to a bug in 1.1-R3
-        if (world != null && !world.getAllowedPortals().isPortalAllowed(event.getPortalType())) {
-            event.setCancelled(true);
-        }
-    }
-
-    /**
-     * This is called when a portal is created as the result of another world being linked.
-     * @param event The event where a portal was formed due to a world link
+     * @param event The event where a portal is created.
      */
     @EventHandler(ignoreCancelled = true)
     public void portalForm(PortalCreateEvent event) {
+        // as of Bukkit 1.13, this event is only fired for nether portals
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
         if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalType.NETHER)) {
             plugin.log(Level.FINE, "Cancelling creation of nether portal because portalForm disallows.");
