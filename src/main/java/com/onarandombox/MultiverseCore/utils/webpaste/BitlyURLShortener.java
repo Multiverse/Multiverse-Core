@@ -23,7 +23,7 @@ public class BitlyURLShortener extends HttpAPIClient implements URLShortener {
     public String shorten(String longUrl) {
         try {
             String result = this.exec(longUrl);
-            if (!result.startsWith("http://j.mp/")) // ... then it's failed :/
+            if (!result.startsWith("https://j.mp/")) // ... then it's failed :/
                 throw new IOException(result);
             return result;
         } catch (IOException e) {
