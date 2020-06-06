@@ -49,7 +49,9 @@ public class GithubPasteService implements PasteService {
     public URL getPostURL() {
         try {
             return new URL("https://api.github.com/gists");
-            //return new URL("http://jsonplaceholder.typicode.com/posts");
+
+            // the following can be used for testing purposes
+            // return new URL("http://jsonplaceholder.typicode.com/posts");
         } catch (MalformedURLException e) {
             return null; // should never hit here
         }
@@ -68,8 +70,6 @@ public class GithubPasteService implements PasteService {
 
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
-            String pastieUrl = "";
-            //Pattern pastiePattern = this.getURLMatchingPattern();
             StringBuilder responseString = new StringBuilder();
 
             while ((line = rd.readLine()) != null) {
