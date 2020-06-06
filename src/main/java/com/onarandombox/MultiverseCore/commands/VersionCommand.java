@@ -24,9 +24,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.StringUtil;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,79 +53,74 @@ public class VersionCommand extends MultiverseCommand {
     }
 
     private String getLegacyString() {
-        StringBuilder legacyFile = new StringBuilder();
-        legacyFile.append("[Multiverse-Core] Multiverse-Core Version: ").append(this.plugin.getDescription().getVersion()).append('\n');
-        legacyFile.append("[Multiverse-Core] Bukkit Version: ").append(this.plugin.getServer().getVersion()).append('\n');
-        legacyFile.append("[Multiverse-Core] Loaded Worlds: ").append(this.plugin.getMVWorldManager().getMVWorlds()).append('\n');
-        legacyFile.append("[Multiverse-Core] Multiverse Plugins Loaded: ").append(this.plugin.getPluginCount()).append('\n');
-        legacyFile.append("[Multiverse-Core] Economy being used: ").append(plugin.getEconomist().getEconomyName()).append('\n');
-        legacyFile.append("[Multiverse-Core] Permissions Plugin: ").append(this.plugin.getMVPerms().getType()).append('\n');
-        legacyFile.append("[Multiverse-Core] Dumping Config Values: (version ")
-                .append(this.plugin.getMVConfig().getVersion()).append(")").append('\n');
-        legacyFile.append("[Multiverse-Core]  messagecooldown: ").append(plugin.getMessaging().getCooldown()).append('\n');
-        legacyFile.append("[Multiverse-Core]  teleportcooldown: ").append(plugin.getMVConfig().getTeleportCooldown()).append('\n');
-        legacyFile.append("[Multiverse-Core]  worldnameprefix: ").append(plugin.getMVConfig().getPrefixChat()).append('\n');
-        legacyFile.append("[Multiverse-Core]  worldnameprefixFormat: ").append(plugin.getMVConfig().getPrefixChatFormat()).append('\n');
-        legacyFile.append("[Multiverse-Core]  enforceaccess: ").append(plugin.getMVConfig().getEnforceAccess()).append('\n');
-        legacyFile.append("[Multiverse-Core]  displaypermerrors: ").append(plugin.getMVConfig().getDisplayPermErrors()).append('\n');
-        legacyFile.append("[Multiverse-Core]  teleportintercept: ").append(plugin.getMVConfig().getTeleportIntercept()).append('\n');
-        legacyFile.append("[Multiverse-Core]  firstspawnoverride: ").append(plugin.getMVConfig().getFirstSpawnOverride()).append('\n');
-        legacyFile.append("[Multiverse-Core]  firstspawnworld: ").append(plugin.getMVConfig().getFirstSpawnWorld()).append('\n');
-        legacyFile.append("[Multiverse-Core]  debug: ").append(plugin.getMVConfig().getGlobalDebug()).append('\n');
-        legacyFile.append("[Multiverse-Core] Special Code: FRN002").append('\n');
-        return legacyFile.toString();
+        return "[Multiverse-Core] Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + System.lineSeparator() +
+                "[Multiverse-Core] Bukkit Version: " + this.plugin.getServer().getVersion() + System.lineSeparator() +
+                "[Multiverse-Core] Loaded Worlds: " + this.plugin.getMVWorldManager().getMVWorlds() + System.lineSeparator() +
+                "[Multiverse-Core] Multiverse Plugins Loaded: " + this.plugin.getPluginCount() + System.lineSeparator() +
+                "[Multiverse-Core] Economy being used: " + plugin.getEconomist().getEconomyName() + System.lineSeparator() +
+                "[Multiverse-Core] Permissions Plugin: " + this.plugin.getMVPerms().getType() + System.lineSeparator() +
+                "[Multiverse-Core] Dumping Config Values: (version " + this.plugin.getMVConfig().getVersion() + ")" + System.lineSeparator() +
+                "[Multiverse-Core]  messagecooldown: " + plugin.getMessaging().getCooldown() + System.lineSeparator() +
+                "[Multiverse-Core]  teleportcooldown: " + plugin.getMVConfig().getTeleportCooldown() + System.lineSeparator() +
+                "[Multiverse-Core]  worldnameprefix: " + plugin.getMVConfig().getPrefixChat() + System.lineSeparator() +
+                "[Multiverse-Core]  worldnameprefixFormat: " + plugin.getMVConfig().getPrefixChatFormat() + System.lineSeparator() +
+                "[Multiverse-Core]  enforceaccess: " + plugin.getMVConfig().getEnforceAccess() + System.lineSeparator() +
+                "[Multiverse-Core]  displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + System.lineSeparator() +
+                "[Multiverse-Core]  teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + System.lineSeparator() +
+                "[Multiverse-Core]  firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + System.lineSeparator() +
+                "[Multiverse-Core]  firstspawnworld: " + plugin.getMVConfig().getFirstSpawnWorld() + System.lineSeparator() +
+                "[Multiverse-Core]  debug: " + plugin.getMVConfig().getGlobalDebug() + System.lineSeparator() +
+                "[Multiverse-Core] Special Code: FRN002" + System.lineSeparator();
     }
 
     private String getMarkdownString() {
-        StringBuilder markdownString = new StringBuilder();
-        markdownString.append("# Multiverse-Core\n");
-        markdownString.append("## Overview\n");
-        markdownString.append("| Name | Value |\n");
-        markdownString.append("| --- | --- |\n");
-        markdownString.append("| Multiverse-Core Version | `").append(this.plugin.getDescription().getVersion()).append("` |\n");
-        markdownString.append("| Bukkit Version | `").append(this.plugin.getServer().getVersion()).append("` |\n");
-        //markdownString.append("| Loaded Worlds | `").append(this.plugin.getMVWorldManager().getMVWorlds()).append("` |\n");
-        markdownString.append("| Multiverse Plugins Loaded | `").append(this.plugin.getPluginCount()).append("` |\n");
-        markdownString.append("| Economy being used | `").append(plugin.getEconomist().getEconomyName()).append("` |\n");
-        markdownString.append("| Permissions Plugin | `").append(this.plugin.getMVPerms().getType()).append("` |\n");
-        markdownString.append("## Parsed Config\n");
-        markdownString.append("These are what Multiverse thought the in-memory values of the config were.\n\n");
-        markdownString.append("| Config Key  | Value |\n");
-        markdownString.append("| --- | --- |\n");
-        markdownString.append("| version | `").append(this.plugin.getMVConfig().getVersion()).append("` |\n");
-        markdownString.append("| messagecooldown | `").append(plugin.getMessaging().getCooldown()).append("` |\n");
-        markdownString.append("| teleportcooldown | `").append(plugin.getMVConfig().getTeleportCooldown()).append("` |\n");
-        markdownString.append("| worldnameprefix | `").append(plugin.getMVConfig().getPrefixChat()).append("` |\n");
-        markdownString.append("| worldnameprefixFormat | `").append(plugin.getMVConfig().getPrefixChatFormat()).append("` |\n");
-        markdownString.append("| enforceaccess | `").append(plugin.getMVConfig().getEnforceAccess()).append("` |\n");
-        markdownString.append("| displaypermerrors | `").append(plugin.getMVConfig().getDisplayPermErrors()).append("` |\n");
-        markdownString.append("| teleportintercept | `").append(plugin.getMVConfig().getTeleportIntercept()).append("` |\n");
-        markdownString.append("| firstspawnoverride | `").append(plugin.getMVConfig().getFirstSpawnOverride()).append("` |\n");
-        markdownString.append("| firstspawnworld | `").append(plugin.getMVConfig().getFirstSpawnWorld()).append("` |\n");
-        markdownString.append("| debug | `").append(plugin.getMVConfig().getGlobalDebug()).append("` |\n");
-        return markdownString.toString();
+        return "# Multiverse-Core" + System.lineSeparator() +
+                "## Overview" + System.lineSeparator() +
+                "| Name | Value |" + System.lineSeparator() +
+                "| --- | --- |" + System.lineSeparator() +
+                "| Multiverse-Core Version | `" + this.plugin.getDescription().getVersion() + "` |" + System.lineSeparator() +
+                "| Bukkit Version | `" + this.plugin.getServer().getVersion() + "` |" + System.lineSeparator() +
+                //"| Loaded Worlds | `" + this.plugin.getMVWorldManager().getMVWorlds() + "` |" + System.lineSeparator() +
+                "| Multiverse Plugins Loaded | `" + this.plugin.getPluginCount() + "` |" + System.lineSeparator() +
+                "| Economy being used | `" + plugin.getEconomist().getEconomyName() + "` |" + System.lineSeparator() +
+                "| Permissions Plugin | `" + this.plugin.getMVPerms().getType() + "` |" + System.lineSeparator() +
+                "## Parsed Config" + System.lineSeparator() +
+                "These are what Multiverse thought the in-memory values of the config were." + System.lineSeparator() + System.lineSeparator() +
+                "| Config Key  | Value |" + System.lineSeparator() +
+                "| --- | --- |" + System.lineSeparator() +
+                "| version | `" + this.plugin.getMVConfig().getVersion() + "` |" + System.lineSeparator() +
+                "| messagecooldown | `" + plugin.getMessaging().getCooldown() + "` |" + System.lineSeparator() +
+                "| teleportcooldown | `" + plugin.getMVConfig().getTeleportCooldown() + "` |" + System.lineSeparator() +
+                "| worldnameprefix | `" + plugin.getMVConfig().getPrefixChat() + "` |" + System.lineSeparator() +
+                "| worldnameprefixFormat | `" + plugin.getMVConfig().getPrefixChatFormat() + "` |" + System.lineSeparator() +
+                "| enforceaccess | `" + plugin.getMVConfig().getEnforceAccess() + "` |" + System.lineSeparator() +
+                "| displaypermerrors | `" + plugin.getMVConfig().getDisplayPermErrors() + "` |" + System.lineSeparator() +
+                "| teleportintercept | `" + plugin.getMVConfig().getTeleportIntercept() + "` |" + System.lineSeparator() +
+                "| firstspawnoverride | `" + plugin.getMVConfig().getFirstSpawnOverride() + "` |" + System.lineSeparator() +
+                "| firstspawnworld | `" + plugin.getMVConfig().getFirstSpawnWorld() + "` |" + System.lineSeparator() +
+                "| debug | `" + plugin.getMVConfig().getGlobalDebug() + "` |" + System.lineSeparator();
     }
 
     private String readFile(final String filename) {
-        String result;
+        StringBuilder result;
         try {
             FileReader reader = new FileReader(filename);
             BufferedReader bufferedReader = new BufferedReader(reader);
             String line;
-            result = "";
+            result = new StringBuilder();
             while ((line = bufferedReader.readLine()) != null) {
-                result += line + '\n';
+                result.append(line).append(System.lineSeparator());
             }
         } catch (FileNotFoundException e) {
             Logging.severe("Unable to find %s. Here's the traceback: %s", filename, e.getMessage());
             e.printStackTrace();
-            result = String.format("ERROR: Could not load: %s", filename);
+            result = new StringBuilder(String.format("ERROR: Could not load: %s", filename));
         } catch (IOException e) {
             Logging.severe("Something bad happend when reading %s. Here's the traceback: %s", filename, e.getMessage());
             e.printStackTrace();
-            result = String.format("ERROR: Could not load: %s", filename);
+            result = new StringBuilder(String.format("ERROR: Could not load: %s", filename));
         }
-        return result;
+        return result.toString();
     }
 
     private Map<String, String> getVersionFiles() {
@@ -155,13 +153,13 @@ public class VersionCommand extends MultiverseCommand {
         String versionInfo = versionEvent.getVersionInfo();
 
         if (CommandHandler.hasFlag("--include-plugin-list", args)) {
-            versionInfo = versionInfo + "\nPlugins: " + getPluginList();
+            versionInfo = versionInfo + System.lineSeparator() + "Plugins: " + getPluginList();
         }
 
         final String data = versionInfo;
 
         // log to console
-        String[] lines = data.split("\n");
+        String[] lines = data.split(System.lineSeparator());
         for (String line : lines) {
             if (!line.isEmpty()) {
                 Logging.info(line);
@@ -177,7 +175,7 @@ public class VersionCommand extends MultiverseCommand {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
                     } else if (CommandHandler.hasFlag("-h", args)) {
-                        // private post to pastebin
+                        // private post to hastebin
                         pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
                     } else {
                         return;
@@ -216,8 +214,11 @@ public class VersionCommand extends MultiverseCommand {
             }
             return SHORTENER.shorten(result);
         } catch (PasteFailedException e) {
-            System.out.print(e);
-            return "Error posting to service";
+            e.printStackTrace();
+            return "Error posting to service.";
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return "That service isn't supported yet.";
         }
     }
 
