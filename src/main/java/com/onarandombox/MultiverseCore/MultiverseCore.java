@@ -17,11 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import buscript.Buscript;
@@ -105,11 +103,11 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -122,7 +120,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.mcstats.Metrics;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -355,95 +352,48 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         buscript.setScriptVariable("multiverse", this);
     }
 
-    /**
-     * Plotter for Environment-Values.
-     */
-    private static final class EnvironmentPlotter extends Metrics.Plotter {
-        private MultiverseCore core;
-        private final Environment env;
-
-        public EnvironmentPlotter(MultiverseCore core, Environment env) {
-            super(envToString(env));
-            this.core = core;
-            this.env = env;
-        }
-
-        private static String envToString(Environment env) {
-            return new StringBuilder().append(env.name().toUpperCase().charAt(0))
-                    .append(env.name().toLowerCase().substring(1)).toString();
-        }
-
-        @Override
-        public int getValue() {
-            int count = 0;
-            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (w.getEnvironment() == env)
-                    count++;
-            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, env));
-            return count;
-        }
-    }
-
-    /**
-     * Plotter for Generator-Values.
-     */
-    private static final class GeneratorPlotter extends Metrics.Plotter {
-        private MultiverseCore core;
-        private final String gen;
-
-        public GeneratorPlotter(MultiverseCore core, String gen) {
-            super(gen);
-            this.core = core;
-            this.gen = gen;
-        }
-
-        @Override
-        public int getValue() {
-            int count = 0;
-            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (gen.equals(w.getGenerator()))
-                    count++;
-            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, gen));
-            return count;
-        }
-    }
-
     private void setupMetrics() {
         try {
-            Metrics m = new Metrics(this);
+            Metrics metrics = new Metrics(this, 7765);
 
-            Metrics.Graph envGraph = m.createGraph("Worlds by environment");
-            for (Environment env : Environment.values())
-                envGraph.addPlotter(new EnvironmentPlotter(this, env));
-
-            Metrics.Graph loadedWorldsGraph = m.createGraph("Worlds by environment");
-            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Loaded worlds") {
-                @Override
-                public int getValue() {
-                    return getMVWorldManager().getMVWorlds().size();
+            metrics.addCustomChart(new Metrics.AdvancedPie("custom_generators", () -> {
+                Map<String, Integer> map = new HashMap<>();
+                for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds()) {
+                    if (w.getGenerator() != null && !w.getGenerator().equalsIgnoreCase("null")) {
+                        map.putIfAbsent(w.getGenerator(), 0);
+                        map.put(w.getGenerator(), map.get(w.getGenerator()) + 1);
+                    }
                 }
-            });
-            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Total number of worlds") {
-                @Override
-                public int getValue() {
-                    return getMVWorldManager().getMVWorlds().size()
-                            + getMVWorldManager().getUnloadedWorlds().size();
+
+                return map;
+            }));
+
+            metrics.addCustomChart(new Metrics.AdvancedPie("environments", () -> {
+                Map<String, Integer> map = new HashMap<>();
+                for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds()) {
+                    StringBuilder environment = new StringBuilder();
+                    String[] environmentArray = w.getEnvironment().name().split("_");
+
+                    for (int i = 0; i < environmentArray.length; i++) {
+                        environment.append(environmentArray[i].substring(0, 1).toUpperCase());
+                        environment.append(environmentArray[i].substring(1).toLowerCase());
+                        if (i != environmentArray.length - 1) environment.append(" ");
+                    }
+
+                    String e = environment.toString();
+                    map.putIfAbsent(e, 0);
+                    map.put(e, map.get(e) + 1);
                 }
-            });
 
-            Set<String> gens = new HashSet<String>();
-            for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds())
-                gens.add(w.getGenerator());
-            gens.remove(null);
-            gens.remove("null");
-            Metrics.Graph genGraph = m.createGraph("Custom Generators");
-            for (String gen : gens)
-                genGraph.addPlotter(new GeneratorPlotter(this, gen));
+                // TODO: add Worlds vs Loaded Worlds once bStats adds support for multi-line charts
 
-            m.start();
-            log(Level.FINE, "Metrics have run!");
+                return map;
+            }));
+
+            log(Level.FINE, "Metrics were set up!");
         } catch (Exception e) {
-            log(Level.WARNING, "There was an issue while enabling metrics: " + e.getMessage());
+            log(Level.WARNING, "There was an issue while enabling metrics:");
+            e.printStackTrace();
         }
     }
 
