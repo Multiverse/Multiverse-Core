@@ -60,16 +60,16 @@ public class VersionCommand extends MultiverseCommand {
                 "[Multiverse-Core] Economy being used: " + plugin.getEconomist().getEconomyName() + System.lineSeparator() +
                 "[Multiverse-Core] Permissions Plugin: " + this.plugin.getMVPerms().getType() + System.lineSeparator() +
                 "[Multiverse-Core] Dumping Config Values: (version " + this.plugin.getMVConfig().getVersion() + ")" + System.lineSeparator() +
-                "[Multiverse-Core]  messagecooldown: " + plugin.getMessaging().getCooldown() + System.lineSeparator() +
-                "[Multiverse-Core]  teleportcooldown: " + plugin.getMVConfig().getTeleportCooldown() + System.lineSeparator() +
-                "[Multiverse-Core]  worldnameprefix: " + plugin.getMVConfig().getPrefixChat() + System.lineSeparator() +
-                "[Multiverse-Core]  worldnameprefixFormat: " + plugin.getMVConfig().getPrefixChatFormat() + System.lineSeparator() +
-                "[Multiverse-Core]  enforceaccess: " + plugin.getMVConfig().getEnforceAccess() + System.lineSeparator() +
-                "[Multiverse-Core]  displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + System.lineSeparator() +
-                "[Multiverse-Core]  teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + System.lineSeparator() +
-                "[Multiverse-Core]  firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + System.lineSeparator() +
-                "[Multiverse-Core]  firstspawnworld: " + plugin.getMVConfig().getFirstSpawnWorld() + System.lineSeparator() +
-                "[Multiverse-Core]  debug: " + plugin.getMVConfig().getGlobalDebug() + System.lineSeparator() +
+                "[Multiverse-Core]   messagecooldown: " + plugin.getMessaging().getCooldown() + System.lineSeparator() +
+                "[Multiverse-Core]   teleportcooldown: " + plugin.getMVConfig().getTeleportCooldown() + System.lineSeparator() +
+                "[Multiverse-Core]   worldnameprefix: " + plugin.getMVConfig().getPrefixChat() + System.lineSeparator() +
+                "[Multiverse-Core]   worldnameprefixFormat: " + plugin.getMVConfig().getPrefixChatFormat() + System.lineSeparator() +
+                "[Multiverse-Core]   enforceaccess: " + plugin.getMVConfig().getEnforceAccess() + System.lineSeparator() +
+                "[Multiverse-Core]   displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + System.lineSeparator() +
+                "[Multiverse-Core]   teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + System.lineSeparator() +
+                "[Multiverse-Core]   firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + System.lineSeparator() +
+                "[Multiverse-Core]   firstspawnworld: " + plugin.getMVConfig().getFirstSpawnWorld() + System.lineSeparator() +
+                "[Multiverse-Core]   debug: " + plugin.getMVConfig().getGlobalDebug() + System.lineSeparator() +
                 "[Multiverse-Core] Special Code: FRN002" + System.lineSeparator();
     }
 
