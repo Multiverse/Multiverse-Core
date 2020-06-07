@@ -174,7 +174,15 @@ public class VersionCommand extends MultiverseCommand {
                     if (CommandHandler.hasFlag("-b", args)) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
-                    } else if (CommandHandler.hasFlag("-h", args)) {
+                    }
+
+                    // pasting to GitHub now requires an account, so we've disabled it
+                    /* else if (CommandHandler.hasFlag("-g", args)) {
+                        // private post to github
+                        pasteUrl = postToService(PasteServiceType.GITHUB, true, data, files);
+                    } */
+
+                    else if (CommandHandler.hasFlag("-h", args)) {
                         // private post to hastebin
                         pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
                     } else {
