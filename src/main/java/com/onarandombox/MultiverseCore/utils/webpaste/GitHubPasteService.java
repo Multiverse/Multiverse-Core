@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,14 +65,18 @@ public class GithubPasteService implements PasteService {
         try {
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
-            wr = new OutputStreamWriter(conn.getOutputStream());
+
+            // this isn't required, but is technically correct
+            conn.addRequestProperty("Content-Type", "application/json; charset=utf-8");
+
+            wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
             wr.write(encodedData);
             wr.flush();
 
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
             StringBuilder responseString = new StringBuilder();
-
+            // this has to be initialized AFTER the data has been flushed!
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
             while ((line = rd.readLine()) != null) {
                 responseString.append(line);
             }

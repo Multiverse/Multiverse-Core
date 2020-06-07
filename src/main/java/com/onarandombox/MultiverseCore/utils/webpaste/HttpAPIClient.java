@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 /**
  * HTTP API-client.
@@ -32,11 +33,11 @@ public abstract class HttpAPIClient {
         StringBuilder ret = new StringBuilder();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
             while (!reader.ready()); // wait until reader is ready, may not be necessary, SUPPRESS CHECKSTYLE: EmptyStatement
 
             while (reader.ready()) {
-                ret.append(reader.readLine()).append('\n');
+                ret.append(reader.readLine()).append(System.lineSeparator());
             }
         } finally {
             if (reader != null) {
