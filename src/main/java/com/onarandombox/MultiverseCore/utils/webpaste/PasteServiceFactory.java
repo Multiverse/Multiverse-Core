@@ -19,7 +19,7 @@ public class PasteServiceFactory {
             case HASTEBIN:
                 return new HastebinPasteService();
             case GITHUB:
-                return new GithubPasteService(isPrivate);
+                return new GitHubPasteService(isPrivate);
             default:
                 return null;
         }

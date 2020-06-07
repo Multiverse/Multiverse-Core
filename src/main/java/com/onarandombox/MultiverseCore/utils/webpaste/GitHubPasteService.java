@@ -15,11 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GithubPasteService implements PasteService {
+public class GitHubPasteService implements PasteService {
 
     private final boolean isPrivate;
 
-    public GithubPasteService(boolean isPrivate) {
+    public GitHubPasteService(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
 
