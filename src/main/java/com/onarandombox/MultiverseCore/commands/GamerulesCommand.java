@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -60,6 +61,11 @@ public class GamerulesCommand extends MultiverseCommand {
             world = p.getWorld();
         } else {
             world = Bukkit.getWorld(args.get(0));
+            if (world == null) {
+                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(0)
+                        + ChatColor.WHITE + " does not exist.");
+                return;
+            }
         }
 
         final StringBuilder gameRules = new StringBuilder();
@@ -68,7 +74,7 @@ public class GamerulesCommand extends MultiverseCommand {
                 gameRules.append(ChatColor.WHITE).append(", ");
             }
             gameRules.append(ChatColor.AQUA).append(gameRule).append(ChatColor.WHITE).append(": ");
-            gameRules.append(ChatColor.GREEN).append(world.getGameRuleValue(gameRule));
+            gameRules.append(ChatColor.GREEN).append(world.getGameRuleValue(GameRule.getByName(gameRule)));
         }
         sender.sendMessage("=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===");
         sender.sendMessage(gameRules.toString());
