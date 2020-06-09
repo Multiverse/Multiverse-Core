@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
-import java.net.URL;
 import java.util.Map;
 
 /**
@@ -15,41 +14,30 @@ import java.util.Map;
  * should implement a custom constructor that specifies which kind the PasteService
  * instance is submitting; an example of this is the PastebinPasteService class.
  */
-public interface PasteService {
+public abstract class PasteService extends HttpAPIClient {
+    public PasteService(String url, String accessToken) {
+        super(url, accessToken);
+    }
 
     /**
-     * Encode the given String data into a format suitable for transmission in an HTTP request.
+     * Post data to the Web.
      *
-     * @param data The raw data to encode.
-     * @return A URL-encoded string.
-     */
-    String encodeData(String data);
-
-    /**
-     * Encode the given Map data into a format suitable for transmission in an HTTP request.
-     *
-     * @param data The raw data to encode.
-     * @return A URL-encoded string.
-     */
-    String encodeData(Map<String, String> data);
-
-    /**
-     * Get the URL to which this paste service sends new pastes.
-     *
-     * @return The URL that will be accessed to complete the paste.
-     */
-    URL getPostURL();
-
-    /**
-     * Post encoded data to the Web.
-     *
-     * @param encodedData A URL-encoded String containing the full request to post to
-     *                    the given URL. Can be the result of calling #encodeData().
-     * @param url The URL to which to paste. Can be the result of calling #getPostURL().
+     * @param data A URL-encoded String containing the full request to post to
+     *             the given URL. Can be the result of calling #encodeData().
      * @throws PasteFailedException When pasting/posting the data failed.
      * @return The URL at which the new paste is visible.
      */
-    String postData(String encodedData, URL url) throws PasteFailedException;
+    public abstract String postData(String data) throws PasteFailedException;
+
+    /**
+     * Post data to the Web.
+     *
+     * @param data A URL-encoded Map containing the full request to post to
+     *             the given URL. Can be the result of calling #encodeData().
+     * @throws PasteFailedException When pasting/posting the data failed.
+     * @return The URL at which the new paste is visible.
+     */
+    public abstract String postData(Map<String, String> data) throws PasteFailedException;
 
     /**
      * Does this service support uploading multiple files.
@@ -59,5 +47,5 @@ public interface PasteService {
      *
      * @return True if this service supports multiple file upload.
      */
-    boolean supportsMultiFile();
+    public abstract boolean supportsMultiFile();
 }

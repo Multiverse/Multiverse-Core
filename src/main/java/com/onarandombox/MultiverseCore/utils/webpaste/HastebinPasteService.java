@@ -1,81 +1,55 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
-import com.google.gson.JsonParser;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
  * Pastes to {@code hastebin.com}.
  */
-public class HastebinPasteService implements PasteService {
+class HastebinPasteService extends PasteService {
+    private static final String HASTEBIN_POST_REQUEST = "https://hastebin.com/documents";
 
+    public HastebinPasteService() {
+        super(HASTEBIN_POST_REQUEST, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String encodeData(String data) {
         return data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public URL getPostURL() {
+    public String postData(String data) throws PasteFailedException {
         try {
-            return new URL("https://hastebin.com/documents");
-        } catch (MalformedURLException e) {
-            return null; // should never hit here
+            String stringJSON = this.exec(encodeData(data), ContentType.PLAINTEXT);
+            return "https://hastebin.com/" + ((JSONObject) new JSONParser().parse(stringJSON)).get("key");
+        } catch (IOException | ParseException e) {
+            throw new PasteFailedException(e);
         }
     }
 
     @Override
-    public String postData(String encodedData, URL url) throws PasteFailedException {
-        OutputStreamWriter wr = null;
-        BufferedReader rd = null;
+    public String postData(Map<String, String> data) throws PasteFailedException {
         try {
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-
-            // hastebin needs a user-agent
-            conn.addRequestProperty("User-Agent", "placeholder");
-            // this isn't required, but is technically correct
-            conn.addRequestProperty("Content-Type", "text/plain; charset=utf-8");
-
-            wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8.newEncoder());
-            wr.write(encodedData);
-            wr.flush();
-
-            String line;
-            StringBuilder responseString = new StringBuilder();
-            // this has to be initialized AFTER the data has been flushed!
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-            while ((line = rd.readLine()) != null) {
-                responseString.append(line);
-            }
-            String key = new JsonParser().parse(responseString.toString()).getAsJsonObject().get("key").getAsString();
-
-            return "https://hastebin.com/" + key;
-        } catch (Exception e) {
+            String stringJSON = this.exec(encodeData(data), ContentType.PLAINTEXT);
+            return "https://hastebin.com/" + ((JSONObject) new JSONParser().parse(stringJSON)).get("key");
+        } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
-        } finally {
-            if (wr != null) {
-                try {
-                    wr.close();
-                } catch (IOException ignore) { }
-            }
-            if (rd != null) {
-                try {
-                    rd.close();
-                } catch (IOException ignore) { }
-            }
         }
     }
 

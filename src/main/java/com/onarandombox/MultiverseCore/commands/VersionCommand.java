@@ -10,12 +10,13 @@ package com.onarandombox.MultiverseCore.commands;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
-import com.onarandombox.MultiverseCore.utils.webpaste.BitlyURLShortener;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
+import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerFactory;
+import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerType;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -38,7 +39,7 @@ import java.util.Map;
  * Dumps version info to the console.
  */
 public class VersionCommand extends MultiverseCommand {
-    private static final URLShortener SHORTENER = new BitlyURLShortener();
+    private static final URLShortener SHORTENER = URLShortenerFactory.getService(URLShortenerType.BITLY);
 
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
@@ -174,15 +175,10 @@ public class VersionCommand extends MultiverseCommand {
                     if (CommandHandler.hasFlag("-b", args)) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
-                    }
-
-                    // pasting to GitHub now requires an account, so we've disabled it
-                    /* else if (CommandHandler.hasFlag("-g", args)) {
+                    } else if (CommandHandler.hasFlag("-g", args)) {
                         // private post to github
                         pasteUrl = postToService(PasteServiceType.GITHUB, true, data, files);
-                    } */
-
-                    else if (CommandHandler.hasFlag("-h", args)) {
+                    } else if (CommandHandler.hasFlag("-h", args)) {
                         // private post to hastebin
                         pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
                     } else {
@@ -210,17 +206,19 @@ public class VersionCommand extends MultiverseCommand {
      * @param pasteFiles Map of filenames/contents of debug info.
      * @return URL of visible paste
      */
-    private static String postToService(PasteServiceType type, boolean isPrivate, String pasteData,
-                                        Map<String, String> pasteFiles) {
+    private static String postToService(PasteServiceType type, boolean isPrivate, String pasteData, Map<String, String> pasteFiles) {
         PasteService ps = PasteServiceFactory.getService(type, isPrivate);
+
         try {
             String result;
             if (ps.supportsMultiFile()) {
-                result = ps.postData(ps.encodeData(pasteFiles), ps.getPostURL());
+                result = ps.postData(pasteFiles);
             } else {
-                result = ps.postData(ps.encodeData(pasteData), ps.getPostURL());
+                result = ps.postData(pasteData);
             }
-            return SHORTENER.shorten(result);
+
+            if (SHORTENER != null) return SHORTENER.shorten(result);
+            return result;
         } catch (PasteFailedException e) {
             e.printStackTrace();
             return "Error posting to service.";
