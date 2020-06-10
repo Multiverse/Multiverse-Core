@@ -21,14 +21,14 @@ public class GitHubPasteService extends PasteService {
     }
 
     @Override
-    public String encodeData(String data) {
+    String encodeData(String data) {
         Map<String, String> mapData = new HashMap<String, String>();
         mapData.put("multiverse.txt", data);
         return this.encodeData(mapData);
     }
 
     @Override
-    public String encodeData(Map<String, String> files) {
+    String encodeData(Map<String, String> files) {
         JSONObject root = new JSONObject();
         root.put("description", "Multiverse-Core Debug Info");
         root.put("public", !this.isPrivate);

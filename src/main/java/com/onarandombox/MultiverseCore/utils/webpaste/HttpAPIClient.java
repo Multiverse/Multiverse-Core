@@ -23,7 +23,7 @@ public abstract class HttpAPIClient {
     /**
      * Types of data that can be sent.
      */
-    protected enum ContentType {
+    enum ContentType {
         JSON,
         PLAINTEXT,
         URLENCODED
@@ -53,7 +53,7 @@ public abstract class HttpAPIClient {
      * @param data The raw data to encode.
      * @return A URL-encoded string.
      */
-    protected abstract String encodeData(String data);
+    abstract String encodeData(String data);
 
     /**
      * Encode the given Map data into a format suitable for transmission in an HTTP request.
@@ -61,7 +61,7 @@ public abstract class HttpAPIClient {
      * @param data The raw data to encode.
      * @return A URL-encoded string.
      */
-    protected abstract String encodeData(Map<String, String> data);
+    abstract String encodeData(Map<String, String> data);
 
     /**
      * Executes this API-Request.
@@ -70,7 +70,7 @@ public abstract class HttpAPIClient {
      * @return The result (as text).
      * @throws IOException When the I/O-operation failed.
      */
-    protected final String exec(String payload, ContentType type) throws IOException {
+    final String exec(String payload, ContentType type) throws IOException {
         BufferedReader rd = null;
         OutputStreamWriter wr = null;
 

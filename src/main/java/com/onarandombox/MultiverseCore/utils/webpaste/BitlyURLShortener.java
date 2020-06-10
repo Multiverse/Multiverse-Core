@@ -23,7 +23,7 @@ class BitlyURLShortener extends URLShortener {
      * {@inheritDoc}
      */
     @Override
-    protected String encodeData(String data) {
+    String encodeData(String data) {
         JSONObject json = new JSONObject();
         json.put("domain", "j.mp");
         json.put("long_url", data);
@@ -34,7 +34,7 @@ class BitlyURLShortener extends URLShortener {
      * {@inheritDoc}
      */
     @Override
-    protected String encodeData(Map<String, String> data) {
+    String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
     }
 

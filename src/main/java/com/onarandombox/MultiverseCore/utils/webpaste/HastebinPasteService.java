@@ -21,7 +21,7 @@ class HastebinPasteService extends PasteService {
      * {@inheritDoc}
      */
     @Override
-    public String encodeData(String data) {
+    String encodeData(String data) {
         return data;
     }
 
@@ -29,7 +29,7 @@ class HastebinPasteService extends PasteService {
      * {@inheritDoc}
      */
     @Override
-    public String encodeData(Map<String, String> data) {
+    String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
     }
 

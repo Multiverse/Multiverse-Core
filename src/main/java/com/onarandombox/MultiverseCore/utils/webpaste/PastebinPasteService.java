@@ -21,7 +21,7 @@ class PastebinPasteService extends PasteService {
      * {@inheritDoc}
      */
     @Override
-    public String encodeData(String data) {
+    String encodeData(String data) {
         try {
             return URLEncoder.encode("api_dev_key", "UTF-8") + "=" + URLEncoder.encode("d61d68d31e8e0392b59b50b277411c71", "UTF-8") +
                     "&" + URLEncoder.encode("api_option", "UTF-8") + "=" + URLEncoder.encode("paste", "UTF-8") +
@@ -38,7 +38,7 @@ class PastebinPasteService extends PasteService {
      * {@inheritDoc}
      */
     @Override
-    public String encodeData(Map<String, String> data) {
+    String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
     }
 
