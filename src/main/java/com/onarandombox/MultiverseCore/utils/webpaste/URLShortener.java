@@ -1,10 +1,16 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
 /**
- * URL-Shortener.
+ * An interface to a web-based URL Shortener. Classes extending this should
+ * implement its methods to shorten links using the service. Given some
+ * URLShortener instance us, a URL is shortened by:
+ *
+ * {@code us.shorten(longUrl);}
+ *
+ * An example of this, is the BitlyURLShortener.
  */
 public abstract class URLShortener extends HttpAPIClient {
-    public URLShortener(String url, String accessToken) {
+    URLShortener(String url, String accessToken) {
         super(url, accessToken);
     }
 

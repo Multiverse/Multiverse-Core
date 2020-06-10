@@ -13,7 +13,7 @@ import java.util.Map;
 class HastebinPasteService extends PasteService {
     private static final String HASTEBIN_POST_REQUEST = "https://hastebin.com/documents";
 
-    public HastebinPasteService() {
+    HastebinPasteService() {
         super(HASTEBIN_POST_REQUEST, null);
     }
 
@@ -33,6 +33,9 @@ class HastebinPasteService extends PasteService {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
@@ -43,6 +46,9 @@ class HastebinPasteService extends PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
@@ -53,6 +59,9 @@ class HastebinPasteService extends PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsMultiFile() {
         return false;

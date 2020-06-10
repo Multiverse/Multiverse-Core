@@ -12,7 +12,7 @@ class PastebinPasteService extends PasteService {
     private final boolean isPrivate;
     private static final String PASTEBIN_POST_REQUEST = "https://pastebin.com/api/api_post.php";
 
-    public PastebinPasteService(boolean isPrivate) {
+    PastebinPasteService(boolean isPrivate) {
         super(PASTEBIN_POST_REQUEST, null);
         this.isPrivate = isPrivate;
     }
@@ -66,6 +66,9 @@ class PastebinPasteService extends PasteService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsMultiFile() {
         return false;

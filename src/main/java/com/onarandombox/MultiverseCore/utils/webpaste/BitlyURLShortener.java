@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * An {@link URLShortener} using {@code bit.ly}.
+ * A {@link URLShortener} using {@code bit.ly}. Requires an access token.
  */
 class BitlyURLShortener extends URLShortener {
     private static final String ACCESS_TOKEN = "Bearer bitly-access-token";
     private static final String BITLY_POST_REQUEST = "https://api-ssl.bitly.com/v4/shorten";
 
-    public BitlyURLShortener() {
+    BitlyURLShortener() {
         super(BITLY_POST_REQUEST, ACCESS_TOKEN);
         if (ACCESS_TOKEN.endsWith("access-token")) throw new UnsupportedOperationException();
     }

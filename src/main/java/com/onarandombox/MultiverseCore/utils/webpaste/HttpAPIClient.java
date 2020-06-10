@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * HTTP API-client.
  */
-public abstract class HttpAPIClient {
+abstract class HttpAPIClient {
     /**
      * The URL for this API-request, and if necessary, the access token.
      * If an access token is not necessary, it should be set to null.
@@ -29,11 +29,16 @@ public abstract class HttpAPIClient {
         URLENCODED
     }
 
-    public HttpAPIClient(String url, String accessToken) {
+    HttpAPIClient(String url, String accessToken) {
         this.url = url;
         this.accessToken = accessToken;
     }
 
+    /**
+     * Returns the HTTP Content-Type header that corresponds with each ContentType.
+     * @param type The type of data.
+     * @return The HTTP Content-Type header that corresponds with the type of data.
+     */
     private String getContentHeader(ContentType type) {
         switch (type) {
             case JSON:
