@@ -93,7 +93,7 @@ import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
-import com.onarandombox.MultiverseCore.utils.MetricsConfigurator;
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;

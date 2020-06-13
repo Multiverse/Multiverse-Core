@@ -1,7 +1,7 @@
-package com.onarandombox.MultiverseCore.utils;
+package com.onarandombox.MultiverseCore.utils.metrics;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -28,7 +28,7 @@ public class MetricsConfigurator {
 
     private void initMetrics() {
         try {
-            createCustomGeneratorsMetric();
+            addCustomGeneratorsMetric();
             createEnvironmentsMetric();
 
             Logging.fine("Metrics enabled.");
@@ -38,30 +38,28 @@ public class MetricsConfigurator {
         }
     }
 
-    private void createCustomGeneratorsMetric() {
-        metrics.addCustomChart(new Metrics.AdvancedPie("custom_generators", () -> {
-            Map<String, Integer> map = new HashMap<>();
+    private void addCustomGeneratorsMetric() {
+        addAdvancedPieMetric("custom_generators", map -> {
             for (MultiverseWorld w : plugin.getMVWorldManager().getMVWorlds()) {
                 String gen = w.getGenerator() != null ? w.getGenerator() : "N/A";
                 map.putIfAbsent(gen, 0);
                 map.put(gen, map.get(gen) + 1);
             }
-
-            return map;
-        }));
+        });
     }
 
     private void createEnvironmentsMetric() {
-        metrics.addCustomChart(new Metrics.AdvancedPie("environments", () -> {
-            Map<String, Integer> map = new HashMap<>();
+        addAdvancedPieMetric("environments", map -> {
             for (MultiverseWorld w : plugin.getMVWorldManager().getMVWorlds()) {
                 String env = w.getEnvironment().name().replace('_', ' ');
                 env = StringUtils.capitalize(env.toLowerCase());
                 map.putIfAbsent(env, 0);
                 map.put(env, map.get(env) + 1);
             }
+        });
+    }
 
-            return map;
-        }));
+    private void addAdvancedPieMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+        metrics.addCustomChart(MetricsHelper.createAdvancedPieChart(chartId, metricsFunc));
     }
 }
