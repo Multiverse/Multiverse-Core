@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
 
@@ -60,7 +60,8 @@ public class MetricsConfigurator {
     }
 
     private String getGeneratorName(MultiverseWorld world) {
-        return world.getGenerator() != null ? world.getGenerator() : NO_GENERATOR_NAME;
+        String gen = world.getGenerator();
+        return (gen != null && !gen.equalsIgnoreCase("null")) ? gen : NO_GENERATOR_NAME;
     }
 
     private void addEnvironmentsMetric() {
@@ -73,7 +74,7 @@ public class MetricsConfigurator {
 
     private String titleCaseEnv(World.Environment env) {
         String envName = env.name().replaceAll("_+", " ");
-        return StringUtils.capitalize(envName.toLowerCase());
+        return WordUtils.capitalizeFully(envName);
     }
 
     private void addWorldCountMetric() {
