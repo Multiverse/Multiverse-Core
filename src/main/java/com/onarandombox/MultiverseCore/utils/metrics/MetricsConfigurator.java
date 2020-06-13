@@ -1,10 +1,12 @@
 package com.onarandombox.MultiverseCore.utils.metrics;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
@@ -28,10 +30,19 @@ public class MetricsConfigurator {
         this.metrics = new Metrics(plugin, PLUGIN_ID);
     }
 
+    private MVWorldManager getWorldManager() {
+        return plugin.getMVWorldManager();
+    }
+
+    private Collection<MultiverseWorld> getMVWorlds() {
+        return getWorldManager().getMVWorlds();
+    }
+
     private void initMetrics() {
         try {
             addCustomGeneratorsMetric();
-            createEnvironmentsMetric();
+            addEnvironmentsMetric();
+            addWorldCountMetric();
 
             Logging.fine("Metrics enabled.");
         } catch (Exception e) {
@@ -42,7 +53,7 @@ public class MetricsConfigurator {
 
     private void addCustomGeneratorsMetric() {
         addAdvancedPieMetric("custom_generators", map -> {
-            for (MultiverseWorld w : plugin.getMVWorldManager().getMVWorlds()) {
+            for (MultiverseWorld w : getMVWorlds()) {
                 MetricsHelper.incrementCount(map, getGeneratorName(w));
             }
         });
@@ -52,9 +63,9 @@ public class MetricsConfigurator {
         return world.getGenerator() != null ? world.getGenerator() : NO_GENERATOR_NAME;
     }
 
-    private void createEnvironmentsMetric() {
+    private void addEnvironmentsMetric() {
         addAdvancedPieMetric("environments", map -> {
-            for (MultiverseWorld w : plugin.getMVWorldManager().getMVWorlds()) {
+            for (MultiverseWorld w : getMVWorlds()) {
                 MetricsHelper.incrementCount(map, titleCaseEnv(w.getEnvironment()));
             }
         });
@@ -65,7 +76,19 @@ public class MetricsConfigurator {
         return StringUtils.capitalize(envName.toLowerCase());
     }
 
+    private void addWorldCountMetric() {
+        addMultiLineMetric("world_count", map -> {
+            int loadedWorldsCount = getMVWorlds().size();
+            map.put("Loaded worlds", loadedWorldsCount);
+            map.put("Total number of worlds", loadedWorldsCount + getWorldManager().getUnloadedWorlds().size());
+        });
+    }
+
     private void addAdvancedPieMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
         metrics.addCustomChart(MetricsHelper.createAdvancedPieChart(chartId, metricsFunc));
+    }
+
+    private void addMultiLineMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+        metrics.addCustomChart(MetricsHelper.createMultiLineChart(chartId, metricsFunc));
     }
 }

@@ -23,4 +23,10 @@ enum MetricsHelper {
         return new Metrics.AdvancedPie(chartId, () -> map);
     }
 
+    static Metrics.MultiLineChart createMultiLineChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+        Map<String, Integer> map = new HashMap<>();
+        metricsFunc.accept(map);
+        return new Metrics.MultiLineChart(chartId, () -> map);
+    }
+
 }
