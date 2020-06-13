@@ -103,6 +103,7 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
@@ -359,10 +360,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             metrics.addCustomChart(new Metrics.AdvancedPie("custom_generators", () -> {
                 Map<String, Integer> map = new HashMap<>();
                 for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds()) {
-                    if (w.getGenerator() != null && !w.getGenerator().equalsIgnoreCase("null")) {
-                        map.putIfAbsent(w.getGenerator(), 0);
-                        map.put(w.getGenerator(), map.get(w.getGenerator()) + 1);
-                    }
+                    String gen = w.getGenerator() != null ? w.getGenerator() : "N/A";
+                    map.putIfAbsent(gen, 0);
+                    map.put(gen, map.get(gen) + 1);
                 }
 
                 return map;
@@ -371,25 +371,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             metrics.addCustomChart(new Metrics.AdvancedPie("environments", () -> {
                 Map<String, Integer> map = new HashMap<>();
                 for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds()) {
-                    StringBuilder environment = new StringBuilder();
-                    String[] environmentArray = w.getEnvironment().name().split("_");
-
-                    for (int i = 0; i < environmentArray.length; i++) {
-                        environment.append(environmentArray[i].substring(0, 1).toUpperCase());
-                        environment.append(environmentArray[i].substring(1).toLowerCase());
-                        if (i != environmentArray.length - 1) environment.append(" ");
-                    }
-
-                    String e = environment.toString();
-                    map.putIfAbsent(e, 0);
-                    map.put(e, map.get(e) + 1);
+                    String env = w.getEnvironment().name().replace('_', ' ');
+                    env = StringUtils.capitalize(env.toLowerCase());
+                    map.putIfAbsent(env, 0);
+                    map.put(env, map.get(env) + 1);
                 }
-
-                // TODO: add Worlds vs Loaded Worlds once bStats adds support for multi-line charts
 
                 return map;
             }));
 
+            // TODO: add Worlds vs Loaded Worlds once bStats adds support for multi-line charts
             log(Level.FINE, "Metrics were set up!");
         } catch (Exception e) {
             log(Level.WARNING, "There was an issue while enabling metrics:");
