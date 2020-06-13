@@ -43,9 +43,7 @@ public class MetricsConfigurator {
     private void addCustomGeneratorsMetric() {
         addAdvancedPieMetric("custom_generators", map -> {
             for (MultiverseWorld w : plugin.getMVWorldManager().getMVWorlds()) {
-                String gen = getGeneratorName(w);
-                Integer count = map.getOrDefault(gen, 0);
-                map.put(gen, count + 1);
+                MetricsHelper.incrementCount(map, getGeneratorName(w));
             }
         });
     }
@@ -57,9 +55,7 @@ public class MetricsConfigurator {
     private void createEnvironmentsMetric() {
         addAdvancedPieMetric("environments", map -> {
             for (MultiverseWorld w : plugin.getMVWorldManager().getMVWorlds()) {
-                String env = titleCaseEnv(w.getEnvironment());
-                Integer count = map.getOrDefault(env, 0);
-                map.put(env, count + 1);
+                MetricsHelper.incrementCount(map, titleCaseEnv(w.getEnvironment()));
             }
         });
     }
