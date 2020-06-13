@@ -331,8 +331,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getServer().getPluginManager().registerEvents(this.chatListener, this);
 
         this.initializeBuscript();
-
-        MetricsConfigurator.configureMetrics(this);
+        this.setupMetrics();
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
@@ -341,6 +340,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
+    }
+
+    private void setupMetrics() {
+        MetricsConfigurator.configureMetrics(this);
     }
 
     /**
