@@ -32,7 +32,6 @@ import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
@@ -94,6 +93,7 @@ import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
@@ -103,8 +103,6 @@ import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.apache.commons.lang.StringUtils;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -333,7 +331,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         getServer().getPluginManager().registerEvents(this.chatListener, this);
 
         this.initializeBuscript();
-        this.setupMetrics();
+
+        MetricsConfigurator.configureMetrics(this);
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
@@ -351,41 +350,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         buscript = new Buscript(this);
         // Add global variable "multiverse" to javascript environment
         buscript.setScriptVariable("multiverse", this);
-    }
-
-    private void setupMetrics() {
-        try {
-            Metrics metrics = new Metrics(this, 7765);
-
-            metrics.addCustomChart(new Metrics.AdvancedPie("custom_generators", () -> {
-                Map<String, Integer> map = new HashMap<>();
-                for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds()) {
-                    String gen = w.getGenerator() != null ? w.getGenerator() : "N/A";
-                    map.putIfAbsent(gen, 0);
-                    map.put(gen, map.get(gen) + 1);
-                }
-
-                return map;
-            }));
-
-            metrics.addCustomChart(new Metrics.AdvancedPie("environments", () -> {
-                Map<String, Integer> map = new HashMap<>();
-                for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds()) {
-                    String env = w.getEnvironment().name().replace('_', ' ');
-                    env = StringUtils.capitalize(env.toLowerCase());
-                    map.putIfAbsent(env, 0);
-                    map.put(env, map.get(env) + 1);
-                }
-
-                return map;
-            }));
-
-            // TODO: add Worlds vs Loaded Worlds once bStats adds support for multi-line charts
-            log(Level.FINE, "Metrics were set up!");
-        } catch (Exception e) {
-            log(Level.WARNING, "There was an issue while enabling metrics:");
-            e.printStackTrace();
-        }
     }
 
     private void initializeDestinationFactory() {
