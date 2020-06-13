@@ -74,29 +74,43 @@ public class GameruleCommand extends MultiverseCommand {
             sender.sendMessage(ChatColor.RED + "Failure! " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE
                     + " is not a valid gamerule.");
         } else {
-            boolean success = false;
-
-            try {
-                if (gameRule.getType() == Boolean.class) {
-                    if (value.equalsIgnoreCase("true")) success = world.setGameRule(gameRule, true);
-                    else if (value.equalsIgnoreCase("false")) success = world.setGameRule(gameRule, false);
-                } else if (gameRule.getType() == Integer.class) {
-                    success = world.setGameRule(gameRule, Integer.parseInt(value));
+            if (gameRule.getType() == Boolean.class) {
+                if (value.equalsIgnoreCase("true")) {
+                    if (!world.setGameRule(gameRule, true)) {
+                        sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
+                        return;
+                    }
+                } else if (value.equalsIgnoreCase("false")) {
+                    if (!world.setGameRule(gameRule, false)) {
+                        sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
+                        return;
+                    }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
-                            + ChatColor.WHITE + " isn't supported yet, please let us know about it.");
+                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to true or false.");
                     return;
                 }
-            } catch (NumberFormatException ignored) {}
-
-            if (success) {
-                sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
-                        + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
+            } else if (gameRule.getType() == Integer.class) {
+                try {
+                    if (!world.setGameRule(gameRule, Integer.parseInt(value))) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to a positive integer.");
+                    return;
+                }
             } else {
                 sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
-                        + ChatColor.WHITE + " cannot be set to " + ChatColor.RED + value + ChatColor.WHITE + ", it can only be set to type "
-                        + gameRule.getType().getSimpleName() + ".");
-                }
+                        + ChatColor.WHITE + " isn't supported yet, please let us know about it.");
+                return;
+            }
+
+            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
+                    + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
         }
+    }
+
+    private String getErrorMessage(String gameRule, String value) {
+        return ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule
+                + ChatColor.WHITE + " could not be set to " + ChatColor.RED + value + ChatColor.WHITE + ", ";
     }
 }
