@@ -44,13 +44,13 @@ public class VersionCommand extends MultiverseCommand {
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Multiverse Version");
-        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bh] [--include-plugin-list]");
+        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bhp] [--include-plugin-list]");
         this.setArgRange(0, 2);
         this.addKey("mv version");
         this.addKey("mvv");
         this.addKey("mvversion");
         this.setPermission("multiverse.core.version",
-                "Dumps version info to the console, optionally to pastebin.com with -b, or to hastebin.com using -h.", PermissionDefault.TRUE);
+                "Dumps version info to the console, optionally to pastebin.com with -b, to hastebin.com using -h, or to paste.gg with -p.", PermissionDefault.TRUE);
     }
 
     private String getLegacyString() {
@@ -181,6 +181,9 @@ public class VersionCommand extends MultiverseCommand {
                     } else if (CommandHandler.hasFlag("-h", args)) {
                         // private post to hastebin
                         pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
+                    } else if (CommandHandler.hasFlag("-p", args)) {
+                        // private post to paste.gg
+                        pasteUrl = postToService(PasteServiceType.PASTEGG, true, data, files);
                     } else {
                         return;
                     }
