@@ -81,7 +81,7 @@ public class VersionCommand extends MultiverseCommand {
                 "| --- | --- |" + System.lineSeparator() +
                 "| Multiverse-Core Version | `" + this.plugin.getDescription().getVersion() + "` |" + System.lineSeparator() +
                 "| Bukkit Version | `" + this.plugin.getServer().getVersion() + "` |" + System.lineSeparator() +
-                //"| Loaded Worlds | `" + this.plugin.getMVWorldManager().getMVWorlds() + "` |" + System.lineSeparator() +
+                "| Loaded Worlds | `" + this.plugin.getMVWorldManager().getMVWorlds() + "` |" + System.lineSeparator() +
                 "| Multiverse Plugins Loaded | `" + this.plugin.getPluginCount() + "` |" + System.lineSeparator() +
                 "| Economy being used | `" + plugin.getEconomist().getEconomyName() + "` |" + System.lineSeparator() +
                 "| Permissions Plugin | `" + this.plugin.getMVPerms().getType() + "` |" + System.lineSeparator() +
@@ -134,7 +134,7 @@ public class VersionCommand extends MultiverseCommand {
         File configFile = new File(this.plugin.getDataFolder(), "config.yml");
         files.put(configFile.getName(), this.readFile(configFile.getAbsolutePath()));
 
-        // Add the config.yml
+        // Add the worlds.yml
         File worldConfig = new File(this.plugin.getDataFolder(), "worlds.yml");
         files.put(worldConfig.getName(), this.readFile(worldConfig.getAbsolutePath()));
         return files;
@@ -148,13 +148,14 @@ public class VersionCommand extends MultiverseCommand {
         }
 
         MVVersionEvent versionEvent = new MVVersionEvent(this.getLegacyString(), this.getVersionFiles());
-        final Map<String, String> files = this.getVersionFiles();
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
 
         String versionInfo = versionEvent.getVersionInfo();
+        Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
         if (CommandHandler.hasFlag("--include-plugin-list", args)) {
             versionInfo = versionInfo + System.lineSeparator() + "Plugins: " + getPluginList();
+            files.put("plugins.txt", "Plugins: " + getPluginList());
         }
 
         final String data = versionInfo;
