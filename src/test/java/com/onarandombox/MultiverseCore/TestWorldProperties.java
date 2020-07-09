@@ -166,7 +166,7 @@ public class TestWorldProperties {
         assertTrue(mvWorld.isKeepingSpawnInMemory());
         assertTrue(mvWorld.getBedRespawn());
         assertTrue(mvWorld.getAutoLoad());
-        assertEquals(new SpawnLocation(0, 64, 0), mvWorld.getSpawnLocation());
+        assertEquals(new SpawnLocation(core.getServer().getWorld("world"), 0, 64, 0), mvWorld.getSpawnLocation());
 
         /* ****************************************** *
          *    Call some events and verify behavior
@@ -258,7 +258,7 @@ public class TestWorldProperties {
         mvWorld.setAutoLoad(false);
         assertEquals(false, mvWorld.getAutoLoad());
         mvWorld.setSpawnLocation(new Location(mvWorld.getCBWorld(), 1, 1, 1));
-        assertEquals(new SpawnLocation(1, 1, 1), mvWorld.getSpawnLocation());
+        assertEquals(new SpawnLocation(core.getServer().getWorld("world"), 1, 1, 1), mvWorld.getSpawnLocation());
 
 
         /* ****************************************** *
@@ -297,7 +297,7 @@ public class TestWorldProperties {
         core.getPlayerListener().playerJoin(playerJoinEvent);
         verify(mockPlayer, never()).teleport(any(Location.class));
         core.getPlayerListener().playerJoin(playerNewJoinEvent);
-        verify(mockNewPlayer).teleport(new SpawnLocation(1, 1, 1));
+        verify(mockNewPlayer).teleport(new SpawnLocation(core.getServer().getWorld("world"), 1, 1, 1));
 
         // call player respawn events
         core.getPlayerListener().playerRespawn(playerRespawnBed);
@@ -347,7 +347,7 @@ public class TestWorldProperties {
         assertEquals(false, mvWorld.isKeepingSpawnInMemory());
         assertEquals(false, mvWorld.getBedRespawn());
         assertEquals(false, mvWorld.getAutoLoad());
-        assertEquals(new SpawnLocation(1, 1, 1), mvWorld.getSpawnLocation());
+        assertEquals(new SpawnLocation(core.getServer().getWorld("world"), 1, 1, 1), mvWorld.getSpawnLocation());
     }
 
     public void createEvents(MultiverseWorld mvWorld) {

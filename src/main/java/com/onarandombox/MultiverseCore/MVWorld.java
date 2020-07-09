@@ -28,7 +28,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -346,7 +345,7 @@ public class MVWorld implements MultiverseWorld {
     @SerializableAs("MVNullLocation (It's a bug if you see this in your config file)")
     public static final class NullLocation extends SpawnLocation {
         public NullLocation() {
-            super(0, -1, 0);
+            super(null, 0, -1, 0);
         }
 
         @Override
