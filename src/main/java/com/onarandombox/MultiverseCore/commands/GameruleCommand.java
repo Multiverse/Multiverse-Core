@@ -25,7 +25,7 @@ public class GameruleCommand extends MultiverseCommand {
 
     public GameruleCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setName("Set a Minecraft gamerule for a World.");
+        this.setName("Set a Minecraft Game Rule for a World.");
         this.setCommandUsage("/mv gamerule " + ChatColor.GREEN + "{RULE} {VALUE}" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(2, 3);
         this.addKey("mv gamerule");
