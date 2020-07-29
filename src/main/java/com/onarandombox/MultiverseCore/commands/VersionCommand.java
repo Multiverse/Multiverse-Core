@@ -116,7 +116,7 @@ public class VersionCommand extends MultiverseCommand {
             String line;
             result = new StringBuilder();
             while ((line = bufferedReader.readLine()) != null) {
-                result.append(line).append(System.lineSeparator());
+                result.append(line).append("\n");
             }
         } catch (FileNotFoundException e) {
             Logging.severe("Unable to find %s. Here's the traceback: %s", filename, e.getMessage());
