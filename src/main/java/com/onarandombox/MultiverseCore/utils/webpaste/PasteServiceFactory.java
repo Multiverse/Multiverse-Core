@@ -14,12 +14,14 @@ public class PasteServiceFactory {
      */
     public static PasteService getService(PasteServiceType type, boolean isPrivate) {
         switch(type) {
+            case PASTEGG:
+                return new PasteGGPasteService(isPrivate);
             case PASTEBIN:
                 return new PastebinPasteService(isPrivate);
             case HASTEBIN:
                 return new HastebinPasteService();
             case GITHUB:
-                return new GithubPasteService(isPrivate);
+                return new GitHubPasteService(isPrivate);
             default:
                 return null;
         }

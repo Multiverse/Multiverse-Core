@@ -66,4 +66,13 @@ public class MVVersionEvent extends Event {
     public void appendVersionInfo(String moreVersionInfo) {
         this.versionInfoBuilder.append(moreVersionInfo);
     }
+
+    /**
+     * Adds a file to to the detailed version-info currently saved in this event.
+     * @param filename The name of the file.
+     * @param text The file's content.
+     */
+    public void putDetailedVersionInfo(String filename, String text) {
+        this.detailedVersionInfo.put(filename, text);
+    }
 }
