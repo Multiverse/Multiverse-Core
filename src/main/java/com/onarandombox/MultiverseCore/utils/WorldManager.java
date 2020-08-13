@@ -193,16 +193,31 @@ public class WorldManager implements MVWorldManager {
 
         if (newWorldFile.exists()) {
             Logging.fine("Succeeded at copying files");
-            if (this.addWorld(newName, environment, seedString, worldType, generateStructures, generator, useSpawnAdjust)) {
-                // getMVWorld() doesn't actually return an MVWorld
-                Logging.fine("Succeeded at importing world");
-                MVWorld newWorld = (MVWorld) this.getMVWorld(newName);
-                newWorld.copyValues(this.worldsFromTheConfig.get(oldName));
-                // don't keep the alias the same -- that would be useless
-                newWorld.setAlias("");
-                return true;
+
+            // initialize new properties with old ones
+            WorldProperties newProps = new WorldProperties();
+            newProps.copyValues(this.worldsFromTheConfig.get(oldName));
+            // don't keep the alias the same -- that would be useless
+            newProps.setAlias("");
+            // store the new properties in worlds config map
+            this.worldsFromTheConfig.put(newName, newProps);
+
+            // save the worlds config to disk (worlds.yml)
+            if (!saveWorldsConfig()) {
+                this.plugin.log(Level.SEVERE, "Failed to save worlds.yml");
+                return false;
             }
+
+            // actually load the world
+            if (doLoad(newName)) {
+               this.plugin.log(Level.FINE, "Succeeded at loading cloned world '" + newName + "'");
+               return true;
+            }
+
+            this.plugin.log(Level.SEVERE, "Failed to load the cloned world '" + newName + "'");
+            return false;
         }
+
         Logging.warning("Failed to copy files for world '%s', see the log info", newName);
         return false;
     }
