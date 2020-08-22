@@ -8,6 +8,8 @@ about: Report an Multiverse-Core bug. Only use this if you're 100% sure it's som
 
 Don't put anything inside this block, as it won't be included in the issue.
 
+Get latest build from: http://ci.onarandombox.com/view/Multiverse/
+
 If you are having issues with other submodules of Multiverse, go to their respective git repo:
     Multiverse-Portals: https://github.com/Multiverse/Multiverse-Portals/issues
     Multiverse-NetherPortals: https://github.com/Multiverse/Multiverse-NetherPortals/issues
@@ -32,11 +34,14 @@ If you are reporting a bug, please follow the following steps:
 
 ### Information
 
-**Full output of `/mv version -b`:** <!-- Replace this with the command output's pastebin.com link -->
+* **Server version:** <!-- Insert output of `/version` command -->
 
-**Server log:** <!-- Upload `logs/latest.log` to https://gist.github.com/ -->
+* **Full output of `/mv version -b`:** <!-- Replace this with the command output's https://pastebin.com link -->
+
+* **Server log:** <!-- Upload `logs/latest.log` to https://gist.github.com/ -->
 
 ### Details
+I was **`<able / not able>`** to reproduce my issue on a freshly setup and up-to-date server with the latest version of Multiverse plugins with no other plugins and with no kinds of other server or client mods.
 
 **Description**  
 <!-- Replace this with a brief summary of the bug. -->

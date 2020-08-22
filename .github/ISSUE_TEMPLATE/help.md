@@ -8,6 +8,8 @@ about: Encountered a problem with Multiverse-Core? Not sure how to fix it?
 
 Don't write inside the arrows as they will be hidden when you post your issue.
 
+Get latest build from: http://ci.onarandombox.com/view/Multiverse/
+
 If you need help other submodules of Multiverse, go to their respective git repo:
     Multiverse-Portals: https://github.com/Multiverse/Multiverse-Portals/issues
     Multiverse-NetherPortals: https://github.com/Multiverse/Multiverse-NetherPortals/issues
@@ -33,9 +35,11 @@ If you're happy to wait (or you were sent here from Discord), read on:
 
 ### Information
 
-**Full output of `/mv version -b`:** <!-- Replace this with the command output's pastebin.com link -->
+* **Server version:** <!-- Insert output of `/version` command -->
 
-**Server log:** <!-- Upload `logs/latest.log` to https://gist.github.com/ -->
+* **Full output of `/mv version -b`:** <!-- Replace this with the command output's https://pastebin.com link -->
+
+* **Server log:** <!-- Upload `logs/latest.log` to https://gist.github.com/ -->
 
 ### Help request
 

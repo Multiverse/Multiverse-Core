@@ -9,6 +9,8 @@ about: Suggest a feature you want to see in Multiverse-Core!
 Fill out the template. Don't write inside the arrows as they will be hidden
 when you post your issue.
 
+Get latest build from: http://ci.onarandombox.com/view/Multiverse/
+
 If you are look for other submodules of Multiverse, go to their respective git repo:
     Multiverse-Portals: https://github.com/Multiverse/Multiverse-Portals/issues
     Multiverse-NetherPortals: https://github.com/Multiverse/Multiverse-NetherPortals/issues
