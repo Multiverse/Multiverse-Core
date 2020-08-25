@@ -1,5 +1,5 @@
 ---
-name: Report a bug
+name: Report a Bug
 about: Report an Multiverse-Core bug. Only use this if you're 100% sure it's something wrong with Multiverse-Core - otherwise, try "Help!".
 
 ---
