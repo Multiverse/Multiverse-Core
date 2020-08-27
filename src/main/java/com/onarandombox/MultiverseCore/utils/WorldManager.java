@@ -17,12 +17,8 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -47,6 +43,7 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -126,6 +123,11 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
+        // Check for valid world name
+        if (!(isValidWorldName(oldName) && isValidWorldName(newName))) {
+            return false;
+        }
+
         final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
         final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
         final List<String> ignoreFiles = new ArrayList<>(Arrays.asList("session.lock", "uid.dat"));
@@ -198,6 +200,10 @@ public class WorldManager implements MVWorldManager {
                 newWorld.setAlias("");
                 return true;
             }
+            else {
+                Logging.warning("Error in importing newly cloned world, see log for info");
+                return false;
+            }
         }
         Logging.warning("Failed to copy files for world '%s', see the log info", newName);
         return false;
@@ -221,6 +227,11 @@ public class WorldManager implements MVWorldManager {
         if (name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("logs")) {
             return false;
         }
+
+        if (!isValidWorldName(name)) {
+            return false;
+        }
+
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
@@ -401,6 +412,22 @@ public class WorldManager implements MVWorldManager {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Check if the world name is allowed
+     *
+     * @param name   Name of the world
+     * @return True if the world world name is valid based on regex
+     */
+    private boolean isValidWorldName(String name) {
+        String worldNamePattern = "[a-zA-Z0-9/._-]+";
+        if (!name.matches(worldNamePattern)) {
+            Logging.warning("Invalid world name '" + name + "'");
+            Logging.warning("World name should not contain spaces or special characters!");
+            return false;
+        }
+        return true;
     }
 
     private void brokenWorld(String name) {
