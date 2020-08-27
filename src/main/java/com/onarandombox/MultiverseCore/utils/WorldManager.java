@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -127,6 +128,7 @@ public class WorldManager implements MVWorldManager {
 
         final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
         final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
+        final List<String> ignoreFiles = new ArrayList<>(Arrays.asList("session.lock", "uid.dat"));
 
         // Make sure the new world doesn't exist outside of multiverse.
         if (newWorldFile.exists()) {
@@ -177,20 +179,14 @@ public class WorldManager implements MVWorldManager {
             oldWorld.getCBWorld().save();
         }
         Logging.config("Copying files for world '%s'", oldName);
-        if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, Logging.getLogger())) {
+        if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, ignoreFiles, Logging.getLogger())) {
             Logging.warning("Failed to copy files for world '%s', see the log info", newName);
             return false;
         }
         if (oldWorld != null && wasAutoSave) {
             oldWorld.getCBWorld().setAutoSave(true);
         }
-
-        File uidFile = new File(newWorldFile, "uid.dat");
-        if (uidFile.exists() && !uidFile.delete()) {
-            Logging.warning("Failed to delete unique ID file for world '%s'", newName);
-            return false;
-        }
-
+        
         if (newWorldFile.exists()) {
             Logging.fine("Succeeded at copying files");
             if (this.addWorld(newName, environment, seedString, worldType, generateStructures, generator, useSpawnAdjust)) {

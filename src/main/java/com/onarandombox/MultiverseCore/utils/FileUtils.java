@@ -16,7 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -72,14 +74,27 @@ public class FileUtils {
      * @param target Target-File
      * @param log A logger that logs the operation
      *
-     * @return if it had success
+     * @return true if it had success
      */
     public static boolean copyFolder(File source, File target, Logger log) {
+        return copyFolder(source, target, null, log);
+    }
+
+    /**
+     * Helper method to copy the world-folder.
+     * @param source Source-File
+     * @param target Target-File
+     * @param excludeFiles files to ignore and not copy over to Target-File
+     * @param log A logger that logs the operation
+     *
+     * @return true if it had success
+     */
+    public static boolean copyFolder(File source, File target, List<String> excludeFiles, Logger log) {
         Path sourceDir = source.toPath();
         Path targetDir = target.toPath();
 
         try {
-            Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir));
+            Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir, excludeFiles));
             return true;
         } catch (IOException e) {
             log.log(Level.WARNING, "Unable to copy directory", e);
@@ -91,10 +106,12 @@ public class FileUtils {
 
         private final Path sourceDir;
         private final Path targetDir;
+        private final List<String> excludeFiles;
 
-        private CopyDirFileVisitor(Path sourceDir, Path targetDir) {
+        private CopyDirFileVisitor(Path sourceDir, Path targetDir, List<String> excludeFiles) {
             this.sourceDir = sourceDir;
             this.targetDir = targetDir;
+            this.excludeFiles = excludeFiles;
         }
 
         @Override
@@ -108,6 +125,10 @@ public class FileUtils {
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            // Pass files that are set to ignore
+            if (excludeFiles != null && excludeFiles.contains(file.getFileName().toString()))
+                return FileVisitResult.CONTINUE;
+            // Copy the files
             Path targetFile = targetDir.resolve(sourceDir.relativize(file));
             Files.copy(file, targetFile, COPY_ATTRIBUTES);
             return FileVisitResult.CONTINUE;

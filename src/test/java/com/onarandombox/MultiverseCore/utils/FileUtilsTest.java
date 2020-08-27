@@ -6,6 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.junit.After;
@@ -84,6 +87,34 @@ public class FileUtilsTest {
         assertTrue(Files.isRegularFile(targetFile));
         assertTrue(Files.isDirectory(targetChildDir));
         assertTrue(Files.isRegularFile(targetChildDirFile));
+    }
+
+    @Test
+    public void copyFolder_excludingSomeFiles() throws Exception {
+        Path targetDir = tempDir.resolve("target");
+        Path targetFile = targetDir.resolve("parentDirFile.txt");
+        Path targetIgnoreFile = targetDir.resolve("parentIgnoreFile.txt");
+        Path targetChildDir = targetDir.resolve("childDir");
+        Path targetChildDirFile = targetChildDir.resolve("childDirFile.txt");
+        Path targetChildIgnoreFile = targetChildDir.resolve("childIgnoreFile.txt");
+
+        List<String> excludeFiles = new ArrayList<>(Arrays.asList("parentIgnoreFile.txt", "childIgnoreFile.txt"));
+
+        assertFalse(Files.isDirectory(targetDir));
+        assertFalse(Files.isRegularFile(targetFile));
+        assertFalse(Files.isRegularFile(targetIgnoreFile));
+        assertFalse(Files.isDirectory(targetChildDir));
+        assertFalse(Files.isRegularFile(targetChildDirFile));
+        assertFalse(Files.isRegularFile(targetChildIgnoreFile));
+
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), excludeFiles, Logging.getLogger()));
+
+        assertTrue(Files.isDirectory(targetDir));
+        assertTrue(Files.isRegularFile(targetFile));
+        assertFalse(Files.isRegularFile(targetIgnoreFile));
+        assertTrue(Files.isDirectory(targetChildDir));
+        assertTrue(Files.exists(targetChildDirFile));
+        assertFalse(Files.isRegularFile(targetChildIgnoreFile));
     }
 
     @Test
