@@ -35,6 +35,7 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -90,6 +92,98 @@ public class WorldManager implements MVWorldManager {
         } else {
             this.plugin.log(Level.WARNING, "Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean convertVanillaWorld(String name) {
+        final String netherName = name + "_nether";
+        final String endName = name + "_the_end";
+
+        // File variables
+        // Overworld
+        File worldFolder = new File(this.plugin.getServer().getWorldContainer(), name);
+        File worldDatFile = new File(worldFolder, "level.dat");
+        // Nether
+        File netherDIMFolder = new File(worldFolder, "DIM-1");
+        File netherWorldFolder = new File(this.plugin.getServer().getWorldContainer(), netherName);
+        File netherDatFile = new File(netherWorldFolder, "level.dat");
+        // End
+        File endDIMFolder = new File(worldFolder, "DIM1");
+        File endWorldFolder = new File(this.plugin.getServer().getWorldContainer(), endName);
+        File endDatFile = new File(endWorldFolder, "level.dat");
+
+        // Ensure that relevant files and folder needed exist
+        if (!worldDatFile.isFile()) {
+            this.plugin.log(Level.SEVERE, "Vanilla world does not have valid .dat file!");
+            return false;
+        }
+        if (!netherDIMFolder.isDirectory()) {
+            this.plugin.log(Level.SEVERE, "Vanilla world does not have a nether dimension!");
+            return false;
+        }
+        if (!endDIMFolder.isDirectory()) {
+            this.plugin.log(Level.SEVERE, "Vanilla world does not have a end dimension!");
+            return false;
+        }
+
+        // Check if folders to create already present
+        if (netherWorldFolder.exists()) {
+            this.plugin.log(Level.SEVERE, netherName + " world folder already exist! Unable to import vanilla world.");
+            return false;
+        }
+        if (endWorldFolder.exists()) {
+            this.plugin.log(Level.SEVERE, endName + " world folder already exist! Unable to import vanilla world.");
+            return false;
+        }
+
+        // Copy the files and folders
+        // Nether
+        if (!FileUtils.copyFolder(netherDIMFolder, netherWorldFolder, Logging.getLogger())) {
+            this.plugin.log(Level.SEVERE, "Unable to copy " + netherDIMFolder.toString() +
+                    "to " + netherWorldFolder.toString());
+            return false;
+        }
+        try {
+            Files.copy(worldDatFile.toPath(), netherDatFile.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.plugin.log(Level.SEVERE, "Unable to copy " + worldDatFile.toString() +
+                    "to " + netherDatFile.toString());
+            return false;
+        }
+        // End
+        if (!FileUtils.copyFolder(endDIMFolder, endWorldFolder, Logging.getLogger())) {
+            this.plugin.log(Level.SEVERE, "Unable to copy " + endDIMFolder.toString() +
+                    "to " + endWorldFolder.toString());
+            return false;
+        }
+        try {
+            Files.copy(worldDatFile.toPath(), endDatFile.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.plugin.log(Level.SEVERE, "Unable to copy " + worldDatFile.toString() +
+                    "to " + endDatFile.toString());
+            return false;
+        }
+
+        // Add the worlds to mv
+        if (!this.addWorld(name, Environment.NORMAL, null, null, true, null)) {
+            this.plugin.log(Level.SEVERE, "Error occurred while importing " + name);
+            return false;
+        }
+        if (!this.addWorld(netherName, Environment.NETHER, null, null, true, null)) {
+            this.plugin.log(Level.SEVERE, "Error occurred while importing " + netherName);
+            return false;
+        }
+        if (!this.addWorld(endName, Environment.THE_END, null, null, true, null)) {
+            this.plugin.log(Level.SEVERE, "Error occurred while importing " + endName);
+            return false;
+        }
+
+        return true;
     }
 
     /**

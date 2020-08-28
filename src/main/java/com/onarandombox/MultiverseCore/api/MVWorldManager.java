@@ -60,6 +60,14 @@ public interface MVWorldManager {
                      String generator, boolean useSpawnAdjust);
 
     /**
+     * Splits vanilla world dimensions into individual overworld, nether and end
+     *
+     * @param name   Name of the vanilla world
+     * @return True if the world is copied successfully, false if not.
+     */
+    boolean convertVanillaWorld(String name);
+
+    /**
      * Make a copy of a world.
      *
      * @param oldName            Name of world to be copied
