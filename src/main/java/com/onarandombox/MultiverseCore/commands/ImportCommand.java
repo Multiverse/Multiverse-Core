@@ -105,6 +105,7 @@ public class ImportCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = trimWorldName(args.get(0));
 
+        // List down possible worlds available for import
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
             String worldList = this.getPotentialWorlds();
             if (worldList.length() > 2) {
@@ -131,6 +132,21 @@ public class ImportCommand extends MultiverseCommand {
 
         File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
 
+        // Ensure world available for import
+        if (!worldFile.exists()) {
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            String worldList = this.getPotentialWorlds();
+            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
+            sender.sendMessage(worldList);
+            return;
+        } else if (!checkIfIsWorld(worldFile)) {
+            sender.sendMessage(ChatColor.RED + "FAILED.");
+            sender.sendMessage(String.format("'%s' does not appear to be a world. It is lacking a .dat file.",
+                    worldName));
+            return;
+        }
+
+        // Generator
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
         for (String s : args) {
@@ -140,32 +156,37 @@ public class ImportCommand extends MultiverseCommand {
         }
 
         String env = args.get(1);
+
+        // Vanilla import
+        if (env.toLowerCase().equals("--vanilla") || env.toLowerCase().equals("-v")) {
+            if (this.worldManager.convertVanillaWorld(worldName)) {
+                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete vanilla import!");
+            } else {
+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed! See console for more details.");
+            }
+            return;
+        }
+
+        // Environment
         Environment environment = EnvironmentCommand.getEnvFromString(env);
         if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
-        }
-
-        if (!worldFile.exists()) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            String worldList = this.getPotentialWorlds();
-            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
-            sender.sendMessage(worldList);
-        } else if (!checkIfIsWorld(worldFile)) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage(String.format("'%s' does not appear to be a world. It is lacking a .dat file.",
-                                             worldName));
         } else if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world environment did not exist.");
             sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
-        } else {
-            Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
-            if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust))
-                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            else
-                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            return;
+        }
+
+        // Import world
+        Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
+        if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust)) {
+            Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
+        }
+        else {
+            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed! See console for more details.");
         }
     }
 }
