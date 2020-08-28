@@ -37,11 +37,11 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * The implementation of a Multiverse handled world.
@@ -520,6 +520,14 @@ public class MVWorld implements MultiverseWorld {
             props.setAlias(this.getName());
         }
 
+        final String REPLACE_COLOR_PATTERN = "(&)?&([0-9a-fk-orA-FK-OR])";
+        final String REPLACE_RGB_PATTERN = "(&)?&#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])";
+
+        // Parse rgb color codes
+        String parsedRBGAlias = props.getAlias().replaceAll(REPLACE_RGB_PATTERN, "§x§$2§$3§$4§$5§$6§$7");
+        // normal code code
+        String parsedColorAlias = parsedRBGAlias.replaceAll(REPLACE_COLOR_PATTERN, "§$2");
+
         if ((props.getColor() == null) || (props.getColor().getColor() == null)) {
             this.props.setColor(EnglishChatColor.WHITE);
         }
@@ -527,7 +535,7 @@ public class MVWorld implements MultiverseWorld {
         StringBuilder nameBuilder = new StringBuilder().append(props.getColor().getColor());
         if (props.getStyle().getColor() != null)
             nameBuilder.append(props.getStyle().getColor());
-        nameBuilder.append(props.getAlias()).append(ChatColor.WHITE).toString();
+        nameBuilder.append(parsedColorAlias).append(ChatColor.WHITE);
 
         return nameBuilder.toString();
     }
