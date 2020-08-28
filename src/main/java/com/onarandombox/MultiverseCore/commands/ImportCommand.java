@@ -159,6 +159,7 @@ public class ImportCommand extends MultiverseCommand {
 
         // Vanilla import
         if (env.toLowerCase().equals("--vanilla") || env.toLowerCase().equals("-v")) {
+            Command.broadcastCommandMessage(sender, String.format("Starting import of vanilla world '%s'...", worldName));
             if (this.worldManager.convertVanillaWorld(worldName)) {
                 Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete vanilla import!");
             } else {

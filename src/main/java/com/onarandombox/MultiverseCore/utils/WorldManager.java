@@ -102,6 +102,14 @@ public class WorldManager implements MVWorldManager {
         final String netherName = name + "_nether";
         final String endName = name + "_the_end";
 
+        // Ensure world has not been imported
+        if (this.worlds.containsKey(name)) {
+            this.plugin.log(Level.SEVERE, "The vanilla world has already been imported to MV as a " +
+                    this.worlds.get(name).getEnvironment().toString());
+            this.plugin.log(Level.SEVERE, "Run /mv remove before importing with MV vanilla conversion again.");
+            return false;
+        }
+
         // File variables
         // Overworld
         File worldFolder = new File(this.plugin.getServer().getWorldContainer(), name);
@@ -170,14 +178,17 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Add the worlds to mv
+        // Overworld
         if (!this.addWorld(name, Environment.NORMAL, null, null, true, null)) {
             this.plugin.log(Level.SEVERE, "Error occurred while importing " + name);
             return false;
         }
+        // Nether
         if (!this.addWorld(netherName, Environment.NETHER, null, null, true, null)) {
             this.plugin.log(Level.SEVERE, "Error occurred while importing " + netherName);
             return false;
         }
+        // End
         if (!this.addWorld(endName, Environment.THE_END, null, null, true, null)) {
             this.plugin.log(Level.SEVERE, "Error occurred while importing " + endName);
             return false;
