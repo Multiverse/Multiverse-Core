@@ -28,7 +28,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -1130,6 +1129,22 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public boolean getBedRespawn() {
+        return this.props.getBedRespawn();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAnchorRespawn(boolean respawn) {
+        this.props.setBedRespawn(respawn);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getAnchorRespawn() {
         return this.props.getBedRespawn();
     }
 

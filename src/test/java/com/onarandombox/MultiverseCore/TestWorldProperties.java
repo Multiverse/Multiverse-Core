@@ -13,6 +13,7 @@ import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
+import com.onarandombox.MultiverseCore.utils.VersionUtils;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,6 +80,7 @@ public class TestWorldProperties {
     private PlayerJoinEvent playerNewJoinEvent;
     private PlayerJoinEvent playerJoinEvent;
     private PlayerRespawnEvent playerRespawnBed;
+    private PlayerRespawnEvent playerRespawnAnchor;
     private PlayerRespawnEvent playerRespawnNormal;
     private HumanEntity mockHumanEntity;
     private EntityRegainHealthEvent entityRegainHealthEvent;
@@ -93,6 +95,8 @@ public class TestWorldProperties {
         mockCommandSender = creator.getCommandSender();
         MockWorldFactory.createWorldDirectory("world");
         MockWorldFactory.createWorldDirectory("world_nether");
+        MockWorldFactory.createWorldDirectory("world_the_end");
+        VersionUtils.setTestServerVersion("1.16.2-R0.1-SNAPSHOT");
     }
 
     @After
@@ -131,6 +135,20 @@ public class TestWorldProperties {
         assertEquals(core.getServer().getWorlds().get(1).getEnvironment(), World.Environment.NETHER);
         assertEquals(core.getServer().getWorlds().get(1).getWorldType(), WorldType.NORMAL);
 
+        // Import a third world
+        String[] endArgs = new String[] { "import", "world_the_end", "end" };
+        core.onCommand(mockCommandSender, mockCommand, "", endArgs);
+        verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");
+        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(
+                ChatColor.GREEN + "Complete!");
+
+        assertEquals(core.getServer().getWorlds().size(), 3);
+        assertEquals(core.getServer().getWorlds().get(0).getName(), "world");
+        assertEquals(core.getServer().getWorlds().get(1).getName(), "world_nether");
+        assertEquals(core.getServer().getWorlds().get(2).getName(), "world_the_end");
+        assertEquals(core.getServer().getWorlds().get(2).getEnvironment(), World.Environment.THE_END);
+        assertEquals(core.getServer().getWorlds().get(2).getWorldType(), WorldType.NORMAL);
+
         // ////////////////////////////////////////////////
         // let's set some world-properties
         // we can test the API with this, too :D
@@ -139,6 +157,7 @@ public class TestWorldProperties {
 
         MultiverseWorld mvWorld = worldManager.getMVWorld("world");
         MultiverseWorld netherWorld = worldManager.getMVWorld("world_nether");
+        MultiverseWorld endWorld = worldManager.getMVWorld("world_the_end");
         assertNotNull(mvWorld);
         assertNotNull(netherWorld);
         assertSame(mvWorld, worldManager.getFirstSpawnWorld());
@@ -165,6 +184,7 @@ public class TestWorldProperties {
         assertEquals(GameMode.SURVIVAL, mvWorld.getGameMode());
         assertTrue(mvWorld.isKeepingSpawnInMemory());
         assertTrue(mvWorld.getBedRespawn());
+        assertTrue(mvWorld.getAnchorRespawn());
         assertTrue(mvWorld.getAutoLoad());
         assertEquals(new SpawnLocation(0, 64, 0), mvWorld.getSpawnLocation());
 
@@ -199,12 +219,22 @@ public class TestWorldProperties {
         core.getPlayerListener().playerJoin(playerNewJoinEvent);
         verify(mockNewPlayer).teleport(worldManager.getFirstSpawnWorld().getSpawnLocation());
 
-        // call player respawn events
+        // call player bed respawn events
         core.getPlayerListener().playerRespawn(playerRespawnBed);
         // bedrespawn is on so nothing should happen
         verify(playerRespawnBed, never()).setRespawnLocation(any(Location.class));
+
+        // call normal spawn point respawn
         core.getPlayerListener().playerRespawn(playerRespawnNormal);
         verify(playerRespawnNormal).setRespawnLocation(mvWorld.getSpawnLocation());
+
+        // call player nether anchor respawn event
+        core.getPlayerListener().playerRespawn(playerRespawnAnchor);
+        verify(playerRespawnAnchor, never()).setRespawnLocation(any(Location.class));
+        // Older version, so shouldnt call anchor respawn event
+        VersionUtils.setTestServerVersion("1.15.2-R0.1-SNAPSHOT");
+        core.getPlayerListener().playerRespawn(playerRespawnAnchor);
+        verify(playerRespawnAnchor).setRespawnLocation(mvWorld.getSpawnLocation());
 
         // call entity regain health event
         core.getEntityListener().entityRegainHealth(entityRegainHealthEvent);
@@ -255,6 +285,8 @@ public class TestWorldProperties {
         assertEquals(false, mvWorld.isKeepingSpawnInMemory());
         mvWorld.setBedRespawn(false);
         assertEquals(false, mvWorld.getBedRespawn());
+        mvWorld.setAnchorRespawn(false);
+        assertEquals(false, mvWorld.getAnchorRespawn());
         mvWorld.setAutoLoad(false);
         assertEquals(false, mvWorld.getAutoLoad());
         mvWorld.setSpawnLocation(new Location(mvWorld.getCBWorld(), 1, 1, 1));
@@ -376,13 +408,17 @@ public class TestWorldProperties {
         when(playerJoinEvent.getPlayer()).thenReturn(mockPlayer);
         playerNewJoinEvent = PowerMockito.mock(PlayerJoinEvent.class);
         when(playerNewJoinEvent.getPlayer()).thenReturn(mockNewPlayer);
-        // player respawn
+        // player bed respawn
         playerRespawnBed = PowerMockito.mock(PlayerRespawnEvent.class);
         when(playerRespawnBed.getPlayer()).thenReturn(mockPlayer);
         when(playerRespawnBed.isBedSpawn()).thenReturn(true);
         playerRespawnNormal = PowerMockito.mock(PlayerRespawnEvent.class);
         when(playerRespawnNormal.getPlayer()).thenReturn(mockPlayer);
         when(playerRespawnNormal.isBedSpawn()).thenReturn(false);
+        // player nether anchor respawn
+        playerRespawnAnchor = PowerMockito.mock(PlayerRespawnEvent.class);
+        when(playerRespawnAnchor.getPlayer()).thenReturn(mockPlayer);
+        when(playerRespawnAnchor.isAnchorSpawn()).thenReturn(true);
         //// Entity events
         mockHumanEntity = mock(HumanEntity.class);
         // entity regain health
