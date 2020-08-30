@@ -30,15 +30,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Matchers;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
+import java.io.IOException;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
@@ -62,6 +66,91 @@ public class TestWorldStuff {
     @After
     public void tearDown() throws Exception {
         creator.tearDown();
+    }
+
+    @Test
+    public void testVanillaWorldConversion_noNetherAndEnd() throws IOException {
+        // Create files needed
+        MockWorldFactory.createWorldDirectory("vanilla");
+
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null
+        assertNotNull(plugin);
+
+        // Make sure Core is enabled
+        assertTrue(plugin.isEnabled());
+
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
+
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Import the vanilla world.
+        String[] skyArgs = new String[]{ "import", "vanilla", "--vanilla" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", skyArgs);
+
+        // We now should have 3 worlds
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Verify that the commandSender shows failed message
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Failed! See console for more details.");
+    }
+
+    @Test
+    public void testVanillaWorldConversion() throws IOException {
+        // Create files needed
+        File worldFolder = new File(TestInstanceCreator.serverDirectory, "vanilla");
+        File worldDat = new File(worldFolder, "level.dat");
+        File worldNether = new File(worldFolder, "DIM-1");
+        File netherFolder = new File(TestInstanceCreator.serverDirectory, "vanilla_nether");
+        File worldEnd = new File(worldFolder, "DIM1");
+        File endFolder = new File(TestInstanceCreator.serverDirectory, "vanilla_the_end");
+
+        assertTrue(worldFolder.mkdir());
+        assertTrue(worldDat.createNewFile());
+        assertTrue(worldNether.mkdir());
+        assertTrue(worldEnd.mkdir());
+        assertFalse(netherFolder.isDirectory());
+        assertFalse(endFolder.isDirectory());
+
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null
+        assertNotNull(plugin);
+
+        // Make sure Core is enabled
+        assertTrue(plugin.isEnabled());
+
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
+
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Import the vanilla world.
+        String[] skyArgs = new String[]{ "import", "vanilla", "--vanilla" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", skyArgs);
+
+        // We now should have 3 worlds
+        assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        assertTrue(creator.getCore().getMVWorldManager().isMVWorld("vanilla"));
+        assertTrue(creator.getCore().getMVWorldManager().isMVWorld("vanilla_nether"));
+        assertTrue(creator.getCore().getMVWorldManager().isMVWorld("vanilla_the_end"));
+
+        // Verify that the commandSender shows vanilla message
+        verify(mockCommandSender).sendMessage("Starting import of vanilla world 'vanilla'...");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete vanilla import!");
+
+        // Ensure the respective folders are created
+        assertTrue(worldFolder.isDirectory());
+        assertTrue(netherFolder.isDirectory());
+        assertTrue(endFolder.isDirectory());
     }
 
     @Test
