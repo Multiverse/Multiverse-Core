@@ -54,6 +54,8 @@ public class TestWorldStuff {
     private TestInstanceCreator creator;
     private Server mockServer;
     private CommandSender mockCommandSender;
+    private Plugin plugin;
+    private Command mockCommand;
 
     @Before
     public void setUp() throws Exception {
@@ -61,6 +63,17 @@ public class TestWorldStuff {
         assertTrue(creator.setUp());
         mockServer = creator.getServer();
         mockCommandSender = creator.getCommandSender();
+
+        // Pull a core instance from the server.
+        plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+
+        // Make sure Core is not null and enabled
+        assertNotNull(plugin);
+        assertTrue(plugin.isEnabled());
+
+        // Initialize a fake command
+        mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
     }
 
     @After
@@ -70,28 +83,15 @@ public class TestWorldStuff {
 
     @Test
     public void testVanillaWorldConversion_noNetherAndEnd() throws IOException {
-        // Create files needed
-        MockWorldFactory.createWorldDirectory("vanilla");
-
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
+        // Create files needed
+        MockWorldFactory.createWorldDirectory("vanilla");
+
         // Import the vanilla world.
-        String[] skyArgs = new String[]{ "import", "vanilla", "--vanilla" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", skyArgs);
+        String[] importArgs = new String[]{ "import", "vanilla", "--vanilla" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", importArgs);
 
         // We now should have 3 worlds
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
@@ -102,6 +102,9 @@ public class TestWorldStuff {
 
     @Test
     public void testVanillaWorldConversion() throws IOException {
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
         // Create files needed
         File worldFolder = new File(TestInstanceCreator.serverDirectory, "vanilla");
         File worldDat = new File(worldFolder, "level.dat");
@@ -116,22 +119,6 @@ public class TestWorldStuff {
         assertTrue(worldEnd.mkdir());
         assertFalse(netherFolder.isDirectory());
         assertFalse(endFolder.isDirectory());
-
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
-        // Ensure that there are no worlds imported. This is a fresh setup.
-        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the vanilla world.
         String[] skyArgs = new String[]{ "import", "vanilla", "--vanilla" };
@@ -155,6 +142,9 @@ public class TestWorldStuff {
 
     @Test
     public void testWorldImportWithNoFolder() {
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
         // Make sure the world directory do NOT exist
         // (it was created by the TestInstanceCreator)
         File worldFile = new File(TestInstanceCreator.serverDirectory, "world");
@@ -162,21 +152,7 @@ public class TestWorldStuff {
         assertTrue(worldFile.delete());
 
         // Start actual testing.
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
         String[] normalArgs = new String[]{ "import", "world", "normal" };
-
-        // Ensure we have a fresh copy of MV, 0 worlds.
-        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the first world. The world folder does not exist.
         plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
@@ -189,25 +165,12 @@ public class TestWorldStuff {
 
     @Test
     public void testWorldImport() {
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
         MockWorldFactory.createWorldDirectory("world");
         MockWorldFactory.createWorldDirectory("world_nether");
         MockWorldFactory.createWorldDirectory("world_the_end");
-
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
-        // Ensure that there are no worlds imported. This is a fresh setup.
-        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the first world.
         String[] normalArgs = new String[]{ "import", "world", "normal" };
@@ -239,19 +202,6 @@ public class TestWorldStuff {
 
     @Test
     public void testWorldCreation() {
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
@@ -272,19 +222,6 @@ public class TestWorldStuff {
 
     @Test
     public void testWorldCreateInvalidGenerator() {
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
@@ -301,19 +238,6 @@ public class TestWorldStuff {
 
     @Test
     public void testNullWorld() {
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-
-        // Make sure Core is not null
-        assertNotNull(plugin);
-
-        // Make sure Core is enabled
-        assertTrue(plugin.isEnabled());
-
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
@@ -336,13 +260,9 @@ public class TestWorldStuff {
     @Test
     // TODO Migrate this to TestWorldProperties
     public void testModifyGameMode() {
-        // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
         this.createInitialWorlds(plugin, mockCommand);
 
         // Ensure that the default worlds have been created.
