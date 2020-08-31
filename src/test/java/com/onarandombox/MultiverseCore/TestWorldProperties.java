@@ -206,7 +206,7 @@ public class TestWorldProperties {
         // call player chat event
         core.getMVConfig().setPrefixChat(true);
         ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
-        verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
+        verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "§r]" + "format");
         core.getMVConfig().setPrefixChat(false);
         ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
@@ -250,7 +250,7 @@ public class TestWorldProperties {
         assertTrue(mvWorld.setColor("BLACK"));
         assertFalse(mvWorld.setColor("INVALID COLOR"));
         assertEquals(ChatColor.BLACK, mvWorld.getColor());
-        assertEquals(ChatColor.BLACK.toString() + "alias" + ChatColor.WHITE.toString(), mvWorld.getColoredWorldString());
+        assertEquals(ChatColor.BLACK.toString() + "alias", mvWorld.getColoredWorldString());
         mvWorld.setPVPMode(false);
         assertEquals(false, mvWorld.isPVPEnabled());
         assertTrue(mvWorld.setScaling(2D));
@@ -312,10 +312,10 @@ public class TestWorldProperties {
         ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         // never because it's hidden!
         verify(playerChatEvent, never()).setFormat(
-                "[" + mvWorld.getColoredWorldString() + "]" + "format");
+                "[" + mvWorld.getColoredWorldString() + "§r]" + "format");
         mvWorld.setHidden(false);
         ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
-        verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
+        verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "§r]" + "format");
         core.getMVConfig().setPrefixChat(false);
         ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
@@ -357,7 +357,7 @@ public class TestWorldProperties {
         assertEquals(true, mvWorld.isHidden());
         assertEquals("alias", mvWorld.getAlias());
         assertEquals(ChatColor.GREEN, mvWorld.getColor());
-        assertEquals(ChatColor.GREEN.toString() + "alias" + ChatColor.WHITE.toString(), mvWorld.getColoredWorldString());
+        assertEquals(ChatColor.GREEN.toString() + "alias", mvWorld.getColoredWorldString());
         assertEquals(false, mvWorld.isPVPEnabled());
         assertEquals(2D, mvWorld.getScaling(), 0);
         assertSame(worldManager.getMVWorld("world_nether").getCBWorld(),

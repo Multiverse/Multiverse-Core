@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.enums.AllowedPortalType;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import com.onarandombox.MultiverseCore.utils.FormatUtils;
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.VirtualProperty;
@@ -524,9 +525,10 @@ public class MVWorld implements MultiverseWorld {
         }
 
         StringBuilder nameBuilder = new StringBuilder().append(props.getColor().getColor());
-        if (props.getStyle().getColor() != null)
+        if (props.getStyle().getColor() != null) {
             nameBuilder.append(props.getStyle().getColor());
-        nameBuilder.append(props.getAlias()).append(ChatColor.WHITE).toString();
+        }
+        nameBuilder.append(FormatUtils.parseColors(props.getAlias()));
 
         return nameBuilder.toString();
     }

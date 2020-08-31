@@ -13,6 +13,11 @@ import java.util.regex.Pattern;
 /*
 Credits to essentialsX
  */
+
+/**
+ * Use to get and compare server version.
+ * Used to check for server version specific methods
+ */
 public class VersionUtils {
 
     public static final BukkitVersion v1_13_0_R01 = BukkitVersion.fromString("1.13.0-R0.1-SNAPSHOT");

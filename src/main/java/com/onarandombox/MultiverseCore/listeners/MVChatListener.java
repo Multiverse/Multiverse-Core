@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 
+import com.onarandombox.MultiverseCore.utils.FormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
@@ -49,7 +50,7 @@ public abstract class MVChatListener implements Listener {
             prefix = mvworld.getColoredWorldString();
             String chat = event.getFormat();
             
-            String prefixChatFormat = plugin.getMVConfig().getPrefixChatFormat();
+            String prefixChatFormat = FormatUtils.parseColors(plugin.getMVConfig().getPrefixChatFormat());
             prefixChatFormat = prefixChatFormat.replace("%world%", prefix).replace("%chat%", chat);
             prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
             

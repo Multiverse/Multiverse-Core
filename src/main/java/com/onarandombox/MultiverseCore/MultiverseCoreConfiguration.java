@@ -95,7 +95,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         enforceaccess = false;
         useasyncchat = true;
         prefixchat = true;
-        prefixchatformat = "[%world%]%chat%";
+        prefixchatformat = "[%world%&r]%chat%";
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
