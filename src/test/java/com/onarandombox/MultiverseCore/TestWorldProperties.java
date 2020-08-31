@@ -183,7 +183,6 @@ public class TestWorldProperties {
         assertEquals(GameMode.SURVIVAL, mvWorld.getGameMode());
         assertTrue(mvWorld.isKeepingSpawnInMemory());
         assertTrue(mvWorld.getBedRespawn());
-        assertTrue(mvWorld.getAnchorRespawn());
         assertTrue(mvWorld.getAutoLoad());
         assertEquals(new SpawnLocation(0, 64, 0), mvWorld.getSpawnLocation());
 
@@ -230,7 +229,7 @@ public class TestWorldProperties {
         // call player nether anchor respawn event
         core.getPlayerListener().playerRespawn(playerRespawnAnchor);
         verify(playerRespawnAnchor, never()).setRespawnLocation(any(Location.class));
-        // Older version, so shouldnt call anchor respawn event
+        // Older version, so shouldn't call anchor respawn event
         VersionUtils.setTestServerVersion("1.15.2-R0.1-SNAPSHOT");
         core.getPlayerListener().playerRespawn(playerRespawnAnchor);
         verify(playerRespawnAnchor).setRespawnLocation(mvWorld.getSpawnLocation());
@@ -284,8 +283,6 @@ public class TestWorldProperties {
         assertEquals(false, mvWorld.isKeepingSpawnInMemory());
         mvWorld.setBedRespawn(false);
         assertEquals(false, mvWorld.getBedRespawn());
-        mvWorld.setAnchorRespawn(false);
-        assertEquals(false, mvWorld.getAnchorRespawn());
         mvWorld.setAutoLoad(false);
         assertEquals(false, mvWorld.getAutoLoad());
         mvWorld.setSpawnLocation(new Location(mvWorld.getCBWorld(), 1, 1, 1));
@@ -417,6 +414,7 @@ public class TestWorldProperties {
         // player nether anchor respawn
         playerRespawnAnchor = PowerMockito.mock(PlayerRespawnEvent.class);
         when(playerRespawnAnchor.getPlayer()).thenReturn(mockPlayer);
+        when(playerRespawnAnchor.isBedSpawn()).thenReturn(false);
         when(playerRespawnAnchor.isAnchorSpawn()).thenReturn(true);
         //// Entity events
         mockHumanEntity = mock(HumanEntity.class);

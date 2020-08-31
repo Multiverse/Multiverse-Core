@@ -588,27 +588,9 @@ public interface MultiverseWorld {
      * <p>
      * True is default.
      *
-     * @param bedRespawn True if players dying in this world respawn at their bed.
+     * @param bedRespawn True if players dying in this world respawn at their bed/Respawn Anchor.
      */
     void setBedRespawn(boolean bedRespawn);
-
-    /**
-     * Gets whether or not a player who dies in this world will respawn in their
-     * nether Respawn Anchor or follow the normal respawn pattern.
-     *
-     * @return True if players dying in this world should respawn at their nether Respawn Anchor.
-     */
-    boolean getAnchorRespawn();
-
-    /**
-     * Sets whether or not a player who dies in this world will respawn in their
-     * nether Respawn Anchor or follow the normal respawn pattern.
-     * <p>
-     * True is default.
-     *
-     * @param anchorRespawn True if players dying in this world respawn at their nether Respawn Anchor.
-     */
-    void setAnchorRespawn(boolean anchorRespawn);
 
     /**
      * Sets the player limit for this world after which players without an override

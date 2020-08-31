@@ -1136,22 +1136,6 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public void setAnchorRespawn(boolean respawn) {
-        this.props.setBedRespawn(respawn);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean getAnchorRespawn() {
-        return this.props.getBedRespawn();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getAllPropertyNames() {
         return this.props.getAllPropertyNames();
     }

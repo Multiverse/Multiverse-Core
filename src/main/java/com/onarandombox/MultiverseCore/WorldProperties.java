@@ -283,10 +283,8 @@ public class WorldProperties extends SerializationConfig {
     volatile VirtualProperty<Location> spawn; // SUPPRESS CHECKSTYLE: VisibilityModifier
     @Property(description = "Set this to false ONLY if you don't want this world to load itself on server restart.")
     private volatile boolean autoLoad;
-    @Property(description = "If a player dies in this world, should they go to their bed?")
+    @Property(description = "If a player dies in this world, should they go to their bed/Respawn Anchor?")
     private volatile boolean bedRespawn;
-    @Property(description = "If a player dies in nether, should they go to their nether respawn anchor?")
-    private volatile boolean anchorRespawn;
     @Property
     private volatile List<String> worldBlacklist;
     @Property(serializor = TimePropertySerializor.class, virtualType = Long.class,
@@ -350,7 +348,6 @@ public class WorldProperties extends SerializationConfig {
         this.spawnLocation = new NullLocation();
         this.autoLoad = true;
         this.bedRespawn = true;
-        this.anchorRespawn = true;
         this.worldBlacklist = new ArrayList<String>();
         this.generator = null;
         this.playerLimit = -1;
@@ -611,14 +608,6 @@ public class WorldProperties extends SerializationConfig {
 
     public boolean getBedRespawn() {
         return this.bedRespawn;
-    }
-
-    public boolean isAnchorRespawn() {
-        return anchorRespawn;
-    }
-
-    public void setAnchorRespawn(boolean anchorRespawn) {
-        this.anchorRespawn = anchorRespawn;
     }
 
     public String getAllPropertyNames() {

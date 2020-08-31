@@ -70,15 +70,16 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-        if (VersionUtils.getServerVersion().isHigherThanOrEqualTo(VersionUtils.v1_16_1_R01)
-                && mvWorld.getAnchorRespawn() && event.isAnchorSpawn()) {
-            this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their respawn anchor");
-            return;
-        }
-
-        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-            this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
-            return;
+        // Set to respawn at bed or Respawn Anchor
+        if (mvWorld.getBedRespawn()) {
+            if (VersionUtils.getServerVersion().isHigherThanOrEqualTo(VersionUtils.v1_16_1_R01) && event.isAnchorSpawn()) {
+                this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their Respawn Anchor.");
+                return;
+            }
+            if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
+                this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed.");
+                return;
+            }
         }
 
         // Get the instance of the World the player should respawn at.
@@ -95,7 +96,7 @@ public class MVPlayerListener implements Listener {
         // World has been set to the appropriate world
         Location respawnLocation = getMostAccurateRespawnLocation(world);
 
-        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
+        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatibility");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
     }
