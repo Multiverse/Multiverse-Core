@@ -37,13 +37,13 @@ public class MVPortalListener implements Listener {
      * @param event The event where an entity created a portal.
      */
     @EventHandler
-    public void entityPortalCreate(PortalCreateEvent event) {
+    public void entityPortalCreate(EntityCreatePortalEvent event) {
         if (event.isCancelled() || event.getBlocks().size() == 0) {
             return;
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getEntity().getWorld());
         // We have to do it like this due to a bug in 1.1-R3
-        if (world != null && !world.getAllowedPortals().isPortalAllowed(event.getReason())) {
+        if (world != null && !world.getAllowedPortals().isPortalAllowed(event.getPortalType())) {
             event.setCancelled(true);
         }
     }
@@ -55,7 +55,7 @@ public class MVPortalListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void portalForm(PortalCreateEvent event) {
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
-        if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalCreateEvent.CreateReason.NETHER_PAIR)) {
+        if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalType.NETHER)) {
             plugin.log(Level.FINE, "Cancelling creation of nether portal because portalForm disallows.");
             event.setCancelled(true);
         }
@@ -78,7 +78,7 @@ public class MVPortalListener implements Listener {
             return;
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
-        if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalCreateEvent.CreateReason.END_PLATFORM)) {
+        if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalType.ENDER)) {
             plugin.log(Level.FINE, "Cancelling creation of ender portal because portalForm disallows.");
             event.setCancelled(true);
         }

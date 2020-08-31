@@ -96,7 +96,6 @@ public class TestWorldProperties {
         MockWorldFactory.createWorldDirectory("world");
         MockWorldFactory.createWorldDirectory("world_nether");
         MockWorldFactory.createWorldDirectory("world_the_end");
-        VersionUtils.setTestServerVersion("1.16.2-R0.1-SNAPSHOT");
     }
 
     @After

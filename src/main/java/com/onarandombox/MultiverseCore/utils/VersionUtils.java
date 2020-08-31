@@ -24,10 +24,10 @@ public class VersionUtils {
     public static final BukkitVersion v1_16_1_R01 = BukkitVersion.fromString("1.16.1-R0.1-SNAPSHOT");
     public static final BukkitVersion v1_16_2_R01 = BukkitVersion.fromString("1.16.2-R0.1-SNAPSHOT");
 
-    private static final Set<BukkitVersion> supportedVersions = ImmutableSet.of(v1_14_4_R01, v1_15_2_R01, v1_16_2_R01);
+    private static final Set<BukkitVersion> supportedVersions = ImmutableSet.of(v1_13_2_R01, v1_14_4_R01, v1_15_2_R01, v1_16_2_R01);
 
     private static BukkitVersion serverVersion;
-    private static BukkitVersion testServerVersion;
+    private static BukkitVersion testServerVersion = BukkitVersion.fromString("1.16.2-R0.1-SNAPSHOT");
 
     public static BukkitVersion getServerVersion() {
         if (Bukkit.getName().equals("TestBukkit")) {
