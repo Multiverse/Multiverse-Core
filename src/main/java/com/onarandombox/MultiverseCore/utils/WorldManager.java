@@ -616,7 +616,7 @@ public class WorldManager implements MVWorldManager {
      */
     private MultiverseWorld getMVWorldByAlias(String alias) {
         for (MultiverseWorld w : this.worlds.values()) {
-            if (w.getAlias().equalsIgnoreCase(alias)) {
+            if (FormatUtils.removeColors(w.getAlias()).equalsIgnoreCase(alias) || w.getAlias().equalsIgnoreCase(alias)) {
                 return w;
             }
         }
@@ -647,7 +647,7 @@ public class WorldManager implements MVWorldManager {
      */
     private boolean isMVWorldAlias(final String alias) {
         for (MultiverseWorld w : this.worlds.values()) {
-            if (w.getAlias().equalsIgnoreCase(alias)) {
+            if (FormatUtils.removeColors(w.getAlias()).equalsIgnoreCase(alias) || w.getAlias().equalsIgnoreCase(alias)) {
                 return true;
             }
         }

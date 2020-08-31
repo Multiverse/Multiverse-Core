@@ -24,4 +24,23 @@ public class FormatUtilsTest {
         assertEquals("§x§7§8§9§0§A§B", FormatUtils.parseRGBColor("&#7890AB"));
         assertEquals("§x§c§d§e§f§D§C", FormatUtils.parseRGBColor("&#cdefDC"));
     }
+
+    @Test
+    public void testRemoveColors() {
+        assertEquals("&#rrggbb ", FormatUtils.removeColors("&#rrggbb &c"));
+        assertEquals(" &v", FormatUtils.removeColors("&#aabbcc &v"));
+    }
+
+    @Test
+    public void testRemoveLegacyColor() {
+        assertEquals("", FormatUtils.removeLegacyColor("&4&c&6&e&2&a&b&3&1&9&d&5&f&7&8&0&k&l&m&n&o&r"));
+    }
+
+    @Test
+    public void testRemoveRGBCode() {
+        assertEquals("&#rrggbd", FormatUtils.removeRGBColor("&#rrggbd"));
+        assertEquals("", FormatUtils.removeRGBColor("&#123456"));
+        assertEquals("", FormatUtils.removeRGBColor("&#7890AB"));
+        assertEquals("", FormatUtils.removeRGBColor("&#cdefDC"));
+    }
 }
