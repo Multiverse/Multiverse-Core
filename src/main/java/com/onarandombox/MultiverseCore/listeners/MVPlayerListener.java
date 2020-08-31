@@ -63,12 +63,6 @@ public class MVPlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
-        try {
-            Logging.severe("Repsawning at " + event.getRespawnLocation().getBlock().getType());
-        } catch (NullPointerException e) {
-            Logging.severe("NULL location!");
-        }
-
         World world = event.getPlayer().getWorld();
         MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
@@ -105,12 +99,6 @@ public class MVPlayerListener implements Listener {
         MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatibility");
         this.plugin.getServer().getPluginManager().callEvent(respawnEvent);
         event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
-
-        try {
-            Logging.severe("Repsawning at " + event.getRespawnLocation().getBlock().getType());
-        } catch (NullPointerException e) {
-            Logging.severe("NULL location!");
-        }
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
