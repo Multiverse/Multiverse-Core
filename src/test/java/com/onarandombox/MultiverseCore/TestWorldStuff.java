@@ -214,7 +214,7 @@ public class TestWorldStuff {
 
         // Verify
         verify(mockCommandSender).sendMessage("Starting creation of world 'newworld'...");
-        verify(mockCommandSender).sendMessage("Complete!");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Completed creating 'newworld'!");
 
         WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("newworld"));
         verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
@@ -251,7 +251,7 @@ public class TestWorldStuff {
 
         // Verify
         verify(mockCommandSender).sendMessage("Starting creation of world 'nullworld'...");
-        verify(mockCommandSender).sendMessage("Complete!");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Completed creating 'nullworld'!");
 
         WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("nullworld"));
         verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
