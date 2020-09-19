@@ -75,18 +75,18 @@ public class GameruleCommand extends MultiverseCommand {
                     + " is not a valid gamerule.");
         } else {
             if (gameRule.getType() == Boolean.class) {
+                boolean booleanValue;
                 if (value.equalsIgnoreCase("true")) {
-                    if (!world.setGameRule(gameRule, true)) {
-                        sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
-                        return;
-                    }
+                    booleanValue = true;
                 } else if (value.equalsIgnoreCase("false")) {
-                    if (!world.setGameRule(gameRule, false)) {
-                        sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
-                        return;
-                    }
+                    booleanValue = false;
                 } else {
                     sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to true or false.");
+                    return;
+                }
+
+                if (!world.setGameRule(gameRule, booleanValue)) {
+                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
                     return;
                 }
             } else if (gameRule.getType() == Integer.class) {
