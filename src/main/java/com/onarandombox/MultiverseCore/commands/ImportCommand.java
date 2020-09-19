@@ -169,6 +169,8 @@ public class ImportCommand extends MultiverseCommand {
 
             if (allSuccess) {
                 Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Completed!");
+            } else {
+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Import failed!");
             }
             return;
         }
