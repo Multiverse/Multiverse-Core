@@ -82,7 +82,7 @@ public class TestWorldStuff {
     }
 
     @Test
-    public void testVanillaWorldConversion_noNetherAndEnd() throws IOException {
+    public void testVanillaWorldConversion_noNetherAndEnd() {
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
@@ -90,18 +90,18 @@ public class TestWorldStuff {
         MockWorldFactory.createWorldDirectory("vanilla");
 
         // Import the vanilla world.
-        String[] importArgs = new String[]{ "import", "vanilla", "--vanilla" };
+        String[] importArgs = new String[]{ "import", "vanilla", "vanilla" };
         plugin.onCommand(mockCommandSender, mockCommand, "", importArgs);
 
-        // We now should have 3 worlds
+        // No worlds show me imported
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify that the commandSender shows failed message
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Failed! See console for more details.");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Error splitting 'vanilla' folder to it's overworld, nether and end.");
     }
 
     @Test
-    public void testVanillaWorldConversion() throws IOException {
+    public void testVanillaWorldImport() throws IOException {
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
@@ -121,7 +121,7 @@ public class TestWorldStuff {
         assertFalse(endFolder.isDirectory());
 
         // Import the vanilla world.
-        String[] skyArgs = new String[]{ "import", "vanilla", "--vanilla" };
+        String[] skyArgs = new String[]{ "import", "vanilla", "vanilla" };
         plugin.onCommand(mockCommandSender, mockCommand, "", skyArgs);
 
         // We now should have 3 worlds
@@ -131,8 +131,8 @@ public class TestWorldStuff {
         assertTrue(creator.getCore().getMVWorldManager().isMVWorld("vanilla_the_end"));
 
         // Verify that the commandSender shows vanilla message
-        verify(mockCommandSender).sendMessage("Starting import of vanilla world 'vanilla'...");
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete vanilla import!");
+        verify(mockCommandSender).sendMessage("Starting import of worlds 'vanilla', 'vanilla_nether', 'vanilla_the_end'...");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Completed!");
 
         // Ensure the respective folders are created
         assertTrue(worldFolder.isDirectory());
@@ -157,10 +157,31 @@ public class TestWorldStuff {
         // Import the first world. The world folder does not exist.
         plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
         verify(mockCommandSender).sendMessage(ChatColor.RED + "FAILED.");
-        verify(mockCommandSender).sendMessage("That world folder does not exist. These look like worlds to me:");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "'world' folder does not exist. These look like worlds to me:");
 
         // We should still have no worlds.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+    }
+
+    @Test
+    public void testWorldImportAll() {
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        MockWorldFactory.createWorldDirectory("world");
+        MockWorldFactory.createWorldDirectory("world_nether");
+        MockWorldFactory.createWorldDirectory("world_the_end");
+
+        // Import the full set of worlds
+        String[] normalArgs = new String[]{ "import", "world", "all" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+
+        // We should now have 2 worlds imported!
+        assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
+
+        // Verify that the commandSender has been called 3 times.
+        verify(mockCommandSender).sendMessage("Starting import of worlds 'world', 'world_nether', 'world_the_end'...");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Completed!");
     }
 
     @Test
@@ -197,7 +218,7 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");
-        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Complete!");
+        verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Completed!");
     }
 
     @Test
@@ -305,6 +326,6 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");
-        verify(mockCommandSender, times(3)).sendMessage(ChatColor.GREEN + "Complete!");
+        verify(mockCommandSender, times(3)).sendMessage(ChatColor.GREEN + "Completed!");
     }
 }

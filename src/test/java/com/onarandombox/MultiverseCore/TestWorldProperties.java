@@ -110,7 +110,7 @@ public class TestWorldProperties {
         String[] normalArgs = new String[] { "import", "world", "normal" };
         core.onCommand(mockCommandSender, mockCommand, "", normalArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Completed!");
 
         assertEquals(core.getServer().getWorlds().size(), 1);
         assertEquals(core.getServer().getWorlds().get(0).getName(), "world");
@@ -123,7 +123,7 @@ public class TestWorldProperties {
         core.onCommand(mockCommandSender, mockCommand, "", netherArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage(
-                ChatColor.GREEN + "Complete!");
+                ChatColor.GREEN + "Completed!");
 
         assertEquals(core.getServer().getWorlds().size(), 2);
         assertEquals(core.getServer().getWorlds().get(0).getName(), "world");

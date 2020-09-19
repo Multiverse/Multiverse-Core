@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -18,10 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Imports a new world of the specified type.
@@ -44,61 +41,59 @@ public class ImportCommand extends MultiverseCommand {
         this.setPermission("multiverse.core.import", "Imports a new world of the specified type.", PermissionDefault.OP);
         this.worldManager = this.plugin.getMVWorldManager();
     }
-
-    /**
-     * A very basic check to see if a folder has a level.dat file.
-     * If it does, we can safely assume it's a world folder.
-     *
-     * @param worldFolder The File that may be a world.
-     * @return True if it looks like a world, false if not.
-     */
-    private static boolean checkIfIsWorld(File worldFolder) {
-        if (worldFolder.isDirectory()) {
-            File[] files = worldFolder.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File file, String name) {
-                    return name.toLowerCase().endsWith(".dat");
-                }
-            });
-            if (files != null && files.length > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String getPotentialWorlds() {
-        File worldFolder = this.plugin.getServer().getWorldContainer();
-        if (worldFolder == null) {
-            return "";
-        }
-        File[] files = worldFolder.listFiles();
-        String worldList = "";
-        Collection<MultiverseWorld> worlds = this.worldManager.getMVWorlds();
-        List<String> worldStrings = new ArrayList<String>();
-        for (MultiverseWorld world : worlds) {
-            worldStrings.add(world.getName());
-        }
-        for (String world : this.worldManager.getUnloadedWorlds()) {
-            worldStrings.add(world);
-        }
-        ChatColor currColor = ChatColor.WHITE;
-        for (File file : files) {
-            if (file.isDirectory() && checkIfIsWorld(file) && !worldStrings.contains(file.getName())) {
-                worldList += currColor + file.getName() + " ";
-                if (currColor == ChatColor.WHITE) {
-                    currColor = ChatColor.YELLOW;
-                } else {
-                    currColor = ChatColor.WHITE;
-                }
-            }
-        }
-        return worldList;
-    }
     
     private String trimWorldName(String userInput) {
         // Removes relative paths.
         return userInput.replaceAll("^[./\\\\]+", "");
+    }
+
+    private void potentialWorldMessage(CommandSender sender) {
+        List<String> potentialWorlds = this.worldManager.getPotentialWorlds();
+
+        if (potentialWorlds.size() < 1) {
+            sender.sendMessage(ChatColor.RED + "No potential worlds found. Sorry!");
+        }
+
+        StringBuilder worldList = new StringBuilder();
+        ChatColor currColor = ChatColor.WHITE;
+
+        for (String world : potentialWorlds) {
+            worldList.append(currColor).append(world).append(" ");
+            if (currColor == ChatColor.WHITE) {
+                currColor = ChatColor.YELLOW;
+            } else {
+                currColor = ChatColor.WHITE;
+            }
+        }
+
+        sender.sendMessage(ChatColor.AQUA + "====[ These look like worlds ]====");
+        sender.sendMessage(worldList.toString());
+    }
+
+    private void failedMessage(CommandSender sender, String reason) {
+        sender.sendMessage(ChatColor.RED + "FAILED.");
+        sender.sendMessage(ChatColor.RED + reason);
+    }
+
+    private boolean checkValidWorld(CommandSender sender, String worldName) {
+        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
+
+        if (this.worldManager.isMVWorld(worldName)) {
+            sender.sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
+                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
+            return false;
+        }
+        if (!worldFile.exists()) {
+            this.failedMessage(sender, "'" + worldName + "' folder does not exist. These look like worlds to me:");
+            this.potentialWorldMessage(sender);
+            return false;
+        }
+        if (!this.worldManager.isValidWorld(worldFile)) {
+            this.failedMessage(sender, String.format("'%s' does not appear to be a world. It is lacking a level.dat file.", worldName));
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -106,16 +101,11 @@ public class ImportCommand extends MultiverseCommand {
         String worldName = trimWorldName(args.get(0));
 
         // List down possible worlds available for import
-        if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
-            String worldList = this.getPotentialWorlds();
-            if (worldList.length() > 2) {
-                sender.sendMessage(ChatColor.AQUA + "====[ These look like worlds ]====");
-                sender.sendMessage(worldList);
-            } else {
-                sender.sendMessage(ChatColor.RED + "No potential worlds found. Sorry!");
-            }
+        if (args.size() == 1 && (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l"))) {
+            this.potentialWorldMessage(sender);
             return;
         }
+
         // Since we made an exception for the list, we have to make sure they have at least 2 params:
         // Note the exception is --list, which is covered above.
         if (args.size() == 1 || worldName.length() < 1) {
@@ -123,30 +113,12 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 
-        // Make sure we don't already know about this world.
-        if (this.worldManager.isMVWorld(worldName)) {
-            sender.sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
-                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
-            return;
-        }
-
-        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
-
         // Ensure world available for import
-        if (!worldFile.exists()) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            String worldList = this.getPotentialWorlds();
-            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
-            sender.sendMessage(worldList);
-            return;
-        } else if (!checkIfIsWorld(worldFile)) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage(String.format("'%s' does not appear to be a world. It is lacking a .dat file.",
-                    worldName));
+        if (!this.checkValidWorld(sender, worldName)) {
             return;
         }
 
-        // Generator
+        // Generator and SpawnAdjust
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
         for (String s : args) {
@@ -158,12 +130,45 @@ public class ImportCommand extends MultiverseCommand {
         String env = args.get(1);
 
         // Vanilla import
-        if (env.toLowerCase().equals("--vanilla") || env.toLowerCase().equals("-v")) {
-            Command.broadcastCommandMessage(sender, String.format("Starting import of vanilla world '%s'...", worldName));
-            if (this.worldManager.convertVanillaWorld(worldName)) {
-                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete vanilla import!");
-            } else {
-                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed! See console for more details.");
+        if (env.toLowerCase().equals("vanilla")) {
+            Command.broadcastCommandMessage(sender, "Splitting up vanilla world folder...");
+            if (!this.worldManager.splitVanillaWorld(worldName)) {
+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Error splitting '" + worldName + "' folder to it's overworld, nether and end.");
+                return;
+            }
+        }
+
+        // Import all 3 default environments
+        if (env.toLowerCase().equals("all") || env.toLowerCase().equals("vanilla")) {
+            String netherName = worldName + "_nether";
+            String endName = worldName + "_the_end";
+            boolean allSuccess = true;
+
+            if (!this.checkValidWorld(sender, netherName)) {
+                return;
+            }
+
+            if (!this.checkValidWorld(sender, endName)) {
+                return;
+            }
+
+            Command.broadcastCommandMessage(sender, String.format("Starting import of worlds '%s', '%s', '%s'...", worldName, netherName, endName));
+
+            if (!this.worldManager.addWorld(worldName, Environment.NORMAL, null, null, null, generator, useSpawnAdjust)) {
+                Command.broadcastCommandMessage(sender,  ChatColor.RED + "Error occurred while importing " + worldName);
+                allSuccess = false;
+            }
+            if (!this.worldManager.addWorld(netherName, Environment.NETHER, null, null, null, generator, useSpawnAdjust)) {
+                Command.broadcastCommandMessage(sender,  ChatColor.RED + "Error occurred while importing " + netherName);
+                allSuccess = false;
+            }
+            if (!this.worldManager.addWorld(endName, Environment.THE_END, null, null, null, generator, useSpawnAdjust)) {
+                Command.broadcastCommandMessage(sender,  ChatColor.RED + "Error occurred while importing " + endName);
+                allSuccess = false;
+            }
+
+            if (allSuccess) {
+                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Completed!");
             }
             return;
         }
@@ -171,23 +176,23 @@ public class ImportCommand extends MultiverseCommand {
         // Environment
         Environment environment = EnvironmentCommand.getEnvFromString(env);
         if (environment == null) {
-            sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
+            this.failedMessage(sender, "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
-        } else if (env == null) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage("That world environment did not exist.");
-            sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
+        }
+        if (env == null) {
+            this.failedMessage(sender, "You need to specify a world environment!");
+            EnvironmentCommand.showEnvironments(sender);
             return;
         }
 
-        // Import world
+        // Import a world
         Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
         if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust)) {
-            Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
+            Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Completed!");
         }
         else {
-            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed! See console for more details.");
+            Command.broadcastCommandMessage(sender, ChatColor.RED + "Error occurred while importing " + worldName);
         }
     }
 }

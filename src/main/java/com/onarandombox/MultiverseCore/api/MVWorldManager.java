@@ -60,12 +60,20 @@ public interface MVWorldManager {
                      String generator, boolean useSpawnAdjust);
 
     /**
+     * Check if world is able to be added to multiverse
+     *
+     * @param worldFolder   Folder directory of the  world
+     * @return True if the world is valid and most likely able to import
+     */
+    boolean isValidWorld(File worldFolder);
+
+    /**
      * Splits vanilla world dimensions into individual overworld, nether and end
      *
      * @param name   Name of the vanilla world
-     * @return True if the world is copied successfully, false if not.
+     * @return True if the world is copied and imported successfully, false if not.
      */
-    boolean convertVanillaWorld(String name);
+    boolean splitVanillaWorld(String name);
 
     /**
      * Make a copy of a world.
@@ -164,6 +172,13 @@ public interface MVWorldManager {
      * @return A {@link ChunkGenerator} or null
      */
     ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName);
+
+    /**
+     * Returns a list of potential the worlds present on the server
+     *
+     * @return A list of worlds available worlds for import.
+     */
+    List<String> getPotentialWorlds();
 
     /**
      * Returns a list of all the worlds Multiverse knows about.

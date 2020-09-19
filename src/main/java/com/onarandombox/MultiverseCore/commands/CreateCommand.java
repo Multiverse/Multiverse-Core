@@ -67,7 +67,7 @@ public class CreateCommand extends MultiverseCommand {
 
         List<String> worlds = new ArrayList<>(Arrays.asList(args.get(0)));
 
-        if (env.equalsIgnoreCase("--all")) {
+        if (env.equalsIgnoreCase("all")) {
             worlds.add(args.get(0) + "_nether");
             worlds.add(args.get(0) + "_the_end");
         }
@@ -89,7 +89,7 @@ public class CreateCommand extends MultiverseCommand {
 
             // Set environment
             Environment environment;
-            if (env.equalsIgnoreCase("--all")) {
+            if (env.equalsIgnoreCase("all")) {
                 if (worldName.endsWith("_nether")) {
                     environment = Environment.NETHER;
                 } else if (worldName.endsWith("_the_end")) {

@@ -17,12 +17,8 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -98,7 +94,24 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean convertVanillaWorld(String name) {
+    public boolean isValidWorld(File worldFolder) {
+        if (!worldFolder.isDirectory()) {
+            return false;
+        }
+        File[] files = worldFolder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String name) {
+                return name.equalsIgnoreCase("level.dat");
+            }
+        });
+        return files != null && files.length > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean splitVanillaWorld(String name) {
         final String netherName = name + "_nether";
         final String endName = name + "_the_end";
 
@@ -174,23 +187,6 @@ public class WorldManager implements MVWorldManager {
             e.printStackTrace();
             this.plugin.log(Level.SEVERE, "Unable to copy " + worldDatFile.toString() +
                     "to " + endDatFile.toString());
-            return false;
-        }
-
-        // Add the worlds to mv
-        // Overworld
-        if (!this.addWorld(name, Environment.NORMAL, null, null, true, null)) {
-            this.plugin.log(Level.SEVERE, "Error occurred while importing " + name);
-            return false;
-        }
-        // Nether
-        if (!this.addWorld(netherName, Environment.NETHER, null, null, true, null)) {
-            this.plugin.log(Level.SEVERE, "Error occurred while importing " + netherName);
-            return false;
-        }
-        // End
-        if (!this.addWorld(endName, Environment.THE_END, null, null, true, null)) {
-            this.plugin.log(Level.SEVERE, "Error occurred while importing " + endName);
             return false;
         }
 
@@ -677,6 +673,23 @@ public class WorldManager implements MVWorldManager {
                 teleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getPotentialWorlds() {
+        ArrayList<String> potentialWorlds = new ArrayList<>();
+        File worldFolder = this.plugin.getServer().getWorldContainer();
+        File[] files = worldFolder.listFiles();
+
+        for (File file : files) {
+            if (file.isDirectory() && !this.worldsFromTheConfig.containsKey(file.getName()) && this.isValidWorld(file)) {
+                potentialWorlds.add(file.getName());
+            }
+        }
+        return potentialWorlds;
     }
 
     /**
