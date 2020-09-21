@@ -14,7 +14,7 @@ class HastebinPasteService extends PasteService {
     private static final String HASTEBIN_POST_REQUEST = "https://hastebin.com/documents";
 
     HastebinPasteService() {
-        super(HASTEBIN_POST_REQUEST, null);
+        super(HASTEBIN_POST_REQUEST);
     }
 
     /**
