@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,7 +56,7 @@ public class GameruleCommand extends MultiverseCommand {
             return;
         }
 
-        final String gameRule = args.get(0);
+        final GameRule gameRule = GameRule.getByName(args.get(0));
         final String value = args.get(1);
         final World world;
         if (args.size() == 2) {
@@ -64,17 +65,52 @@ public class GameruleCommand extends MultiverseCommand {
             world = Bukkit.getWorld(args.get(2));
             if (world == null) {
                 sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(2)
-                    + ChatColor.WHITE + " does not exist.");
+                        + ChatColor.WHITE + " does not exist.");
                 return;
             }
         }
 
-        if (world.setGameRuleValue(gameRule, value)) {
-            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule
-                    + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value);
+        if (gameRule == null) {
+            sender.sendMessage(ChatColor.RED + "Failure! " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE
+                    + " is not a valid gamerule.");
         } else {
-            sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule
-                    + ChatColor.WHITE + " cannot be set to " + ChatColor.RED + value);
+            if (gameRule.getType() == Boolean.class) {
+                boolean booleanValue;
+                if (value.equalsIgnoreCase("true")) {
+                    booleanValue = true;
+                } else if (value.equalsIgnoreCase("false")) {
+                    booleanValue = false;
+                } else {
+                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to true or false.");
+                    return;
+                }
+
+                if (!world.setGameRule(gameRule, booleanValue)) {
+                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
+                    return;
+                }
+            } else if (gameRule.getType() == Integer.class) {
+                try {
+                    if (!world.setGameRule(gameRule, Integer.parseInt(value))) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to a positive integer.");
+                    return;
+                }
+            } else {
+                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
+                        + ChatColor.WHITE + " isn't supported yet, please let us know about it.");
+                return;
+            }
+
+            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
+                    + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
         }
+    }
+
+    private String getErrorMessage(String gameRule, String value) {
+        return ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule
+                + ChatColor.WHITE + " could not be set to " + ChatColor.RED + value + ChatColor.WHITE + ", ";
     }
 }
