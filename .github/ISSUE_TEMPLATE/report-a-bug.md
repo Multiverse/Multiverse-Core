@@ -1,6 +1,6 @@
 ---
 name: Report a Bug
-about: Report an Multiverse-Core bug. Only use this if you're 100% sure it's something wrong with Multiverse-Core - otherwise, try "Help!".
+about: Report a Multiverse-Core bug. Only use this if you're 100% sure it's something wrong with Multiverse-Core - otherwise, try "Help!".
 
 ---
 

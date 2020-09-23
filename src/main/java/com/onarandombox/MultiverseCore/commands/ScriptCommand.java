@@ -35,6 +35,10 @@ public class ScriptCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        if (plugin.getScriptAPI() == null) {
+            sender.sendMessage("Buscript failed to load while the server was starting. Scripts cannot be run.");
+            return;
+        }
         File file = new File(plugin.getScriptAPI().getScriptFolder(), args.get(0));
         if (!file.exists()) {
             sender.sendMessage("That script file does not exist in the Multiverse-Core scripts directory!");
