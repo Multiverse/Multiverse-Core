@@ -26,6 +26,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -41,7 +42,7 @@ public class TeleportCommand extends MultiverseCommand {
 
         this.setName("Teleport");
         this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
-        this.setArgRange(1, 2);
+        this.setArgRange(1, 4);
         this.addKey("mvtp");
         this.addKey("mv tp");
         this.playerTeleporter = this.plugin.getSafeTTeleporter();
@@ -66,6 +67,37 @@ public class TeleportCommand extends MultiverseCommand {
             }
             destinationName = args.get(1);
 
+        }
+        // Add posibility to teleport by command block
+        else if (args.size() == 4) {
+            Player nearestPlayer = null;
+            double x = Double.valueOf(args.get(0));
+            double y = Double.valueOf(args.get(1));
+            double z = Double.valueOf(args.get(2));
+
+            double base = 100000;
+            Collection<? extends Player> onlinePlayers = sender.getServer().getOnlinePlayers();
+            if (onlinePlayers.size() > 0) {
+                for (Player onlinePlayer : onlinePlayers) {
+                    double diff = Math.sqrt(
+                            (onlinePlayer.getLocation().getX() - x) * (onlinePlayer.getLocation().getX() - x) +
+                                    (onlinePlayer.getLocation().getY() - y) * (onlinePlayer.getLocation().getY() - y) +
+                                    (onlinePlayer.getLocation().getZ() - z) * (onlinePlayer.getLocation().getZ() - z)
+                    );
+
+                    if (diff <= base) {
+                        diff = (diff * diff) / diff;
+                        base = diff;
+                        nearestPlayer = onlinePlayer.getPlayer();
+                    }
+                }
+                if (base < 2) {
+                    teleportee = nearestPlayer;
+                } else {
+                    return;
+                }
+            }
+            destinationName = args.get(3);
         } else {
             destinationName = args.get(0);
             if (!(sender instanceof Player)) {
