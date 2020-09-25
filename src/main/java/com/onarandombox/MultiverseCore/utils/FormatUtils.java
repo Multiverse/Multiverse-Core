@@ -20,6 +20,9 @@ public class FormatUtils {
     }
 
     public static String parseRGBColor(String text) {
+        if (!VersionUtils.getServerVersion().isHigherThanOrEqualTo(VersionUtils.v1_16_1_R01)) {
+            return text;
+        }
         // Parse rgb color codes
         return text.replaceAll(REPLACE_RGB_PATTERN, "§x§$2§$3§$4§$5§$6§$7");
     }
@@ -34,6 +37,9 @@ public class FormatUtils {
     }
 
     public static String removeRGBColor(String text) {
+        if (!VersionUtils.getServerVersion().isHigherThanOrEqualTo(VersionUtils.v1_16_1_R01)) {
+            return text;
+        }
         // Parse rgb color codes
         return text.replaceAll(REPLACE_RGB_PATTERN, "");
     }
