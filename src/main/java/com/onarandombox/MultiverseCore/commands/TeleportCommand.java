@@ -40,7 +40,7 @@ public class TeleportCommand extends MultiverseCommand {
         Permission menu = new Permission("multiverse.teleport.*", "Allows you to display the teleport menu.", PermissionDefault.OP);
 
         this.setName("Teleport");
-        this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
+        this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {DESTINATION}");
         this.setArgRange(1, 2);
         this.addKey("mvtp");
         this.addKey("mv tp");

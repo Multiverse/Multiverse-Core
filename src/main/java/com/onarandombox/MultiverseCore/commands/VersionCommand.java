@@ -44,9 +44,10 @@ public class VersionCommand extends MultiverseCommand {
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Multiverse Version");
-        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bhp] [--include-plugin-list]");
+        this.setCommandUsage("/mv version " + ChatColor.GOLD + "[-b|-h|-p] [--include-plugin-list]");
         this.setArgRange(0, 2);
         this.addKey("mv version");
+        this.addKey("mvver");
         this.addKey("mvv");
         this.addKey("mvversion");
         this.setPermission("multiverse.core.version",
