@@ -17,7 +17,7 @@ class PasteGGPasteService extends PasteService {
     private static final String PASTEGG_POST_REQUEST = "https://api.paste.gg/v1/pastes";
 
     PasteGGPasteService(boolean isPrivate) {
-        super(PASTEGG_POST_REQUEST, null);
+        super(PASTEGG_POST_REQUEST);
         this.isPrivate = isPrivate;
     }
 

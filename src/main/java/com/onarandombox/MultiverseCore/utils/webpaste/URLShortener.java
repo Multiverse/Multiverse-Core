@@ -10,6 +10,10 @@ package com.onarandombox.MultiverseCore.utils.webpaste;
  * An example of this, is the BitlyURLShortener.
  */
 public abstract class URLShortener extends HttpAPIClient {
+    URLShortener(String url) {
+        super(url);
+    }
+
     URLShortener(String url, String accessToken) {
         super(url, accessToken);
     }

@@ -13,7 +13,7 @@ class PastebinPasteService extends PasteService {
     private static final String PASTEBIN_POST_REQUEST = "https://pastebin.com/api/api_post.php";
 
     PastebinPasteService(boolean isPrivate) {
-        super(PASTEBIN_POST_REQUEST, null);
+        super(PASTEBIN_POST_REQUEST);
         this.isPrivate = isPrivate;
     }
 
