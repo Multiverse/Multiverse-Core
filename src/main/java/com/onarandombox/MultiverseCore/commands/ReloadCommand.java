@@ -27,6 +27,7 @@ public class ReloadCommand extends MultiverseCommand {
         this.setCommandUsage("/mv reload");
         this.setArgRange(0, 0);
         this.addKey("mvreload");
+        this.addKey("mvr");
         this.addKey("mv reload");
         this.addCommandExample("/mv reload");
         this.setPermission("multiverse.core.reload", "Reloads worlds.yml and config.yml.", PermissionDefault.OP);
