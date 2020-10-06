@@ -525,6 +525,12 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean deleteWorld(String name, boolean removeFromConfig, boolean deleteWorldFolder) {
+            // Attempt to load if unloaded so we can actually delete the world
+            if (!this.doLoad(name)) {
+                return false;
+            }
+        }
+
         World world = this.plugin.getServer().getWorld(name);
         if (world == null) {
             // We can only delete loaded worlds
@@ -937,6 +943,9 @@ public class WorldManager implements MVWorldManager {
         return this.configWorlds;
     }
 
+    /**
+     * {@inheritDoc}
+     */
 	@Override
 	public boolean hasUnloadedWorld(String name, boolean includeLoaded) {
 		if (getMVWorld(name) != null) {
