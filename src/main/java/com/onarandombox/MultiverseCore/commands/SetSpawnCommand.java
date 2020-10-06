@@ -30,6 +30,7 @@ public class SetSpawnCommand extends MultiverseCommand {
         this.setCommandUsage("/mv setspawn");
         this.setArgRange(0, 6);
         this.addKey("mvsetspawn");
+        this.addKey("mvsets");
         this.addKey("mvss");
         this.addKey("mv set spawn");
         this.addKey("mv setspawn");

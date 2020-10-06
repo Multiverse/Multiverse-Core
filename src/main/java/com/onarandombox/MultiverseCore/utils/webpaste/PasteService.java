@@ -14,6 +14,10 @@ import java.util.Map;
  * instance is submitting; an example of this is the PastebinPasteService class.
  */
 public abstract class PasteService extends HttpAPIClient {
+    PasteService(String url) {
+        super(url);
+    }
+
     PasteService(String url, String accessToken) {
         super(url, accessToken);
     }

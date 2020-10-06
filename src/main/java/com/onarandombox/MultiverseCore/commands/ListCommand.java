@@ -26,7 +26,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
     public ListCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("World Listing");
-        this.setCommandUsage("/mv list");
+        this.setCommandUsage("/mv list [page]");
         this.setArgRange(0, 2);
         this.addKey("mvlist");
         this.addKey("mvl");
