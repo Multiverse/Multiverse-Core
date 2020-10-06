@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
@@ -46,7 +47,7 @@ import java.util.logging.Level;
 /**
  * The implementation of a Multiverse handled world.
  */
-public class MVWorld implements MultiverseWorld {
+public class MVWorld implements MultiverseWorld, Comparable<MultiverseWorld> {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
@@ -204,6 +205,14 @@ public class MVWorld implements MultiverseWorld {
         setRespawnToWorld(this.props.getRespawnToWorld());
         validateEntitySpawns();
         setGameMode(getGameMode());
+    }
+
+    /**
+     * Used to sort MVWorlds by alphabetical order.
+     */
+    @Override
+    public int compareTo(@NotNull MultiverseWorld o) {
+        return this.getAlias().compareTo(o.getAlias());
     }
 
     /**

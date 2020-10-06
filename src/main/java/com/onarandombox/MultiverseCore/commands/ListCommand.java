@@ -37,7 +37,7 @@ public class ListCommand extends PaginatedCoreCommand<String> {
 
     private List<String> getFancyWorldList(Player p) {
         List<String> worldList = new ArrayList<String>();
-        for (MultiverseWorld world : this.plugin.getMVWorldManager().getMVWorlds()) {
+        for (MultiverseWorld world : this.plugin.getMVWorldManager().getSortedMVWorlds()) {
 
             if (p != null && (!this.plugin.getMVPerms().canEnterWorld(p, world))) {
                 continue;

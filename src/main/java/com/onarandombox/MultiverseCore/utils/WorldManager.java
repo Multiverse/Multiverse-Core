@@ -47,7 +47,6 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -622,6 +621,16 @@ public class WorldManager implements MVWorldManager {
     @Override
     public Collection<MultiverseWorld> getMVWorlds() {
         return this.worlds.values();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MultiverseWorld> getSortedMVWorlds() {
+        MultiverseWorld[] MVWorldList = this.getMVWorlds().toArray(new MultiverseWorld[0]);
+        Arrays.sort(MVWorldList);
+        return Arrays.asList(MVWorldList);
     }
 
     /**
