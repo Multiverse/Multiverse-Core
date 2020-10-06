@@ -64,6 +64,7 @@ public class TestInstanceCreator {
     public static final File worldsDirectory = new File("bin/test/server");
 
     public boolean setUp() {
+        TestingMode.enable();
         try {
             pluginDirectory.mkdirs();
             assertTrue(pluginDirectory.exists());
