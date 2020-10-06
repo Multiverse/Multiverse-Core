@@ -115,6 +115,7 @@ public class InfoCommand extends MultiverseCommand {
         FancyColorScheme colors = new FancyColorScheme(ChatColor.AQUA, ChatColor.AQUA, ChatColor.GOLD, ChatColor.WHITE);
         message.add(new FancyHeader("General Info", colors));
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
+        message.add(new FancyMessage("World UID: ", world.getCBWorld().getUID().toString(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
         message.add(new FancyMessage("Game Mode: ", world.getGameMode().toString(), colors));
         message.add(new FancyMessage("Difficulty: ", world.getDifficulty().toString(), colors));
