@@ -525,6 +525,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean deleteWorld(String name, boolean removeFromConfig, boolean deleteWorldFolder) {
+        if (this.hasUnloadedWorld(name, false)) {
             // Attempt to load if unloaded so we can actually delete the world
             if (!this.doLoad(name)) {
                 return false;
