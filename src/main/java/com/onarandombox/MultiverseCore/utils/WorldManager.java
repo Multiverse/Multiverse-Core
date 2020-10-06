@@ -140,7 +140,7 @@ public class WorldManager implements MVWorldManager {
 
         // Make sure the new world doesn't exist outside of multiverse.
         if (newWorldFile.exists()) {
-            Logging.warning("File for new world '%s' already exists", newName);
+            Logging.warning("Folder for new world '%s' already exists", newName);
             return false;
         }
 
@@ -162,14 +162,8 @@ public class WorldManager implements MVWorldManager {
         }
         
         // Grab a bit of metadata from the old world.
-        MVWorld oldWorld = (MVWorld) getMVWorld(oldName);
-        Environment environment = oldWorld.getEnvironment();
-        String seedString = oldWorld.getSeed() + "";
-        WorldType worldType = oldWorld.getWorldType();
-        Boolean generateStructures = oldWorld.getCBWorld().canGenerateStructures();
-        String generator = oldWorld.getGenerator();
-        boolean useSpawnAdjust = oldWorld.getAdjustSpawn();
-        
+        MultiverseWorld oldWorld = getMVWorld(oldName);
+
         // Don't need the loaded world anymore.
         if (wasJustLoaded) {
             this.unloadWorld(oldName, true);
