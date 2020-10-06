@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -54,6 +55,7 @@ import java.util.regex.Pattern;
  */
 public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
+    private final Pattern worldNamePattern = Pattern.compile("[a-zA-Z0-9/._-]+");
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
     private Map<String, WorldProperties> worldsFromTheConfig;
@@ -435,8 +437,7 @@ public class WorldManager implements MVWorldManager {
      * @return True if the world world name is valid based on regex
      */
     private boolean isValidWorldName(String name) {
-        String worldNamePattern = "[a-zA-Z0-9/._-]+";
-        if (!name.matches(worldNamePattern)) {
+        if (!worldNamePattern.matcher(name).matches()) {
             Logging.warning("Invalid world name '" + name + "'");
             Logging.warning("World name should not contain spaces or special characters!");
             return false;
