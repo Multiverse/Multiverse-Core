@@ -27,6 +27,22 @@ import java.util.List;
  */
 public interface MVWorldManager {
     /**
+     * Check if a world is valid for import
+     *
+     * @param worldName   World Name
+     * @return True if the world is valid, false if not.
+     */
+    boolean isValidWorld(String worldName);
+
+    /**
+     * Check if a world is valid for import
+     *
+     * @param worldFolder   World Folder
+     * @return True if the world is valid, false if not.
+     */
+    boolean isValidWorld(File worldFolder);
+
+    /**
      * Add a new World to the Multiverse Setup.
      *
      * @param name               World Name

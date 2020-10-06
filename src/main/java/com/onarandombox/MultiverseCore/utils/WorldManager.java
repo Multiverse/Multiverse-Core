@@ -229,6 +229,32 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
+    public boolean isValidWorld(String worldName) {
+        if (worldName == null) {
+            return false;
+        }
+        return isValidWorld(new File(this.plugin.getServer().getWorldContainer(), worldName));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isValidWorld(File worldFolder) {
+        if (worldFolder == null || !worldFolder.exists() || !worldFolder.isDirectory()) {
+            return false;
+        }
+        if (!isValidWorldName(worldFolder.getName())) {
+            return false;
+        }
+        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase("level.dat"));
+        return files != null && files.length > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                             String generator) {
         return this.addWorld(name, env, seedString, type, generateStructures, generator, true);
