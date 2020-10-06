@@ -47,12 +47,15 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
  */
 public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
+    private final Pattern worldNamePattern = Pattern.compile("[a-zA-Z0-9/._-]+");
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
     private Map<String, WorldProperties> worldsFromTheConfig;
@@ -123,6 +126,11 @@ public class WorldManager implements MVWorldManager {
         }
         if (this.isMVWorld(newName)) {
             Logging.warning("New world '%s' already exists", newName);
+            return false;
+        }
+
+        // Check for valid world name
+        if (!(isValidWorldName(oldName) && isValidWorldName(newName))) {
             return false;
         }
 
@@ -209,7 +217,6 @@ public class WorldManager implements MVWorldManager {
                this.plugin.log(Level.FINE, "Succeeded at loading cloned world '" + newName + "'");
                return true;
             }
-
             this.plugin.log(Level.SEVERE, "Failed to load the cloned world '" + newName + "'");
             return false;
         }
@@ -236,6 +243,11 @@ public class WorldManager implements MVWorldManager {
         if (name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("logs")) {
             return false;
         }
+
+        if (!isValidWorldName(name)) {
+            return false;
+        }
+
         Long seed = null;
         WorldCreator c = new WorldCreator(name);
         if (seedString != null && seedString.length() > 0) {
@@ -416,6 +428,21 @@ public class WorldManager implements MVWorldManager {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Check if the world name is allowed
+     *
+     * @param name   Name of the world
+     * @return True if the world world name is valid based on regex
+     */
+    private boolean isValidWorldName(String name) {
+        if (!worldNamePattern.matcher(name).matches()) {
+            Logging.warning("Invalid world name '" + name + "'");
+            Logging.warning("World name should not contain spaces or special characters!");
+            return false;
+        }
+        return true;
     }
 
     private void brokenWorld(String name) {
