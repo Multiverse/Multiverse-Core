@@ -788,6 +788,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void onDisable() {
+        // Loads config before shutting down mv to prevent config reset
+        this.loadConfigs();
         this.saveMVConfigs();
         Logging.shutdown();
     }
