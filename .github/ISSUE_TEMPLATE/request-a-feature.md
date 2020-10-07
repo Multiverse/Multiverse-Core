@@ -2,7 +2,7 @@
 name: 💡 Request a Feature
 about: Suggest a feature you want to see in Multiverse-Core!
 title: ''
-labels: 'type: Suggestion'
+labels: 'Suggestion'
 assignees: ''
 
 ---
