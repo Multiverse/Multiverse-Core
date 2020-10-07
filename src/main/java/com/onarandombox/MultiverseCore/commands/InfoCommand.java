@@ -152,6 +152,7 @@ public class InfoCommand extends MultiverseCommand {
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("More World Settings", colors));
         message.add(new FancyMessage("World Type: ", world.getWorldType().toString(), colors));
+        message.add(new FancyMessage("Generator: ", world.getGenerator(), colors));
         message.add(new FancyMessage("Structures: ", world.getCBWorld().canGenerateStructures() + "", colors));
         message.add(new FancyMessage("Weather: ", world.isWeatherEnabled() + "", colors));
         message.add(new FancyMessage("Players will get hungry: ", world.getHunger() + "", colors));
