@@ -109,7 +109,8 @@ public class VersionCommand extends MultiverseCommand {
         event.appendVersionInfo(this.getLegacyString());
 
         // add the legacy file, but as markdown so it's readable
-        event.putDetailedVersionInfo("version.md", this.getMarkdownString());
+        // TODO Readd this in 5.0.0
+        // event.putDetailedVersionInfo("version.md", this.getMarkdownString());
 
         // add config.yml
         File configFile = new File(this.plugin.getDataFolder(), "config.yml");
@@ -138,6 +139,8 @@ public class VersionCommand extends MultiverseCommand {
         }
 
         final String versionInfo = versionEvent.getVersionInfo();
+        versionEvent.putDetailedVersionInfo("version.txt", versionInfo);
+
         final Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
         // log to console
