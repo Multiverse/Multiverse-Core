@@ -113,11 +113,11 @@ public class VersionCommand extends MultiverseCommand {
 
         // add config.yml
         File configFile = new File(this.plugin.getDataFolder(), "config.yml");
-        event.putDetailedVersionInfo("version.md", configFile);
+        event.putDetailedVersionInfo("multiverse-core/config.yml", configFile);
 
         // add worlds.yml
         File worldsFile = new File(this.plugin.getDataFolder(), "worlds.yml");
-        event.putDetailedVersionInfo("version.md", worldsFile);
+        event.putDetailedVersionInfo("multiverse-core/worlds.yml", worldsFile);
     }
 
     @Override
