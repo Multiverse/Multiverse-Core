@@ -149,7 +149,7 @@ public class VersionCommand extends MultiverseCommand {
         String[] lines = versionInfo.split(System.lineSeparator());
         for (String line : lines) {
             if (!line.isEmpty()) {
-                Logging.info(line);
+                this.plugin.getServer().getLogger().info(line);
             }
         }
 
