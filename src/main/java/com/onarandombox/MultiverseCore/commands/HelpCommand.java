@@ -40,24 +40,16 @@ public class HelpCommand extends PaginatedCoreCommand<Command> {
 
     @Override
     protected List<Command> getFilteredItems(List<Command> availableItems, String filter) {
+        String expression = "(?i).*" + cleanFilter(filter) + ".*";
         List<Command> filtered = new ArrayList<Command>();
 
         for (Command c : availableItems) {
-            if (stitchThisString(c.getKeyStrings()).matches("(?i).*" + filter + ".*")) {
+            if (stitchThisString(c.getKeyStrings()).matches(expression)
+                    || c.getCommandName().matches(expression)
+                    || c.getCommandDesc().matches(expression)
+                    || c.getCommandUsage().matches(expression)
+                    || c.getCommandExamples().stream().anyMatch(eg -> eg.matches(expression))) {
                 filtered.add(c);
-            } else if (c.getCommandName().matches("(?i).*" + filter + ".*")) {
-                filtered.add(c);
-            } else if (c.getCommandDesc().matches("(?i).*" + filter + ".*")) {
-                filtered.add(c);
-            } else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
-                filtered.add(c);
-            } else {
-                for (String example : c.getCommandExamples()) {
-                    if (example.matches("(?i).*" + filter + ".*")) {
-                        filtered.add(c);
-                        break;
-                    }
-                }
             }
         }
         return filtered;
