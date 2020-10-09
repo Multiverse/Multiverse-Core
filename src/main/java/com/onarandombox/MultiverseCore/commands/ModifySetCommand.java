@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.ChatColor;
@@ -57,6 +58,12 @@ public class ModifySetCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        if (ModifyCommand.isShowAvailableProps(args)) {
+            sender.sendMessage("Properties available: " + this.worldManager.getMVWorlds().iterator().next().getAllPropertyNames());
+            sender.sendMessage("Type " + ChatColor.GREEN + "/mvm set ?" + ChatColor.WHITE + " for command usage.");
+            return;
+        }
+
         // Special case for spawn:
         if (args.size() == 1) {
             if (!(sender instanceof Player)) {

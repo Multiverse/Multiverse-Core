@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.Action;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,7 +29,7 @@ public class ModifyRemoveCommand extends MultiverseCommand {
         super(plugin);
         this.setName("Modify a World (Remove a value)");
         this.setCommandUsage("/mv modify" + ChatColor.GREEN + " remove {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
-        this.setArgRange(2, 3);
+        this.setArgRange(1, 3);
         this.addKey("mvm remove");
         this.addKey("mvmremove");
         this.addKey("mv modify remove");
@@ -47,6 +48,12 @@ public class ModifyRemoveCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        if (ModifyCommand.isShowAvailableProps(args)) {
+            sender.sendMessage("Properties available: " + AddProperties.getAllPropertyNames());
+            sender.sendMessage("Type " + ChatColor.GREEN + "/mvm remove ?" + ChatColor.WHITE + " for command usage.");
+            return;
+        }
+
         // We NEED a world from the command line
         Player p = null;
         if (sender instanceof Player) {

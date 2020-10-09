@@ -65,6 +65,10 @@ public class ModifyCommand extends MultiverseCommand {
         return false;
     }
 
+    protected static boolean isShowAvailableProps(List<String> args) {
+        return args.get(0).equalsIgnoreCase("-l") || args.get(0).equalsIgnoreCase("-list");
+    }
+
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         // This is just a place holder. The real commands are in:

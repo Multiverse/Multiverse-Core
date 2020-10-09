@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.Action;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -43,6 +44,12 @@ public class ModifyClearCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
+        if (ModifyCommand.isShowAvailableProps(args)) {
+            sender.sendMessage("Properties available: " + AddProperties.getAllPropertyNames());
+            sender.sendMessage("Type " + ChatColor.GREEN + "/mvm clear ?" + ChatColor.WHITE + " for command usage.");
+            return;
+        }
+
         // We NEED a world from the command line
         Player p = null;
         if (sender instanceof Player) {

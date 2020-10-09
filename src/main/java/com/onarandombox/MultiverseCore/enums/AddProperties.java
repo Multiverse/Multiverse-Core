@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore.enums;
 
+import org.bukkit.ChatColor;
+
 /**
  * An enum containing all list-properties.
  */
@@ -22,5 +24,16 @@ public enum AddProperties {
     /**
      * Monster-exceptions.
      */
-    monsters
+    monsters;
+
+    public static String getAllPropertyNames() {
+        ChatColor myColor = ChatColor.AQUA;
+        StringBuilder result = new StringBuilder();
+        AddProperties[] properties = AddProperties.values();
+        for (AddProperties property : properties) {
+            result.append(myColor).append(property.toString()).append(' ');
+            myColor = (myColor == ChatColor.AQUA) ? ChatColor.GOLD : ChatColor.AQUA;
+        }
+        return result.toString();
+    }
 }
