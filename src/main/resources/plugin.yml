@@ -11,34 +11,24 @@ commands:
     usage: /<command>
   mvcreate:
     description: World create command
-    usage: |
-            /<command> <world> <environment>
-            /<command> creative normal -- Creates a world called 'creative' with a NORMAL environment.
-            /<command> hellworld nether -- Creates a world called 'hellworld' with a NETHER environment.
-  mvc:
-    description: World create command
+    aliases: [mvc]
     usage: |
             /<command> <world> <environment>
             /<command> creative normal -- Creates a world called 'creative' with a NORMAL environment.
             /<command> hellworld nether -- Creates a world called 'hellworld' with a NETHER environment.
   mvimport:
     description: World import command
+    aliases: [mvim]
     usage: |
-            /<command> <world> <environment>
-            /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
-            /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
-  mvim:
-    description: World import command
-    usage: |
-            /<command> <world> <environment>
-            /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
-            /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
+      /<command> <world> <environment> [-g generator[:id]] [-n]
+      /<command> creative normal -- Imports an existing world called 'creative' with a NORMAL environment.
+      /<command> hellworld nether -- Imports an existing world called 'hellworld' with a NETHER environment.
   mvremove:
-    description: World remove command
+    description: Remove world from multiverse command
     usage: |
             /<command> <world>
   mvdelete:
-    description: World delete command
+    description: Delete world from server folders command
     usage: |
             /<command> <world>
   mvunload:
@@ -47,103 +37,75 @@ commands:
             /<command> <world>
   mvmodify:
     description: Modify the settings of an existing world
+    aliases: [mvm]
     usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+            /<command> <set|add|remove|clear> <value> <property> [world]
+            /<command> set pvp false creative -- Turns off PVP in the 'creative' world.
   mvmset:
     description: Modify the settings of an existing world
     usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+            /<command> <value> <property> [world]
+            /<command> pvp false creative -- Turns off PVP in the 'creative' world.
   mvmadd:
     description: Modify the settings of an existing world
     usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+            /<command> <value> <property> [world]
+            /<command> sheep animals world_nether -- Add sheep to animal list for 'world_nether' world.
   mvmremove:
     description: Modify the settings of an existing world
+    aliases: [mvmdelete]
     usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+            /<command> <value> <property> [world]
+            /<command> sheep animals world_nether -- remove sheep from animal list for 'world_nether' world.
   mvmclear:
     description: Modify the settings of an existing world
     usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
-  mvm:
-    description: Modify the settings of an existing world
-    usage: |
-            /<command> <world> <option>:<value>
-            /<command> creative pvp:false -- Turns off PVP in the 'creative' world.
+            /<command> <property> [world]
+            /<command> animals world_nether -- Empties animal list for 'world_nether' world.
   mvtp:
     description: Command to teleport between Worlds
     usage: |
-            /<command> <world>[:spawn]
+            /<command> [player] <destination>
             Example: /<command> creative - Teleports you to the relevant location in the 'creative' world.
-            Example: /<command> creative:spawn - Teleports you to the spawn of the 'creative' world.
   mvlist:
     description: Print list of loaded Worlds
+    aliases: [mvl]
     usage: |
-            /<command> [environment]
-            Example: /<command> NETHER - Shows all NETHER Worlds.
-            Example: /<command> NORMAL - Shows all NORMAL Worlds.
-  mvl:
-    description: Print list of loaded Worlds
-    usage: |
-            /<command> [environment]
+            /<command> [page]
             Example: /<command> NETHER - Shows all NETHER Worlds.
             Example: /<command> NORMAL - Shows all NORMAL Worlds.
   mvsetspawn:
     description: Set the spawn area for a particular world
-    usage: /<command> -- Sets the spawn area of the current world to your location.
-  mvset:
-    description: Set the spawn area for a particular world
-    usage: /<command> -- Sets the spawn area of the current world to your location.
-  mvss:
-    description: Set the spawn area for a particular world
+    aliases: [mvsets, mvss]
     usage: /<command> -- Sets the spawn area of the current world to your location.
   mvspawn:
     description: Teleport to the spawn area
-    usage: /<command> -- Teleports you to the spawn area of your current world.
-  mvs:
-    description: Teleport to the spawn area
-    usage: /<command> -- Teleports you to the spawn area of your current world.
+    aliases: [mvs]
+    usage: /<command> [player] -- Teleports you to the spawn area of your current world.
   mvcoord:
     description: Display World, Coordinates, Direction & Compression for a world.
-    usage: |
-            /<command> [world]
-            /<command> -- Shows the relevant coordinates in your current world.
-            /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
-  mvc:
-    description: Display World, Coordinates, Direction & Compression for a world.
+    aliases: [mvco]
     usage: |
             /<command> [world]
             /<command> -- Shows the relevant coordinates in your current world.
             /<command> creative -- Shows the relevant coordinates if you were in the 'creative' world.
   mvwho:
     description: Display online users per world.
+    aliases: [mvw]
     usage: |
-            /<command> [world]
-            /<command> -- Shows who is online in each world.
-            /<command> creative -- Shows who is online in the 'creative' world.
-  mvw:
-    description: Display online users per world.
-    usage: |
-            /<command> [world]
+            /<command> [world|--all]
             /<command> -- Shows who is online in each world.
             /<command> creative -- Shows who is online in the 'creative' world.
   mvreload:
     description: Reload Configuration files.
-    usage: /<command>
-  mvr:
-    description: Reload Configuration files.
+    aliases: [mvr]
     usage: /<command>
   mvpurge:
     description: Purge the targetted world of creatures.
     usage: |
-            /<command> [world] [creatures]
+            /<command> [WORLD|all] [all|animals|monsters|MOBNAME]
             /<command> -- Purges the players world of all creatures.
-            /<command> creative * -- Purges the creative world of all Creatures.
+            /<command> creative all -- Purges the creative world of all Creatures.
             /<command> creative creeper -- Purges the creative world of all CREEPERS.
   mvconfirm:
     description: Confirms sensitive decisions like deleting a world.
@@ -151,87 +113,75 @@ commands:
             /<command>
   mvinfo:
     description: Gets world info.
+    aliases: [mvi]
     usage: |
-            /<command> [world]
-  mvi:
-    description: Gets world info.
-    usage: |
-            /<command> [world]
+            /<command> [world] [page]
   mvenv:
     description: Tells the user all possible environment types.
     usage: |
             /<command>
-  mvv:
-    description: Prints out version info.
-    usage: |
-            /<command>
   mvversion:
     description: Prints out version info.
+    aliases: [mvv, mvver]
     usage: |
-            /<command>
-  mvco:
-    description: Displays the player's coordinates.
-    usage: |
-            /<command>
-  mvh:
-    description: Displays the Multiverse Help.
-    usage: |
-            /<command>
-  mvsearch:
-    description: Displays the Multiverse Help.
-    usage: |
-            /<command>
+            /<command> [-b|-h|-p] [--include-plugin-list]
   mvhelp:
     description: Displays the Multiverse Help.
+    aliases: [mvsearch, mvh]
     usage: |
-            /<command>
+            /<command> [filter] [page #]
   mvdebug:
     description: Turns on debugging.
     usage: |
-            /<command>
+            /<command> [1|2|3|off|silent]
   mvgenerators:
     description: Displays all found world generators.
-    usage: |
-            /<command>
-  mvgens:
-    description: Displays all found world generators.
+    aliases: [mvgens]
     usage: |
             /<command>
   mvload:
     description: Loads a world into Multiverse.
     usage: |
-            /<command> {WORLD}
+            /<command> <world>
   mvregen:
     description: Regenerates a world Multiverse already knows about.
     usage: |
-            /<command> {WORLD}
+            /<command> <world> [-s seed]
   mvscript:
     description: Runs a script from the Multiverse scripts directory.
     usage: |
-            /<command> {script} [target]
+            /<command> <script> [target]
   mvclone:
     description: World clone command
+    aliases: [mvcl]
     usage: |
-            /<command> <world> <environment>
+            /<command> <world> <environment> [-g generator[:id]]
             /<command> creative grieftastic -- Creates a world called 'grieftastic' exactly identical to the world 'creative'.
   mvsilent:
     description: Reduces startup messages
     usage: |
             /<command> [true|false]
-  
   mvgamerule:
     description: Sets a gamerule.
+    aliases: [mvrule]
     usage: |
-            /<command> {RULE} {VALUE} [WORLD]
-  mvrule:
-    description: Sets a gamerule.
-    usage: |
-            /<command> {RULE} {VALUE} [WORLD]
+            /<command> <rule> <value> [world]
   mvgamerules:
-    description: Lists the gamerules.
+    description: Lists the gamerules
+    aliases: [mvrules]
     usage: |
-            /<command> [WORLD]
-  mvrules:
-    description: Lists the gamerules.
+            /<command> [world]
+  mvanchors:
+    description: Creating and removing Anchors command
+    aliases: [mvanchor]
     usage: |
-            /<command> [WORLD]
+      /<command> <name> [-d]
+  mvcheck:
+    description: Validate your multiverse settings command
+    usage: |
+      /<command> <name> <destination>
+  mvconfig:
+    description: Configuration command
+    aliases: [mvconf]
+    usage: |
+      /<command> <property> <value>

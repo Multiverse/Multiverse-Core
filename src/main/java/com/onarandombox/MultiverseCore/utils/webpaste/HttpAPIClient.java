@@ -29,6 +29,10 @@ abstract class HttpAPIClient {
         URLENCODED
     }
 
+    HttpAPIClient(String url) {
+        this(url, null);
+    }
+
     HttpAPIClient(String url, String accessToken) {
         this.url = url;
         this.accessToken = accessToken;
@@ -48,7 +52,7 @@ abstract class HttpAPIClient {
             case URLENCODED:
                 return "application/x-www-form-urlencoded; charset=utf-8";
             default:
-                throw new IllegalStateException("Unexpected value: " + type);
+                throw new IllegalArgumentException("Unexpected value: " + type);
         }
     }
 
@@ -91,7 +95,9 @@ abstract class HttpAPIClient {
             // this isn't required, but is technically correct
             conn.addRequestProperty("Content-Type", getContentHeader(type));
             // only some API requests require an access token
-            if (this.accessToken != null) conn.addRequestProperty("Authorization", this.accessToken);
+            if (this.accessToken != null) {
+                conn.addRequestProperty("Authorization", this.accessToken);
+            }
 
             wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8.newEncoder());
             wr.write(payload);
@@ -102,7 +108,10 @@ abstract class HttpAPIClient {
             // this has to be initialized AFTER the data has been flushed!
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
 
-            while ((line = rd.readLine()) != null) responseString.append(line);
+            while ((line = rd.readLine()) != null) {
+                responseString.append(line);
+            }
+
             return responseString.toString();
         } finally {
             if (wr != null) {

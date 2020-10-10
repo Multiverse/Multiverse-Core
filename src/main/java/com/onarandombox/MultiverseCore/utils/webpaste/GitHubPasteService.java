@@ -20,7 +20,9 @@ class GitHubPasteService extends PasteService {
     GitHubPasteService(boolean isPrivate) {
         super(GITHUB_POST_REQUEST, ACCESS_TOKEN);
         this.isPrivate = isPrivate;
-        if (ACCESS_TOKEN.endsWith("access-token")) throw new UnsupportedOperationException();
+        if (ACCESS_TOKEN.endsWith("access-token")) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**

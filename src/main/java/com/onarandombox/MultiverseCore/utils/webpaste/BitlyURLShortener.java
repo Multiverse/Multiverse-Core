@@ -16,7 +16,9 @@ class BitlyURLShortener extends URLShortener {
 
     BitlyURLShortener() {
         super(BITLY_POST_REQUEST, ACCESS_TOKEN);
-        if (ACCESS_TOKEN.endsWith("access-token")) throw new UnsupportedOperationException();
+        if (ACCESS_TOKEN.endsWith("access-token")) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**
