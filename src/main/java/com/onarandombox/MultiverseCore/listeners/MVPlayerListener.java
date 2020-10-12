@@ -305,15 +305,7 @@ public class MVPlayerListener implements Listener {
                     + "' because enforceaccess is off.");
         }
         if (!plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            try {
-                Class.forName("org.bukkit.TravelAgent");
-                if (event.getPortalTravelAgent() != null) {
-                    event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
-                }
-            } catch (ClassNotFoundException ignore) {
-                plugin.log(Level.FINE, "TravelAgent not available for PlayerPortalEvent for " + event.getPlayer().getName());
-            }
-
+            event.setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 
