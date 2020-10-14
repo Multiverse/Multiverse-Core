@@ -60,6 +60,16 @@ public interface MVWorldManager {
                      String generator, boolean useSpawnAdjust);
 
     /**
+     * Splits vanilla world dimensions into individual overworld, nether and end
+     *
+     * @param name             Name of the vanilla world
+     * @param generator        The Custom generator plugin to use.
+     * @param useSpawnAdjust   If true, multiverse will search for a safe spawn. If not, It will not modify the level.dat.
+     * @return True if the world is copied and imported successfully, false if not.
+     */
+    boolean importVanillaWorld(String name, String generator, Boolean useSpawnAdjust);
+
+    /**
      * Make a copy of a world.
      *
      * @param oldName            Name of world to be copied

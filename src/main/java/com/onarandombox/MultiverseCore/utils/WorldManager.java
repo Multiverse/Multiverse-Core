@@ -18,6 +18,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -35,6 +36,7 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +49,6 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -55,6 +56,11 @@ import java.util.regex.Pattern;
  */
 public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
+    private final String WORLD_DAT = "level.dat";
+    private final String DEFAULT_NETHER_SUFFIX = "_nether";
+    private final String DEFAULT_END_SUFFIX = "_the_end";
+    private final String NETHER_DIM = "DIM-1";
+    private final String END_DIM = "DIM1";
     private final Pattern worldNamePattern = Pattern.compile("[a-zA-Z0-9/._-]+");
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
@@ -93,6 +99,85 @@ public class WorldManager implements MVWorldManager {
         } else {
             this.plugin.log(Level.WARNING, "Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean importVanillaWorld(String worldName, String generator, Boolean useSpawnAdjust) {
+        // Ensure world has not been imported
+        if (this.worlds.containsKey(worldName)) {
+            this.plugin.log(Level.SEVERE, "The vanilla world has already been imported to MV as a " + this.worlds.get(worldName).getEnvironment().toString());
+            this.plugin.log(Level.SEVERE, "Run " + ChatColor.AQUA + "/mv remove" + ChatColor.RESET + " before importing with MV vanilla conversion again.");
+            return false;
+        }
+
+        // File variables
+        String netherName = worldName + DEFAULT_NETHER_SUFFIX;
+        String endName = worldName + DEFAULT_END_SUFFIX;
+        File worldContainer = this.plugin.getServer().getWorldContainer();
+
+        File worldFolder = new File(worldContainer, worldName);
+        File worldDatFile = new File(worldFolder, WORLD_DAT);
+
+        File netherDIMFolder = new File(worldFolder, NETHER_DIM);
+        File netherWorldFolder = new File(worldContainer, netherName);
+        File netherDatFile = new File(netherWorldFolder, WORLD_DAT);
+
+        File endDIMFolder = new File(worldFolder, END_DIM);
+        File endWorldFolder = new File(worldContainer, endName);
+        File endDatFile = new File(endWorldFolder, WORLD_DAT);
+
+        // Ensure that relevant files and folder needed exist
+        if (!worldDatFile.isFile()) {
+            Logging.severe(ChatColor.RED + "Invalid vanilla world. Does not have valid .dat file!");
+            return false;
+        }
+        if (!netherDIMFolder.isDirectory()) {
+            Logging.severe(ChatColor.RED + "Invalid vanilla world. Does not have a nether dimension!");
+            return false;
+        }
+        if (!endDIMFolder.isDirectory()) {
+            Logging.severe(ChatColor.RED + "Invalid vanilla world. Does not have a end dimension!");
+            return false;
+        }
+
+        // Check if folders to create already present
+        if (netherWorldFolder.exists()) {
+            Logging.severe(ChatColor.RED + netherName + " world folder already exist! Unable to import vanilla world.");
+            return false;
+        }
+        if (endWorldFolder.exists()) {
+            Logging.severe(ChatColor.RED + endName + " world folder already exist! Unable to import vanilla world.");
+            return false;
+        }
+
+        // Copy the files and folders
+        if (!FileUtils.copyFolder(netherDIMFolder, netherWorldFolder, Logging.getLogger()) || !FileUtils.copyFile(worldDatFile, netherDatFile)) {
+            Logging.severe(ChatColor.RED + "Unable to copy to " + netherWorldFolder.getName());
+            return false;
+        }
+        if (!FileUtils.copyFolder(endDIMFolder, endWorldFolder, Logging.getLogger()) || !FileUtils.copyFile(worldDatFile, endDatFile)) {
+            Logging.severe("Unable to copy to " + endWorldFolder.getName());
+            return false;
+        }
+
+        // Add these worlds
+        if (!this.addWorld(worldName, Environment.NORMAL, null, null, null, generator, useSpawnAdjust)) {
+            Logging.severe(ChatColor.RED + "Unable to import " + worldName);
+            return false;
+        }
+        if (!this.addWorld(netherName, Environment.NETHER, null, null, null, generator, useSpawnAdjust)) {
+            Logging.severe(ChatColor.RED + "Unable to import " + netherName);
+            return false;
+        }
+        if (!this.addWorld(endName, Environment.THE_END, null, null, null, generator, useSpawnAdjust)) {
+            Logging.severe(ChatColor.RED + "Unable to import " + endName);
+            return false;
+        }
+
+        return true;
     }
 
     /**

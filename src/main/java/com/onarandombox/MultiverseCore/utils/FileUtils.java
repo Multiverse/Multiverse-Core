@@ -69,6 +69,25 @@ public class FileUtils {
     }
 
     /**
+     * Helper method to copy a file.
+     * @param source Source-File
+     * @param target Target-File
+     *
+     * @return true if it had success
+     */
+    public static boolean copyFile(File source, File target) {
+        try {
+            Files.copy(source.toPath(), target.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logging.severe("Unable to copy " + source.getName() +
+                    "to " + target.getName());
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Helper method to copy the world-folder.
      * @param source Source-File
      * @param target Target-File
