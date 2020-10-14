@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
@@ -23,11 +22,9 @@ import java.util.List;
  * Used to set world-properties.
  */
 public class ModifySetCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);
-        this.worldManager = this.plugin.getMVWorldManager();
         this.setName("Modify a World (Set a value)");
         this.setCommandUsage("/mv modify" + ChatColor.GREEN + " set {PROPERTY} {VALUE}" + ChatColor.GOLD + " [WORLD]");
         this.setArgRange(1, 3);
@@ -73,34 +70,13 @@ public class ModifySetCommand extends MultiverseCommand {
             }
             return;
         }
-        // We NEED a world from the command line
-        Player p = null;
-        if (sender instanceof Player) {
-            p = (Player) sender;
-        }
 
-        if (args.size() == 2 && p == null) {
-            sender.sendMessage("From the command line, WORLD is required.");
-            sender.sendMessage(this.getCommandDesc());
-            sender.sendMessage(this.getCommandUsage());
-            sender.sendMessage("Nothing changed.");
-            return;
-        }
-
-        MultiverseWorld world;
-        String value = args.get(1);
-        String property = args.get(0);
-
-        if (args.size() == 2) {
-            world = this.worldManager.getMVWorld(p.getWorld().getName());
-        } else {
-            world = this.worldManager.getMVWorld(args.get(2));
-        }
-
+        MultiverseWorld world = getTargetWorld(sender, args, 2);
         if (world == null) {
-            sender.sendMessage("That world does not exist!");
             return;
         }
+        String property = args.get(0);
+        String value = args.get(1);
 
         if ((property.equalsIgnoreCase("aliascolor") || property.equalsIgnoreCase("color")) && !EnglishChatColor.isValidAliasColor(value)) {
             sender.sendMessage(value + " is not a valid color. Please pick one of the following:");

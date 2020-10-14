@@ -8,12 +8,11 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.bukkit.Bukkit;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
@@ -40,41 +39,19 @@ public class GamerulesCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        // We NEED a world from the command line
-        final Player p;
-        if (sender instanceof Player) {
-            p = (Player) sender;
-        } else {
-            p = null;
-        }
-
-        if (args.size() == 0 && p == null) {
-            sender.sendMessage("From the command line, WORLD is required.");
-            sender.sendMessage(this.getCommandDesc());
-            sender.sendMessage(this.getCommandUsage());
-            sender.sendMessage("Nothing changed.");
+        MultiverseWorld world = getTargetWorld(sender, args, 0);
+        if (world == null) {
             return;
         }
 
-        final World world;
-        if (args.size() == 0) {
-            world = p.getWorld();
-        } else {
-            world = Bukkit.getWorld(args.get(0));
-            if (world == null) {
-                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(0)
-                        + ChatColor.WHITE + " does not exist.");
-                return;
-            }
-        }
-
+        final World CBWorld = world.getCBWorld();
         final StringBuilder gameRules = new StringBuilder();
-        for (final String gameRule : world.getGameRules()) {
+        for (final String gameRule : CBWorld.getGameRules()) {
             if (gameRules.length() != 0) {
                 gameRules.append(ChatColor.WHITE).append(", ");
             }
             gameRules.append(ChatColor.AQUA).append(gameRule).append(ChatColor.WHITE).append(": ");
-            gameRules.append(ChatColor.GREEN).append(world.getGameRuleValue(GameRule.getByName(gameRule)));
+            gameRules.append(ChatColor.GREEN).append(CBWorld.getGameRuleValue(GameRule.getByName(gameRule)));
         }
         sender.sendMessage("=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===");
         sender.sendMessage(gameRules.toString());

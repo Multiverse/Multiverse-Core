@@ -8,12 +8,11 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.bukkit.Bukkit;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
@@ -40,35 +39,14 @@ public class GameruleCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        // We NEED a world from the command line
-        final Player p;
-        if (sender instanceof Player) {
-            p = (Player) sender;
-        } else {
-            p = null;
-        }
-
-        if (args.size() == 2 && p == null) {
-            sender.sendMessage("From the command line, WORLD is required.");
-            sender.sendMessage(this.getCommandDesc());
-            sender.sendMessage(this.getCommandUsage());
-            sender.sendMessage("Nothing changed.");
+        MultiverseWorld world = getTargetWorld(sender, args, 2);
+        if (world == null) {
             return;
         }
 
+        final World CBWorld = world.getCBWorld();
         final GameRule gameRule = GameRule.getByName(args.get(0));
         final String value = args.get(1);
-        final World world;
-        if (args.size() == 2) {
-            world = p.getWorld();
-        } else {
-            world = Bukkit.getWorld(args.get(2));
-            if (world == null) {
-                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(2)
-                        + ChatColor.WHITE + " does not exist.");
-                return;
-            }
-        }
 
         if (gameRule == null) {
             sender.sendMessage(ChatColor.RED + "Failure! " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE
@@ -85,13 +63,13 @@ public class GameruleCommand extends MultiverseCommand {
                     return;
                 }
 
-                if (!world.setGameRule(gameRule, booleanValue)) {
+                if (!CBWorld.setGameRule(gameRule, booleanValue)) {
                     sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
                     return;
                 }
             } else if (gameRule.getType() == Integer.class) {
                 try {
-                    if (!world.setGameRule(gameRule, Integer.parseInt(value))) {
+                    if (!CBWorld.setGameRule(gameRule, Integer.parseInt(value))) {
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e) {
