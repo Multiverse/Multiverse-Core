@@ -40,7 +40,7 @@ If you're happy to wait (or you were sent here from Discord), read on:
 
 * **Server version:** <!-- Insert output of `/version` command -->
 
-* **Full output of `/mv version -b`:** <!-- Replace this with the command output's https://pastebin.com link -->
+* **Full output of `/mv version -p`:** <!-- Replace this with the command output's https://paste.gg/ link -->
 
 * **Server log:** <!-- Upload `logs/latest.log` to https://gist.github.com/ -->
 
