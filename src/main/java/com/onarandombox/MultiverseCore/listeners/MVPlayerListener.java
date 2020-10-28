@@ -358,6 +358,9 @@ public class MVPlayerListener implements Listener {
                         return;
                     }
 
+                    boolean isAllowFlight = player.getAllowFlight();
+                    boolean isFlying = player.isFlying();
+
                     if (!MVPlayerListener.this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
                         // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
                         Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
@@ -368,19 +371,17 @@ public class MVPlayerListener implements Listener {
                         Logging.fine("Player: " + player.getName() + " is IMMUNE to gamemode changes!");
                     }
 
-                    if (!MVPlayerListener.this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
-                        // Check if their flight mode should change
-                        if (player.getAllowFlight() && !world.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
+                    if (!MVPlayerListener.this.pt.playerCanIgnoreFlyRestriction(world, player)) {
+                        if (player.getGameMode() == GameMode.CREATIVE && world.getAllowFlight()) {
+                            player.setAllowFlight(true);
+                        } else if (isAllowFlight && player.getGameMode() != GameMode.SPECTATOR) {
                             player.setAllowFlight(false);
-                            if (player.isFlying()) {
-                                player.setFlying(false);
-                            }
-                        } else if (world.getAllowFlight()) {
-                            if (player.getGameMode() == GameMode.CREATIVE) {
-                                player.setAllowFlight(true);
-                            }
+                            player.setFlying(false);
                         }
                     } else {
+                        // Set back to previous state before gamemode change
+                        player.setAllowFlight(isAllowFlight);
+                        player.setFlying(isFlying);
                         Logging.fine("Player: " + player.getName() + " is IMMUNE to fly changes!");
                     }
                 }
