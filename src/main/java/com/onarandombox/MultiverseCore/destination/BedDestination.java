@@ -46,7 +46,7 @@ public class BedDestination implements MVDestination {
         boolean validFormat = split.length >= 1 && split.length <= 2 && split[0].equals(this.getIdentifier());
 
         OfflinePlayer p = Bukkit.getOfflinePlayer(split[1]);
-        boolean validPlayer = (p != null);
+        boolean validPlayer = p.getName() != null && !p.getName().equals("playerbed");
 
         if (validFormat && validPlayer) this.playername = p.getName();
 
