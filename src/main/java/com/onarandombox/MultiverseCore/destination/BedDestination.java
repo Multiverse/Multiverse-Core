@@ -23,7 +23,8 @@ import org.bukkit.util.Vector;
  * A bed-{@link MVDestination}.
  */
 public class BedDestination implements MVDestination {
-    public static final String OLD_BED_STRING = "b:playerbed";
+    public static final String CALLER_BED_NAME = "my-bed";
+    public static final String CALLER_BED_STRING = "b:" + CALLER_BED_NAME;
     private String playername = "";
     private boolean isValid;
     private Location knownBedLoc;
@@ -46,11 +47,11 @@ public class BedDestination implements MVDestination {
         boolean validFormat = split.length >= 1 && split.length <= 2 && split[0].equals(this.getIdentifier());
 
         OfflinePlayer p = Bukkit.getOfflinePlayer(split[1]);
-        boolean validPlayer = p.getName() != null && !p.getName().equals("playerbed");
+        boolean validPlayer = p.getName() != null && !p.getName().equals(CALLER_BED_NAME);
 
         if (validFormat && validPlayer) this.playername = p.getName();
 
-        this.isValid = destination.equals(OLD_BED_STRING) || (validFormat && validPlayer);
+        this.isValid = destination.equals(CALLER_BED_STRING) || (validFormat && validPlayer);
 
         return this.isValid;
     }
@@ -136,6 +137,6 @@ public class BedDestination implements MVDestination {
 
     @Override
     public String toString() {
-        return playername.isEmpty() ? OLD_BED_STRING : ("b:" + playername);
+        return playername.isEmpty() ? CALLER_BED_STRING : ("b:" + playername);
     }
 }
