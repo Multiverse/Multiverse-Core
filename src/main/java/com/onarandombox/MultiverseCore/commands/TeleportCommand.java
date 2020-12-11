@@ -58,7 +58,7 @@ public class TeleportCommand extends MultiverseCommand {
         String destinationName;
 
         if (args.size() == 2) {
-            teleportee = this.plugin.getServer().getPlayer(args.get(0));
+            teleportee = this.plugin.getServer().getPlayerExact(args.get(0));
             if (teleportee == null) {
                 this.messaging.sendMessage(sender, String.format("Sorry, I couldn't find player: %s%s",
                         ChatColor.GOLD, args.get(0)), false);

@@ -169,7 +169,7 @@ public class MVPlayerListener implements Listener {
                 this.plugin.log(Level.FINER, "We know the teleporter is the console! Magical!");
                 teleporter = this.plugin.getServer().getConsoleSender();
             } else {
-                teleporter = this.plugin.getServer().getPlayer(teleporterName);
+                teleporter = this.plugin.getServer().getPlayerExact(teleporterName);
             }
         }
         this.plugin.log(Level.FINER, "Inferred sender '" + teleporter + "' from name '"
