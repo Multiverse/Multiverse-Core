@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.Material;
@@ -56,7 +57,7 @@ public class MVPortalListener implements Listener {
     public void portalForm(PortalCreateEvent event) {
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
         if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalType.NETHER)) {
-            plugin.log(Level.FINE, "Cancelling creation of nether portal because portalForm disallows.");
+            Logging.fine("Cancelling creation of nether portal because portalForm disallows.");
             event.setCancelled(true);
         }
     }
@@ -79,7 +80,7 @@ public class MVPortalListener implements Listener {
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
         if (world != null && !world.getAllowedPortals().isPortalAllowed(PortalType.ENDER)) {
-            plugin.log(Level.FINE, "Cancelling creation of ender portal because portalForm disallows.");
+            Logging.fine("Cancelling creation of ender portal because portalForm disallows.");
             event.setCancelled(true);
         }
     }

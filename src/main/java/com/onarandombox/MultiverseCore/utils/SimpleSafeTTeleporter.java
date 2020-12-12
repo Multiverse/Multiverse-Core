@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
@@ -58,9 +59,9 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         if (safe != null) {
             safe.setX(safe.getBlockX() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
             safe.setZ(safe.getBlockZ() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-            this.plugin.log(Level.FINE, "Hey! I found one: " + plugin.getLocationManipulation().strCoordsRaw(safe));
+            Logging.fine("Hey! I found one: " + plugin.getLocationManipulation().strCoordsRaw(safe));
         } else {
-            this.plugin.log(Level.FINE, "Uh oh! No safe place found!");
+            Logging.fine("Uh oh! No safe place found!");
         }
         return safe;
     }
@@ -72,8 +73,8 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         }
         // We want half of it, so we can go up and down
         tolerance /= 2;
-        this.plugin.log(Level.FINER, "Given Location of: " + plugin.getLocationManipulation().strCoordsRaw(l));
-        this.plugin.log(Level.FINER, "Checking +-" + tolerance + " with a radius of " + radius);
+        Logging.finer("Given Location of: " + plugin.getLocationManipulation().strCoordsRaw(l));
+        Logging.finer("Checking +-" + tolerance + " with a radius of " + radius);
 
         // For now this will just do a straight up block.
         Location locToCheck = l.clone();
@@ -191,7 +192,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     @Override
     public TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d) {
         if (d instanceof InvalidDestination) {
-            this.plugin.log(Level.FINER, "Entity tried to teleport to an invalid destination");
+            Logging.finer("Entity tried to teleport to an invalid destination");
             return TeleportResult.FAIL_INVALID;
         }
         Player teleporteePlayer = null;
@@ -248,7 +249,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     public Location getSafeLocation(Entity e, MVDestination d) {
         Location l = d.getLocation(e);
         if (plugin.getBlockSafety().playerCanSpawnHereSafely(l)) {
-            plugin.log(Level.FINE, "The first location you gave me was safe.");
+            Logging.fine("The first location you gave me was safe.");
             return l;
         }
         if (e instanceof Minecart) {
@@ -267,21 +268,21 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
             // Add offset to account for a vehicle on dry land!
             if (e instanceof Minecart && !plugin.getBlockSafety().isEntitiyOnTrack(safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
-                this.plugin.log(Level.FINER, "Player was inside a minecart. Offsetting Y location.");
+                Logging.finer("Player was inside a minecart. Offsetting Y location.");
             }
-            this.plugin.log(Level.FINE, "Had to look for a bit, but I found a safe place for ya!");
+            Logging.finer("Had to look for a bit, but I found a safe place for ya!");
             return safeLocation;
         }
         if (e instanceof Player) {
             Player p = (Player) e;
             this.plugin.getMessaging().sendMessage(p, "No safe locations found!", false);
-            this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
+            Logging.finer("No safe location found for " + p.getName());
         } else if (e.getPassenger() instanceof Player) {
             Player p = (Player) e.getPassenger();
             this.plugin.getMessaging().sendMessage(p, "No safe locations found!", false);
-            this.plugin.log(Level.FINER, "No safe location found for " + p.getName());
+            Logging.finer("No safe location found for " + p.getName());
         }
-        this.plugin.log(Level.FINE, "Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
+        Logging.fine("Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");
         return null;
     }
 
