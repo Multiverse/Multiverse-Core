@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -100,7 +101,7 @@ public class MVPermissions implements PermissionsInterface {
     public boolean canEnterWorld(Player p, MultiverseWorld w) {
         // If we're not enforcing access, anyone can enter.
         if (!plugin.getMVConfig().getEnforceAccess()) {
-            this.plugin.log(Level.FINEST, "EnforceAccess is OFF. Player was allowed in " + w.getAlias());
+            Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }
         return this.hasPermission(p, "multiverse.access." + w.getName(), false);
@@ -257,14 +258,14 @@ public class MVPermissions implements PermissionsInterface {
 
         boolean hasPermission = sender.hasPermission(node);
         if (!sender.isPermissionSet(node)) {
-            this.plugin.log(Level.FINER, String.format("The node [%s%s%s] was %sNOT%s set for [%s%s%s].",
+            Logging.finer(String.format("The node [%s%s%s] was %sNOT%s set for [%s%s%s].",
                     ChatColor.RED, node, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.AQUA,
                     player.getDisplayName(), ChatColor.WHITE));
         }
         if (hasPermission) {
-            this.plugin.log(Level.FINER, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
+            Logging.finer("Checking to see if player [" + player.getName() + "] has permission [" + node + "]... YES");
         } else {
-            this.plugin.log(Level.FINER, "Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
+            Logging.finer("Checking to see if player [" + player.getName() + "] has permission [" + node + "]... NO");
         }
         return hasPermission;
     }

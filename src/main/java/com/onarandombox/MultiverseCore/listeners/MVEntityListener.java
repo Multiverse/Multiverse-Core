@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -98,7 +99,7 @@ public class MVEntityListener implements Listener {
          * Handle people with non-standard animals: ie a patched craftbukkit.
          */
         if (type == null || type.getName() == null) {
-            this.plugin.log(Level.FINER, "Found a null typed creature.");
+            Logging.finer("Found a null typed creature.");
             return;
         }
 

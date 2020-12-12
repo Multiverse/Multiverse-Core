@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import java.util.logging.Level;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
 import org.bukkit.Location;
@@ -89,7 +90,7 @@ public class BukkitTravelAgent implements TravelAgent {
     private Location getSafeLocation() {
         // At this time, these can never use the velocity.
         if (agent.destination instanceof CannonDestination) {
-            agent.core.log(Level.FINE, "Using Stock TP method. This cannon will have 0 velocity");
+            Logging.fine("Using Stock TP method. This cannon will have 0 velocity");
         }
         SafeTTeleporter teleporter = agent.core.getSafeTTeleporter();
         Location newLoc = agent.destination.getLocation(agent.player);

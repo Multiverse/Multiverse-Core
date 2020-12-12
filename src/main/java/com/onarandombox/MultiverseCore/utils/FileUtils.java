@@ -72,12 +72,11 @@ public class FileUtils {
      * Helper method to copy the world-folder.
      * @param source Source-File
      * @param target Target-File
-     * @param log A logger that logs the operation
      *
      * @return true if it had success
      */
-    public static boolean copyFolder(File source, File target, Logger log) {
-        return copyFolder(source, target, null, log);
+    public static boolean copyFolder(File source, File target) {
+        return copyFolder(source, target, null);
     }
 
     /**
@@ -85,11 +84,10 @@ public class FileUtils {
      * @param source Source-File
      * @param target Target-File
      * @param excludeFiles files to ignore and not copy over to Target-File
-     * @param log A logger that logs the operation
      *
      * @return true if it had success
      */
-    public static boolean copyFolder(File source, File target, List<String> excludeFiles, Logger log) {
+    public static boolean copyFolder(File source, File target, List<String> excludeFiles) {
         Path sourceDir = source.toPath();
         Path targetDir = target.toPath();
 
@@ -97,7 +95,7 @@ public class FileUtils {
             Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir, excludeFiles));
             return true;
         } catch (IOException e) {
-            log.log(Level.WARNING, "Unable to copy directory", e);
+            Logging.warning("Unable to copy directory", e);
             return false;
         }
     }

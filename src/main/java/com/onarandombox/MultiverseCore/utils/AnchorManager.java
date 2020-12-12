@@ -74,7 +74,7 @@ public class AnchorManager {
             this.anchorConfig.save(new File(this.plugin.getDataFolder(), "anchors.yml"));
             return true;
         } catch (IOException e) {
-            this.plugin.log(Level.SEVERE, "Failed to save anchors.yml. Please check your file permissions.");
+            Logging.severe("Failed to save anchors.yml. Please check your file permissions.");
             return false;
         }
     }
