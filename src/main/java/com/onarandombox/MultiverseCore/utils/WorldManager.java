@@ -47,7 +47,6 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -62,6 +61,8 @@ public class WorldManager implements MVWorldManager {
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
     private String firstSpawn;
+
+    private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("session.lock", "uid.dat");
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
@@ -96,6 +97,188 @@ public class WorldManager implements MVWorldManager {
     }
 
     /**
+     * Makes cloning easier to understand and manage.
+     */
+    private class CloneHelper {
+        private String oldName;
+        private String newName;
+        private File oldWorldFile;
+        private File newWorldFile;
+        private MultiverseWorld oldWorld;
+
+        public CloneHelper(String oldName, String newName) {
+            this.oldName = oldName;
+            this.newName = newName;
+        }
+
+        /**
+         * The clone operation.
+         *
+         * @return True if clone is successful, false otherwise.
+         */
+        public boolean run() {
+            if (!validCloneParameters()) {
+                Logging.warning("Invalid clone parameters");
+                return false;
+            }
+
+            initWorldFiles();
+            if (newWorldFile.exists()) {
+                Logging.warning("Folder for new world '%s' already exists", newName);
+                return false;
+            }
+
+            oldWorld = getMVWorld(oldName);
+            if (!isOldWorldLoadable()) {
+                Logging.severe("Old world '%s' is not loadable", oldName);
+                return false;
+            }
+
+            boolean wasAutoSave = manuallySaveWorld();
+
+            if (!copyWorldFolder()) {
+                return false;
+            }
+
+            revertBackAutoSave(wasAutoSave);
+
+            return initNewCloneWorld();
+        }
+
+        /**
+         * Ensure that world with oldName can be clone to a world called newName.
+         *
+         * @return True if parameters are valid, otherwise false.
+         */
+        private boolean validCloneParameters() {
+            String originalOldName = oldName;
+            oldName = isWorldFromConfig(oldName) ? oldName : getWorldByAliasFromConfig(oldName);
+
+            if (oldName == null) {
+                Logging.warning("Old world '%s' does not exist", originalOldName);
+                return false;
+            }
+            if (isWorldFromConfig(newName)) {
+                Logging.warning("New world '%s' already exists", newName);
+                return false;
+            }
+            if (!isValidWorldName(newName)) {
+                Logging.warning("New world name '%s' is invalid", newName);
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Get world folders from world container.
+         */
+        private void initWorldFiles() {
+            oldWorldFile = new File(plugin.getServer().getWorldContainer(), oldName);
+            newWorldFile = new File(plugin.getServer().getWorldContainer(), newName);
+        }
+
+        /**
+         * Ensure that old world can be loaded and saved properly.
+         *
+         * @return True if old world can be loaded successfully, false otherwise.
+         */
+        private boolean isOldWorldLoadable() {
+            if (oldWorld != null) {
+                return true;
+            }
+
+            Logging.fine("Old world '%s' is currently unloaded. Attempting to load it...", oldName);
+            WorldProperties props = worldsFromTheConfig.get(oldName);
+            boolean wasLoadSpawn = worldsFromTheConfig.get(oldName).isKeepingSpawnInMemory();
+            if (wasLoadSpawn) {
+                props.setKeepSpawnInMemory(false);
+            }
+
+            if (!loadWorld(oldName)) {
+                Logging.severe("Failed to load the old world '%s'", oldName);
+                return false;
+            }
+
+            getMVWorld(oldName).getCBWorld().setAutoSave(false);
+
+            if (!unloadWorld(oldName, true)) {
+                Logging.severe("Failed to unload the old world '%S'", oldName);
+                return false;
+            }
+
+            if (wasLoadSpawn) {
+                props.setKeepSpawnInMemory(true);
+            }
+
+            return true;
+        }
+
+        /**
+         * Duplicating old world folder to the new world folder.
+         *
+         * @return True if copy process was successful, false otherwise.
+         */
+        private boolean copyWorldFolder() {
+            Logging.fine("Copying files for world '%s'", oldName);
+            if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, CLONE_IGNORE_FILES, Logging.getLogger()) || !newWorldFile.exists()) {
+                Logging.severe("Failed to copy files for world '%s', see the log info", newName);
+                return false;
+            }
+            Logging.fine("Succeeded at copying files");
+            return true;
+        }
+
+        /**
+         * Ensure world is save being copying world files.
+         *
+         * @return Previous auto-save setting for the old world.
+         */
+        private boolean manuallySaveWorld() {
+            if (oldWorld != null && oldWorld.getCBWorld().isAutoSave()) {
+                Logging.config("Saving world '%s'", oldName);
+                oldWorld.getCBWorld().setAutoSave(false);
+                oldWorld.getCBWorld().save();
+                return true;
+            }
+            return false;
+        }
+
+        private void revertBackAutoSave(boolean wasAutoSave) {
+            if (oldWorld != null && wasAutoSave) {
+                Logging.fine("Revert back to enabling auto-save");
+                oldWorld.getCBWorld().setAutoSave(true);
+            }
+        }
+
+        /**
+         * Initialize new properties with old ones.
+         */
+        private void copyPropertiesToNewWorld() {
+            WorldProperties newProps = new WorldProperties();
+            newProps.copyValues(worldsFromTheConfig.get(oldName));
+            newProps.setAlias(""); // don't keep the alias the same -- that would be useless
+            worldsFromTheConfig.put(newName, newProps);
+        }
+
+        /**
+         * Load up the newly copied clone world.
+         */
+        private boolean initNewCloneWorld() {
+            copyPropertiesToNewWorld();
+            if (!saveWorldsConfig()) {
+                Logging.severe("Failed to save worlds.yml");
+                return false;
+            }
+            if (!doLoad(newName)) {
+                Logging.severe("Failed to load the cloned world '" + newName + "'");
+                return false;
+            }
+            Logging.fine("Succeeded at loading cloned world '" + newName + "'");
+            return true;
+        }
+    }
+
+    /**
      * {@inheritDoc}
      * @deprecated Use {@link #cloneWorld(String, String)} instead.
      */
@@ -110,113 +293,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean cloneWorld(String oldName, String newName) {
-        // Make sure we already know about the old world and that we don't
-        // already know about the new world.
-        if (!this.worldsFromTheConfig.containsKey(oldName)) {
-            for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
-                if (oldName.equals(entry.getValue().getAlias())) {
-                    oldName = entry.getKey();
-                    break;
-                }
-            }
-            if (!this.worldsFromTheConfig.containsKey(oldName)) {
-                Logging.warning("Old world '%s' does not exist", oldName);
-                return false;
-            }
-        }
-        if (this.isMVWorld(newName)) {
-            Logging.warning("New world '%s' already exists", newName);
-            return false;
-        }
-
-        // Check for valid world name
-        if (!(isValidWorldName(oldName) && isValidWorldName(newName))) {
-            return false;
-        }
-
-        final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
-        final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
-        final List<String> ignoreFiles = new ArrayList<>(Arrays.asList("session.lock", "uid.dat"));
-
-        // Make sure the new world doesn't exist outside of multiverse.
-        if (newWorldFile.exists()) {
-            Logging.warning("Folder for new world '%s' already exists", newName);
-            return false;
-        }
-
-        // Load the old world... but just the metadata.
-        boolean wasJustLoaded = false;
-        boolean wasLoadSpawn = false;
-        if (this.plugin.getServer().getWorld(oldName) == null) {
-            wasJustLoaded = true;
-            WorldProperties props = this.worldsFromTheConfig.get(oldName);
-            wasLoadSpawn = props.isKeepingSpawnInMemory();
-            if (wasLoadSpawn) {
-                // No chunks please.
-                props.setKeepSpawnInMemory(false);
-            }
-            if (!this.loadWorld(oldName)) {
-                return false;
-            }
-            this.plugin.getServer().getWorld(oldName).setAutoSave(false);
-        }
-        
-        // Grab a bit of metadata from the old world.
-        MultiverseWorld oldWorld = getMVWorld(oldName);
-
-        // Don't need the loaded world anymore.
-        if (wasJustLoaded) {
-            this.unloadWorld(oldName, true);
-            oldWorld = null;
-            if (wasLoadSpawn) {
-                this.worldsFromTheConfig.get(oldName).setKeepSpawnInMemory(true);
-            }
-        }
-
-        boolean wasAutoSave = false;
-        if (oldWorld != null && oldWorld.getCBWorld().isAutoSave()) {
-            wasAutoSave = true;
-            Logging.config("Saving world '%s'", oldName);
-            oldWorld.getCBWorld().setAutoSave(false);
-            oldWorld.getCBWorld().save();
-        }
-        Logging.config("Copying files for world '%s'", oldName);
-        if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, ignoreFiles, Logging.getLogger())) {
-            Logging.warning("Failed to copy files for world '%s', see the log info", newName);
-            return false;
-        }
-        if (oldWorld != null && wasAutoSave) {
-            oldWorld.getCBWorld().setAutoSave(true);
-        }
-        
-        if (newWorldFile.exists()) {
-            Logging.fine("Succeeded at copying files");
-
-            // initialize new properties with old ones
-            WorldProperties newProps = new WorldProperties();
-            newProps.copyValues(this.worldsFromTheConfig.get(oldName));
-            // don't keep the alias the same -- that would be useless
-            newProps.setAlias("");
-            // store the new properties in worlds config map
-            this.worldsFromTheConfig.put(newName, newProps);
-
-            // save the worlds config to disk (worlds.yml)
-            if (!saveWorldsConfig()) {
-                this.plugin.log(Level.SEVERE, "Failed to save worlds.yml");
-                return false;
-            }
-
-            // actually load the world
-            if (doLoad(newName)) {
-               this.plugin.log(Level.FINE, "Succeeded at loading cloned world '" + newName + "'");
-               return true;
-            }
-            this.plugin.log(Level.SEVERE, "Failed to load the cloned world '" + newName + "'");
-            return false;
-        }
-
-        Logging.warning("Failed to copy files for world '%s', see the log info", newName);
-        return false;
+        return new CloneHelper(oldName, newName).run();
     }
 
     /**
@@ -695,6 +772,19 @@ public class WorldManager implements MVWorldManager {
             }
         }
         return false;
+    }
+
+    private boolean isWorldFromConfig(String name) {
+        return this.worldsFromTheConfig.containsKey(name);
+    }
+
+    private String getWorldByAliasFromConfig(String name) {
+        return this.worldsFromTheConfig.entrySet()
+                .stream()
+                .filter(worldEntry -> name.equals(worldEntry.getValue().getAlias()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
     /**
