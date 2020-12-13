@@ -28,7 +28,6 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Used to teleport players.
@@ -177,8 +176,8 @@ public class TeleportCommand extends MultiverseCommand {
             }
             String message = String.format("%sMultiverse %sdid not teleport %s%s %sto %s%s %sbecause it was unsafe.",
                     ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, player, ChatColor.WHITE, ChatColor.DARK_AQUA, d.getName(), ChatColor.WHITE);
-            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items,
-                    paramTypes, message, "Would you like to try anyway?", "", "", UNSAFE_TELEPORT_EXPIRE_DELAY);
+//            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items,
+//                    paramTypes, message, "Would you like to try anyway?", "", "", UNSAFE_TELEPORT_EXPIRE_DELAY);
         }
         // else: Player was teleported successfully (or the tp event was fired I should say)
     }

@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Enables debug-information.

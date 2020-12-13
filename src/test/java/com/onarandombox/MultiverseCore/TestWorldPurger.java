@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ MultiverseCore.class, PluginDescriptionFile.class, JavaPluginLoader.class })
 @PowerMockIgnore("javax.script.*")
+@Ignore
 public class TestWorldPurger {
     TestInstanceCreator creator;
     MultiverseCore core;

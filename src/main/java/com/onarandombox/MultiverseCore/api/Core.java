@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
+import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -84,7 +85,7 @@ public interface Core {
      *
      * @return A non-null {@link CommandHandler}.
      */
-    CommandHandler getCommandHandler();
+    PaperCommandManager getCommandHandler();
 
     /**
      * Gets the factory class responsible for loading many different destinations

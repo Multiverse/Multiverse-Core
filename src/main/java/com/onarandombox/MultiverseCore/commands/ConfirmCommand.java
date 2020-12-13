@@ -33,7 +33,7 @@ public class ConfirmCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        this.plugin.getCommandHandler().confirmQueuedCommand(sender);
+//        this.plugin.getCommandHandler().confirmQueuedCommand(sender);
     }
 
 }

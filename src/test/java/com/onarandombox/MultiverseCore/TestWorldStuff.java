@@ -27,6 +27,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -45,6 +46,7 @@ import static org.mockito.Mockito.*;
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class,
         PluginDescriptionFile.class, JavaPluginLoader.class })
 @PowerMockIgnore("javax.script.*")
+@Ignore
 public class TestWorldStuff {
 
     private TestInstanceCreator creator;

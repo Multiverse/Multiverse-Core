@@ -9,14 +9,12 @@ package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /** A factory class that will create destinations from specific strings. */
@@ -28,12 +26,12 @@ public class DestinationFactory {
     public DestinationFactory(MultiverseCore plugin) {
         this.plugin = plugin;
         this.destList = new HashMap<String, Class<? extends MVDestination>>();
-        List<Command> cmds = this.plugin.getCommandHandler().getAllCommands();
-        for (Command c : cmds) {
-            if (c instanceof TeleportCommand) {
-                this.teleportCommand = c;
-            }
-        }
+//        List<Command> cmds = this.plugin.getCommandHandler().getAllCommands();
+//        for (Command c : cmds) {
+//            if (c instanceof TeleportCommand) {
+//                this.teleportCommand = c;
+//            }
+//        }
     }
 
     /**
@@ -97,8 +95,8 @@ public class DestinationFactory {
             this.plugin.getServer().getPluginManager().addPermission(other);
             pt.addToParentPerms("multiverse.teleport.other." + identifier);
         }
-        this.teleportCommand.addAdditonalPermission(self);
-        this.teleportCommand.addAdditonalPermission(other);
+//        this.teleportCommand.addAdditonalPermission(self);
+//        this.teleportCommand.addAdditonalPermission(other);
         return true;
     }
 }

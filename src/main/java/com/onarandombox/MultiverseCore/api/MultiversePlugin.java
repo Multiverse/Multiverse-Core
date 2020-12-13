@@ -103,19 +103,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
     protected abstract void registerCommands(CommandHandler handler);
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!this.isEnabled()) {
-            sender.sendMessage("This plugin is Disabled!");
-            return true;
-        }
-
-        ArrayList<String> allArgs = new ArrayList<String>(args.length + 1);
-        allArgs.add(command.getName());
-        allArgs.addAll(Arrays.asList(args));
-        return this.getCore().getCommandHandler().locateAndRunCommand(sender, allArgs);
-    }
-
-    @Override
     public void log(Level level, String msg) {
         int debugLevel = this.getCore().getMVConfig().getGlobalDebug();
         if ((level == Level.FINE && debugLevel >= 1) || (level == Level.FINER && debugLevel >= 2)

@@ -47,7 +47,7 @@ public class RegenCommand extends MultiverseCommand {
         objectArgs.add(useseed);
         objectArgs.add(randomseed);
         objectArgs.add(seed);
-        this.plugin.getCommandHandler().queueCommand(sender, "mvregen", "regenWorld", objectArgs,
-                paramTypes, ChatColor.GREEN + "World Regenerated!", ChatColor.RED + "World could NOT be regenerated!");
+//        this.plugin.getCommandHandler().queueCommand(sender, "mvregen", "regenWorld", objectArgs,
+//                paramTypes, ChatColor.GREEN + "World Regenerated!", ChatColor.RED + "World could NOT be regenerated!");
     }
 }
