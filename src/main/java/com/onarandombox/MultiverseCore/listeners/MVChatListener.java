@@ -5,6 +5,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 /**
@@ -26,34 +27,30 @@ public abstract class MVChatListener implements Listener {
      * @param event The {@link ChatEvent}.
      */
     public void playerChat(ChatEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() || !plugin.getMVConfig().getPrefixChat()) {
             return;
         }
-        // Check whether the Server is set to prefix the chat with the World name.
-        // If not we do nothing, if so we need to check if the World has an Alias.
-        if (plugin.getMVConfig().getPrefixChat()) {
-            String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
-            if (world == null) {
-                world = event.getPlayer().getWorld().getName();
-                playerListener.getPlayerWorld().put(event.getPlayer().getName(), world);
-            }
-            String prefix = "";
-            // If we're not a MV world, don't do anything
-            if (!this.worldManager.isMVWorld(world)) {
-                return;
-            }
-            MultiverseWorld mvworld = this.worldManager.getMVWorld(world);
-            if (mvworld.isHidden()) {
-                return;
-            }
-            prefix = mvworld.getColoredWorldString();
-            String chat = event.getFormat();
-            
-            String prefixChatFormat = plugin.getMVConfig().getPrefixChatFormat();
-            prefixChatFormat = prefixChatFormat.replace("%world%", prefix).replace("%chat%", chat);
-            prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
-            
-            event.setFormat(prefixChatFormat);
+
+        MultiverseWorld mvworld = getPlayerWorld(event.getPlayer());
+        if (mvworld == null || mvworld.isHidden()) {
+            return;
         }
+
+        String prefixChatFormat = plugin.getMVConfig().getPrefixChatFormat()
+                .replace("%world%", mvworld.getColoredWorldString())
+                .replace("%chat%", event.getFormat());
+        
+        prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
+
+        event.setFormat(prefixChatFormat);
+    }
+
+    private MultiverseWorld getPlayerWorld(Player player) {
+        String world = playerListener.getPlayerWorld().get(player.getName());
+        if (world == null) {
+            world = player.getWorld().getName();
+            playerListener.getPlayerWorld().put(player.getName(), world);
+        }
+        return this.worldManager.getMVWorld(world);
     }
 }
