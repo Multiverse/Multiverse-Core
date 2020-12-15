@@ -37,6 +37,7 @@ import com.onarandombox.MultiverseCore.commands_acf.ConfigCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DebugCommand;
 import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
 import com.onarandombox.MultiverseCore.commands_acf.LoadCommand;
+import com.onarandombox.MultiverseCore.commands_acf.QueueManager;
 import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
@@ -171,6 +172,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup our Map for our Commands using the CommandHandler.
     private PaperCommandManager commandHandler;
+    private QueueManager queueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
 
@@ -712,7 +714,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         commandHandler.enableUnstableAPI("help");
 
         CommandTools tools = new CommandTools(this);
-        tools.registerCommandContext();
+        tools.registerCommandContexts();
         tools.registerCommandCompletions();
 
         commandHandler.registerCommand(new UnloadCommand(this));
@@ -824,6 +826,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public PaperCommandManager getCommandHandler() {
         return commandHandler;
+    }
+
+    public QueueManager getQueueManager() {
+        return queueManager;
     }
 
     /**

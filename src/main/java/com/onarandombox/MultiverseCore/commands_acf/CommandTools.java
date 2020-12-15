@@ -61,7 +61,7 @@ public class CommandTools {
         //TODO: world types
     }
 
-    public void registerCommandContext() {
+    public void registerCommandContexts() {
         commandHandler.getCommandContexts().registerIssuerAwareContext(
                 MultiverseWorld.class,
                 context -> {
