@@ -23,7 +23,7 @@ public class ConfigCommand extends MultiverseCommand {
     }
 
     @Subcommand("list")
-    @Description("Show Global MV Variables.")
+    @Description("Show multiverse config values.")
     public void onShowCommand(CommandSender sender) {
         StringBuilder builder = new StringBuilder();
         Map<String, Object> serializedConfig = this.plugin.getMVConfig().serialize();
@@ -53,13 +53,14 @@ public class ConfigCommand extends MultiverseCommand {
             return;
         }
 
-        // special rule, don't forget to set the world!
-        if (property.equalsIgnoreCase("firstspawnworld")) {
-            this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
-        }
-
         if (!this.plugin.saveMVConfigs()) {
             sender.sendMessage(ChatColor.RED + "FAIL!" + ChatColor.WHITE + " Check your console for details!");
+        }
+
+        // special rule, don't forget to set the world!
+        //TODO: Potentially should move to MultiverseCore#loadConfigs method
+        if (property.equalsIgnoreCase("firstspawnworld")) {
+            this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
         }
 
         sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");

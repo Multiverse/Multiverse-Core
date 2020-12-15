@@ -10,13 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QueueManager {
+public class CommandQueueManager {
+
     private final MultiverseCore plugin;
     private final Map<CommandSender, QueuedCommand> queuedCommands;
 
     private static final int DEFAULT_EXPIRE_TIME = 200;  // In ticks for now
 
-    public QueueManager(MultiverseCore plugin) {
+    public CommandQueueManager(MultiverseCore plugin) {
         this.plugin = plugin;
         this.queuedCommands = new HashMap<CommandSender, QueuedCommand>();
     }
@@ -26,7 +27,7 @@ public class QueueManager {
     }
 
     public void addToQueue(@NotNull CommandSender sender, @NotNull Runnable runnable, int validPeriod) {
-        cancelPreviousQueue(sender);
+        cancelPreviousInQueue(sender);
 
         QueuedCommand queuedCommand = new QueuedCommand(sender, runnable, validPeriod);
         queuedCommands.put(sender, queuedCommand);
@@ -36,7 +37,7 @@ public class QueueManager {
         sender.sendMessage("Run /mv confirm to continue.");
     }
 
-    private void cancelPreviousQueue(@NotNull CommandSender sender) {
+    private void cancelPreviousInQueue(@NotNull CommandSender sender) {
         QueuedCommand previousCommand = queuedCommands.get(sender);
         if (previousCommand == null) {
             return;
@@ -72,6 +73,7 @@ public class QueueManager {
             return false;
         }
 
+        Logging.fine("Running queued command.");
         queuedCommand.runCommand();
         queuedCommands.remove(sender);
         return true;
