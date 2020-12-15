@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -23,11 +24,12 @@ public class UnloadCommand extends MultiverseCommand {
     @Syntax("<world>")
     @CommandCompletion("@mvworlds")
     @Description("Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.")
-    public void onUnloadCommand(CommandSender sender, @Single String worldName) {
-        if (!this.plugin.getMVWorldManager().unloadWorld(worldName)) {
-            sender.sendMessage("Error trying to unload world '" + worldName + "'!");
+    public void onUnloadCommand(CommandSender sender, MultiverseWorld world) {
+        //TODO: Should be able to use MVWorld object directly
+        if (!this.plugin.getMVWorldManager().unloadWorld(world.getName())) {
+            sender.sendMessage("Error trying to unload world '" + world.getName() + "'!");
             return;
         }
-        Command.broadcastCommandMessage(sender, "Unloaded world '" + worldName + "'!");
+        Command.broadcastCommandMessage(sender, "Unloaded world '" + world.getName() + "'!");
     }
 }

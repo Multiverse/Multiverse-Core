@@ -32,14 +32,16 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands_acf.CommandTools;
+import com.onarandombox.MultiverseCore.commands_acf.CoordCommand;
+import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
+import com.onarandombox.MultiverseCore.commands_helper.CommandTools;
 import com.onarandombox.MultiverseCore.commands_acf.ConfigCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ConfirmCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DebugCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
 import com.onarandombox.MultiverseCore.commands_acf.LoadCommand;
-import com.onarandombox.MultiverseCore.commands_acf.CommandQueueManager;
+import com.onarandombox.MultiverseCore.commands_helper.CommandQueueManager;
 import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
@@ -720,13 +722,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         tools.registerCommandContexts();
         tools.registerCommandCompletions();
 
-        commandHandler.registerCommand(new UnloadCommand(this));
-        commandHandler.registerCommand(new LoadCommand(this));
-        commandHandler.registerCommand(new ConfigCommand(this));
-        commandHandler.registerCommand(new InfoCommand(this));
-        commandHandler.registerCommand(new DebugCommand(this));
-        commandHandler.registerCommand(new DeleteCommand(this));
-        commandHandler.registerCommand(new ConfirmCommand(this));
+        this.commandHandler.registerCommand(new UnloadCommand(this));
+        this.commandHandler.registerCommand(new LoadCommand(this));
+        this.commandHandler.registerCommand(new ConfigCommand(this));
+        this.commandHandler.registerCommand(new InfoCommand(this));
+        this.commandHandler.registerCommand(new DebugCommand(this));
+        this.commandHandler.registerCommand(new DeleteCommand(this));
+        this.commandHandler.registerCommand(new ConfirmCommand(this));
+        this.commandHandler.registerCommand(new CoordCommand(this));
+        this.commandHandler.registerCommand(new CreateCommand(this));
     }
 
     /**

@@ -1,7 +1,8 @@
-package com.onarandombox.MultiverseCore.commands_acf;
+package com.onarandombox.MultiverseCore.commands_helper;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commands_helper.QueuedCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
@@ -69,7 +70,7 @@ public class CommandQueueManager {
     public boolean runQueuedCommand(@NotNull CommandSender sender) {
         QueuedCommand queuedCommand = this.queuedCommands.get(sender);
         if (queuedCommand == null) {
-            Logging.fine("No queued command.");
+            sender.sendMessage("You do not have any commands in queue.");
             return false;
         }
 

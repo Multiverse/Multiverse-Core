@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commands_helper.WorldAndPage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,14 +26,11 @@ public class InfoCommand extends MultiverseCommand {
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
     @Syntax("[world] [page]")
-    @CommandCompletion("@mvworlds")
+    @CommandCompletion("@mvworlds @range:1-3")
     @Description("")
-    public void onInfoCommand(CommandSender sender, MultiverseWorld world, @Default("1") int page) {
-        ShowWorldInfo(sender, world, page);
-    }
-
-    private void ShowWorldInfo(CommandSender sender, MultiverseWorld world, int page) {
-        sender.sendMessage(world.toString());
-        sender.sendMessage("Page of " + page);
+    public void onInfoCommand(CommandSender sender, WorldAndPage worldAndPage) {
+        //TODO: The actual paged info
+        sender.sendMessage(worldAndPage.getWorld().toString());
+        sender.sendMessage("Page of " + worldAndPage.getPage());
     }
 }
