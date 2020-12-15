@@ -24,11 +24,11 @@ import org.bukkit.event.HandlerList;
  * @param <T> The type of the property that was set.
  */
 public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable {
-    private MultiverseWorld world;
-    private CommandSender changer;
-    private boolean isCancelled = false;
-    private String name;
+    private final MultiverseWorld world;
+    private final CommandSender changer;
+    private final String name;
     private T value;
+    private boolean isCancelled = false;
 
     public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, T value) {
         this.world = world;

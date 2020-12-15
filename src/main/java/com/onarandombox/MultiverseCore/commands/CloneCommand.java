@@ -20,7 +20,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
  * Creates a clone of a world.
  */
 public class CloneCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public CloneCommand(MultiverseCore plugin) {
         super(plugin);

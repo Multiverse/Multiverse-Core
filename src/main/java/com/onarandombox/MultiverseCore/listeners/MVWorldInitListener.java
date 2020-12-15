@@ -14,7 +14,7 @@ import org.bukkit.event.world.WorldInitEvent;
 
 public class MVWorldInitListener implements Listener {
 
-    MultiverseCore plugin;
+    private final MultiverseCore plugin;
 
     public MVWorldInitListener(MultiverseCore plugin) {
         this.plugin = plugin;

@@ -34,7 +34,7 @@ import java.util.logging.Level;
  * Used to teleport players.
  */
 public class TeleportCommand extends MultiverseCommand {
-    private SafeTTeleporter playerTeleporter;
+    private final SafeTTeleporter playerTeleporter;
 
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);

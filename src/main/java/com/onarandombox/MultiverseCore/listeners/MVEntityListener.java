@@ -28,8 +28,8 @@ import java.util.logging.Level;
  * Multiverse's Entity {@link Listener}.
  */
 public class MVEntityListener implements Listener {
-    private MultiverseCore plugin;
-    private MVWorldManager worldManager;
+    private final MultiverseCore plugin;
+    private final MVWorldManager worldManager;
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;

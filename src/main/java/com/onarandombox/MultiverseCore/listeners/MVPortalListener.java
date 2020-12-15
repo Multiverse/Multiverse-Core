@@ -26,7 +26,7 @@ import java.util.logging.Level;
  */
 public class MVPortalListener implements Listener {
 
-    private MultiverseCore plugin;
+    private final MultiverseCore plugin;
 
     public MVPortalListener(MultiverseCore core) {
         this.plugin = core;

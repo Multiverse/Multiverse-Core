@@ -19,6 +19,7 @@ import java.util.Map;
  * Allows you to set Global MV Variables.
  */
 public class ConfigCommand extends MultiverseCommand {
+
     public ConfigCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Configuration");

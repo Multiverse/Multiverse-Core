@@ -21,10 +21,10 @@ import org.bukkit.event.HandlerList;
  * Event that gets called when a player use the /mvtp command.
  */
 public class MVTeleportEvent extends Event implements Cancellable {
-    private Player teleportee;
-    private CommandSender teleporter;
-    private MVDestination dest;
-    private boolean useSafeTeleport;
+    private final Player teleportee;
+    private final CommandSender teleporter;
+    private final MVDestination dest;
+    private final boolean useSafeTeleport;
     private boolean isCancelled;
 
     public MVTeleportEvent(MVDestination dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {

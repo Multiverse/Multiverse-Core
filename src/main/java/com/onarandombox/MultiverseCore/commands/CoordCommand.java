@@ -24,7 +24,7 @@ import java.util.List;
  * Returns detailed information on the Players where abouts.
  */
 public class CoordCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);

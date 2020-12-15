@@ -128,9 +128,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final int PROTOCOL = 24;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
-    private static Map<String, String> teleportQueue = new HashMap<String, String>();
+    private static final Map<String, String> teleportQueue = new HashMap<String, String>();
 
-    private AnchorManager anchorManager = new AnchorManager(this);
+    private final AnchorManager anchorManager = new AnchorManager(this);
     // TODO please let's make this non-static
     private volatile MultiverseCoreConfiguration config;
 

@@ -23,8 +23,7 @@ import java.util.List;
  * States who is in what world.
  */
 public class WhoCommand extends MultiverseCommand {
-
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);

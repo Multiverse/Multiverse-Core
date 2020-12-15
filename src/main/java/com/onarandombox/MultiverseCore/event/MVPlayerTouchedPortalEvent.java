@@ -17,8 +17,8 @@ import org.bukkit.event.HandlerList;
  * This event is thrown when a portal is touched.
  */
 public class MVPlayerTouchedPortalEvent extends Event implements Cancellable {
-    private Player p;
-    private Location l;
+    private final Player p;
+    private final Location l;
     private boolean isCancelled;
     private boolean canUse = true;
 

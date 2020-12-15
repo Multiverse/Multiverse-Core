@@ -30,7 +30,7 @@ import java.util.List;
  * Returns detailed information about a world.
  */
 public class InfoCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);

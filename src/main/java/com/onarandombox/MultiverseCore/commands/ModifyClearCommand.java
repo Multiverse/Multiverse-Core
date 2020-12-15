@@ -22,7 +22,7 @@ import java.util.List;
  * Removes all values from a world-property.
  */
 public class ModifyClearCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public ModifyClearCommand(MultiverseCore plugin) {
         super(plugin);

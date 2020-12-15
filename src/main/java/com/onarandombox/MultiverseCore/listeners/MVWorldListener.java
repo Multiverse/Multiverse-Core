@@ -20,8 +20,8 @@ import org.bukkit.event.world.WorldUnloadEvent;
  * Multiverse's World {@link Listener}.
  */
 public class MVWorldListener implements Listener {
-    private MultiverseCore plugin;
-    private MVWorldManager worldManager;
+    private final MultiverseCore plugin;
+    private final MVWorldManager worldManager;
 
     public MVWorldListener(MultiverseCore plugin) {
         this.plugin = plugin;

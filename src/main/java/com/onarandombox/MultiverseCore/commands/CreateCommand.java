@@ -26,7 +26,7 @@ import java.util.List;
  * Creates a new world and loads it.
  */
 public class CreateCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);

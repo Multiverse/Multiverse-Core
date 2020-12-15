@@ -16,7 +16,7 @@ import java.util.List;
  * Called when the Multiverse-config should be reloaded.
  */
 public class MVConfigReloadEvent extends Event {
-    private List<String> configsLoaded;
+    private final List<String> configsLoaded;
 
     public MVConfigReloadEvent(List<String> configsLoaded) {
         this.configsLoaded = configsLoaded;

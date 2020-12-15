@@ -23,7 +23,7 @@ import java.util.List;
  * Used to set world-properties.
  */
 public class ModifySetCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public ModifySetCommand(MultiverseCore plugin) {
         super(plugin);

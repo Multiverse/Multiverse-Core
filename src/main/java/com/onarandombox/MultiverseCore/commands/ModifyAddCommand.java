@@ -25,7 +25,7 @@ import java.util.List;
  * Used to modify various aspects of worlds.
  */
 public class ModifyAddCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public ModifyAddCommand(MultiverseCore plugin) {
         super(plugin);
