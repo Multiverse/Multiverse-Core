@@ -1,18 +1,28 @@
 package com.onarandombox.MultiverseCore.commands_helper;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.ConditionContext;
+import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.security.pkcs.PKCS9Attribute;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,7 +41,7 @@ public class CommandTools {
 
     public void registerCommandCompletions() {
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "mvworlds",
+                "MVWorlds",
                 context -> worldManager.getMVWorlds()
                         .stream()
                         .map(MultiverseWorld::getName)
@@ -39,12 +49,12 @@ public class CommandTools {
         );
 
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "unloadedworlds",
+                "unloadedWorlds",
                 context -> this.worldManager.getUnloadedWorlds()
         );
 
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "mvconfig",
+                "MVConfigs",
                 context -> this.plugin.getMVConfig().serialize().keySet()
         );
 
@@ -84,6 +94,11 @@ public class CommandTools {
                 this::deriveEnvironment
         );
 
+        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
+                WorldFlags.class,
+                this::deriveWorldFlags
+        );
+
         //TODO: Destination
     }
 
@@ -121,8 +136,7 @@ public class CommandTools {
         }
         try {
             return Integer.parseInt(value);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new InvalidCommandArgument(errorReason);
         }
     }
@@ -217,8 +231,7 @@ public class CommandTools {
         UUID playerUUID;
         try {
             playerUUID = UUID.fromString(playerIdentifier);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
         return Bukkit.getPlayer(playerUUID);
@@ -229,19 +242,160 @@ public class CommandTools {
 
         if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD")) {
             env = "NORMAL";
-        }
-        else if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER")) {
+        } else if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER")) {
             env = "NETHER";
-        }
-        else if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS")) {
+        } else if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS")) {
             env = "THE_END";
         }
 
         try {
             return World.Environment.valueOf(env);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCommandArgument("'" + env + "' is not a valid environment.");
+            //TODO: Possibly show valid environments.
         }
-        catch (IllegalArgumentException e) {
+    }
+
+    private WorldFlags deriveWorldFlags(@NotNull BukkitCommandExecutionContext context) {
+        Map<String, String> flags = parseFlags(context.getArgs());
+        return new WorldFlags(
+                flags.get("-s"),
+                validateGenerator(flags.get("-g")),
+                getWorldType(flags.get("-t")),
+                !flags.containsKey("-n"),
+                doGenerateStructures(flags.get("-a"))
+        );
+    }
+
+    private String validateGenerator(String value) {
+        if (value == null) {
             return null;
+        }
+
+        List<String> genArray = new ArrayList<>(Arrays.asList(value.split(":")));
+        if (genArray.size() < 2) {
+            // If there was only one arg specified, pad with another empty one.
+            genArray.add("");
+        }
+        if (this.worldManager.getChunkGenerator(genArray.get(0), genArray.get(1), "test") == null) {
+            throw new InvalidCommandArgument("Invalid generator '" + value + "'.");
+        }
+
+        return value;
+    }
+
+    private WorldType getWorldType(String type) {
+        if (type == null || type.length() == 0) {
+            return WorldType.NORMAL;
+        }
+
+        if (type.equalsIgnoreCase("normal")) {
+            type = "NORMAL";
+        } else if (type.equalsIgnoreCase("flat")) {
+            type = "FLAT";
+        } else if (type.equalsIgnoreCase("largebiomes")) {
+            type = "LARGE_BIOMES";
+        } else if (type.equalsIgnoreCase("amplified")) {
+            type = "AMPLIFIED";
+        }
+
+        try {
+            return WorldType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCommandArgument("'" + type + "' is not a valid World Type.");
+        }
+    }
+
+    private boolean doGenerateStructures(String value) {
+        if (value == null) {
+            return true;
+        }
+        return value.equalsIgnoreCase("true");
+    }
+
+    private Map<String, String> parseFlags(List<String> args) {
+        Map<String, String> flags = new HashMap<>();
+        if (!validateFlagArgs(args)) {
+            return flags;
+        }
+
+        String preFlagKey = args.remove(0);
+        StringBuilder flagValue = new StringBuilder();
+
+        for (String arg : args) {
+            if (!isFlagKey(arg)) {
+                flagValue.append(arg);
+                continue;
+            }
+            if (preFlagKey != null) {
+                flags.put(preFlagKey, flagValue.toString());
+                flagValue = new StringBuilder();
+            }
+            preFlagKey = arg;
+        }
+
+        flags.put(preFlagKey, flagValue.toString());
+
+        return flags;
+    }
+
+    private boolean validateFlagArgs(List<String> args) {
+        if (args == null || args.size() == 0) {
+            return false;
+        }
+        if (!isFlagKey(args.get(0))) {
+            throw new InvalidCommandArgument("No flag defined for value '" + args.get(0) + "'");
+        }
+        return true;
+    }
+
+    private boolean isFlagKey(String value) {
+        return value.charAt(0) == '-';
+    }
+
+    public void registerCommandConditions() {
+        this.commandHandler.getCommandConditions().addCondition(
+                String.class,
+                "isMVWorld",
+                this::checkIsMVWorld
+        );
+
+        this.commandHandler.getCommandConditions().addCondition(
+                String.class,
+                "worldFolderExist",
+                this::checkIsWorldFolderExist
+        );
+    }
+
+    private void checkIsMVWorld(ConditionContext<BukkitCommandIssuer> context, BukkitCommandExecutionContext executionContext, String worldName) {
+        boolean shouldBeMVWorld = Boolean.parseBoolean(context.getConfig());
+        boolean isMVWorld = this.plugin.getMVWorldManager().isMVWorld(worldName);
+
+        if (isMVWorld && !shouldBeMVWorld) {
+            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
+                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
+            throw new ConditionFailedException();
+        }
+        if (!isMVWorld && shouldBeMVWorld) {
+            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
+            executionContext.getSender().sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
+            throw new ConditionFailedException();
+        }
+    }
+
+    private void checkIsWorldFolderExist(ConditionContext<BukkitCommandIssuer> context, BukkitCommandExecutionContext executionContext, String worldFolder) {
+        boolean shouldExist = Boolean.parseBoolean(context.getConfig());
+        boolean worldFileExist = new File(this.plugin.getServer().getWorldContainer(), worldFolder).exists();
+
+        if (worldFileExist && !shouldExist) {
+            executionContext.getSender().sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
+            executionContext.getSender().sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mv import");
+            throw new ConditionFailedException();
+        }
+        if (!worldFileExist && shouldExist) {
+            executionContext.getSender().sendMessage(ChatColor.RED + "World folder '" + worldFolder + "' does not exist.");
+            //TODO: Possibly show potential worlds.
+            throw new ConditionFailedException();
         }
     }
 }

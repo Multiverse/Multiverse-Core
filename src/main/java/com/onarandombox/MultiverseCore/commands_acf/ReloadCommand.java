@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.commands_helper.WorldAndPage;
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +17,14 @@ import java.util.List;
 @CommandAlias("mv")
 public class ReloadCommand extends MultiverseCommand {
 
-    public ReloadCommand(MultiverseCore plugin) {
+    public ReloadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
 
     @Subcommand("reload")
     @CommandPermission("multiverse.core.reload")
     @Description("Reloads config files for all multiverse modules.")
-    public void onReloadCommand(CommandSender sender) {
+    public void onReloadCommand(@NotNull CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "Reloading all Multiverse Plugin configs...");
         this.plugin.loadConfigs();
         this.plugin.getAnchorManager().loadAnchors();

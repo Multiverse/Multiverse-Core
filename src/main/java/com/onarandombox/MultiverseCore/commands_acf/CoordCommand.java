@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
@@ -28,7 +29,9 @@ public class CoordCommand extends MultiverseCommand {
     @Syntax("[player]")
     @CommandCompletion("@players")
     @Description("")
-    public void onCoordCommand(CommandSender sender, @Flags("deriveFromPlayer") Player targetPlayer) {
+    public void onCoordCommand(@NotNull CommandSender sender,
+                               @NotNull @Flags("deriveFromPlayer") Player targetPlayer) {
+
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(targetPlayer.getWorld());
         if (world == null) {
             this.plugin.showNotMVWorldMessage(sender, targetPlayer.getWorld().getName());

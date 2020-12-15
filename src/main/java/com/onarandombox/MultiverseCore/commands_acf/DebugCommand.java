@@ -9,6 +9,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 @Subcommand("debug")
@@ -20,13 +21,15 @@ public class DebugCommand extends MultiverseCommand {
     }
 
     @Description("Show the current debug level.")
-    public void showDebugCommand(CommandSender sender) {
+    public void showDebugCommand(@NotNull CommandSender sender) {
         displayDebugMode(sender);
     }
 
     @Syntax("<level>")
     @Description("Change debug level.")
-    public void changeDebugCommand(CommandSender sender, String debugLevel) {
+    public void changeDebugCommand(@NotNull CommandSender sender,
+                                   @NotNull String debugLevel) {
+
         int parsedLevel = parseDebugLevel(debugLevel);
         if (parsedLevel == -1) {
             sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE

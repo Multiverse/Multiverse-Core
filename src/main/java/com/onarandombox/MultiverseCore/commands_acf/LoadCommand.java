@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class LoadCommand extends MultiverseCommand {
@@ -22,9 +23,11 @@ public class LoadCommand extends MultiverseCommand {
     @Subcommand("load")
     @CommandPermission("multiverse.core.load")
     @Syntax("<world>")
-    @CommandCompletion("@unloadedworlds")
+    @CommandCompletion("@unloadedWorlds")
     @Description("Loads a world into Multiverse.")
-    public void onLoadCommand(CommandSender sender, @Single String world) {
+    public void onLoadCommand(@NotNull CommandSender sender,
+                              @NotNull @Single String world) {
+
         if (!this.plugin.getMVWorldManager().loadWorld(world)) {
             sender.sendMessage("Error trying to load world '" + world + "'!");
             return;

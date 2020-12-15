@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class ConfirmCommand extends MultiverseCommand {
@@ -17,7 +18,7 @@ public class ConfirmCommand extends MultiverseCommand {
     @Subcommand("confirm")
     @CommandPermission("multiverse.core.confirm")
     @Description("")
-    public void onConfirmCommand(CommandSender sender) {
+    public void onConfirmCommand(@NotNull CommandSender sender) {
         this.plugin.getCommandQueueManager().runQueuedCommand(sender);
     }
 }

@@ -34,6 +34,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands_acf.CoordCommand;
 import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
+import com.onarandombox.MultiverseCore.commands_acf.UsageCommand;
 import com.onarandombox.MultiverseCore.commands_helper.CommandTools;
 import com.onarandombox.MultiverseCore.commands_acf.ConfigCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ConfirmCommand;
@@ -721,16 +722,18 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         CommandTools tools = new CommandTools(this);
         tools.registerCommandContexts();
         tools.registerCommandCompletions();
+        tools.registerCommandConditions();
 
-        this.commandHandler.registerCommand(new UnloadCommand(this));
+        this.commandHandler.registerCommand(new UsageCommand(this));
+        this.commandHandler.registerCommand(new CreateCommand(this));
         this.commandHandler.registerCommand(new LoadCommand(this));
-        this.commandHandler.registerCommand(new ConfigCommand(this));
+        this.commandHandler.registerCommand(new UnloadCommand(this));
         this.commandHandler.registerCommand(new InfoCommand(this));
-        this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new DeleteCommand(this));
         this.commandHandler.registerCommand(new ConfirmCommand(this));
+        this.commandHandler.registerCommand(new ConfigCommand(this));
+        this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new CoordCommand(this));
-        this.commandHandler.registerCommand(new CreateCommand(this));
     }
 
     /**

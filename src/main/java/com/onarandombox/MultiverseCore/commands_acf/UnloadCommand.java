@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class UnloadCommand extends MultiverseCommand {
@@ -22,9 +23,11 @@ public class UnloadCommand extends MultiverseCommand {
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
     @Syntax("<world>")
-    @CommandCompletion("@mvworlds")
+    @CommandCompletion("@MVWorlds")
     @Description("Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.")
-    public void onUnloadCommand(CommandSender sender, MultiverseWorld world) {
+    public void onUnloadCommand(@NotNull CommandSender sender,
+                                @NotNull MultiverseWorld world) {
+
         //TODO: Should be able to use MVWorld object directly
         if (!this.plugin.getMVWorldManager().unloadWorld(world.getName())) {
             sender.sendMessage("Error trying to unload world '" + world.getName() + "'!");
