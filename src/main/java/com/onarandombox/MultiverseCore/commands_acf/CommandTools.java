@@ -5,16 +5,21 @@ import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CommandTools {
     private final MultiverseCore plugin;
     private final PaperCommandManager commandHandler;
     private final MVWorldManager worldManager;
+
+    private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+            ;
 
     public CommandTools(MultiverseCore plugin) {
         this.plugin = plugin;
@@ -73,23 +78,33 @@ public class CommandTools {
                 }
         );
 
-        commandHandler.getCommandContexts().registerIssuerAwareContext(
-                PageOrWorld.class,
+        commandHandler.getCommandContexts().registerContext(
+                Player.class,
                 context -> {
-                    String arg = context.popFirstArg();
-                    MultiverseWorld targetWorld = this.worldManager.getMVWorld(arg);
-                    if (targetWorld != null) {
-                        return new PageOrWorld(targetWorld);
+                    String playerIdentifier = context.popFirstArg();
+                    Player targetPlayer = Bukkit.getPlayerExact(playerIdentifier);
+                    if (targetPlayer == null) {
+                        return tryGetPlayerByUUID(playerIdentifier);
                     }
-
-                    targetWorld = GetPlayerMVWorld(context.getPlayer());
-                    int page = ParsePageNumber(arg);
-
-                    return new PageOrWorld(targetWorld, page);
+                    return targetPlayer;
                 }
         );
 
         //TODO: Destination
+    }
+
+    private Player tryGetPlayerByUUID(String playerIdentifier) {
+        if (!playerIdentifier.matches(UUID_REGEX)) {
+            return null;
+        }
+        UUID playerUUID;
+        try {
+            playerUUID = UUID.fromString(playerIdentifier);
+        }
+        catch (Exception e) {
+            return null;
+        }
+        return Bukkit.getPlayer(playerUUID);
     }
 
     @NotNull
@@ -104,18 +119,5 @@ public class CommandTools {
         }
 
         return targetWorld;
-    }
-
-    private int ParsePageNumber(String arg) {
-        if (arg == null) {
-            return 1;
-        }
-
-        try {
-            return Integer.parseInt(arg);
-        }
-        catch (NumberFormatException ignored) {
-            throw new InvalidCommandArgument("Invalid page number: " + arg);
-        }
     }
 }

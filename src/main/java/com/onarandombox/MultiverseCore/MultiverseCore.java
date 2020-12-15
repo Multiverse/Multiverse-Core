@@ -709,6 +709,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
+        commandHandler.enableUnstableAPI("help");
+
         CommandTools tools = new CommandTools(this);
         tools.registerCommandContext();
         tools.registerCommandCompletions();

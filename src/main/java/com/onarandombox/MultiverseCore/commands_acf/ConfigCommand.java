@@ -22,7 +22,7 @@ public class ConfigCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("show")
+    @Subcommand("list")
     @Description("Show Global MV Variables.")
     public void onShowCommand(CommandSender sender) {
         StringBuilder builder = new StringBuilder();
@@ -53,17 +53,16 @@ public class ConfigCommand extends MultiverseCommand {
             return;
         }
 
-        // special rule
+        // special rule, don't forget to set the world!
         if (property.equalsIgnoreCase("firstspawnworld")) {
-            // Don't forget to set the world!
             this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
         }
 
-        if (this.plugin.saveMVConfigs()) {
-            sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
-            this.plugin.loadConfigs();
-        } else {
+        if (!this.plugin.saveMVConfigs()) {
             sender.sendMessage(ChatColor.RED + "FAIL!" + ChatColor.WHITE + " Check your console for details!");
         }
+
+        sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
+        this.plugin.loadConfigs();
     }
 }
