@@ -3,10 +3,13 @@ package com.onarandombox.MultiverseCore.commands_acf;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commands_helper.WorldAndPage;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -24,10 +27,11 @@ public class InfoCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds @range:1-3")
     @Description("")
     public void onInfoCommand(@NotNull CommandSender sender,
-                              @NotNull WorldAndPage worldAndPage) {
+                              @NotNull @Flags("other,defaultself,fallbackself") MultiverseWorld world,
+                              @Default("1") int page) {
 
         //TODO: The actual paged info
-        sender.sendMessage(worldAndPage.getWorld().toString());
-        sender.sendMessage("Page of " + worldAndPage.getPage());
+        sender.sendMessage(world.toString());
+        sender.sendMessage("Page of " + page);
     }
 }

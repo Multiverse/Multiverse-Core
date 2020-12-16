@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commands_acf;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
@@ -12,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-@Subcommand("debug")
 @CommandPermission("multiverse.core.debug")
 public class DebugCommand extends MultiverseCommand {
 
@@ -20,11 +20,14 @@ public class DebugCommand extends MultiverseCommand {
         super(plugin);
     }
 
+    @Subcommand("debug")
     @Description("Show the current debug level.")
     public void showDebugCommand(@NotNull CommandSender sender) {
         displayDebugMode(sender);
     }
 
+    @Subcommand("debug")
+    @CommandCompletion("on|off|@range:3")
     @Syntax("<level>")
     @Description("Change debug level.")
     public void changeDebugCommand(@NotNull CommandSender sender,
@@ -45,7 +48,7 @@ public class DebugCommand extends MultiverseCommand {
         displayDebugMode(sender);
     }
 
-    private int parseDebugLevel(String debugLevel) {
+    private int parseDebugLevel(@NotNull String debugLevel) {
         if (debugLevel.equalsIgnoreCase("off")) {
             return 0;
         }
@@ -62,7 +65,7 @@ public class DebugCommand extends MultiverseCommand {
         }
     }
 
-    private void displayDebugMode(CommandSender sender) {
+    private void displayDebugMode(@NotNull CommandSender sender) {
         final int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
         if (debugLevel == 0) {
             sender.sendMessage("Multiverse Debug mode is " + ChatColor.RED + "OFF");

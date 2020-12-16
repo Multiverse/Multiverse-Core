@@ -17,7 +17,7 @@ public class ConfirmCommand extends MultiverseCommand {
 
     @Subcommand("confirm")
     @CommandPermission("multiverse.core.confirm")
-    @Description("")
+    @Description("Confirms dangerous commands before executing them.")
     public void onConfirmCommand(@NotNull CommandSender sender) {
         this.plugin.getCommandQueueManager().runQueuedCommand(sender);
     }

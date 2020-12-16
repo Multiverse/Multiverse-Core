@@ -33,16 +33,20 @@ public class CreateCommand extends MultiverseCommand {
                                 @NotNull WorldFlags flags) {
 
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
-        if (!this.plugin.getMVWorldManager().addWorld(
+
+        // TODO: Should Allow WorldFlags object to be passed directly
+        String resultMessage = (!this.plugin.getMVWorldManager().addWorld(
                 worldName,
                 environment,
                 flags.getSeed(),
                 flags.getWorldType(),
                 flags.isGenerateStructures(),
                 flags.getGenerator(),
-                flags.isSpawnAdjust())) {
-            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed to create world! See console for errors.");
-        }
-        Command.broadcastCommandMessage(sender, "Complete!");
+                flags.isSpawnAdjust())
+        )
+                ? ChatColor.RED + "Failed to create world! See console for errors."
+                : ChatColor.GREEN + "Complete!";
+
+        Command.broadcastCommandMessage(sender, resultMessage);
     }
 }

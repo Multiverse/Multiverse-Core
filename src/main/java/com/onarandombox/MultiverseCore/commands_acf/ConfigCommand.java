@@ -23,9 +23,9 @@ public class ConfigCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("list")
+    @Subcommand("show")
     @Description("Show multiverse config values.")
-    public void onShowCommand(CommandSender sender) {
+    public void onShowCommand(@NotNull CommandSender sender) {
         StringBuilder builder = new StringBuilder();
         Map<String, Object> serializedConfig = this.plugin.getMVConfig().serialize();
 
@@ -59,6 +59,7 @@ public class ConfigCommand extends MultiverseCommand {
 
         if (!this.plugin.saveMVConfigs()) {
             sender.sendMessage(ChatColor.RED + "FAIL!" + ChatColor.WHITE + " Check your console for details!");
+            return;
         }
 
         // special rule, don't forget to set the world!

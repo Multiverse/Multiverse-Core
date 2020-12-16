@@ -1,11 +1,13 @@
 package com.onarandombox.MultiverseCore.commands_helper;
 
+import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -13,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,20 +46,17 @@ public class CommandTools {
     public void registerCommandCompletions() {
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "MVWorlds",
-                context -> worldManager.getMVWorlds()
-                        .stream()
-                        .map(MultiverseWorld::getName)
-                        .collect(Collectors.toList())
+                this::SuggestMVWorlds
         );
 
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "unloadedWorlds",
-                context -> this.worldManager.getUnloadedWorlds()
+                this::SuggestUnloadedWorlds
         );
 
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "MVConfigs",
-                context -> this.plugin.getMVConfig().serialize().keySet()
+                this::SuggestMVConfig
         );
 
         //TODO: set properties
@@ -73,15 +74,32 @@ public class CommandTools {
         //TODO: world types
     }
 
-    public void registerCommandContexts() {
-        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
-                WorldAndPage.class,
-                this::deriveWorldAndPage
-        );
+    @NotNull
+    private List<String> SuggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
+        return worldManager.getMVWorlds().stream()
+                .map(MultiverseWorld::getName)
+                .collect(Collectors.toList());
+    }
 
+    @NotNull
+    private List<String> SuggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
+        return this.worldManager.getUnloadedWorlds();
+    }
+
+    @NotNull
+    private Set<String> SuggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
+        return this.plugin.getMVConfig().serialize().keySet();
+    }
+
+    public void registerCommandContexts() {
         this.commandHandler.getCommandContexts().registerIssuerAwareContext(
                 MultiverseWorld.class,
                 this::deriveMultiverseWorld
+        );
+
+        this.commandHandler.getCommandContexts().registerContext(
+                CommandPlayer.class,
+                this::deriveCommandPlayer
         );
 
         this.commandHandler.getCommandContexts().registerIssuerAwareContext(
@@ -102,128 +120,176 @@ public class CommandTools {
         //TODO: Destination
     }
 
-    private WorldAndPage deriveWorldAndPage(@NotNull BukkitCommandExecutionContext context) {
-        String eitherWorldOrPage = context.popFirstArg();
+    @NotNull
+    private MultiverseWorld deriveMultiverseWorld(@NotNull BukkitCommandExecutionContext context) {
         Player player = context.getPlayer();
 
-        if (eitherWorldOrPage == null) {
-            return new WorldAndPage(
-                    getPlayerWorld(context.getPlayer()),
-                    1);
+        if (!context.hasFlag("other")) {
+            return getPlayerWorld(player, "You cannot run this command from console.");
         }
 
-        // Maybe its a world
-        MultiverseWorld targetWorld = getMultiverseWorld(eitherWorldOrPage, true);
-        if (targetWorld == null) {
-            if (player == null) {
-                throw new InvalidCommandArgument("World '" + eitherWorldOrPage + "' not found.");
-            }
-            // Safely assume its a page
-            return new WorldAndPage(
-                    getPlayerWorld(context.getPlayer()),
-                    parsePageNumber(eitherWorldOrPage, "World '" + eitherWorldOrPage + "' not found."));
-        }
-
-        String optionalPageValue = context.popFirstArg();
-        return new WorldAndPage(
-                targetWorld,
-                parsePageNumber(optionalPageValue, "'" + optionalPageValue + "' is not a valid page number."));
-    }
-
-    private Integer parsePageNumber(@Nullable String value, @NotNull String errorReason) {
-        if (value == null) {
-            return 1;
-        }
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new InvalidCommandArgument(errorReason);
-        }
-    }
-
-    private MultiverseWorld deriveMultiverseWorld(@NotNull BukkitCommandExecutionContext context) {
-        String worldName = context.popFirstArg();
-        boolean worldFromPLayer = context.hasFlag("deriveFromPlayer");
-        boolean checkUnloaded = context.hasFlag("checkUnloaded");
-
+        String worldName = context.getFirstArg();
         if (worldName == null) {
-            if (worldFromPLayer) {
-                return getPlayerWorld(context.getPlayer());
+            if (context.hasFlag("defaultself")) {
+                return getPlayerWorld(player, "You need to specific a world name from console.");
             }
-            throw new InvalidCommandArgument("Please specify a world name.");
+            throw new InvalidCommandArgument("You need to specific a world name.");
         }
 
-        MultiverseWorld world = getMultiverseWorld(worldName, checkUnloaded);
+        MultiverseWorld world = getWorld(context.getSender(), worldName, !context.hasFlag("ignoreunload"));
         if (world == null) {
-            throw new InvalidCommandArgument("World '" + worldName + "' not found.");
+            if (context.hasFlag("fallbackself")) {
+                return getPlayerWorld(player, "World '" + worldName + "' not found.");
+            }
+            throw new InvalidCommandArgument("World '" + worldName + "' not found.", false);
         }
 
+        context.popFirstArg();
         return world;
     }
 
-    private MultiverseWorld getMultiverseWorld(@Nullable String worldName, boolean checkUnloaded) {
-        if (worldName == null) {
-            return null;
-        }
+    @Nullable
+    private MultiverseWorld getWorld(@NotNull CommandSender sender,
+                                     @NotNull String worldName,
+                                     boolean checkUnloaded) {
 
         MultiverseWorld targetWorld = this.worldManager.getMVWorld(worldName);
         if (targetWorld != null) {
             return targetWorld;
         }
 
+        //TODO: API should have a isUnloadedWorld method.
         if (checkUnloaded && this.worldManager.getUnloadedWorlds().contains(worldName)) {
-            throw new InvalidCommandArgument("World " + worldName + " exists, but you need to load it first with: /mv load");
+            sender.sendMessage("World '" + worldName + "' exists, but it is unloaded!");
+            sender.sendMessage("You can load it with: " + ChatColor.AQUA + "/mv load " + worldName);
+            throw new InvalidCommandArgument();
         }
 
         return null;
     }
 
-    private MultiverseWorld getPlayerWorld(@Nullable Player player) {
+    @NotNull
+    private MultiverseWorld getPlayerWorld(@Nullable Player player, String errorReason) {
         if (player == null) {
-            throw new InvalidCommandArgument("You need to specific a world from console.");
+            throw new InvalidCommandArgument(errorReason, false);
         }
 
         MultiverseWorld targetWorld = this.worldManager.getMVWorld(player.getWorld());
         if (targetWorld == null) {
-            //TODO: Overload that doesnt need world name.
-            this.plugin.showNotMVWorldMessage(player, player.getWorld().getName());
-            throw new InvalidCommandArgument("Invalid world!");
+            player.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + player.getWorld().getName() + ChatColor.WHITE + " yet.");
+            player.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
+            throw new InvalidCommandArgument();
         }
 
         return targetWorld;
     }
 
-    private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
+    @NotNull CommandPlayer deriveCommandPlayer(@NotNull BukkitCommandExecutionContext context) {
         String playerIdentifier = context.popFirstArg();
-        boolean playerFromSelf = context.hasFlag("deriveFromPlayer");
-
-        Player targetPlayer = getPlayerFromValue(playerIdentifier);
-        if (targetPlayer != null) {
-            return targetPlayer;
+        if (playerIdentifier == null) {
+            throw new InvalidCommandArgument((context.getPlayer() == null)
+                    ? "You need to specify a player from console."
+                    : "You need to specify a player.");
         }
 
-        if (!playerFromSelf) {
+        Player player = getPlayerFromValue(context.getSender(), playerIdentifier);
+        if (player == null) {
             throw new InvalidCommandArgument("Player '" + playerIdentifier + "' not found.");
         }
 
+        return new CommandPlayer(player);
+    }
+
+    @NotNull
+    private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
+        boolean mustBeSelf = context.hasFlag("onlyself");
+        String error = (mustBeSelf)
+                ? "You cannot run this command from console."
+                : "You need to specify a player from console.";
+
+        if (mustBeSelf || !context.hasFlag("other")) {
+            return getPlayerFromSelf(context, error);
+        }
+
+        String playerIdentifier = context.getFirstArg();
+        if (playerIdentifier == null) {
+            if (context.hasFlag("defaultself")) {
+                return getPlayerFromSelf(context, error);
+            }
+            throw new InvalidCommandArgument("You need to specify a player.");
+        }
+
+        Player player = getPlayerFromValue(context.getSender(), playerIdentifier);
+        if (player == null) {
+            if (context.hasFlag("fallbackself")) {
+                return getPlayerFromSelf(context, "Player '" + playerIdentifier + "' not found.");
+            }
+            throw new InvalidCommandArgument("Player '" + playerIdentifier + "' not found.");
+        }
+
+        context.popFirstArg();
+        return player;
+    }
+
+    @NotNull
+    private Player getPlayerFromSelf(@NotNull BukkitCommandExecutionContext context, String errorReason) {
         Player self = context.getPlayer();
         if (self == null) {
-            throw new InvalidCommandArgument("You need to specific a player from console.");
+            throw new InvalidCommandArgument(errorReason, false);
         }
         return self;
     }
 
-    private Player getPlayerFromValue(@Nullable String value) {
-        if (value == null) {
+    @Nullable
+    private Player getPlayerFromValue(@NotNull CommandSender sender,
+                                      @Nullable String playerIdentifier) {
+
+        if (playerIdentifier == null) {
             return null;
         }
-        Player targetPlayer = Bukkit.getPlayerExact(value);
-        if (targetPlayer == null) {
-            return getPlayerByUUID(value);
+
+        Player player = getPlayerBySelector(sender, playerIdentifier);
+        if (player == null) {
+            player = Bukkit.getPlayerExact(playerIdentifier);
         }
-        return targetPlayer;
+        if (player == null) {
+            player = getPlayerByUUID(playerIdentifier);
+        }
+
+        return player;
     }
 
+    @Nullable
+    private Player getPlayerBySelector(@NotNull CommandSender sender,
+                                       @NotNull String playerIdentifier) {
+
+        if (playerIdentifier.charAt(0) != '@') {
+            return null;
+        }
+
+        List<Player> matchedPlayers;
+        try {
+            matchedPlayers = this.plugin.getServer().selectEntities(sender, playerIdentifier).stream()
+                    .filter(e -> e instanceof Player)
+                    .map(e -> ((Player) e))
+                    .collect(Collectors.toList());
+        }
+        catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new InvalidCommandArgument("Error parsing selector '" + playerIdentifier + "' for " + sender.getName());
+        }
+        if (matchedPlayers.isEmpty()) {
+            throw new InvalidCommandArgument("No player found with selector '" + playerIdentifier + "' for " + sender.getName());
+        }
+        if (matchedPlayers.size() > 1) {
+            throw new InvalidCommandArgument("Error parsing selector '" + playerIdentifier + "' for " + sender.getName() +
+                    ": ambiguous result (more than one player matched) - " + matchedPlayers.toString());
+        }
+
+        return matchedPlayers.get(0);
+    }
+
+    @Nullable
     private Player getPlayerByUUID(@NotNull String playerIdentifier) {
         if (!playerIdentifier.matches(UUID_REGEX)) {
             return null;
@@ -237,6 +303,7 @@ public class CommandTools {
         return Bukkit.getPlayer(playerUUID);
     }
 
+    @NotNull
     private World.Environment deriveEnvironment(@NotNull BukkitCommandExecutionContext context) {
         String env = context.popFirstArg();
 
@@ -256,6 +323,7 @@ public class CommandTools {
         }
     }
 
+    @NotNull
     private WorldFlags deriveWorldFlags(@NotNull BukkitCommandExecutionContext context) {
         Map<String, String> flags = parseFlags(context.getArgs());
         return new WorldFlags(
@@ -267,7 +335,8 @@ public class CommandTools {
         );
     }
 
-    private String validateGenerator(String value) {
+    @Nullable
+    private String validateGenerator(@Nullable String value) {
         if (value == null) {
             return null;
         }
@@ -284,18 +353,22 @@ public class CommandTools {
         return value;
     }
 
-    private WorldType getWorldType(String type) {
+    @NotNull
+    private WorldType getWorldType(@Nullable String type) {
         if (type == null || type.length() == 0) {
             return WorldType.NORMAL;
         }
 
         if (type.equalsIgnoreCase("normal")) {
             type = "NORMAL";
-        } else if (type.equalsIgnoreCase("flat")) {
+        }
+        else if (type.equalsIgnoreCase("flat")) {
             type = "FLAT";
-        } else if (type.equalsIgnoreCase("largebiomes")) {
+        }
+        else if (type.equalsIgnoreCase("largebiomes")) {
             type = "LARGE_BIOMES";
-        } else if (type.equalsIgnoreCase("amplified")) {
+        }
+        else if (type.equalsIgnoreCase("amplified")) {
             type = "AMPLIFIED";
         }
 
@@ -306,18 +379,33 @@ public class CommandTools {
         }
     }
 
-    private boolean doGenerateStructures(String value) {
-        if (value == null) {
-            return true;
-        }
-        return value.equalsIgnoreCase("true");
+    private boolean doGenerateStructures(@Nullable String value) {
+        return value == null || value.equalsIgnoreCase("true");
     }
 
-    private Map<String, String> parseFlags(List<String> args) {
+    @NotNull
+    private Map<String, String> parseFlags(@NotNull List<String> args) {
         Map<String, String> flags = new HashMap<>();
         if (!validateFlagArgs(args)) {
             return flags;
         }
+
+        mapOutTheArgs(args, flags);
+        return flags;
+    }
+
+    private boolean validateFlagArgs(@Nullable List<String> args) {
+        if (args == null || args.size() == 0) {
+            return false;
+        }
+        if (!isFlagKey(args.get(0))) {
+            throw new InvalidCommandArgument("No flag defined for value '" + args.get(0) + "'");
+        }
+        return true;
+    }
+
+    private void mapOutTheArgs(@NotNull List<String> args,
+                               @NotNull Map<String, String> flags) {
 
         String preFlagKey = args.remove(0);
         StringBuilder flagValue = new StringBuilder();
@@ -335,21 +423,9 @@ public class CommandTools {
         }
 
         flags.put(preFlagKey, flagValue.toString());
-
-        return flags;
     }
 
-    private boolean validateFlagArgs(List<String> args) {
-        if (args == null || args.size() == 0) {
-            return false;
-        }
-        if (!isFlagKey(args.get(0))) {
-            throw new InvalidCommandArgument("No flag defined for value '" + args.get(0) + "'");
-        }
-        return true;
-    }
-
-    private boolean isFlagKey(String value) {
+    private boolean isFlagKey(@NotNull String value) {
         return value.charAt(0) == '-';
     }
 
@@ -363,11 +439,14 @@ public class CommandTools {
         this.commandHandler.getCommandConditions().addCondition(
                 String.class,
                 "worldFolderExist",
-                this::checkIsWorldFolderExist
+                this::checkWorldFolderExist
         );
     }
 
-    private void checkIsMVWorld(ConditionContext<BukkitCommandIssuer> context, BukkitCommandExecutionContext executionContext, String worldName) {
+    private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                @NotNull BukkitCommandExecutionContext executionContext,
+                                @NotNull String worldName) {
+
         boolean shouldBeMVWorld = Boolean.parseBoolean(context.getConfig());
         boolean isMVWorld = this.plugin.getMVWorldManager().isMVWorld(worldName);
 
@@ -383,7 +462,10 @@ public class CommandTools {
         }
     }
 
-    private void checkIsWorldFolderExist(ConditionContext<BukkitCommandIssuer> context, BukkitCommandExecutionContext executionContext, String worldFolder) {
+    private void checkWorldFolderExist(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                       @NotNull BukkitCommandExecutionContext executionContext,
+                                       @NotNull String worldFolder) {
+
         boolean shouldExist = Boolean.parseBoolean(context.getConfig());
         boolean worldFileExist = new File(this.plugin.getServer().getWorldContainer(), worldFolder).exists();
 

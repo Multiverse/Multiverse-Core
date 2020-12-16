@@ -4,6 +4,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -25,18 +26,21 @@ public class DeleteCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds")
     @Description("")
     public void onDeleteCommand(@NotNull CommandSender sender,
-                                @NotNull MultiverseWorld world) {
+                                @NotNull @Flags("other") MultiverseWorld world) {
 
         this.plugin.getCommandQueueManager().addToQueue(sender, deleteRunnable(sender, world));
     }
 
-    private Runnable deleteRunnable(CommandSender sender, MultiverseWorld world) {
+    private Runnable deleteRunnable(@NotNull CommandSender sender,
+                                    @NotNull MultiverseWorld world) {
+
         return () -> {
             //TODO: deleteWorld method should take world object directly
-            if (!this.plugin.getMVWorldManager().deleteWorld(world.getName())) {
-                sender.sendMessage(ChatColor.RED + "World '" + world.getName() + "' could NOT be deleted!");
-            }
-            sender.sendMessage(ChatColor.GREEN + "World '" + world.getName() + "' Deleted!");
+            String resultMessage = (this.plugin.getMVWorldManager().deleteWorld(world.getName()))
+                    ? ChatColor.GREEN + "World '" + world.getName() + "' Deleted!"
+                    : ChatColor.RED + "World '" + world.getName() + "' could NOT be deleted!";
+
+            sender.sendMessage(resultMessage);
         };
     }
 }

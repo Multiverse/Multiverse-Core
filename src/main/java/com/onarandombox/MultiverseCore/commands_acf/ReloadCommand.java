@@ -5,7 +5,6 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commands_helper.WorldAndPage;
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

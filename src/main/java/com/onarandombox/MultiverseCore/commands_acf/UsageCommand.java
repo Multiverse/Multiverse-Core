@@ -13,14 +13,16 @@ public class UsageCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @HelpCommand
     @Subcommand("help")
+    @HelpCommand
     @CommandPermission("multiverse.core.help")
+    // @Syntax("[page]")
     @Description("Show Multiverse Command usage.")
     public void onUsageCommand(@NotNull CommandSender sender,
                                @NotNull CommandHelp help) {
 
         //TODO: Paging
+        help.setPerPage(10);
         help.showHelp();
     }
 }
