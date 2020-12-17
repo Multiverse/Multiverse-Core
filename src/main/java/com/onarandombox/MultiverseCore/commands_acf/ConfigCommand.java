@@ -12,6 +12,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @CommandAlias("mv")
@@ -26,20 +28,18 @@ public class ConfigCommand extends MultiverseCommand {
     @Subcommand("show")
     @Description("Show multiverse config values.")
     public void onShowCommand(@NotNull CommandSender sender) {
-        StringBuilder builder = new StringBuilder();
+        List<String> configList = new ArrayList<>();
         Map<String, Object> serializedConfig = this.plugin.getMVConfig().serialize();
 
         for (Map.Entry<String, Object> entry : serializedConfig.entrySet()) {
-            builder.append(ChatColor.GREEN)
-                    .append(entry.getKey())
-                    .append(ChatColor.WHITE).append(" = ").append(ChatColor.GOLD)
-                    .append(entry.getValue().toString())
-                    .append(ChatColor.WHITE).append(", ");
+
+            configList.add(ChatColor.GREEN + entry.getKey()
+                    + ChatColor.WHITE + " = "
+                    + ChatColor.GOLD + entry.getValue().toString()
+                    + ChatColor.WHITE);
         }
 
-        String message = builder.toString();
-        message = message.substring(0, message.length() - 2);
-        sender.sendMessage(message);
+        sender.sendMessage(String.join(", ", configList));
     }
 
     @Subcommand("set")
@@ -58,7 +58,7 @@ public class ConfigCommand extends MultiverseCommand {
         }
 
         if (!this.plugin.saveMVConfigs()) {
-            sender.sendMessage(ChatColor.RED + "FAIL!" + ChatColor.WHITE + " Check your console for details!");
+            sender.sendMessage(ChatColor.RED + "Failed to save config! Check your console for details.");
             return;
         }
 
@@ -68,6 +68,7 @@ public class ConfigCommand extends MultiverseCommand {
             this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
         }
 
+        //TODO: Show properties and values that where updated.
         sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
         this.plugin.loadConfigs();
     }

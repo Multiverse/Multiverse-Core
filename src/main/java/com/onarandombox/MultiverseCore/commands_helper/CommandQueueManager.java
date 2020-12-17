@@ -34,9 +34,9 @@ public class CommandQueueManager {
 
         cancelPreviousInQueue(sender);
 
-        QueuedCommand queuedCommand = new QueuedCommand(sender, runnable, validPeriod);
+        QueuedCommand queuedCommand = new QueuedCommand(sender, runnable);
         queuedCommands.put(sender, queuedCommand);
-        queuedCommand.setExpireTask(runExpireLater(queuedCommand));
+        queuedCommand.setExpireTask(runExpireLater(queuedCommand, validPeriod));
 
         sender.sendMessage("The command you are trying to run is deemed dangerous.");
         sender.sendMessage("Run /mv confirm to continue.");
@@ -47,15 +47,16 @@ public class CommandQueueManager {
         if (previousCommand == null) {
             return;
         }
+
         previousCommand.cancelExpiryTask();
         queuedCommands.remove(sender);
     }
 
-    private BukkitTask runExpireLater(@NotNull QueuedCommand queuedCommand) {
+    private BukkitTask runExpireLater(@NotNull QueuedCommand queuedCommand, int validPeriod) {
         return Bukkit.getScheduler().runTaskLater(
                 this.plugin,
                 expireRunnable(queuedCommand),
-                queuedCommand.getValidInterval()
+                validPeriod
         );
     }
 
@@ -66,8 +67,9 @@ public class CommandQueueManager {
                 Logging.finer("This is an old command already.");
                 return;
             }
+
+            Logging.finer("Command is expired, removing...");
             this.queuedCommands.remove(queuedCommand.getSender());
-            Logging.finer("Command expired and is removed.");
         };
     }
 

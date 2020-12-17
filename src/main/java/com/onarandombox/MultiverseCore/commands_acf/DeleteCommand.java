@@ -3,8 +3,10 @@ package com.onarandombox.MultiverseCore.commands_acf;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -23,22 +25,22 @@ public class DeleteCommand extends MultiverseCommand {
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
     @Syntax("<world>")
-    @CommandCompletion("@MVWorlds")
+    @CommandCompletion("@MVWorlds|@unloadedWorlds")
     @Description("")
     public void onDeleteCommand(@NotNull CommandSender sender,
-                                @NotNull @Flags("other") MultiverseWorld world) {
+                                @NotNull @Single @Conditions("isWorldInConfig") String worldName) {
 
-        this.plugin.getCommandQueueManager().addToQueue(sender, deleteRunnable(sender, world));
+        this.plugin.getCommandQueueManager().addToQueue(sender, deleteRunnable(sender, worldName));
     }
 
     private Runnable deleteRunnable(@NotNull CommandSender sender,
-                                    @NotNull MultiverseWorld world) {
+                                    @NotNull String worldName) {
 
         return () -> {
             //TODO: deleteWorld method should take world object directly
-            String resultMessage = (this.plugin.getMVWorldManager().deleteWorld(world.getName()))
-                    ? ChatColor.GREEN + "World '" + world.getName() + "' Deleted!"
-                    : ChatColor.RED + "World '" + world.getName() + "' could NOT be deleted!";
+            String resultMessage = (this.plugin.getMVWorldManager().deleteWorld(worldName))
+                    ? ChatColor.GREEN + "World '" + worldName + "' Deleted!"
+                    : ChatColor.RED + "World '" + worldName + "' could NOT be deleted!";
 
             sender.sendMessage(resultMessage);
         };

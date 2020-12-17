@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commands_helper.WorldAndPage;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 

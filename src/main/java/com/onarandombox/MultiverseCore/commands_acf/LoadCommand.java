@@ -3,7 +3,9 @@ package com.onarandombox.MultiverseCore.commands_acf;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -26,12 +28,12 @@ public class LoadCommand extends MultiverseCommand {
     @CommandCompletion("@unloadedWorlds")
     @Description("Loads a world into Multiverse.")
     public void onLoadCommand(@NotNull CommandSender sender,
-                              @NotNull @Single String world) {
+                              @NotNull @Single @Conditions("isUnloadedWorld") String worldName) {
 
-        if (!this.plugin.getMVWorldManager().loadWorld(world)) {
-            sender.sendMessage("Error trying to load world '" + world + "'!");
+        if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
+            sender.sendMessage("Error trying to load world '" + worldName + "'!");
             return;
         }
-        Command.broadcastCommandMessage(sender, "Loaded world '" + world + "'!");
+        Command.broadcastCommandMessage(sender, "Loaded world '" + worldName + "'!");
     }
 }

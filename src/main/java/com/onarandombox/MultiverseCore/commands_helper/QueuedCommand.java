@@ -6,13 +6,11 @@ import org.bukkit.scheduler.BukkitTask;
 public class QueuedCommand {
     private final CommandSender sender;
     private final Runnable runnable;
-    private final int validInterval;
     private BukkitTask expireTask;
 
-    public QueuedCommand(CommandSender sender, Runnable runnable, int validPeriod) {
+    public QueuedCommand(CommandSender sender, Runnable runnable) {
         this.sender = sender;
         this.runnable = runnable;
-        this.validInterval = validPeriod;
     }
 
     public void runCommand() {
@@ -30,9 +28,5 @@ public class QueuedCommand {
 
     public CommandSender getSender() {
         return sender;
-    }
-
-    public int getValidInterval() {
-        return validInterval;
     }
 }

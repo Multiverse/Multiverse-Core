@@ -29,7 +29,7 @@ public class ReloadCommand extends MultiverseCommand {
         this.plugin.getAnchorManager().loadAnchors();
         this.plugin.getMVWorldManager().loadWorlds(true);
 
-        List<String> configsLoaded = new ArrayList<String>();
+        List<String> configsLoaded = new ArrayList<>();
         configsLoaded.add("Multiverse-Core - config.yml");
         configsLoaded.add("Multiverse-Core - worlds.yml");
         configsLoaded.add("Multiverse-Core - anchors.yml");
@@ -37,10 +37,7 @@ public class ReloadCommand extends MultiverseCommand {
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
         this.plugin.getServer().getPluginManager().callEvent(configReload);
 
-        for (String s : configReload.getAllConfigsLoaded()) {
-            sender.sendMessage(s);
-        }
-
+        configReload.getAllConfigsLoaded().forEach(sender::sendMessage);
         sender.sendMessage(ChatColor.GREEN + "Reload Complete!");
     }
 }

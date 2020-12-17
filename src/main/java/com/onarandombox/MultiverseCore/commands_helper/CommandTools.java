@@ -66,9 +66,10 @@ public class CommandTools {
                 this::suggestPotentialWorlds
         );
 
-        this.commandHandler.getCommandCompletions().registerStaticCompletion(
+        //TODO: Change to static
+        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "MVConfigs",
-                suggestMVConfig()
+                this::suggestMVConfig
         );
 
         this.commandHandler.getCommandCompletions().registerStaticCompletion(
@@ -139,7 +140,7 @@ public class CommandTools {
 
 
     @NotNull
-    private Set<String> suggestMVConfig() {
+    private Set<String> suggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
         return this.plugin.getMVConfig().serialize().keySet();
     }
 
@@ -511,6 +512,18 @@ public class CommandTools {
 
         this.commandHandler.getCommandConditions().addCondition(
                 String.class,
+                "isUnloadedWorld",
+                this::checkIsUnloadedWorld
+        );
+
+        this.commandHandler.getCommandConditions().addCondition(
+                String.class,
+                "isWorldInConfig",
+                this::checkIsWorldInConfig
+        );
+
+        this.commandHandler.getCommandConditions().addCondition(
+                String.class,
                 "worldFolderExist",
                 this::checkWorldFolderExist
         );
@@ -522,12 +535,13 @@ public class CommandTools {
         );
     }
 
+    //TODO: Message seems a bit too targeted to create world only
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
                                 @NotNull BukkitCommandExecutionContext executionContext,
                                 @NotNull String worldName) {
 
         boolean shouldBeMVWorld = Boolean.parseBoolean(context.getConfig());
-        boolean isMVWorld = this.plugin.getMVWorldManager().isMVWorld(worldName);
+        boolean isMVWorld = this.worldManager.isMVWorld(worldName);
 
         if (isMVWorld && !shouldBeMVWorld) {
             executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
@@ -541,9 +555,32 @@ public class CommandTools {
         }
     }
 
-    private void checkWorldFolderExist(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                       @NotNull BukkitCommandExecutionContext executionContext,
-                                       @NotNull String worldFolder) {
+    private void checkIsUnloadedWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                      @NotNull BukkitCommandExecutionContext executionContext,
+                                      @NotNull String worldName) {
+
+        if (this.worldManager.isMVWorld(worldName)) {
+            throw new ConditionFailedException("World '" + worldName + "' is already loaded.");
+        }
+
+        if (!this.worldManager.getUnloadedWorlds().contains(worldName)) {
+            throw new ConditionFailedException("World '" + worldName + "' not found.");
+        }
+    }
+
+    private void checkIsWorldInConfig(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                      @NotNull BukkitCommandExecutionContext executionContext,
+                                      @NotNull String worldName) {
+
+        //TODO: Should have direct API for it, instead of check both loaded and unloaded.
+        if (!this.worldManager.isMVWorld(worldName) && !this.worldManager.getUnloadedWorlds().contains(worldName)) {
+            throw new ConditionFailedException("World '" + worldName + "' not found.");
+        }
+    }
+
+        private void checkWorldFolderExist(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                           @NotNull BukkitCommandExecutionContext executionContext,
+                                           @NotNull String worldFolder) {
 
         boolean shouldExist = Boolean.parseBoolean(context.getConfig());
         boolean worldFileExist = new File(this.plugin.getServer().getWorldContainer(), worldFolder).exists();
@@ -560,9 +597,9 @@ public class CommandTools {
         }
     }
 
-    private void checkValidWorldFolder (@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                        @NotNull BukkitCommandExecutionContext executionContext,
-                                        @NotNull String worldName) {
+    private void checkValidWorldFolder(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                       @NotNull BukkitCommandExecutionContext executionContext,
+                                       @NotNull String worldName) {
 
         File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
         if (!worldFolder.isDirectory()) {

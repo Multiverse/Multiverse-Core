@@ -45,7 +45,7 @@ public class SpawnCommand extends MultiverseCommand {
         spawnAccurately(player);
 
         String senderName = (sender instanceof ConsoleCommandSender)
-                ? ChatColor.LIGHT_PURPLE + "the console"
+                ? ChatColor.LIGHT_PURPLE + "console"
                 : ChatColor.YELLOW + sender.getName();
 
         player.sendMessage("You were teleported by " + senderName);

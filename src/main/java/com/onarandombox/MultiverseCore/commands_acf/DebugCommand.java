@@ -48,6 +48,7 @@ public class DebugCommand extends MultiverseCommand {
         displayDebugMode(sender);
     }
 
+    //TODO: See if can move this to CommandContext Integer.class
     private int parseDebugLevel(@NotNull String debugLevel) {
         if (debugLevel.equalsIgnoreCase("off")) {
             return 0;

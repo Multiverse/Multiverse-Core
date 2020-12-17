@@ -25,6 +25,7 @@ public class ListCommand extends MultiverseCommand {
     public void onListCommand(@NotNull CommandSender sender,
                               @Default("1") int page) {
 
+        //TODO: Do the actual fancy list display
         sender.sendMessage(this.plugin.getMVWorldManager().getMVWorlds().toString());
         sender.sendMessage("Page of: " + page);
     }

@@ -34,6 +34,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands_acf.CoordCommand;
 import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
+import com.onarandombox.MultiverseCore.commands_acf.GamerulesCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ListCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RemoveCommand;
@@ -744,6 +745,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new RemoveCommand(this));
         this.commandHandler.registerCommand(new ListCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
+        this.commandHandler.registerCommand(new GamerulesCommand(this));
     }
 
     /**
