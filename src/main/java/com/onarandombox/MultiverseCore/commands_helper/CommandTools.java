@@ -11,8 +11,10 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
@@ -23,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,17 +49,32 @@ public class CommandTools {
     public void registerCommandCompletions() {
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "MVWorlds",
-                this::SuggestMVWorlds
+                this::suggestMVWorlds
         );
 
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "unloadedWorlds",
-                this::SuggestUnloadedWorlds
+                this::suggestUnloadedWorlds
         );
 
-        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
+        this.commandHandler.getCommandCompletions().registerStaticCompletion(
                 "MVConfigs",
-                this::SuggestMVConfig
+                suggestMVConfig()
+        );
+
+        this.commandHandler.getCommandCompletions().registerStaticCompletion(
+                "gamerules",
+                suggestGameRules()
+        );
+
+        this.commandHandler.getCommandCompletions().registerStaticCompletion(
+                "environments",
+                suggestEnvironments()
+        );
+
+        this.commandHandler.getCommandCompletions().registerStaticCompletion(
+                "addProperties",
+                suggestAddProperties()
         );
 
         //TODO: set properties
@@ -70,25 +88,44 @@ public class CommandTools {
         //TODO: version
 
         //TODO: environment
-
-        //TODO: world types
     }
 
     @NotNull
-    private List<String> SuggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
+    private List<String> suggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
         return worldManager.getMVWorlds().stream()
                 .map(MultiverseWorld::getName)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private List<String> SuggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
+    private List<String> suggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
         return this.worldManager.getUnloadedWorlds();
     }
 
     @NotNull
-    private Set<String> SuggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
+    private Set<String> suggestMVConfig() {
         return this.plugin.getMVConfig().serialize().keySet();
+    }
+
+    @NotNull
+    private List<String> suggestGameRules() {
+        return Arrays.stream(GameRule.values())
+                .map(GameRule::getName)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<String> suggestEnvironments() {
+        return Arrays.stream(World.Environment.values())
+                .map(e -> e.toString().toLowerCase())
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<String> suggestAddProperties() {
+        return Arrays.stream(AddProperties.values())
+                .map(p -> p.toString().toLowerCase())
+                .collect(Collectors.toList());
     }
 
     public void registerCommandContexts() {
