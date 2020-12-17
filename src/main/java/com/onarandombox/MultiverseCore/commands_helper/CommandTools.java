@@ -23,21 +23,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommandTools {
     private final MultiverseCore plugin;
     private final PaperCommandManager commandHandler;
     private final MVWorldManager worldManager;
 
+    private static final Set<String> BLACKLIST_WORLD_FOLDER = Stream.of("plugins", "cache", "logs").collect(Collectors.toCollection(HashSet::new));
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}";
 
     public CommandTools(MultiverseCore plugin) {
@@ -55,6 +59,11 @@ public class CommandTools {
         this.commandHandler.getCommandCompletions().registerAsyncCompletion(
                 "unloadedWorlds",
                 this::suggestUnloadedWorlds
+        );
+
+        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
+                "potentialWorlds",
+                this::suggestPotentialWorlds
         );
 
         this.commandHandler.getCommandCompletions().registerStaticCompletion(
@@ -101,6 +110,33 @@ public class CommandTools {
     private List<String> suggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
         return this.worldManager.getUnloadedWorlds();
     }
+
+    @NotNull
+    private List<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
+        //TODO: this should be in WorldManager API
+        List<String> knownWorlds = this.worldManager.getMVWorlds().stream()
+                .map(MultiverseWorld::getName)
+                .collect(Collectors.toList());
+        knownWorlds.addAll(this.worldManager.getUnloadedWorlds());
+
+        return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles())
+                .filter(File::isDirectory)
+                .filter(file -> !knownWorlds.contains(file.getName()))
+                .filter(this::validateWorldFolder)
+                .map(File::getName)
+                .collect(Collectors.toList());
+    }
+
+    private boolean validateWorldFolder(@NotNull File worldFolder) {
+        if (!worldFolder.isDirectory()) {
+            return false;
+        }
+        if (BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
+            return false;
+        }
+        return folderHasDat(worldFolder);
+    }
+
 
     @NotNull
     private Set<String> suggestMVConfig() {
@@ -478,6 +514,12 @@ public class CommandTools {
                 "worldFolderExist",
                 this::checkWorldFolderExist
         );
+
+        this.commandHandler.getCommandConditions().addCondition(
+                String.class,
+                "validWorldFolder",
+                this::checkValidWorldFolder
+        );
     }
 
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -516,5 +558,26 @@ public class CommandTools {
             //TODO: Possibly show potential worlds.
             throw new ConditionFailedException();
         }
+    }
+
+    private void checkValidWorldFolder (@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                        @NotNull BukkitCommandExecutionContext executionContext,
+                                        @NotNull String worldName) {
+
+        File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
+        if (!worldFolder.isDirectory()) {
+            throw new ConditionFailedException("That world folder does not exist.");
+        }
+        if (BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
+            throw new ConditionFailedException("World should be not in reversed server folders.");
+        }
+        if (!folderHasDat(worldFolder)) {
+            throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking a .dat file.");
+        }
+    }
+
+    private boolean folderHasDat(@NotNull File worldFolder) {
+        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase("level.dat"));
+        return files != null && files.length > 0;
     }
 }
