@@ -33,6 +33,7 @@ public class GeneratorCommand extends MultiverseCommand {
 
         List<String> generators = Arrays.stream(this.plugin.getServer().getPluginManager().getPlugins())
                 .filter(Plugin::isEnabled)
+                //TODO: Think what if they do not have a world named 'world'
                 .filter(p -> p.getDefaultWorldGenerator("world", "") != null)
                 .map(p -> p.getDescription().getName())
                 .collect(Collectors.toList());
