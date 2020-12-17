@@ -22,13 +22,15 @@ public class GamerulesCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("info")
+    //TODO: should it be `gamerule list` instead?
+    @Subcommand("gamerules")
     @CommandPermission("multiverse.core.gamerule.list")
     @Syntax("[world]")
     @CommandCompletion("@MVWorlds")
     @Description("See the list gamerules values for a given world.")
-    public void onGamerulesCommand(@NotNull CommandSender sender,
-                                   @NotNull @Flags("other|defaultself") MultiverseWorld world) {
+    public void onGameRulesCommand(@NotNull CommandSender sender,
+                                   @NotNull @Flags("other,defaultself") MultiverseWorld world) {
+
 
         World CBWorld = world.getCBWorld();
         StringBuilder gameRules = new StringBuilder();

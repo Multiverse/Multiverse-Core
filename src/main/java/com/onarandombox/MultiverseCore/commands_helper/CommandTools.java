@@ -73,7 +73,7 @@ public class CommandTools {
         );
 
         this.commandHandler.getCommandCompletions().registerStaticCompletion(
-                "gamerules",
+                "gameRules",
                 suggestGameRules()
         );
 
@@ -189,6 +189,11 @@ public class CommandTools {
         this.commandHandler.getCommandContexts().registerIssuerAwareContext(
                 WorldFlags.class,
                 this::deriveWorldFlags
+        );
+
+        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
+                GameRule.class,
+                this::deriveGameRule
         );
 
         //TODO: Destination
@@ -501,6 +506,20 @@ public class CommandTools {
 
     private boolean isFlagKey(@NotNull String value) {
         return value.charAt(0) == '-';
+    }
+
+    @NotNull
+    private GameRule deriveGameRule(@NotNull BukkitCommandExecutionContext context) {
+        String rule = context.popFirstArg();
+        if (rule == null) {
+            throw new InvalidCommandArgument("You need to specify a gamerule.");
+        }
+
+        GameRule gameRule = GameRule.getByName(rule);
+        if (gameRule == null) {
+            throw new InvalidCommandArgument("'" + rule + "' is not a valid gamerule.");
+        }
+        return gameRule;
     }
 
     public void registerCommandConditions() {
