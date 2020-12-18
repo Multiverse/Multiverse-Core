@@ -7,21 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
 import buscript.Buscript;
-import co.aikar.commands.PaperCommandManager;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
@@ -32,28 +18,8 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands_acf.CloneCommand;
-import com.onarandombox.MultiverseCore.commands_acf.CoordCommand;
-import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
-import com.onarandombox.MultiverseCore.commands_acf.GameRuleCommand;
-import com.onarandombox.MultiverseCore.commands_acf.GamerulesCommand;
-import com.onarandombox.MultiverseCore.commands_acf.GeneratorCommand;
-import com.onarandombox.MultiverseCore.commands_acf.ImportCommand;
-import com.onarandombox.MultiverseCore.commands_acf.ListCommand;
-import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
-import com.onarandombox.MultiverseCore.commands_acf.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands_acf.ScriptCommand;
-import com.onarandombox.MultiverseCore.commands_acf.SpawnCommand;
-import com.onarandombox.MultiverseCore.commands_acf.UsageCommand;
-import com.onarandombox.MultiverseCore.commands_helper.CommandTools;
-import com.onarandombox.MultiverseCore.commands_acf.ConfigCommand;
-import com.onarandombox.MultiverseCore.commands_acf.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commands_acf.DebugCommand;
-import com.onarandombox.MultiverseCore.commands_acf.DeleteCommand;
-import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
-import com.onarandombox.MultiverseCore.commands_acf.LoadCommand;
 import com.onarandombox.MultiverseCore.commands_helper.CommandQueueManager;
-import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
+import com.onarandombox.MultiverseCore.commands_helper.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
@@ -79,14 +45,14 @@ import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
-import com.onarandombox.MultiverseCore.utils.TestingMode;
-import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.ChatColor;
@@ -104,6 +70,19 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -186,7 +165,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     // Setup our Map for our Commands using the CommandHandler.
-    private PaperCommandManager commandHandler;
+    private MVCommandManager commandManager;
     private CommandQueueManager commandQueueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
@@ -270,9 +249,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup commands
         //TODO: Should init commands after config
-        this.commandHandler = new PaperCommandManager(this);
+        this.commandManager = new MVCommandManager(this);
         this.commandQueueManager = new CommandQueueManager(this);
-        this.registerCommands();
 
         // Initialize the Destination factor AFTER the commands
         this.initializeDestinationFactory();
@@ -725,40 +703,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Register Multiverse-Core commands to Command Manager.
-     */
-    private void registerCommands() {
-        commandHandler.enableUnstableAPI("help");
-
-        CommandTools tools = new CommandTools(this);
-        tools.registerCommandContexts();
-        tools.registerCommandCompletions();
-        tools.registerCommandConditions();
-
-        this.commandHandler.registerCommand(new UsageCommand(this));
-        this.commandHandler.registerCommand(new CreateCommand(this));
-        this.commandHandler.registerCommand(new LoadCommand(this));
-        this.commandHandler.registerCommand(new UnloadCommand(this));
-        this.commandHandler.registerCommand(new InfoCommand(this));
-        this.commandHandler.registerCommand(new DeleteCommand(this));
-        this.commandHandler.registerCommand(new ConfirmCommand(this));
-        this.commandHandler.registerCommand(new ConfigCommand(this));
-        this.commandHandler.registerCommand(new DebugCommand(this));
-        this.commandHandler.registerCommand(new CoordCommand(this));
-        this.commandHandler.registerCommand(new SpawnCommand(this));
-        this.commandHandler.registerCommand(new ReloadCommand(this));
-        this.commandHandler.registerCommand(new RemoveCommand(this));
-        this.commandHandler.registerCommand(new ListCommand(this));
-        this.commandHandler.registerCommand(new ScriptCommand(this));
-        this.commandHandler.registerCommand(new GeneratorCommand(this));
-        this.commandHandler.registerCommand(new CloneCommand(this));
-        this.commandHandler.registerCommand(new ImportCommand(this));
-        //TODO: Can combine both gamerules class into one.
-        this.commandHandler.registerCommand(new GamerulesCommand(this));
-        this.commandHandler.registerCommand(new GameRuleCommand(this));
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -856,14 +800,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
-    public PaperCommandManager getCommandHandler() {
-        return commandHandler;
-    }
-
-    public CommandQueueManager getCommandQueueManager() {
-        return commandQueueManager;
+    public MVCommandManager getMVCommandManager() {
+        return commandManager;
     }
 
     /**

@@ -28,7 +28,7 @@ public class DeleteCommand extends MultiverseCommand {
     public void onDeleteCommand(@NotNull CommandSender sender,
                                 @NotNull @Single @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
 
-        this.plugin.getCommandQueueManager().addToQueue(sender, deleteRunnable(sender, worldName));
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(sender, deleteRunnable(sender, worldName));
     }
 
     private Runnable deleteRunnable(@NotNull CommandSender sender,

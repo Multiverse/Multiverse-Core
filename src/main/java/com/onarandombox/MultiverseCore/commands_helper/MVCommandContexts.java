@@ -1,17 +1,11 @@
 package com.onarandombox.MultiverseCore.commands_helper;
 
-import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
-import co.aikar.commands.BukkitCommandIssuer;
-import co.aikar.commands.ConditionContext;
-import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.PaperCommandManager;
-import com.dumptruckman.minecraft.util.Logging;
+import co.aikar.commands.PaperCommandContexts;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -22,179 +16,32 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class CommandTools {
+public class MVCommandContexts extends PaperCommandContexts {
+
     private final MultiverseCore plugin;
-    private final PaperCommandManager commandHandler;
     private final MVWorldManager worldManager;
 
-    private static final Set<String> BLACKLIST_WORLD_FOLDER = Stream.of("plugins", "cache", "logs", "crash-reports").collect(Collectors.toCollection(HashSet::new));
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}";
 
-    public CommandTools(MultiverseCore plugin) {
+    public MVCommandContexts(MVCommandManager manager, MultiverseCore plugin) {
+        super(manager);
         this.plugin = plugin;
-        this.commandHandler = this.plugin.getCommandHandler();
-        this.worldManager = this.plugin.getMVWorldManager();
-    }
+        this.worldManager = plugin.getMVWorldManager();
 
-    public void registerCommandCompletions() {
-        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "MVWorlds",
-                this::suggestMVWorlds
-        );
-
-        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "unloadedWorlds",
-                this::suggestUnloadedWorlds
-        );
-
-        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "potentialWorlds",
-                this::suggestPotentialWorlds
-        );
-
-        //TODO: Change to static
-        this.commandHandler.getCommandCompletions().registerAsyncCompletion(
-                "MVConfigs",
-                this::suggestMVConfig
-        );
-
-        this.commandHandler.getCommandCompletions().registerStaticCompletion(
-                "gameRules",
-                suggestGameRules()
-        );
-
-        this.commandHandler.getCommandCompletions().registerStaticCompletion(
-                "environments",
-                suggestEnvironments()
-        );
-
-        this.commandHandler.getCommandCompletions().registerStaticCompletion(
-                "addProperties",
-                suggestAddProperties()
-        );
-
-        //TODO: set properties
-
-        //TODO: add properties
-
-        //TODO: remove properties
-
-        //TODO: destination
-
-        //TODO: version
-
-        //TODO: environment
-    }
-
-    @NotNull
-    private List<String> suggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
-        return worldManager.getMVWorlds().stream()
-                .map(MultiverseWorld::getName)
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private List<String> suggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
-        return this.worldManager.getUnloadedWorlds();
-    }
-
-    @NotNull
-    private List<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
-        //TODO: Should be more efficient
-        //TODO: this should be in WorldManager API
-        List<String> knownWorlds = this.worldManager.getMVWorlds().stream()
-                .map(MultiverseWorld::getName)
-                .collect(Collectors.toList());
-
-        return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles())
-                .filter(File::isDirectory)
-                .filter(file -> !knownWorlds.contains(file.getName()))
-                .filter(this::validateWorldFolder)
-                .map(File::getName)
-                .collect(Collectors.toList());
-    }
-
-    private boolean validateWorldFolder(@NotNull File worldFolder) {
-        if (!worldFolder.isDirectory()) {
-            return false;
-        }
-        if (BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
-            return false;
-        }
-        return folderHasDat(worldFolder);
-    }
-
-
-    @NotNull
-    private Set<String> suggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
-        return this.plugin.getMVConfig().serialize().keySet();
-    }
-
-    @NotNull
-    private List<String> suggestGameRules() {
-        return Arrays.stream(GameRule.values())
-                .map(GameRule::getName)
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private List<String> suggestEnvironments() {
-        return Arrays.stream(World.Environment.values())
-                .map(e -> e.toString().toLowerCase())
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private List<String> suggestAddProperties() {
-        return Arrays.stream(AddProperties.values())
-                .map(p -> p.toString().toLowerCase())
-                .collect(Collectors.toList());
-    }
-
-    public void registerCommandContexts() {
-        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
-                MultiverseWorld.class,
-                this::deriveMultiverseWorld
-        );
-
-        this.commandHandler.getCommandContexts().registerContext(
-                CommandPlayer.class,
-                this::deriveCommandPlayer
-        );
-
-        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
-                Player.class,
-                this::derivePlayer
-        );
-
-        this.commandHandler.getCommandContexts().registerContext(
-                World.Environment.class,
-                this::deriveEnvironment
-        );
-
-        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
-                WorldFlags.class,
-                this::deriveWorldFlags
-        );
-
-        this.commandHandler.getCommandContexts().registerIssuerAwareContext(
-                GameRule.class,
-                this::deriveGameRule
-        );
+        registerIssuerAwareContext(MultiverseWorld.class, this::deriveMultiverseWorld);
+        registerContext(CommandPlayer.class, this::deriveCommandPlayer);
+        registerIssuerAwareContext(Player.class, this::derivePlayer);
+        registerContext(World.Environment.class, this::deriveEnvironment);
+        registerIssuerAwareContext(WorldFlags.class, this::deriveWorldFlags);
+        registerIssuerAwareContext(GameRule.class, this::deriveGameRule);
 
         //TODO: Trim worldname strings
 
@@ -528,132 +375,5 @@ public class CommandTools {
             throw new InvalidCommandArgument("'" + rule + "' is not a valid gamerule.");
         }
         return gameRule;
-    }
-
-    public void registerCommandConditions() {
-        this.commandHandler.getCommandConditions().addCondition(
-                String.class,
-                "isMVWorld",
-                this::checkIsMVWorld
-        );
-
-        this.commandHandler.getCommandConditions().addCondition(
-                String.class,
-                "isUnloadedWorld",
-                this::checkIsUnloadedWorld
-        );
-
-        this.commandHandler.getCommandConditions().addCondition(
-                String.class,
-                "isWorldInConfig",
-                this::checkIsWorldInConfig
-        );
-
-        this.commandHandler.getCommandConditions().addCondition(
-                String.class,
-                "creatableWorldName",
-                this::checkCreatableWorldName
-        );
-
-        this.commandHandler.getCommandConditions().addCondition(
-                String.class,
-                "importableWorldName",
-                this::checkImportableWorldName
-        );
-
-        this.commandHandler.getCommandConditions().addCondition(
-                String.class,
-                "validWorldFolder",
-                this::checkValidWorldFolder
-        );
-    }
-
-    //TODO: Message seems a bit too targeted to create world only
-    private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                @NotNull BukkitCommandExecutionContext executionContext,
-                                @NotNull String worldName) {
-
-        if (!this.worldManager.isMVWorld(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' not found.");
-        }
-    }
-
-    private void checkIsUnloadedWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                      @NotNull BukkitCommandExecutionContext executionContext,
-                                      @NotNull String worldName) {
-
-        if (this.worldManager.isMVWorld(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' is already loaded.");
-        }
-
-        if (!this.worldManager.getUnloadedWorlds().contains(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' not found.");
-        }
-    }
-
-    private void checkIsWorldInConfig(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                      @NotNull BukkitCommandExecutionContext executionContext,
-                                      @NotNull String worldName) {
-
-        //TODO: Should have direct API for it, instead of check both loaded and unloaded.
-        if (!this.worldManager.isMVWorld(worldName) && !this.worldManager.getUnloadedWorlds().contains(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' not found.");
-        }
-    }
-
-    private void checkCreatableWorldName(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                         @NotNull BukkitCommandExecutionContext executionContext,
-                                         @NotNull String worldName) {
-
-        if (this.worldManager.isMVWorld(worldName)) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
-                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
-            throw new ConditionFailedException();
-        }
-
-        File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
-        if (worldFolder.exists() && worldFolder.isDirectory()) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "A Folder already exists with this name!");
-            if (folderHasDat(worldFolder)) {
-                executionContext.getSender().sendMessage(ChatColor.RED + "World Folder '" + worldName + "' already look like a world to me!");
-                executionContext.getSender().sendMessage(ChatColor.RED + "You can try importing it with /mv import");
-            }
-            throw new ConditionFailedException();
-        }
-    }
-
-    private void checkImportableWorldName(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                         @NotNull BukkitCommandExecutionContext executionContext,
-                                         @NotNull String worldName) {
-
-        if (this.worldManager.isMVWorld(worldName)) {
-            executionContext.getSender().sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
-                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
-            throw new ConditionFailedException();
-        }
-
-        checkValidWorldFolder(context, executionContext, worldName);
-    }
-
-    private void checkValidWorldFolder(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                       @NotNull BukkitCommandExecutionContext executionContext,
-                                       @NotNull String worldName) {
-
-        File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
-        if (!worldFolder.isDirectory()) {
-            //TODO: Possibly show potential worlds. Use flags.
-            throw new ConditionFailedException("World folder '"+ worldName +"' does not exist.");
-        }
-        if (BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
-            throw new ConditionFailedException("World should not be in reserved server folders.");
-        }
-        if (!folderHasDat(worldFolder)) {
-            throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking level.dat file.");
-        }
-    }
-
-    private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase("level.dat"));
-        return files != null && files.length > 0;
     }
 }
