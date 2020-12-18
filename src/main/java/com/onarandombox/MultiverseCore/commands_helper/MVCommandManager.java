@@ -30,6 +30,7 @@ import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ScriptCommand;
 import com.onarandombox.MultiverseCore.commands_acf.SpawnCommand;
+import com.onarandombox.MultiverseCore.commands_acf.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UsageCommand;
 import org.bukkit.ChatColor;
@@ -86,6 +87,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new GameRuleCommand(plugin));
         registerCommand(new EnvironmentCommand(plugin));
         registerCommand(new RegenCommand(plugin));
+        registerCommand(new TeleportCommand(plugin));
     }
 
     @Override

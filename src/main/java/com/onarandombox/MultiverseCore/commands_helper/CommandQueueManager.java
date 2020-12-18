@@ -38,6 +38,7 @@ public class CommandQueueManager {
         queuedCommands.put(sender, queuedCommand);
         queuedCommand.setExpireTask(runExpireLater(queuedCommand, validPeriod));
 
+        //TODO: Custom message for needing to confirm reason.
         sender.sendMessage("The command you are trying to run is deemed dangerous.");
         sender.sendMessage("Run /mv confirm to continue.");
     }
