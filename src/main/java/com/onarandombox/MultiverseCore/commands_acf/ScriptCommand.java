@@ -25,8 +25,8 @@ public class ScriptCommand extends MultiverseCommand {
 
     @Subcommand("script")
     @CommandPermission("multiverse.core.script")
-    @CommandCompletion(" @players")
     @Syntax("<script> [player]")
+    @CommandCompletion(" @players")
     @Description("Runs a script.")
     public void onScriptCommand(@NotNull CommandSender sender,
                                 @NotNull String targetScript,

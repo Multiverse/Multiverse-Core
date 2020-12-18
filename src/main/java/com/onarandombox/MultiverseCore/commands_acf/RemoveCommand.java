@@ -25,7 +25,7 @@ public class RemoveCommand extends MultiverseCommand {
     @Syntax("<world>")
     @Description("Unloads a world from Multiverse and removes it from worlds.yml, this does NOT DELETE the world folder.")
     public void onRemoveCommand(@NotNull CommandSender sender,
-                                @NotNull @Single @Conditions("isWorldInConfig") String worldName) {
+                                @NotNull @Single @Conditions("isWorldInConfig|worldFolderExist:true") String worldName) {
 
         sender.sendMessage((this.plugin.getMVWorldManager().removeWorldFromConfig(worldName))
                 ? "World removed from config!"

@@ -601,16 +601,18 @@ public class CommandTools {
                                            @NotNull BukkitCommandExecutionContext executionContext,
                                            @NotNull String worldFolder) {
 
+        CommandSender sender = executionContext.getSender();
         boolean shouldExist = Boolean.parseBoolean(context.getConfig());
         boolean worldFileExist = new File(this.plugin.getServer().getWorldContainer(), worldFolder).exists();
 
         if (worldFileExist && !shouldExist) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
-            executionContext.getSender().sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mv import");
+            sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
+            sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mv import");
             throw new ConditionFailedException();
         }
         if (!worldFileExist && shouldExist) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "World folder '" + worldFolder + "' does not exist.");
+            sender.sendMessage(ChatColor.RED + "World folder '" + worldFolder + "' does not exist.");
+            //TODO: Use mv remove message.
             //TODO: Possibly show potential worlds.
             throw new ConditionFailedException();
         }
