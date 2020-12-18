@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -26,7 +27,7 @@ public class DeleteCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds|@unloadedWorlds")
     @Description("")
     public void onDeleteCommand(@NotNull CommandSender sender,
-                                @NotNull @Single @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
+                                @NotNull @Single @Flags("trim") @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(sender, deleteRunnable(sender, worldName));
     }

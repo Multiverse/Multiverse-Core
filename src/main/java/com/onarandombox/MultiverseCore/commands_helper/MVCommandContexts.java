@@ -3,9 +3,12 @@ package com.onarandombox.MultiverseCore.commands_helper;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
+import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -42,10 +45,8 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(World.Environment.class, this::deriveEnvironment);
         registerIssuerAwareContext(WorldFlags.class, this::deriveWorldFlags);
         registerIssuerAwareContext(GameRule.class, this::deriveGameRule);
-
-        //TODO: Trim worldname strings
-
-        //TODO: Destination
+        registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
+        registerIssuerAwareContext(String.class, this::deriveString);
     }
 
     @NotNull
@@ -375,5 +376,39 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("'" + rule + "' is not a valid gamerule.");
         }
         return gameRule;
+    }
+
+    @NotNull
+    private MVDestination deriveMVDestination(@NotNull BukkitCommandExecutionContext context) {
+        String destString = context.popFirstArg();
+        if (destString == null) {
+            throw new InvalidCommandArgument("Please specify a destination.");
+        }
+
+        MVDestination destination = this.plugin.getDestFactory().getDestination(destString);
+        if (destination instanceof InvalidDestination) {
+            throw new  InvalidCommandArgument("No such destination '" + destString + "' found.");
+        }
+        return destination;
+    }
+
+    @NotNull
+    private String deriveString(@NotNull BukkitCommandExecutionContext context) {
+        if (context.hasAnnotation(Values.class)) {
+            return context.popFirstArg();
+        }
+
+        String string = context.popFirstArg();
+        if (context.hasFlag("trim")) {
+            return trimWorldName(string);
+        }
+
+        return string;
+    }
+
+    @NotNull
+    private String trimWorldName(@NotNull String worldName) {
+        // Removes relative paths.
+        return worldName.replaceAll("^[./\\\\]+", "");
     }
 }

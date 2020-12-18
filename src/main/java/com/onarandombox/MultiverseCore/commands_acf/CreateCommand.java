@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -28,7 +29,7 @@ public class CreateCommand extends MultiverseCommand {
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
                                 //TODO: Cleanup/fix conditions here
-                                @NotNull @Conditions("creatableWorldName") String worldName,
+                                @NotNull @Flags("trim") @Conditions("creatableWorldName") String worldName,
                                 @NotNull World.Environment environment,
                                 @NotNull WorldFlags flags) {
 

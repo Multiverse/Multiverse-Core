@@ -2,7 +2,6 @@ package com.onarandombox.MultiverseCore.commands_helper;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.PaperCommandCompletions;
-import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -13,18 +12,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
 
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
-
-    private static final Set<String> BLACKLIST_WORLD_FOLDER = Stream.of("plugins", "cache", "logs", "crash-reports").collect(Collectors.toCollection(HashSet::new));
 
     public MVCommandCompletions(MVCommandManager manager, MultiverseCore plugin) {
         super(manager);
@@ -38,6 +33,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("gameRules", suggestGameRules());
         registerStaticCompletion("environments", suggestEnvironments());
         registerStaticCompletion("addProperties", suggestAddProperties());
+
+        //TODO: Change to destinations
     }
 
     @NotNull
@@ -72,7 +69,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         if (!worldFolder.isDirectory()) {
             return false;
         }
-        if (BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
+        if (MVCommandManager.BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
             return false;
         }
         return folderHasDat(worldFolder);

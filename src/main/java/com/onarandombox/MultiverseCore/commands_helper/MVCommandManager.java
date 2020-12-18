@@ -4,13 +4,13 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandCompletions;
-import co.aikar.commands.CommandConditions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commands_acf.CheckCommand;
 import com.onarandombox.MultiverseCore.commands_acf.CloneCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ConfigCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ConfirmCommand;
@@ -35,10 +35,9 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MVCommandManager extends PaperCommandManager {
 
@@ -46,8 +45,13 @@ public class MVCommandManager extends PaperCommandManager {
     private final MVWorldManager worldManager;
     private final CommandQueueManager commandQueueManager;
 
-    //TODO: Should be in world manager
-    private static final Set<String> BLACKLIST_WORLD_FOLDER = Stream.of("plugins", "cache", "logs", "crash-reports").collect(Collectors.toCollection(HashSet::new));
+    //TODO: Should be in world manager?
+    protected static final Set<String> BLACKLIST_WORLD_FOLDER = Collections.unmodifiableSet(new HashSet<String>() {{
+        add("plugins");
+        add("cache");
+        add("logs");
+        add("crash-reports");
+    }});
 
     public MVCommandManager(MultiverseCore plugin) {
         super(plugin);
@@ -77,6 +81,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new GeneratorCommand(plugin));
         registerCommand(new CloneCommand(plugin));
         registerCommand(new ImportCommand(plugin));
+        registerCommand(new CheckCommand(plugin));
 
         //TODO: Can combine both gamerules class into one.
         registerCommand(new GamerulesCommand(plugin));
@@ -191,12 +196,12 @@ public class MVCommandManager extends PaperCommandManager {
             throw new ConditionFailedException("World should not be in reserved server folders.");
         }
         if (!folderHasDat(worldFolder)) {
-            throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking level.dat file.");
+            throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking .dat file.");
         }
     }
 
     private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase("level.dat"));
+        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase(".dat"));
         return files != null && files.length > 0;
     }
 }

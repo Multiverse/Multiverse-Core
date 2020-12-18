@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -27,7 +28,7 @@ public class CloneCommand extends MultiverseCommand {
     @Description("Clones a world.")
     public void onCloneCommand(@NotNull CommandSender sender,
                                @NotNull @Conditions("isWorldInConfig") String worldName,
-                               @NotNull @Single @Conditions("worldFolderExist:false") String newWorldName) {
+                               @NotNull @Single @Flags("trim") @Conditions("creatableWorldName") String newWorldName) {
 
         sender.sendMessage((this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName))
                 ? ChatColor.GREEN + "World cloned!"

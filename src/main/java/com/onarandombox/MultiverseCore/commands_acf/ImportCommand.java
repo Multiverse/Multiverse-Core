@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -28,7 +29,7 @@ public class ImportCommand extends MultiverseCommand {
     @CommandCompletion("@potentialWorlds")
     @Description("Imports a new world of the specified type.")
     public void onImportCommand(@NotNull CommandSender sender,
-                                @NotNull @Conditions("importableWorldName") String worldName,
+                                @NotNull @Flags("trim") @Conditions("importableWorldName") String worldName,
                                 @NotNull World.Environment environment,
                                 @NotNull WorldFlags flags) {
 
