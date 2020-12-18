@@ -25,7 +25,7 @@ public class DeleteCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.delete")
     @Syntax("<world>")
     @CommandCompletion("@MVWorlds|@unloadedWorlds")
-    @Description("")
+    @Description("Deletes a world on your server PERMANENTLY.")
     public void onDeleteCommand(@NotNull CommandSender sender,
                                 @NotNull @Single @Flags("trim") @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
 
@@ -37,11 +37,9 @@ public class DeleteCommand extends MultiverseCommand {
 
         return () -> {
             //TODO: deleteWorld method should take world object directly
-            String resultMessage = (this.plugin.getMVWorldManager().deleteWorld(worldName))
+            sender.sendMessage((this.plugin.getMVWorldManager().deleteWorld(worldName))
                     ? ChatColor.GREEN + "World '" + worldName + "' is deleted!"
-                    : ChatColor.RED + "World '" + worldName + "' could not be deleted!";
-
-            sender.sendMessage(resultMessage);
+                    : ChatColor.RED + "World '" + worldName + "' could not be deleted!");
         };
     }
 }

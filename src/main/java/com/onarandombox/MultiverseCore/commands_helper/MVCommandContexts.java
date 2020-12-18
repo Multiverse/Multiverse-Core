@@ -262,6 +262,7 @@ public class MVCommandContexts extends PaperCommandContexts {
     private WorldFlags deriveWorldFlags(@NotNull BukkitCommandExecutionContext context) {
         Map<String, String> flags = parseFlags(context.getArgs());
         return new WorldFlags(
+                flags.keySet(),
                 flags.get("-s"),
                 validateGenerator(flags.get("-g")),
                 getWorldType(flags.get("-t")),

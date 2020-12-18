@@ -2,19 +2,32 @@ package com.onarandombox.MultiverseCore.commands_helper;
 
 import org.bukkit.WorldType;
 
+import java.util.Set;
+
 public class WorldFlags {
+    private final Set<String> flagsUsed;
     private final String seed;
     private final String generator;
     private final WorldType worldType;
     private final boolean spawnAdjust;
     private final boolean generateStructures;
 
-    public WorldFlags(String seed, String generator, WorldType worldType, boolean spawnAdjust, boolean generateStructures) {
+    public WorldFlags(Set<String> flagsUsed,
+                      String seed, String generator,
+                      WorldType worldType,
+                      boolean spawnAdjust,
+                      boolean generateStructures) {
+
+        this.flagsUsed = flagsUsed;
         this.seed = seed;
         this.generator = generator;
         this.worldType = worldType;
         this.spawnAdjust = spawnAdjust;
         this.generateStructures = generateStructures;
+    }
+
+    public boolean hasFlag(String flag) {
+        return flagsUsed.contains(flag);
     }
 
     public String getSeed() {

@@ -18,12 +18,14 @@ import com.onarandombox.MultiverseCore.commands_acf.CoordCommand;
 import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DebugCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DeleteCommand;
+import com.onarandombox.MultiverseCore.commands_acf.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GameRuleCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GeneratorCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ImportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ListCommand;
 import com.onarandombox.MultiverseCore.commands_acf.LoadCommand;
+import com.onarandombox.MultiverseCore.commands_acf.RegenCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ScriptCommand;
@@ -82,6 +84,8 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new ImportCommand(plugin));
         registerCommand(new CheckCommand(plugin));
         registerCommand(new GameRuleCommand(plugin));
+        registerCommand(new EnvironmentCommand(plugin));
+        registerCommand(new RegenCommand(plugin));
     }
 
     @Override
