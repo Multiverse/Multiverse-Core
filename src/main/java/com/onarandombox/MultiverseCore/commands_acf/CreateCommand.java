@@ -26,6 +26,7 @@ public class CreateCommand extends MultiverseCommand {
     @Subcommand("create")
     @CommandPermission("multiverse.core.info")
     @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
+    @CommandCompletion(" @environments")
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
                                 //TODO: Cleanup/fix conditions here
@@ -36,7 +37,7 @@ public class CreateCommand extends MultiverseCommand {
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
         // TODO: Should Allow WorldFlags object to be passed directly
-        String resultMessage = (!this.plugin.getMVWorldManager().addWorld(
+        Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(
                 worldName,
                 environment,
                 flags.getSeed(),
@@ -45,9 +46,7 @@ public class CreateCommand extends MultiverseCommand {
                 flags.getGenerator(),
                 flags.isSpawnAdjust())
         )
-                ? ChatColor.RED + "Failed to create world! See console for errors."
-                : ChatColor.GREEN + "Complete!";
-
-        Command.broadcastCommandMessage(sender, resultMessage);
+                ? ChatColor.GREEN + "Complete!"
+                : ChatColor.RED + "Failed to create world! See console for errors.");
     }
 }

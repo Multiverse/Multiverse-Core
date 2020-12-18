@@ -35,8 +35,8 @@ public class SpawnCommand extends MultiverseCommand {
 
     @Subcommand("spawn")
     @CommandPermission("multiverse.core.spawn.other")
-    @CommandCompletion("@players")
     @Syntax("[player]")
+    @CommandCompletion("@players")
     @Description("Teleport another player to the spawn of the world they are in.")
     public void onOtherSpawnCommand(@NotNull CommandSender sender,
                                     @NotNull CommandPlayer targetPlayer) {
