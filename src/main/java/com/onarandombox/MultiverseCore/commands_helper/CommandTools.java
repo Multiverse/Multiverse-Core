@@ -41,7 +41,7 @@ public class CommandTools {
     private final PaperCommandManager commandHandler;
     private final MVWorldManager worldManager;
 
-    private static final Set<String> BLACKLIST_WORLD_FOLDER = Stream.of("plugins", "cache", "logs").collect(Collectors.toCollection(HashSet::new));
+    private static final Set<String> BLACKLIST_WORLD_FOLDER = Stream.of("plugins", "cache", "logs", "crash-reports").collect(Collectors.toCollection(HashSet::new));
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}";
 
     public CommandTools(MultiverseCore plugin) {
@@ -114,11 +114,11 @@ public class CommandTools {
 
     @NotNull
     private List<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
+        //TODO: Should be more efficient
         //TODO: this should be in WorldManager API
         List<String> knownWorlds = this.worldManager.getMVWorlds().stream()
                 .map(MultiverseWorld::getName)
                 .collect(Collectors.toList());
-        knownWorlds.addAll(this.worldManager.getUnloadedWorlds());
 
         return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles())
                 .filter(File::isDirectory)
@@ -195,6 +195,8 @@ public class CommandTools {
                 GameRule.class,
                 this::deriveGameRule
         );
+
+        //TODO: Trim worldname strings
 
         //TODO: Destination
     }
@@ -388,17 +390,23 @@ public class CommandTools {
 
         if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD")) {
             env = "NORMAL";
-        } else if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER")) {
+        }
+        else if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER")) {
             env = "NETHER";
-        } else if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS")) {
+        }
+        else if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS")) {
             env = "THE_END";
         }
 
         try {
             return World.Environment.valueOf(env);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidCommandArgument("'" + env + "' is not a valid environment.");
+        }
+        catch (IllegalArgumentException e) {
+            CommandSender sender = context.getSender();
+            sender.sendMessage("'" + env + "' is not a valid environment.");
+            sender.sendMessage("For a list of available world types, see " + ChatColor.AQUA + "/mv env");
             //TODO: Possibly show valid environments.
+            throw new InvalidCommandArgument();
         }
     }
 
@@ -426,7 +434,7 @@ public class CommandTools {
             genArray.add("");
         }
         if (this.worldManager.getChunkGenerator(genArray.get(0), genArray.get(1), "test") == null) {
-            throw new InvalidCommandArgument("Invalid generator '" + value + "'.");
+            throw new InvalidCommandArgument("Invalid generator '" + value + "'. See /mv gens for available generators");
         }
 
         return value;
@@ -543,8 +551,14 @@ public class CommandTools {
 
         this.commandHandler.getCommandConditions().addCondition(
                 String.class,
-                "worldFolderExist",
-                this::checkWorldFolderExist
+                "creatableWorldName",
+                this::checkCreatableWorldName
+        );
+
+        this.commandHandler.getCommandConditions().addCondition(
+                String.class,
+                "importableWorldName",
+                this::checkImportableWorldName
         );
 
         this.commandHandler.getCommandConditions().addCondition(
@@ -559,18 +573,8 @@ public class CommandTools {
                                 @NotNull BukkitCommandExecutionContext executionContext,
                                 @NotNull String worldName) {
 
-        boolean shouldBeMVWorld = Boolean.parseBoolean(context.getConfig());
-        boolean isMVWorld = this.worldManager.isMVWorld(worldName);
-
-        if (isMVWorld && !shouldBeMVWorld) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
-                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
-            throw new ConditionFailedException();
-        }
-        if (!isMVWorld && shouldBeMVWorld) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
-            executionContext.getSender().sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
-            throw new ConditionFailedException();
+        if (!this.worldManager.isMVWorld(worldName)) {
+            throw new ConditionFailedException("World '" + worldName + "' not found.");
         }
     }
 
@@ -597,25 +601,38 @@ public class CommandTools {
         }
     }
 
-        private void checkWorldFolderExist(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                           @NotNull BukkitCommandExecutionContext executionContext,
-                                           @NotNull String worldFolder) {
+    private void checkCreatableWorldName(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                         @NotNull BukkitCommandExecutionContext executionContext,
+                                         @NotNull String worldName) {
 
-        CommandSender sender = executionContext.getSender();
-        boolean shouldExist = Boolean.parseBoolean(context.getConfig());
-        boolean worldFileExist = new File(this.plugin.getServer().getWorldContainer(), worldFolder).exists();
-
-        if (worldFileExist && !shouldExist) {
-            sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
-            sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mv import");
+        if (this.worldManager.isMVWorld(worldName)) {
+            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
+                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
             throw new ConditionFailedException();
         }
-        if (!worldFileExist && shouldExist) {
-            sender.sendMessage(ChatColor.RED + "World folder '" + worldFolder + "' does not exist.");
-            //TODO: Use mv remove message.
-            //TODO: Possibly show potential worlds.
+
+        File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
+        if (worldFolder.exists() && worldFolder.isDirectory()) {
+            executionContext.getSender().sendMessage(ChatColor.RED + "A Folder already exists with this name!");
+            if (folderHasDat(worldFolder)) {
+                executionContext.getSender().sendMessage(ChatColor.RED + "World Folder '" + worldName + "' already look like a world to me!");
+                executionContext.getSender().sendMessage(ChatColor.RED + "You can try importing it with /mv import");
+            }
             throw new ConditionFailedException();
         }
+    }
+
+    private void checkImportableWorldName(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                         @NotNull BukkitCommandExecutionContext executionContext,
+                                         @NotNull String worldName) {
+
+        if (this.worldManager.isMVWorld(worldName)) {
+            executionContext.getSender().sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
+                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
+            throw new ConditionFailedException();
+        }
+
+        checkValidWorldFolder(context, executionContext, worldName);
     }
 
     private void checkValidWorldFolder(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -624,13 +641,14 @@ public class CommandTools {
 
         File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
         if (!worldFolder.isDirectory()) {
-            throw new ConditionFailedException("That world folder does not exist.");
+            //TODO: Possibly show potential worlds. Use flags.
+            throw new ConditionFailedException("World folder '"+ worldName +"' does not exist.");
         }
         if (BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
-            throw new ConditionFailedException("World should be not in reversed server folders.");
+            throw new ConditionFailedException("World should not be in reserved server folders.");
         }
         if (!folderHasDat(worldFolder)) {
-            throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking a .dat file.");
+            throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking level.dat file.");
         }
     }
 

@@ -38,6 +38,7 @@ import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GameRuleCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GamerulesCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GeneratorCommand;
+import com.onarandombox.MultiverseCore.commands_acf.ImportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ListCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RemoveCommand;
@@ -751,6 +752,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new ScriptCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CloneCommand(this));
+        this.commandHandler.registerCommand(new ImportCommand(this));
         //TODO: Can combine both gamerules class into one.
         this.commandHandler.registerCommand(new GamerulesCommand(this));
         this.commandHandler.registerCommand(new GameRuleCommand(this));

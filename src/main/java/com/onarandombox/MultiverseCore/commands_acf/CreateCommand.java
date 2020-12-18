@@ -25,11 +25,10 @@ public class CreateCommand extends MultiverseCommand {
     @Subcommand("create")
     @CommandPermission("multiverse.core.info")
     @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
-    @CommandCompletion("")
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
                                 //TODO: Cleanup/fix conditions here
-                                @NotNull @Conditions("isMVWorld:false|worldFolderExist:false") String worldName,
+                                @NotNull @Conditions("creatableWorldName") String worldName,
                                 @NotNull World.Environment environment,
                                 @NotNull WorldFlags flags) {
 
