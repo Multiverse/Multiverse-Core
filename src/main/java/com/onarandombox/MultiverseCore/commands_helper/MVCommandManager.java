@@ -25,6 +25,7 @@ import com.onarandombox.MultiverseCore.commands_acf.ImportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ListCommand;
 import com.onarandombox.MultiverseCore.commands_acf.LoadCommand;
+import com.onarandombox.MultiverseCore.commands_acf.PurgeCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RegenCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RemoveCommand;
@@ -90,6 +91,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new RegenCommand(plugin));
         registerCommand(new TeleportCommand(plugin));
         registerCommand(new SilentCommand(plugin));
+        registerCommand(new PurgeCommand(plugin));
     }
 
     @Override

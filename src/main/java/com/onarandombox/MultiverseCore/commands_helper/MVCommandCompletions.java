@@ -8,6 +8,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -33,8 +34,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("gameRules", suggestGameRules());
         registerStaticCompletion("environments", suggestEnvironments());
         registerStaticCompletion("addProperties", suggestAddProperties());
+        registerStaticCompletion("livingEntities", suggestEntities());
 
-        //TODO: Change to destinations
+        //TODO: Destinations
     }
 
     @NotNull
@@ -103,6 +105,14 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private List<String> suggestAddProperties() {
         return Arrays.stream(AddProperties.values())
                 .map(p -> p.toString().toLowerCase())
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<String> suggestEntities() {
+        return Arrays.stream(EntityType.values())
+                .filter(e -> e.isAlive() && e.isSpawnable())
+                .map(e -> e.toString().toLowerCase())
                 .collect(Collectors.toList());
     }
 }
