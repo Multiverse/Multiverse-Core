@@ -19,7 +19,6 @@ import com.onarandombox.MultiverseCore.commands_acf.CreateCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DebugCommand;
 import com.onarandombox.MultiverseCore.commands_acf.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GameRuleCommand;
-import com.onarandombox.MultiverseCore.commands_acf.GamerulesCommand;
 import com.onarandombox.MultiverseCore.commands_acf.GeneratorCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ImportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
@@ -82,9 +81,6 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new CloneCommand(plugin));
         registerCommand(new ImportCommand(plugin));
         registerCommand(new CheckCommand(plugin));
-
-        //TODO: Can combine both gamerules class into one.
-        registerCommand(new GamerulesCommand(plugin));
         registerCommand(new GameRuleCommand(plugin));
     }
 
