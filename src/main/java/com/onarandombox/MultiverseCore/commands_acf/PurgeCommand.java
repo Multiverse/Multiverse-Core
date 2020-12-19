@@ -13,7 +13,6 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;

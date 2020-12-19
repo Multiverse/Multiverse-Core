@@ -41,7 +41,7 @@ public class TeleportCommand extends MultiverseCommand {
         @Syntax("[player] <destination>")
         @CommandCompletion("@players|@MVWorlds @MVWorlds")
         @Description("Allows you to the teleport to a location on your server!")
-        public void doSameTeleportCommand(@NotNull CommandSender sender,
+        public void doTeleportCommand(@NotNull CommandSender sender,
                                           @NotNull @Flags("other,defaultself,fallbackself") Player player,
                                           @NotNull @Single String destinationName) {
 

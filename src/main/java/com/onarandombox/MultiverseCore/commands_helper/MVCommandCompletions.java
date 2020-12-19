@@ -2,7 +2,6 @@ package com.onarandombox.MultiverseCore.commands_helper;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.PaperCommandCompletions;
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -20,8 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MVCommandCompletions extends PaperCommandCompletions {

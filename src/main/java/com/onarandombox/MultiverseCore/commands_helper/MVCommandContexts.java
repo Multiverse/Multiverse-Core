@@ -4,7 +4,6 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.annotation.Values;
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -27,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MVCommandContexts extends PaperCommandContexts {
@@ -418,7 +416,6 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     private Location deriveLocation(BukkitCommandExecutionContext context) {
-        Logging.info("testing location");
         if (context.getArgs().isEmpty()) {
             Player player = context.getPlayer();
             if (player != null) {
@@ -435,8 +432,6 @@ public class MVCommandContexts extends PaperCommandContexts {
             e.printStackTrace();
             throw new InvalidCommandArgument("There was an error getting Target location world!");
         }
-
-        Logging.info(world.getName());
 
         List<String> locationArgs = context.getArgs();
         if (locationArgs.size() != 3 && locationArgs.size() != 5) {
