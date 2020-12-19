@@ -2,19 +2,25 @@ package com.onarandombox.MultiverseCore.commands_helper;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.PaperCommandCompletions;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -30,6 +36,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
         registerAsyncCompletion("unloadedWorlds", this::suggestUnloadedWorlds);
         registerAsyncCompletion("potentialWorlds", this::suggestPotentialWorlds);
+        registerCompletion("location", this::suggestLocation);
         registerAsyncCompletion("MVConfigs", this::suggestMVConfig); //TODO: Change to static
         registerStaticCompletion("gameRules", suggestGameRules());
         registerStaticCompletion("environments", suggestEnvironments());
@@ -78,8 +85,44 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase("level.dat"));
+        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase(".dat"));
         return files != null && files.length > 0;
+    }
+
+    @NotNull
+    private List<String> suggestLocation(@NotNull BukkitCommandCompletionContext context) {
+        Player player = context.getPlayer();
+        if (player == null) {
+            return Collections.singletonList("0");
+        }
+
+        DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(0);
+        df.setMaximumFractionDigits(2);
+
+        Location playerLocation = player.getLocation();
+        double coordValue;
+        switch (context.getConfig()) {
+            case "x":
+                coordValue = playerLocation.getX();
+                break;
+            case "y":
+                coordValue = playerLocation.getY();
+                break;
+            case "z":
+                coordValue = playerLocation.getZ();
+                break;
+            case "yaw":
+                coordValue = playerLocation.getYaw();
+                break;
+            case "pitch":
+                coordValue = playerLocation.getPitch();
+                break;
+            default:
+                return Collections.emptyList();
+        }
+
+        return Arrays.asList("~", String.valueOf(coordValue));
     }
 
     @NotNull

@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.annotation.Values;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -12,6 +13,7 @@ import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MVCommandContexts extends PaperCommandContexts {
@@ -47,6 +50,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(GameRule.class, this::deriveGameRule);
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
         registerIssuerAwareContext(String.class, this::deriveString);
+        registerIssuerAwareContext(Location.class, this::deriveLocation);
     }
 
     @NotNull
@@ -411,5 +415,57 @@ public class MVCommandContexts extends PaperCommandContexts {
     private String trimWorldName(@NotNull String worldName) {
         // Removes relative paths.
         return worldName.replaceAll("^[./\\\\]+", "");
+    }
+
+    private Location deriveLocation(BukkitCommandExecutionContext context) {
+        Logging.info("testing location");
+        if (context.getArgs().isEmpty()) {
+            Player player = context.getPlayer();
+            if (player != null) {
+                return player.getLocation();
+            }
+            throw new InvalidCommandArgument("You need to specify world and coordinates from the console!");
+        }
+
+        MultiverseWorld world;
+        try {
+            world = deriveMultiverseWorld(context);
+        }
+        catch (ClassCastException e) {
+            e.printStackTrace();
+            throw new InvalidCommandArgument("There was an error getting Target location world!");
+        }
+
+        Logging.info(world.getName());
+
+        List<String> locationArgs = context.getArgs();
+        if (locationArgs.size() != 3 && locationArgs.size() != 5) {
+            context.getSender().sendMessage(ChatColor.RED + "Invalid location arguments.");
+            context.getSender().sendMessage("Use no arguments for your current location, or world/x/y/z, or world/x/y/z/yaw/pitch!");
+            throw new InvalidCommandArgument(true);
+        }
+
+        double x = parsePos(locationArgs.get(0), "x");
+        double y = parsePos(locationArgs.get(1), "y");
+        double z = parsePos(locationArgs.get(2), "z");
+
+        double yaw = 0.0;
+        double pitch = 0.0;
+
+        if (locationArgs.size() == 5) {
+            yaw = parsePos(locationArgs.get(3), "yaw");
+            pitch = parsePos(locationArgs.get(4), "pitch");
+        }
+
+        return new Location(world.getCBWorld(), x, y, z, (float) yaw, (float) pitch);
+    }
+
+    private double parsePos(String value, String posType) {
+        try {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException e) {
+            throw new InvalidCommandArgument("'" + value + "' for "+ posType + " coordinate is not a number.", false);
+        }
     }
 }
