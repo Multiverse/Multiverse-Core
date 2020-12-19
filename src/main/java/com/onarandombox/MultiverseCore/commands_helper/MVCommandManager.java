@@ -37,6 +37,7 @@ import com.onarandombox.MultiverseCore.commands_acf.SpawnCommand;
 import com.onarandombox.MultiverseCore.commands_acf.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UsageCommand;
+import com.onarandombox.MultiverseCore.commands_acf.VersionCommand;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -98,6 +99,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new PurgeCommand(plugin));
         registerCommand(new SetSpawnCommand(plugin));
         registerCommand(new ModifyCommand(plugin));
+        registerCommand(new VersionCommand(plugin));
     }
 
     @Override

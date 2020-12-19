@@ -6,6 +6,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -41,6 +42,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("setProperties", suggestSetProperties());
         registerStaticCompletion("addProperties", suggestAddProperties());
         registerStaticCompletion("livingEntities", suggestEntities());
+        registerStaticCompletion("pasteTypes", suggestPasteTypes());
 
         //TODO: Destinations
     }
@@ -160,6 +162,14 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         return Arrays.stream(EntityType.values())
                 .filter(e -> e.isAlive() && e.isSpawnable())
                 .map(e -> e.toString().toLowerCase())
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private Collection<String> suggestPasteTypes() {
+        return Arrays.stream(PasteServiceType.values())
+                .filter(pt -> pt != PasteServiceType.GITHUB && pt != PasteServiceType.NONE)
+                .map(p -> p.toString().toLowerCase())
                 .collect(Collectors.toList());
     }
 }

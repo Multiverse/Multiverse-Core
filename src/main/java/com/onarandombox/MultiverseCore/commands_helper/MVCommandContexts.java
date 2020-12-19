@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -49,6 +50,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
         registerIssuerAwareContext(String.class, this::deriveString);
         registerIssuerAwareContext(Location.class, this::deriveLocation);
+        registerIssuerAwareContext(PasteServiceType.class, this::derivePasteServiceType);
     }
 
     @NotNull
@@ -395,7 +397,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         return destination;
     }
 
-    @NotNull
+    @Nullable
     private String deriveString(@NotNull BukkitCommandExecutionContext context) {
         if (context.hasAnnotation(Values.class)) {
             return context.popFirstArg();
@@ -461,6 +463,21 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
         catch (NumberFormatException e) {
             throw new InvalidCommandArgument("'" + value + "' for "+ posType + " coordinate is not a number.", false);
+        }
+    }
+
+    @NotNull
+    private PasteServiceType derivePasteServiceType(BukkitCommandExecutionContext context) {
+        String pasteType = context.popFirstArg();
+        if (pasteType == null) {
+            return PasteServiceType.NONE;
+        }
+
+        try {
+            return PasteServiceType.valueOf(pasteType.toUpperCase());
+        }
+        catch (IllegalArgumentException e) {
+            throw new InvalidCommandArgument("Invalid paste service type '" + pasteType + "'");
         }
     }
 }
