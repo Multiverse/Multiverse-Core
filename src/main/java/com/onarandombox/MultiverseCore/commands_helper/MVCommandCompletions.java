@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("MVConfigs", this::suggestMVConfig); //TODO: Change to static
         registerStaticCompletion("gameRules", suggestGameRules());
         registerStaticCompletion("environments", suggestEnvironments());
+        registerStaticCompletion("setProperties", suggestSetProperties());
         registerStaticCompletion("addProperties", suggestAddProperties());
         registerStaticCompletion("livingEntities", suggestEntities());
 
@@ -47,19 +49,19 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     @NotNull
-    private List<String> suggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
-        return worldManager.getMVWorlds().stream()
+    private Collection<String> suggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
+        return this.worldManager.getMVWorlds().stream()
                 .map(MultiverseWorld::getName)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private List<String> suggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
+    private Collection<String> suggestUnloadedWorlds(@NotNull BukkitCommandCompletionContext context) {
         return this.worldManager.getUnloadedWorlds();
     }
 
     @NotNull
-    private List<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
+    private Collection<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
         //TODO: Should be more efficient
         //TODO: this should be in WorldManager API
         List<String> knownWorlds = this.worldManager.getMVWorlds().stream()
@@ -90,7 +92,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     @NotNull
-    private List<String> suggestLocation(@NotNull BukkitCommandCompletionContext context) {
+    private Collection<String> suggestLocation(@NotNull BukkitCommandCompletionContext context) {
         Player player = context.getPlayer();
         if (player == null) {
             return Collections.singletonList("0");
@@ -126,33 +128,38 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     @NotNull
-    private Set<String> suggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
+    private Collection<String> suggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
         return this.plugin.getMVConfig().serialize().keySet();
     }
 
     @NotNull
-    private List<String> suggestGameRules() {
+    private Collection<String> suggestGameRules() {
         return Arrays.stream(GameRule.values())
                 .map(GameRule::getName)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private List<String> suggestEnvironments() {
+    private Collection<String> suggestEnvironments() {
         return Arrays.stream(World.Environment.values())
                 .map(e -> e.toString().toLowerCase())
                 .collect(Collectors.toList());
     }
 
+    private Collection<String> suggestSetProperties() {
+        //TODO: Will need api change to getAllPropertyValues as a List<String>.
+        return Collections.singletonList("null");
+    }
+
     @NotNull
-    private List<String> suggestAddProperties() {
+    private Collection<String> suggestAddProperties() {
         return Arrays.stream(AddProperties.values())
                 .map(p -> p.toString().toLowerCase())
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private List<String> suggestEntities() {
+    private Collection<String> suggestEntities() {
         return Arrays.stream(EntityType.values())
                 .filter(e -> e.isAlive() && e.isSpawnable())
                 .map(e -> e.toString().toLowerCase())

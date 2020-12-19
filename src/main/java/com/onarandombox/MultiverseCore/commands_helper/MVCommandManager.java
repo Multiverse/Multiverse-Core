@@ -25,6 +25,7 @@ import com.onarandombox.MultiverseCore.commands_acf.ImportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.InfoCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ListCommand;
 import com.onarandombox.MultiverseCore.commands_acf.LoadCommand;
+import com.onarandombox.MultiverseCore.commands_acf.ModifyCommand;
 import com.onarandombox.MultiverseCore.commands_acf.PurgeCommand;
 import com.onarandombox.MultiverseCore.commands_acf.RegenCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ReloadCommand;
@@ -36,7 +37,9 @@ import com.onarandombox.MultiverseCore.commands_acf.SpawnCommand;
 import com.onarandombox.MultiverseCore.commands_acf.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UsageCommand;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -94,6 +97,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new SilentCommand(plugin));
         registerCommand(new PurgeCommand(plugin));
         registerCommand(new SetSpawnCommand(plugin));
+        registerCommand(new ModifyCommand(plugin));
     }
 
     @Override
@@ -123,6 +127,7 @@ public class MVCommandManager extends PaperCommandManager {
         getCommandConditions().addCondition(String.class, "creatableWorldName", this::checkCreatableWorldName);
         getCommandConditions().addCondition(String.class, "importableWorldName", this::checkImportableWorldName);
         getCommandConditions().addCondition(String.class, "validWorldFolder", this::checkValidWorldFolder);
+        getCommandConditions().addCondition(String.class, "validAddProperty", this::checkValidAddProperty);
     }
 
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -211,5 +216,25 @@ public class MVCommandManager extends PaperCommandManager {
     private boolean folderHasDat(@NotNull File worldFolder) {
         File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase(".dat"));
         return files != null && files.length > 0;
+    }
+
+    private void checkValidAddProperty (@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                        @NotNull BukkitCommandExecutionContext executionContext,
+                                        @NotNull String property) {
+
+        String actionType = context.getConfig();
+        if (actionType.equalsIgnoreCase("set")) {
+            return;
+        }
+
+        try {
+            AddProperties.valueOf(property);
+        }
+        catch (IllegalArgumentException e) {
+            CommandSender sender = executionContext.getSender();
+            sender.sendMessage("Sorry, you can't use " + actionType + " with '" + property + "'");
+            sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/q1h01S");
+            throw new ConditionFailedException();
+        }
     }
 }
