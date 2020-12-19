@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.commands_acf;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
@@ -34,27 +35,33 @@ public class TeleportCommand extends MultiverseCommand {
         this.playerTeleporter = this.plugin.getSafeTTeleporter();
     }
 
-    @CommandAlias("mvtp")
-    @Syntax("[player] <destination>")
-    @CommandCompletion("@players|@MVWorlds @MVWorlds")
-    @Description("Alias for /mv tp")
-    public void doTeleportCommand(@NotNull CommandSender sender,
-                                  @NotNull @Flags("other,defaultself,fallbackself") Player player,
-                                  @NotNull @Single String destinationName) {
+    @CommandAlias("mv")
+    public class Teleport extends BaseCommand {
+        @Subcommand("tp|teleport")
+        @Syntax("[player] <destination>")
+        @CommandCompletion("@players|@MVWorlds @MVWorlds")
+        @Description("Allows you to the teleport to a location on your server!")
+        public void doSameTeleportCommand(@NotNull CommandSender sender,
+                                          @NotNull @Flags("other,defaultself,fallbackself") Player player,
+                                          @NotNull @Single String destinationName) {
 
-        doTeleport(sender, player, destinationName);
+            doTeleport(sender, player, destinationName);
+        }
     }
 
-    @CommandAlias("mv")
-    @Subcommand("tp|teleport")
-    @Syntax("[player] <destination>")
-    @CommandCompletion("@players|@MVWorlds @MVWorlds")
-    @Description("Allows you to the teleport to a location on your server!")
-    public void doSameTeleportCommand(@NotNull CommandSender sender,
+    public class AliasTeleport extends BaseCommand {
+
+        @CommandAlias("mvtp")
+        @Syntax("[player] <destination>")
+        //TODO: playerOnly flag
+        @CommandCompletion("@players|@MVWorlds @MVWorlds")
+        @Description("Alias for /mv tp")
+        public void doTeleportCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
                                       @NotNull @Single String destinationName) {
 
-        doTeleport(sender, player, destinationName);
+            doTeleport(sender, player, destinationName);
+        }
     }
 
     private void doTeleport(@NotNull CommandSender teleporter,

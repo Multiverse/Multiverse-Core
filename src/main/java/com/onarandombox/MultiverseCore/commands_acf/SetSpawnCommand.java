@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.commands_acf;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -24,29 +25,35 @@ public class SetSpawnCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    //TODO: For some reason this doesnt work with coord args.
-    @CommandAlias("mvsetspawn")
-    @CommandPermission("multiverse.core.spawn.set")
-    @Syntax("[world x y z [yaw pitch]]")
-    @CommandCompletion("@MVWorlds")
-    @Description("Sets the spawn for the current world.")
-    public void onAliasSetSpawnCommand(@NotNull CommandSender sender,
-                                       @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+    @CommandAlias("mv")
+    public class SetSpawn extends BaseCommand {
 
-        doSpawnSet(sender, location);
+        @Subcommand("setspawn")
+        @CommandPermission("multiverse.core.spawn.set")
+        @Syntax("[world x y z [yaw pitch]]")
+        //TODO: Location tab complete doesnt work.
+        @CommandCompletion("@MVWorlds")
+        @Description("Sets the spawn for the current world.")
+        public void onSetSpawnCommand(@NotNull CommandSender sender,
+                                      @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+
+            doSpawnSet(sender, location);
+        }
     }
 
-    @CommandAlias("mv")
-    @Subcommand("setspawn")
-    @CommandPermission("multiverse.core.spawn.set")
-    @Syntax("[world x y z [yaw pitch]]")
-    //TODO: Location tab complete doesnt work.
-    @CommandCompletion("@MVWorlds")
-    @Description("Sets the spawn for the current world.")
-    public void onSetSpawnCommand(@NotNull CommandSender sender,
-                                  @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
-        doSpawnSet(sender, location);
+    public class AliasSetSpawn extends BaseCommand {
+
+        @CommandAlias("mvsetspawn")
+        @CommandPermission("multiverse.core.spawn.set")
+        @Syntax("[world x y z [yaw pitch]]")
+        @CommandCompletion("@MVWorlds")
+        @Description("Sets the spawn for the current world.")
+        public void onAliasSetSpawnCommand(@NotNull CommandSender sender,
+                                           @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+
+            doSpawnSet(sender, location);
+        }
     }
 
     private void doSpawnSet(@NotNull CommandSender sender, @NotNull Location location) {
