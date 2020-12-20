@@ -10,6 +10,7 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commands_acf.BedCommand;
 import com.onarandombox.MultiverseCore.commands_acf.CheckCommand;
 import com.onarandombox.MultiverseCore.commands_acf.CloneCommand;
 import com.onarandombox.MultiverseCore.commands_acf.ConfigCommand;
@@ -100,6 +101,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new SetSpawnCommand(plugin));
         registerCommand(new ModifyCommand(plugin));
         registerCommand(new VersionCommand(plugin));
+        registerCommand(new BedCommand(plugin));
     }
 
     @Override
