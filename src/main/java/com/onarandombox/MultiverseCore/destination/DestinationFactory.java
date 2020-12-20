@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.destination;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
@@ -14,24 +15,27 @@ import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** A factory class that will create destinations from specific strings. */
 public class DestinationFactory {
-    private MultiverseCore plugin;
-    private Map<String, Class<? extends MVDestination>> destList;
-    private Command teleportCommand;
+    private final MultiverseCore plugin;
+    private final Map<String, Class<? extends MVDestination>> destList;
+    private final Set<String> destPermissions;
+    private final PermissionTools permTools;
 
     public DestinationFactory(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.destList = new HashMap<String, Class<? extends MVDestination>>();
-//        List<Command> cmds = this.plugin.getCommandHandler().getAllCommands();
-//        for (Command c : cmds) {
-//            if (c instanceof TeleportCommand) {
-//                this.teleportCommand = c;
-//            }
-//        }
+        this.destList = new HashMap<>();
+        this.destPermissions = new HashSet<>();
+        this.permTools = new PermissionTools(plugin);
     }
 
     /**
@@ -80,23 +84,32 @@ public class DestinationFactory {
         if (identifier.equals("")) {
             identifier = "w";
         }
-        Permission self = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.self." + identifier);
-        Permission other = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.other." + identifier);
-        PermissionTools pt = new PermissionTools(this.plugin);
-        if (self == null) {
-            self = new Permission("multiverse.teleport.self." + identifier,
-                    "Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
-            this.plugin.getServer().getPluginManager().addPermission(self);
-            pt.addToParentPerms("multiverse.teleport.self." + identifier);
-        }
-        if (other == null) {
-            other = new Permission("multiverse.teleport.other." + identifier,
-                    "Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
-            this.plugin.getServer().getPluginManager().addPermission(other);
-            pt.addToParentPerms("multiverse.teleport.other." + identifier);
-        }
-//        this.teleportCommand.addAdditonalPermission(self);
-//        this.teleportCommand.addAdditonalPermission(other);
+
+        addDestPerm("multiverse.teleport.self." + identifier,
+                "Permission to teleport yourself for the " + identifier + " destination.");
+        addDestPerm("multiverse.teleport.other." + identifier,
+                "Permission to teleport other for the " + identifier + " destination.");
+
         return true;
+    }
+
+    private void addDestPerm(String permNode, String description) {
+        if (this.plugin.getServer().getPluginManager().getPermission(permNode) != null) {
+            Logging.fine("Destination permission node " + permNode + " already added.");
+            return;
+        }
+
+        Permission perm = new Permission(permNode, description, PermissionDefault.OP);
+        this.plugin.getServer().getPluginManager().addPermission(perm);
+        permTools.addToParentPerms(permNode);
+        destPermissions.add(permNode);
+    }
+
+    public Collection<String> getIdentifiers() {
+        return destList.keySet();
+    }
+
+    public Set<String> getPermissions() {
+        return destPermissions;
     }
 }

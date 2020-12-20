@@ -245,11 +245,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
         this.ph = new MVPermissions(this);
 
-        // Setup commands
-        //TODO: Should init commands after config
-        this.commandManager = new MVCommandManager(this);
-
-        // Initialize the Destination factor AFTER the commands
+        // Initialize the Destination factory
         this.initializeDestinationFactory();
 
         this.playerSessions = new HashMap<String, MVPlayerSession>();
@@ -294,6 +290,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         this.initializeBuscript();
         this.setupMetrics();
+
+        // Setup commands
+        this.commandManager = new MVCommandManager(this);
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());

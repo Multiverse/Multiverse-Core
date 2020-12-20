@@ -1,8 +1,10 @@
 package com.onarandombox.MultiverseCore.commands_acf;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Single;
@@ -24,6 +26,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
 public class TeleportCommand extends MultiverseCommand {
 
     private final SafeTTeleporter playerTeleporter;
@@ -37,36 +41,53 @@ public class TeleportCommand extends MultiverseCommand {
 
     @CommandAlias("mv")
     public class Teleport extends BaseCommand {
-        @Subcommand("tp|teleport")
+
+        @Subcommand("teleport")
+        @CommandPermission("@destinations")
         @Syntax("[player] <destination>")
         @CommandCompletion("@players|@MVWorlds @MVWorlds")
         @Description("Allows you to the teleport to a location on your server!")
         public void doTeleportCommand(@NotNull CommandSender sender,
-                                          @NotNull @Flags("other,defaultself,fallbackself") Player player,
-                                          @NotNull @Single String destinationName) {
+                                      @NotNull @Flags("other,defaultself,fallbackself") Player player,
+                                      @Single String destinationName) {
 
             doTeleport(sender, player, destinationName);
+        }
+
+        @Override
+        public Set<String> getRequiredPermissions() {
+            return destPerms();
         }
     }
 
     public class AliasTeleport extends BaseCommand {
 
         @CommandAlias("mvtp")
+        @CommandPermission("@destinations")
         @Syntax("[player] <destination>")
         //TODO: playerOnly flag
         @CommandCompletion("@players|@MVWorlds @MVWorlds")
         @Description("Alias for /mv tp")
         public void doTeleportCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
-                                      @NotNull @Single String destinationName) {
+                                      @Single String destinationName) {
 
             doTeleport(sender, player, destinationName);
         }
+
+        @Override
+        public Set<String> getRequiredPermissions() {
+            return destPerms();
+        }
+    }
+
+    private Set<String> destPerms() {
+        return this.plugin.getDestFactory().getPermissions();
     }
 
     private void doTeleport(@NotNull CommandSender teleporter,
                             @NotNull Player teleportee,
-                            @NotNull String destinationName) {
+                            String destinationName) {
 
         destinationName = parseCannonDestination(teleportee, destinationName);
         MVDestination destination = this.plugin.getDestFactory().getDestination(destinationName);

@@ -5,9 +5,11 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commands_acf.BedCommand;
@@ -43,6 +45,7 @@ import com.onarandombox.MultiverseCore.enums.AddProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.util.Collections;
@@ -118,6 +121,39 @@ public class MVCommandManager extends PaperCommandManager {
             this.completions = new MVCommandCompletions(this, plugin);
         }
         return this.completions;
+    }
+
+    /**
+     * Change default implementation to OR instead of AND
+     */
+    @Override
+    public boolean hasPermission(CommandIssuer issuer, Set<String> permissions) {
+        if (permissions == null || permissions.isEmpty()) {
+            return true;
+        }
+
+        for (String permission : permissions) {
+            if (hasPermission(issuer, permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Change default implementation to OR instead of AND
+     */
+    @Override
+    public boolean hasPermission(CommandIssuer issuer, String permission) {
+        if (permission == null || permission.isEmpty()) {
+            return true;
+        }
+        for (String perm : permission.split(",")) {
+            if (!perm.isEmpty() && issuer.hasPermission(perm)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public CommandQueueManager getQueueManager() {
