@@ -43,9 +43,8 @@ public class TeleportCommand extends MultiverseCommand {
     public class Teleport extends BaseCommand {
 
         @Subcommand("teleport")
-        @CommandPermission("@destinations")
         @Syntax("[player] <destination>")
-        @CommandCompletion("@players|@MVWorlds @MVWorlds")
+        @CommandCompletion("@players|@MVWorlds|@destinations @MVWorlds|@destinations")
         @Description("Allows you to the teleport to a location on your server!")
         public void doTeleportCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
@@ -63,10 +62,9 @@ public class TeleportCommand extends MultiverseCommand {
     public class AliasTeleport extends BaseCommand {
 
         @CommandAlias("mvtp")
-        @CommandPermission("@destinations")
         @Syntax("[player] <destination>")
         //TODO: playerOnly flag
-        @CommandCompletion("@players|@MVWorlds @MVWorlds")
+        @CommandCompletion("@players|@MVWorlds|@destinations @MVWorlds|@destinations")
         @Description("Alias for /mv tp")
         public void doTeleportCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,

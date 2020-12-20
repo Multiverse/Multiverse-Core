@@ -23,7 +23,7 @@ public class CheckCommand extends MultiverseCommand {
     @Subcommand("check")
     @CommandPermission("multiverse.core.debug")
     @Syntax("[player] <destination>")
-    @CommandCompletion("@players")
+    @CommandCompletion("@players @destinations|@MVWorlds")
     @Description("Checks to see if a player can go to a destination. Prints debug if false.")
     public void onCheckCommand(@NotNull CommandSender sender,
                                @NotNull @Flags("other,defaultself,fallbackself") Player player,

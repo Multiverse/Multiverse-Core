@@ -36,15 +36,23 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("unloadedWorlds", this::suggestUnloadedWorlds);
         registerAsyncCompletion("potentialWorlds", this::suggestPotentialWorlds);
         registerAsyncCompletion("location", this::suggestLocation);
-        registerStaticCompletion("MVConfigs", suggestMVConfig());
-        registerStaticCompletion("gameRules", suggestGameRules());
-        registerStaticCompletion("environments", suggestEnvironments());
-        registerStaticCompletion("setProperties", suggestSetProperties());
-        registerStaticCompletion("addProperties", suggestAddProperties());
-        registerStaticCompletion("livingEntities", suggestEntities());
-        registerStaticCompletion("pasteTypes", suggestPasteTypes());
+        registerAsyncCompletion("destinations", this::suggestDestinations);
+        registerStaticCompletion("MVConfigs", this::suggestMVConfig);
+        registerStaticCompletion("gameRules", this::suggestGameRules);
+        registerStaticCompletion("environments", this::suggestEnvironments);
+        registerStaticCompletion("setProperties", this::suggestSetProperties);
+        registerStaticCompletion("addProperties", this::suggestAddProperties);
+        registerStaticCompletion("livingEntities", this::suggestEntities);
+        registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
 
         //TODO: Destinations
+    }
+
+    private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
+        //TODO: There is one empty dest need to remove.
+        return this.plugin.getDestFactory().getIdentifiers().stream()
+                .map(id -> id + ":")
+                .collect(Collectors.toList());
     }
 
     @NotNull
