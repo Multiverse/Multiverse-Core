@@ -48,9 +48,9 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(WorldFlags.class, this::deriveWorldFlags);
         registerIssuerAwareContext(GameRule.class, this::deriveGameRule);
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
-        registerIssuerAwareContext(String.class, this::deriveString);
         registerIssuerAwareContext(Location.class, this::deriveLocation);
         registerIssuerAwareContext(PasteServiceType.class, this::derivePasteServiceType);
+        registerOptionalContext(String.class, this::deriveString);
     }
 
     @NotNull
@@ -404,6 +404,14 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String string = context.popFirstArg();
+        if (string == null) {
+            if (!context.isOptional()) {
+                String argType = context.getFlagValue("type", "string");
+                throw new InvalidCommandArgument("You need to specify a " + argType + ".");
+            }
+            return null;
+        }
+
         if (context.hasFlag("trim")) {
             return trimWorldName(string);
         }

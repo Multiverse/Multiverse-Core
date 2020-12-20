@@ -1009,9 +1009,7 @@ public class WorldManager implements MVWorldManager {
     }
 
     private boolean folderHasDat(File worldFolder) {
-        Logging.info(worldFolder.getName());
         File[] files = worldFolder.listFiles((file, name) -> name.toLowerCase().endsWith(".dat"));
-        Logging.info(Arrays.toString(files));
         return files != null && files.length > 0;
     }
 

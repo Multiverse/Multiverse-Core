@@ -48,7 +48,7 @@ public class VersionCommand extends MultiverseCommand {
     @Description("Dumps version info to the console, optionally to pastal service.")
     public void onVersionCommand(@NotNull CommandSender sender,
                                  @NotNull PasteServiceType pasteType,
-                                 @Nullable @Optional @Single String includePlugin) {
+                                 @Nullable @Optional String includePlugin) {
 
         if (sender instanceof Player) {
             sender.sendMessage("Version info dumped to console! Please check your server logs.");

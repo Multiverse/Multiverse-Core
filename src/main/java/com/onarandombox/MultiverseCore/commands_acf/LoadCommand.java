@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -26,7 +27,7 @@ public class LoadCommand extends MultiverseCommand {
     @CommandCompletion("@unloadedWorlds")
     @Description("Loads a world into Multiverse.")
     public void onLoadCommand(@NotNull CommandSender sender,
-                              @NotNull @Single @Conditions("isUnloadedWorld") String worldName) {
+                              @NotNull @Flags("type=world name") @Conditions("isUnloadedWorld") String worldName) {
 
         if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
             sender.sendMessage("Error trying to load world '" + worldName + "'!");

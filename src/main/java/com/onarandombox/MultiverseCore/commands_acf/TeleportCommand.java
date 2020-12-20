@@ -42,13 +42,13 @@ public class TeleportCommand extends MultiverseCommand {
     @CommandAlias("mv")
     public class Teleport extends BaseCommand {
 
-        @Subcommand("teleport")
+        @Subcommand("tp|teleport")
         @Syntax("[player] <destination>")
         @CommandCompletion("@players|@MVWorlds|@destinations @MVWorlds|@destinations")
         @Description("Allows you to the teleport to a location on your server!")
         public void doTeleportCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
-                                      @Single String destinationName) {
+                                      @NotNull @Flags("type=destination") String destinationName) {
 
             doTeleport(sender, player, destinationName);
         }
@@ -68,7 +68,7 @@ public class TeleportCommand extends MultiverseCommand {
         @Description("Alias for /mv tp")
         public void doTeleportCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
-                                      @Single String destinationName) {
+                                      @NotNull @Flags("type=destination") String destinationName) {
 
             doTeleport(sender, player, destinationName);
         }
@@ -85,7 +85,7 @@ public class TeleportCommand extends MultiverseCommand {
 
     private void doTeleport(@NotNull CommandSender teleporter,
                             @NotNull Player teleportee,
-                            String destinationName) {
+                            @NotNull String destinationName) {
 
         destinationName = parseCannonDestination(teleportee, destinationName);
         MVDestination destination = this.plugin.getDestFactory().getDestination(destinationName);
@@ -150,7 +150,9 @@ public class TeleportCommand extends MultiverseCommand {
     }
 
     @NotNull
-    private String parseCannonDestination(@NotNull Player teleportee, String destinationName) {
+    private String parseCannonDestination(@NotNull Player teleportee,
+                                          @NotNull String destinationName) {
+
         if (!destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
             return destinationName;
         }
