@@ -18,7 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-
+//TODO: Location tab complete doesnt work.
 public class SetSpawnCommand extends MultiverseCommand {
 
     public SetSpawnCommand(MultiverseCore plugin) {
@@ -28,14 +28,39 @@ public class SetSpawnCommand extends MultiverseCommand {
     @CommandAlias("mv")
     public class SetSpawn extends BaseCommand {
 
-        @Subcommand("setspawn")
+        @Subcommand("setspawn|")
         @CommandPermission("multiverse.core.spawn.set")
         @Syntax("[world x y z [yaw pitch]]")
-        //TODO: Location tab complete doesnt work.
         @CommandCompletion("@MVWorlds")
         @Description("Sets the spawn for the current world.")
         public void onSetSpawnCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+
+            doSpawnSet(sender, location);
+        }
+
+        @Subcommand("modify set spawn")
+        @CommandPermission("multiverse.core.spawn.set")
+        @Syntax("[world x y z [yaw pitch]]")
+        @CommandCompletion("@MVWorlds")
+        @Description("Sets the spawn for the current world.")
+        public void onModifySetSpawnCommand(@NotNull CommandSender sender,
+                                      @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+
+            doSpawnSet(sender, location);
+        }
+    }
+
+    @CommandAlias("mvm")
+    public class AliasModifySetSpawn extends BaseCommand {
+
+        @Subcommand("set spawn")
+        @CommandPermission("multiverse.core.spawn.set")
+        @Syntax("[world x y z [yaw pitch]]")
+        @CommandCompletion("@MVWorlds")
+        @Description("Sets the spawn for the current world.")
+        public void onModifySetSpawnCommand(@NotNull CommandSender sender,
+                                            @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);
         }
