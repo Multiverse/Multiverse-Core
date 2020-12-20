@@ -137,7 +137,7 @@ public class MVCommandContexts extends PaperCommandContexts {
     private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
         boolean mustBeSelf = context.hasFlag("onlyself");
         String error = (mustBeSelf)
-                ? "You cannot run this command from console."
+                ? "You must be a player to run this command."
                 : "You need to specify a player from console.";
 
         if (mustBeSelf || !context.hasFlag("other")) {

@@ -29,7 +29,6 @@ public class CreateCommand extends MultiverseCommand {
     @CommandCompletion(" @environments")
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
-                                //TODO: Cleanup/fix conditions here
                                 @NotNull @Flags("trim") @Conditions("creatableWorldName") String worldName,
                                 @NotNull World.Environment environment,
                                 @NotNull WorldFlags flags) {

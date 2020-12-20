@@ -35,7 +35,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
         registerAsyncCompletion("unloadedWorlds", this::suggestUnloadedWorlds);
         registerAsyncCompletion("potentialWorlds", this::suggestPotentialWorlds);
-        registerCompletion("location", this::suggestLocation);
+        registerAsyncCompletion("location", this::suggestLocation);
         registerAsyncCompletion("MVConfigs", this::suggestMVConfig); //TODO: Change to static
         registerStaticCompletion("gameRules", suggestGameRules());
         registerStaticCompletion("environments", suggestEnvironments());

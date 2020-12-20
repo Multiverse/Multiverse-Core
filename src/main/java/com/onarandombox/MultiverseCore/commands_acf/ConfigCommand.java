@@ -25,7 +25,7 @@ public class ConfigCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("show")
+    @Subcommand("list")
     @Description("Show multiverse config values.")
     public void onShowCommand(@NotNull CommandSender sender) {
         List<String> configList = new ArrayList<>();

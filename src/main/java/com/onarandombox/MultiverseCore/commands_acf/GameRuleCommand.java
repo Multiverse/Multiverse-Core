@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
+@Subcommand("gamerule")
 public class GameRuleCommand extends MultiverseCommand {
 
     public GameRuleCommand(MultiverseCore plugin) {
@@ -23,7 +24,7 @@ public class GameRuleCommand extends MultiverseCommand {
     }
 
     //TODO: Should it be `gamerule list` instead?
-    @Subcommand("gamerules")
+    @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
     @Syntax("[world]")
     @CommandCompletion("@MVWorlds")
@@ -51,7 +52,7 @@ public class GameRuleCommand extends MultiverseCommand {
     }
 
     //TODO: Should it be `gamerule set` instead?
-    @Subcommand("gamerule")
+    @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @Syntax("<rule> <value> [world]")
     @CommandCompletion("@gameRules")

@@ -41,7 +41,6 @@ public class SetSpawnCommand extends MultiverseCommand {
         }
     }
 
-
     public class AliasSetSpawn extends BaseCommand {
 
         @CommandAlias("mvsetspawn")

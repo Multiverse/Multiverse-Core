@@ -27,7 +27,7 @@ public class PurgeCommand extends MultiverseCommand {
     }
 
     @Subcommand("purgeall")
-    @CommandPermission("multiverse.core.purge")
+    @CommandPermission("multiverse.core.purge.all")
     @Syntax("<all|animals|monsters|mobname>")
     @CommandCompletion("all|animals|monsters|@livingEntities")
     @Description("Removed the specified type of mob from all worlds.")

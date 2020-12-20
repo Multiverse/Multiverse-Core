@@ -23,14 +23,14 @@ public class CoordCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("coord")
+    @Subcommand("coord|coordinate")
     @CommandPermission("multiverse.core.coord.self")
     @Description("Detailed information on the your where abouts.")
     public void onOtherCoordCommand(@NotNull Player player) {
         showCoordInfo(player, player);
     }
 
-    @Subcommand("coord")
+    @Subcommand("coord|coordinate")
     @CommandPermission("multiverse.core.coord.other")
     @Syntax("[player]")
     @CommandCompletion("@players")
@@ -44,7 +44,7 @@ public class CoordCommand extends MultiverseCommand {
     private void showCoordInfo(@NotNull CommandSender sender,
                                @NotNull Player player) {
 
-        //TODO: Should somehow clean this up
+        //TODO: Possible to move to CommandContext or something?
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(player.getWorld());
         if (world == null) {
             this.plugin.showNotMVWorldMessage(sender, player.getWorld().getName());
