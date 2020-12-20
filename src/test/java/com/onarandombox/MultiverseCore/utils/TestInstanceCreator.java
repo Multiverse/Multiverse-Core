@@ -20,6 +20,8 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.help.HelpMap;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -48,7 +50,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -72,13 +73,17 @@ public class TestInstanceCreator {
             MockGateway.MOCK_STANDARD_METHODS = false;
 
             // Initialize the Mock server.
-            mockServer = mock(Server.class);
+            mockServer = PowerMockito.mock(DummyCraftServer.class);
             JavaPluginLoader mockPluginLoader = PowerMock.createMock(JavaPluginLoader.class);
             Whitebox.setInternalState(mockPluginLoader, "server", mockServer);
             when(mockServer.getName()).thenReturn("TestBukkit");
+            when(mockServer.getVersion()).thenReturn("TestBukkit V1");
             Logger.getLogger("Minecraft").setParent(Util.logger);
             when(mockServer.getLogger()).thenReturn(Util.logger);
             when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
+
+            // Add an internal command map (needed for ACF)
+            PowerMockito.when(mockServer, "getCommandMap").thenReturn(new SimpleCommandMap(mockServer));
 
             // Return a fake PDF file.
             PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
@@ -207,6 +212,10 @@ public class TestInstanceCreator {
                     return null;
                 }});
             when(mockServer.getScheduler()).thenReturn(mockScheduler);
+
+            // add dummy help map
+            HelpMap helpMap = mock(HelpMap.class);
+            when(mockServer.getHelpMap()).thenReturn(helpMap);
 
             // Set server
             Field serverfield = JavaPlugin.class.getDeclaredField("server");
