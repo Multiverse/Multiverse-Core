@@ -78,24 +78,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles())
                 .filter(File::isDirectory)
                 .filter(file -> !knownWorlds.contains(file.getName()))
-                .filter(this::validateWorldFolder)
                 .map(File::getName)
+                .filter(this.worldManager::isValidWorld)
                 .collect(Collectors.toList());
-    }
-
-    private boolean validateWorldFolder(@NotNull File worldFolder) {
-        if (!worldFolder.isDirectory()) {
-            return false;
-        }
-        if (MVCommandManager.BLACKLIST_WORLD_FOLDER.contains(worldFolder.getName())) {
-            return false;
-        }
-        return folderHasDat(worldFolder);
-    }
-
-    private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase(".dat"));
-        return files != null && files.length > 0;
     }
 
     @NotNull

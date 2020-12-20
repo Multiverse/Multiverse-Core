@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.enums;
 
+//TODO: Not needed anymore
 /**
  * A enum containing all actions that can be used to modify world-properties.
  */

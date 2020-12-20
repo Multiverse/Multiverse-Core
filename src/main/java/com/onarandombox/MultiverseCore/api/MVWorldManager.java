@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
 import org.bukkit.World;
@@ -314,4 +315,20 @@ public interface MVWorldManager {
      * does not exist. {@code includeLoaded} if the world exists and is loaded.
      */
     boolean hasUnloadedWorld(String name, boolean includeLoaded);
+
+    /**
+     * Check if a world name is a possible importable world folder.
+     *
+     * @param worldName Name of the world you want to check.
+     * @return True if world is valid, false otherwise.
+     */
+    boolean isValidWorld(String worldName);
+
+    /**
+     * Check if a world name is a possible importable world folder.
+     *
+     * @param worldName Name of the world you want to check.
+     * @return WorldValidationResult.VALID if world is valid, else the reason why its not valid.
+     */
+    WorldValidationResult validateWorld(String worldName);
 }

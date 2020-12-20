@@ -16,6 +16,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,13 +32,16 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -46,8 +50,6 @@ import java.util.Stack;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -55,13 +57,20 @@ import java.util.regex.Pattern;
  */
 public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
-    private final Pattern worldNamePattern = Pattern.compile("[a-zA-Z0-9/._-]+");
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
     private Map<String, WorldProperties> worldsFromTheConfig;
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
     private String firstSpawn;
+
+    private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
+    private static final Set<String> BLACKLIST_WORLD_FOLDER = Collections.unmodifiableSet(new HashSet<String>() {{
+        add("plugins");
+        add("cache");
+        add("logs");
+        add("crash-reports");
+    }});
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
@@ -422,21 +431,6 @@ public class WorldManager implements MVWorldManager {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Check if the world name is allowed
-     *
-     * @param name   Name of the world
-     * @return True if the world world name is valid based on regex
-     */
-    private boolean isValidWorldName(String name) {
-        if (!worldNamePattern.matcher(name).matches()) {
-            Logging.warning("Invalid world name '" + name + "'");
-            Logging.warning("World name should not contain spaces or special characters!");
-            return false;
-        }
-        return true;
     }
 
     private void brokenWorld(String name) {
@@ -953,4 +947,84 @@ public class WorldManager implements MVWorldManager {
 		}
 		return false;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValidWorld(String worldName) {
+        final WorldValidationResult validationResult = validateWorld(worldName);
+        if (validationResult != WorldValidationResult.VALID) {
+            Logging.fine("Invalid world, reason: %s", validationResult);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public WorldValidationResult validateWorld(String worldName) {
+        WorldValidationResult worldNameResult = validateWorldName(worldName);
+        if (worldNameResult != WorldValidationResult.VALID) {
+            return worldNameResult;
+        }
+
+        return validateWorldFolder(worldName);
+    }
+
+    /**
+     * Check if the world folder is a allowed/possible world.
+     *
+     * @param worldName Name of the world
+     * @return {@link WorldValidationResult} VALID if the world folder is valid.
+     */
+    @NotNull
+    private WorldValidationResult validateWorldFolder(String worldName) {
+        File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
+        if (!worldFolder.exists()) {
+            return WorldValidationResult.DOES_NOT_EXIST;
+        }
+        if (!worldFolder.isDirectory()) {
+            return WorldValidationResult.NOT_A_DIRECTORY;
+        }
+        if (!folderHasDat(worldFolder)) {
+            return WorldValidationResult.FOLDER_LACK_DAT;
+        }
+        return WorldValidationResult.VALID;
+    }
+
+    /**
+     * Check if the world name is allowed.
+     *
+     * @param worldName Name of the world
+     * @return {@link WorldValidationResult} VALID if the world name is valid.
+     */
+    @NotNull
+    private WorldValidationResult validateWorldName(String worldName) {
+        if (BLACKLIST_WORLD_FOLDER.contains(worldName)) {
+            return WorldValidationResult.NAME_BLACKLISTED;
+        }
+        if (worldName.contains(".dat")) {
+            return WorldValidationResult.NAME_CONTAINS_DAT;
+        }
+        if (!WORLD_NAME_PATTERN.matcher(worldName).matches()) {
+            return WorldValidationResult.NAME_INVALID;
+        }
+        return WorldValidationResult.VALID;
+    }
+
+    private boolean folderHasDat(@NotNull File worldFolder) {
+        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase(".dat"));
+        return files != null && files.length > 0;
+    }
+
+    /**
+     * Check if the world name is allowed.
+     *
+     * @param worldName Name of the world
+     * @return True if the world name is valid.
+     */
+    private boolean isValidWorldName(String worldName) {
+        return validateWorldName(worldName) == WorldValidationResult.VALID;
+    }
 }
