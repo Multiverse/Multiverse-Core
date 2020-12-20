@@ -204,6 +204,11 @@ public class MVCommandManager extends PaperCommandManager {
                                        @NotNull BukkitCommandExecutionContext executionContext,
                                        @NotNull String worldName) {
 
+        if(worldName.contains(".dat")){
+            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot have a world name that contains '.dat'");
+            throw new ConditionFailedException();
+        }
+
         File worldFolder = new File(this.plugin.getServer().getWorldContainer(), worldName);
         if (!worldFolder.isDirectory()) {
             //TODO: Possibly show potential worlds. Use flags.
