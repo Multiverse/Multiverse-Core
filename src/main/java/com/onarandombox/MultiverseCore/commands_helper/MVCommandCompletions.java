@@ -44,8 +44,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("addProperties", this::suggestAddProperties);
         registerStaticCompletion("livingEntities", this::suggestEntities);
         registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
-
-        //TODO: Destinations
     }
 
     private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {

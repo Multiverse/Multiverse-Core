@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -952,12 +952,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     public boolean isValidWorld(String worldName) {
-        final WorldValidationResult validationResult = validateWorld(worldName);
-        if (validationResult != WorldValidationResult.VALID) {
-            Logging.fine("Invalid world, reason: %s", validationResult);
-            return false;
-        }
-        return true;
+        return validateWorld(worldName) == WorldValidationResult.VALID;
     }
 
     /**
@@ -970,6 +965,26 @@ public class WorldManager implements MVWorldManager {
         }
 
         return validateWorldFolder(worldName);
+    }
+
+    /**
+     * Check if the world name is allowed.
+     *
+     * @param worldName Name of the world
+     * @return {@link WorldValidationResult} VALID if the world name is valid.
+     */
+    @NotNull
+    private WorldValidationResult validateWorldName(String worldName) {
+        if (BLACKLIST_WORLD_FOLDER.contains(worldName)) {
+            return WorldValidationResult.NAME_BLACKLISTED;
+        }
+        if (worldName.contains(".dat")) {
+            return WorldValidationResult.NAME_CONTAINS_DAT;
+        }
+        if (!WORLD_NAME_PATTERN.matcher(worldName).matches()) {
+            return WorldValidationResult.NAME_INVALID;
+        }
+        return WorldValidationResult.VALID;
     }
 
     /**
@@ -993,28 +1008,10 @@ public class WorldManager implements MVWorldManager {
         return WorldValidationResult.VALID;
     }
 
-    /**
-     * Check if the world name is allowed.
-     *
-     * @param worldName Name of the world
-     * @return {@link WorldValidationResult} VALID if the world name is valid.
-     */
-    @NotNull
-    private WorldValidationResult validateWorldName(String worldName) {
-        if (BLACKLIST_WORLD_FOLDER.contains(worldName)) {
-            return WorldValidationResult.NAME_BLACKLISTED;
-        }
-        if (worldName.contains(".dat")) {
-            return WorldValidationResult.NAME_CONTAINS_DAT;
-        }
-        if (!WORLD_NAME_PATTERN.matcher(worldName).matches()) {
-            return WorldValidationResult.NAME_INVALID;
-        }
-        return WorldValidationResult.VALID;
-    }
-
-    private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.equalsIgnoreCase(".dat"));
+    private boolean folderHasDat(File worldFolder) {
+        Logging.info(worldFolder.getName());
+        File[] files = worldFolder.listFiles((file, name) -> name.toLowerCase().endsWith(".dat"));
+        Logging.info(Arrays.toString(files));
         return files != null && files.length > 0;
     }
 
