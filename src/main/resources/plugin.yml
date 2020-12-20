@@ -15,6 +15,9 @@ commands:
   mvsetspawn:
     description: Set the spawn area for a particular world
     usage: /<command>
+  mvspawn:
+    description: Go to spawn of a particular world.
+    usage: /<command> [player]
   mvm:
     description: Modify properties for a particular world
     usage: /<command> <set|add|remove|clear> <property> [value] [world]
