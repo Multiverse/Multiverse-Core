@@ -18,7 +18,6 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands_helper.CommandQueueManager;
 import com.onarandombox.MultiverseCore.commands_helper.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
@@ -166,7 +165,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup our Map for our Commands using the CommandHandler.
     private MVCommandManager commandManager;
-    private CommandQueueManager commandQueueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
 
@@ -250,7 +248,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup commands
         //TODO: Should init commands after config
         this.commandManager = new MVCommandManager(this);
-        this.commandQueueManager = new CommandQueueManager(this);
 
         // Initialize the Destination factor AFTER the commands
         this.initializeDestinationFactory();
@@ -872,18 +869,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * This is a convenience method to allow the QueuedCommand system to call it. You should NEVER call this directly.
-     *
-     * @param teleporter The Person requesting that the teleport should happen.
-     * @param p          Player The Person being teleported.
-     * @param l          The potentially unsafe location.
-     */
-    public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
-        // This command is the override, and MUST NOT TELEPORT SAFELY
-        this.getSafeTTeleporter().safelyTeleport(teleporter, p, l, false);
-    }
-
-    /**
      * Gets the server's root-folder as {@link File}.
      *
      * @return The server's root-folder
@@ -979,40 +964,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public boolean saveMVConfigs() {
         return this.saveMVConfig() && this.saveWorldConfig();
-    }
-
-    /**
-     * NOT deprecated for the time as queued commands use this.
-     * However, this is not in the API and other plugins should therefore not use it.
-     *
-     * @param name World to delete
-     * @return True if success, false if fail.
-     */
-    public Boolean deleteWorld(String name) {
-        return this.worldManager.deleteWorld(name);
-    }
-
-    /**
-     * NOT deprecated for the time as queued commands use this.
-     * However, this is not in the API and other plugins should therefore not use it.
-     *
-     * @param oldName   World to copy
-     * @param newName   World to create
-     * @param generator The Custom generator plugin to use.
-     * @return True if success, false if fail.
-     */
-    public Boolean cloneWorld(String oldName, String newName, String generator) {
-        return this.worldManager.cloneWorld(oldName, newName, generator);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated This is deprecated!
-     */
-    @Override
-    @Deprecated
-    public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
-        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed);
     }
 
     /**
