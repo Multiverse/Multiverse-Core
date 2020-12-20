@@ -36,7 +36,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("unloadedWorlds", this::suggestUnloadedWorlds);
         registerAsyncCompletion("potentialWorlds", this::suggestPotentialWorlds);
         registerAsyncCompletion("location", this::suggestLocation);
-        registerAsyncCompletion("MVConfigs", this::suggestMVConfig); //TODO: Change to static
+        registerStaticCompletion("MVConfigs", suggestMVConfig());
         registerStaticCompletion("gameRules", suggestGameRules());
         registerStaticCompletion("environments", suggestEnvironments());
         registerStaticCompletion("setProperties", suggestSetProperties());
@@ -127,7 +127,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     @NotNull
-    private Collection<String> suggestMVConfig(@NotNull BukkitCommandCompletionContext context) {
+    private Collection<String> suggestMVConfig() {
         return this.plugin.getMVConfig().serialize().keySet();
     }
 
