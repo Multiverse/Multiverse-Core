@@ -43,8 +43,8 @@ public class VersionCommand extends MultiverseCommand {
     //TODO: Think, Is there a point in keeping the old flags?
     @Subcommand("version")
     @CommandPermission("multiverse.core.version")
-    @Syntax("[pastebin|hastebin|pastegg] [--include-plugin-list|-pl]")
-    @CommandCompletion("@pasteTypes --include-plugin-list|-pl")
+    @Syntax("[pastebin|hastebin|pastegg] [--include-plugin-list]")
+    @CommandCompletion("@pasteTypes --include-plugin-list")
     @Description("Dumps version info to the console, optionally to pastal service.")
     public void onVersionCommand(@NotNull CommandSender sender,
                                  @NotNull PasteServiceType pasteType,
@@ -149,27 +149,27 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core] Economy being used: " + plugin.getEconomist().getEconomyName() + '\n'
                 + "[Multiverse-Core] Permissions Plugin: " + this.plugin.getMVPerms().getType() + '\n'
                 + "[Multiverse-Core] Dumping Config Values: (version " + this.plugin.getMVConfig().getVersion() + ")" + '\n'
-                + "[Multiverse-Core]   enforceaccess: " + plugin.getMVConfig().getEnforceAccess() + '\n'
-                + "[Multiverse-Core]   prefixchat: " + plugin.getMVConfig().getPrefixChat() + '\n'
-                + "[Multiverse-Core]   prefixchatformat: " + plugin.getMVConfig().getPrefixChatFormat() + '\n'
-                + "[Multiverse-Core]   useasyncchat: " + plugin.getMVConfig().getUseAsyncChat() + '\n'
-                + "[Multiverse-Core]   teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + '\n'
-                + "[Multiverse-Core]   firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + '\n'
-                + "[Multiverse-Core]   displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + '\n'
-                + "[Multiverse-Core]   globaldebug: " + plugin.getMVConfig().getGlobalDebug() + '\n'
-                + "[Multiverse-Core]   silentstart: " + plugin.getMVConfig().getSilentStart() + '\n'
-                + "[Multiverse-Core]   messagecooldown: " + plugin.getMessaging().getCooldown() + '\n'
-                + "[Multiverse-Core]   version: " + plugin.getMVConfig().getVersion() + '\n'
-                + "[Multiverse-Core]   firstspawnworld: " + plugin.getMVConfig().getFirstSpawnWorld() + '\n'
-                + "[Multiverse-Core]   teleportcooldown: " + plugin.getMVConfig().getTeleportCooldown() + '\n'
-                + "[Multiverse-Core]   defaultportalsearch: " + plugin.getMVConfig().isUsingDefaultPortalSearch() + '\n'
-                + "[Multiverse-Core]   portalsearchradius: " + plugin.getMVConfig().getPortalSearchRadius() + '\n'
-                + "[Multiverse-Core]   autopurge: " + plugin.getMVConfig().isAutoPurgeEnabled() + '\n'
+                + "[Multiverse-Core]   enforceaccess: " + this.plugin.getMVConfig().getEnforceAccess() + '\n'
+                + "[Multiverse-Core]   prefixchat: " + this.plugin.getMVConfig().getPrefixChat() + '\n'
+                + "[Multiverse-Core]   prefixchatformat: " + this.plugin.getMVConfig().getPrefixChatFormat() + '\n'
+                + "[Multiverse-Core]   useasyncchat: " + this.plugin.getMVConfig().getUseAsyncChat() + '\n'
+                + "[Multiverse-Core]   teleportintercept: " + this.plugin.getMVConfig().getTeleportIntercept() + '\n'
+                + "[Multiverse-Core]   firstspawnoverride: " + this.plugin.getMVConfig().getFirstSpawnOverride() + '\n'
+                + "[Multiverse-Core]   displaypermerrors: " + this.plugin.getMVConfig().getDisplayPermErrors() + '\n'
+                + "[Multiverse-Core]   globaldebug: " + this.plugin.getMVConfig().getGlobalDebug() + '\n'
+                + "[Multiverse-Core]   silentstart: " + this.plugin.getMVConfig().getSilentStart() + '\n'
+                + "[Multiverse-Core]   messagecooldown: " + this.plugin.getMessaging().getCooldown() + '\n'
+                + "[Multiverse-Core]   version: " + this.plugin.getMVConfig().getVersion() + '\n'
+                + "[Multiverse-Core]   firstspawnworld: " + this.plugin.getMVConfig().getFirstSpawnWorld() + '\n'
+                + "[Multiverse-Core]   teleportcooldown: " + this.plugin.getMVConfig().getTeleportCooldown() + '\n'
+                + "[Multiverse-Core]   defaultportalsearch: " +this. plugin.getMVConfig().isUsingDefaultPortalSearch() + '\n'
+                + "[Multiverse-Core]   portalsearchradius: " + this.plugin.getMVConfig().getPortalSearchRadius() + '\n'
+                + "[Multiverse-Core]   autopurge: " +this. plugin.getMVConfig().isAutoPurgeEnabled() + '\n'
                 //TODO: Still dont know what this special code means.
                 + "[Multiverse-Core] Special Code: FRN002" + '\n';
     }
 
     private String getPluginList() {
-        return StringUtils.join(plugin.getServer().getPluginManager().getPlugins(), ", ");
+        return StringUtils.join(this.plugin.getServer().getPluginManager().getPlugins(), ", ");
     }
 }
