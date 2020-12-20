@@ -59,7 +59,7 @@ public class DebugCommand extends MultiverseCommand {
 
         try {
             int parsedLevel = Integer.parseInt(debugLevel);
-            return (parsedLevel > 3 || parsedLevel < 0) ? parsedLevel : -1;
+            return (parsedLevel > 3 || parsedLevel < 0) ? -1 : parsedLevel;
         }
         catch (NumberFormatException ignored) {
             return -1;
