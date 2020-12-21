@@ -40,6 +40,8 @@ public class ImportCommand extends MultiverseCommand {
                                 @NotNull World.Environment environment,
                                 @NotNull WorldFlags flags) {
 
+        Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
+
         String resultMessage = (this.plugin.getMVWorldManager().addWorld(worldName,
                 environment,
                 null,
@@ -48,7 +50,7 @@ public class ImportCommand extends MultiverseCommand {
                 flags.getGenerator(),
                 flags.isSpawnAdjust())
         )
-                ? ChatColor.GREEN + "Import complete!"
+                ? ChatColor.GREEN + "Complete!"
                 : ChatColor.RED + "Failed! See console for more details.";
 
         Command.broadcastCommandMessage(sender, resultMessage);

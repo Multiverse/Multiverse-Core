@@ -31,7 +31,7 @@ public class CreateCommand extends MultiverseCommand {
     }
 
     @Subcommand("create")
-    @CommandPermission("multiverse.core.info")
+    @CommandPermission("multiverse.core.create")
     @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
     @CommandCompletion(" @environments")
     @Description("Creates a new world and loads it.")
@@ -53,6 +53,6 @@ public class CreateCommand extends MultiverseCommand {
                 flags.isSpawnAdjust())
         )
                 ? ChatColor.GREEN + "Complete!"
-                : ChatColor.RED + "Failed to create world! See console for errors.");
+                : ChatColor.RED + "Failed! See console for errors.");
     }
 }
