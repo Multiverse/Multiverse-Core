@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -129,7 +130,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     @NotNull
     private Collection<String> suggestMVConfig() {
-        return this.plugin.getMVConfig().serialize().keySet();
+        final Set<String> configOptions = this.plugin.getMVConfig().serialize().keySet();
+        configOptions.remove("version");
+        return configOptions;
     }
 
     @NotNull

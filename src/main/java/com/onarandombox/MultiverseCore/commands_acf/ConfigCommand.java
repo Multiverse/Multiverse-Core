@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -47,7 +48,7 @@ public class ConfigCommand extends MultiverseCommand {
     @CommandCompletion("@MVConfigs")
     @Description("Set Global MV Variables.")
     public void onSetCommand(@NotNull CommandSender sender,
-                             @NotNull String property,
+                             @NotNull @Values("@MVConfigs") String property,
                              @NotNull @Single String value) {
 
         property = property.toLowerCase();
