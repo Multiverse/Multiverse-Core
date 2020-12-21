@@ -85,18 +85,22 @@ public class InfoCommand extends MultiverseCommand {
 
         // Page 2
         contents.add(parseHeader("More World Settings"));
+        contents.add(String.format("World UID: %s%s", ChatColor.WHITE, world.getCBWorld().getUID()));
         contents.add(String.format("World Type: %s%s", ChatColor.WHITE, world.getWorldType().toString()));
+        contents.add(String.format("Generator: %s%s", ChatColor.WHITE, world.getGenerator()));
         contents.add(String.format("Structures: %s%s", ChatColor.WHITE, world.getCBWorld().canGenerateStructures()));
         contents.add(String.format("Weather: %s%s", ChatColor.WHITE, world.isWeatherEnabled()));
         contents.add(String.format("Players will get hungry: %s%s", ChatColor.WHITE, world.getHunger()));
         contents.add(String.format("Keep spawn in memory: %s%s", ChatColor.WHITE, world.isKeepingSpawnInMemory()));
-        contents.add(" ");
+        contents.add("%lf%");
+
+        // Page 3
         contents.add(parseHeader("PVP Settings"));
         contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.isPVPEnabled()));
         contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getPVP()));
         contents.add("%lf%");
 
-        // Page 3
+        // Page 4
         contents.add(parseHeader("Monster Settings"));
         contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canMonstersSpawn()));
         contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowMonsters()));
@@ -109,7 +113,7 @@ public class InfoCommand extends MultiverseCommand {
         }
         contents.add("%lf%");
 
-        // Page 4
+        // Page 5
         contents.add(parseHeader("Animal Settings"));
         contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canAnimalsSpawn()));
         contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowAnimals()));

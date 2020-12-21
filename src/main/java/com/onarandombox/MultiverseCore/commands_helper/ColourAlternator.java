@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.commands_helper;
 
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 
 public class ColourAlternator {
