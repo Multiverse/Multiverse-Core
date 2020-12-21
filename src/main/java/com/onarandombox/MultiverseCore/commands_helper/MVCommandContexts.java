@@ -8,6 +8,8 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commands_acf.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commands_acf.GeneratorCommand;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.Bukkit;
@@ -255,10 +257,9 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
         catch (IllegalArgumentException e) {
             CommandSender sender = context.getSender();
-            sender.sendMessage("'" + env + "' is not a valid environment.");
-            sender.sendMessage("For a list of available world types, see " + ChatColor.AQUA + "/mv env");
-            //TODO: Possibly show valid environments.
-            throw new InvalidCommandArgument();
+            sender.sendMessage(ChatColor.RED + "'" + env + "' is not a valid environment.");
+            EnvironmentCommand.showEnvironments(sender);
+            throw new InvalidCommandArgument(false);
         }
     }
 
@@ -268,15 +269,17 @@ public class MVCommandContexts extends PaperCommandContexts {
         return new WorldFlags(
                 flags.keySet(),
                 flags.get("-s"),
-                validateGenerator(flags.get("-g")),
-                getWorldType(flags.get("-t")),
+                validateGenerator(flags.get("-g"), context.getSender()),
+                getWorldType(flags.get("-t"), context.getSender()),
                 !flags.containsKey("-n"),
                 doGenerateStructures(flags.get("-a"))
         );
     }
 
     @Nullable
-    private String validateGenerator(@Nullable String value) {
+    private String validateGenerator(@Nullable String value,
+                                     @NotNull CommandSender sender) {
+
         if (value == null) {
             return null;
         }
@@ -287,14 +290,17 @@ public class MVCommandContexts extends PaperCommandContexts {
             genArray.add("");
         }
         if (this.worldManager.getChunkGenerator(genArray.get(0), genArray.get(1), "test") == null) {
-            throw new InvalidCommandArgument("Invalid generator '" + value + "'. See /mv gens for available generators");
+            sender.sendMessage(ChatColor.RED + "Invalid generator '" + value + "'.");
+            GeneratorCommand.showAvailableGenerator(sender);
+            throw new InvalidCommandArgument(false);
         }
 
         return value;
     }
 
     @NotNull
-    private WorldType getWorldType(@Nullable String type) {
+    private WorldType getWorldType(@Nullable String type,
+                                   @NotNull CommandSender sender) {
         if (type == null || type.length() == 0) {
             return WorldType.NORMAL;
         }
@@ -314,8 +320,11 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         try {
             return WorldType.valueOf(type);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidCommandArgument("'" + type + "' is not a valid World Type.");
+        }
+        catch (IllegalArgumentException e) {
+            sender.sendMessage(ChatColor.RED + "'" + type + "' is not a valid World Type.");
+            EnvironmentCommand.showWorldTypes(sender);
+            throw new InvalidCommandArgument(false);
         }
     }
 

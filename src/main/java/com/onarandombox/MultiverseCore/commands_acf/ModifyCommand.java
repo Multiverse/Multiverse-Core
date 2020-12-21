@@ -24,11 +24,6 @@ public class ModifyCommand extends MultiverseCommand {
         super(plugin);
     }
 
-
-    //TODO: AddProperties Validation
-
-    // LINK: https://tinyurl.com/nehhzp6
-
     @CommandAlias("mv")
     @Subcommand("modify")
     public class Modify extends BaseCommand {
@@ -113,7 +108,6 @@ public class ModifyCommand extends MultiverseCommand {
             doModifySet(sender, property, value, world);
         }
 
-        //TODO: Think why previously it was {VALUE} {PROPERTY}
         @Subcommand("add")
         @CommandPermission("multiverse.core.modify.add")
         @Syntax("<property> <value> [world]")
@@ -245,7 +239,6 @@ public class ModifyCommand extends MultiverseCommand {
                               @NotNull MultiverseWorld world) {
 
         //TODO: Think, all worlds should have the same properties?
-        //TODO
         sender.sendMessage("===[ Properties Values ]===");
         sender.sendMessage(world.getAllPropertyNames());
     }

@@ -20,6 +20,7 @@ public class EnvironmentCommand extends MultiverseCommand {
     @Description("Lists valid known environments/world types.")
     public void onEnvironmentCommand(CommandSender sender) {
         showEnvironments(sender);
+        sender.sendMessage(" ");
         showWorldTypes(sender);
     }
 
@@ -28,20 +29,20 @@ public class EnvironmentCommand extends MultiverseCommand {
      *
      * @param sender The {@link CommandSender}.
      */
-    private void showEnvironments(CommandSender sender) {
+    public static void showEnvironments(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");
-        sender.sendMessage(ChatColor.GREEN + "NORMAL");
-        sender.sendMessage(ChatColor.RED + "NETHER");
-        sender.sendMessage(ChatColor.AQUA + "END");
+        sender.sendMessage(String.format("%sNORMAL%s, %sNETHER %sor %sEND",
+                ChatColor.GREEN, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.AQUA));
     }
+
     /**
      * Shows all valid known world types to a {@link CommandSender}.
      *
      * @param sender The {@link CommandSender}.
      */
-    private void showWorldTypes(CommandSender sender) {
+    public static void showWorldTypes(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "Valid World Types are:");
-        sender.sendMessage(String.format("%sNORMAL%s, %sFLAT, %sLARGEBIOMES %sor %sAMPLIFIED",
-                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, ChatColor.RED, ChatColor.WHITE, ChatColor.GOLD));
+        sender.sendMessage(String.format("%sNORMAL%s, %sFLAT%s, %sLARGEBIOMES %sor %sAMPLIFIED",
+                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.GOLD));
     }
 }

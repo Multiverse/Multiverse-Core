@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -28,17 +29,20 @@ public class GeneratorCommand extends MultiverseCommand {
     public void onGeneratorCommand(@NotNull CommandSender sender) {
         //TODO: Figure out why this loggin message exist...
         Logging.info("PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
+        showAvailableGenerator(sender);
+    }
 
-        List<String> generators = Arrays.stream(this.plugin.getServer().getPluginManager().getPlugins())
+    public static void showAvailableGenerator(@NotNull CommandSender sender) {
+        List<String> generators = Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                 .filter(Plugin::isEnabled)
                 //TODO: Think what if they do not have a world named 'world'
-                .filter(p -> p.getDefaultWorldGenerator("world", "") != null)
-                .map(p -> p.getDescription().getName())
+                .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
+                .map(plugin -> plugin.getDescription().getName())
                 .collect(Collectors.toList());
 
         if (generators.size() == 0) {
-             sender.sendMessage(ChatColor.RED + "No Generator Plugins found.");
-             return;
+             sender.sendMessage(ChatColor.RED + "You do not have any generator plugins installed.");
+            return;
         }
 
         StringBuilder loadedGens = new StringBuilder();
@@ -50,7 +54,7 @@ public class GeneratorCommand extends MultiverseCommand {
             altColor ^= true;
         }
 
-        sender.sendMessage(ChatColor.AQUA + "--- Loaded Generator Plugins ---");
+        sender.sendMessage(ChatColor.AQUA + "--- Available Generator Plugins ---");
         sender.sendMessage(loadedGens.toString());
     }
 }
