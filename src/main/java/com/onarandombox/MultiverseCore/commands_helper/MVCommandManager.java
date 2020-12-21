@@ -37,6 +37,7 @@ import com.onarandombox.MultiverseCore.commands_acf.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands_acf.UsageCommand;
 import com.onarandombox.MultiverseCore.commands_acf.VersionCommand;
+import com.onarandombox.MultiverseCore.commands_acf.WhoCommand;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -84,6 +85,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new VersionCommand(plugin));
         registerCommand(new BedCommand(plugin));
         registerCommand(new AnchorCommand(plugin));
+        registerCommand(new WhoCommand(plugin));
     }
 
     @Override

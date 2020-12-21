@@ -4,30 +4,22 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.BukkitConditionContext;
 import co.aikar.commands.CommandConditions;
-import co.aikar.commands.CommandExecutionContext;
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MVCommandConditions {
 
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
-
-    //TODO: Should be in world manager?
-
 
     public MVCommandConditions(@NotNull MultiverseCore plugin,
                                @NotNull CommandConditions<BukkitCommandIssuer, BukkitCommandExecutionContext, BukkitConditionContext> conditions) {
@@ -42,6 +34,7 @@ public class MVCommandConditions {
         conditions.addCondition(String.class, "importableWorldName", this::checkImportableWorldName);
         conditions.addCondition(String.class, "validWorldFolder", this::checkValidWorldFolder);
         conditions.addCondition(String.class, "validAddProperty", this::checkValidAddProperty);
+        conditions.addCondition(MultiverseWorld.class, "hasWorldAccess", this::checkHasWorldAccess);
     }
 
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -71,7 +64,7 @@ public class MVCommandConditions {
                                       @NotNull String worldName) {
 
         //TODO: Should have direct API for it, instead of check both loaded and unloaded.
-        if (!this.worldManager.isMVWorld(worldName) && !this.worldManager.getUnloadedWorlds().contains(worldName)) {
+        if (!this.worldManager.hasUnloadedWorld(worldName, true)) {
             throw new ConditionFailedException("World '" + worldName + "' not found.");
         }
     }
@@ -159,6 +152,20 @@ public class MVCommandConditions {
             sender.sendMessage("Sorry, you can't use " + actionType + " with '" + property + "'");
             sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/q1h01S");
             throw new ConditionFailedException();
+        }
+    }
+
+    private void checkHasWorldAccess(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                     @NotNull BukkitCommandExecutionContext executionContext,
+                                     @NotNull MultiverseWorld world) {
+
+        Player player = executionContext.getPlayer();
+        if (player == null) {
+            return;
+        }
+
+        if (!this.plugin.getMVPerms().canEnterWorld(player, world)) {
+            throw new ConditionFailedException("You aren't allowed to access to this world!");
         }
     }
 }
