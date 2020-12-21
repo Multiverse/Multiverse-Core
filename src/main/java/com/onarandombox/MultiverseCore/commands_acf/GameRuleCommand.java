@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commands_helper.GameRuleProperty;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -56,17 +57,18 @@ public class GameRuleCommand extends MultiverseCommand {
     @CommandCompletion("@gameRules")
     @Description("Allows a player to set a gamerule for a given world.")
     public void onGameRuleChangeCommand(@NotNull CommandSender sender,
-                                        @NotNull GameRule gameRule,
-                                        //TODO: Need to validate value.
-                                        @NotNull @Flags("type=gamerule value") String value,
-                                        @NotNull World world) {
+                                        @NotNull GameRuleProperty property,
+                                        @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
-
-        //TODO: Set actual gameRule.
-        sender.sendMessage(gameRule.getName());
-        sender.sendMessage(gameRule.getType().getName());
-        sender.sendMessage(value);
-        sender.sendMessage(world.getName());
-        sender.sendMessage("Gamerule setting isnt done yet.");
+        if (world.getCBWorld().setGameRule(property.getGameRule(), property.getValue())) {
+            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA
+                    + property.getGameRule().getName() + ChatColor.WHITE + " was set to " + ChatColor.GREEN
+                    + property.getValue() + ChatColor.WHITE + ".");
+        }
+        else {
+            sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule "
+                    + ChatColor.AQUA + property.getGameRule().getName() + ChatColor.WHITE
+                    + " could not be set to " + ChatColor.RED + property.getValue() + ChatColor.WHITE + ", ");
+        }
     }
 }

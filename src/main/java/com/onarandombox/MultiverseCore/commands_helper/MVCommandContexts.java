@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.annotation.Values;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -49,7 +50,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(Player.class, this::derivePlayer);
         registerContext(World.Environment.class, this::deriveEnvironment);
         registerIssuerAwareContext(WorldFlags.class, this::deriveWorldFlags);
-        registerIssuerAwareContext(GameRule.class, this::deriveGameRule);
+        registerIssuerAwareContext(GameRuleProperty.class, this::deriveGameRuleProperty);
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
         registerIssuerAwareContext(Location.class, this::deriveLocation);
         registerIssuerAwareContext(PasteServiceType.class, this::derivePasteServiceType);
@@ -382,17 +383,33 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     @NotNull
-    private GameRule deriveGameRule(@NotNull BukkitCommandExecutionContext context) {
-        String rule = context.popFirstArg();
-        if (rule == null) {
-            throw new InvalidCommandArgument("You need to specify a gamerule.");
+    private GameRuleProperty deriveGameRuleProperty(@NotNull BukkitCommandExecutionContext context) {
+        int argLength = context.getArgs().size();
+        if (argLength == 0) {
+            throw new InvalidCommandArgument("You need to specify a game rule property and value to set.");
+        }
+        if (argLength == 1) {
+            throw new InvalidCommandArgument("You need to specify a value to set.");
         }
 
-        GameRule gameRule = GameRule.getByName(rule);
+        String ruleString = context.popFirstArg();
+        GameRule gameRule = GameRule.getByName(ruleString);
         if (gameRule == null) {
-            throw new InvalidCommandArgument("'" + rule + "' is not a valid gamerule.");
+            throw new InvalidCommandArgument("'" + ruleString + "' is not a valid gamerule.");
         }
-        return gameRule;
+
+        Class ruleType = gameRule.getType();
+        Object result = getResolver(ruleType).getContext(context);
+        if (result == null) {
+            context.getSender().sendMessage(ChatColor.RED + "'" + ruleString + "' is not a valid value.");
+            context.getSender().sendMessage(ChatColor.RED + "Value need to be a " + ruleType.getTypeName());
+            throw new InvalidCommandArgument();
+        }
+        if (result instanceof Integer && ((int) result) < 0) {
+            throw new InvalidCommandArgument(ChatColor.RED + "Value need to be a positive number.");
+        }
+
+        return new GameRuleProperty(gameRule, result);
     }
 
     @NotNull
