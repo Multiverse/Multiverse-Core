@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -19,8 +18,9 @@ public class PageDisplay {
     private final String header;
     private final List<String> contents;
     private final int pageToShow;
-    private final int contentLinesPerPage; // excludes header
+    private int contentLinesPerPage; // excludes header
     private final Pattern filter;
+    private final ColourAlternator colours;
 
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_LINES_PER_PAGE = 8;
@@ -28,17 +28,27 @@ public class PageDisplay {
     private static final String LINE_BREAK_PLACEHOLDER = "%lf%";
     private static final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
 
+    //TODO: Cleanup messy constructors.
+    public PageDisplay(@NotNull CommandSender sender,
+                       @NotNull List<String> contents,
+                       int currentPage,
+                       int linesPerPage,
+                       @Nullable ColourAlternator colours) {
+
+        this(sender, null, contents, currentPage, linesPerPage, null, colours);
+    }
+
     public PageDisplay(@NotNull CommandSender sender,
                        @NotNull List<String> contents) {
 
-        this(sender, null, contents, DEFAULT_PAGE, DEFAULT_LINES_PER_PAGE, null);
+        this(sender, null, contents, DEFAULT_PAGE, DEFAULT_LINES_PER_PAGE, null, null);
     }
 
     public PageDisplay(@NotNull CommandSender sender,
                        @Nullable String header,
                        @NotNull List<String> contents) {
 
-        this(sender, header, contents, DEFAULT_PAGE, DEFAULT_LINES_PER_PAGE, null);
+        this(sender, header, contents, DEFAULT_PAGE, DEFAULT_LINES_PER_PAGE, null, null);
     }
 
     public PageDisplay(@NotNull CommandSender sender,
@@ -46,7 +56,7 @@ public class PageDisplay {
                        @NotNull List<String> contents,
                        int currentPage) {
 
-        this(sender, header, contents, currentPage, DEFAULT_LINES_PER_PAGE, null);
+        this(sender, header, contents, currentPage, DEFAULT_LINES_PER_PAGE, null, null);
     }
 
     public PageDisplay(@NotNull CommandSender sender,
@@ -55,7 +65,7 @@ public class PageDisplay {
                        int currentPage,
                        int linesPerPage) {
 
-        this(sender, header, contents, currentPage, linesPerPage, null);
+        this(sender, header, contents, currentPage, linesPerPage, null, null);
     }
 
     public PageDisplay(@NotNull CommandSender sender,
@@ -64,7 +74,7 @@ public class PageDisplay {
                        int currentPage,
                        @Nullable String filter) {
 
-        this(sender, header, contents, currentPage, DEFAULT_LINES_PER_PAGE, filter);
+        this(sender, header, contents, currentPage, DEFAULT_LINES_PER_PAGE, filter, null);
     }
 
     public PageDisplay(@NotNull CommandSender sender,
@@ -72,7 +82,8 @@ public class PageDisplay {
                        @NotNull List<String> contents,
                        int currentPage,
                        int linesPerPage,
-                       @Nullable String filter) {
+                       @Nullable String filter,
+                       @Nullable ColourAlternator colours) {
 
         this.sender = sender;
         this.header = header;
@@ -80,6 +91,7 @@ public class PageDisplay {
         this.pageToShow = currentPage;
         this.contentLinesPerPage = linesPerPage;
         this.filter = parseFilter(filter);
+        this.colours = colours;
     }
 
     private Pattern parseFilter(@Nullable String filter) {
@@ -113,6 +125,7 @@ public class PageDisplay {
 
         public ShowRunnable() {
             this.contentToShowIndex = new ArrayList<>();
+            colours.reset();
         }
 
         @Override
@@ -130,7 +143,10 @@ public class PageDisplay {
         public void showContent() {
             contentToShowIndex.stream()
                     .map(contents::get)
-                    .map(line -> line.equals(LINE_BREAK_PLACEHOLDER) ? " " : line)
+                    .map(line -> line.equals(LINE_BREAK_PLACEHOLDER)
+                            ? " "
+                            : line.replace(PAGE_PLACEHOLDER, ""))
+                    .map(line -> ((colours == null) ? "" : colours.get()) + line)
                     .forEach(sender::sendMessage);
         }
     }
@@ -201,7 +217,7 @@ public class PageDisplay {
                 }
                 if (++lineCount > contentLinesPerPage) {
                     totalPages++;
-                    lineCount = 0;
+                    lineCount = 1;
                 }
                 if (pageToShow == totalPages) {
                     contentToShowIndex.add(index);
@@ -211,9 +227,14 @@ public class PageDisplay {
 
         @Override
         public void showHeader() {
-            String theHeader = (header == null)
-                    ? contents.get(contentToShowIndex.remove(0))
-                    : header;
+            String theHeader;
+            if (header == null) {
+                theHeader = contents.get(contentToShowIndex.remove(0));
+                contentLinesPerPage--;
+            }
+            else {
+                theHeader = header;
+            }
 
             if (theHeader.contains(PAGE_PLACEHOLDER)) {
                 sender.sendMessage(theHeader.replace(PAGE_PLACEHOLDER, parsePaging()));
