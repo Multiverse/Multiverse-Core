@@ -18,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Server;
 import org.bukkit.WorldCreator;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -80,18 +79,13 @@ public class TestWorldStuff {
 
         // Make sure Core is enabled
         assertTrue(plugin.isEnabled());
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-        String[] normalArgs = new String[]{ "import", "world", "normal" };
 
         // Ensure we have a fresh copy of MV, 0 worlds.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the first world. The world folder does not exist.
-        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "FAILED.");
-        verify(mockCommandSender).sendMessage("That world folder does not exist. These look like worlds to me:");
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world normal"));
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Error: World folder 'world' does not exist.");
 
         // We should still have no worlds.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
@@ -112,30 +106,23 @@ public class TestWorldStuff {
         // Make sure Core is enabled
         assertTrue(plugin.isEnabled());
 
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the first world.
-        String[] normalArgs = new String[]{ "import", "world", "normal" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world normal"));
 
         // We should now have one world imported!
         assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the second world.
-        String[] netherArgs = new String[]{ "import", "world_nether", "nether" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", netherArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world_nether nether"));
 
         // We should now have 2 worlds imported!
         assertEquals(2, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Import the third world.
-        String[] skyArgs = new String[]{ "import", "world_the_end", "end" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", skyArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world_the_end end"));
 
         // We should now have 2 worlds imported!
         assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
@@ -158,23 +145,18 @@ public class TestWorldStuff {
         // Make sure Core is enabled
         assertTrue(plugin.isEnabled());
 
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Create the world
-        String[] normalArgs = new String[]{ "create", "newworld", "normal" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv create newworld normal"));
 
         // We should now have one world!
         assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify
         verify(mockCommandSender).sendMessage("Starting creation of world 'newworld'...");
-        verify(mockCommandSender).sendMessage("Complete!");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
         WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("newworld"));
         verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
@@ -191,22 +173,17 @@ public class TestWorldStuff {
         // Make sure Core is enabled
         assertTrue(plugin.isEnabled());
 
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Create the world
-        String[] normalArgs = new String[]{ "create", "newworld", "normal", "-g", "BogusGen"};
-        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv create newworld normal -g BogusGen"));
 
         // This command should halt, not creating any worlds
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify
-        verify(mockCommandSender).sendMessage("Invalid generator! 'BogusGen'. " + ChatColor.RED + "Aborting world creation.");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Invalid generator 'BogusGen'.");
     }
 
     @Test
@@ -220,24 +197,19 @@ public class TestWorldStuff {
         // Make sure Core is enabled
         assertTrue(plugin.isEnabled());
 
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Create the NULL world
         // The safe check is now BALLS SLOW. Use the -n to skip checking.
-        String[] normalArgs = new String[]{ "create", "nullworld", "normal", "-n" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv create nullworld normal -n"));
 
         // We should now have one world!
         assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify
         verify(mockCommandSender).sendMessage("Starting creation of world 'nullworld'...");
-        verify(mockCommandSender).sendMessage("Complete!");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
         WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("nullworld"));
         verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
@@ -248,12 +220,10 @@ public class TestWorldStuff {
     public void testModifyGameMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
 
         // Ensure that there are no worlds imported. This is a fresh setup.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
-        this.createInitialWorlds(plugin, mockCommand);
+        this.createInitialWorlds();
 
         // Ensure that the default worlds have been created.
         assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
@@ -263,35 +233,35 @@ public class TestWorldStuff {
         assertEquals(GameMode.SURVIVAL, mainWorld.getGameMode());
 
         // Set the mode to creative in world.
-        plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "mode", "creative", "world" });
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + "mode" + ChatColor.WHITE + " was set to " + ChatColor.GREEN + "creative");
+        assertTrue(creator.dispatch(mockCommandSender, "mv modify set mode creative world"));
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + "mode" + ChatColor.WHITE + " was set to " + ChatColor.GREEN + "creative" + ChatColor.WHITE + ".");
         // Ensure the world is now a creative world
         assertEquals(GameMode.CREATIVE, mainWorld.getGameMode());
 
         // More tests, with alternate syntax.
-        plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "gamemode", "0", "world" });
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + "gamemode" + ChatColor.WHITE + " was set to " + ChatColor.GREEN + "0");
+        assertTrue(creator.dispatch(mockCommandSender, "mv modify set gamemode 0 world"));
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + "gamemode" + ChatColor.WHITE + " was set to " + ChatColor.GREEN + "0" + ChatColor.WHITE + ".");
         assertEquals(GameMode.SURVIVAL, mainWorld.getGameMode());
 
         // Now fail one.
-        plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "mode", "fish", "world" });
+        assertTrue(creator.dispatch(mockCommandSender, "mv modify set mode fish world"));
         try {
             verify(mockCommandSender).sendMessage(ChatColor.RED + mainWorld.getPropertyHelp("mode"));
         } catch (PropertyDoesNotExistException e) {
             fail("Mode property did not exist.");
         }
 
-        plugin.onCommand(mockCommandSender, mockCommand, "", new String[]{ "modify", "set", "blah", "fish", "world" });
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set: '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'");
+        assertTrue(creator.dispatch(mockCommandSender, "mv modify set blah fish world"));
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'");
     }
 
-    private void createInitialWorlds(Plugin plugin, Command command) {
+    private void createInitialWorlds() {
         MockWorldFactory.createWorldDirectory("world");
         MockWorldFactory.createWorldDirectory("world_nether");
         MockWorldFactory.createWorldDirectory("world_the_end");
-        plugin.onCommand(mockCommandSender, command, "", new String[]{ "import", "world", "normal" });
-        plugin.onCommand(mockCommandSender, command, "", new String[]{ "import", "world_nether", "nether" });
-        plugin.onCommand(mockCommandSender, command, "", new String[]{ "import", "world_the_end", "end" });
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world normal"));
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world_nether nether"));
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world_the_end end"));
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender).sendMessage("Starting import of world 'world_the_end'...");

@@ -59,6 +59,7 @@ public class TestInstanceCreator {
     private MultiverseCore core;
     private Server mockServer;
     private CommandSender commandSender;
+    private SimpleCommandMap simpleCommandMap;
 
     public static final File pluginDirectory = new File("bin/test/server/plugins/coretest");
     public static final File serverDirectory = new File("bin/test/server");
@@ -83,7 +84,8 @@ public class TestInstanceCreator {
             when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
 
             // Add an internal command map (needed for ACF)
-            PowerMockito.when(mockServer, "getCommandMap").thenReturn(new SimpleCommandMap(mockServer));
+            this.simpleCommandMap = new SimpleCommandMap(mockServer);
+            PowerMockito.when(mockServer, "getCommandMap").thenReturn(this.simpleCommandMap);
 
             // Return a fake PDF file.
             PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
@@ -325,5 +327,9 @@ public class TestInstanceCreator {
 
     public CommandSender getCommandSender() {
         return commandSender;
+    }
+
+    public boolean dispatch(CommandSender sender, String commandLine) {
+        return this.simpleCommandMap.dispatch(sender, commandLine);
     }
 }
