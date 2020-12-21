@@ -48,14 +48,17 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
         //TODO: There is one empty dest need to remove.
-        return this.plugin.getDestFactory().getIdentifiers().stream()
+        return this.plugin.getDestFactory().getIdentifiers().parallelStream()
+                .unordered()
+                .filter(id -> !id.isEmpty())
                 .map(id -> id + ":")
                 .collect(Collectors.toList());
     }
 
     @NotNull
     private Collection<String> suggestMVWorlds(@NotNull BukkitCommandCompletionContext context) {
-        return this.worldManager.getMVWorlds().stream()
+        return this.worldManager.getMVWorlds().parallelStream()
+                .unordered()
                 .map(MultiverseWorld::getName)
                 .collect(Collectors.toList());
     }
@@ -69,11 +72,13 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
         //TODO: Should be more efficient
         //TODO: this should be in WorldManager API
-        List<String> knownWorlds = this.worldManager.getMVWorlds().stream()
+        List<String> knownWorlds = this.worldManager.getMVWorlds().parallelStream()
+                .unordered()
                 .map(MultiverseWorld::getName)
                 .collect(Collectors.toList());
 
-        return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles())
+        return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles()).parallel()
+                .unordered()
                 .filter(File::isDirectory)
                 .filter(file -> !knownWorlds.contains(file.getName()))
                 .map(File::getName)

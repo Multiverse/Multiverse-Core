@@ -204,7 +204,8 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         List<Player> matchedPlayers;
         try {
-            matchedPlayers = this.plugin.getServer().selectEntities(sender, playerIdentifier).stream()
+            matchedPlayers = this.plugin.getServer().selectEntities(sender, playerIdentifier).parallelStream()
+                    .unordered()
                     .filter(e -> e instanceof Player)
                     .map(e -> ((Player) e))
                     .collect(Collectors.toList());

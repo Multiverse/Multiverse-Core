@@ -241,6 +241,7 @@ public class PageDisplay {
 
         private void doEndPadding() {
             IntStream.range(0, contentLinesPerPage - contentToShowIndex.size())
+                    .unordered()
                     .mapToObj(i -> " ")
                     .forEach(sender::sendMessage);
         }
