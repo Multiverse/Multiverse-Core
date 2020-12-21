@@ -29,14 +29,18 @@ public class DeleteCommand extends MultiverseCommand {
     public void onDeleteCommand(@NotNull CommandSender sender,
                                 @NotNull @Single @Flags("trim") @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
 
-        this.plugin.getMVCommandManager().getQueueManager().addToQueue(sender, deleteRunnable(sender, worldName));
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(
+                sender,
+                deleteRunnable(sender, worldName),
+                String.format("Are you sure you want to delete world '%s'?", worldName)
+        );
     }
 
     private Runnable deleteRunnable(@NotNull CommandSender sender,
                                     @NotNull String worldName) {
 
         return () -> {
-            //TODO: deleteWorld method should take world object directly
+            sender.sendMessage(String.format("Deleting world '%s'...", worldName));
             sender.sendMessage((this.plugin.getMVWorldManager().deleteWorld(worldName))
                     ? ChatColor.GREEN + "World '" + worldName + "' is deleted!"
                     : ChatColor.RED + "World '" + worldName + "' could not be deleted!");

@@ -31,7 +31,11 @@ public class RegenCommand extends MultiverseCommand {
                                @NotNull @Flags("other") MultiverseWorld world,
                                @NotNull WorldFlags flags) {
 
-        this.plugin.getMVCommandManager().getQueueManager().addToQueue(sender, regenRunnable(sender, world, flags));
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(
+                sender,
+                regenRunnable(sender, world, flags),
+                String.format("Are you sure you want to regen world '%s'?", world.getColoredWorldString())
+        );
     }
 
     private Runnable regenRunnable(@NotNull CommandSender sender,
@@ -39,6 +43,8 @@ public class RegenCommand extends MultiverseCommand {
                                    @NotNull WorldFlags flags) {
 
         return () -> {
+            sender.sendMessage(String.format("Regening world '%s'...", world.getName()));
+
             //TODO: regenWorld method should take world object directly
             //TODO: Shouldn't need randomSeed, just check if seed parameter is null.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
@@ -48,7 +54,7 @@ public class RegenCommand extends MultiverseCommand {
                     flags.getSeed())
             )
                     ? ChatColor.GREEN + "World Regenerated!"
-                    : ChatColor.RED + "World could NOT be regenerated!");
+                    : ChatColor.RED + "World could not be regenerated!");
         };
     }
 }

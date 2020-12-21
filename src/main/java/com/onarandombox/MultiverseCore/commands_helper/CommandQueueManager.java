@@ -2,7 +2,9 @@ package com.onarandombox.MultiverseCore.commands_helper;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +17,7 @@ public class CommandQueueManager {
     private final MultiverseCore plugin;
     private final Map<CommandSender, QueuedCommand> queuedCommands;
 
+    private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous.";
     private static final int DEFAULT_VALID_TIME = 200;  // In ticks for now
 
     public CommandQueueManager(MultiverseCore plugin) {
@@ -25,11 +28,27 @@ public class CommandQueueManager {
     public void addToQueue(@NotNull CommandSender sender,
                            @NotNull Runnable runnable) {
 
-        addToQueue(sender, runnable, DEFAULT_VALID_TIME);
+        addToQueue(sender, runnable, DEFAULT_PROMPT_MESSAGE, DEFAULT_VALID_TIME);
     }
 
     public void addToQueue(@NotNull CommandSender sender,
                            @NotNull Runnable runnable,
+                           @NotNull String prompt) {
+
+        addToQueue(sender, runnable, prompt, DEFAULT_VALID_TIME);
+    }
+
+    public void addToQueue(@NotNull CommandSender sender,
+                           @NotNull Runnable runnable,
+                           int validPeriod) {
+
+        addToQueue(sender, runnable, DEFAULT_PROMPT_MESSAGE, validPeriod);
+
+    }
+
+    public void addToQueue(@NotNull CommandSender sender,
+                           @NotNull Runnable runnable,
+                           @NotNull String prompt,
                            int validPeriod) {
 
         cancelPreviousInQueue(sender);
@@ -38,9 +57,8 @@ public class CommandQueueManager {
         queuedCommands.put(sender, queuedCommand);
         queuedCommand.setExpireTask(runExpireLater(queuedCommand, validPeriod));
 
-        //TODO: Custom message for needing to confirm reason.
-        sender.sendMessage("The command you are trying to run is deemed dangerous.");
-        sender.sendMessage("Run /mv confirm to continue.");
+        sender.sendMessage(prompt);
+        sender.sendMessage("Run " + ChatColor.GREEN + "/mv confirm" + ChatColor.WHITE + " to continue.");
     }
 
     private void cancelPreviousInQueue(@NotNull CommandSender sender) {

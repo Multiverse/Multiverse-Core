@@ -1,13 +1,10 @@
 package com.onarandombox.MultiverseCore.commands_acf;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
-import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
@@ -143,6 +140,7 @@ public class TeleportCommand extends MultiverseCommand {
             this.plugin.getMVCommandManager().getQueueManager().addToQueue(
                     teleporter,
                     unsafeTeleportRunnable(teleporter, teleportee, destination.getLocation(teleportee)),
+                    "The location you are trying to teleport to is deemed unsafe, do you still want to try?",
                     UNSAFE_TELEPORT_EXPIRE_DELAY);
         }
 
