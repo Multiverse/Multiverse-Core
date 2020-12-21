@@ -60,7 +60,7 @@ public class GameRuleCommand extends MultiverseCommand {
     public void onGameRuleChangeCommand(@NotNull CommandSender sender,
                                         @NotNull GameRule gameRule,
                                         //TODO: Need to validate value.
-                                        @NotNull String value,
+                                        @NotNull @Flags("type=gamerule value") String value,
                                         @NotNull World world) {
 
         //TODO: Set actual gameRule.

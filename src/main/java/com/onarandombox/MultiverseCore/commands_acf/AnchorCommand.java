@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -33,7 +34,7 @@ public class AnchorCommand extends MultiverseCommand {
     @Syntax("<name>")
     @Description("Create a new anchor point.")
     public void onCreateAnchorCommand(@NotNull @Flags("onlyself") Player player,
-                                      @NotNull @Flags("type=anchor name") String anchorName) {
+                                      @NotNull @Single @Flags("type=anchor name") String anchorName) {
 
         player.sendMessage((this.plugin.getAnchorManager().saveAnchorLocation(anchorName, player.getLocation()))
                 ? "Anchor '" + anchorName + "' was successfully " + ChatColor.GREEN + "created!"

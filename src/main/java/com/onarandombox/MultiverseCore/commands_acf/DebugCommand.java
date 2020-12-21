@@ -4,6 +4,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
@@ -22,7 +23,7 @@ public class DebugCommand extends MultiverseCommand {
 
     @Subcommand("debug")
     @Description("Show the current debug level.")
-    public void showDebugCommand(@NotNull CommandSender sender) {
+    public void onShowDebugCommand(@NotNull CommandSender sender) {
         displayDebugMode(sender);
     }
 
@@ -30,8 +31,8 @@ public class DebugCommand extends MultiverseCommand {
     @CommandCompletion("on|off|@range:3")
     @Syntax("<level>")
     @Description("Change debug level.")
-    public void changeDebugCommand(@NotNull CommandSender sender,
-                                   @NotNull String debugLevel) {
+    public void onChangeDebugCommand(@NotNull CommandSender sender,
+                                   @NotNull @Single String debugLevel) {
 
         int parsedLevel = parseDebugLevel(debugLevel);
         if (parsedLevel == -1) {

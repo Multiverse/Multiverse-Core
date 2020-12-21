@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,7 @@ public class GeneratorCommand extends MultiverseCommand {
     @Subcommand("gens|generators")
     @CommandPermission("multiverse.core.generator")
     @Description("Shows a list of Loaded Generator Plugins.")
-    public void onGeneratorCommand(CommandSender sender) {
+    public void onGeneratorCommand(@NotNull CommandSender sender) {
         //TODO: Figure out why this loggin message exist...
         Logging.info("PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
 

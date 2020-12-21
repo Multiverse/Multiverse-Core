@@ -133,7 +133,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         return new CommandPlayer(player);
     }
 
-    @NotNull
+    @Nullable
     private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
         boolean mustBeSelf = context.hasFlag("onlyself");
         String error = (mustBeSelf)
@@ -164,10 +164,10 @@ public class MVCommandContexts extends PaperCommandContexts {
         return player;
     }
 
-    @NotNull
+    @Nullable
     private Player getPlayerFromSelf(@NotNull BukkitCommandExecutionContext context, String errorReason) {
         Player self = context.getPlayer();
-        if (self == null) {
+        if (self == null && !context.isOptional()) {
             throw new InvalidCommandArgument(errorReason, false);
         }
         return self;

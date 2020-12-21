@@ -26,7 +26,7 @@ public class ImportCommand extends MultiverseCommand {
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @Syntax("<world> <env> -g [generator[:id]] [-n]")
-    @CommandCompletion("@potentialWorlds")
+    @CommandCompletion("@potentialWorlds @environments")
     @Description("Imports a new world of the specified type.")
     public void onImportCommand(@NotNull CommandSender sender,
                                 @NotNull @Flags("trim") @Conditions("importableWorldName") String worldName,
