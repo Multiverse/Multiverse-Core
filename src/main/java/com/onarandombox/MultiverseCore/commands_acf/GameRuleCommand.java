@@ -23,7 +23,6 @@ public class GameRuleCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    //TODO: Should it be `gamerule list` instead?
     @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
     @Syntax("[world]")
@@ -51,7 +50,6 @@ public class GameRuleCommand extends MultiverseCommand {
         sender.sendMessage(gameRules.toString());
     }
 
-    //TODO: Should it be `gamerule set` instead?
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @Syntax("<rule> <value> [world]")
@@ -62,6 +60,7 @@ public class GameRuleCommand extends MultiverseCommand {
                                         //TODO: Need to validate value.
                                         @NotNull @Flags("type=gamerule value") String value,
                                         @NotNull World world) {
+
 
         //TODO: Set actual gameRule.
         sender.sendMessage(gameRule.getName());

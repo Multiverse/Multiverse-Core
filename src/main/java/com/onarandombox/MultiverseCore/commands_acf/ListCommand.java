@@ -10,6 +10,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commands_helper.PageDisplay;
+import com.onarandombox.MultiverseCore.commands_helper.PageFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -36,7 +37,7 @@ public class ListCommand extends MultiverseCommand {
     @Description("Displays a listing of all worlds that you can enter.")
     public void onListCommand(@NotNull CommandSender sender,
                               @Nullable @Optional Player player,
-                              @Default("1") int page) {
+                              @NotNull PageFilter pageFilter) {
 
         //TODO: Hidden and unloaded
         List<String> worldList =  new ArrayList<>();
@@ -57,7 +58,7 @@ public class ListCommand extends MultiverseCommand {
                 sender,
                 ChatColor.LIGHT_PURPLE + "====[ Multiverse World List ]====",
                 worldList,
-                page
+                pageFilter
         );
 
         pageDisplay.showPageAsync(this.plugin);

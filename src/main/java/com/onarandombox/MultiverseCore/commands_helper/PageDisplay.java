@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.commands_helper;
 
+import net.milkbowl.vault.chat.Chat;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -19,78 +21,74 @@ public class PageDisplay {
     private final List<String> contents;
     private final int pageToShow;
     private int contentLinesPerPage; // excludes header
-    private final Pattern filter;
+    private final String filterString;
+    private final Pattern filterPattern;
     private final ColourAlternator colours;
 
-    private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_LINES_PER_PAGE = 8;
     private static final String PAGE_PLACEHOLDER = "%page%";
     private static final String LINE_BREAK_PLACEHOLDER = "%lf%";
     private static final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
 
-    //TODO: Cleanup messy constructors.
     public PageDisplay(@NotNull CommandSender sender,
+                       @Nullable String header,
                        @NotNull List<String> contents,
-                       int currentPage,
-                       int linesPerPage,
+                       int pageToShow) {
+
+        this(sender, header, contents, pageToShow, DEFAULT_LINES_PER_PAGE, null, null);
+    }
+
+    public PageDisplay(@NotNull CommandSender sender,
+                       @Nullable String header,
+                       @NotNull List<String> contents,
+                       int pageToShow,
+                       int contentLinesPerPage) {
+
+        this(sender, header, contents, pageToShow, contentLinesPerPage, null, null);
+    }
+
+    public PageDisplay(@NotNull CommandSender sender,
+                       @Nullable String header,
+                       @NotNull List<String> contents,
+                       int pageToShow,
+                       int contentLinesPerPage,
+                       @NotNull ColourAlternator colours) {
+
+        this(sender, header, contents, pageToShow, contentLinesPerPage, null, colours);
+    }
+
+    public PageDisplay(@NotNull CommandSender sender,
+                       @Nullable String header,
+                       @NotNull List<String> contents,
+                       @NotNull PageFilter pageFilter) {
+
+        this(sender, header, contents, pageFilter.getPage(), DEFAULT_LINES_PER_PAGE, pageFilter.getFilter(), null);
+    }
+
+    public PageDisplay(@NotNull CommandSender sender,
+                       @Nullable String header,
+                       @NotNull List<String> contents,
+                       @NotNull PageFilter pageFilter,
                        @Nullable ColourAlternator colours) {
 
-        this(sender, null, contents, currentPage, linesPerPage, null, colours);
-    }
-
-    public PageDisplay(@NotNull CommandSender sender,
-                       @NotNull List<String> contents) {
-
-        this(sender, null, contents, DEFAULT_PAGE, DEFAULT_LINES_PER_PAGE, null, null);
-    }
-
-    public PageDisplay(@NotNull CommandSender sender,
-                       @Nullable String header,
-                       @NotNull List<String> contents) {
-
-        this(sender, header, contents, DEFAULT_PAGE, DEFAULT_LINES_PER_PAGE, null, null);
+        this(sender, header, contents, pageFilter.getPage(), DEFAULT_LINES_PER_PAGE, pageFilter.getFilter(), colours);
     }
 
     public PageDisplay(@NotNull CommandSender sender,
                        @Nullable String header,
                        @NotNull List<String> contents,
-                       int currentPage) {
-
-        this(sender, header, contents, currentPage, DEFAULT_LINES_PER_PAGE, null, null);
-    }
-
-    public PageDisplay(@NotNull CommandSender sender,
-                       @Nullable String header,
-                       @NotNull List<String> contents,
-                       int currentPage,
-                       int linesPerPage) {
-
-        this(sender, header, contents, currentPage, linesPerPage, null, null);
-    }
-
-    public PageDisplay(@NotNull CommandSender sender,
-                       @Nullable String header,
-                       @NotNull List<String> contents,
-                       int currentPage,
-                       @Nullable String filter) {
-
-        this(sender, header, contents, currentPage, DEFAULT_LINES_PER_PAGE, filter, null);
-    }
-
-    public PageDisplay(@NotNull CommandSender sender,
-                       @Nullable String header,
-                       @NotNull List<String> contents,
-                       int currentPage,
-                       int linesPerPage,
-                       @Nullable String filter,
+                       int pageToShow,
+                       int contentLinesPerPage,
+                       @Nullable String filterString,
                        @Nullable ColourAlternator colours) {
 
         this.sender = sender;
         this.header = header;
         this.contents = contents;
-        this.pageToShow = currentPage;
-        this.contentLinesPerPage = linesPerPage;
-        this.filter = parseFilter(filter);
+        this.pageToShow = pageToShow;
+        this.contentLinesPerPage = contentLinesPerPage;
+        this.filterString = filterString;
+        this.filterPattern = parseFilter(filterString);
         this.colours = colours;
     }
 
@@ -103,7 +101,7 @@ public class PageDisplay {
     }
 
     public boolean matchFilter(@Nullable String value) {
-        return value != null && (filter == null || value.equals(LINE_BREAK_PLACEHOLDER) || filter.matcher(value).matches());
+        return value != null && (filterPattern == null || value.equals(LINE_BREAK_PLACEHOLDER) || filterPattern.matcher(value).matches());
     }
 
     public void showPage() {
@@ -125,7 +123,9 @@ public class PageDisplay {
 
         public ShowRunnable() {
             this.contentToShowIndex = new ArrayList<>();
-            colours.reset();
+            if (colours != null) {
+                colours.reset();
+            }
         }
 
         @Override
@@ -148,6 +148,10 @@ public class PageDisplay {
                             : line.replace(PAGE_PLACEHOLDER, ""))
                     .map(line -> ((colours == null) ? "" : colours.get()) + line)
                     .forEach(sender::sendMessage);
+        }
+
+        public String parseFilter() {
+             return String.format("%sFilter: '%s'%s", ChatColor.ITALIC, filterString, ChatColor.RESET);
         }
     }
 
@@ -178,6 +182,10 @@ public class PageDisplay {
                 return;
             }
             sender.sendMessage(header.replace(PAGE_PLACEHOLDER, ""));
+
+            if (filterPattern != null) {
+                sender.sendMessage(String.format("[ %s ]", parseFilter()));
+            }
         }
     }
 
@@ -257,7 +265,9 @@ public class PageDisplay {
         }
 
         private String parsePaging() {
-            return String.format("[ Page %s of %s ]", pageToShow, totalPages);
+            return (filterPattern == null)
+                    ? String.format("[ Page %s of %s ]", pageToShow, totalPages)
+                    : String.format("[ Page %s of %s, %s ]", pageToShow, totalPages, parseFilter());
         }
 
         private void doEndPadding() {

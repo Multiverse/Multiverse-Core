@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(Location.class, this::deriveLocation);
         registerIssuerAwareContext(PasteServiceType.class, this::derivePasteServiceType);
         registerOptionalContext(String.class, this::deriveString);
+        registerOptionalContext(PageFilter.class, this::derivePageFilter);
     }
 
     @NotNull
@@ -496,6 +498,39 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
         catch (IllegalArgumentException e) {
             throw new InvalidCommandArgument("Invalid paste service type '" + pasteType + "'");
+        }
+    }
+
+
+    @NotNull
+    private PageFilter derivePageFilter(@NotNull BukkitCommandExecutionContext context) {
+        final int argLength = context.getArgs().size();
+        if (argLength == 0) {
+            return new PageFilter(null, 1);
+        }
+        if (argLength == 1) {
+            String pageOrFilter = context.popFirstArg();
+            Optional<Integer> page = tryParseInt(pageOrFilter);
+            return page.isPresent()
+                    ? new PageFilter(null, page.get())
+                    : new PageFilter(pageOrFilter, 1);
+        }
+
+        String filter = context.popFirstArg();
+        String pageString = context.popFirstArg();
+        Optional<Integer> page = tryParseInt(pageString);
+        if (!page.isPresent()) {
+            throw new InvalidCommandArgument("'" + pageString + "' is not a number.", false);
+        }
+        return new PageFilter(filter, page.get());
+    }
+
+    private Optional<Integer> tryParseInt(String value) {
+        try {
+            return Optional.of(Integer.parseInt(value));
+        }
+        catch (NumberFormatException e) {
+            return Optional.empty();
         }
     }
 }

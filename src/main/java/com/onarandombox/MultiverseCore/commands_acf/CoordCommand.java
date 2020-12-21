@@ -51,10 +51,6 @@ public class CoordCommand extends MultiverseCommand {
             return;
         }
 
-        DecimalFormat df = new DecimalFormat();
-        df.setMinimumFractionDigits(0);
-        df.setMaximumFractionDigits(2);
-
         sender.sendMessage(ChatColor.AQUA + "--- Location Information ---");
         sender.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
         sender.sendMessage(ChatColor.AQUA + "Alias: " + world.getColoredWorldString());

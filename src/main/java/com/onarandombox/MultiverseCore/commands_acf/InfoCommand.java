@@ -40,6 +40,7 @@ public class InfoCommand extends MultiverseCommand {
 
         PageDisplay pageDisplay = new PageDisplay(
                 sender,
+                null,
                 buildWorldInfoContent(world),
                 page,
                 10,

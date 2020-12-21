@@ -37,6 +37,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("potentialWorlds", this::suggestPotentialWorlds);
         registerAsyncCompletion("location", this::suggestLocation);
         registerAsyncCompletion("destinations", this::suggestDestinations);
+        registerAsyncCompletion("anchors", this::suggestAnchors);
         registerStaticCompletion("MVConfigs", this::suggestMVConfig);
         registerStaticCompletion("gameRules", this::suggestGameRules);
         registerStaticCompletion("environments", this::suggestEnvironments);
@@ -44,15 +45,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("addProperties", this::suggestAddProperties);
         registerStaticCompletion("livingEntities", this::suggestEntities);
         registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
-    }
-
-    private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
-        //TODO: There is one empty dest need to remove.
-        return this.plugin.getDestFactory().getIdentifiers().parallelStream()
-                .unordered()
-                .filter(id -> !id.isEmpty())
-                .map(id -> id + ":")
-                .collect(Collectors.toList());
     }
 
     @NotNull
@@ -120,6 +112,19 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
 
         return Arrays.asList("~", String.valueOf(coordValue));
+    }
+
+    private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
+        //TODO: There is one empty dest need to remove.
+        return this.plugin.getDestFactory().getIdentifiers().parallelStream()
+                .unordered()
+                .filter(id -> !id.isEmpty())
+                .map(id -> id + ":")
+                .collect(Collectors.toList());
+    }
+
+    private Collection<String> suggestAnchors(@NotNull BukkitCommandCompletionContext context) {
+        return this.plugin.getAnchorManager().getAnchors(context.getPlayer());
     }
 
     @NotNull

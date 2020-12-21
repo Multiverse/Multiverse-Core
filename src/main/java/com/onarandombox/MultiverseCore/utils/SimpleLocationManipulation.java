@@ -15,6 +15,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -28,7 +29,12 @@ import java.util.Map;
 public class SimpleLocationManipulation implements LocationManipulation {
     private static final Map<String, Integer> ORIENTATION_INTS;
 
+    private static final DecimalFormat df = new DecimalFormat();
+
     static {
+        df.setMinimumFractionDigits(0);
+        df.setMaximumFractionDigits(2);
+
         Map<String, Integer> orientationInts = new HashMap<String, Integer>();
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         orientationInts.put("n", 180);
@@ -117,16 +123,26 @@ public class SimpleLocationManipulation implements LocationManipulation {
      * {@inheritDoc}
      */
     @Override
+    public String strAxis(Location l) {
+        return getAxisString(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String strCoords(Location l) {
+        String result = getAxisString(l);
+        result += ChatColor.WHITE + "P: " + ChatColor.GOLD + df.format(l.getPitch()) + " ";
+        result += ChatColor.WHITE + "Y: " + ChatColor.GOLD + df.format(l.getYaw()) + " ";
+        return result;
+    }
+
+    private String getAxisString(Location l) {
         String result = "";
-        DecimalFormat df = new DecimalFormat();
-        df.setMinimumFractionDigits(0);
-        df.setMaximumFractionDigits(2);
         result += ChatColor.WHITE + "X: " + ChatColor.AQUA + df.format(l.getX()) + " ";
         result += ChatColor.WHITE + "Y: " + ChatColor.AQUA + df.format(l.getY()) + " ";
         result += ChatColor.WHITE + "Z: " + ChatColor.AQUA + df.format(l.getZ()) + " ";
-        result += ChatColor.WHITE + "P: " + ChatColor.GOLD + df.format(l.getPitch()) + " ";
-        result += ChatColor.WHITE + "Y: " + ChatColor.GOLD + df.format(l.getYaw()) + " ";
         return result;
     }
 

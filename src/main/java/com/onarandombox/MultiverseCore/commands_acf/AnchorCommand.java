@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commands_acf;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
@@ -9,14 +10,23 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commands_helper.ColourAlternator;
+import com.onarandombox.MultiverseCore.commands_helper.PageDisplay;
+import com.onarandombox.MultiverseCore.commands_helper.PageFilter;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CommandAlias("mv")
 @Subcommand("anchors")
@@ -44,6 +54,7 @@ public class AnchorCommand extends MultiverseCommand {
     @Subcommand("delete")
     @CommandPermission("multiverse.core.anchor.delete")
     @Syntax("<anchor>")
+    @CommandCompletion("@anchors")
     @Description("Delete an existing anchor point.")
     public void onDeleteAnchorCommand(@NotNull CommandSender sender,
                                       @NotNull @Flags("type=anchor name") String anchorName) {
@@ -56,16 +67,38 @@ public class AnchorCommand extends MultiverseCommand {
     //TODO: Filtering and paging
     @Subcommand("list")
     @CommandPermission("multiverse.core.anchor.list")
-    @Syntax("[filter]")
+    @Syntax("[filter] [page]")
     @Description("Delete an existing anchor point.")
     public void onListAnchorCommand(@NotNull CommandSender sender,
-                                    @Nullable @Optional String filter) {
+                                    @NotNull PageFilter pageFilter) {
 
         Set<String> anchors = (sender instanceof Player)
                 ? this.anchorManager.getAnchors((Player) sender)
                 : this.anchorManager.getAllAnchors();
 
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "====[ Multiverse Anchor List ]====");
-        sender.sendMessage(String.join(", ", anchors));
+        List<String> anchorContent = new ArrayList<>();
+        for (String anchor : anchors) {
+            Location anchorLocation = this.anchorManager.getAnchorLocation(anchor);
+            World world = anchorLocation.getWorld(); // this.plugin.getMVWorldManager().getMVWorld();
+
+            String locationString = ChatColor.RED + "!!INVALID!!";
+            if (world != null) {
+                MultiverseWorld mvworld = this.plugin.getMVWorldManager().getMVWorld(world);
+                locationString = (mvworld == null)
+                        ? ChatColor.RED + world.getName() + "!!NOT MULTIVERSE WORLD!!"
+                        : mvworld.getColoredWorldString() + " - " + this.plugin.getLocationManipulation().strAxis(anchorLocation);
+            }
+            anchorContent.add(anchor + ": " + locationString);
+        }
+
+        PageDisplay pageDisplay = new PageDisplay(
+                sender,
+                ChatColor.LIGHT_PURPLE + "====[ Multiverse Anchor List ]====",
+                anchorContent,
+                pageFilter,
+                new ColourAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA)
+        );
+
+        pageDisplay.showPageAsync(this.plugin);
     }
 }
