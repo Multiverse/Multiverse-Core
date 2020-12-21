@@ -18,7 +18,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands_helper.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandTools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;

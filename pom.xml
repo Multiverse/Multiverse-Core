@@ -233,10 +233,6 @@
                                     <shadedPattern>com.onarandombox.serializationconfig</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.onarandombox.commandhandler</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>buscript</pattern>
                                     <shadedPattern>com.onarandombox.buscript</shadedPattern>
                                 </relocation>
@@ -319,9 +315,9 @@
         <!-- End of Economy Dependency -->
         <!-- Start of CommandHandler Dependency -->
         <dependency>
-            <groupId>com.pneumaticraft.commandhandler</groupId>
-            <artifactId>CommandHandler</artifactId>
-            <version>11</version>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
@@ -394,11 +390,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-paper</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <distributionManagement>

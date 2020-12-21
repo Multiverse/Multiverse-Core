@@ -1,60 +1,60 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * Returns a list of loaded generator plugins.
- */
+@CommandAlias("mv")
 public class GeneratorCommand extends MultiverseCommand {
 
     public GeneratorCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setName("World Information");
-        this.setCommandUsage("/mv generators");
-        this.setArgRange(0, 0);
-        this.addKey("mv generators");
-        this.addKey("mvgenerators");
-        this.addKey("mv gens");
-        this.addKey("mvgens");
-        this.addCommandExample("/mv generators");
-        this.setPermission("multiverse.core.generator", "Returns a list of Loaded Generator Plugins.", PermissionDefault.OP);
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
+    @Subcommand("gens|generators")
+    @CommandPermission("multiverse.core.generator")
+    @Description("Shows a list of Loaded Generator Plugins.")
+    public void onGeneratorCommand(@NotNull CommandSender sender) {
+        //TODO: Figure out why this loggin message exist...
         Logging.info("PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
-        Plugin[] plugins = this.plugin.getServer().getPluginManager().getPlugins();
-        List<String> generators = new ArrayList<String>();
-        for (Plugin p : plugins) {
-            if (p.isEnabled() && p.getDefaultWorldGenerator("world", "") != null) {
-                generators.add(p.getDescription().getName());
-            }
+        showAvailableGenerator(sender);
+    }
+
+    public static void showAvailableGenerator(@NotNull CommandSender sender) {
+        List<String> generators = Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
+                .filter(Plugin::isEnabled)
+                //TODO: Think what if they do not have a world named 'world'
+                .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
+                .map(plugin -> plugin.getDescription().getName())
+                .collect(Collectors.toList());
+
+        if (generators.size() == 0) {
+             sender.sendMessage(ChatColor.RED + "You do not have any generator plugins installed.");
+            return;
         }
-        sender.sendMessage(ChatColor.AQUA + "--- Loaded Generator Plugins ---");
-        String loadedGens = "";
+
+        StringBuilder loadedGens = new StringBuilder();
         boolean altColor = false;
         for (String s : generators) {
-            loadedGens += (altColor ? ChatColor.YELLOW : ChatColor.WHITE) + s + " ";
-            altColor = !altColor;
+            loadedGens.append(altColor ? ChatColor.YELLOW : ChatColor.WHITE)
+                    .append(s)
+                    .append(' ');
+            altColor ^= true;
         }
-        if (loadedGens.length() == 0) {
-            loadedGens = ChatColor.RED + "No Generator Plugins found.";
-        }
-        sender.sendMessage(loadedGens);
+
+        sender.sendMessage(ChatColor.AQUA + "--- Available Generator Plugins ---");
+        sender.sendMessage(loadedGens.toString());
     }
 }

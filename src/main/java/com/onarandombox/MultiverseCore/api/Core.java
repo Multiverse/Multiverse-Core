@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
-import com.onarandombox.MultiverseCore.commands_helper.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandTools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -18,7 +18,6 @@ import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
-import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.entity.Player;
 
 /**
@@ -80,10 +79,10 @@ public interface Core {
     MVPermissions getMVPerms();
 
     /**
-     * Multiverse uses {@link CommandHandler} to make adding and using commands
+     * Multiverse uses {@link MVCommandManager} to make adding and using commands
      * a piece of cake.
      *
-     * @return A non-null {@link CommandHandler}.
+     * @return A non-null {@link MVCommandManager}.
      */
     MVCommandManager getMVCommandManager();
 

@@ -1,64 +1,78 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-/**
- * Enables debug-information.
- */
+@CommandAlias("mv")
+@CommandPermission("multiverse.core.debug")
 public class DebugCommand extends MultiverseCommand {
 
     public DebugCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setName("Turn Debug on/off?");
-        this.setCommandUsage("/mv debug" + ChatColor.GOLD + " [1|2|3|off|silent]");
-        this.setArgRange(0, 1);
-        this.addKey("mv debug");
-        this.addKey("mv d");
-        this.addKey("mvdebug");
-        this.addCommandExample("/mv debug " + ChatColor.GOLD + "2");
-        this.setPermission("multiverse.core.debug", "Spams the console a bunch.", PermissionDefault.OP);
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        if (args.size() == 1) {
-            if (args.get(0).equalsIgnoreCase("off")) {
-                plugin.getMVConfig().setGlobalDebug(0);
-            } else {
-                try {
-                    int debugLevel = Integer.parseInt(args.get(0));
-                    if (debugLevel > 3 || debugLevel < 0) {
-                        throw new NumberFormatException();
-                    }
-                    plugin.getMVConfig().setGlobalDebug(debugLevel);
-                } catch (NumberFormatException e) {
-                    sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE
-                            + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
-                }
-            }
-            plugin.saveMVConfigs();
+    @Subcommand("debug")
+    @Description("Show the current debug level.")
+    public void onShowDebugCommand(@NotNull CommandSender sender) {
+        displayDebugMode(sender);
+    }
+
+    @Subcommand("debug")
+    @CommandCompletion("on|off|@range:3")
+    @Syntax("<level>")
+    @Description("Change debug level.")
+    public void onChangeDebugCommand(@NotNull CommandSender sender,
+                                   @NotNull @Single String debugLevel) {
+
+        int parsedLevel = parseDebugLevel(debugLevel);
+        if (parsedLevel == -1) {
+            sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE
+                    + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
+            return;
         }
-        this.displayDebugMode(sender);
+
+        this.plugin.getMVConfig().setGlobalDebug(parsedLevel);
+        if (!this.plugin.saveMVConfigs()) {
+            sender.sendMessage(ChatColor.RED + "Error saving changes to config! See console for more info.");
+        }
+
+        displayDebugMode(sender);
     }
 
-    private void displayDebugMode(CommandSender sender) {
-        final int debugLevel = plugin.getMVConfig().getGlobalDebug();
+    //TODO: See if can move this to CommandContext Integer.class
+    private int parseDebugLevel(@NotNull String debugLevel) {
+        if (debugLevel.equalsIgnoreCase("off")) {
+            return 0;
+        }
+        if (debugLevel.equalsIgnoreCase("on")) {
+            return 1;
+        }
+
+        try {
+            int parsedLevel = Integer.parseInt(debugLevel);
+            return (parsedLevel > 3 || parsedLevel < 0) ? -1 : parsedLevel;
+        }
+        catch (NumberFormatException ignored) {
+            return -1;
+        }
+    }
+
+    private void displayDebugMode(@NotNull CommandSender sender) {
+        final int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
         if (debugLevel == 0) {
             sender.sendMessage("Multiverse Debug mode is " + ChatColor.RED + "OFF");
-        } else {
+        }
+        else {
             sender.sendMessage("Multiverse Debug mode is " + ChatColor.GREEN + debugLevel);
             Logging.fine("Multiverse Debug ENABLED");
         }

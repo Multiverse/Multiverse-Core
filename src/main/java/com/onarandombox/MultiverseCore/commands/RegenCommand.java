@@ -1,53 +1,60 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commandTools.WorldFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Regenerates a world.
- */
+@CommandAlias("mv")
 public class RegenCommand extends MultiverseCommand {
 
     public RegenCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setName("Regenerates a World");
-        this.setCommandUsage("/mv regen" + ChatColor.GREEN + " {WORLD}" + ChatColor.GOLD + " [-s [SEED]]");
-        this.setArgRange(1, 3);
-        this.addKey("mvregen");
-        this.addKey("mv regen");
-        this.addCommandExample("You can use the -s with no args to get a new seed:");
-        this.addCommandExample("/mv regen " + ChatColor.GREEN + "MyWorld" + ChatColor.GOLD + " -s");
-        this.addCommandExample("or specifiy a seed to get that one:");
-        this.addCommandExample("/mv regen " + ChatColor.GREEN + "MyWorld" + ChatColor.GOLD + " -s" + ChatColor.AQUA + " gargamel");
-        this.setPermission("multiverse.core.regen", "Regenerates a world on your server. The previous state will be lost "
-                + ChatColor.RED + "PERMANENTLY.", PermissionDefault.OP);
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        Boolean useseed = (!(args.size() == 1));
-        Boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s"));
-        String seed = (args.size() == 3) ? args.get(2) : "";
+    @Subcommand("regen")
+    @CommandPermission("multiverse.core.regen")
+    @Syntax("<world>")
+    @CommandCompletion("@MVWorlds")
+    @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
+    public void onRegenCommand(@NotNull CommandSender sender,
+                               //TODO: Allow regen of unloaded worlds.
+                               @NotNull @Flags("other") MultiverseWorld world,
+                               @NotNull WorldFlags flags) {
 
-        Class<?>[] paramTypes = {String.class, Boolean.class, Boolean.class, String.class};
-        List<Object> objectArgs = new ArrayList<Object>();
-        objectArgs.add(args.get(0));
-        objectArgs.add(useseed);
-        objectArgs.add(randomseed);
-        objectArgs.add(seed);
-//        this.plugin.getCommandHandler().queueCommand(sender, "mvregen", "regenWorld", objectArgs,
-//                paramTypes, ChatColor.GREEN + "World Regenerated!", ChatColor.RED + "World could NOT be regenerated!");
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(
+                sender,
+                regenRunnable(sender, world, flags),
+                String.format("Are you sure you want to regen world '%s'?", world.getColoredWorldString())
+        );
+    }
+
+    private Runnable regenRunnable(@NotNull CommandSender sender,
+                                   @NotNull MultiverseWorld world,
+                                   @NotNull WorldFlags flags) {
+
+        return () -> {
+            sender.sendMessage(String.format("Regening world '%s'...", world.getName()));
+
+            //TODO: regenWorld method should take world object directly
+            //TODO: Shouldn't need randomSeed, just check if seed parameter is null.
+            sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
+                    world.getName(),
+                    flags.hasFlag("-s"),
+                    flags.getSeed() == null,
+                    flags.getSeed())
+            )
+                    ? ChatColor.GREEN + "World Regenerated!"
+                    : ChatColor.RED + "World could not be regenerated!");
+        };
     }
 }

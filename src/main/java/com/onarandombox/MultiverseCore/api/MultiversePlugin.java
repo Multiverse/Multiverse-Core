@@ -1,19 +1,13 @@
 package com.onarandombox.MultiverseCore.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.utils.DebugLog;
-import com.pneumaticraft.commandhandler.CommandHandler;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Make things easier for MV-Plugins!
@@ -95,12 +89,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
      * @see #onEnable()
      */
     protected abstract void onPluginEnable();
-
-    /**
-     * You can register commands here.
-     * @param handler The CommandHandler.
-     */
-    protected abstract void registerCommands(CommandHandler handler);
 
     @Override
     public void log(Level level, String msg) {
