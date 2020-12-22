@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onarandombox.multiversecore</groupId>
     <artifactId>Multiverse-Core</artifactId>
-    <version>4.2.3-SNAPSHOT</version>
+    <version>5.0.0-ACF-BETA</version>
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
