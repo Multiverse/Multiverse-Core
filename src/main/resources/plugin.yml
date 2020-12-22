@@ -24,3 +24,9 @@ commands:
   mvp:
     description: Generic Multiverse-Portals Command
     usage: /<command>
+  mvnp:
+    description: Generic Multiverse-NetherPortals Command
+    usage: /<command>
+  mvinv:
+    description: Generic Multiverse-Inventories Command
+    usage: /<command>
