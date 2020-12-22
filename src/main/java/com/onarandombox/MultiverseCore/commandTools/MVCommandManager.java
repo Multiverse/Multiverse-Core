@@ -47,12 +47,16 @@ import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
     private final CommandQueueManager commandQueueManager;
+
+    private static final Pattern PERMISSION_SPLIT = Pattern.compile(",");
 
     public MVCommandManager(MultiverseCore plugin) {
         super(plugin);
@@ -112,7 +116,7 @@ public class MVCommandManager extends PaperCommandManager {
     }
 
     /**
-     * Change default implementation to OR instead of AND
+     * Change default implementation to be able to choose from OR / AND
      */
     @Override
     public boolean hasPermission(CommandIssuer issuer, Set<String> permissions) {
@@ -120,8 +124,21 @@ public class MVCommandManager extends PaperCommandManager {
             return true;
         }
 
+        return (permissions.contains("AND"))
+                ? andPermissionCheck(issuer, permissions)
+                : orPermissionCheck(issuer, permissions);
+    }
+
+    private boolean orPermissionCheck(CommandIssuer issuer, Set<String> permissions) {
         return permissions.stream()
+                .unordered()
                 .anyMatch(permission -> hasPermission(issuer, permission));
+    }
+
+    private boolean andPermissionCheck(CommandIssuer issuer, Set<String> permissions) {
+        return permissions.stream()
+                .unordered()
+                .allMatch(permission -> hasPermission(issuer, permission));
     }
 
     /**
@@ -134,7 +151,7 @@ public class MVCommandManager extends PaperCommandManager {
         }
 
         return Arrays.stream(permission.split(","))
-                .anyMatch(perm -> !perm.isEmpty() && issuer.hasPermission(perm));
+                .anyMatch(perm -> perm.equals("AND") || issuer.hasPermission(perm));
     }
 
     public CommandQueueManager getQueueManager() {
