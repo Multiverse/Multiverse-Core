@@ -35,11 +35,11 @@ public class DebugCommand extends MultiverseCommand {
     }
 
     @Subcommand("debug")
-    @CommandCompletion("on|off|@range:3")
+    @CommandCompletion("@toggles|@range:3")
     @Syntax("<level>")
     @Description("Change debug level.")
     public void onChangeDebugCommand(@NotNull CommandSender sender,
-                                   @NotNull @Single String debugLevel) {
+                                     @NotNull @Single String debugLevel) {
 
         int parsedLevel = parseDebugLevel(debugLevel);
         if (parsedLevel == -1) {

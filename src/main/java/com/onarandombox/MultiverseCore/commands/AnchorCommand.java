@@ -47,7 +47,7 @@ public class AnchorCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.anchor.create")
     @Syntax("<name>")
     @Description("Create a new anchor point.")
-    public void onCreateAnchorCommand(@NotNull @Flags("onlyself") Player player,
+    public void onCreateAnchorCommand(@NotNull Player player,
                                       @NotNull @Single @Flags("type=anchor name") String anchorName) {
 
         player.sendMessage((this.plugin.getAnchorManager().saveAnchorLocation(anchorName, player.getLocation()))
@@ -61,7 +61,7 @@ public class AnchorCommand extends MultiverseCommand {
     @CommandCompletion("@anchors")
     @Description("Delete an existing anchor point.")
     public void onDeleteAnchorCommand(@NotNull CommandSender sender,
-                                      @NotNull @Flags("type=anchor name") String anchorName) {
+                                      @NotNull @Single @Flags("type=anchor name") String anchorName) {
 
         sender.sendMessage((this.plugin.getAnchorManager().deleteAnchor(anchorName))
                 ? "Anchor '" + anchorName + "' was successfully " + ChatColor.RED + "deleted!"

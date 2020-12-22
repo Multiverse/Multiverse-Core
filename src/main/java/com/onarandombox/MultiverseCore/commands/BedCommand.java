@@ -28,7 +28,7 @@ public class BedCommand extends MultiverseCommand {
     @Subcommand("bed")
     @CommandPermission("multiverse.core.bed")
     @Description("Takes your current respawn point.")
-    public void onBedCommand(@NotNull @Flags("onlyself") Player player) {
+    public void onBedCommand(@NotNull Player player) {
         Location bedLocation = player.getBedSpawnLocation();
         if (bedLocation == null) {
             player.sendMessage("You do have a respawn point set!");

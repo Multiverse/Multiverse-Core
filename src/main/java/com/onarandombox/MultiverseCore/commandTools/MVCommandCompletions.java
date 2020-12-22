@@ -53,6 +53,12 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("addProperties", this::suggestAddProperties);
         registerStaticCompletion("livingEntities", this::suggestEntities);
         registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
+        registerStaticCompletion("toggles", this::suggestToggles);
+    }
+
+    @NotNull
+    private Collection<String> suggestToggles() {
+        return Arrays.asList("on", "off");
     }
 
     @NotNull

@@ -35,7 +35,7 @@ public class SetSpawnCommand extends MultiverseCommand {
     @CommandAlias("mv")
     public class SetSpawn extends BaseCommand {
 
-        @Subcommand("setspawn|")
+        @Subcommand("setspawn")
         @CommandPermission("multiverse.core.spawn.set")
         @Syntax("[world x y z [yaw pitch]]")
         @CommandCompletion("@MVWorlds")
@@ -52,7 +52,7 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds")
         @Description("Sets the spawn for the current world.")
         public void onModifySetSpawnCommand(@NotNull CommandSender sender,
-                                      @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+                                            @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);
         }
@@ -121,6 +121,4 @@ public class SetSpawnCommand extends MultiverseCommand {
             sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
         }
     }
-
-
 }

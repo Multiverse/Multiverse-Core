@@ -146,19 +146,14 @@ public class MVCommandContexts extends PaperCommandContexts {
 
     @Nullable
     private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
-        boolean mustBeSelf = context.hasFlag("onlyself");
-        String error = (mustBeSelf)
-                ? "You must be a player to run this command."
-                : "You need to specify a player from console.";
-
-        if (mustBeSelf || !context.hasFlag("other")) {
-            return getPlayerFromSelf(context, error);
+        if (!context.hasFlag("other")) {
+            return getPlayerFromSelf(context, "You must be a player to run this command.");
         }
 
         String playerIdentifier = context.getFirstArg();
         if (playerIdentifier == null) {
             if (context.hasFlag("defaultself")) {
-                return getPlayerFromSelf(context, error);
+                return getPlayerFromSelf(context, "You need to specify a player from console.");
             }
             throw new InvalidCommandArgument("You need to specify a player.");
         }
