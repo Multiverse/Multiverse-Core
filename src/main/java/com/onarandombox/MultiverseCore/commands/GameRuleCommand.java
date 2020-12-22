@@ -61,7 +61,7 @@ public class GameRuleCommand extends MultiverseCommand {
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @Syntax("<rule> <value> [world]")
-    @CommandCompletion("@gameRules")
+    @CommandCompletion("@gameRules @MVWorlds")
     @Description("Allows a player to set a gamerule for a given world.")
     public void onGameRuleChangeCommand(@NotNull CommandSender sender,
                                         @NotNull GameRuleProperty property,

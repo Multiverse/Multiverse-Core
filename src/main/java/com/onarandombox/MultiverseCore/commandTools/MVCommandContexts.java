@@ -389,7 +389,7 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     @NotNull
-    private GameRuleProperty deriveGameRuleProperty(@NotNull BukkitCommandExecutionContext context) {
+    private GameRuleProperty<?> deriveGameRuleProperty(@NotNull BukkitCommandExecutionContext context) {
         int argLength = context.getArgs().size();
         if (argLength == 0) {
             throw new InvalidCommandArgument("You need to specify a game rule property and value to set.");
@@ -399,15 +399,16 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String ruleString = context.popFirstArg();
-        GameRule gameRule = GameRule.getByName(ruleString);
+        GameRule<?> gameRule = GameRule.getByName(ruleString);
         if (gameRule == null) {
             throw new InvalidCommandArgument("'" + ruleString + "' is not a valid gamerule.");
         }
 
-        Class ruleType = gameRule.getType();
+        Class<?> ruleType = gameRule.getType();
+        String value = context.getFirstArg();
         Object result = getResolver(ruleType).getContext(context);
         if (result == null) {
-            context.getSender().sendMessage(ChatColor.RED + "'" + ruleString + "' is not a valid value.");
+            context.getSender().sendMessage(ChatColor.RED + "'" + value + "' is not a valid value.");
             context.getSender().sendMessage(ChatColor.RED + "Value need to be a " + ruleType.getTypeName());
             throw new InvalidCommandArgument();
         }

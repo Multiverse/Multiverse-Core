@@ -62,37 +62,37 @@ public class MVCommandManager extends PaperCommandManager {
 
         enableUnstableAPI("help");
 
-        registerCommand(new UsageCommand(plugin));
-        registerCommand(new CreateCommand(plugin));
-        registerCommand(new LoadCommand(plugin));
-        registerCommand(new UnloadCommand(plugin));
-        registerCommand(new InfoCommand(plugin));
-        registerCommand(new DeleteCommand(plugin));
-        registerCommand(new ConfirmCommand(plugin));
-        registerCommand(new ConfigCommand(plugin));
-        registerCommand(new DebugCommand(plugin));
-        registerCommand(new CoordCommand(plugin));
-        registerCommand(new SpawnCommand(plugin));
-        registerCommand(new ReloadCommand(plugin));
-        registerCommand(new RemoveCommand(plugin));
-        registerCommand(new ListCommand(plugin));
-        registerCommand(new ScriptCommand(plugin));
-        registerCommand(new GeneratorCommand(plugin));
-        registerCommand(new CloneCommand(plugin));
-        registerCommand(new ImportCommand(plugin));
-        registerCommand(new CheckCommand(plugin));
-        registerCommand(new GameRuleCommand(plugin));
-        registerCommand(new EnvironmentCommand(plugin));
-        registerCommand(new RegenCommand(plugin));
-        registerCommand(new TeleportCommand(plugin));
-        registerCommand(new SilentCommand(plugin));
-        registerCommand(new PurgeCommand(plugin));
-        registerCommand(new SetSpawnCommand(plugin));
-        registerCommand(new ModifyCommand(plugin));
-        registerCommand(new VersionCommand(plugin));
-        registerCommand(new BedCommand(plugin));
-        registerCommand(new AnchorCommand(plugin));
-        registerCommand(new WhoCommand(plugin));
+        registerCommand(new UsageCommand(this.plugin));
+        registerCommand(new CreateCommand(this.plugin));
+        registerCommand(new LoadCommand(this.plugin));
+        registerCommand(new UnloadCommand(this.plugin));
+        registerCommand(new InfoCommand(this.plugin));
+        registerCommand(new DeleteCommand(this.plugin));
+        registerCommand(new ConfirmCommand(this.plugin));
+        registerCommand(new ConfigCommand(this.plugin));
+        registerCommand(new DebugCommand(this.plugin));
+        registerCommand(new CoordCommand(this.plugin));
+        registerCommand(new SpawnCommand(this.plugin));
+        registerCommand(new ReloadCommand(this.plugin));
+        registerCommand(new RemoveCommand(this.plugin));
+        registerCommand(new ListCommand(this.plugin));
+        registerCommand(new ScriptCommand(this.plugin));
+        registerCommand(new GeneratorCommand(this.plugin));
+        registerCommand(new CloneCommand(this.plugin));
+        registerCommand(new ImportCommand(this.plugin));
+        registerCommand(new CheckCommand(this.plugin));
+        registerCommand(new GameRuleCommand(this.plugin));
+        registerCommand(new EnvironmentCommand(this.plugin));
+        registerCommand(new RegenCommand(this.plugin));
+        registerCommand(new TeleportCommand(this.plugin));
+        registerCommand(new SilentCommand(this.plugin));
+        registerCommand(new PurgeCommand(this.plugin));
+        registerCommand(new SetSpawnCommand(this.plugin));
+        registerCommand(new ModifyCommand(this.plugin));
+        registerCommand(new VersionCommand(this.plugin));
+        registerCommand(new BedCommand(this.plugin));
+        registerCommand(new AnchorCommand(this.plugin));
+        registerCommand(new WhoCommand(this.plugin));
     }
 
     @Override
