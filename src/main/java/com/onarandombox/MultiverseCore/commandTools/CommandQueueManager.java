@@ -11,6 +11,8 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.data.type.CommandBlock;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +25,7 @@ public class CommandQueueManager {
     private final MultiverseCore plugin;
     private final Map<CommandSender, QueuedCommand> queuedCommands;
 
+    private static final MVCommandBlock COMMAND_BLOCK = new MVCommandBlock();
     private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous.";
     private static final int DEFAULT_VALID_TIME = 200;  // In ticks for now
 
@@ -49,7 +52,6 @@ public class CommandQueueManager {
                            int validPeriod) {
 
         addToQueue(sender, runnable, DEFAULT_PROMPT_MESSAGE, validPeriod);
-
     }
 
     public void addToQueue(@NotNull CommandSender sender,
@@ -57,10 +59,12 @@ public class CommandQueueManager {
                            @NotNull String prompt,
                            int validPeriod) {
 
-        cancelPreviousInQueue(sender);
+        CommandSender targetSender = parseSender(sender);
+        cancelPreviousInQueue(targetSender);
 
-        QueuedCommand queuedCommand = new QueuedCommand(sender, runnable);
-        queuedCommands.put(sender, queuedCommand);
+        Logging.finer("Adding command to queue for " + sender.getName());
+        QueuedCommand queuedCommand = new QueuedCommand(targetSender, runnable);
+        queuedCommands.put(targetSender, queuedCommand);
         queuedCommand.setExpireTask(runExpireLater(queuedCommand, validPeriod));
 
         sender.sendMessage(prompt);
@@ -77,6 +81,7 @@ public class CommandQueueManager {
         queuedCommands.remove(sender);
     }
 
+    @NotNull
     private BukkitTask runExpireLater(@NotNull QueuedCommand queuedCommand, int validPeriod) {
         return Bukkit.getScheduler().runTaskLater(
                 this.plugin,
@@ -85,6 +90,7 @@ public class CommandQueueManager {
         );
     }
 
+    @NotNull
     private Runnable expireRunnable(@NotNull QueuedCommand queuedCommand) {
         return () -> {
             QueuedCommand matchingQueuedCommand = this.queuedCommands.get(queuedCommand.getSender());
@@ -93,21 +99,36 @@ public class CommandQueueManager {
                 return;
             }
 
-            Logging.finer("Command is expired, removing...");
+            Logging.finer("Command has expired, removing...");
             this.queuedCommands.remove(queuedCommand.getSender());
         };
     }
 
     public boolean runQueuedCommand(@NotNull CommandSender sender) {
-        QueuedCommand queuedCommand = this.queuedCommands.get(sender);
+        CommandSender targetSender = parseSender(sender);
+        QueuedCommand queuedCommand = this.queuedCommands.get(targetSender);
         if (queuedCommand == null) {
             sender.sendMessage("You do not have any commands in queue.");
             return false;
         }
 
-        Logging.fine("Running queued command.");
+        Logging.finer("Running queued command...");
         queuedCommand.runCommand();
-        queuedCommands.remove(sender);
+        queuedCommands.remove(targetSender);
         return true;
+    }
+
+    @NotNull
+    private CommandSender parseSender(@NotNull CommandSender sender) {
+        Logging.fine(sender.getClass().getName());
+        if (isCommandBlock(sender)) {
+            Logging.finer("Is command block.");
+            return COMMAND_BLOCK;
+        }
+        return sender;
+    }
+
+    private boolean isCommandBlock(@NotNull CommandSender sender) {
+        return sender instanceof BlockCommandSender && ((BlockCommandSender) sender).getBlock().getBlockData() instanceof CommandBlock;
     }
 }
