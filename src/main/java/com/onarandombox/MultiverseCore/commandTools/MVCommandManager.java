@@ -36,6 +36,7 @@ import com.onarandombox.MultiverseCore.commands.PurgeCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
+import com.onarandombox.MultiverseCore.commands.RootCommand;
 import com.onarandombox.MultiverseCore.commands.ScriptCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.commands.SilentCommand;
@@ -45,6 +46,10 @@ import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,6 +102,7 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new BedCommand(this.plugin));
         registerCommand(new AnchorCommand(this.plugin));
         registerCommand(new WhoCommand(this.plugin));
+        registerCommand(new RootCommand(this.plugin));
     }
 
     @Override
@@ -156,5 +162,14 @@ public class MVCommandManager extends PaperCommandManager {
 
     public CommandQueueManager getQueueManager() {
         return commandQueueManager;
+    }
+
+    public void showPluginInfo(@NotNull CommandSender sender,
+                               @NotNull PluginDescriptionFile description,
+                               @NotNull ColourAlternator colour,
+                               @NotNull String baseCommand) {
+
+        sender.sendMessage(colour.getColorThis() + description.getName() + ChatColor.DARK_GRAY + " | " + colour.getColorThat() + "v" + description.getVersion());
+        sender.sendMessage(ChatColor.DARK_GREEN + "See " + ChatColor.GREEN + "/" + baseCommand + " help " + ChatColor.DARK_GREEN + "for commands available.");
     }
 }
