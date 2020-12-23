@@ -52,7 +52,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -171,5 +170,14 @@ public class MVCommandManager extends PaperCommandManager {
 
         sender.sendMessage(colour.getColorThis() + description.getName() + ChatColor.DARK_GRAY + " | " + colour.getColorThat() + "v" + description.getVersion());
         sender.sendMessage(ChatColor.DARK_GREEN + "See " + ChatColor.GREEN + "/" + baseCommand + " help " + ChatColor.DARK_GREEN + "for commands available.");
+    }
+
+    public void suggestDownload(@NotNull CommandSender sender,
+                                 @NotNull String pluginName,
+                                 @NotNull ColourAlternator colours,
+                                 @NotNull String downloadLink) {
+
+        sender.sendMessage(colours.getColorThis() + pluginName + ChatColor.WHITE + " is not installed on this server. You can learn more and download it at:");
+        sender.sendMessage(colours.getColorThat() + downloadLink);
     }
 }
