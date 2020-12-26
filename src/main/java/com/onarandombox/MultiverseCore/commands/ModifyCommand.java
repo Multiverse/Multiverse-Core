@@ -24,7 +24,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-
 public class ModifyCommand extends MultiverseCommand {
 
     public ModifyCommand(MultiverseCore plugin) {
@@ -38,7 +37,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("set")
         @CommandPermission("multiverse.core.modify.set")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@setProperties  @MVWorlds")
+        @CommandCompletion("@setProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by setting a property. For more info; https://tinyurl.com/nehhzp6")
         public void onModifySetCommand(@NotNull CommandSender sender,
                                        @NotNull @Flags("type=property") @Conditions("validAddProperty:set") String property,
@@ -51,7 +50,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("add")
         @CommandPermission("multiverse.core.modify.add")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@addProperties  @MVWorlds")
+        @CommandCompletion("@addProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by adding a property. For more info: https://tinyurl.com/nehhzp6")
         public void onModifyAddCommand(@NotNull CommandSender sender,
                                        @NotNull @Flags("type=property") @Conditions("validAddProperty:add") String property,
@@ -64,7 +63,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("remove")
         @CommandPermission("multiverse.core.modify.remove")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@addProperties  @MVWorlds")
+        @CommandCompletion("@addProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by removing a property. For more info: https://tinyurl.com/nehhzp6")
         public void onModifyRemoveCommand(@NotNull CommandSender sender,
                                           @NotNull @Flags("type=property") @Conditions("validAddProperty:remove") String property,
@@ -77,7 +76,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("clear")
         @CommandPermission("multiverse.core.modify.clear")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@addProperties  @MVWorlds")
+        @CommandCompletion("@addProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by clearing a property. For more info: https://tinyurl.com/nehhzp6")
         public void onModifyClearCommand(@NotNull CommandSender sender,
                                          @NotNull @Flags("type=property") @Conditions("validAddProperty:clear") String property,
@@ -104,7 +103,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("set")
         @CommandPermission("multiverse.core.modify.set")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@setProperties  @MVWorlds")
+        @CommandCompletion("@setProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by setting a property. For more info; https://tinyurl.com/nehhzp6")
         public void onModifySetCommand(@NotNull CommandSender sender,
                                        @NotNull @Flags("type=property") @Conditions("validAddProperty:set") String property,
@@ -117,7 +116,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("add")
         @CommandPermission("multiverse.core.modify.add")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@addProperties  @MVWorlds")
+        @CommandCompletion("@addProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by adding a property. For more info: https://tinyurl.com/nehhzp6")
         public void onModifyAddCommand(@NotNull CommandSender sender,
                                        @NotNull @Flags("type=property") @Conditions("validAddProperty:add") String property,
@@ -130,7 +129,7 @@ public class ModifyCommand extends MultiverseCommand {
         @Subcommand("remove")
         @CommandPermission("multiverse.core.modify.remove")
         @Syntax("<property> <value> [world]")
-        @CommandCompletion("@addProperties  @MVWorlds")
+        @CommandCompletion("@addProperties @empty @MVWorlds")
         @Description("Modify various aspects of worlds by removing a property. For more info: https://tinyurl.com/nehhzp6")
         public void onModifyRemoveCommand(@NotNull CommandSender sender,
                                           @NotNull @Flags("type=property") @Conditions("validAddProperty:remove") String property,
@@ -251,7 +250,7 @@ public class ModifyCommand extends MultiverseCommand {
 
     private void saveWorldConfig(@NotNull CommandSender sender) {
         if (!this.plugin.saveWorldConfig()) {
-            sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+            sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml! Your changes will only be temporary!");
         }
     }
 }
