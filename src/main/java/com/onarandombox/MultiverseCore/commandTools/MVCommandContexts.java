@@ -120,7 +120,8 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         MultiverseWorld targetWorld = this.worldManager.getMVWorld(player.getWorld());
         if (targetWorld == null) {
-            player.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + player.getWorld().getName() + ChatColor.WHITE + " yet.");
+            player.sendMessage(ChatColor.RED + "Multiverse doesn't know about world '" + ChatColor.DARK_AQUA + player.getWorld().getName()
+                    + ChatColor.RED + "' that player " + ChatColor.AQUA + player.getName() + ChatColor.RED + "is in.");
             player.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
             throw new InvalidCommandArgument();
         }
