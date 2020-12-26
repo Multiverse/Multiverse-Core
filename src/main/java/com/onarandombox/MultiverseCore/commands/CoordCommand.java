@@ -53,8 +53,11 @@ public class CoordCommand extends MultiverseCommand {
                                @NotNull Player player,
                                @NotNull MultiverseWorld world) {
 
-        //TODO ACF: Show player name if other.
-        sender.sendMessage(ChatColor.AQUA + "--- Location Information ---");
+        sender.sendMessage(ChatColor.AQUA + "--- Location Information "
+                + ((sender.equals(player))
+                ? "---"
+                : "for " + ChatColor.YELLOW + player.getName() + ChatColor.AQUA + " ---"));
+
         sender.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
         sender.sendMessage(ChatColor.AQUA + "Alias: " + world.getColoredWorldString());
         sender.sendMessage(ChatColor.AQUA + "World Scale: " + ChatColor.WHITE + world.getScaling());
