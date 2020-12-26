@@ -105,7 +105,7 @@ public class VersionCommand extends MultiverseCommand {
         event.appendVersionInfo(this.getLegacyString());
 
         // add the legacy file, but as markdown so it's readable
-        // TODO: Readd this in 5.0.0
+        // TODO API: Readd this in 5.0.0
         // event.putDetailedVersionInfo("version.md", this.getMarkdownString());
 
         // add config.yml

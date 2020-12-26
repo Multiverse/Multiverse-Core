@@ -37,6 +37,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -1131,6 +1132,14 @@ public class MVWorld implements MultiverseWorld {
     @Override
     public boolean getBedRespawn() {
         return this.props.getBedRespawn();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<String> getAllPropertyTypes() {
+        return this.props.serialize().keySet();
     }
 
     /**

@@ -20,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -650,6 +651,13 @@ public interface MultiverseWorld {
      * @return A List of world names.
      */
     List<String> getWorldBlacklist();
+
+    /**
+     * Gets all the names of all properties that can be SET.
+     *
+     * @return All property names in list.
+     */
+    Collection<String> getAllPropertyTypes();
 
     /**
      * Gets all the names of all properties that can be SET.
