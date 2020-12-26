@@ -16,7 +16,6 @@ import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
-import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.Bukkit;
@@ -24,17 +23,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,7 +49,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(CommandPlayer.class, this::deriveCommandPlayer);
         registerIssuerAwareContext(Player.class, this::derivePlayer);
         registerContext(World.Environment.class, this::deriveEnvironment);
-        registerIssuerAwareContext(WorldFlags.class, this::deriveWorldFlags);
         registerIssuerAwareContext(GameRuleProperty.class, this::deriveGameRuleProperty);
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
         registerIssuerAwareContext(Location.class, this::deriveLocation);
@@ -273,121 +266,6 @@ public class MVCommandContexts extends PaperCommandContexts {
             EnvironmentCommand.showEnvironments(sender);
             throw new InvalidCommandArgument(false);
         }
-    }
-
-    @NotNull
-    private WorldFlags deriveWorldFlags(@NotNull BukkitCommandExecutionContext context) {
-        Map<String, String> flags = parseFlags(context.getArgs());
-        return new WorldFlags(
-                flags.keySet(),
-                flags.get("-s"),
-                validateGenerator(flags.get("-g"), context.getSender()),
-                getWorldType(flags.get("-t"), context.getSender()),
-                !flags.containsKey("-n"),
-                doGenerateStructures(flags.get("-a"))
-        );
-    }
-
-    @Nullable
-    private String validateGenerator(@Nullable String value,
-                                     @NotNull CommandSender sender) {
-
-        if (value == null) {
-            return null;
-        }
-
-        List<String> genArray = new ArrayList<>(Arrays.asList(value.split(":")));
-        if (genArray.size() < 2) {
-            // If there was only one arg specified, pad with another empty one.
-            genArray.add("");
-        }
-        if (this.worldManager.getChunkGenerator(genArray.get(0), genArray.get(1), "test") == null) {
-            sender.sendMessage(ChatColor.RED + "Invalid generator '" + value + "'.");
-            GeneratorCommand.showAvailableGenerator(sender);
-            throw new InvalidCommandArgument(false);
-        }
-
-        return value;
-    }
-
-    @NotNull
-    private WorldType getWorldType(@Nullable String type,
-                                   @NotNull CommandSender sender) {
-        if (type == null || type.length() == 0) {
-            return WorldType.NORMAL;
-        }
-
-        if (type.equalsIgnoreCase("normal")) {
-            type = "NORMAL";
-        }
-        else if (type.equalsIgnoreCase("flat")) {
-            type = "FLAT";
-        }
-        else if (type.equalsIgnoreCase("largebiomes")) {
-            type = "LARGE_BIOMES";
-        }
-        else if (type.equalsIgnoreCase("amplified")) {
-            type = "AMPLIFIED";
-        }
-
-        try {
-            return WorldType.valueOf(type);
-        }
-        catch (IllegalArgumentException e) {
-            sender.sendMessage(ChatColor.RED + "'" + type + "' is not a valid World Type.");
-            EnvironmentCommand.showWorldTypes(sender);
-            throw new InvalidCommandArgument(false);
-        }
-    }
-
-    private boolean doGenerateStructures(@Nullable String value) {
-        return value == null || value.equalsIgnoreCase("true");
-    }
-
-    @NotNull
-    private Map<String, String> parseFlags(@NotNull List<String> args) {
-        Map<String, String> flags = new HashMap<>();
-        if (!validateFlagArgs(args)) {
-            return flags;
-        }
-
-        mapOutTheArgs(args, flags);
-        return flags;
-    }
-
-    private boolean validateFlagArgs(@Nullable List<String> args) {
-        if (args == null || args.size() == 0) {
-            return false;
-        }
-        if (!isFlagKey(args.get(0))) {
-            throw new InvalidCommandArgument("No flag defined for value '" + args.get(0) + "'");
-        }
-        return true;
-    }
-
-    private void mapOutTheArgs(@NotNull List<String> args,
-                               @NotNull Map<String, String> flags) {
-
-        String preFlagKey = args.remove(0);
-        StringBuilder flagValue = new StringBuilder();
-
-        for (String arg : args) {
-            if (!isFlagKey(arg)) {
-                flagValue.append(arg);
-                continue;
-            }
-            if (preFlagKey != null) {
-                flags.put(preFlagKey, flagValue.toString());
-                flagValue = new StringBuilder();
-            }
-            preFlagKey = arg;
-        }
-
-        flags.put(preFlagKey, flagValue.toString());
-    }
-
-    private boolean isFlagKey(@NotNull String value) {
-        return value.charAt(0) == '-';
     }
 
     @NotNull

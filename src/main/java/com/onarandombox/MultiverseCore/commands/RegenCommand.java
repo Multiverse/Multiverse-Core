@@ -12,6 +12,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -20,6 +21,7 @@ import com.onarandombox.MultiverseCore.commandTools.WorldFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
 public class RegenCommand extends MultiverseCommand {
@@ -36,7 +38,9 @@ public class RegenCommand extends MultiverseCommand {
     public void onRegenCommand(@NotNull CommandSender sender,
                                //TODO: Allow regen of unloaded worlds.
                                @NotNull @Flags("other") MultiverseWorld world,
-                               @NotNull WorldFlags flags) {
+                               @Nullable @Optional String[] flagsArray) {
+
+        WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(
                 sender,

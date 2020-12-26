@@ -13,6 +13,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -22,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
 public class ImportCommand extends MultiverseCommand {
@@ -38,10 +40,11 @@ public class ImportCommand extends MultiverseCommand {
     public void onImportCommand(@NotNull CommandSender sender,
                                 @NotNull @Flags("trim") @Conditions("importableWorldName") String worldName,
                                 @NotNull World.Environment environment,
-                                @NotNull WorldFlags flags) {
+                                @Nullable @Optional String[] flagsArray) {
+
+        WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);
 
         Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
-
         String resultMessage = (this.plugin.getMVWorldManager().addWorld(worldName,
                 environment,
                 null,
