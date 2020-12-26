@@ -42,8 +42,7 @@ public class GeneratorCommand extends MultiverseCommand {
     public static void showAvailableGenerator(@NotNull CommandSender sender) {
         List<String> generators = Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                 .filter(Plugin::isEnabled)
-                //TODO ACF: Think what if they do not have a world named 'world'
-                .filter(plugin -> plugin.getDefaultWorldGenerator("idiot", "") != null)
+                .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
                 .map(plugin -> plugin.getDescription().getName())
                 .collect(Collectors.toList());
 
