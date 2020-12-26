@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commandTools;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.PaperCommandCompletions;
 import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -24,9 +25,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -84,12 +87,11 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     @NotNull
     private Collection<String> suggestPotentialWorlds(@NotNull BukkitCommandCompletionContext context) {
-        //TODO: Should be more efficient
-        //TODO: this should be in WorldManager API
-        List<String> knownWorlds = this.worldManager.getMVWorlds().parallelStream()
+        Collection<MultiverseWorld> worlds = this.worldManager.getMVWorlds();
+        Set<String> knownWorlds = worlds.parallelStream()
                 .unordered()
                 .map(MultiverseWorld::getName)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(() -> new HashSet<>(worlds.size())));
 
         return Arrays.stream(this.plugin.getServer().getWorldContainer().listFiles()).parallel()
                 .unordered()
@@ -138,7 +140,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
-        //TODO: There is one empty dest need to remove.
         return this.plugin.getDestFactory().getIdentifiers().parallelStream()
                 .unordered()
                 .filter(id -> !id.isEmpty())
