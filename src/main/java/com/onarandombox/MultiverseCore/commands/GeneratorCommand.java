@@ -52,7 +52,6 @@ public class GeneratorCommand extends MultiverseCommand {
             return;
         }
 
-        //TODO ACF: Use ColorAlternator
         StringBuilder loadedGens = new StringBuilder();
         boolean altColor = false;
         for (String s : generators) {

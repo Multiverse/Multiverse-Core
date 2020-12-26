@@ -68,7 +68,6 @@ public class AnchorCommand extends MultiverseCommand {
                 : "Anchor '" + anchorName + "' was " + ChatColor.RED + " not " + ChatColor.WHITE + "deleted!");
     }
 
-    //TODO ACF: Filtering and paging
     @Subcommand("list")
     @CommandPermission("multiverse.core.anchor.list")
     @Syntax("[filter] [page]")

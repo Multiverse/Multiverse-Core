@@ -170,7 +170,6 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core]   defaultportalsearch: " +this. plugin.getMVConfig().isUsingDefaultPortalSearch() + '\n'
                 + "[Multiverse-Core]   portalsearchradius: " + this.plugin.getMVConfig().getPortalSearchRadius() + '\n'
                 + "[Multiverse-Core]   autopurge: " +this. plugin.getMVConfig().isAutoPurgeEnabled() + '\n'
-                //TODO: Still dont know what this special code means.
                 + "[Multiverse-Core] Special Code: FRN002" + '\n';
     }
 
