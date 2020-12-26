@@ -46,7 +46,6 @@ public class VersionCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    //TODO: Think, Is there a point in keeping the old flags?
     @Subcommand("version")
     @CommandPermission("multiverse.core.version")
     @Syntax("[pastebin|hastebin|pastegg] [--include-plugin-list]")
@@ -106,7 +105,7 @@ public class VersionCommand extends MultiverseCommand {
         event.appendVersionInfo(this.getLegacyString());
 
         // add the legacy file, but as markdown so it's readable
-        // TODO Readd this in 5.0.0
+        // TODO: Readd this in 5.0.0
         // event.putDetailedVersionInfo("version.md", this.getMarkdownString());
 
         // add config.yml

@@ -31,8 +31,10 @@ public class CoordCommand extends MultiverseCommand {
     @Subcommand("coord|coordinate")
     @CommandPermission("multiverse.core.coord.self")
     @Description("Detailed information on the your where abouts.")
-    public void onOtherCoordCommand(@NotNull Player player) {
-        showCoordInfo(player, player);
+    public void onOtherCoordCommand(@NotNull Player player,
+                                    @NotNull MultiverseWorld world) {
+
+        showCoordInfo(player, player, world);
     }
 
     @Subcommand("coord|coordinate")
@@ -41,21 +43,17 @@ public class CoordCommand extends MultiverseCommand {
     @CommandCompletion("@players")
     @Description("Detailed information on the another player's where abouts.")
     public void showCoordInfo(@NotNull CommandSender sender,
+                              @NotNull MultiverseWorld world,
                               @NotNull CommandPlayer targetPlayer) {
 
-        showCoordInfo(sender, targetPlayer.getPlayer());
+        showCoordInfo(sender, targetPlayer.getPlayer(), world);
     }
 
     private void showCoordInfo(@NotNull CommandSender sender,
-                               @NotNull Player player) {
+                               @NotNull Player player,
+                               @NotNull MultiverseWorld world) {
 
-        //TODO: Possible to move to CommandContext or something?
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(player.getWorld());
-        if (world == null) {
-            this.plugin.showNotMVWorldMessage(sender, player.getWorld().getName());
-            return;
-        }
-
+        //TODO ACF: Show player name if other.
         sender.sendMessage(ChatColor.AQUA + "--- Location Information ---");
         sender.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
         sender.sendMessage(ChatColor.AQUA + "Alias: " + world.getColoredWorldString());

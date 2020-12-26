@@ -48,7 +48,6 @@ public class ModifyCommand extends MultiverseCommand {
             doModifySet(sender, property, value, world);
         }
 
-        //TODO: Think why previously it was {VALUE} {PROPERTY}
         @Subcommand("add")
         @CommandPermission("multiverse.core.modify.add")
         @Syntax("<property> <value> [world]")
@@ -165,7 +164,7 @@ public class ModifyCommand extends MultiverseCommand {
         }
     }
 
-    //TODO: Think why properties method for MultiverseWorld is deprecated.
+    //TODO API: Think why properties method for MultiverseWorld is deprecated.
     private void doModifySet(@NotNull CommandSender sender,
                              @NotNull String property,
                              @NotNull String value,
@@ -245,7 +244,7 @@ public class ModifyCommand extends MultiverseCommand {
     private void doModifyList(@NotNull CommandSender sender,
                               @NotNull MultiverseWorld world) {
 
-        //TODO: Think, all worlds should have the same properties?
+        //TODO ACF: Should we show the properties as well?
         sender.sendMessage("===[ Properties Values ]===");
         sender.sendMessage(world.getAllPropertyNames());
     }

@@ -42,7 +42,6 @@ public class ListCommand extends MultiverseCommand {
                               @Nullable @Optional Player player,
                               @NotNull PageFilter pageFilter) {
 
-        //TODO: Hidden and unloaded
         List<String> worldList =  new ArrayList<>();
         this.plugin.getMVWorldManager().getMVWorlds().stream()
                 .filter(world -> player == null || this.plugin.getMVPerms().canEnterWorld(player, world))

@@ -173,7 +173,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestSetProperties() {
-        //TODO: Will need api change to getAllPropertyValues as a List<String>.
+        //TODO API: Will need api change to getAllPropertyValues as a List<String>.
         return Collections.singletonList("null");
     }
 

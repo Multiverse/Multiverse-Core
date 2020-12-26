@@ -67,7 +67,7 @@ public class TeleportCommand extends MultiverseCommand {
 
         @CommandAlias("mvtp")
         @Syntax("[player] <destination>")
-        //TODO: playerOnly flag
+        //TODO ACF: playerOnly flag
         @CommandCompletion("@players|@MVWorlds|@destinations @MVWorlds|@destinations")
         @Description("Alias for /mv tp")
         public void doTeleportCommand(@NotNull CommandSender sender,
@@ -202,7 +202,6 @@ public class TeleportCommand extends MultiverseCommand {
         if (teleporter.equals(teleportee)) {
             if (!this.plugin.getMVPerms().hasPermission(teleporter, "multiverse.core.spawn.self", true)) {
                 teleporter.sendMessage(String.format("Sorry you don't have permission to go to the world spawn!"));
-                //TODO: Dont think we should show permission anymore, or at least need to conform to the config.
                 teleporter.sendMessage(String.format("%s  (multiverse.core.spawn.self)", ChatColor.RED));
                 return false;
             }

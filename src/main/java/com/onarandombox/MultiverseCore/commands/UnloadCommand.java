@@ -35,7 +35,7 @@ public class UnloadCommand extends MultiverseCommand {
     public void onUnloadCommand(@NotNull CommandSender sender,
                                 @NotNull @Flags("other") MultiverseWorld world) {
 
-        //TODO: Should be able to use MVWorld object directly
+        //TODO API: Should be able to use MVWorld object directly
         if (!this.plugin.getMVWorldManager().unloadWorld(world.getName())) {
             sender.sendMessage("Error trying to unload world '" + world.getName() + "'!");
             return;

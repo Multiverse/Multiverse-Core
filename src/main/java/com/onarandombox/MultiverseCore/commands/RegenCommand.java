@@ -33,7 +33,7 @@ public class RegenCommand extends MultiverseCommand {
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @Syntax("<world>")
-    @CommandCompletion("@MVWorlds")
+    @CommandCompletion("@MVWorlds") //TODO ACF: Add flags tab-complete
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(@NotNull CommandSender sender,
                                //TODO: Allow regen of unloaded worlds.
@@ -56,8 +56,7 @@ public class RegenCommand extends MultiverseCommand {
         return () -> {
             sender.sendMessage(String.format("Regening world '%s'...", world.getName()));
 
-            //TODO: regenWorld method should take world object directly
-            //TODO: Shouldn't need randomSeed, just check if seed parameter is null.
+            //TODO: API should allow regen of unloaded worlds.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
                     world.getName(),
                     flags.hasFlag("-s"),

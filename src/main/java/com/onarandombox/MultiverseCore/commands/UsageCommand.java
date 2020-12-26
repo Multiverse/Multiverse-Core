@@ -28,7 +28,7 @@ public class UsageCommand extends MultiverseCommand {
     public void onUsageCommand(@NotNull CommandSender sender,
                                @NotNull CommandHelp help) {
 
-        //TODO: Paging
+        //TODO ACF: Proper formatting and paging.
         help.setPerPage(6);
         help.showHelp();
     }

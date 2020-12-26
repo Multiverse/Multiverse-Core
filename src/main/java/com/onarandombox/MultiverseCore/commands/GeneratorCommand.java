@@ -34,7 +34,7 @@ public class GeneratorCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.generator")
     @Description("Shows a list of Loaded Generator Plugins.")
     public void onGeneratorCommand(@NotNull CommandSender sender) {
-        //TODO: Figure out why this loggin message exist...
+        //TODO ACF: Figure out why this logging message exist...
         Logging.info("PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
         showAvailableGenerator(sender);
     }
@@ -42,8 +42,8 @@ public class GeneratorCommand extends MultiverseCommand {
     public static void showAvailableGenerator(@NotNull CommandSender sender) {
         List<String> generators = Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                 .filter(Plugin::isEnabled)
-                //TODO: Think what if they do not have a world named 'world'
-                .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
+                //TODO ACF: Think what if they do not have a world named 'world'
+                .filter(plugin -> plugin.getDefaultWorldGenerator("idiot", "") != null)
                 .map(plugin -> plugin.getDescription().getName())
                 .collect(Collectors.toList());
 
@@ -52,6 +52,7 @@ public class GeneratorCommand extends MultiverseCommand {
             return;
         }
 
+        //TODO ACF: Use ColorAlternator
         StringBuilder loadedGens = new StringBuilder();
         boolean altColor = false;
         for (String s : generators) {

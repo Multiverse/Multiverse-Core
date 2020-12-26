@@ -33,7 +33,7 @@ public class WhoCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    //TODO: Possible do paging.
+    //TODO ACF: Possibly do paging.
     @Subcommand("whoall")
     @CommandPermission("multiverse.core.list.who.all")
     @Syntax("[filter]")

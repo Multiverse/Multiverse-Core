@@ -25,7 +25,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-//TODO: Location tab complete doesnt work.
 public class SetSpawnCommand extends MultiverseCommand {
 
     public SetSpawnCommand(MultiverseCore plugin) {
@@ -41,6 +40,7 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onSetSpawnCommand(@NotNull CommandSender sender,
+                                      //TODO ACF: Split parameter into individual attributes.
                                       @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);

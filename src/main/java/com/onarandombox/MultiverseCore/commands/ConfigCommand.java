@@ -71,12 +71,12 @@ public class ConfigCommand extends MultiverseCommand {
         }
 
         // special rule, don't forget to set the world!
-        //TODO: Potentially should move to MultiverseCore#loadConfigs method
+        //TODO API: Potentially should move to MultiverseCore#loadConfigs method
         if (property.equalsIgnoreCase("firstspawnworld")) {
             this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
         }
 
-        //TODO: Show properties and values that where updated.
+        //TODO ACF: Show properties and values that where updated.
         sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
         this.plugin.loadConfigs();
     }

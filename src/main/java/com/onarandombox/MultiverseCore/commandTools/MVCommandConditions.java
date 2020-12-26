@@ -70,7 +70,6 @@ public class MVCommandConditions {
                                       @NotNull BukkitCommandExecutionContext executionContext,
                                       @NotNull String worldName) {
 
-        //TODO: Should have direct API for it, instead of check both loaded and unloaded.
         if (!this.worldManager.hasUnloadedWorld(worldName, true)) {
             throw new ConditionFailedException("World '" + worldName + "' not found.");
         }
