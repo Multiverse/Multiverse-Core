@@ -16,13 +16,20 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class ModifyCommand extends MultiverseCommand {
 
@@ -243,9 +250,26 @@ public class ModifyCommand extends MultiverseCommand {
     private void doModifyList(@NotNull CommandSender sender,
                               @NotNull MultiverseWorld world) {
 
-        //TODO ACF: Should we show the properties as well?
-        sender.sendMessage("===[ Properties Values ]===");
-        sender.sendMessage(world.getAllPropertyNames());
+        Collection<String> properties = world.getAllPropertyTypes();
+        List<String> propValues = new ArrayList<>(properties.size());
+
+        for (String property : properties) {
+            String value = ChatColor.RED + "!!INAVLID!!";
+            try {
+                value = world.getPropertyValue(property);
+            }
+            catch (PropertyDoesNotExistException ignored) {
+
+            }
+
+            propValues.add(ChatColor.GREEN + property
+                    + ChatColor.WHITE + " = "
+                    + ChatColor.GOLD + value
+                    + ChatColor.WHITE);
+        }
+
+        sender.sendMessage("===[ Property Values for " + world.getColoredWorldString() + " ]===");
+        sender.sendMessage(String.join(", ", propValues));
     }
 
     private void saveWorldConfig(@NotNull CommandSender sender) {
