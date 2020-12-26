@@ -21,6 +21,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
@@ -61,11 +62,12 @@ public class GameRuleCommand extends MultiverseCommand {
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @Syntax("<rule> <value> [world]")
-    @CommandCompletion("@gameRules @MVWorlds")
+    @CommandCompletion("@gameRules @empty @MVWorlds")
     @Description("Allows a player to set a gamerule for a given world.")
-    public void onGameRuleChangeCommand(@NotNull CommandSender sender,
-                                        @NotNull GameRuleProperty property,
-                                        @NotNull @Flags("other,defaultself") MultiverseWorld world) {
+    public <T> void onGameRuleChangeCommand(@NotNull CommandSender sender,
+                                            @NotNull Player player,
+                                            @NotNull GameRuleProperty<T> property,
+                                            @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
         if (world.getCBWorld().setGameRule(property.getGameRule(), property.getValue())) {
             sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA
