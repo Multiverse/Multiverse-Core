@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commandTools;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.PaperCommandCompletions;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -34,6 +35,13 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
+
+    private static final DecimalFormat df = new DecimalFormat();
+
+    static {
+        df.setMinimumFractionDigits(0);
+        df.setMaximumFractionDigits(2);
+    }
 
     public MVCommandCompletions(MVCommandManager manager, MultiverseCore plugin) {
         super(manager);
@@ -94,6 +102,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     @NotNull
     private Collection<String> suggestLocation(@NotNull BukkitCommandCompletionContext context) {
+        Logging.info("location");
         Player player = context.getPlayer();
         if (player == null) {
             return Collections.singletonList("0");
@@ -125,7 +134,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 return Collections.emptyList();
         }
 
-        return Arrays.asList("~", String.valueOf(coordValue));
+        return Arrays.asList("~", df.format(coordValue));
     }
 
     private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
