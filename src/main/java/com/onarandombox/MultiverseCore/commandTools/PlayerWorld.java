@@ -13,13 +13,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandPlayer {
+public class PlayerWorld {
 
     private final Player player;
     private final MultiverseWorld world;
 
-    public CommandPlayer(@NotNull Player player,
-                         @Nullable MultiverseWorld world) {
+    public PlayerWorld(@NotNull Player player,
+                       @Nullable MultiverseWorld world) {
 
         this.player = player;
         this.world = world;

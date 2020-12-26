@@ -18,14 +18,12 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.CommandPlayer;
+import com.onarandombox.MultiverseCore.commandTools.PlayerWorld;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 
 public class SpawnCommand extends MultiverseCommand {
@@ -44,7 +42,7 @@ public class SpawnCommand extends MultiverseCommand {
         public void onOtherSpawnCommand(@NotNull CommandSender sender,
                                         @NotNull
                                         @Flags("other|defaultself")
-                                        @Conditions("selfOtherPerm:multiverse.core.spawn") CommandPlayer targetPlayer) {
+                                        @Conditions("selfOtherPerm:multiverse.core.spawn") PlayerWorld targetPlayer) {
 
             doSpawn(sender, targetPlayer.getPlayer(), targetPlayer.getWorld());
         }
@@ -59,7 +57,7 @@ public class SpawnCommand extends MultiverseCommand {
         public void onOtherSpawnCommand(@NotNull CommandSender sender,
                                         @NotNull
                                         @Flags("other|defaultself")
-                                        @Conditions("selfOtherPerm:multiverse.core.spawn") CommandPlayer targetPlayer) {
+                                        @Conditions("selfOtherPerm:multiverse.core.spawn") PlayerWorld targetPlayer) {
 
             doSpawn(sender, targetPlayer.getPlayer(), targetPlayer.getWorld());
         }

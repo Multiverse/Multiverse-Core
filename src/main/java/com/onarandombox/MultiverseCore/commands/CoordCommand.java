@@ -11,20 +11,17 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
-import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
-import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.CommandPlayer;
+import com.onarandombox.MultiverseCore.commandTools.PlayerWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
 public class CoordCommand extends MultiverseCommand {
@@ -41,7 +38,7 @@ public class CoordCommand extends MultiverseCommand {
     public void onCoorCommand(@NotNull CommandSender sender,
                               @NotNull
                               @Flags("other,defaultself")
-                              @Conditions("selfOtherPerm:multiverse.core.coord") CommandPlayer targetPlayer) {
+                              @Conditions("selfOtherPerm:multiverse.core.coord") PlayerWorld targetPlayer) {
 
         Player player = targetPlayer.getPlayer();
         MultiverseWorld world = targetPlayer.getWorld();

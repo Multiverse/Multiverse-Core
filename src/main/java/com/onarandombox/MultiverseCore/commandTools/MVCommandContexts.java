@@ -45,7 +45,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
-        registerIssuerAwareContext(CommandPlayer.class, this::deriveCommandPlayer);
+        registerIssuerAwareContext(PlayerWorld.class, this::derivePlayerWorld);
         registerIssuerAwareContext(MultiverseWorld.class, this::deriveMultiverseWorld);
         registerIssuerAwareContext(Player.class, this::derivePlayer);
         registerContext(World.Environment.class, this::deriveEnvironment);
@@ -58,7 +58,7 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     @Nullable
-    private CommandPlayer deriveCommandPlayer(@NotNull BukkitCommandExecutionContext context) {
+    private PlayerWorld derivePlayerWorld(@NotNull BukkitCommandExecutionContext context) {
         Player player = derivePlayer(context);
         if (player == null) {
             if (context.isOptional()) {
@@ -69,7 +69,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         MultiverseWorld world = getPlayerWorld(player, false, "Something went wrong parsing player...");
 
-        return new CommandPlayer(player, world);
+        return new PlayerWorld(player, world);
     }
 
     @Nullable

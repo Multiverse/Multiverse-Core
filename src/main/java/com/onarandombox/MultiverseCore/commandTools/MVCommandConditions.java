@@ -42,7 +42,7 @@ public class MVCommandConditions {
         conditions.addCondition(String.class, "validWorldFolder", this::checkValidWorldFolder);
         conditions.addCondition(String.class, "validAddProperty", this::checkValidAddProperty);
         conditions.addCondition(MultiverseWorld.class, "hasWorldAccess", this::checkHasWorldAccess);
-        conditions.addCondition(CommandPlayer.class, "selfOtherPerm", this::checkSelfOtherPerm);
+        conditions.addCondition(PlayerWorld.class, "selfOtherPerm", this::checkSelfOtherPerm);
     }
 
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -178,7 +178,7 @@ public class MVCommandConditions {
 
     private void checkSelfOtherPerm(@NotNull ConditionContext<BukkitCommandIssuer> context,
                                     @NotNull BukkitCommandExecutionContext executionContext,
-                                    @NotNull CommandPlayer player) {
+                                    @NotNull PlayerWorld player) {
 
         String permNode = context.getConfig() + (player.isSender(executionContext.getSender()) ? ".self" : ".other");
         if (!player.getPlayer().hasPermission(permNode)) {
