@@ -76,8 +76,8 @@ public class ConfigCommand extends MultiverseCommand {
             this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
         }
 
-        //TODO ACF: Show properties and values that where updated.
-        sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");
+        sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.WHITE + "Config option " + ChatColor.AQUA
+                + property + ChatColor.WHITE + " is now set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
         this.plugin.loadConfigs();
     }
 }
