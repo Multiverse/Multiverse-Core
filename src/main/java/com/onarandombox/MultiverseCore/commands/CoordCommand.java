@@ -10,7 +10,11 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -20,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
 public class CoordCommand extends MultiverseCommand {
@@ -29,32 +34,20 @@ public class CoordCommand extends MultiverseCommand {
     }
 
     @Subcommand("coord|coordinate")
-    @CommandPermission("multiverse.core.coord.self")
-    @Description("Detailed information on the your where abouts.")
-    public void onOtherCoordCommand(@NotNull Player player,
-                                    @NotNull MultiverseWorld world) {
-
-        showCoordInfo(player, player, world);
-    }
-
-    @Subcommand("coord|coordinate")
-    @CommandPermission("multiverse.core.coord.other")
+    @CommandPermission("multiverse.core.coord.self,multiverse.core.coord.other")
     @Syntax("[player]")
     @CommandCompletion("@players")
-    @Description("Detailed information on the another player's where abouts.")
-    public void showCoordInfo(@NotNull CommandSender sender,
-                              @NotNull MultiverseWorld world,
-                              @NotNull CommandPlayer targetPlayer) {
+    @Description("Detailed information on the player's where abouts.")
+    public void onCoorCommand(@NotNull CommandSender sender,
+                              @NotNull
+                              @Flags("other,defaultself")
+                              @Conditions("selfOtherPerm:multiverse.core.coord") CommandPlayer targetPlayer) {
 
-        showCoordInfo(sender, targetPlayer.getPlayer(), world);
-    }
-
-    private void showCoordInfo(@NotNull CommandSender sender,
-                               @NotNull Player player,
-                               @NotNull MultiverseWorld world) {
+        Player player = targetPlayer.getPlayer();
+        MultiverseWorld world = targetPlayer.getWorld();
 
         sender.sendMessage(ChatColor.AQUA + "--- Location Information "
-                + ((sender.equals(player))
+                + ((targetPlayer.isSender(sender))
                 ? "---"
                 : "for " + ChatColor.YELLOW + player.getName() + ChatColor.AQUA + " ---"));
 

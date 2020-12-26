@@ -45,8 +45,8 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
+        registerIssuerAwareContext(CommandPlayer.class, this::deriveCommandPlayer);
         registerIssuerAwareContext(MultiverseWorld.class, this::deriveMultiverseWorld);
-        registerContext(CommandPlayer.class, this::deriveCommandPlayer);
         registerIssuerAwareContext(Player.class, this::derivePlayer);
         registerContext(World.Environment.class, this::deriveEnvironment);
         registerIssuerAwareContext(GameRuleProperty.class, this::deriveGameRuleProperty);
@@ -58,15 +58,34 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     @Nullable
+    private CommandPlayer deriveCommandPlayer(@NotNull BukkitCommandExecutionContext context) {
+        Player player = derivePlayer(context);
+        if (player == null) {
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Command player is null!");
+        }
+
+        MultiverseWorld world = getPlayerWorld(player, false, "Something went wrong parsing player...");
+
+        return new CommandPlayer(player, world);
+    }
+
+    @Nullable
     private MultiverseWorld deriveMultiverseWorld(@NotNull BukkitCommandExecutionContext context) {
         if (!context.hasFlag("other")) {
-            return getPlayerWorld(context, "You cannot run this command from console.");
+            return getPlayerWorld(context.getPlayer(),
+                    context.isOptional()
+                    , "You cannot run this command from console.");
         }
 
         String worldName = context.getFirstArg();
         if (worldName == null) {
             if (context.hasFlag("defaultself")) {
-                return getPlayerWorld(context, "You need to specific a world name from console.");
+                return getPlayerWorld(context.getPlayer(),
+                        context.isOptional()
+                        , "You need to specific a world name from console.");
             }
             if (context.isOptional()) {
                 return null;
@@ -77,7 +96,9 @@ public class MVCommandContexts extends PaperCommandContexts {
         MultiverseWorld world = getWorld(context.getSender(), worldName, !context.hasFlag("ignoreunload"));
         if (world == null) {
             if (context.hasFlag("fallbackself")) {
-                return getPlayerWorld(context, "World '" + worldName + "' not found.");
+                return getPlayerWorld(context.getPlayer(),
+                        context.isOptional(),
+                        "World '" + worldName + "' not found.");
             }
             throw new InvalidCommandArgument("World '" + worldName + "' not found.", false);
         }
@@ -107,12 +128,12 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     @Nullable
-    private MultiverseWorld getPlayerWorld(@NotNull BukkitCommandExecutionContext context,
+    private MultiverseWorld getPlayerWorld(@Nullable Player player,
+                                           boolean allowNull,
                                            @NotNull String errorReason) {
 
-        Player player = context.getPlayer();
         if (player == null) {
-            if (context.isOptional()) {
+            if (allowNull) {
                 return null;
             }
             throw new InvalidCommandArgument(errorReason, false);
@@ -127,22 +148,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return targetWorld;
-    }
-
-    @NotNull CommandPlayer deriveCommandPlayer(@NotNull BukkitCommandExecutionContext context) {
-        String playerIdentifier = context.popFirstArg();
-        if (playerIdentifier == null) {
-            throw new InvalidCommandArgument((context.getPlayer() == null)
-                    ? "You need to specify a player from console."
-                    : "You need to specify a player.");
-        }
-
-        Player player = getPlayerFromValue(context.getSender(), playerIdentifier);
-        if (player == null) {
-            throw new InvalidCommandArgument("Player '" + playerIdentifier + "' not found.");
-        }
-
-        return new CommandPlayer(player);
     }
 
     @Nullable

@@ -42,6 +42,7 @@ public class MVCommandConditions {
         conditions.addCondition(String.class, "validWorldFolder", this::checkValidWorldFolder);
         conditions.addCondition(String.class, "validAddProperty", this::checkValidAddProperty);
         conditions.addCondition(MultiverseWorld.class, "hasWorldAccess", this::checkHasWorldAccess);
+        conditions.addCondition(CommandPlayer.class, "selfOtherPerm", this::checkSelfOtherPerm);
     }
 
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -172,6 +173,16 @@ public class MVCommandConditions {
 
         if (!this.plugin.getMVPerms().canEnterWorld(player, world)) {
             throw new ConditionFailedException("You aren't allowed to access to this world!");
+        }
+    }
+
+    private void checkSelfOtherPerm(@NotNull ConditionContext<BukkitCommandIssuer> context,
+                                    @NotNull BukkitCommandExecutionContext executionContext,
+                                    @NotNull CommandPlayer player) {
+
+        String permNode = context.getConfig() + (player.isSender(executionContext.getSender()) ? ".self" : ".other");
+        if (!player.getPlayer().hasPermission(permNode)) {
+            throw new ConditionFailedException("You do not have permission to run this command.");
         }
     }
 }
