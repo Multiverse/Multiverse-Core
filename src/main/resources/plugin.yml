@@ -18,9 +18,6 @@ commands:
   mvspawn:
     description: Go to spawn of a particular world.
     usage: /<command> [player]
-  mvm:
-    description: Modify properties for a particular world
-    usage: /<command> <set|add|remove|clear> <property> [value] [world]
   mvp:
     description: Generic Multiverse-Portals Command
     usage: /<command>
