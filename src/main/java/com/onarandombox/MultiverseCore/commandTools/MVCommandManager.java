@@ -11,7 +11,9 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
@@ -52,6 +54,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -69,6 +72,7 @@ public class MVCommandManager extends PaperCommandManager {
         new MVCommandConditions(plugin, getCommandConditions());
 
         enableUnstableAPI("help");
+        setDefaultHelpPerPage(6);
 
         registerCommand(new UsageCommand(this.plugin));
         registerCommand(new CreateCommand(this.plugin));
@@ -161,6 +165,17 @@ public class MVCommandManager extends PaperCommandManager {
 
     public CommandQueueManager getQueueManager() {
         return commandQueueManager;
+    }
+
+    public void showUsage(@NotNull CommandHelp help) {
+        List<HelpEntry> entries = help.getHelpEntries();
+
+        if (entries.size() == 1) {
+            this.plugin.getMVCommandManager().getHelpFormatter().showDetailedHelp(help, entries.get(0));
+            return;
+        }
+
+        help.showHelp();
     }
 
     public void showPluginInfo(@NotNull CommandSender sender,

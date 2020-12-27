@@ -8,7 +8,13 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.CommandHelp;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -20,16 +26,15 @@ public class UsageCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("help")
     @HelpCommand
+    @Subcommand("help")
     @CommandPermission("multiverse.core.help")
     @Syntax("[filter] [page]")
-    @Description("Show Multiverse Command usage.")
+    @CommandCompletion("@subCommands:mv")
+    @Description("Show Multiverse-Core Command usage.")
     public void onUsageCommand(@NotNull CommandSender sender,
                                @NotNull CommandHelp help) {
 
-        //TODO ACF: Proper formatting and paging.
-        help.setPerPage(6);
-        help.showHelp();
+        this.plugin.getMVCommandManager().showUsage(help);
     }
 }

@@ -8,7 +8,11 @@
 package com.onarandombox.MultiverseCore.commandTools;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
+import co.aikar.commands.RegisteredCommand;
+import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -31,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,6 +56,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
+        registerAsyncCompletion("subCommands", this::suggestSubCommands);
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
         registerAsyncCompletion("unloadedWorlds", this::suggestUnloadedWorlds);
         registerAsyncCompletion("potentialWorlds", this::suggestPotentialWorlds);
@@ -65,6 +71,37 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("livingEntities", this::suggestEntities);
         registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
         registerStaticCompletion("toggles", this::suggestToggles);
+    }
+
+    @NotNull
+    private Collection<String> suggestSubCommands(@NotNull BukkitCommandCompletionContext context) {
+        String rootCmdName = context.getConfig();
+        if (rootCmdName == null) {
+            return Collections.emptyList();
+        }
+
+        RootCommand rootCommand = this.plugin.getMVCommandManager().getRegisteredRootCommands().stream()
+                .unordered()
+                .filter(c -> c.getCommandName().equals(rootCmdName))
+                .findFirst()
+                .orElse(null);
+
+        if (rootCommand == null) {
+            return Collections.emptyList();
+        }
+
+        return rootCommand.getSubCommands().entries().stream()
+                .unordered()
+                .filter(entry -> checkPerms(context.getIssuer(), entry.getValue()))
+                .map(Map.Entry::getKey)
+                .filter(cmdName -> !cmdName.startsWith("__"))
+                .collect(Collectors.toList());
+    }
+
+    private boolean checkPerms(@NotNull CommandIssuer issuer,
+                               @NotNull RegisteredCommand<?> cmd) {
+
+        return this.plugin.getMVCommandManager().hasPermission(issuer, cmd.getRequiredPermissions());
     }
 
     @NotNull
@@ -139,6 +176,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         return Arrays.asList("~", df.format(coordValue));
     }
 
+    @NotNull
     private Collection<String> suggestDestinations(@NotNull BukkitCommandCompletionContext context) {
         return this.plugin.getDestFactory().getIdentifiers().parallelStream()
                 .unordered()
@@ -147,6 +185,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 .collect(Collectors.toList());
     }
 
+    @NotNull
     private Collection<String> suggestAnchors(@NotNull BukkitCommandCompletionContext context) {
         return this.plugin.getAnchorManager().getAnchors(context.getPlayer());
     }
