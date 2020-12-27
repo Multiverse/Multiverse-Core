@@ -34,8 +34,6 @@ public class GeneratorCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.generator")
     @Description("Shows a list of Loaded Generator Plugins.")
     public void onGeneratorCommand(@NotNull CommandSender sender) {
-        //TODO ACF: Figure out why this logging message exist...
-        Logging.info("PLEASE IGNORE the 'Plugin X does not contain any generators' message below!");
         showAvailableGenerator(sender);
     }
 
