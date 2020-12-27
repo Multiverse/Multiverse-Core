@@ -33,7 +33,7 @@ public class ScriptCommand extends MultiverseCommand {
     @Subcommand("script")
     @CommandPermission("multiverse.core.script")
     @Syntax("<script> [player]")
-    @CommandCompletion("@empty @players") //TODO ACF: tab-complete possible scripts.
+    @CommandCompletion("@scripts @players") //TODO ACF: tab-complete possible scripts.
     @Description("Runs a script.")
     public void onScriptCommand(@NotNull CommandSender sender,
 
@@ -43,7 +43,7 @@ public class ScriptCommand extends MultiverseCommand {
 
                                 @Syntax("[player]")
                                 @Description("Player that you want to execute the script on.")
-                                @NotNull @Flags("other|defaultself") Player player) {
+                                @NotNull @Flags("other,defaultself") Player player) {
 
         Buscript scriptAPI = this.plugin.getScriptAPI();
         if (scriptAPI == null) {

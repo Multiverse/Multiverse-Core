@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commandTools;
 
+import buscript.Buscript;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandIssuer;
@@ -56,6 +57,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
+        registerAsyncCompletion("scripts", this::suggestScripts);
         registerAsyncCompletion("subCommands", this::suggestSubCommands);
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
         registerAsyncCompletion("unloadedWorlds", this::suggestUnloadedWorlds);
@@ -71,6 +73,21 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("livingEntities", this::suggestEntities);
         registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
         registerStaticCompletion("toggles", this::suggestToggles);
+    }
+
+    @NotNull
+    private Collection<String> suggestScripts(@NotNull BukkitCommandCompletionContext context) {
+        Buscript scriptAPI = this.plugin.getScriptAPI();
+        if (scriptAPI == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(scriptAPI.getScriptFolder().listFiles())
+                .unordered()
+                .filter(File::isFile)
+                .map(File::getName)
+                .filter(fileName -> !fileName.equals("scripts.bin"))
+                .collect(Collectors.toList());
     }
 
     @NotNull
