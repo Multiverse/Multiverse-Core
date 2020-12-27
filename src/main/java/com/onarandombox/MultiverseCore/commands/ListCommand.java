@@ -36,7 +36,7 @@ public class ListCommand extends MultiverseCommand {
 
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
-    @Syntax("[page]")
+    @Syntax("[filter] [page]")
     @Description("Displays a listing of all worlds that you can enter.")
     public void onListCommand(@NotNull CommandSender sender,
                               @Nullable @Optional Player player,

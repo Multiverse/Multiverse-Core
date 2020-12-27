@@ -39,6 +39,9 @@ public class DebugCommand extends MultiverseCommand {
     @Syntax("<level>")
     @Description("Change debug level.")
     public void onChangeDebugCommand(@NotNull CommandSender sender,
+
+                                     @Syntax("<level>")
+                                     @Description("Set debug mode level, 0 to 3.")
                                      @NotNull @Single String debugLevel) {
 
         int parsedLevel = parseDebugLevel(debugLevel);

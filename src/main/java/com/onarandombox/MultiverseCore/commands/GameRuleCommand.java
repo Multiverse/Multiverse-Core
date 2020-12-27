@@ -38,6 +38,9 @@ public class GameRuleCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds")
     @Description("See the list gamerules values for a given world.")
     public void onGameRulesCommand(@NotNull CommandSender sender,
+
+                                   @Syntax("[world]")
+                                   @Description("World you want to see game rule info.")
                                    @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
         World CBWorld = world.getCBWorld();
@@ -66,7 +69,13 @@ public class GameRuleCommand extends MultiverseCommand {
     @Description("Allows a player to set a gamerule for a given world.")
     public <T> void onGameRuleChangeCommand(@NotNull CommandSender sender,
                                             @NotNull Player player,
+
+                                            @Syntax("<rule> <value>")
+                                            @Description("Game rule property and value you want to change to.")
                                             @NotNull GameRuleProperty<T> property,
+
+                                            @Syntax("[world]")
+                                            @Description("World you want to set this game rule.")
                                             @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
         if (world.getCBWorld().setGameRule(property.getGameRule(), property.getValue())) {

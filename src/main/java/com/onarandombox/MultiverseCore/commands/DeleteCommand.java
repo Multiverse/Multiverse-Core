@@ -34,7 +34,13 @@ public class DeleteCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds|@unloadedWorlds")
     @Description("Deletes a world on your server PERMANENTLY.")
     public void onDeleteCommand(@NotNull CommandSender sender,
-                                @NotNull @Single @Flags("trim") @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
+
+                                @Syntax("<world>")
+                                @Description("Multiverse world you want to delete.")
+                                @NotNull
+                                @Single
+                                @Flags("trim")
+                                @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(
                 sender,

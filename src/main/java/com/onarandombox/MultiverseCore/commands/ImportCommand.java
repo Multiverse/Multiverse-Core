@@ -34,12 +34,21 @@ public class ImportCommand extends MultiverseCommand {
 
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
-    @Syntax("<world> <env> -g [generator[:id]] [-n]")
+    @Syntax("<name> <env> -g [generator[:id]] [-n]")
     @CommandCompletion("@potentialWorlds @environments") //TODO ACF: Add flags tab-complete
-    @Description("Imports a new world of the specified type.")
+    @Description("Imports a new world into multiverse.")
     public void onImportCommand(@NotNull CommandSender sender,
+
+                                @Syntax("<name>")
+                                @Description("Folder name of the world.")
                                 @NotNull @Flags("trim") @Conditions("importableWorldName") String worldName,
+
+                                @Syntax("<env>")
+                                @Description("The world's environment. See: /mv env")
                                 @NotNull World.Environment environment,
+
+                                @Syntax("-g [generator[:id]] [-n]")
+                                @Description("Other world settings. See: http://gg.gg/nn8c2")
                                 @Nullable @Optional String[] flagsArray) {
 
         WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);

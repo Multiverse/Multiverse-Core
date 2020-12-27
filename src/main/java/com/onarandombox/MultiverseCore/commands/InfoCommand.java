@@ -41,7 +41,13 @@ public class InfoCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds @range:1-3")
     @Description("")
     public void onInfoCommand(@NotNull CommandSender sender,
+
+                              @Syntax("[world]")
+                              @Description("World you want to see info.")
                               @NotNull @Flags("other,defaultself,fallbackself") MultiverseWorld world,
+
+                              @Syntax("[page]")
+                              @Description("Info page to display.")
                               @Default("1") int page) {
 
         PageDisplay pageDisplay = new PageDisplay(

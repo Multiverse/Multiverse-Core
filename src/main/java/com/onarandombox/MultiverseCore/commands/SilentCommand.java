@@ -34,8 +34,8 @@ public class SilentCommand extends MultiverseCommand {
 
     @Subcommand("silent")
     @CommandPermission("multiverse.core.silent")
-    @Syntax("<true|false|on|off>")
-    @CommandCompletion("true|false|on|off")
+    @Syntax("<true|false>")
+    @CommandCompletion("true|false")
     @Description("Reduces the amount of startup messages.")
     public void onChangeSilentCommand(@NotNull CommandSender sender,
                                       boolean silent) {

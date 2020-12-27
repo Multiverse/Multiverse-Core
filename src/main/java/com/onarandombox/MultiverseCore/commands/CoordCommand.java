@@ -36,6 +36,9 @@ public class CoordCommand extends MultiverseCommand {
     @CommandCompletion("@players")
     @Description("Detailed information on the player's where abouts.")
     public void onCoorCommand(@NotNull CommandSender sender,
+
+                              @Syntax("[player]")
+                              @Description("Player you want coordinate info of.")
                               @NotNull
                               @Flags("other,defaultself")
                               @Conditions("selfOtherPerm:multiverse.core.coord") PlayerWorld targetPlayer) {

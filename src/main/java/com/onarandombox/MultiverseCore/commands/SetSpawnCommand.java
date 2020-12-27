@@ -40,7 +40,10 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onSetSpawnCommand(@NotNull CommandSender sender,
+
                                       //TODO ACF: Split parameter into individual attributes.
+                                      @Syntax("[world x y z [yaw pitch]]")
+                                      @Description("New location of spawn.")
                                       @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);
@@ -52,7 +55,10 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onModifySetSpawnCommand(@NotNull CommandSender sender,
-                                            @NotNull @Flags("other") Location location) {
+
+                                            @Syntax("[world x y z [yaw pitch]]")
+                                            @Description("New location of spawn.")
+                                            @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);
         }
@@ -67,7 +73,10 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onModifySetSpawnCommand(@NotNull CommandSender sender,
-                                            @NotNull @Flags("other") Location location) {
+
+                                            @Syntax("[world x y z [yaw pitch]]")
+                                            @Description("New location of spawn.")
+                                            @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);
         }
@@ -82,13 +91,18 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onAliasSetSpawnCommand(@NotNull CommandSender sender,
-                                           @NotNull @Flags("other") Location location) {
+
+                                           @Syntax("[world x y z [yaw pitch]]")
+                                           @Description("New location of spawn.")
+                                           @NotNull @Flags("other,defaultself,fallbackself") Location location) {
 
             doSpawnSet(sender, location);
         }
     }
 
-    private void doSpawnSet(@NotNull CommandSender sender, @NotNull Location location) {
+    private void doSpawnSet(@NotNull CommandSender sender,
+                            @NotNull Location location) {
+
         World bukkitWorld = location.getWorld();
         if (bukkitWorld == null) {
             sender.sendMessage("No world found for the spawn location your tried to set.");

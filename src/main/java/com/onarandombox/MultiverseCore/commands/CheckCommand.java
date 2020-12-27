@@ -33,7 +33,13 @@ public class CheckCommand extends MultiverseCommand {
     @CommandCompletion("@players @destinations|@MVWorlds")
     @Description("Checks to see if a player can go to a destination. Prints debug if false.")
     public void onCheckCommand(@NotNull CommandSender sender,
+
+                               @Syntax("[player]")
+                               @Description("Player to check destination on.")
                                @NotNull @Flags("other,defaultself,fallbackself") Player player,
+
+                               @Syntax("<destination>")
+                               @Description("Location, can be a world name.")
                                @NotNull MVDestination destination) {
 
         this.plugin.getMVPerms().tellMeWhyICantDoThis(sender, player, destination);

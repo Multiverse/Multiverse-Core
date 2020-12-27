@@ -39,10 +39,13 @@ public class SpawnCommand extends MultiverseCommand {
         @Syntax("[player]")
         @CommandCompletion("@players")
         @Description("Teleport another player to the spawn of the world they are in.")
-        public void onOtherSpawnCommand(@NotNull CommandSender sender,
-                                        @NotNull
-                                        @Flags("other|defaultself")
-                                        @Conditions("selfOtherPerm:multiverse.core.spawn") PlayerWorld targetPlayer) {
+        public void onSpawnCommand(@NotNull CommandSender sender,
+
+                                   @Syntax("[player]")
+                                   @Description("Target player to teleport to spawn.")
+                                   @NotNull
+                                   @Flags("other|defaultself")
+                                   @Conditions("selfOtherPerm:multiverse.core.spawn") PlayerWorld targetPlayer) {
 
             doSpawn(sender, targetPlayer.getPlayer(), targetPlayer.getWorld());
         }
@@ -54,10 +57,13 @@ public class SpawnCommand extends MultiverseCommand {
         @Syntax("[player]")
         @CommandCompletion("@players")
         @Description("Teleport another player to the spawn of the world they are in.")
-        public void onOtherSpawnCommand(@NotNull CommandSender sender,
-                                        @NotNull
-                                        @Flags("other|defaultself")
-                                        @Conditions("selfOtherPerm:multiverse.core.spawn") PlayerWorld targetPlayer) {
+        public void onSpawnCommand(@NotNull CommandSender sender,
+
+                                   @Syntax("[player]")
+                                   @Description("Target player to teleport to spawn.")
+                                   @NotNull
+                                   @Flags("other|defaultself")
+                                   @Conditions("selfOtherPerm:multiverse.core.spawn") PlayerWorld targetPlayer) {
 
             doSpawn(sender, targetPlayer.getPlayer(), targetPlayer.getWorld());
         }

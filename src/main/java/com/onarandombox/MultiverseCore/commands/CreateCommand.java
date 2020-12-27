@@ -38,8 +38,17 @@ public class CreateCommand extends MultiverseCommand {
     @CommandCompletion("@empty @environments") //TODO ACF: Add flags tab-complete
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
+
+                                @Syntax("<name>")
+                                @Description("New world name.")
                                 @NotNull @Flags("trim") @Conditions("creatableWorldName") String worldName,
+
+                                @Syntax("<env>")
+                                @Description("The world's environment. See: /mv env")
                                 @NotNull World.Environment environment,
+
+                                @Syntax("[world-flags]")
+                                @Description("Other world settings. See: http://gg.gg/nn8bl")
                                 @Nullable @Optional String[] flagsArray) {
 
         WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);

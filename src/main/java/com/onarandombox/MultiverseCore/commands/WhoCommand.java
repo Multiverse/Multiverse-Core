@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
@@ -39,9 +40,12 @@ public class WhoCommand extends MultiverseCommand {
     @Syntax("[filter]")
     public void onWhoAllCommand(@NotNull CommandSender sender,
                                 @Nullable @Optional Player player,
+
+                                @Syntax("[filter]")
+                                @Description("Filter the player names.")
                                 @Nullable @Optional String filter) {
 
-        final Set<Player> visiblePlayers = getVisiblePlayers(player);
+        Set<Player> visiblePlayers = getVisiblePlayers(player);
 
         sender.sendMessage(ChatColor.AQUA + "--- Worlds and their players --- "
                 + visiblePlayers.size() + "/" + this.plugin.getServer().getMaxPlayers());

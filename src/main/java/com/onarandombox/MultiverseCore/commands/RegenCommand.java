@@ -32,12 +32,17 @@ public class RegenCommand extends MultiverseCommand {
 
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
-    @Syntax("<world>")
+    @Syntax("<world> [-s [seed]]")
     @CommandCompletion("@MVWorlds") //TODO ACF: Add flags tab-complete
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(@NotNull CommandSender sender,
-                               //TODO: Allow regen of unloaded worlds.
+
+                               @Syntax("<world>")
+                               @Description("World that you want to regen.")
                                @NotNull @Flags("other") MultiverseWorld world,
+
+                               @Syntax("[-s [seed]]")
+                               @Description("Other world settings. See: http://gg.gg/nn8lk")
                                @Nullable @Optional String[] flagsArray) {
 
         WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);

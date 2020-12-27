@@ -52,7 +52,13 @@ public class VersionCommand extends MultiverseCommand {
     @CommandCompletion("@pasteTypes --include-plugin-list")
     @Description("Dumps version info to the console, optionally to pastal service.")
     public void onVersionCommand(@NotNull CommandSender sender,
+
+                                 @Syntax("[paste-service]")
+                                 @Description("Website to upload your version info to.")
                                  @NotNull PasteServiceType pasteType,
+
+                                 @Syntax("[--include-plugin-list]")
+                                 @Description("Whether you want to have plugins list in version info.")
                                  @Nullable @Optional String includePlugin) {
 
         if (sender instanceof Player) {

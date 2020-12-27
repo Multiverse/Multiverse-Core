@@ -51,7 +51,13 @@ public class TeleportCommand extends MultiverseCommand {
         @CommandCompletion("@players|@MVWorlds|@destinations @MVWorlds|@destinations")
         @Description("Allows you to the teleport to a location on your server!")
         public void doTeleportCommand(@NotNull CommandSender sender,
+
+                                      @Syntax("[player]")
+                                      @Description("Target player to teleport.")
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
+
+                                      @Syntax("<destination>")
+                                      @Description("Location, can be a world name.")
                                       @NotNull @Flags("type=destination") String destinationName) {
 
             doTeleport(sender, player, destinationName);
@@ -71,7 +77,13 @@ public class TeleportCommand extends MultiverseCommand {
         @CommandCompletion("@players|@MVWorlds|@destinations @MVWorlds|@destinations")
         @Description("Alias for /mv tp")
         public void doTeleportCommand(@NotNull CommandSender sender,
+
+                                      @Syntax("[player]")
+                                      @Description("Target player to teleport.")
                                       @NotNull @Flags("other,defaultself,fallbackself") Player player,
+
+                                      @Syntax("<destination>")
+                                      @Description("Location, can be a world name.")
                                       @NotNull @Flags("type=destination") String destinationName) {
 
             doTeleport(sender, player, destinationName);
