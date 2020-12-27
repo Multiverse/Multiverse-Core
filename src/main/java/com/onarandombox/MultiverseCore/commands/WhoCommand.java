@@ -62,10 +62,18 @@ public class WhoCommand extends MultiverseCommand {
     @CommandCompletion("@MVWorlds")
     public void onWhoCommand(@NotNull CommandSender sender,
                              @Nullable @Optional Player player,
-                             @NotNull @Flags("other,defaultself,fallbackself") @Conditions("hasWorldAccess") MultiverseWorld world,
+
+                             @Syntax("[world]")
+                             @Description("World to show player list.")
+                             @NotNull
+                             @Flags("other,defaultself,fallbackself")
+                             @Conditions("hasWorldAccess") MultiverseWorld world,
+
+                             @Syntax("[filter]")
+                             @Description("Filter the player names.")
                              @Nullable @Optional String filter) {
 
-        final Set<Player> visiblePlayers = getVisiblePlayers(player);
+        Set<Player> visiblePlayers = getVisiblePlayers(player);
 
         sender.sendMessage(String.format("%s--- Players in %s%s ---", ChatColor.AQUA,
                 world.getColoredWorldString(), ChatColor.AQUA));
