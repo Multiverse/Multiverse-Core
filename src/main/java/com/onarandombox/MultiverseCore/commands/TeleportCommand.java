@@ -102,8 +102,7 @@ public class TeleportCommand extends MultiverseCommand {
                             @NotNull Player teleportee,
                             @NotNull String destinationName) {
 
-        destinationName = parseCannonDestination(teleportee, destinationName);
-        MVDestination destination = this.plugin.getDestFactory().getDestination(destinationName);
+        MVDestination destination = this.plugin.getDestFactory().getPlayerAwareDestination(destinationName, teleportee);
 
         MVTeleportEvent teleportEvent = new MVTeleportEvent(destination, teleportee, teleporter, true);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
@@ -163,28 +162,6 @@ public class TeleportCommand extends MultiverseCommand {
         }
 
         // else: Player was teleported successfully (or the tp event was fired I should say)
-    }
-
-    @NotNull
-    private String parseCannonDestination(@NotNull Player teleportee,
-                                          @NotNull String destinationName) {
-
-        if (!destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
-            return destinationName;
-        }
-
-        String[] cannonSpeed = destinationName.split("-");
-        try {
-            double speed = Double.parseDouble(cannonSpeed[1]);
-            destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX()
-                    + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":"
-                    + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
-        }
-        catch (Exception e) {
-            destinationName = "i:invalid";
-        }
-
-        return destinationName;
     }
 
     private boolean checkSendPermissions(@NotNull CommandSender teleporter,

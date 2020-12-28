@@ -11,8 +11,10 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +34,31 @@ public class DestinationFactory {
         this.destList = new HashMap<>();
         this.destPermissions = new HashSet<>();
         this.permTools = new PermissionTools(plugin);
+    }
+
+    public MVDestination getPlayerAwareDestination(String destination, Player player) {
+        return getDestination(parseCannonDest(player, destination));
+    }
+
+    private String parseCannonDest(@NotNull Player teleportee,
+                                   @NotNull String destinationName) {
+
+        if (!destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
+            return destinationName;
+        }
+
+        String[] cannonSpeed = destinationName.split("-");
+        try {
+            double speed = Double.parseDouble(cannonSpeed[1]);
+            destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX()
+                    + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":"
+                    + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
+        }
+        catch (Exception e) {
+            destinationName = "i:invalid";
+        }
+
+        return destinationName;
     }
 
     /**
