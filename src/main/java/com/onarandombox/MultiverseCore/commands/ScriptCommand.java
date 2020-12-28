@@ -33,7 +33,7 @@ public class ScriptCommand extends MultiverseCommand {
     @Subcommand("script")
     @CommandPermission("multiverse.core.script")
     @Syntax("<script> [player]")
-    @CommandCompletion("@scripts @players") //TODO ACF: tab-complete possible scripts.
+    @CommandCompletion("@scripts @players")
     @Description("Runs a script.")
     public void onScriptCommand(@NotNull CommandSender sender,
 

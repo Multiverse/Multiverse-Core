@@ -35,7 +35,7 @@ public class ImportCommand extends MultiverseCommand {
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @Syntax("<name> <env> -g [generator[:id]] [-n]")
-    @CommandCompletion("@potentialWorlds @environments") //TODO ACF: Add flags tab-complete
+    @CommandCompletion("@potentialWorlds @environments -g|-n")
     @Description("Imports a new world into multiverse.")
     public void onImportCommand(@NotNull CommandSender sender,
 

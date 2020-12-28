@@ -33,7 +33,7 @@ public class RegenCommand extends MultiverseCommand {
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @Syntax("<world> [-s [seed]]")
-    @CommandCompletion("@MVWorlds") //TODO ACF: Add flags tab-complete
+    @CommandCompletion("@MVWorlds -s @empty")
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(@NotNull CommandSender sender,
 
