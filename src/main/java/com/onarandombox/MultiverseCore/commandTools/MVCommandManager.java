@@ -159,8 +159,13 @@ public class MVCommandManager extends PaperCommandManager {
             return true;
         }
 
-        return Arrays.stream(permission.split(","))
-                .anyMatch(perm -> perm.equals("AND") || issuer.hasPermission(perm));
+        if (permission.startsWith("AND:")) {
+            return Arrays.stream(PERMISSION_SPLIT.split(permission.substring(4)))
+                    .allMatch(issuer::hasPermission);
+        }
+
+        return Arrays.stream(PERMISSION_SPLIT.split(permission))
+                .anyMatch(issuer::hasPermission);
     }
 
     public CommandQueueManager getQueueManager() {
