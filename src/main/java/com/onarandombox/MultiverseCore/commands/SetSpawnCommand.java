@@ -8,11 +8,13 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -24,6 +26,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SetSpawnCommand extends MultiverseCommand {
 
@@ -40,13 +43,18 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onSetSpawnCommand(@NotNull CommandSender sender,
+                                      @Nullable @Optional Player player,
 
-                                      //TODO ACF: Split parameter into individual attributes.
                                       @Syntax("[world x y z [yaw pitch]]")
                                       @Description("New location of spawn.")
-                                      @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+                                      @NotNull @Flags("other,defaultself") MultiverseWorld world,
+                                      @Nullable @Optional Double x,
+                                      @Nullable @Optional Double y,
+                                      @Nullable @Optional Double z,
+                                      @Nullable @Optional Float yaw,
+                                      @Nullable @Optional Float pitch) {
 
-            doSpawnSet(sender, location);
+            doSpawnSet(sender, world, parseLocation(player, world, x, y, z, yaw, pitch));
         }
 
         @Subcommand("modify set spawn")
@@ -55,30 +63,18 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
         @Description("Sets the spawn for the current world.")
         public void onModifySetSpawnCommand(@NotNull CommandSender sender,
+                                            @Nullable @Optional Player player,
 
                                             @Syntax("[world x y z [yaw pitch]]")
                                             @Description("New location of spawn.")
-                                            @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+                                            @NotNull @Flags("other,defaultself") MultiverseWorld world,
+                                            @Nullable @Optional Double x,
+                                            @Nullable @Optional Double y,
+                                            @Nullable @Optional Double z,
+                                            @Nullable @Optional Float yaw,
+                                            @Nullable @Optional Float pitch) {
 
-            doSpawnSet(sender, location);
-        }
-    }
-
-    @CommandAlias("mvm")
-    public class AliasModifySetSpawn extends BaseCommand {
-
-        @Subcommand("set spawn")
-        @CommandPermission("multiverse.core.spawn.set")
-        @Syntax("[world x y z [yaw pitch]]")
-        @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
-        @Description("Sets the spawn for the current world.")
-        public void onModifySetSpawnCommand(@NotNull CommandSender sender,
-
-                                            @Syntax("[world x y z [yaw pitch]]")
-                                            @Description("New location of spawn.")
-                                            @NotNull @Flags("other,defaultself,fallbackself") Location location) {
-
-            doSpawnSet(sender, location);
+            doSpawnSet(sender, world, parseLocation(player, world, x, y, z, yaw, pitch));
         }
     }
 
@@ -88,32 +84,66 @@ public class SetSpawnCommand extends MultiverseCommand {
         @CommandAlias("mvsetspawn")
         @CommandPermission("multiverse.core.spawn.set")
         @Syntax("[world x y z [yaw pitch]]")
-        @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch")
+        @CommandCompletion("@MVWorlds @location:x @location:y @location:z @location:yaw @location:pitch @empty")
         @Description("Sets the spawn for the current world.")
         public void onAliasSetSpawnCommand(@NotNull CommandSender sender,
+                                           @Nullable @Optional Player player,
 
                                            @Syntax("[world x y z [yaw pitch]]")
                                            @Description("New location of spawn.")
-                                           @NotNull @Flags("other,defaultself,fallbackself") Location location) {
+                                           @NotNull @Flags("other,defaultself") MultiverseWorld world,
+                                           @Nullable @Optional Double x,
+                                           @Nullable @Optional Double y,
+                                           @Nullable @Optional Double z,
+                                           @Nullable @Optional Float yaw,
+                                           @Nullable @Optional Float pitch) {
 
-            doSpawnSet(sender, location);
+            doSpawnSet(sender, world, parseLocation(player, world, x, y, z, yaw, pitch));
         }
     }
 
+    @NotNull
+    private Location parseLocation(@Nullable Player player,
+                                   @NotNull MultiverseWorld world,
+                                   @Nullable Double x,
+                                   @Nullable Double y,
+                                   @Nullable Double z,
+                                   @Nullable Float yaw,
+                                   @Nullable Float pitch) {
+
+        if (x == null) {
+            if (player == null) {
+                throw new InvalidCommandArgument("You need to specify a location from console.");
+            }
+            return player.getLocation();
+        }
+
+        if (y == null) {
+            throw new InvalidCommandArgument("You need to specify y and z axis as well.");
+        }
+
+        if (z == null) {
+            throw new InvalidCommandArgument("You need to specify z axis as well.");
+        }
+
+        if (yaw == null) {
+            return new Location(world.getCBWorld(), x, y, z);
+        }
+
+        if (pitch == null) {
+            throw new InvalidCommandArgument("You need to specify pitch as well.");
+        }
+
+        return new Location(world.getCBWorld(), x, y, z, yaw, pitch);
+    }
+
     private void doSpawnSet(@NotNull CommandSender sender,
+                            @NotNull MultiverseWorld world,
                             @NotNull Location location) {
 
         World bukkitWorld = location.getWorld();
         if (bukkitWorld == null) {
             sender.sendMessage("No world found for the spawn location your tried to set.");
-            return;
-        }
-
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(bukkitWorld);
-        if (world == null) {
-            bukkitWorld.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            sender.sendMessage("Multiverse does not know about this world, only X,Y and Z set.");
-            sender.sendMessage("Please import it (see /mv import) to set the spawn fully with Pitch and Yaw.");
             return;
         }
 

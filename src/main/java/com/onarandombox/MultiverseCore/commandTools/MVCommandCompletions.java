@@ -9,13 +9,10 @@ package com.onarandombox.MultiverseCore.commandTools;
 
 import buscript.Buscript;
 import co.aikar.commands.BukkitCommandCompletionContext;
-import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
-import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -27,16 +24,13 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -170,7 +164,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return Collections.emptyList();
         }
 
-        Logging.info("location");
         Player player = context.getPlayer();
         if (player == null) {
             return Collections.emptyList();
@@ -202,7 +195,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 return Collections.emptyList();
         }
 
-        return Arrays.asList("~", df.format(coordValue));
+        return Collections.singletonList(df.format(coordValue));
     }
 
     @NotNull
