@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commandTools;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
@@ -15,6 +16,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.BedCommand;
@@ -43,6 +45,7 @@ import com.onarandombox.MultiverseCore.commands.ScriptCommand;
 import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.commands.SilentCommand;
 import com.onarandombox.MultiverseCore.commands.SpawnCommand;
+import com.onarandombox.MultiverseCore.commands.SubModulesCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.UsageCommand;
@@ -54,7 +57,9 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -62,6 +67,7 @@ public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
     private final CommandQueueManager commandQueueManager;
+    private final Map<String, BaseCommand> subModuleRootCommands;
 
     private static final Pattern PERMISSION_SPLIT = Pattern.compile(",");
 
@@ -69,6 +75,7 @@ public class MVCommandManager extends PaperCommandManager {
         super(plugin);
         this.plugin = plugin;
         this.commandQueueManager = new CommandQueueManager(plugin);
+        this.subModuleRootCommands = new HashMap<>(3);
         new MVCommandConditions(plugin, getCommandConditions());
 
         enableUnstableAPI("help");
@@ -106,6 +113,20 @@ public class MVCommandManager extends PaperCommandManager {
         registerCommand(new AnchorCommand(this.plugin));
         registerCommand(new WhoCommand(this.plugin));
         registerCommand(new RootCommand(this.plugin));
+
+        addAvailableSubModule("mvnp", new SubModulesCommand.NetherPortals());
+        addAvailableSubModule("mvp", new SubModulesCommand.Portals());
+        addAvailableSubModule("mvinv", new SubModulesCommand.Inventories());
+    }
+
+    private void addAvailableSubModule(String moduleName, BaseCommand cmd) {
+        subModuleRootCommands.put(moduleName, cmd);
+        registerCommand(cmd);
+    }
+
+    public void registerSubModule(String moduleName, BaseCommand cmd) {
+        unregisterCommand(subModuleRootCommands.remove(moduleName));
+        registerCommand(cmd);
     }
 
     @Override
@@ -190,14 +211,5 @@ public class MVCommandManager extends PaperCommandManager {
 
         sender.sendMessage(colour.getColorThis() + description.getName() + ChatColor.DARK_GRAY + " | " + colour.getColorThat() + "v" + description.getVersion());
         sender.sendMessage(ChatColor.DARK_GREEN + "See " + ChatColor.GREEN + "/" + baseCommand + " help " + ChatColor.DARK_GREEN + "for commands available.");
-    }
-
-    public void suggestDownload(@NotNull CommandSender sender,
-                                 @NotNull String pluginName,
-                                 @NotNull ColourAlternator colours,
-                                 @NotNull String downloadLink) {
-
-        sender.sendMessage(colours.getColorThis() + pluginName + ChatColor.WHITE + " is not installed on this server. You can learn more and download it at:");
-        sender.sendMessage(colours.getColorThat() + downloadLink);
     }
 }
