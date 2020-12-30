@@ -15,6 +15,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
@@ -416,14 +417,14 @@ public class MVCommandContexts extends PaperCommandContexts {
     private PageFilter derivePageFilter(@NotNull BukkitCommandExecutionContext context) {
         final int argLength = context.getArgs().size();
         if (argLength == 0) {
-            return new PageFilter(null, 1);
+            return new PageFilter(new ContentFilter(null), 1);
         }
         if (argLength == 1) {
             String pageOrFilter = context.popFirstArg();
             Optional<Integer> page = tryParseInt(pageOrFilter);
             return page.isPresent()
-                    ? new PageFilter(null, page.get())
-                    : new PageFilter(pageOrFilter, 1);
+                    ? new PageFilter(new ContentFilter(null), page.get())
+                    : new PageFilter(new ContentFilter(pageOrFilter), 1);
         }
 
         String filter = context.popFirstArg();
@@ -432,7 +433,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (!page.isPresent()) {
             throw new InvalidCommandArgument("'" + pageString + "' is not a number.", false);
         }
-        return new PageFilter(filter, page.get());
+        return new PageFilter(new ContentFilter(filter), page.get());
     }
 
     private Optional<Integer> tryParseInt(String value) {

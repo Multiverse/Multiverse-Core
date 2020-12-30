@@ -15,7 +15,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.PageDisplay;
 import com.onarandombox.MultiverseCore.commandTools.PageFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -63,7 +63,7 @@ public class ListCommand extends MultiverseCommand {
                 pageFilter
         );
 
-        pageDisplay.showPageAsync(this.plugin);
+        pageDisplay.showContentAsync(this.plugin);
     }
 
     private boolean canSeeHidden(Player player, MultiverseWorld world) {

@@ -2,7 +2,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

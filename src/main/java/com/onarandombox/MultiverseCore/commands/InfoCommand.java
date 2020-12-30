@@ -17,8 +17,8 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.ColourAlternator;
-import com.onarandombox.MultiverseCore.commandTools.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.PageDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -59,7 +59,7 @@ public class InfoCommand extends MultiverseCommand {
                 new ColourAlternator(ChatColor.YELLOW, ChatColor.AQUA)
         );
 
-        pageDisplay.showPageAsync(this.plugin);
+        pageDisplay.showContentAsync(this.plugin);
     }
 
     private List<String> buildWorldInfoContent(MultiverseWorld world) {

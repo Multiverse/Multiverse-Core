@@ -7,16 +7,20 @@
 
 package com.onarandombox.MultiverseCore.commandTools;
 
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import org.jetbrains.annotations.NotNull;
+
 public class PageFilter {
-    private final String filter;
+    private final ContentFilter filter;
     private final int page;
 
-    public PageFilter(String filter, int page) {
+    public PageFilter(@NotNull ContentFilter filter,
+                      @NotNull int page) {
         this.filter = filter;
         this.page = page;
     }
 
-    public String getFilter() {
+    public ContentFilter getFilter() {
         return filter;
     }
 

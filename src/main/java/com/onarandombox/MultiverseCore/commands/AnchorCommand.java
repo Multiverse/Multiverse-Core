@@ -17,8 +17,8 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.ColourAlternator;
-import com.onarandombox.MultiverseCore.commandTools.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.PageDisplay;
 import com.onarandombox.MultiverseCore.commandTools.PageFilter;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import org.bukkit.ChatColor;
@@ -108,6 +108,6 @@ public class AnchorCommand extends MultiverseCommand {
                 new ColourAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA)
         );
 
-        pageDisplay.showPageAsync(this.plugin);
+        pageDisplay.showContentAsync(this.plugin);
     }
 }
