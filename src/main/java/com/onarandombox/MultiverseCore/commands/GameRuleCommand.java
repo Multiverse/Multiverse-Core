@@ -17,12 +17,21 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.GameRuleProperty;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.kvpair.KeyValueDisplay;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @CommandAlias("mv")
 @Subcommand("gamerule")
@@ -43,23 +52,30 @@ public class GameRuleCommand extends MultiverseCommand {
                                    @Description("World you want to see game rule info.")
                                    @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
-        World CBWorld = world.getCBWorld();
-        StringBuilder gameRules = new StringBuilder();
+        KeyValueDisplay display = new KeyValueDisplay(
+                this.plugin,
+                sender,
+                "=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===",
+                getGameRuleMap(world),
+                new ContentFilter(null),
+                new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
+                ": "
+        );
 
-        for (String gameRule : CBWorld.getGameRules()) {
-            if (gameRules.length() != 0) {
-                gameRules.append(ChatColor.WHITE).append(", ");
-            }
-            gameRules.append(ChatColor.AQUA)
-                    .append(gameRule)
-                    .append(ChatColor.WHITE)
-                    .append(": ")
-                    .append(ChatColor.GREEN)
-                    .append(CBWorld.getGameRuleValue(GameRule.getByName(gameRule)));
-        }
+        display.showContentAsync();
+    }
 
-        sender.sendMessage("=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===");
-        sender.sendMessage(gameRules.toString());
+    private ContentCreator<Map<String, Object>> getGameRuleMap(MultiverseWorld world) {
+        return () -> new HashMap<String, Object>() {{
+            Arrays.stream(GameRule.values())
+                    .unordered()
+                    .forEach(gr -> {
+                        Object value = world.getCBWorld().getGameRuleValue(gr);
+                        if (value != null) {
+                            put(gr.getName(), value.toString());
+                        }
+                    });
+        }};
     }
 
     @Subcommand("set")
