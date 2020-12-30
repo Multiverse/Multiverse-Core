@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /** A factory class that will create destinations from specific strings. */
 public class DestinationFactory {
@@ -28,6 +29,8 @@ public class DestinationFactory {
     private final Map<String, Class<? extends MVDestination>> destList;
     private final Set<String> destPermissions;
     private final PermissionTools permTools;
+
+    private static final Pattern CANNON_PATTERN = Pattern.compile("(?i)cannon-[\\d]+(\\.[\\d]+)?");
 
     public DestinationFactory(MultiverseCore plugin) {
         this.plugin = plugin;
@@ -37,15 +40,19 @@ public class DestinationFactory {
     }
 
     public MVDestination getPlayerAwareDestination(String destination, Player player) {
-        return getDestination(parseCannonDest(player, destination));
+        if (CANNON_PATTERN.matcher(destination).matches()) {
+            return getDestination(parseCannonDest(destination, player));
+        }
+
+        Player targetPlayer = this.plugin.getMVCommandManager().getCommandContexts().getPlayerFromValue(player, destination);
+        if (targetPlayer != null) {
+            return getDestination("pl:" + targetPlayer.getName());
+        }
+
+        return getDestination(destination);
     }
 
-    private String parseCannonDest(@NotNull Player teleportee,
-                                   @NotNull String destinationName) {
-
-        if (!destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
-            return destinationName;
-        }
+    private String parseCannonDest(@NotNull String destinationName, @NotNull Player teleportee) {
 
         String[] cannonSpeed = destinationName.split("-");
         try {

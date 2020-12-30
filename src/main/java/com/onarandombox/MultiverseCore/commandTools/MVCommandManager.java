@@ -130,11 +130,11 @@ public class MVCommandManager extends PaperCommandManager {
     }
 
     @Override
-    public synchronized CommandContexts<BukkitCommandExecutionContext> getCommandContexts() {
+    public synchronized MVCommandContexts getCommandContexts() {
         if (this.contexts == null) {
             this.contexts = new MVCommandContexts(this, plugin);
         }
-        return this.contexts;
+        return (MVCommandContexts) this.contexts;
     }
 
     @Override

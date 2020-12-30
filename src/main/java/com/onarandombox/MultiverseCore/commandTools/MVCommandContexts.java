@@ -188,8 +188,8 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     @Nullable
-    private Player getPlayerFromValue(@NotNull CommandSender sender,
-                                      @Nullable String playerIdentifier) {
+    public Player getPlayerFromValue(@NotNull CommandSender sender,
+                                     @Nullable String playerIdentifier) {
 
         if (playerIdentifier == null) {
             return null;
