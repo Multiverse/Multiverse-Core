@@ -18,7 +18,8 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
-import com.onarandombox.MultiverseCore.commandTools.display.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commandTools.PageFilter;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import org.bukkit.ChatColor;
@@ -81,33 +82,42 @@ public class AnchorCommand extends MultiverseCommand {
     public void onListAnchorCommand(@NotNull CommandSender sender,
                                     @NotNull PageFilter pageFilter) {
 
-        Set<String> anchors = (sender instanceof Player)
-                ? this.anchorManager.getAnchors((Player) sender)
-                : this.anchorManager.getAllAnchors();
-
-        List<String> anchorContent = new ArrayList<>();
-        for (String anchor : anchors) {
-            Location anchorLocation = this.anchorManager.getAnchorLocation(anchor);
-            World world = anchorLocation.getWorld(); // this.plugin.getMVWorldManager().getMVWorld();
-
-            String locationString = ChatColor.RED + "!!INVALID!!";
-            if (world != null) {
-                MultiverseWorld mvworld = this.plugin.getMVWorldManager().getMVWorld(world);
-                locationString = (mvworld == null)
-                        ? ChatColor.RED + world.getName() + "!!NOT MULTIVERSE WORLD!!"
-                        : mvworld.getColoredWorldString() + " - " + this.plugin.getLocationManipulation().strAxis(anchorLocation);
-            }
-            anchorContent.add(anchor + ": " + locationString);
-        }
-
         PageDisplay pageDisplay = new PageDisplay(
+                this.plugin,
                 sender,
                 ChatColor.LIGHT_PURPLE + "====[ Multiverse Anchor List ]====",
-                anchorContent,
-                pageFilter,
-                new ColourAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA)
+                buildAnchorList(sender),
+                pageFilter.getFilter(),
+                new ColourAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA),
+                pageFilter.getPage(),
+                8
         );
 
-        pageDisplay.showContentAsync(this.plugin);
+        pageDisplay.showContentAsync();
+    }
+
+    private ContentCreator<List<String>> buildAnchorList(@NotNull CommandSender sender) {
+        return () -> {
+            Set<String> anchors = (sender instanceof Player)
+                    ? this.anchorManager.getAnchors((Player) sender)
+                    : this.anchorManager.getAllAnchors();
+
+            List<String> anchorContent = new ArrayList<>();
+            for (String anchor : anchors) {
+                Location anchorLocation = this.anchorManager.getAnchorLocation(anchor);
+                World world = anchorLocation.getWorld(); // this.plugin.getMVWorldManager().getMVWorld();
+
+                String locationString = ChatColor.RED + "!!INVALID!!";
+                if (world != null) {
+                    MultiverseWorld mvworld = this.plugin.getMVWorldManager().getMVWorld(world);
+                    locationString = (mvworld == null)
+                            ? ChatColor.RED + world.getName() + "!!NOT MULTIVERSE WORLD!!"
+                            : mvworld.getColoredWorldString() + " - " + this.plugin.getLocationManipulation().strAxis(anchorLocation);
+                }
+                anchorContent.add(anchor + ": " + locationString);
+            }
+
+            return anchorContent;
+        };
     }
 }

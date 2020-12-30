@@ -16,6 +16,11 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.kvpair.KeyValueDisplay;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -36,18 +41,21 @@ public class ConfigCommand extends MultiverseCommand {
     @Subcommand("list")
     @Description("Show multiverse config values.")
     public void onShowCommand(@NotNull CommandSender sender) {
-        List<String> configList = new ArrayList<>();
-        Map<String, Object> serializedConfig = this.plugin.getMVConfig().serialize();
+        KeyValueDisplay display = new KeyValueDisplay(
+                this.plugin,
+                sender,
+                ChatColor.LIGHT_PURPLE + "===[ Multiverse Config ]===",
+                getConfigMap(),
+                new ContentFilter("first"),
+                new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
+                " = "
+        );
 
-        for (Map.Entry<String, Object> entry : serializedConfig.entrySet()) {
+        display.showContentAsync();
+    }
 
-            configList.add(ChatColor.GREEN + entry.getKey()
-                    + ChatColor.WHITE + " = "
-                    + ChatColor.GOLD + entry.getValue().toString()
-                    + ChatColor.WHITE);
-        }
-
-        sender.sendMessage(String.join(", ", configList));
+    private ContentCreator<Map<String, Object>> getConfigMap() {
+        return () -> this.plugin.getMVConfig().serialize();
     }
 
     @Subcommand("set")

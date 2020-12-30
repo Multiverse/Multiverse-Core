@@ -15,7 +15,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.display.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commandTools.PageFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -42,28 +44,39 @@ public class ListCommand extends MultiverseCommand {
                               @Nullable @Optional Player player,
                               @NotNull PageFilter pageFilter) {
 
-        List<String> worldList =  new ArrayList<>();
-        this.plugin.getMVWorldManager().getMVWorlds().stream()
-                .filter(world -> player == null || this.plugin.getMVPerms().canEnterWorld(player, world))
-                .filter(world -> canSeeHidden(player, world))
-                .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
-                .sorted()
-                .forEach(worldList::add);
-
-        this.plugin.getMVWorldManager().getUnloadedWorlds().stream()
-                .filter(world -> this.plugin.getMVPerms().hasPermission(sender, "multiverse.access." + world, true))
-                .map(world -> ChatColor.GRAY + world + " - UNLOADED")
-                .sorted()
-                .forEach(worldList::add);
-
         PageDisplay pageDisplay = new PageDisplay(
+                this.plugin,
                 sender,
                 ChatColor.LIGHT_PURPLE + "====[ Multiverse World List ]====",
-                worldList,
-                pageFilter
+                getListContents(sender, player),
+                pageFilter.getFilter(),
+                new ColourAlternator(ChatColor.WHITE, ChatColor.WHITE),
+                pageFilter.getPage(),
+                8
         );
 
-        pageDisplay.showContentAsync(this.plugin);
+        pageDisplay.showContentAsync();
+    }
+
+    private ContentCreator<List<String>> getListContents(@NotNull CommandSender sender,
+                                           @Nullable @Optional Player player) {
+        return () -> {
+            List<String> worldList =  new ArrayList<>();
+            plugin.getMVWorldManager().getMVWorlds().stream()
+                    .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))
+                    .filter(world -> canSeeHidden(player, world))
+                    .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
+                    .sorted()
+                    .forEach(worldList::add);
+
+            plugin.getMVWorldManager().getUnloadedWorlds().stream()
+                    .filter(world -> plugin.getMVPerms().hasPermission(sender, "multiverse.access." + world, true))
+                    .map(world -> ChatColor.GRAY + world + " - UNLOADED")
+                    .sorted()
+                    .forEach(worldList::add);
+
+            return worldList;
+        };
     }
 
     private boolean canSeeHidden(Player player, MultiverseWorld world) {

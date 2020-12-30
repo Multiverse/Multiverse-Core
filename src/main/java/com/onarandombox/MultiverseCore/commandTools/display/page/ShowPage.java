@@ -1,17 +1,18 @@
-package com.onarandombox.MultiverseCore.commandTools.display;
+package com.onarandombox.MultiverseCore.commandTools.display.page;
 
-import org.bukkit.ChatColor;
-import org.bukkit.scheduler.BukkitRunnable;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ShowPage extends BukkitRunnable {
+public abstract class ShowPage extends ShowRunnable<List<String>> {
 
     protected PageDisplay display;
     protected final List<Integer> contentToShowIndex;
 
     public ShowPage(PageDisplay display) {
+        super(display);
         this.display = display;
         this.contentToShowIndex = new ArrayList<>();
 
@@ -33,22 +34,12 @@ public abstract class ShowPage extends BukkitRunnable {
         display();
     }
 
-    public void display() {
-        showHeader();
-        showContent();
-    }
-
-    public abstract void calculateContent();
-
-    public abstract boolean validateContent();
-
-    public abstract void showHeader();
-
+    @Override
     public void showContent() {
         ColourAlternator colours = this.display.getColours();
 
         contentToShowIndex.stream()
-                .map(this.display.getContents()::get)
+                .map(this.contents::get)
                 .map(line -> line.equals(PageDisplay.LINE_BREAK_PLACEHOLDER)
                         ? ""
                         : line.replace(PageDisplay.PAGE_PLACEHOLDER, ""))

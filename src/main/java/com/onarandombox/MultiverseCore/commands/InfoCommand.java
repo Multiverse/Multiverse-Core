@@ -18,7 +18,9 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
-import com.onarandombox.MultiverseCore.commandTools.display.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -51,94 +53,98 @@ public class InfoCommand extends MultiverseCommand {
                               @Default("1") int page) {
 
         PageDisplay pageDisplay = new PageDisplay(
+                this.plugin,
                 sender,
                 null,
                 buildWorldInfoContent(world),
+                new ContentFilter(null),
+                new ColourAlternator(ChatColor.YELLOW, ChatColor.AQUA),
                 page,
-                10,
-                new ColourAlternator(ChatColor.YELLOW, ChatColor.AQUA)
+                10
         );
 
-        pageDisplay.showContentAsync(this.plugin);
+        pageDisplay.showContentAsync();
     }
 
-    private List<String> buildWorldInfoContent(MultiverseWorld world) {
-        List<String> contents = new ArrayList<>(38);
+    private ContentCreator<List<String>> buildWorldInfoContent(MultiverseWorld world) {
+        return () -> {
+            List<String> contents = new ArrayList<>(38);
 
-        // Page 1
-        contents.add(parseHeader("General Info"));
-        contents.add(String.format("World Name: %s%s", ChatColor.WHITE, world.getName()));
-        contents.add(String.format("World Alias: %s%s", ChatColor.WHITE,  world.getColoredWorldString()));
-        contents.add(String.format("Game Mode: %s%s", ChatColor.WHITE, world.getGameMode().toString()));
-        contents.add(String.format("Difficulty: %s%s", ChatColor.WHITE, world.getDifficulty().toString()));
+            // Page 1
+            contents.add(parseHeader("General Info"));
+            contents.add(String.format("World Name: %s%s", ChatColor.WHITE, world.getName()));
+            contents.add(String.format("World Alias: %s%s", ChatColor.WHITE,  world.getColoredWorldString()));
+            contents.add(String.format("Game Mode: %s%s", ChatColor.WHITE, world.getGameMode().toString()));
+            contents.add(String.format("Difficulty: %s%s", ChatColor.WHITE, world.getDifficulty().toString()));
 
-        Location spawn = world.getSpawnLocation();
-        contents.add(String.format("Spawn Location: %s%s", ChatColor.WHITE, this.plugin.getLocationManipulation().strCoords(spawn)));
-        contents.add(String.format("World Scale: %s%s", ChatColor.WHITE, world.getScaling()));
-        contents.add(String.format("World Seed: %s%s", ChatColor.WHITE, world.getSeed()));
+            Location spawn = world.getSpawnLocation();
+            contents.add(String.format("Spawn Location: %s%s", ChatColor.WHITE, this.plugin.getLocationManipulation().strCoords(spawn)));
+            contents.add(String.format("World Scale: %s%s", ChatColor.WHITE, world.getScaling()));
+            contents.add(String.format("World Seed: %s%s", ChatColor.WHITE, world.getSeed()));
 
-        String priceString = (world.getPrice() == 0)
-                ? ChatColor.GREEN + "FREE!"
-                : plugin.getEconomist().formatPrice(-world.getPrice(), world.getCurrency());
+            String priceString = (world.getPrice() == 0)
+                    ? ChatColor.GREEN + "FREE!"
+                    : plugin.getEconomist().formatPrice(-world.getPrice(), world.getCurrency());
 
-        contents.add(String.format((world.getPrice() >= 0)
-                        ? "Price to enter this world: %s%s"
-                        : "Reward for entering this world: %s%s", ChatColor.WHITE, priceString));
+            contents.add(String.format((world.getPrice() >= 0)
+                    ? "Price to enter this world: %s%s"
+                    : "Reward for entering this world: %s%s", ChatColor.WHITE, priceString));
 
-        World respawnWorld = world.getRespawnToWorld();
-        if (respawnWorld != null) {
-            MultiverseWorld respawn = this.plugin.getMVWorldManager().getMVWorld(respawnWorld);
-            String respawnWorldString = (respawn != null)
-                    ? respawn.getColoredWorldString()
-                    : ChatColor.RED + respawnWorld.getName() + " !!INVALID!!";
+            World respawnWorld = world.getRespawnToWorld();
+            if (respawnWorld != null) {
+                MultiverseWorld respawn = this.plugin.getMVWorldManager().getMVWorld(respawnWorld);
+                String respawnWorldString = (respawn != null)
+                        ? respawn.getColoredWorldString()
+                        : ChatColor.RED + respawnWorld.getName() + " !!INVALID!!";
 
-            contents.add(String.format("Players will respawn in: %s%s", ChatColor.WHITE, respawnWorldString));
-        }
-        contents.add("%lf%");
+                contents.add(String.format("Players will respawn in: %s%s", ChatColor.WHITE, respawnWorldString));
+            }
+            contents.add("%lf%");
 
-        // Page 2
-        contents.add(parseHeader("More World Settings"));
-        contents.add(String.format("World UID: %s%s", ChatColor.WHITE, world.getCBWorld().getUID()));
-        contents.add(String.format("World Type: %s%s", ChatColor.WHITE, world.getWorldType().toString()));
-        contents.add(String.format("Generator: %s%s", ChatColor.WHITE, world.getGenerator()));
-        contents.add(String.format("Structures: %s%s", ChatColor.WHITE, world.getCBWorld().canGenerateStructures()));
-        contents.add(String.format("Weather: %s%s", ChatColor.WHITE, world.isWeatherEnabled()));
-        contents.add(String.format("Players will get hungry: %s%s", ChatColor.WHITE, world.getHunger()));
-        contents.add(String.format("Keep spawn in memory: %s%s", ChatColor.WHITE, world.isKeepingSpawnInMemory()));
-        contents.add("%lf%");
+            // Page 2
+            contents.add(parseHeader("More World Settings"));
+            contents.add(String.format("World UID: %s%s", ChatColor.WHITE, world.getCBWorld().getUID()));
+            contents.add(String.format("World Type: %s%s", ChatColor.WHITE, world.getWorldType().toString()));
+            contents.add(String.format("Generator: %s%s", ChatColor.WHITE, world.getGenerator()));
+            contents.add(String.format("Structures: %s%s", ChatColor.WHITE, world.getCBWorld().canGenerateStructures()));
+            contents.add(String.format("Weather: %s%s", ChatColor.WHITE, world.isWeatherEnabled()));
+            contents.add(String.format("Players will get hungry: %s%s", ChatColor.WHITE, world.getHunger()));
+            contents.add(String.format("Keep spawn in memory: %s%s", ChatColor.WHITE, world.isKeepingSpawnInMemory()));
+            contents.add("%lf%");
 
-        // Page 3
-        contents.add(parseHeader("PVP Settings"));
-        contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.isPVPEnabled()));
-        contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getPVP()));
-        contents.add("%lf%");
+            // Page 3
+            contents.add(parseHeader("PVP Settings"));
+            contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.isPVPEnabled()));
+            contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getPVP()));
+            contents.add("%lf%");
 
-        // Page 4
-        contents.add(parseHeader("Monster Settings"));
-        contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canMonstersSpawn()));
-        contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowMonsters()));
+            // Page 4
+            contents.add(parseHeader("Monster Settings"));
+            contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canMonstersSpawn()));
+            contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowMonsters()));
 
-        if (!world.getMonsterList().isEmpty()){
-            contents.add(String.format((world.canMonstersSpawn())
-                    ? "Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: %s%s"
-                    : "Monsters that" + ChatColor.GREEN + " CAN SPAWN: %s%s",
-                    ChatColor.WHITE, toCommaSeparated(world.getMonsterList())));
-        }
-        contents.add("%lf%");
+            if (!world.getMonsterList().isEmpty()){
+                contents.add(String.format((world.canMonstersSpawn())
+                                ? "Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: %s%s"
+                                : "Monsters that" + ChatColor.GREEN + " CAN SPAWN: %s%s",
+                        ChatColor.WHITE, toCommaSeparated(world.getMonsterList())));
+            }
+            contents.add("%lf%");
 
-        // Page 5
-        contents.add(parseHeader("Animal Settings"));
-        contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canAnimalsSpawn()));
-        contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowAnimals()));
+            // Page 5
+            contents.add(parseHeader("Animal Settings"));
+            contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canAnimalsSpawn()));
+            contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowAnimals()));
 
-        if (!world.getAnimalList().isEmpty()){
-            contents.add(String.format((world.canMonstersSpawn())
-                            ? "Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: %s%s"
-                            : "Animals that" + ChatColor.GREEN + " CAN SPAWN: %s%s",
-                    ChatColor.WHITE, toCommaSeparated(world.getAnimalList())));
-        }
+            if (!world.getAnimalList().isEmpty()){
+                contents.add(String.format((world.canMonstersSpawn())
+                                ? "Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: %s%s"
+                                : "Animals that" + ChatColor.GREEN + " CAN SPAWN: %s%s",
+                        ChatColor.WHITE, toCommaSeparated(world.getAnimalList())));
+            }
 
-        return contents;
+            return contents;
+        };
     }
 
     private String parseHeader(String header) {

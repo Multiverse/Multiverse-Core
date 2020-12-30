@@ -1,4 +1,6 @@
-package com.onarandombox.MultiverseCore.commandTools.display;
+package com.onarandombox.MultiverseCore.commandTools.display.page;
+
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 
 import java.util.stream.IntStream;
 
@@ -20,7 +22,7 @@ public class ShowSelectedPage extends ShowPage {
     public void calculateContent() {
         int lineCount = 0;
         int index = -1;
-        for (String line : this.display.getContents()) {
+        for (String line : this.contents) {
             index++;
             if (PageDisplay.LINE_BREAK_PLACEHOLDER.equals(line)) {
                 lineCount = this.display.getContentLinesPerPage();
@@ -44,11 +46,21 @@ public class ShowSelectedPage extends ShowPage {
         return !pageOutOfRange();
     }
 
+    private boolean pageOutOfRange() {
+        if (this.display.getPageToShow() < 0 || this.display.getPageToShow() > totalPages) {
+            this.display.getSender().sendMessage((totalPages == 1)
+                    ? "There is only 1 page."
+                    : String.format("Please enter a page from 1 to %s.", totalPages));
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void showHeader() {
         String theHeader;
         if (this.display.getHeader() == null) {
-            theHeader = this.display.getContents().get(contentToShowIndex.remove(0));
+            theHeader = this.contents.get(contentToShowIndex.remove(0));
             this.display.reduceContentLinesPerPage(1);
         }
         else {
@@ -61,16 +73,6 @@ public class ShowSelectedPage extends ShowPage {
         }
         this.display.getSender().sendMessage(theHeader);
         this.display.getSender().sendMessage(parsePaging());
-    }
-
-    private boolean pageOutOfRange() {
-        if (this.display.getPageToShow() < 0 || this.display.getPageToShow() > totalPages) {
-            this.display.getSender().sendMessage((totalPages == 1)
-                    ? "There is only 1 page."
-                    : String.format("Please enter a page from 1 to %s.", totalPages));
-            return true;
-        }
-        return false;
     }
 
     private String parsePaging() {

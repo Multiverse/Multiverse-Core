@@ -1,4 +1,8 @@
-package com.onarandombox.MultiverseCore.commandTools.display;
+package com.onarandombox.MultiverseCore.commandTools.display.page;
+
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.page.ShowPage;
 
 public class ShowAllPage extends ShowPage {
 
@@ -9,10 +13,10 @@ public class ShowAllPage extends ShowPage {
     @Override
     public void calculateContent() {
         int index = -1;
-        for (String line : this.display.getContents()) {
+        for (String line : this.contents) {
             index++;
             if (PageDisplay.LINE_BREAK_PLACEHOLDER.equals(line)
-                || this.display.getFilter().checkMatch(this.display.getContents().get(index))) {
+                || this.display.getFilter().checkMatch(this.contents.get(index))) {
                 contentToShowIndex.add(index);
             }
         }
