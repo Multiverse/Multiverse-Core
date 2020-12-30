@@ -13,6 +13,7 @@ import co.aikar.commands.BukkitConditionContext;
 import co.aikar.commands.CommandConditions;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -181,8 +182,8 @@ public class MVCommandConditions {
                                     @NotNull PlayerWorld player) {
 
         String permNode = context.getConfig() + (player.isSender(executionContext.getSender()) ? ".self" : ".other");
-        if (!player.getPlayer().hasPermission(permNode)) {
-            throw new ConditionFailedException("You do not have permission to run this command.");
+        if (!executionContext.getSender().hasPermission(permNode)) {
+            throw new ConditionFailedException("You do not have perm to run this command.");
         }
     }
 }
