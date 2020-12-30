@@ -39,14 +39,17 @@ public class ConfigCommand extends MultiverseCommand {
     }
 
     @Subcommand("list")
+    @Syntax("[filter]")
     @Description("Show multiverse config values.")
-    public void onShowCommand(@NotNull CommandSender sender) {
+    public void onShowCommand(@NotNull CommandSender sender,
+                              @NotNull ContentFilter filter) {
+
         KeyValueDisplay display = new KeyValueDisplay(
                 this.plugin,
                 sender,
                 ChatColor.LIGHT_PURPLE + "===[ Multiverse Config ]===",
                 getConfigMap(),
-                new ContentFilter("first"),
+                filter,
                 new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
                 " = "
         );

@@ -37,7 +37,8 @@ public class ShowKeyValue extends ShowRunnable<Map<String, Object>> {
                     .append(ChatColor.WHITE)
                     .append(this.display.getOperator())
                     .append(this.display.getColours().getColorThat())
-                    .append(entry.getValue());
+                    .append(entry.getValue())
+                    .append(ChatColor.WHITE);
         }
     }
 

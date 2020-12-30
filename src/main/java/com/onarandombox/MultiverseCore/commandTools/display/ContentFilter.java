@@ -14,6 +14,11 @@ public class ContentFilter {
     private boolean exactMatch;
 
     private static final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
+    public static ContentFilter EMPTY = new ContentFilter();
+
+    public ContentFilter() {
+        this(null);
+    }
 
     public ContentFilter(@Nullable String filterString) {
         this(filterString, false);
@@ -64,10 +69,6 @@ public class ContentFilter {
         return (exactMatch)
                 ? filterPattern.matcher(text).matches()
                 : filterPattern.matcher(text).find();
-    }
-
-    public void setExactMatch(boolean exactMatch) {
-        this.exactMatch = exactMatch;
     }
 
     public boolean hasFilter() {

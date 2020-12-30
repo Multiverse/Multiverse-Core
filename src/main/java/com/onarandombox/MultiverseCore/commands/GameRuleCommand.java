@@ -43,21 +43,23 @@ public class GameRuleCommand extends MultiverseCommand {
 
     @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
-    @Syntax("[world]")
+    @Syntax("[world] [filter]")
     @CommandCompletion("@MVWorlds")
     @Description("See the list gamerules values for a given world.")
     public void onGameRulesCommand(@NotNull CommandSender sender,
 
                                    @Syntax("[world]")
                                    @Description("World you want to see game rule info.")
-                                   @NotNull @Flags("other,defaultself") MultiverseWorld world) {
+                                   @NotNull @Flags("other,defaultself, fallbackself") MultiverseWorld world,
+
+                                   @NotNull ContentFilter filter) {
 
         KeyValueDisplay display = new KeyValueDisplay(
                 this.plugin,
                 sender,
                 "=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===",
                 getGameRuleMap(world),
-                new ContentFilter(null),
+                filter,
                 new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
                 ": "
         );

@@ -55,6 +55,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(Location.class, this::deriveLocation);
         registerIssuerAwareContext(PasteServiceType.class, this::derivePasteServiceType);
         registerOptionalContext(String.class, this::deriveString);
+        registerIssuerAwareContext(ContentFilter.class, this::deriveContentFilter);
         registerOptionalContext(PageFilter.class, this::derivePageFilter);
     }
 
@@ -412,12 +413,16 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
     }
 
+    @NotNull
+    private ContentFilter deriveContentFilter(@NotNull BukkitCommandExecutionContext context) {
+        return new ContentFilter(context.popFirstArg());
+    }
 
     @NotNull
     private PageFilter derivePageFilter(@NotNull BukkitCommandExecutionContext context) {
         final int argLength = context.getArgs().size();
         if (argLength == 0) {
-            return new PageFilter(new ContentFilter(null), 1);
+            return new PageFilter(ContentFilter.EMPTY, 1);
         }
         if (argLength == 1) {
             String pageOrFilter = context.popFirstArg();
