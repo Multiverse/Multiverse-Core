@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commandTools.contexts;
 
 import org.bukkit.GameRule;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Single key value pair for a game rule.
@@ -19,15 +20,19 @@ public class GameRuleProperty<T> {
     private final GameRule<T> gameRule;
     private final T value;
 
-    public GameRuleProperty(GameRule<T> gameRule, T value) {
+    public GameRuleProperty(@NotNull GameRule<T> gameRule,
+                            @NotNull T value) {
+
         this.gameRule = gameRule;
         this.value = value;
     }
 
+    @NotNull
     public GameRule<T> getGameRule() {
         return gameRule;
     }
 
+    @NotNull
     public T getValue() {
         return value;
     }

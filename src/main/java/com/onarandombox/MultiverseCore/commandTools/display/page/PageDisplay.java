@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
@@ -48,8 +49,10 @@ public class PageDisplay extends ContentDisplay<List<String>> {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
+    @NotNull
     public ShowPage getShowRunnable() {
         return (this.sender instanceof ConsoleCommandSender)
                 ? new ShowAllPage(this)

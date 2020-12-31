@@ -32,7 +32,7 @@ public class CommandQueueManager {
     private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous.";
     private static final int DEFAULT_VALID_TIME = 200;  // In ticks, 20 ticks = 1s
 
-    public CommandQueueManager(MultiverseCore plugin) {
+    public CommandQueueManager(@NotNull MultiverseCore plugin) {
         this.plugin = plugin;
         this.queuedCommandMap = new HashMap<>();
     }
@@ -186,6 +186,7 @@ public class CommandQueueManager {
      * Check if sender is a command block.
      */
     private boolean isCommandBlock(@NotNull CommandSender sender) {
-        return sender instanceof BlockCommandSender && ((BlockCommandSender) sender).getBlock().getBlockData() instanceof CommandBlock;
+        return sender instanceof BlockCommandSender
+                && ((BlockCommandSender) sender).getBlock().getBlockData() instanceof CommandBlock;
     }
 }

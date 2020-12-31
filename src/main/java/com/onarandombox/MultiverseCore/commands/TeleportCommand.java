@@ -102,7 +102,7 @@ public class TeleportCommand extends MultiverseCommand {
                             @NotNull Player teleportee,
                             @NotNull String destinationName) {
 
-        MVDestination destination = this.plugin.getDestFactory().getPlayerAwareDestination(destinationName, teleportee);
+        MVDestination destination = this.plugin.getDestFactory().getPlayerAwareDestination(teleportee, destinationName);
 
         MVTeleportEvent teleportEvent = new MVTeleportEvent(destination, teleportee, teleporter, true);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);

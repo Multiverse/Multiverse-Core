@@ -50,7 +50,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         df.setMaximumFractionDigits(2);
     }
 
-    public MVCommandCompletions(MVCommandManager manager, MultiverseCore plugin) {
+    public MVCommandCompletions(@NotNull MVCommandManager manager,
+                                @NotNull MultiverseCore plugin) {
         super(manager);
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();

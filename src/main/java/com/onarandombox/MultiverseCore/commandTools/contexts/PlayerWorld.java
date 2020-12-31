@@ -37,6 +37,7 @@ public class PlayerWorld {
         return player;
     }
 
+    @Nullable
     public MultiverseWorld getWorld() {
         return world;
     }

@@ -136,7 +136,8 @@ public class MVCommandConditions {
         }
     }
 
-    private void validateWorldFolderResult(WorldValidationResult validationResult, String worldName) {
+    private void validateWorldFolderResult(@NotNull WorldValidationResult validationResult,
+                                           @NotNull String worldName) {
         switch (validationResult) {
             case DOES_NOT_EXIST:
             case NOT_A_DIRECTORY:

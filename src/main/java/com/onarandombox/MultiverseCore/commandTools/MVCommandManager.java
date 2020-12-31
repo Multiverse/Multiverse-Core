@@ -79,42 +79,55 @@ public class MVCommandManager extends PaperCommandManager {
         this.subModuleRootCommands = new HashMap<>(3);
         new MVCommandConditions(plugin, getCommandConditions());
 
+        // Setup help command
         enableUnstableAPI("help");
         setDefaultHelpPerPage(6);
 
+        // General plugin command
+        registerCommand(new RootCommand(this.plugin));
         registerCommand(new UsageCommand(this.plugin));
+        registerCommand(new VersionCommand(this.plugin));
+
+        // World commands
         registerCommand(new CreateCommand(this.plugin));
+        registerCommand(new ImportCommand(this.plugin));
         registerCommand(new LoadCommand(this.plugin));
         registerCommand(new UnloadCommand(this.plugin));
-        registerCommand(new InfoCommand(this.plugin));
+        registerCommand(new RemoveCommand(this.plugin));
+        registerCommand(new CloneCommand(this.plugin));
+        registerCommand(new RegenCommand(this.plugin));
         registerCommand(new DeleteCommand(this.plugin));
         registerCommand(new ConfirmCommand(this.plugin));
-        registerCommand(new ConfigCommand(this.plugin));
-        registerCommand(new DebugCommand(this.plugin));
-        registerCommand(new CoordCommand(this.plugin));
-        registerCommand(new SpawnCommand(this.plugin));
-        registerCommand(new ReloadCommand(this.plugin));
-        registerCommand(new RemoveCommand(this.plugin));
-        registerCommand(new ListCommand(this.plugin));
-        registerCommand(new ScriptCommand(this.plugin));
-        registerCommand(new GeneratorCommand(this.plugin));
-        registerCommand(new CloneCommand(this.plugin));
-        registerCommand(new ImportCommand(this.plugin));
-        registerCommand(new CheckCommand(this.plugin));
-        registerCommand(new GameRuleCommand(this.plugin));
-        registerCommand(new EnvironmentCommand(this.plugin));
-        registerCommand(new RegenCommand(this.plugin));
-        registerCommand(new TeleportCommand(this.plugin));
-        registerCommand(new SilentCommand(this.plugin));
-        registerCommand(new PurgeCommand(this.plugin));
-        registerCommand(new SetSpawnCommand(this.plugin));
-        registerCommand(new ModifyCommand(this.plugin));
-        registerCommand(new VersionCommand(this.plugin));
-        registerCommand(new BedCommand(this.plugin));
-        registerCommand(new AnchorCommand(this.plugin));
-        registerCommand(new WhoCommand(this.plugin));
-        registerCommand(new RootCommand(this.plugin));
 
+        // Properties management commands
+        registerCommand(new ConfigCommand(this.plugin));
+        registerCommand(new GameRuleCommand(this.plugin));
+        registerCommand(new ModifyCommand(this.plugin));
+        registerCommand(new SetSpawnCommand(this.plugin));
+        registerCommand(new PurgeCommand(this.plugin));
+
+        // Show information commands
+        registerCommand(new InfoCommand(this.plugin));
+        registerCommand(new CoordCommand(this.plugin));
+        registerCommand(new EnvironmentCommand(this.plugin));
+        registerCommand(new GeneratorCommand(this.plugin));
+        registerCommand(new ListCommand(this.plugin));
+        registerCommand(new WhoCommand(this.plugin));
+
+        // Teleport commands
+        registerCommand(new TeleportCommand(this.plugin));
+        registerCommand(new AnchorCommand(this.plugin));
+        registerCommand(new BedCommand(this.plugin));
+        registerCommand(new SpawnCommand(this.plugin));
+
+        // Misc commands
+        registerCommand(new DebugCommand(this.plugin));
+        registerCommand(new CheckCommand(this.plugin));
+        registerCommand(new ReloadCommand(this.plugin));
+        registerCommand(new SilentCommand(this.plugin));
+        registerCommand(new ScriptCommand(this.plugin));
+
+        // Sub-modules
         addAvailableSubModule("mvnp", new SubModulesCommand.NetherPortals());
         addAvailableSubModule("mvp", new SubModulesCommand.Portals());
         addAvailableSubModule("mvinv", new SubModulesCommand.Inventories());

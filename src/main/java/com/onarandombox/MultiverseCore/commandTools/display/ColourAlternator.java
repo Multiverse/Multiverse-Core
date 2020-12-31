@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commandTools.display;
 
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Some helper class to alternate between 2 colours.
@@ -18,7 +19,13 @@ public class ColourAlternator {
     private final ChatColor thisColour;
     private final ChatColor thatColour;
 
-    public ColourAlternator(ChatColor colorThis, ChatColor colorThat) {
+    public ColourAlternator() {
+        this(ChatColor.WHITE, ChatColor.WHITE);
+    }
+
+    public ColourAlternator(@NotNull ChatColor colorThis,
+                            @NotNull ChatColor colorThat) {
+
         this.thisColour = colorThis;
         this.thatColour = colorThat;
     }
@@ -43,6 +50,7 @@ public class ColourAlternator {
      *
      * @return {@link ColourAlternator#thisColour}.
      */
+    @NotNull
     public ChatColor getThis() {
         return thisColour;
     }
@@ -51,6 +59,7 @@ public class ColourAlternator {
      *
      * @return {@link ColourAlternator#thatColour}.
      */
+    @NotNull
     public ChatColor getThat() {
         return thatColour;
     }

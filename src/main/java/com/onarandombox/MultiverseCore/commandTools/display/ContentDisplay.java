@@ -53,6 +53,7 @@ public abstract class ContentDisplay<T> {
      *
      * @return {@link ShowRunnable}
      */
+    @NotNull
     public abstract ShowRunnable<? extends ContentDisplay<T>, T> getShowRunnable();
 
     public CommandSender getSender() {

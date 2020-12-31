@@ -39,20 +39,26 @@ public class DestinationFactory {
         this.permTools = new PermissionTools(plugin);
     }
 
-    public MVDestination getPlayerAwareDestination(String destination, Player player) {
-        if (CANNON_PATTERN.matcher(destination).matches()) {
-            return getDestination(parseCannonDest(destination, player));
+    public MVDestination getPlayerAwareDestination(@NotNull Player teleportee,
+                                                   @NotNull String destinationName) {
+
+        if (CANNON_PATTERN.matcher(destinationName).matches()) {
+            return getDestination(parseCannonDest(teleportee, destinationName));
         }
 
-        Player targetPlayer = this.plugin.getMVCommandManager().getCommandContexts().getPlayerFromValue(player, destination);
+        Player targetPlayer = this.plugin.getMVCommandManager()
+                .getCommandContexts()
+                .getPlayerFromValue(teleportee, destinationName);
+
         if (targetPlayer != null) {
             return getDestination("pl:" + targetPlayer.getName());
         }
 
-        return getDestination(destination);
+        return getDestination(destinationName);
     }
 
-    private String parseCannonDest(@NotNull String destinationName, @NotNull Player teleportee) {
+    private String parseCannonDest(@NotNull Player teleportee,
+                                   @NotNull String destinationName) {
 
         String[] cannonSpeed = destinationName.split("-");
         try {

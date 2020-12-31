@@ -18,12 +18,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,32 +58,43 @@ public class WorldFlags {
         this.generateStructures = doGenerateStructures(flags.get("-a"));
     }
 
+    /**
+     *
+     * @param genString  Generator setting.
+     * @param sender     Command executor.
+     * @param plugin     Multiverse plugin.
+     * @return genString if generator is valid, null otherwise.
+     */
     @Nullable
-    private static String validateGenerator(@Nullable String value,
-                                            @NotNull CommandSender sender,
-                                            @NotNull MultiverseCore plugin) {
+    private String validateGenerator(@Nullable String genString,
+                                     @NotNull CommandSender sender,
+                                     @NotNull MultiverseCore plugin) {
 
-        if (value == null) {
+        if (genString == null) {
             return null;
         }
 
-        List<String> genArray = new ArrayList<>(Arrays.asList(value.split(":")));
-        if (genArray.size() < 2) {
-            // If there was only one arg specified, pad with another empty one.
-            genArray.add("");
+        String[] genArray = genString.split(":");
+        if (genArray.length == 0) {
+            return null;
         }
-        if (plugin.getMVWorldManager().getChunkGenerator(genArray.get(0), genArray.get(1), "test") == null) {
-            sender.sendMessage(ChatColor.RED + "Invalid generator '" + value + "'.");
+
+        String generator = genArray[0];
+        String generatorId = (genArray.length > 1) ? genArray[1] : "";
+
+        if (plugin.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
+            sender.sendMessage(ChatColor.RED + "Invalid generator '" + genString + "'.");
             GeneratorCommand.showAvailableGenerator(sender);
             throw new InvalidCommandArgument(false);
         }
 
-        return value;
+        return genString;
     }
 
     @NotNull
-    private static WorldType getWorldType(@Nullable String type,
-                                          @NotNull CommandSender sender) {
+    private WorldType getWorldType(@Nullable String type,
+                                   @NotNull CommandSender sender) {
+
         if (type == null || type.length() == 0) {
             return WorldType.NORMAL;
         }
@@ -114,12 +122,18 @@ public class WorldFlags {
         }
     }
 
-    private static boolean doGenerateStructures(@Nullable String value) {
+    private boolean doGenerateStructures(@Nullable String value) {
         return value == null || value.equalsIgnoreCase("true");
     }
 
+    /**
+     * Parse world setting flags into it's key value pair.
+     *
+     * @param args Array of string to parse.
+     * @return Map of flag and value pair.
+     */
     @NotNull
-    private static Map<String, String> parseFlags(@Nullable String[] args) {
+    private Map<String, String> parseFlags(@Nullable String[] args) {
         Map<String, String> flags = new HashMap<>();
         if (args == null || args.length == 0) {
             return flags;
@@ -129,8 +143,8 @@ public class WorldFlags {
         return flags;
     }
 
-    private static void mapOutTheArgs(@NotNull String[] args,
-                                      @NotNull Map<String, String> flags) {
+    private void mapOutTheArgs(@NotNull String[] args,
+                               @NotNull Map<String, String> flags) {
 
         String currentFlagKey = null;
 
@@ -155,7 +169,7 @@ public class WorldFlags {
         }
     }
 
-    private static boolean isValidFlagKey(@Nullable String value) {
+    private boolean isValidFlagKey(@Nullable String value) {
         return value != null && FLAG_KEYS.contains(value.toLowerCase());
     }
 

@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -43,31 +44,24 @@ public class ContentFilter {
             return;
         }
         if (filterString.startsWith("r=")) {
-            parseCustomFilter();
+            convertToMatcher(filterString.substring(2));
             return;
         }
-        parseContainsFilter();
+        String cleanedFilter = REGEX_SPECIAL_CHARS.matcher(filterString.toLowerCase()).replaceAll("\\\\$0");
+        convertToMatcher("(?i).*" + cleanedFilter + ".*");
     }
 
     /**
      * When prefixed with 'r=', use {@link ContentFilter#filterString} as the full regex pattern.
      */
-    private void parseCustomFilter() {
+    private void convertToMatcher(@NotNull String regex) {
         try {
-            this.filterPattern = Pattern.compile(filterString.substring(2));
-            Logging.finest("Custom regex pattern: %s", this.filterPattern.toString());
+            this.filterPattern = Pattern.compile(regex);
+            Logging.finest("Parsed regex pattern: %s", this.filterPattern.toString());
         }
         catch (PatternSyntaxException ignored) {
             Logging.warning("Error parsing regex: %s", filterString);
         }
-    }
-
-    /**
-     * Set pattern that matches any text that contains {@link ContentFilter#filterString}.
-     */
-    private void parseContainsFilter() {
-        String cleanedFilter = REGEX_SPECIAL_CHARS.matcher(filterString.toLowerCase()).replaceAll("\\\\$0");
-        this.filterPattern = Pattern.compile("(?i).*" + cleanedFilter + ".*");
     }
 
     /**

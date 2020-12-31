@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.commandTools.contexts.GameRuleProperty;
 import com.onarandombox.MultiverseCore.commandTools.contexts.PageFilter;
 import com.onarandombox.MultiverseCore.commandTools.contexts.PlayerWorld;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -45,9 +47,12 @@ public class MVCommandContexts extends PaperCommandContexts {
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
 
-    private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}";
+    private static final Pattern UUID_REGEX = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}");
+    private static final Pattern TRIM_REGEX = Pattern.compile("^[./\\\\]+");
 
-    public MVCommandContexts(MVCommandManager manager, MultiverseCore plugin) {
+    public MVCommandContexts(@NotNull MVCommandManager manager,
+                             @NotNull MultiverseCore plugin) {
+
         super(manager);
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
@@ -252,7 +257,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
     @Nullable
     private Player getPlayerByUUID(@NotNull String playerIdentifier) {
-        if (!playerIdentifier.matches(UUID_REGEX)) {
+        if (!UUID_REGEX.matcher(playerIdentifier).matches()) {
             return null;
         }
         UUID playerUUID;
@@ -359,7 +364,7 @@ public class MVCommandContexts extends PaperCommandContexts {
     @NotNull
     private String trimWorldName(@NotNull String worldName) {
         // Removes relative paths.
-        return worldName.replaceAll("^[./\\\\]+", "");
+        return TRIM_REGEX.matcher(worldName).replaceAll("");
     }
 
     @NotNull
@@ -384,16 +389,15 @@ public class MVCommandContexts extends PaperCommandContexts {
 
     @NotNull
     private PageFilter derivePageFilter(@NotNull BukkitCommandExecutionContext context) {
-        final int argLength = context.getArgs().size();
+        int argLength = context.getArgs().size();
         if (argLength == 0) {
             return new PageFilter(ContentFilter.EMPTY, 1);
         }
         if (argLength == 1) {
             String pageOrFilter = context.popFirstArg();
             Optional<Integer> page = tryParseInt(pageOrFilter);
-            return page.isPresent()
-                    ? new PageFilter(new ContentFilter(null), page.get())
-                    : new PageFilter(new ContentFilter(pageOrFilter), 1);
+            return page.map(pgNum -> new PageFilter(new ContentFilter(null), pgNum))
+                    .orElseGet(() -> new PageFilter(new ContentFilter(pageOrFilter), PageDisplay.FIST_PAGE));
         }
 
         String filter = context.popFirstArg();
