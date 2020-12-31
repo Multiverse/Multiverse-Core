@@ -8,10 +8,6 @@
 package com.onarandombox.MultiverseCore.commandTools;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.BukkitCommandCompletionContext;
-import co.aikar.commands.BukkitCommandExecutionContext;
-import co.aikar.commands.CommandCompletions;
-import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
@@ -138,11 +134,11 @@ public class MVCommandManager extends PaperCommandManager {
     }
 
     @Override
-    public synchronized CommandCompletions<BukkitCommandCompletionContext> getCommandCompletions() {
+    public synchronized MVCommandCompletions getCommandCompletions() {
         if (this.completions == null) {
             this.completions = new MVCommandCompletions(this, plugin);
         }
-        return this.completions;
+        return (MVCommandCompletions) this.completions;
     }
 
     /**
@@ -209,7 +205,7 @@ public class MVCommandManager extends PaperCommandManager {
                                @NotNull ColourAlternator colour,
                                @NotNull String baseCommand) {
 
-        sender.sendMessage(colour.getColorThis() + description.getName() + ChatColor.DARK_GRAY + " | " + colour.getColorThat() + "v" + description.getVersion());
+        sender.sendMessage(colour.getThis() + description.getName() + ChatColor.DARK_GRAY + " | " + colour.getThat() + "v" + description.getVersion());
         sender.sendMessage(ChatColor.DARK_GREEN + "See " + ChatColor.GREEN + "/" + baseCommand + " help " + ChatColor.DARK_GREEN + "for commands available.");
     }
 }
