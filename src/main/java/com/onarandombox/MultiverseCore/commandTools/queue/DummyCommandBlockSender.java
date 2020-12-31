@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandTools.queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Used by {@link CommandQueueManager}, so different commands block can be recognised as one.
  */
-class MVCommandBlock implements CommandSender {
+class DummyCommandBlockSender implements CommandSender {
 
     @Override
     public void sendMessage(@NotNull String message) {
@@ -35,7 +35,7 @@ class MVCommandBlock implements CommandSender {
 
     @Override
     public @NotNull String getName() {
-        return "MVCommandBlock";
+        return "DummyCommandBlockSender";
     }
 
     @Override

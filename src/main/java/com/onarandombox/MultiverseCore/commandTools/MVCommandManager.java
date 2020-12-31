@@ -14,6 +14,7 @@ import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.BedCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;

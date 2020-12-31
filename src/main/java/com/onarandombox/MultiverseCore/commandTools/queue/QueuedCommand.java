@@ -5,35 +5,50 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandTools.queue;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
-public class QueuedCommand {
+/**
+ * Represents a single command in {@link CommandQueueManager}.
+ */
+class QueuedCommand {
     private final CommandSender sender;
     private final Runnable runnable;
     private BukkitTask expireTask;
 
-    public QueuedCommand(CommandSender sender, Runnable runnable) {
+    /**
+     *
+     * @param sender    {@link CommandSender} that executed the command.
+     * @param runnable  Action to do when the command is ran.
+     */
+    public QueuedCommand(@NotNull CommandSender sender,
+                         @NotNull Runnable runnable) {
+
         this.sender = sender;
         this.runnable = runnable;
     }
 
-    public void runCommand() {
+    /**
+     * Do the command actions.
+     */
+    public void runAction() {
         runnable.run();
-        cancelExpiryTask();
     }
 
-    public void cancelExpiryTask() {
-        expireTask.cancel();
-    }
-
-    public void setExpireTask(BukkitTask expireTask) {
+    public void setExpireTask(@NotNull BukkitTask expireTask) {
         this.expireTask = expireTask;
     }
 
+    @NotNull
     public CommandSender getSender() {
         return sender;
+    }
+
+    @NotNull
+    public BukkitTask getExpireTask() {
+        return expireTask;
     }
 }
