@@ -52,23 +52,38 @@ public class ListCommand extends PaginatedCoreCommand<String> {
             } else if (env == Environment.THE_END) {
                 color = ChatColor.AQUA;
             }
+
             StringBuilder builder = new StringBuilder();
-            builder.append(world.getColoredWorldString()).append(ChatColor.WHITE);
-            builder.append(" - ").append(color).append(world.getEnvironment());
-            if (world.isHidden()) {
-                if (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.core.modify", true)) {
-                    // Prefix hidden worlds with an "[H]"
-                    worldList.add(ChatColor.GRAY + "[H]" + builder.toString());
-                }
-            } else {
-                worldList.add(builder.toString());
+
+            if (world.isHidden() && (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.core.modify", true))) {
+                // Prefix hidden worlds with an "[H]"
+                builder.append(ChatColor.GRAY)
+                        .append("[H] ")
+                        .append(ChatColor.WHITE);
             }
+
+            builder.append(world.getName());
+
+            if (world.hasCustomWorldString()) {
+                builder.append(" (")
+                        .append(world.getColoredWorldString())
+                        .append(')');
+            }
+
+            builder.append(ChatColor.GRAY)
+                    .append(" - ")
+                    .append(color)
+                    .append(world.getEnvironment());
+
+            worldList.add(builder.toString());
         }
+
         for (String name : this.plugin.getMVWorldManager().getUnloadedWorlds()) {
             if (p == null || this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + name, true)) {
                 worldList.add(ChatColor.GRAY + name + " - UNLOADED");
             }
         }
+
         return worldList;
     }
 
