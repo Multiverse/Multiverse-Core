@@ -4,6 +4,9 @@ import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 
 import java.util.stream.IntStream;
 
+/**
+ * Show a single page from a list content.
+ */
 public class ShowSelectedPage extends ShowPage {
 
     private int totalPages = 1;

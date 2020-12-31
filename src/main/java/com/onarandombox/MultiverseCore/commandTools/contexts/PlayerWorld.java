@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Player and its corresponding {@link MultiverseWorld}.
+ */
 public class PlayerWorld {
 
     private final Player player;

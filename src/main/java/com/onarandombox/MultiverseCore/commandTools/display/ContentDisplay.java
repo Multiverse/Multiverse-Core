@@ -19,7 +19,8 @@ public abstract class ContentDisplay<T> {
     protected final ContentFilter filter;
     protected final ColourAlternator colours;
 
-    public ContentDisplay(Plugin plugin, @NotNull CommandSender sender,
+    public ContentDisplay(@NotNull Plugin plugin,
+                          @NotNull CommandSender sender,
                           @Nullable String header,
                           @NotNull ContentCreator<T> creator,
                           @NotNull ContentFilter filter,

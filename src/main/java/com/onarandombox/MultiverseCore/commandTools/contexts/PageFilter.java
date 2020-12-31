@@ -10,16 +10,20 @@ package com.onarandombox.MultiverseCore.commandTools.contexts;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Filter and paging.
+ */
 public class PageFilter {
     private final ContentFilter filter;
     private final int page;
 
     public PageFilter(@NotNull ContentFilter filter,
-                      @NotNull int page) {
+                      int page) {
         this.filter = filter;
         this.page = page;
     }
 
+    @NotNull
     public ContentFilter getFilter() {
         return filter;
     }

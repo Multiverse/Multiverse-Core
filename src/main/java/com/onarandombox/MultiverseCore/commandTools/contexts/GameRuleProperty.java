@@ -9,6 +9,11 @@ package com.onarandombox.MultiverseCore.commandTools.contexts;
 
 import org.bukkit.GameRule;
 
+/**
+ * Single key value pair for a game rule.
+ *
+ * @param <T> Type of GameRule property.
+ */
 public class GameRuleProperty<T> {
 
     private final GameRule<T> gameRule;

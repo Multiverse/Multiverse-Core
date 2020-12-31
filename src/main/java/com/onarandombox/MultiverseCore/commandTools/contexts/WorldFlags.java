@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Additional world settings.
+ */
 public class WorldFlags {
     private final String seed;
     private final String generator;

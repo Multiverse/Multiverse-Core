@@ -2,6 +2,9 @@ package com.onarandombox.MultiverseCore.commandTools.display.page;
 
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 
+/**
+ * Show a everything from a list content.
+ */
 public class ShowAllPage extends ShowPage {
 
     public ShowAllPage(PageDisplay display) {
