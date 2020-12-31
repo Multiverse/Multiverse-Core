@@ -4,7 +4,6 @@ import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+/**
+ * Used to display config/property values pair, each separated with a comma.
+ */
 public class KeyValueDisplay extends ContentDisplay<Map<String, Object>> {
 
     private final String operator;
@@ -28,8 +30,11 @@ public class KeyValueDisplay extends ContentDisplay<Map<String, Object>> {
         this.operator = operator;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ShowRunnable<Map<String, Object>> getShowPageRunnable() {
+    public ShowKeyValue getShowRunnable() {
         return new ShowKeyValue(this);
     }
 

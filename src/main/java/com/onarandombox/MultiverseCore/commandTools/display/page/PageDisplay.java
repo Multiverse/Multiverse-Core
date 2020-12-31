@@ -7,12 +7,10 @@
 
 package com.onarandombox.MultiverseCore.commandTools.display.page;
 
-import com.onarandombox.MultiverseCore.commandTools.PageFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
@@ -21,6 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Used to display list of multiple lines with paging and filter.
+ */
 public class PageDisplay extends ContentDisplay<List<String>> {
 
     private final int pageToShow;
@@ -45,8 +46,11 @@ public class PageDisplay extends ContentDisplay<List<String>> {
         this.contentLinesPerPage = contentLinesPerPage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ShowRunnable<List<String>> getShowPageRunnable() {
+    public ShowPage getShowRunnable() {
         return (this.sender instanceof ConsoleCommandSender)
                 ? new ShowAllPage(this)
                 : new ShowSelectedPage(this);

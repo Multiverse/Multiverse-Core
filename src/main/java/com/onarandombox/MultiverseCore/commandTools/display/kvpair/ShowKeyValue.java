@@ -1,20 +1,17 @@
 package com.onarandombox.MultiverseCore.commandTools.display.kvpair;
 
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.bukkit.ChatColor;
 
 import java.util.Map;
 
-public class ShowKeyValue extends ShowRunnable<Map<String, Object>> {
+public class ShowKeyValue extends ShowRunnable<KeyValueDisplay, Map<String, Object>> {
 
     private final StringBuilder contentBuilder;
-    private final KeyValueDisplay display;
 
     public ShowKeyValue(KeyValueDisplay display) {
         super(display);
-        this.display = display;
         this.contentBuilder = new StringBuilder();
     }
 
@@ -32,19 +29,24 @@ public class ShowKeyValue extends ShowRunnable<Map<String, Object>> {
             else {
                 contentBuilder.append(", ");
             }
-            contentBuilder.append(this.display.getColours().getColorThis())
+            contentBuilder.append(this.display.getColours().getThis())
                     .append(entry.getKey())
                     .append(ChatColor.WHITE)
                     .append(this.display.getOperator())
-                    .append(this.display.getColours().getColorThat())
+                    .append(this.display.getColours().getThat())
                     .append(entry.getValue())
                     .append(ChatColor.WHITE);
         }
     }
 
     @Override
+    public boolean hasContentToShow() {
+        return contentBuilder.length() == 0;
+    }
+
+    @Override
     public boolean validateContent() {
-        return false;
+        return true;
     }
 
     @Override
@@ -52,7 +54,6 @@ public class ShowKeyValue extends ShowRunnable<Map<String, Object>> {
         if (this.display.getHeader() == null) {
             return;
         }
-
         this.display.getSender().sendMessage(this.display.getHeader());
     }
 

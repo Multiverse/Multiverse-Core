@@ -12,12 +12,18 @@ public class ShowSelectedPage extends ShowPage {
         super(display);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void display() {
         super.display();
         doEndPadding();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void calculateContent() {
         int lineCount = 0;
@@ -41,6 +47,9 @@ public class ShowSelectedPage extends ShowPage {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean validateContent() {
         return !pageOutOfRange();
@@ -56,23 +65,30 @@ public class ShowSelectedPage extends ShowPage {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showHeader() {
-        String theHeader;
-        if (this.display.getHeader() == null) {
-            theHeader = this.contents.get(contentToShowIndex.remove(0));
-            this.display.reduceContentLinesPerPage(1);
-        }
-        else {
-            theHeader = this.display.getHeader();
-        }
+        String header = getHeader();
 
-        if (theHeader.contains(PageDisplay.PAGE_PLACEHOLDER)) {
-            this.display.getSender().sendMessage(theHeader.replace(PageDisplay.PAGE_PLACEHOLDER, parsePaging()));
+        // Paging inline with header
+        if (header.contains(PageDisplay.PAGE_PLACEHOLDER)) {
+            this.display.getSender().sendMessage(header.replace(PageDisplay.PAGE_PLACEHOLDER, parsePaging()));
             return;
         }
-        this.display.getSender().sendMessage(theHeader);
+
+        this.display.getSender().sendMessage(header);
         this.display.getSender().sendMessage(parsePaging());
+    }
+
+    private String getHeader() {
+        if (this.display.getHeader() != null) {
+            return this.display.getHeader();
+        }
+        // Let first content line be the header.
+        this.display.reduceContentLinesPerPage(1);
+        return this.contents.get(contentToShowIndex.remove(0));
     }
 
     private String parsePaging() {

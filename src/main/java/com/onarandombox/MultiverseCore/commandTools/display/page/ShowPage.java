@@ -6,14 +6,12 @@ import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ShowPage extends ShowRunnable<List<String>> {
+public abstract class ShowPage extends ShowRunnable<PageDisplay, List<String>> {
 
-    protected PageDisplay display;
     protected final List<Integer> contentToShowIndex;
 
     public ShowPage(PageDisplay display) {
         super(display);
-        this.display = display;
         this.contentToShowIndex = new ArrayList<>();
 
         if (this.display.getColours() != null) {
@@ -21,19 +19,17 @@ public abstract class ShowPage extends ShowRunnable<List<String>> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void run() {
-        calculateContent();
-        if (!validateContent()) {
-            return;
-        }
-        if (contentToShowIndex.isEmpty()) {
-            this.display.getSender().sendMessage("No matching content to display.");
-            return;
-        }
-        display();
+    public boolean hasContentToShow() {
+        return !contentToShowIndex.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showContent() {
         ColourAlternator colours = this.display.getColours();

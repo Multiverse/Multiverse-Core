@@ -9,30 +9,49 @@ package com.onarandombox.MultiverseCore.commandTools.display;
 
 import org.bukkit.ChatColor;
 
+/**
+ * Some helper class to alternate between 2 colours.
+ */
 public class ColourAlternator {
 
     private boolean switcher;
-    private final ChatColor colorThis;
-    private final ChatColor colorThat;
+    private final ChatColor thisColour;
+    private final ChatColor thatColour;
 
     public ColourAlternator(ChatColor colorThis, ChatColor colorThat) {
-        this.colorThis = colorThis;
-        this.colorThat = colorThat;
+        this.thisColour = colorThis;
+        this.thatColour = colorThat;
     }
 
+    /**
+     * Gives you {@link ColourAlternator#thisColour} or {@link ColourAlternator#thatColour}.
+     *
+     * @return Opposite of the previous colour.
+     */
     public ChatColor get() {
-        return (switcher ^= true) ? colorThis : colorThat;
+        return (switcher ^= true) ? thisColour : thatColour;
     }
 
+    /**
+     * Set back to be {@link ColourAlternator#thisColour} when {@link ColourAlternator#get()} is called.
+     */
     public void reset() {
         switcher = false;
     }
 
-    public ChatColor getColorThis() {
-        return colorThis;
+    /**
+     *
+     * @return {@link ColourAlternator#thisColour}.
+     */
+    public ChatColor getThis() {
+        return thisColour;
     }
 
-    public ChatColor getColorThat() {
-        return colorThat;
+    /**
+     *
+     * @return {@link ColourAlternator#thatColour}.
+     */
+    public ChatColor getThat() {
+        return thatColour;
     }
 }

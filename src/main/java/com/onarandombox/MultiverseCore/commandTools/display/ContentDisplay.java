@@ -5,6 +5,11 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Displays various types of content to sender.
+ *
+ * @param <T> Type of content to display.
+ */
 public abstract class ContentDisplay<T> {
 
     protected final Plugin plugin;
@@ -28,15 +33,26 @@ public abstract class ContentDisplay<T> {
         this.colours = colours;
     }
 
+    /**
+     * Display the content to the {@link ContentDisplay#sender}.
+     */
     public void showContent() {
-        getShowPageRunnable().runTask(this.plugin);
+        getShowRunnable().runTask(this.plugin);
     }
 
+    /**
+     * Display the content to the {@link ContentDisplay#sender} with a asynchronous task.
+     */
     public void showContentAsync() {
-        getShowPageRunnable().runTaskAsynchronously(this.plugin);
+        getShowRunnable().runTaskAsynchronously(this.plugin);
     }
 
-    public abstract ShowRunnable<T> getShowPageRunnable();
+    /**
+     * Runnable used to format and display contents to
+     *
+     * @return {@link ShowRunnable}
+     */
+    public abstract ShowRunnable<? extends ContentDisplay<T>, T> getShowRunnable();
 
     public CommandSender getSender() {
         return sender;
