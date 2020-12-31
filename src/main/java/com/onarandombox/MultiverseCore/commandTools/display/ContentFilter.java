@@ -43,7 +43,6 @@ public class ContentFilter {
             return;
         }
         if (filterString.startsWith("r=")) {
-            Logging.info("custom");
             parseCustomFilter();
             return;
         }
