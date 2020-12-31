@@ -52,6 +52,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,6 +61,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Heart of Multiverse Command Handler.
+ */
 public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
@@ -68,7 +72,7 @@ public class MVCommandManager extends PaperCommandManager {
 
     private static final Pattern PERMISSION_SPLIT = Pattern.compile(",");
 
-    public MVCommandManager(MultiverseCore plugin) {
+    public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
         this.plugin = plugin;
         this.commandQueueManager = new CommandQueueManager(plugin);
@@ -116,12 +120,28 @@ public class MVCommandManager extends PaperCommandManager {
         addAvailableSubModule("mvinv", new SubModulesCommand.Inventories());
     }
 
-    private void addAvailableSubModule(String moduleName, BaseCommand cmd) {
+    /**
+     * Use for download link suggestion for sub-module
+     *
+     * @param moduleName  A sub-module for Multiverse.
+     * @param cmd         Command to register.
+     */
+    private void addAvailableSubModule(@NotNull String moduleName,
+                                       @NotNull BaseCommand cmd) {
+
         subModuleRootCommands.put(moduleName, cmd);
         registerCommand(cmd);
     }
 
-    public void registerSubModule(String moduleName, BaseCommand cmd) {
+    /**
+     * Replace suggest download with actual command from sub-module.
+     *
+     * @param moduleName  A sub-module for Multiverse.
+     * @param cmd         Command to register.
+     */
+    public void registerSubModule(@NotNull String moduleName,
+                                  @NotNull BaseCommand cmd) {
+
         unregisterCommand(subModuleRootCommands.remove(moduleName));
         registerCommand(cmd);
     }
@@ -146,7 +166,9 @@ public class MVCommandManager extends PaperCommandManager {
      * Change default implementation to be able to choose from OR / AND
      */
     @Override
-    public boolean hasPermission(CommandIssuer issuer, Set<String> permissions) {
+    public boolean hasPermission(@NotNull CommandIssuer issuer,
+                                 @Nullable Set<String> permissions) {
+
         if (permissions == null || permissions.isEmpty()) {
             return true;
         }
@@ -156,40 +178,56 @@ public class MVCommandManager extends PaperCommandManager {
                 : orPermissionCheck(issuer, permissions);
     }
 
-    private boolean orPermissionCheck(CommandIssuer issuer, Set<String> permissions) {
+    private boolean orPermissionCheck(@NotNull CommandIssuer issuer,
+                                      @NotNull Set<String> permissions) {
+
         return permissions.stream()
                 .unordered()
                 .anyMatch(permission -> hasPermission(issuer, permission));
     }
 
-    private boolean andPermissionCheck(CommandIssuer issuer, Set<String> permissions) {
+    private boolean andPermissionCheck(@NotNull CommandIssuer issuer,
+                                       @NotNull Set<String> permissions) {
+
         return permissions.stream()
                 .unordered()
                 .allMatch(permission -> hasPermission(issuer, permission));
     }
 
     /**
-     * Change default implementation to OR instead of AND
+     * Change default implementation to be able to choose from OR / AND
      */
     @Override
-    public boolean hasPermission(CommandIssuer issuer, String permission) {
+    public boolean hasPermission(@NotNull CommandIssuer issuer,
+                                 @Nullable String permission) {
+
         if (permission == null || permission.isEmpty()) {
             return true;
         }
-
         if (permission.startsWith("AND:")) {
             return Arrays.stream(PERMISSION_SPLIT.split(permission.substring(4)))
+                    .unordered()
                     .allMatch(issuer::hasPermission);
         }
-
         return Arrays.stream(PERMISSION_SPLIT.split(permission))
+                .unordered()
                 .anyMatch(issuer::hasPermission);
     }
 
+    /**
+     * Gets {@link CommandQueueManager}.
+     *
+     * @return {@link CommandQueueManager}.
+     */
     public CommandQueueManager getQueueManager() {
         return commandQueueManager;
     }
 
+    /**
+     * Standardise usage command formatting for all mv modules.
+     *
+     * @param help The target {@link CommandHelp}.
+     */
     public void showUsage(@NotNull CommandHelp help) {
         List<HelpEntry> entries = help.getHelpEntries();
 
@@ -201,6 +239,14 @@ public class MVCommandManager extends PaperCommandManager {
         help.showHelp();
     }
 
+    /**
+     * Standardise root command for all mv modules.
+     *
+     * @param sender       Sender to send the info to.
+     * @param description  mv-module's description and info.
+     * @param colour       Special colour for each mv-module.
+     * @param baseCommand  mv-module's root command name.
+     */
     public void showPluginInfo(@NotNull CommandSender sender,
                                @NotNull PluginDescriptionFile description,
                                @NotNull ColourAlternator colour,

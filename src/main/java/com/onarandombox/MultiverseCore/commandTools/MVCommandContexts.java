@@ -37,6 +37,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Parse args into objects.
+ */
 public class MVCommandContexts extends PaperCommandContexts {
 
     private final MultiverseCore plugin;
@@ -55,7 +58,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(World.Environment.class, this::deriveEnvironment);
         registerIssuerAwareContext(GameRuleProperty.class, this::deriveGameRuleProperty);
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
-        registerIssuerAwareContext(Location.class, this::deriveLocation);
         registerIssuerAwareContext(PasteServiceType.class, this::derivePasteServiceType);
         registerOptionalContext(String.class, this::deriveString);
         registerIssuerAwareContext(ContentFilter.class, this::deriveContentFilter);
@@ -185,11 +187,19 @@ public class MVCommandContexts extends PaperCommandContexts {
     private Player getPlayerFromSelf(@NotNull BukkitCommandExecutionContext context, String errorReason) {
         Player self = context.getPlayer();
         if (self == null && !context.isOptional()) {
-            throw new InvalidCommandArgument(errorReason, false);
+            throw new InvalidCommandArgument(errorReason);
         }
         return self;
     }
 
+    /**
+     * Parse Player from string.
+     * Supports player name, UUID and selectors.
+     *
+     * @param sender            Sender use to parse vanilla selectors.
+     * @param playerIdentifier  Text to parse into a Player object.
+     * @return A Player object if found, null otherwise.
+     */
     @Nullable
     public Player getPlayerFromValue(@NotNull CommandSender sender,
                                      @Nullable String playerIdentifier) {
@@ -350,55 +360,6 @@ public class MVCommandContexts extends PaperCommandContexts {
     private String trimWorldName(@NotNull String worldName) {
         // Removes relative paths.
         return worldName.replaceAll("^[./\\\\]+", "");
-    }
-
-    private Location deriveLocation(BukkitCommandExecutionContext context) {
-        if (context.getArgs().isEmpty()) {
-            Player player = context.getPlayer();
-            if (player != null) {
-                return player.getLocation();
-            }
-            throw new InvalidCommandArgument("You need to specify world and coordinates from the console!");
-        }
-
-        MultiverseWorld world;
-        try {
-            world = deriveMultiverseWorld(context);
-        }
-        catch (ClassCastException e) {
-            e.printStackTrace();
-            throw new InvalidCommandArgument("There was an error getting Target location world!");
-        }
-
-        List<String> locationArgs = context.getArgs();
-        if (locationArgs.size() != 3 && locationArgs.size() != 5) {
-            context.getSender().sendMessage(ChatColor.RED + "Invalid location arguments.");
-            context.getSender().sendMessage("Use no arguments for your current location, or world/x/y/z, or world/x/y/z/yaw/pitch!");
-            throw new InvalidCommandArgument(true);
-        }
-
-        double x = parsePos(locationArgs.get(0), "x");
-        double y = parsePos(locationArgs.get(1), "y");
-        double z = parsePos(locationArgs.get(2), "z");
-
-        double yaw = 0.0;
-        double pitch = 0.0;
-
-        if (locationArgs.size() == 5) {
-            yaw = parsePos(locationArgs.get(3), "yaw");
-            pitch = parsePos(locationArgs.get(4), "pitch");
-        }
-
-        return new Location(world.getCBWorld(), x, y, z, (float) yaw, (float) pitch);
-    }
-
-    private double parsePos(String value, String posType) {
-        try {
-            return Double.parseDouble(value);
-        }
-        catch (NumberFormatException e) {
-            throw new InvalidCommandArgument("'" + value + "' for "+ posType + " coordinate is not a number.", false);
-        }
     }
 
     @NotNull

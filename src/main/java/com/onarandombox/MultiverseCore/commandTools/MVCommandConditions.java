@@ -24,6 +24,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Args input validation.
+ */
 public class MVCommandConditions {
 
     private final MultiverseCore plugin;
