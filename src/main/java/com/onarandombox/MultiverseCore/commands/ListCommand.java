@@ -18,7 +18,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
-import com.onarandombox.MultiverseCore.commandTools.PageFilter;
+import com.onarandombox.MultiverseCore.commandTools.contexts.PageFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;

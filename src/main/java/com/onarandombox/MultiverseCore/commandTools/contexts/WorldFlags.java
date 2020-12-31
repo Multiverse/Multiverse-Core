@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandTools.contexts;
 
 import co.aikar.commands.InvalidCommandArgument;
 import com.dumptruckman.minecraft.util.Logging;
