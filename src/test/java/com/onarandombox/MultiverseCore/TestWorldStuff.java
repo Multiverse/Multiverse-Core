@@ -183,7 +183,7 @@ public class TestWorldStuff {
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Invalid generator 'BogusGen'.");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Invalid generator string 'BogusGen'.");
     }
 
     @Test
@@ -234,13 +234,13 @@ public class TestWorldStuff {
 
         // Set the mode to creative in world.
         assertTrue(creator.dispatch(mockCommandSender, "mv modify set mode creative world"));
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + "mode" + ChatColor.WHITE + " was set to " + ChatColor.GREEN + "creative" + ChatColor.WHITE + ".");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success! " + ChatColor.WHITE + "Property " + ChatColor.AQUA + "mode " + ChatColor.WHITE + "was set to " + ChatColor.GREEN + "creative" + ChatColor.WHITE + ".");
         // Ensure the world is now a creative world
         assertEquals(GameMode.CREATIVE, mainWorld.getGameMode());
 
         // More tests, with alternate syntax.
         assertTrue(creator.dispatch(mockCommandSender, "mv modify set gamemode 0 world"));
-        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA + "gamemode" + ChatColor.WHITE + " was set to " + ChatColor.GREEN + "0" + ChatColor.WHITE + ".");
+        verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Success! " + ChatColor.WHITE + "Property " + ChatColor.AQUA + "gamemode " + ChatColor.WHITE + "was set to " + ChatColor.GREEN + "0" + ChatColor.WHITE + ".");
         assertEquals(GameMode.SURVIVAL, mainWorld.getGameMode());
 
         // Now fail one.
@@ -252,7 +252,7 @@ public class TestWorldStuff {
         }
 
         assertTrue(creator.dispatch(mockCommandSender, "mv modify set blah fish world"));
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Sorry, You can't set '" + ChatColor.GRAY + "blah" + ChatColor.RED + "'!");
     }
 
     private void createInitialWorlds() {

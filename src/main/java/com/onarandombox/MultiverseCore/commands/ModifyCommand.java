@@ -163,7 +163,7 @@ public class ModifyCommand extends MultiverseCommand {
             return;
         }
 
-        sender.sendMessage(String.format("%sSuccess! %sProperty %s%s%s was set to %s%s%s.",
+        sender.sendMessage(String.format("%sSuccess! %sProperty %s%s %swas set to %s%s%s.",
                 ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, property, ChatColor.WHITE, ChatColor.GREEN, value, ChatColor.WHITE));
         saveWorldConfig(sender);
     }
@@ -197,7 +197,7 @@ public class ModifyCommand extends MultiverseCommand {
         }
 
         sender.sendMessage(String.format("%sSuccess! %s%s%s was %sremoved %sfrom %s%s%s.",
-                ChatColor.GREEN, ChatColor.AQUA, value, ChatColor.WHITE, ChatColor.RED, ChatColor.GREEN, property, ChatColor.WHITE));
+                ChatColor.GREEN, ChatColor.AQUA, value, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.GREEN, property, ChatColor.WHITE));
 
         saveWorldConfig(sender);
     }
