@@ -17,6 +17,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -55,8 +56,8 @@ public class DeleteCommand extends MultiverseCommand {
         return () -> {
             sender.sendMessage(String.format("Deleting world '%s'...", worldName));
             sender.sendMessage((this.plugin.getMVWorldManager().deleteWorld(worldName))
-                    ? ChatColor.GREEN + "World '" + worldName + "' is deleted!"
-                    : ChatColor.RED + "World '" + worldName + "' could not be deleted!");
+                    ? String.format("%sWorld %s was deleted!", ChatColor.GREEN, worldName)
+                    : String.format("%sThere was an issue deleting '%s'! Please check console for errors.", ChatColor.RED, worldName));
         };
     }
 }

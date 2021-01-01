@@ -45,6 +45,6 @@ public class ReloadCommand extends MultiverseCommand {
         this.plugin.getServer().getPluginManager().callEvent(configReload);
 
         configReload.getAllConfigsLoaded().forEach(sender::sendMessage);
-        sender.sendMessage(ChatColor.GREEN + "Reload Complete!");
+        sender.sendMessage(String.format("%sReload Complete!", ChatColor.GREEN));
     }
 }

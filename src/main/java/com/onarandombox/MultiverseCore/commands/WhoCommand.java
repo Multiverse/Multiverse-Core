@@ -47,8 +47,8 @@ public class WhoCommand extends MultiverseCommand {
 
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 
-        sender.sendMessage(ChatColor.AQUA + "--- Worlds and their players --- "
-                + visiblePlayers.size() + "/" + this.plugin.getServer().getMaxPlayers());
+        sender.sendMessage(String.format("%s--- Worlds and their players --- %s%s/%s",
+                ChatColor.GOLD, ChatColor.AQUA, visiblePlayers.size(), this.plugin.getServer().getMaxPlayers()));
 
         this.plugin.getMVWorldManager().getMVWorlds().stream()
                 .filter(world -> player == null || this.plugin.getMVPerms().canEnterWorld(player, world))
@@ -75,8 +75,8 @@ public class WhoCommand extends MultiverseCommand {
 
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 
-        sender.sendMessage(String.format("%s--- Players in %s%s ---", ChatColor.AQUA,
-                world.getColoredWorldString(), ChatColor.AQUA));
+        sender.sendMessage(String.format("%s--- Players in %s%s ---",
+                ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA));
 
         sender.sendMessage(buildPlayerString(world, filter, visiblePlayers));
     }

@@ -27,7 +27,7 @@ public class EnvironmentCommand extends MultiverseCommand {
     @Description("Lists valid known environments/world types.")
     public void onEnvironmentCommand(CommandSender sender) {
         showEnvironments(sender);
-        sender.sendMessage(" ");
+        sender.sendMessage("");
         showWorldTypes(sender);
     }
 
@@ -37,7 +37,7 @@ public class EnvironmentCommand extends MultiverseCommand {
      * @param sender The {@link CommandSender}.
      */
     public static void showEnvironments(CommandSender sender) {
-        sender.sendMessage(ChatColor.YELLOW + "Valid Environments are:");
+        sender.sendMessage(String.format("%sValid Environments are:", ChatColor.YELLOW));
         sender.sendMessage(String.format("%sNORMAL%s, %sNETHER %sor %sEND",
                 ChatColor.GREEN, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.AQUA));
     }
@@ -48,7 +48,7 @@ public class EnvironmentCommand extends MultiverseCommand {
      * @param sender The {@link CommandSender}.
      */
     public static void showWorldTypes(CommandSender sender) {
-        sender.sendMessage(ChatColor.YELLOW + "Valid World Types are:");
+        sender.sendMessage(String.format("%sValid World Types are:", ChatColor.YELLOW));
         sender.sendMessage(String.format("%sNORMAL%s, %sFLAT%s, %sLARGEBIOMES %sor %sAMPLIFIED",
                 ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.GOLD));
     }

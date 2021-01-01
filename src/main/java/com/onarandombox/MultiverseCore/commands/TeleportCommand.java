@@ -129,8 +129,10 @@ public class TeleportCommand extends MultiverseCommand {
 
         if (!this.plugin.getMVPerms().canTravelFromLocation(teleporter, destination.getLocation(teleportee))) {
             teleporter.sendMessage((teleportee.equals(teleporter))
-                    ? String.format("DOH! Doesn't look like you can get to %s%s %sfrom where you are...", ChatColor.GREEN, destination.toString(), ChatColor.WHITE)
-                    : String.format("DOH! Doesn't look like %s%s %scan get to %sTHERE from where they are...", ChatColor.GREEN, ((Player) teleporter).getWorld().getName(), ChatColor.WHITE, ChatColor.RED));
+                    ? String.format("Doh! Doesn't look like you can get to %s%s %sfrom where you are...",
+                    ChatColor.GREEN, destination.toString(), ChatColor.WHITE)
+                    : String.format("Doh! Doesn't look like %s%s %scan get to %sTHERE from where they are...",
+                    ChatColor.GREEN, ((Player) teleporter).getWorld().getName(), ChatColor.WHITE, ChatColor.RED));
             return;
         }
 

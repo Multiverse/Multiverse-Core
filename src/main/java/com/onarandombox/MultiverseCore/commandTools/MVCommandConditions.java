@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.contexts.PlayerWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -54,7 +55,7 @@ public class MVCommandConditions {
                                 @NotNull String worldName) {
 
         if (!this.worldManager.isMVWorld(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' not found.");
+            throw new ConditionFailedException(String.format("World '%s' not found.", worldName));
         }
     }
 
@@ -63,11 +64,11 @@ public class MVCommandConditions {
                                       @NotNull String worldName) {
 
         if (this.worldManager.isMVWorld(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' is already loaded.");
+            throw new ConditionFailedException(String.format("World '%s' is already loaded.", worldName));
         }
 
         if (!this.worldManager.getUnloadedWorlds().contains(worldName)) {
-            throw new ConditionFailedException("World '" + worldName + "' not found.");
+            throw new ConditionFailedException(String.format("World '%s' not found.", worldName));
         }
     }
 
@@ -76,7 +77,7 @@ public class MVCommandConditions {
                                       @NotNull String worldName) {
 
         if (!this.worldManager.hasUnloadedWorld(worldName, true)) {
-            throw new ConditionFailedException("World '" + worldName + "' not found.");
+            throw new ConditionFailedException(String.format("World '%s' not found.", worldName));
         }
     }
 
@@ -85,8 +86,8 @@ public class MVCommandConditions {
                                          @NotNull String worldName) {
 
         if (this.worldManager.isMVWorld(worldName)) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
-                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
+            executionContext.getSender().sendMessage(String.format("%sMultiverse cannot create %s%sanother %s%sworld named '%s'",
+                    ChatColor.RED, ChatColor.GOLD, ChatColor.UNDERLINE, ChatColor.RESET, ChatColor.RED, worldName));
             throw new ConditionFailedException();
         }
 
@@ -94,10 +95,12 @@ public class MVCommandConditions {
         validateWorldNameResult(validationResult);
 
         if (validationResult != WorldValidationResult.DOES_NOT_EXIST && validationResult != WorldValidationResult.NOT_A_DIRECTORY) {
-            executionContext.getSender().sendMessage(ChatColor.RED + "A Folder already exists with this name!");
+            CommandSender sender = executionContext.getSender();
+            sender.sendMessage(String.format("%sA Folder already exists with this name!", ChatColor.RED));
+
             if (validationResult == WorldValidationResult.VALID) {
-                executionContext.getSender().sendMessage(ChatColor.RED + "World Folder '" + worldName + "' already look like a world to me!");
-                executionContext.getSender().sendMessage(ChatColor.RED + "You can try importing it with /mv import");
+                sender.sendMessage(String.format("%sWorld Folder '%s' already look like a world to me!", ChatColor.RED, worldName));
+                sender.sendMessage(String.format("%sYou can try importing it with %s/mv import", ChatColor.RED, ChatColor.AQUA));
             }
             throw new ConditionFailedException();
         }
@@ -108,8 +111,8 @@ public class MVCommandConditions {
                                           @NotNull String worldName) {
 
         if (this.worldManager.isMVWorld(worldName)) {
-            executionContext.getSender().sendMessage(ChatColor.GREEN + "Multiverse" + ChatColor.WHITE
-                    + " already knows about '" + ChatColor.AQUA + worldName + ChatColor.WHITE + "'!");
+            executionContext.getSender().sendMessage(String.format("%sMultiverse %s already knows about %s%s%s!",
+                    ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, worldName, ChatColor.WHITE));
             throw new ConditionFailedException();
         }
 
@@ -141,9 +144,9 @@ public class MVCommandConditions {
         switch (validationResult) {
             case DOES_NOT_EXIST:
             case NOT_A_DIRECTORY:
-                throw new ConditionFailedException("World folder '"+ worldName +"' does not exist.");
+                throw new ConditionFailedException(String.format("World folder '%s' does not exist.", worldName));
             case FOLDER_LACK_DAT:
-                throw new ConditionFailedException("'" + worldName + "' does not appear to be a world. It is lacking .dat file.");
+                throw new ConditionFailedException(String.format("'%s' does not appear to be a world. It is lacking .dat file.", worldName));
         }
     }
 
@@ -161,7 +164,7 @@ public class MVCommandConditions {
         }
         catch (IllegalArgumentException e) {
             CommandSender sender = executionContext.getSender();
-            sender.sendMessage("Sorry, you can't use " + actionType + " with '" + property + "'");
+            sender.sendMessage(String.format("%sSorry, you can't use %s with '%s'.", ChatColor.RED, actionType, property));
             sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/q1h01S");
             throw new ConditionFailedException();
         }

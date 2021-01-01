@@ -53,8 +53,8 @@ public class ImportCommand extends MultiverseCommand {
 
         WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);
 
-        Command.broadcastCommandMessage(sender, "Starting import of world '" + worldName + "'...");
-        String resultMessage = (this.plugin.getMVWorldManager().addWorld(worldName,
+        Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
+        Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(worldName,
                 environment,
                 null,
                 null,
@@ -62,9 +62,7 @@ public class ImportCommand extends MultiverseCommand {
                 flags.getGenerator(),
                 flags.isSpawnAdjust())
         )
-                ? ChatColor.GREEN + "Complete!"
-                : ChatColor.RED + "Failed! See console for more details.";
-
-        Command.broadcastCommandMessage(sender, resultMessage);
+                ? String.format("%sComplete!", ChatColor.GREEN)
+                : String.format("%sFailed! See console for more details.", ChatColor.RED));
     }
 }

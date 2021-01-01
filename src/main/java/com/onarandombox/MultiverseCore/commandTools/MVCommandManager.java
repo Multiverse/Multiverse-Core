@@ -257,15 +257,18 @@ public class MVCommandManager extends PaperCommandManager {
      *
      * @param sender       Sender to send the info to.
      * @param description  mv-module's description and info.
-     * @param colour       Special colour for each mv-module.
-     * @param baseCommand  mv-module's root command name.
+     * @param color        Special colour for each mv-module.
+     * @param rootCmd      mv-module's root command name.
      */
     public void showPluginInfo(@NotNull CommandSender sender,
                                @NotNull PluginDescriptionFile description,
-                               @NotNull ColourAlternator colour,
-                               @NotNull String baseCommand) {
+                               @NotNull ColourAlternator color,
+                               @NotNull String rootCmd) {
 
-        sender.sendMessage(colour.getThis() + description.getName() + ChatColor.DARK_GRAY + " | " + colour.getThat() + "v" + description.getVersion());
-        sender.sendMessage(ChatColor.DARK_GREEN + "See " + ChatColor.GREEN + "/" + baseCommand + " help " + ChatColor.DARK_GREEN + "for commands available.");
+        sender.sendMessage(String.format("%s%s %s| %sv%s",
+                color.getThis(), description.getName(), ChatColor.DARK_GRAY, color.getThat(), description.getVersion()));
+
+        sender.sendMessage(String.format("%sSee %s/%s help %sfor commands available.",
+                ChatColor.DARK_GREEN, ChatColor.GREEN, rootCmd, ChatColor.DARK_GREEN));
     }
 }

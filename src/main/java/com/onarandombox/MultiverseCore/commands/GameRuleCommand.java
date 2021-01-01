@@ -55,7 +55,7 @@ public class GameRuleCommand extends MultiverseCommand {
         KeyValueDisplay display = new KeyValueDisplay(
                 this.plugin,
                 sender,
-                "=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===",
+                String.format("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE),
                 getGameRuleMap(world),
                 filter,
                 new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
@@ -94,15 +94,14 @@ public class GameRuleCommand extends MultiverseCommand {
                                             @Description("World you want to set this game rule.")
                                             @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
-        if (world.getCBWorld().setGameRule(property.getGameRule(), property.getValue())) {
-            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA
-                    + property.getGameRule().getName() + ChatColor.WHITE + " was set to " + ChatColor.GREEN
-                    + property.getValue() + ChatColor.WHITE + ".");
-        }
-        else {
-            sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule "
-                    + ChatColor.AQUA + property.getGameRule().getName() + ChatColor.WHITE
-                    + " could not be set to " + ChatColor.RED + property.getValue() + ChatColor.WHITE + ", ");
-        }
+        sender.sendMessage((world.getCBWorld().setGameRule(property.getGameRule(), property.getValue()))
+
+                ? String.format("%sSuccess! %sGamerule %s%s%s was set to %s%s%s.",
+                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, property.getGameRule().getName(),
+                ChatColor.WHITE, ChatColor.GREEN, property.getValue(), ChatColor.WHITE)
+
+                : String.format("%sFailure! Gamerule %s%s%s could not be set to %s%s%s.",
+                ChatColor.RED, ChatColor.AQUA, property.getGameRule().getName(),
+                ChatColor.RED, ChatColor.DARK_RED, property.getValue(), ChatColor.RED));
     }
 }

@@ -47,7 +47,7 @@ public class ListCommand extends MultiverseCommand {
         PageDisplay pageDisplay = new PageDisplay(
                 this.plugin,
                 sender,
-                ChatColor.LIGHT_PURPLE + "====[ Multiverse World List ]====",
+                 String.format("%s====[ Multiverse World List ]====", ChatColor.GOLD),
                 getListContents(sender, player),
                 pageFilter.getFilter(),
                 new ColourAlternator(ChatColor.WHITE, ChatColor.WHITE),
@@ -64,7 +64,7 @@ public class ListCommand extends MultiverseCommand {
             List<String> worldList =  new ArrayList<>();
             plugin.getMVWorldManager().getMVWorlds().stream()
                     .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))
-                    .filter(world -> canSeeHidden(player, world))
+                    .filter(world -> canSeeWorld(player, world))
                     .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
                     .sorted()
                     .forEach(worldList::add);
@@ -79,12 +79,14 @@ public class ListCommand extends MultiverseCommand {
         };
     }
 
-    private boolean canSeeHidden(Player player, MultiverseWorld world) {
-        return !world.isHidden() || player == null || this.plugin.getMVPerms().hasPermission(player, "multiverse.core.modify", true);
+    private boolean canSeeWorld(Player player, MultiverseWorld world) {
+        return !world.isHidden()
+                || player == null
+                || this.plugin.getMVPerms().hasPermission(player, "multiverse.core.modify", true);
     }
 
     private String hiddenText(MultiverseWorld world) {
-        return (world.isHidden()) ? ChatColor.GRAY + "[H] " : "";
+        return (world.isHidden()) ? String.format("%s[H] ", ChatColor.GRAY) : "";
     }
 
     private String parseColouredEnvironment(World.Environment env) {

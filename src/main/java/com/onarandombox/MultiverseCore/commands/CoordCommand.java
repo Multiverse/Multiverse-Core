@@ -46,16 +46,17 @@ public class CoordCommand extends MultiverseCommand {
         Player player = targetPlayer.getPlayer();
         MultiverseWorld world = targetPlayer.getWorld();
 
-        sender.sendMessage(ChatColor.AQUA + "--- Location Information "
-                + ((targetPlayer.isSender(sender))
-                ? "---"
-                : "for " + ChatColor.YELLOW + player.getName() + ChatColor.AQUA + " ---"));
+        sender.sendMessage(String.format("%s--- Location Information %s---", ChatColor.AQUA,
+                (targetPlayer.isSender(sender))
+                        ? ""
+                        : String.format("for %s%s%s",ChatColor.YELLOW, player.getName(), ChatColor.AQUA)));
 
-        sender.sendMessage(ChatColor.AQUA + "World: " + ChatColor.WHITE + world.getName());
-        sender.sendMessage(ChatColor.AQUA + "Alias: " + world.getColoredWorldString());
-        sender.sendMessage(ChatColor.AQUA + "World Scale: " + ChatColor.WHITE + world.getScaling());
-        sender.sendMessage(ChatColor.AQUA + "Coordinates: " + ChatColor.WHITE + this.plugin.getLocationManipulation().strCoords(player.getLocation()));
-        sender.sendMessage(ChatColor.AQUA + "Direction: " + ChatColor.WHITE + this.plugin.getLocationManipulation().getDirection(player.getLocation()));
-        sender.sendMessage(ChatColor.AQUA + "Block: " + ChatColor.WHITE + world.getCBWorld().getBlockAt(player.getLocation()).getType());
+        sender.sendMessage(String.format("%sWorld: %s%s", ChatColor.AQUA, ChatColor.WHITE,  world.getName()));
+        sender.sendMessage(String.format("%sAlias: %s%s", ChatColor.AQUA, ChatColor.WHITE,  world.getColoredWorldString()));
+        sender.sendMessage(String.format("%sWorld Scale: %s%s", ChatColor.AQUA, ChatColor.WHITE, world.getScaling()));
+        sender.sendMessage(String.format("%sCoordinates: %s%s", ChatColor.AQUA, ChatColor.WHITE, this.plugin.getLocationManipulation().strCoords(player.getLocation())));
+        sender.sendMessage(String.format("%sWorld Scale: %s%s", ChatColor.AQUA, ChatColor.WHITE, world.getScaling()));
+        sender.sendMessage(String.format("%sDirection: %s%s", ChatColor.AQUA, ChatColor.WHITE, this.plugin.getLocationManipulation().getDirection(player.getLocation())));
+        sender.sendMessage(String.format("%sBlock: %s%s", ChatColor.AQUA, ChatColor.WHITE, world.getCBWorld().getBlockAt(player.getLocation()).getType()));
     }
 }

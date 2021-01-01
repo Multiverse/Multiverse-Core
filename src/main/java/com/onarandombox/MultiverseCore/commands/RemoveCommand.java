@@ -17,6 +17,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,7 @@ public class RemoveCommand extends MultiverseCommand {
                                 @Conditions("isWorldInConfig") String worldName) {
 
         sender.sendMessage((this.plugin.getMVWorldManager().removeWorldFromConfig(worldName))
-                ? "World removed from config!"
-                : "Error trying to remove world from config!");
+                ? String.format("World '%s' is removed from config!", worldName)
+                : String.format("%sError trying to remove world from config!", ChatColor.RED));
     }
 }

@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -17,8 +18,10 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -142,7 +145,8 @@ public class ModifyCommand extends MultiverseCommand {
         if ((property.equalsIgnoreCase("aliascolor")
                 || property.equalsIgnoreCase("color"))
                 && !EnglishChatColor.isValidAliasColor(value)) {
-            sender.sendMessage(value + " is not a valid color. Please pick one of the following:");
+            sender.sendMessage(String.format("%s'%s' is not a valid color. Please pick one of the following:",
+                    ChatColor.RED, value));
             sender.sendMessage(EnglishChatColor.getAllColors());
             return;
         }
@@ -154,13 +158,13 @@ public class ModifyCommand extends MultiverseCommand {
             }
         }
         catch (PropertyDoesNotExistException e) {
-            sender.sendMessage(ChatColor.RED + "Sorry, You can't set '" + ChatColor.GRAY + property + ChatColor.RED + "'");
-            sender.sendMessage("Valid world-properties: " + world.getAllPropertyNames());
+            sender.sendMessage(String.format("%sSorry, You can't set '%s%s%s'!", ChatColor.RED, ChatColor.GRAY, property, ChatColor.RED));
+            sender.sendMessage(String.format("Valid world-properties: %s", world.getAllPropertyNames()));
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Property " + ChatColor.AQUA
-                + property + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
+        sender.sendMessage(String.format("%sSuccess! %sProperty %s%s%s was set to %s%s%s.",
+                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, property, ChatColor.WHITE, ChatColor.GREEN, value, ChatColor.WHITE));
         saveWorldConfig(sender);
     }
 
@@ -170,12 +174,14 @@ public class ModifyCommand extends MultiverseCommand {
                              @NotNull MultiverseWorld world) {
 
         if (!world.addToVariable(property, value)) {
-            sender.sendMessage(value + " could not be added to " + property);
+            sender.sendMessage(String.format("%s %scould not be added to %s%s%s.",
+                    value, ChatColor.RED, ChatColor.AQUA, property, ChatColor.RED));
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE + " was "
-                + ChatColor.GREEN + "added to " + ChatColor.GREEN + property);
+        sender.sendMessage(String.format("%sSuccess! %s%s%s was added to %s%s%s.",
+                ChatColor.GREEN, ChatColor.AQUA, value, ChatColor.WHITE, ChatColor.GREEN, property, ChatColor.WHITE));
+
         saveWorldConfig(sender);
     }
 
@@ -185,13 +191,14 @@ public class ModifyCommand extends MultiverseCommand {
                                 @NotNull MultiverseWorld world) {
 
         if (!world.removeFromVariable(property, value)) {
-            sender.sendMessage(ChatColor.RED + "There was an error removing " + ChatColor.GRAY
-                    + value + ChatColor.WHITE + " from " + ChatColor.GOLD + property);
+            sender.sendMessage(String.format("%sThere was an error removing %s%s%s from %s%s%s!",
+                    ChatColor.RED, ChatColor.GRAY, value, ChatColor.RED, ChatColor.GRAY, property, ChatColor.RED));
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + value + ChatColor.WHITE + " was "
-                + ChatColor.RED + "removed from " + ChatColor.GREEN + property);
+        sender.sendMessage(String.format("%sSuccess! %s%s%s was %sremoved %sfrom %s%s%s.",
+                ChatColor.GREEN, ChatColor.AQUA, value, ChatColor.WHITE, ChatColor.RED, ChatColor.GREEN, property, ChatColor.WHITE));
+
         saveWorldConfig(sender);
     }
 
@@ -200,29 +207,30 @@ public class ModifyCommand extends MultiverseCommand {
                                @NotNull MultiverseWorld world) {
 
         if (!world.clearList(property)) {
-            sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.GOLD + property
-                    + ChatColor.WHITE + " was " + ChatColor.GOLD + "NOT" + ChatColor.WHITE + " cleared.");
+            sender.sendMessage(String.format("%sThere was an error clearing %s%s%s.",
+                    ChatColor.RED, ChatColor.GOLD, property, ChatColor.RED));
         }
 
-        sender.sendMessage(property + " was cleared. It contains 0 values now.");
-        sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.AQUA + property + ChatColor.WHITE + " was "
-                + ChatColor.GREEN + "CLEARED" + ChatColor.WHITE + ". It contains " + ChatColor.LIGHT_PURPLE + "0" + ChatColor.WHITE + " values now.");
+        sender.sendMessage(String.format("%s%s%s was cleared. It contains 0 values now.",
+                ChatColor.GOLD, property, ChatColor.WHITE));
+
         saveWorldConfig(sender);
     }
 
     private void doModifyList(@NotNull CommandSender sender,
                               @NotNull MultiverseWorld world) {
 
+        //TODO ACF: Use KayValueDisplay
         Collection<String> properties = world.getAllPropertyTypes();
         List<String> propValues = new ArrayList<>(properties.size());
 
         for (String property : properties) {
-            String value = ChatColor.RED + "!!INAVLID!!";
+            String value;
             try {
                 value = world.getPropertyValue(property);
             }
             catch (PropertyDoesNotExistException ignored) {
-
+                value = String.format("%s!!INAVLID!!", ChatColor.RED);
             }
 
             propValues.add(ChatColor.GREEN + property
@@ -231,13 +239,13 @@ public class ModifyCommand extends MultiverseCommand {
                     + ChatColor.WHITE);
         }
 
-        sender.sendMessage("===[ Property Values for " + world.getColoredWorldString() + " ]===");
+        sender.sendMessage(String.format("%s===[ Property Values for %s ]===", ChatColor.GOLD, world.getColoredWorldString()));
         sender.sendMessage(String.join(", ", propValues));
     }
 
     private void saveWorldConfig(@NotNull CommandSender sender) {
         if (!this.plugin.saveWorldConfig()) {
-            sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml! Your changes will only be temporary!");
+            throw new InvalidCommandArgument("There was an issue saving worlds.yml! Your changes will only be temporary.", false);
         }
     }
 }

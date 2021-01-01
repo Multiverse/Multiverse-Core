@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import buscript.Buscript;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -47,14 +48,13 @@ public class ScriptCommand extends MultiverseCommand {
 
         Buscript scriptAPI = this.plugin.getScriptAPI();
         if (scriptAPI == null) {
-            sender.sendMessage("Buscript failed to load while the server was starting. Scripts cannot be run.");
-            return;
+            throw new InvalidCommandArgument("Buscript failed to load while server was starting! Scripts cannot be run.", false);
         }
 
+        //TODO: ACF: Use command complete.
         File file = new File(scriptAPI.getScriptFolder(), targetScript);
         if (!file.exists()) {
-            sender.sendMessage("That script file does not exist in the Multiverse-Core scripts directory!");
-            return;
+            throw new InvalidCommandArgument("That script file does not exist in the Multiverse-Core scripts directory!");
         }
 
         scriptAPI.executeScript(file, targetScript, player);

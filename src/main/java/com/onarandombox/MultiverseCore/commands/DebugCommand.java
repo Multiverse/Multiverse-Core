@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -46,14 +47,12 @@ public class DebugCommand extends MultiverseCommand {
 
         int parsedLevel = parseDebugLevel(debugLevel);
         if (parsedLevel == -1) {
-            sender.sendMessage(ChatColor.RED + "Error" + ChatColor.WHITE
-                    + " setting debug level. Please use a number 0-3 " + ChatColor.AQUA + "(3 being many many messages!)");
-            return;
+            throw new InvalidCommandArgument("No such debug level. Please use a number from 0 to 3.");
         }
 
         this.plugin.getMVConfig().setGlobalDebug(parsedLevel);
         if (!this.plugin.saveMVConfigs()) {
-            sender.sendMessage(ChatColor.RED + "Error saving changes to config! See console for more info.");
+            sender.sendMessage(String.format("%sError saving changes to config! See console for more info.", ChatColor.RED));
         }
 
         displayDebugMode(sender);
@@ -79,11 +78,11 @@ public class DebugCommand extends MultiverseCommand {
     private void displayDebugMode(@NotNull CommandSender sender) {
         final int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
         if (debugLevel == 0) {
-            sender.sendMessage("Multiverse Debug mode is " + ChatColor.RED + "OFF");
+            sender.sendMessage(String.format("Multiverse Debug mode is %soff", ChatColor.RED));
         }
         else {
-            sender.sendMessage("Multiverse Debug mode is " + ChatColor.GREEN + debugLevel);
-            Logging.fine("Multiverse Debug ENABLED");
+            sender.sendMessage(String.format("Multiverse Debug mode at level %s%s", ChatColor.GREEN, debugLevel));
+            Logging.fine("Multiverse debug mode enabled!");
         }
     }
 }

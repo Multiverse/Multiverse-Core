@@ -18,6 +18,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -68,8 +69,8 @@ public class RegenCommand extends MultiverseCommand {
                     flags.getSeed() == null,
                     flags.getSeed())
             )
-                    ? ChatColor.GREEN + "World Regenerated!"
-                    : ChatColor.RED + "World could not be regenerated!");
+                    ? String.format("%sWorld Regenerated!", ChatColor.GREEN)
+                    : String.format("%sWorld could not be regenerated!", ChatColor.RED));
         };
     }
 }

@@ -83,7 +83,7 @@ public class ConfigCommand extends MultiverseCommand {
         }
 
         if (!this.plugin.saveMVConfigs()) {
-            sender.sendMessage(ChatColor.RED + "Failed to save config! Check your console for details.");
+            sender.sendMessage(String.format("%sFailed to save config! Check your console for details.", ChatColor.RED));
             return;
         }
 
@@ -93,8 +93,9 @@ public class ConfigCommand extends MultiverseCommand {
             this.plugin.getMVWorldManager().setFirstSpawnWorld(value);
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Success! " + ChatColor.WHITE + "Config option " + ChatColor.AQUA
-                + property + ChatColor.WHITE + " is now set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
+        sender.sendMessage(String.format("%sSuccess! %sConfig option %s%s %sis now set to %s%s%s.",
+                ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, property, ChatColor.WHITE, ChatColor.GREEN, value, ChatColor.WHITE));
+
         this.plugin.loadConfigs();
     }
 }

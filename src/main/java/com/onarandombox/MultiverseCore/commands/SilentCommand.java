@@ -42,7 +42,7 @@ public class SilentCommand extends MultiverseCommand {
 
         plugin.getMVConfig().setSilentStart(silent);
         if (!plugin.saveMVConfigs()) {
-            sender.sendMessage(ChatColor.RED + "Failed to save config! Check your console for details.");
+            sender.sendMessage(String.format("%sFailed to save config! Check your console for details.", ChatColor.RED));
         }
 
         displaySilentMode(sender);
@@ -50,7 +50,7 @@ public class SilentCommand extends MultiverseCommand {
 
     private void displaySilentMode(CommandSender sender) {
         sender.sendMessage((plugin.getMVConfig().getSilentStart())
-                ? "Multiverse Silent Start mode is " + ChatColor.GREEN + "ON"
-                : "Multiverse Silent Start mode is " + ChatColor.RED + "OFF");
+                ? String.format("Multiverse Silent Start mode is %sOn", ChatColor.GREEN)
+                : String.format("Multiverse Silent Start mode is %sOff", ChatColor.RED));
     }
 }

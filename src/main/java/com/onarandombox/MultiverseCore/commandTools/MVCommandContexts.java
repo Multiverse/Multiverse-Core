@@ -23,6 +23,7 @@ import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -32,6 +33,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.management.Sensor;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,9 +112,9 @@ public class MVCommandContexts extends PaperCommandContexts {
             if (context.hasFlag("fallbackself")) {
                 return getPlayerWorld(context.getPlayer(),
                         context.isOptional(),
-                        "World '" + worldName + "' not found.");
+                        String.format("World '%s' not found.", worldName));
             }
-            throw new InvalidCommandArgument("World '" + worldName + "' not found.", false);
+            throw new InvalidCommandArgument(String.format("World '%s' not found.", worldName), false);
         }
 
         context.popFirstArg();
@@ -131,8 +133,8 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         //TODO: API should have a isUnloadedWorld method.
         if (checkUnloaded && this.worldManager.getUnloadedWorlds().contains(worldName)) {
-            sender.sendMessage("World '" + worldName + "' exists, but it is unloaded!");
-            sender.sendMessage("You can load it with: " + ChatColor.AQUA + "/mv load " + worldName);
+            sender.sendMessage(String.format("%sWorld '%s' exists, but it is unloaded!", ChatColor.RED, worldName));
+            sender.sendMessage(String.format("You can load it with: %s/mv load %s", ChatColor.AQUA, worldName));
             throw new InvalidCommandArgument();
         }
 
@@ -153,9 +155,13 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         MultiverseWorld targetWorld = this.worldManager.getMVWorld(player.getWorld());
         if (targetWorld == null) {
-            player.sendMessage(ChatColor.RED + "Multiverse doesn't know about world '" + ChatColor.DARK_AQUA + player.getWorld().getName()
-                    + ChatColor.RED + "' that player " + ChatColor.AQUA + player.getName() + ChatColor.RED + "is in.");
-            player.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
+            player.sendMessage(String.format("%sMultiverse doesn't know about world '%s%s%s' that '%s%s%s' is in.",
+                    ChatColor.RED, ChatColor.DARK_AQUA, player.getWorld().getName(), ChatColor.RED,
+                    ChatColor.AQUA, player.getName(), ChatColor.RED));
+
+            player.sendMessage(String.format("You need to import the world with %s/mv import %s %s",
+                    ChatColor.DARK_AQUA, player.getWorld().getName(), player.getWorld().getEnvironment()));
+
             throw new InvalidCommandArgument();
         }
 
@@ -179,9 +185,9 @@ public class MVCommandContexts extends PaperCommandContexts {
         Player player = getPlayerFromValue(context.getSender(), playerIdentifier);
         if (player == null) {
             if (context.hasFlag("fallbackself")) {
-                return getPlayerFromSelf(context, "Player '" + playerIdentifier + "' not found.");
+                return getPlayerFromSelf(context, String.format("Player '%s' not found.", playerIdentifier));
             }
-            throw new InvalidCommandArgument("Player '" + playerIdentifier + "' not found.");
+            throw new InvalidCommandArgument(String.format("Player '%s' not found.", playerIdentifier));
         }
 
         context.popFirstArg();
@@ -242,14 +248,16 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
         catch (IllegalArgumentException e) {
             e.printStackTrace();
-            throw new InvalidCommandArgument("Error parsing selector '" + playerIdentifier + "' for " + sender.getName());
+            throw new InvalidCommandArgument(String.format("Error parsing selector '%s' for %s! See console for more details",
+                    playerIdentifier, sender.getName()));
         }
         if (matchedPlayers.isEmpty()) {
-            throw new InvalidCommandArgument("No player found with selector '" + playerIdentifier + "' for " + sender.getName());
+            throw new InvalidCommandArgument(String.format("No player found with selector '%s' for %s",
+                    playerIdentifier, sender.getName()));
         }
         if (matchedPlayers.size() > 1) {
-            throw new InvalidCommandArgument("Error parsing selector '" + playerIdentifier + "' for " + sender.getName() +
-                    ": ambiguous result (more than one player matched) - " + matchedPlayers.toString());
+            throw new InvalidCommandArgument(String.format("Error parsing selector '%s' for %s. ambiguous result (more than one player matched) - %s",
+                    playerIdentifier, sender.getName(), matchedPlayers.toString()));
         }
 
         return matchedPlayers.get(0);
@@ -288,7 +296,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
         catch (IllegalArgumentException e) {
             CommandSender sender = context.getSender();
-            sender.sendMessage(ChatColor.RED + "'" + env + "' is not a valid environment.");
+            sender.sendMessage(String.format("%s'%s' is not a valid environment.", ChatColor.RED, env));
             EnvironmentCommand.showEnvironments(sender);
             throw new InvalidCommandArgument(false);
         }
@@ -307,19 +315,19 @@ public class MVCommandContexts extends PaperCommandContexts {
         String ruleString = context.popFirstArg();
         GameRule<?> gameRule = GameRule.getByName(ruleString);
         if (gameRule == null) {
-            throw new InvalidCommandArgument("'" + ruleString + "' is not a valid gamerule.");
+            throw new InvalidCommandArgument(String.format("'%s' is not a valid gamerule.", ruleString));
         }
 
         Class<?> ruleType = gameRule.getType();
         String value = context.getFirstArg();
         Object result = getResolver(ruleType).getContext(context);
         if (result == null) {
-            context.getSender().sendMessage(ChatColor.RED + "'" + value + "' is not a valid value.");
-            context.getSender().sendMessage(ChatColor.RED + "Value need to be a " + ruleType.getTypeName());
+            context.getSender().sendMessage(String.format("%s'%s' is not a valid value.", ChatColor.RED, value));
+            context.getSender().sendMessage(String.format("%sValue need to be a %s", ChatColor.RED, ruleType.getTypeName()));
             throw new InvalidCommandArgument();
         }
         if (result instanceof Integer && ((int) result) < 0) {
-            throw new InvalidCommandArgument(ChatColor.RED + "Value need to be a positive number.");
+            throw new InvalidCommandArgument("Value need to be a positive number.");
         }
 
         return new GameRuleProperty(gameRule, result);
@@ -334,7 +342,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         MVDestination destination = this.plugin.getDestFactory().getDestination(destString);
         if (destination instanceof InvalidDestination) {
-            throw new  InvalidCommandArgument("No such destination '" + destString + "' found.");
+            throw new  InvalidCommandArgument(String.format("No such destination '%s' found.", destString));
         }
         return destination;
     }
@@ -349,7 +357,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (string == null) {
             if (!context.isOptional()) {
                 String argType = context.getFlagValue("type", "string");
-                throw new InvalidCommandArgument("You need to specify a " + argType + ".");
+                throw new InvalidCommandArgument(String.format("You need to specify a %s.", argType));
             }
             return null;
         }
@@ -378,7 +386,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             return PasteServiceType.valueOf(pasteType.toUpperCase());
         }
         catch (IllegalArgumentException e) {
-            throw new InvalidCommandArgument("Invalid paste service type '" + pasteType + "'");
+            throw new InvalidCommandArgument(String.format("Invalid paste service type '%s'.", pasteType));
         }
     }
 
@@ -404,7 +412,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         String pageString = context.popFirstArg();
         Optional<Integer> page = tryParseInt(pageString);
         if (!page.isPresent()) {
-            throw new InvalidCommandArgument("'" + pageString + "' is not a number.", false);
+            throw new InvalidCommandArgument(String.format("'%s' is not a number.", pageString), false);
         }
         return new PageFilter(new ContentFilter(filter), page.get());
     }

@@ -39,9 +39,9 @@ public class LoadCommand extends MultiverseCommand {
                               @NotNull @Flags("type=world name") @Conditions("isUnloadedWorld") String worldName) {
 
         if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
-            sender.sendMessage("Error trying to load world '" + worldName + "'!");
+            sender.sendMessage(String.format("Error trying to load world '%s'!", worldName));
             return;
         }
-        Command.broadcastCommandMessage(sender, "Loaded world '" + worldName + "'!");
+        Command.broadcastCommandMessage(sender, String.format("Loaded world '%s'!", worldName));
     }
 }

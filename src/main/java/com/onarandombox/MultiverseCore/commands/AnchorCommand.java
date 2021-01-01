@@ -55,8 +55,13 @@ public class AnchorCommand extends MultiverseCommand {
                                       @NotNull @Single @Flags("type=anchor name") String anchorName) {
 
         player.sendMessage((this.plugin.getAnchorManager().saveAnchorLocation(anchorName, player.getLocation()))
-                ? "Anchor '" + anchorName + "' was successfully " + ChatColor.GREEN + "created!"
-                : "Anchor '" + anchorName + "' was " + ChatColor.RED + " NOT " + ChatColor.WHITE + "created!");
+
+                ? String.format("Anchor '%s%s%s' was successfully %s created!",
+                ChatColor.AQUA, anchorName, ChatColor.WHITE, ChatColor.GREEN)
+
+                : String.format("%sThere was an error creating anchor '%s'! Check console for errors.",
+                ChatColor.RED, anchorName));
+
     }
 
     @Subcommand("delete")
@@ -71,8 +76,12 @@ public class AnchorCommand extends MultiverseCommand {
                                       @NotNull @Single @Flags("type=anchor name") String anchorName) {
 
         sender.sendMessage((this.plugin.getAnchorManager().deleteAnchor(anchorName))
-                ? "Anchor '" + anchorName + "' was successfully " + ChatColor.RED + "deleted!"
-                : "Anchor '" + anchorName + "' was " + ChatColor.RED + " not " + ChatColor.WHITE + "deleted!");
+
+                ? String.format("Anchor '%s%s%s' was successfully %s deleted!",
+                ChatColor.AQUA, anchorName, ChatColor.WHITE, ChatColor.RED)
+
+                : String.format("%sThere was an error deleting anchor '%s'! Check console for errors.",
+                ChatColor.RED, anchorName));
     }
 
     @Subcommand("list")
@@ -85,7 +94,7 @@ public class AnchorCommand extends MultiverseCommand {
         PageDisplay pageDisplay = new PageDisplay(
                 this.plugin,
                 sender,
-                ChatColor.LIGHT_PURPLE + "====[ Multiverse Anchor List ]====",
+                String.format("%s====[ Multiverse Anchor List ]====", ChatColor.LIGHT_PURPLE),
                 buildAnchorList(sender),
                 pageFilter.getFilter(),
                 new ColourAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA),
@@ -109,12 +118,12 @@ public class AnchorCommand extends MultiverseCommand {
 
                 String locationString = ChatColor.RED + "!!INVALID!!";
                 if (world != null) {
-                    MultiverseWorld mvworld = this.plugin.getMVWorldManager().getMVWorld(world);
-                    locationString = (mvworld == null)
-                            ? ChatColor.RED + world.getName() + "!!NOT MULTIVERSE WORLD!!"
-                            : mvworld.getColoredWorldString() + " - " + this.plugin.getLocationManipulation().strAxis(anchorLocation);
+                    MultiverseWorld mvWorld = this.plugin.getMVWorldManager().getMVWorld(world);
+                    locationString = (mvWorld == null)
+                            ? String.format("%s%s !!NOT MULTIVERSE WORLD!!", ChatColor.RED, world.getName())
+                            : String.format("%s - %s", mvWorld.getColoredWorldString(), this.plugin.getLocationManipulation().strAxis(anchorLocation));
                 }
-                anchorContent.add(anchor + ": " + locationString);
+                anchorContent.add(String.format("%s: %s", anchor, locationString));
             }
 
             return anchorContent;

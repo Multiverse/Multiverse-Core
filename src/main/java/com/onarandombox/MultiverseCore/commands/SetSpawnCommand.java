@@ -152,18 +152,18 @@ public class SetSpawnCommand extends MultiverseCommand {
         if (!blockSafety.playerCanSpawnHereSafely(location) && world.getAdjustSpawn()) {
             sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
             sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
-            sender.sendMessage("If you want turn this back on, just do " + ChatColor.AQUA + "/mvm set adjustspawn true " + world.getName());
+            sender.sendMessage(String.format("If you want turn this back on, just do %s/mvm set adjustspawn true %s", ChatColor.AQUA, world.getName()));
             world.setAdjustSpawn(false);
         }
 
         sender.sendMessage((sender instanceof Player && ((Player) sender).getWorld().equals(world.getCBWorld()))
                 ? "Spawn of this world is set to:"
-                : "Spawn for " + world.getColoredWorldString() + " is set to:");
+                : String.format("Spawn for %s is set to:",  world.getColoredWorldString()));
 
         sender.sendMessage(plugin.getLocationManipulation().strCoords(location));
 
         if (!plugin.saveWorldConfig()) {
-            sender.sendMessage(ChatColor.RED + "There was an issue saving worlds.yml!  Your changes will only be temporary!");
+            sender.sendMessage(String.format("%sThere was an issue saving worlds.yml!  Your changes will only be temporary!", ChatColor.RED));
         }
     }
 }

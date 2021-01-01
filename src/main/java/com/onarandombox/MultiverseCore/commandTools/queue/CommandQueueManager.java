@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commandTools.queue;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.data.type.CommandBlock;
@@ -93,13 +94,13 @@ public class CommandQueueManager {
         CommandSender targetSender = parseSender(sender);
         cancelPreviousInQueue(targetSender);
 
-        Logging.finer("Adding command to queue for " + sender.getName());
+        Logging.finer("Adding command to queue for %s.", sender.getName());
         QueuedCommand queuedCommand = new QueuedCommand(targetSender, runnable);
         queuedCommand.setExpireTask(runExpireLater(queuedCommand, validPeriod));
         this.queuedCommandMap.put(targetSender, queuedCommand);
 
         sender.sendMessage(prompt);
-        sender.sendMessage("Run " + ChatColor.GREEN + "/mv confirm" + ChatColor.WHITE + " to continue.");
+        sender.sendMessage(String.format("Run %s/mv confirm %sto continue.", ChatColor.GREEN, ChatColor.WHITE));
     }
 
     /**

@@ -24,6 +24,7 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerType;
+import net.milkbowl.vault.chat.Chat;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -61,10 +62,6 @@ public class VersionCommand extends MultiverseCommand {
                                  @Description("Whether you want to have plugins list in version info.")
                                  @Nullable @Optional String includePlugin) {
 
-        if (sender instanceof Player) {
-            sender.sendMessage("Version info dumped to console! Please check your server logs.");
-        }
-
         MVVersionEvent versionEvent = new MVVersionEvent();
         this.addVersionInfoToEvent(versionEvent);
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
@@ -82,6 +79,7 @@ public class VersionCommand extends MultiverseCommand {
         logToConsole(versionInfo);
 
         if (pasteType == PasteServiceType.NONE) {
+            sender.sendMessage("Version info dumped to console! Please check your server logs.");
             return;
         }
 
@@ -89,10 +87,7 @@ public class VersionCommand extends MultiverseCommand {
             @Override
             public void run() {
                 String pasteUrl = postToService(pasteType, true, versionInfo, files);
-                if (!(sender instanceof ConsoleCommandSender)) {
-                    sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
-                }
-                Logging.info("Version info dumped here: %s", pasteUrl);
+                sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
             }
         };
 
@@ -144,11 +139,11 @@ public class VersionCommand extends MultiverseCommand {
         }
         catch (PasteFailedException e) {
             e.printStackTrace();
-            return "Error posting to service.";
+            return String.format("%sError posting to service.", ChatColor.RED);
         }
         catch (NullPointerException e) {
             e.printStackTrace();
-            return "That service isn't supported yet.";
+            return String.format("%sThat service isn't supported yet.", ChatColor.RED);
         }
     }
 

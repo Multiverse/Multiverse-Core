@@ -13,6 +13,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -45,7 +46,7 @@ public class GeneratorCommand extends MultiverseCommand {
                 .collect(Collectors.toList());
 
         if (generators.size() == 0) {
-             sender.sendMessage(ChatColor.RED + "You do not have any generator plugins installed.");
+             sender.sendMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED));
             return;
         }
 
@@ -58,7 +59,7 @@ public class GeneratorCommand extends MultiverseCommand {
             altColor ^= true;
         }
 
-        sender.sendMessage(ChatColor.AQUA + "--- Available Generator Plugins ---");
+        sender.sendMessage(String.format("%s--- Available Generator Plugins ---", ChatColor.AQUA));
         sender.sendMessage(loadedGens.toString());
     }
 }

@@ -83,7 +83,7 @@ public class InfoCommand extends MultiverseCommand {
             contents.add(String.format("World Seed: %s%s", ChatColor.WHITE, world.getSeed()));
 
             String priceString = (world.getPrice() == 0)
-                    ? ChatColor.GREEN + "FREE!"
+                    ? String.format("%sFREE!", ChatColor.GREEN)
                     : plugin.getEconomist().formatPrice(-world.getPrice(), world.getCurrency());
 
             contents.add(String.format((world.getPrice() >= 0)
@@ -124,11 +124,11 @@ public class InfoCommand extends MultiverseCommand {
             contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowMonsters()));
 
             if (!world.getMonsterList().isEmpty()){
-                contents.add(String.format((world.canMonstersSpawn())
-                                ? "Monsters that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: %s%s"
-                                : "Monsters that" + ChatColor.GREEN + " CAN SPAWN: %s%s",
-                        ChatColor.WHITE, toCommaSeparated(world.getMonsterList())));
+                contents.add((world.canMonstersSpawn())
+                        ? String.format("Monsters that %scannot spawn: %s%s", ChatColor.RED, ChatColor.WHITE, toCommaSeparated(world.getMonsterList()))
+                        : String.format("Monsters that %scan spawn: %s%s", ChatColor.GREEN, ChatColor.WHITE, toCommaSeparated(world.getMonsterList())));
             }
+
             contents.add("%lf%");
 
             // Page 5
@@ -137,10 +137,9 @@ public class InfoCommand extends MultiverseCommand {
             contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowAnimals()));
 
             if (!world.getAnimalList().isEmpty()){
-                contents.add(String.format((world.canMonstersSpawn())
-                                ? "Animals that" + ChatColor.RED + " CAN NOT " + ChatColor.GREEN + "spawn: %s%s"
-                                : "Animals that" + ChatColor.GREEN + " CAN SPAWN: %s%s",
-                        ChatColor.WHITE, toCommaSeparated(world.getAnimalList())));
+                contents.add((world.canAnimalsSpawn())
+                        ? String.format("Animals that %scannot spawn: %s%s", ChatColor.RED, ChatColor.WHITE, toCommaSeparated(world.getAnimalList()))
+                        : String.format("Animals that %scan spawn: %s%s", ChatColor.GREEN, ChatColor.WHITE, toCommaSeparated(world.getAnimalList())));
             }
 
             return contents;

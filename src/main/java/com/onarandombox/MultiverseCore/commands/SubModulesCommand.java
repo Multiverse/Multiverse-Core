@@ -72,8 +72,8 @@ public class SubModulesCommand {
                                         @NotNull ColourAlternator colours,
                                         @NotNull String downloadLink) {
 
-        sender.sendMessage(colours.getThis() + pluginName + ChatColor.WHITE +
-                " is not installed on this server. You can learn more and download it at:");
-        sender.sendMessage(colours.getThat() + downloadLink);
+        sender.sendMessage(String.format("%s%s%s is not installed on this server. You can learn more and download it at:",
+                colours.getThis(), pluginName, ChatColor.WHITE));
+        sender.sendMessage(String.format("%s%s", colours.getThat(), downloadLink));
     }
 }

@@ -18,6 +18,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -53,7 +54,7 @@ public class CreateCommand extends MultiverseCommand {
 
         WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);
 
-        Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
+        Command.broadcastCommandMessage(sender, String.format("Starting creation of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(
                 worldName,
                 environment,
@@ -64,7 +65,7 @@ public class CreateCommand extends MultiverseCommand {
                 flags.getGenerator(),
                 flags.isSpawnAdjust())
         )
-                ? ChatColor.GREEN + "Complete!"
-                : ChatColor.RED + "Failed! See console for errors.");
+                ? String.format("%sComplete!", ChatColor.GREEN)
+                : String.format("%sFailed! See console for errors.", ChatColor.RED));
     }
 }

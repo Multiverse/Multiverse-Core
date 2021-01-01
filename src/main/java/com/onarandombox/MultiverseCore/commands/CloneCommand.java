@@ -44,7 +44,7 @@ public class CloneCommand extends MultiverseCommand {
                                @NotNull @Single @Flags("trim") @Conditions("creatableWorldName") String newWorldName) {
 
         sender.sendMessage((this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName))
-                ? ChatColor.GREEN + "World cloned!"
-                : ChatColor.RED + "World could not be cloned! See console for more details.");
+                ? String.format("%sWorld cloned!", ChatColor.GREEN)
+                : String.format("%sWorld could not be cloned! See console for more details.", ChatColor.RED));
     }
 }
