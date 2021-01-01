@@ -82,9 +82,19 @@ public class WorldFlags {
         String generator = genArray[0];
         String generatorId = (genArray.length > 1) ? genArray[1] : "";
 
-        if (plugin.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
-            sender.sendMessage(ChatColor.RED + "Invalid generator '" + genString + "'.");
-            GeneratorCommand.showAvailableGenerator(sender);
+        try {
+            if (plugin.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
+                sender.sendMessage(ChatColor.RED + "Invalid generator string '" + genString + "'.");
+                GeneratorCommand.showAvailableGenerator(sender);
+                throw new InvalidCommandArgument(false);
+            }
+        }
+        catch (Exception e) {
+            sender.sendMessage(String.format("%sThere was an error creating world with generator '%s'! Please check console for errors.",
+                    ChatColor.RED, genString));
+            e.printStackTrace();
+            Logging.severe("Error occurred when trying to create your world with generator '%s'. Reason: %s",
+                    genString, e.getCause());
             throw new InvalidCommandArgument(false);
         }
 
