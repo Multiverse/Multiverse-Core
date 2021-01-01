@@ -152,7 +152,7 @@ public class SetSpawnCommand extends MultiverseCommand {
         if (!blockSafety.playerCanSpawnHereSafely(location) && world.getAdjustSpawn()) {
             sender.sendMessage("It looks like that location would normally be unsafe. But I trust you.");
             sender.sendMessage("I'm turning off the Safe-T-Teleporter for spawns to this world.");
-            sender.sendMessage(String.format("If you want turn this back on, just do %s/mvm set adjustspawn true %s", ChatColor.AQUA, world.getName()));
+            sender.sendMessage(String.format("If you want turn this back on, just do %s/mv modify set adjustspawn true %s", ChatColor.AQUA, world.getName()));
             world.setAdjustSpawn(false);
         }
 
