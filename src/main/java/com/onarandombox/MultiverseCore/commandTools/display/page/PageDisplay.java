@@ -38,18 +38,18 @@ public class PageDisplay extends ContentDisplay<PageDisplay, List<String>> {
                 : new ShowSelectedPage(this);
     }
 
-    public PageDisplay withPageFilter(PageFilter pageFilter) {
+    public @NotNull PageDisplay withPageFilter(@NotNull PageFilter pageFilter) {
         this.pageToShow = pageFilter.getPage();
         this.filter = pageFilter.getFilter();
         return this;
     }
 
-    public PageDisplay withPage(int pageToShow) {
+    public @NotNull PageDisplay withPage(int pageToShow) {
         this.pageToShow = pageToShow;
         return this;
     }
 
-    public PageDisplay withLinesPerPage(int contentLinesPerPage) {
+    public @NotNull PageDisplay withLinesPerPage(int contentLinesPerPage) {
         this.contentLinesPerPage = contentLinesPerPage;
         return this;
     }

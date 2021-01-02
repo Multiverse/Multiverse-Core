@@ -94,13 +94,11 @@ public class ContentFilter {
         return filterPattern != null;
     }
 
-    @Nullable
-    public String getString() {
+    public @Nullable String getString() {
         return filterString;
     }
 
-    @Nullable
-    public Pattern getPattern() {
+    public @Nullable Pattern getPattern() {
         return filterPattern;
     }
 
@@ -113,8 +111,7 @@ public class ContentFilter {
      *
      * @return formatted filter string.
      */
-    @NotNull
-    public String getFormattedString() {
+    public @NotNull String getFormattedString() {
         return String.format("%sFilter: '%s'%s", ChatColor.ITALIC, filterString, ChatColor.RESET);
     }
 

@@ -24,6 +24,13 @@ public class ShowSelectedPage extends ShowPage {
         doEndPadding();
     }
 
+    private void doEndPadding() {
+        IntStream.range(0, this.display.getContentLinesPerPage() - contentToShowIndex.size())
+                .unordered()
+                .mapToObj(i -> " ")
+                .forEach(this.display.getSender()::sendMessage);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -99,12 +106,5 @@ public class ShowSelectedPage extends ShowPage {
         return (filter.hasFilter())
                 ? String.format("[ Page %s of %s, %s ]", this.display.getPageToShow(), totalPages, filter.getFormattedString())
                 : String.format("[ Page %s of %s ]", this.display.getPageToShow(), totalPages);
-    }
-
-    private void doEndPadding() {
-        IntStream.range(0, this.display.getContentLinesPerPage() - contentToShowIndex.size())
-                .unordered()
-                .mapToObj(i -> " ")
-                .forEach(this.display.getSender()::sendMessage);
     }
 }

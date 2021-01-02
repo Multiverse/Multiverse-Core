@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.commandTools.display.inline;
 
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -9,7 +10,7 @@ public class ShowKeyValue extends ShowInline<KeyValueDisplay, Map<String, Object
 
     private final StringBuilder contentBuilder;
 
-    public ShowKeyValue(KeyValueDisplay display) {
+    public ShowKeyValue(@NotNull KeyValueDisplay display) {
         super(display);
         this.contentBuilder = new StringBuilder();
     }

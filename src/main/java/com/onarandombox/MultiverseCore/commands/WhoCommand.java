@@ -82,6 +82,7 @@ public class WhoCommand extends MultiverseCommand {
                 .withHeader(String.format("%s===[ Players in %s%s ]===", ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA))
                 .withCreator(buildPlayerList(world, player))
                 .withFilter(filter)
+                .withEmptyMessage(String.format("%sNo players found.", ChatColor.GRAY))
                 .build()
                 .runTaskAsynchronously(this.plugin);
     }
@@ -92,16 +93,10 @@ public class WhoCommand extends MultiverseCommand {
 
         return () -> {
             Set<Player> visiblePlayers = getVisiblePlayers(player);
-            List<String> players = world.getCBWorld().getPlayers().stream()
+            return world.getCBWorld().getPlayers().stream()
                 .filter(visiblePlayers::contains)
                 .map(Player::getDisplayName)
                 .collect(Collectors.toList());
-
-            if (players.isEmpty()) {
-                players.add(String.format("%sNo players found.", ChatColor.GRAY));
-            }
-
-            return players;
         };
     }
 

@@ -1,10 +1,12 @@
 package com.onarandombox.MultiverseCore.commandTools.display.inline;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class ShowList extends ShowInline<ListDisplay, List<String>> {
 
-    public ShowList(ListDisplay display) {
+    public ShowList(@NotNull ListDisplay display) {
         super(display);
     }
 

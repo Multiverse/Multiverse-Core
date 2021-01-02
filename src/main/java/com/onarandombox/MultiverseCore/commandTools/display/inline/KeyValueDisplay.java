@@ -22,7 +22,7 @@ public class KeyValueDisplay extends ContentDisplay<KeyValueDisplay, Map<String,
         return new ShowKeyValue(this);
     }
 
-    public KeyValueDisplay withOperator(String operator) {
+    public @NotNull KeyValueDisplay withOperator(@NotNull String operator) {
         this.operator = operator;
         return this;
     }

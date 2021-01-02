@@ -27,10 +27,6 @@ public abstract class ShowRunnable<D extends ContentDisplay<?, T>, T> extends Bu
         if (!validateContent()) {
             return;
         }
-        if (!hasContentToShow()) {
-            this.display.getSender().sendMessage("No matching content to display.");
-            return;
-        }
         display();
     }
 
@@ -39,6 +35,10 @@ public abstract class ShowRunnable<D extends ContentDisplay<?, T>, T> extends Bu
      */
     protected void display() {
         showHeader();
+        if (!hasContentToShow()) {
+            this.display.getSender().sendMessage(this.display.getEmptyMessage());
+            return;
+        }
         showContent();
     }
 

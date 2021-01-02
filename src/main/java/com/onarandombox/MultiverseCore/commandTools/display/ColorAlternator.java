@@ -35,7 +35,7 @@ public class ColorAlternator {
      *
      * @return Opposite of the previous colour.
      */
-    public ChatColor get() {
+    public @NotNull ChatColor get() {
         return (switcher ^= true) ? thisColour : thatColour;
     }
 
@@ -50,8 +50,7 @@ public class ColorAlternator {
      *
      * @return {@link ColorAlternator#thisColour}.
      */
-    @NotNull
-    public ChatColor getThis() {
+    public @NotNull ChatColor getThis() {
         return thisColour;
     }
 
@@ -59,8 +58,7 @@ public class ColorAlternator {
      *
      * @return {@link ColorAlternator#thatColour}.
      */
-    @NotNull
-    public ChatColor getThat() {
+    public @NotNull ChatColor getThat() {
         return thatColour;
     }
 }

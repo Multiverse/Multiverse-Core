@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.commandTools.display;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Displays various types of content to sender.
@@ -15,6 +16,9 @@ public abstract class ContentDisplay<C extends ContentDisplay<?, T>, T> {
     protected ContentCreator<T> creator;
     protected ContentFilter filter = ContentFilter.EMPTY;
     protected ColorAlternator colours;
+    protected String emptyMessage = DEFAULT_EMPTY_MESSAGE;
+
+    public static final String DEFAULT_EMPTY_MESSAGE = "No matching content to display.";
 
     /**
      * Build into a runnable for showing of content.
@@ -45,48 +49,57 @@ public abstract class ContentDisplay<C extends ContentDisplay<?, T>, T> {
      */
     protected abstract @NotNull ShowRunnable<C, T> getShowRunnable();
 
-    public C withSender(CommandSender sender) {
+    public @NotNull C withSender(@NotNull CommandSender sender) {
         this.sender = sender;
         return (C) this;
     }
 
-    public C withHeader(String header) {
+    public @NotNull C withHeader(@NotNull String header) {
         this.header = header;
         return (C) this;
     }
 
-    public C withCreator(ContentCreator<T> creator) {
+    public @NotNull C withCreator(@NotNull ContentCreator<T> creator) {
         this.creator = creator;
         return (C) this;
     }
 
-    public C withFilter(ContentFilter filter) {
+    public @NotNull C withFilter(@NotNull ContentFilter filter) {
         this.filter = filter;
         return (C) this;
     }
 
-    public C withColors(ColorAlternator colours) {
+    public @NotNull C withColors(@NotNull ColorAlternator colours) {
         this.colours = colours;
         return (C) this;
     }
 
-    public CommandSender getSender() {
+    public @NotNull C withEmptyMessage(@NotNull String emptyMessage) {
+        this.emptyMessage = emptyMessage;
+        return (C) this;
+    }
+
+    public @NotNull CommandSender getSender() {
         return sender;
     }
 
-    public String getHeader() {
+    public @Nullable String getHeader() {
         return header;
     }
 
-    public ContentCreator<T> getCreator() {
+    public @NotNull ContentCreator<T> getCreator() {
         return creator;
     }
 
-    public ContentFilter getFilter() {
+    public @NotNull ContentFilter getFilter() {
         return filter;
     }
 
-    public ColorAlternator getColours() {
+    public @NotNull ColorAlternator getColours() {
         return colours;
+    }
+
+    public @NotNull String getEmptyMessage() {
+        return emptyMessage;
     }
 }

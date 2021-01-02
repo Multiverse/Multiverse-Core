@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.commandTools.display;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Generate content for displaying with {@link ContentDisplay}.
  *
@@ -7,5 +9,5 @@ package com.onarandombox.MultiverseCore.commandTools.display;
  */
 @FunctionalInterface
 public interface ContentCreator<T> {
-    T generateContent();
+    @NotNull T generateContent();
 }
