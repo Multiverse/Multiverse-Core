@@ -83,7 +83,7 @@ public class ModifyCommand extends MultiverseCommand {
 
         sender.sendMessage(String.format("%sSuccess! %sProperty %s%s %swas set to %s%s%s.",
                 ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, property, ChatColor.WHITE, ChatColor.GREEN, value, ChatColor.WHITE));
-        saveWorldConfig(sender);
+        saveWorldConfig();
     }
 
     @Subcommand("add")
@@ -114,7 +114,7 @@ public class ModifyCommand extends MultiverseCommand {
         sender.sendMessage(String.format("%sSuccess! %s%s%s was added to %s%s%s.",
                 ChatColor.GREEN, ChatColor.AQUA, value, ChatColor.WHITE, ChatColor.GREEN, property, ChatColor.WHITE));
 
-        saveWorldConfig(sender);
+        saveWorldConfig();
     }
 
     @Subcommand("remove")
@@ -145,7 +145,7 @@ public class ModifyCommand extends MultiverseCommand {
         sender.sendMessage(String.format("%sSuccess! %s%s%s was %sremoved %sfrom %s%s%s.",
                 ChatColor.GREEN, ChatColor.AQUA, value, ChatColor.WHITE, ChatColor.RED, ChatColor.WHITE, ChatColor.GREEN, property, ChatColor.WHITE));
 
-        saveWorldConfig(sender);
+        saveWorldConfig();
     }
 
     @Subcommand("clear")
@@ -171,7 +171,7 @@ public class ModifyCommand extends MultiverseCommand {
         sender.sendMessage(String.format("%s%s%s was cleared. It contains 0 values now.",
                 ChatColor.GOLD, property, ChatColor.WHITE));
 
-        saveWorldConfig(sender);
+        saveWorldConfig();
     }
 
     @Subcommand("list")
@@ -217,7 +217,7 @@ public class ModifyCommand extends MultiverseCommand {
         };
     }
 
-    private void saveWorldConfig(@NotNull CommandSender sender) {
+    private void saveWorldConfig() {
         if (!this.plugin.saveWorldConfig()) {
             throw new InvalidCommandArgument("There was an issue saving worlds.yml! Your changes will only be temporary.", false);
         }
