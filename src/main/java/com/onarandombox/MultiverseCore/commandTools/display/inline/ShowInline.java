@@ -17,7 +17,7 @@ public abstract class ShowInline<D extends ContentDisplay<T>, T> extends ShowRun
      */
     @Override
     public boolean hasContentToShow() {
-        return contentBuilder.length() == 0;
+        return contentBuilder.length() > 0;
     }
 
     /**
