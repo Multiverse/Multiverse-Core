@@ -20,7 +20,7 @@ import com.onarandombox.MultiverseCore.commandTools.contexts.GameRuleProperty;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.kvpair.KeyValueDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.inline.KeyValueDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.command.CommandSender;

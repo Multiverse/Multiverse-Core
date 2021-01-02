@@ -19,14 +19,11 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.kvpair.KeyValueDisplay;
-import net.milkbowl.vault.chat.Chat;
+import com.onarandombox.MultiverseCore.commandTools.display.inline.KeyValueDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @CommandAlias("mv")

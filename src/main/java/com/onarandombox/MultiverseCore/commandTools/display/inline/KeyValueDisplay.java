@@ -1,10 +1,9 @@
-package com.onarandombox.MultiverseCore.commandTools.display.kvpair;
+package com.onarandombox.MultiverseCore.commandTools.display.inline;
 
 import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -33,16 +32,13 @@ public class KeyValueDisplay extends ContentDisplay<Map<String, Object>> {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
-    @NotNull
-    public ShowKeyValue getShowRunnable() {
+    public @NotNull ShowKeyValue getShowRunnable() {
         return new ShowKeyValue(this);
     }
 
-    @NotNull
-    public String getOperator() {
+    public @NotNull String getOperator() {
         return operator;
     }
 }

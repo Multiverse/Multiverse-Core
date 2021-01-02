@@ -1,12 +1,11 @@
-package com.onarandombox.MultiverseCore.commandTools.display.kvpair;
+package com.onarandombox.MultiverseCore.commandTools.display.inline;
 
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.bukkit.ChatColor;
 
 import java.util.Map;
 
-public class ShowKeyValue extends ShowRunnable<KeyValueDisplay, Map<String, Object>> {
+public class ShowKeyValue extends ShowInline<KeyValueDisplay, Map<String, Object>> {
 
     private final StringBuilder contentBuilder;
 
@@ -40,40 +39,5 @@ public class ShowKeyValue extends ShowRunnable<KeyValueDisplay, Map<String, Obje
                     .append(entry.getValue())
                     .append(ChatColor.WHITE);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasContentToShow() {
-        return contentBuilder.length() == 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean validateContent() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showHeader() {
-        if (this.display.getHeader() == null) {
-            return;
-        }
-        this.display.getSender().sendMessage(this.display.getHeader());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showContent() {
-        this.display.getSender().sendMessage(contentBuilder.toString());
     }
 }

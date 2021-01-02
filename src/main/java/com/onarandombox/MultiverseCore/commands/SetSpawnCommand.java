@@ -117,19 +117,15 @@ public class SetSpawnCommand extends MultiverseCommand {
             }
             return player.getLocation();
         }
-
         if (y == null) {
             throw new InvalidCommandArgument("You need to specify y and z axis as well.");
         }
-
         if (z == null) {
             throw new InvalidCommandArgument("You need to specify z axis as well.");
         }
-
         if (yaw == null) {
             return new Location(world.getCBWorld(), x, y, z);
         }
-
         if (pitch == null) {
             throw new InvalidCommandArgument("You need to specify pitch as well.");
         }
