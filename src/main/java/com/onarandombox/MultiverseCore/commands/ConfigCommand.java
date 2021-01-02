@@ -16,7 +16,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.inline.KeyValueDisplay;
@@ -41,17 +41,12 @@ public class ConfigCommand extends MultiverseCommand {
     public void onShowCommand(@NotNull CommandSender sender,
                               @NotNull ContentFilter filter) {
 
-        KeyValueDisplay display = new KeyValueDisplay(
-                this.plugin,
-                sender,
-                ChatColor.LIGHT_PURPLE + "===[ Multiverse Config ]===",
-                getConfigMap(),
-                filter,
-                new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
-                " = "
-        );
-
-        display.showContentAsync();
+        new KeyValueDisplay().withSender(sender)
+                .withHeader(ChatColor.LIGHT_PURPLE + "===[ Multiverse Config ]===")
+                .withCreator(getConfigMap())
+                .withColors(new ColorAlternator(ChatColor.GREEN, ChatColor.GOLD))
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     private ContentCreator<Map<String, Object>> getConfigMap() {

@@ -18,7 +18,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.inline.ListDisplay;
@@ -78,16 +78,12 @@ public class WhoCommand extends MultiverseCommand {
                              @Description("Filter the player names.")
                              @NotNull ContentFilter filter) {
 
-        ListDisplay display = new ListDisplay(
-                this.plugin,
-                sender,
-                String.format("%s===[ Players in %s%s ]===", ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA),
-                buildPlayerList(world, player),
-                filter,
-                new ColourAlternator()
-        );
-
-        display.showContentAsync();
+        new ListDisplay().withSender(sender)
+                .withHeader(String.format("%s===[ Players in %s%s ]===", ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA))
+                .withCreator(buildPlayerList(world, player))
+                .withFilter(filter)
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     @NotNull

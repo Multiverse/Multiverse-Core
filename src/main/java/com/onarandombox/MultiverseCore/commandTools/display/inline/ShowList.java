@@ -9,7 +9,7 @@ public class ShowList extends ShowInline<ListDisplay, List<String>> {
     }
 
     @Override
-    public void calculateContent() {
+    protected void calculateContent() {
         boolean isFirst = true;
         for (String element : this.contents) {
             if (!this.display.getFilter().checkMatch(element)) {

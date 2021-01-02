@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.commandTools.display.inline;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 
-public abstract class ShowInline<D extends ContentDisplay<T>, T> extends ShowRunnable<D, T> {
+public abstract class ShowInline<D extends ContentDisplay<?, T>, T> extends ShowRunnable<D, T> {
 
     protected final StringBuilder contentBuilder;
 
@@ -16,7 +16,7 @@ public abstract class ShowInline<D extends ContentDisplay<T>, T> extends ShowRun
      * {@inheritDoc}
      */
     @Override
-    public boolean hasContentToShow() {
+    protected boolean hasContentToShow() {
         return contentBuilder.length() > 0;
     }
 
@@ -24,7 +24,7 @@ public abstract class ShowInline<D extends ContentDisplay<T>, T> extends ShowRun
      * {@inheritDoc}
      */
     @Override
-    public boolean validateContent() {
+    protected boolean validateContent() {
         return true;
     }
 
@@ -32,7 +32,7 @@ public abstract class ShowInline<D extends ContentDisplay<T>, T> extends ShowRun
      * {@inheritDoc}
      */
     @Override
-    public void showHeader() {
+    protected void showHeader() {
         if (this.display.getHeader() == null) {
             return;
         }
@@ -43,7 +43,7 @@ public abstract class ShowInline<D extends ContentDisplay<T>, T> extends ShowRun
      * {@inheritDoc}
      */
     @Override
-    public void showContent() {
+    protected void showContent() {
         this.display.getSender().sendMessage(contentBuilder.toString());
     }
 }

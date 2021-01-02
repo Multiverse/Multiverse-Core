@@ -15,7 +15,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commandTools.contexts.PageFilter;
@@ -44,18 +44,12 @@ public class ListCommand extends MultiverseCommand {
                               @Nullable @Optional Player player,
                               @NotNull PageFilter pageFilter) {
 
-        PageDisplay pageDisplay = new PageDisplay(
-                this.plugin,
-                sender,
-                 String.format("%s====[ Multiverse World List ]====", ChatColor.GOLD),
-                getListContents(sender, player),
-                pageFilter.getFilter(),
-                new ColourAlternator(ChatColor.WHITE, ChatColor.WHITE),
-                pageFilter.getPage(),
-                8
-        );
-
-        pageDisplay.showContentAsync();
+        new PageDisplay().withSender(sender)
+                .withHeader(String.format("%s====[ Multiverse World List ]====", ChatColor.GOLD))
+                .withCreator(getListContents(sender, player))
+                .withPageFilter(pageFilter)
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     private ContentCreator<List<String>> getListContents(@NotNull CommandSender sender,

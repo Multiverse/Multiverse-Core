@@ -19,7 +19,7 @@ public class ShowSelectedPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public void display() {
+    protected void display() {
         super.display();
         doEndPadding();
     }
@@ -28,7 +28,7 @@ public class ShowSelectedPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public void calculateContent() {
+    protected void calculateContent() {
         int lineCount = 0;
         int index = -1;
         for (String line : this.contents) {
@@ -54,7 +54,7 @@ public class ShowSelectedPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public boolean validateContent() {
+    protected boolean validateContent() {
         return !pageOutOfRange();
     }
 
@@ -72,7 +72,7 @@ public class ShowSelectedPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public void showHeader() {
+    protected void showHeader() {
         String header = getHeader();
 
         // Paging inline with header

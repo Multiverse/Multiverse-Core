@@ -17,7 +17,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commandTools.contexts.PageFilter;
@@ -91,18 +91,13 @@ public class AnchorCommand extends MultiverseCommand {
     public void onListAnchorCommand(@NotNull CommandSender sender,
                                     @NotNull PageFilter pageFilter) {
 
-        PageDisplay pageDisplay = new PageDisplay(
-                this.plugin,
-                sender,
-                String.format("%s====[ Multiverse Anchor List ]====", ChatColor.LIGHT_PURPLE),
-                buildAnchorList(sender),
-                pageFilter.getFilter(),
-                new ColourAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA),
-                pageFilter.getPage(),
-                8
-        );
-
-        pageDisplay.showContentAsync();
+        new PageDisplay().withSender(sender)
+                .withHeader(String.format("%s====[ Multiverse Anchor List ]====", ChatColor.LIGHT_PURPLE))
+                .withCreator(buildAnchorList(sender))
+                .withPageFilter(pageFilter)
+                .withColors(new ColorAlternator(ChatColor.YELLOW, ChatColor.DARK_AQUA))
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     private ContentCreator<List<String>> buildAnchorList(@NotNull CommandSender sender) {

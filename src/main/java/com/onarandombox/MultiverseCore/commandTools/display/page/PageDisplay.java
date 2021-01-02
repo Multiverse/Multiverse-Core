@@ -7,56 +7,51 @@
 
 package com.onarandombox.MultiverseCore.commandTools.display.page;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
-import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.contexts.PageFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
-import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
  * Used to display list of multiple lines with paging and filter.
  */
-public class PageDisplay extends ContentDisplay<List<String>> {
+public class PageDisplay extends ContentDisplay<PageDisplay, List<String>> {
 
-    private final int pageToShow;
-    private int contentLinesPerPage; // excludes header
+    private int pageToShow = FIST_PAGE;
+    private int contentLinesPerPage = DEFAULT_LINES_PER_PAGE; // excludes header
 
     public static final int FIST_PAGE = 1;
     public static final int DEFAULT_LINES_PER_PAGE = 8;
     public static final String PAGE_PLACEHOLDER = "%page%";
     public static final String LINE_BREAK_PLACEHOLDER = "%lf%";
 
-    public PageDisplay(@NotNull Plugin plugin,
-                       @NotNull CommandSender sender,
-                       @Nullable String header,
-                       @NotNull ContentCreator<List<String>> creator,
-                       @NotNull ContentFilter filter,
-                       @Nullable ColourAlternator colours,
-                       int pageToShow,
-                       int contentLinesPerPage) {
-
-        super(plugin, sender, header, creator, filter, colours);
-        this.pageToShow = pageToShow;
-        this.contentLinesPerPage = contentLinesPerPage;
-    }
-
     /**
      * {@inheritDoc}
      * @return
      */
     @Override
-    @NotNull
-    public ShowPage getShowRunnable() {
+    protected @NotNull ShowPage getShowRunnable() {
         return (this.sender instanceof ConsoleCommandSender)
                 ? new ShowAllPage(this)
                 : new ShowSelectedPage(this);
+    }
+
+    public PageDisplay withPageFilter(PageFilter pageFilter) {
+        this.pageToShow = pageFilter.getPage();
+        this.filter = pageFilter.getFilter();
+        return this;
+    }
+
+    public PageDisplay withPage(int pageToShow) {
+        this.pageToShow = pageToShow;
+        return this;
+    }
+
+    public PageDisplay withLinesPerPage(int contentLinesPerPage) {
+        this.contentLinesPerPage = contentLinesPerPage;
+        return this;
     }
 
     public void reduceContentLinesPerPage(int by) {

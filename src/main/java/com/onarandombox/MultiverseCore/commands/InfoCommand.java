@@ -17,9 +17,8 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -40,7 +39,7 @@ public class InfoCommand extends MultiverseCommand {
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
     @Syntax("[world] [page]")
-    @CommandCompletion("@MVWorlds @range:1-3")
+    @CommandCompletion("@MVWorlds @range:1-5")
     @Description("")
     public void onInfoCommand(@NotNull CommandSender sender,
 
@@ -52,18 +51,13 @@ public class InfoCommand extends MultiverseCommand {
                               @Description("Info page to display.")
                               @Default("1") int page) {
 
-        PageDisplay pageDisplay = new PageDisplay(
-                this.plugin,
-                sender,
-                null,
-                buildWorldInfoContent(world),
-                new ContentFilter(null),
-                new ColourAlternator(ChatColor.YELLOW, ChatColor.AQUA),
-                page,
-                10
-        );
-
-        pageDisplay.showContentAsync();
+        new PageDisplay().withSender(sender)
+                .withCreator(buildWorldInfoContent(world))
+                .withColors(new ColorAlternator(ChatColor.YELLOW, ChatColor.AQUA))
+                .withPage(page)
+                .withLinesPerPage(10)
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     private ContentCreator<List<String>> buildWorldInfoContent(MultiverseWorld world) {

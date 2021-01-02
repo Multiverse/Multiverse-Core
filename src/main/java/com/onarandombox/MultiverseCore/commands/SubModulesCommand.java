@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class SubModulesCommand {
             suggestDownload(
                     sender,
                     "Multiverse-NetherPortals",
-                    new ColourAlternator(ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE),
+                    new ColorAlternator(ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE),
                     "https://dev.bukkit.org/projects/multiverse-netherportals"
             );
         }
@@ -43,7 +43,7 @@ public class SubModulesCommand {
             suggestDownload(
                     sender,
                     "Multiverse-Portals",
-                    new ColourAlternator(ChatColor.DARK_RED, ChatColor.RED),
+                    new ColorAlternator(ChatColor.DARK_RED, ChatColor.RED),
                     "https://dev.bukkit.org/projects/multiverse-portals"
             );
         }
@@ -61,7 +61,7 @@ public class SubModulesCommand {
             suggestDownload(
                     sender,
                     "Multiverse-Inventories",
-                    new ColourAlternator(ChatColor.DARK_AQUA, ChatColor.AQUA),
+                    new ColorAlternator(ChatColor.DARK_AQUA, ChatColor.AQUA),
                     "https://dev.bukkit.org/projects/multiverse-inventories"
             );
         }
@@ -69,7 +69,7 @@ public class SubModulesCommand {
 
     private static void suggestDownload(@NotNull CommandSender sender,
                                         @NotNull String pluginName,
-                                        @NotNull ColourAlternator colours,
+                                        @NotNull ColorAlternator colours,
                                         @NotNull String downloadLink) {
 
         sender.sendMessage(String.format("%s%s%s is not installed on this server. You can learn more and download it at:",

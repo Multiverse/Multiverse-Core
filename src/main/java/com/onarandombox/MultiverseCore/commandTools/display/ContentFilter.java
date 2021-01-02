@@ -13,7 +13,7 @@ import java.util.regex.PatternSyntaxException;
  * Filter content and text based on regex.
  */
 public class ContentFilter {
-    private final String filterString;
+    private String filterString;
     private Pattern filterPattern;
     private boolean exactMatch;
 
@@ -22,13 +22,16 @@ public class ContentFilter {
     /**
      * Basically just means match everything.
      */
-    public static ContentFilter EMPTY = new ContentFilter(null);
+    public static ContentFilter EMPTY = new ContentFilter();
 
-    public ContentFilter(@Nullable String filterString) {
+    public ContentFilter() {
+    }
+
+    public ContentFilter(@NotNull String filterString) {
         this(filterString, false);
     }
 
-    public ContentFilter(@Nullable String filterString,
+    public ContentFilter(@NotNull String filterString,
                          boolean exactMatch) {
 
         this.filterString = filterString;

@@ -13,25 +13,25 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Some helper class to alternate between 2 colours.
  */
-public class ColourAlternator {
+public class ColorAlternator {
 
     private boolean switcher;
     private final ChatColor thisColour;
     private final ChatColor thatColour;
 
-    public ColourAlternator() {
+    public ColorAlternator() {
         this(ChatColor.WHITE, ChatColor.WHITE);
     }
 
-    public ColourAlternator(@NotNull ChatColor colorThis,
-                            @NotNull ChatColor colorThat) {
+    public ColorAlternator(@NotNull ChatColor colorThis,
+                           @NotNull ChatColor colorThat) {
 
         this.thisColour = colorThis;
         this.thatColour = colorThat;
     }
 
     /**
-     * Gives you {@link ColourAlternator#thisColour} or {@link ColourAlternator#thatColour}.
+     * Gives you {@link ColorAlternator#thisColour} or {@link ColorAlternator#thatColour}.
      *
      * @return Opposite of the previous colour.
      */
@@ -40,7 +40,7 @@ public class ColourAlternator {
     }
 
     /**
-     * Set back to be {@link ColourAlternator#thisColour} when {@link ColourAlternator#get()} is called.
+     * Set back to be {@link ColorAlternator#thisColour} when {@link ColorAlternator#get()} is called.
      */
     public void reset() {
         switcher = false;
@@ -48,7 +48,7 @@ public class ColourAlternator {
 
     /**
      *
-     * @return {@link ColourAlternator#thisColour}.
+     * @return {@link ColorAlternator#thisColour}.
      */
     @NotNull
     public ChatColor getThis() {
@@ -57,7 +57,7 @@ public class ColourAlternator {
 
     /**
      *
-     * @return {@link ColourAlternator#thatColour}.
+     * @return {@link ColorAlternator#thatColour}.
      */
     @NotNull
     public ChatColor getThat() {

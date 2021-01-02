@@ -18,7 +18,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.inline.KeyValueDisplay;
@@ -187,17 +187,12 @@ public class ModifyCommand extends MultiverseCommand {
 
                                      @NotNull ContentFilter filter) {
 
-        KeyValueDisplay display = new KeyValueDisplay(
-                this.plugin,
-                sender,
-                String.format("%s===[ Property Values for %s%s ]===", ChatColor.GOLD, world.getColoredWorldString(), ChatColor.GOLD),
-                generatorModifyList(world),
-                filter,
-                new ColourAlternator(),
-                " = "
-        );
-
-        display.showContentAsync();
+        new KeyValueDisplay().withSender(sender)
+                .withHeader(String.format("%s===[ Property Values for %s%s ]===", ChatColor.GOLD, world.getColoredWorldString(), ChatColor.GOLD))
+                .withCreator(generatorModifyList(world))
+                .withFilter(filter)
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     private ContentCreator<Map<String, Object>> generatorModifyList(MultiverseWorld world) {

@@ -423,7 +423,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (argLength == 1) {
             String pageOrFilter = context.popFirstArg();
             Optional<Integer> page = tryParseInt(pageOrFilter);
-            return page.map(pgNum -> new PageFilter(new ContentFilter(null), pgNum))
+            return page.map(pgNum -> new PageFilter(ContentFilter.EMPTY, pgNum))
                     .orElseGet(() -> new PageFilter(new ContentFilter(pageOrFilter), PageDisplay.FIST_PAGE));
         }
 

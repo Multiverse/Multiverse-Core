@@ -13,7 +13,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.BedCommand;
@@ -262,7 +262,7 @@ public class MVCommandManager extends PaperCommandManager {
      */
     public void showPluginInfo(@NotNull CommandSender sender,
                                @NotNull PluginDescriptionFile description,
-                               @NotNull ColourAlternator color,
+                               @NotNull ColorAlternator color,
                                @NotNull String rootCmd) {
 
         sender.sendMessage(String.format("%s%s %s| %sv%s",

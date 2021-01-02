@@ -1,51 +1,41 @@
 package com.onarandombox.MultiverseCore.commandTools.display;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Displays various types of content to sender.
  *
  * @param <T> Type of content to display.
  */
-public abstract class ContentDisplay<T> {
+public abstract class ContentDisplay<C extends ContentDisplay<?, T>, T> {
 
-    protected final Plugin plugin;
-    protected final CommandSender sender;
-    protected final String header;
-    protected final ContentCreator<T> creator;
-    protected final ContentFilter filter;
-    protected final ColourAlternator colours;
+    protected CommandSender sender;
+    protected String header;
+    protected ContentCreator<T> creator;
+    protected ContentFilter filter = ContentFilter.EMPTY;
+    protected ColorAlternator colours;
 
-    public ContentDisplay(@NotNull Plugin plugin,
-                          @NotNull CommandSender sender,
-                          @Nullable String header,
-                          @NotNull ContentCreator<T> creator,
-                          @NotNull ContentFilter filter,
-                          @Nullable ColourAlternator colours) {
-
-        this.plugin = plugin;
-        this.sender = sender;
-        this.header = header;
-        this.creator = creator;
-        this.filter = filter;
-        this.colours = colours;
+    /**
+     * Build into a runnable for showing of content.
+     *
+     * @return {@link ShowRunnable}.
+     */
+    public ShowRunnable<C, T> build() {
+        buildValidation();
+        return getShowRunnable();
     }
 
     /**
-     * Display the content to the {@link ContentDisplay#sender}.
+     * Set defaults if null and ensure that required fields are not null.
      */
-    public void showContent() {
-        getShowRunnable().runTask(this.plugin);
-    }
-
-    /**
-     * Display the content to the {@link ContentDisplay#sender} with a asynchronous task.
-     */
-    public void showContentAsync() {
-        getShowRunnable().runTaskAsynchronously(this.plugin);
+    protected void buildValidation() {
+        if (this.colours == null) {
+            this.colours = new ColorAlternator();
+        }
+        if (sender == null || creator == null) {
+            throw new IllegalStateException("Incomplete ContentDisplay fields.");
+        }
     }
 
     /**
@@ -53,8 +43,32 @@ public abstract class ContentDisplay<T> {
      *
      * @return {@link ShowRunnable}
      */
-    @NotNull
-    public abstract ShowRunnable<? extends ContentDisplay<T>, T> getShowRunnable();
+    protected abstract @NotNull ShowRunnable<C, T> getShowRunnable();
+
+    public C withSender(CommandSender sender) {
+        this.sender = sender;
+        return (C) this;
+    }
+
+    public C withHeader(String header) {
+        this.header = header;
+        return (C) this;
+    }
+
+    public C withCreator(ContentCreator<T> creator) {
+        this.creator = creator;
+        return (C) this;
+    }
+
+    public C withFilter(ContentFilter filter) {
+        this.filter = filter;
+        return (C) this;
+    }
+
+    public C withColors(ColorAlternator colours) {
+        this.colours = colours;
+        return (C) this;
+    }
 
     public CommandSender getSender() {
         return sender;
@@ -72,7 +86,7 @@ public abstract class ContentDisplay<T> {
         return filter;
     }
 
-    public ColourAlternator getColours() {
+    public ColorAlternator getColours() {
         return colours;
     }
 }

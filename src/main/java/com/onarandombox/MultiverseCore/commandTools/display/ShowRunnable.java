@@ -1,18 +1,19 @@
 package com.onarandombox.MultiverseCore.commandTools.display;
 
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
  * @param <D> {@link ContentDisplay} type that is targted to.
  * @param <T> Type of content its displaying.
  */
-public abstract class ShowRunnable<D extends ContentDisplay<T>, T> extends BukkitRunnable {
+public abstract class ShowRunnable<D extends ContentDisplay<?, T>, T> extends BukkitRunnable {
 
     protected final D display;
     protected T contents;
 
-    protected ShowRunnable(D display) {
+    protected ShowRunnable(@NotNull D display) {
         this.display = display;
     }
 
@@ -36,7 +37,7 @@ public abstract class ShowRunnable<D extends ContentDisplay<T>, T> extends Bukki
     /**
      * Show header and contents to sender.
      */
-    public void display() {
+    protected void display() {
         showHeader();
         showContent();
     }
@@ -44,28 +45,28 @@ public abstract class ShowRunnable<D extends ContentDisplay<T>, T> extends Bukki
     /**
      * Generate the content to show based on filter, pages or other factors depending on implementation.
      */
-    public abstract void calculateContent();
+    protected abstract void calculateContent();
 
     /**
      * Check if there is anything to show after {@link ShowRunnable#calculateContent()}.
      *
      * @return True if content is present, false otherwise.
      */
-    public abstract boolean hasContentToShow();
+    protected abstract boolean hasContentToShow();
 
     /**
      *
      * @return True if valid, false otherwise.
      */
-    public abstract boolean validateContent();
+    protected abstract boolean validateContent();
 
     /**
      * Displays header to the sender.
      */
-    public abstract void showHeader();
+    protected abstract void showHeader();
 
     /**
      * Displays content to the sender.
      */
-    public abstract void showContent();
+    protected abstract void showContent();
 }

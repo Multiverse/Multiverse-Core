@@ -15,7 +15,7 @@ public class ShowAllPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public void calculateContent() {
+    protected void calculateContent() {
         int index = -1;
         for (String line : this.contents) {
             index++;
@@ -30,7 +30,7 @@ public class ShowAllPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public boolean validateContent() {
+    protected boolean validateContent() {
         return true;
     }
 
@@ -38,7 +38,7 @@ public class ShowAllPage extends ShowPage {
      * {@inheritDoc}
      */
     @Override
-    public void showHeader() {
+    protected void showHeader() {
         if (this.display.getHeader() == null) {
             return;
         }

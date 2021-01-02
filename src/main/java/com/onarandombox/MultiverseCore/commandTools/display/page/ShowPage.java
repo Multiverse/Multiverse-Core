@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore.commandTools.display.page;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 
 import java.util.ArrayList;
@@ -13,17 +13,13 @@ public abstract class ShowPage extends ShowRunnable<PageDisplay, List<String>> {
     public ShowPage(PageDisplay display) {
         super(display);
         this.contentToShowIndex = new ArrayList<>();
-
-        if (this.display.getColours() != null) {
-            this.display.getColours().reset();
-        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean hasContentToShow() {
+    protected boolean hasContentToShow() {
         return !contentToShowIndex.isEmpty();
     }
 
@@ -31,15 +27,16 @@ public abstract class ShowPage extends ShowRunnable<PageDisplay, List<String>> {
      * {@inheritDoc}
      */
     @Override
-    public void showContent() {
-        ColourAlternator colours = this.display.getColours();
+    protected void showContent() {
+        ColorAlternator colours = this.display.getColours();
+        colours.reset();
 
         contentToShowIndex.stream()
                 .map(this.contents::get)
                 .map(line -> line.equals(PageDisplay.LINE_BREAK_PLACEHOLDER)
                         ? ""
                         : line.replace(PageDisplay.PAGE_PLACEHOLDER, ""))
-                .map(line -> ((colours == null) ? "" : colours.get()) + line)
+                .map(line -> colours.get() + line)
                 .forEach(this.display.getSender()::sendMessage);
     }
 }

@@ -17,7 +17,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.contexts.GameRuleProperty;
-import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.inline.KeyValueDisplay;
@@ -52,17 +52,14 @@ public class GameRuleCommand extends MultiverseCommand {
 
                                    @NotNull ContentFilter filter) {
 
-        KeyValueDisplay display = new KeyValueDisplay(
-                this.plugin,
-                sender,
-                String.format("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE),
-                getGameRuleMap(world),
-                filter,
-                new ColourAlternator(ChatColor.GREEN, ChatColor.GOLD),
-                ": "
-        );
-
-        display.showContentAsync();
+        new KeyValueDisplay().withSender(sender)
+                .withHeader(String.format("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE))
+                .withCreator(getGameRuleMap(world))
+                .withFilter(filter)
+                .withColors(new ColorAlternator(ChatColor.GREEN, ChatColor.GOLD))
+                .withOperator(": ")
+                .build()
+                .runTaskAsynchronously(this.plugin);
     }
 
     private ContentCreator<Map<String, Object>> getGameRuleMap(MultiverseWorld world) {

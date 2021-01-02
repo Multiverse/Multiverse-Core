@@ -18,7 +18,7 @@ public class ShowKeyValue extends ShowInline<KeyValueDisplay, Map<String, Object
      * {@inheritDoc}
      */
     @Override
-    public void calculateContent() {
+    protected void calculateContent() {
         ContentFilter filter = this.display.getFilter();
         boolean isFirst = true;
         for (Map.Entry<String, Object> entry : this.contents.entrySet()) {
