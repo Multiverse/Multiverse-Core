@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commandTools.display.inline;
 
 import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +38,13 @@ public abstract class ShowInline<D extends ContentDisplay<?, T>, T> extends Show
         if (this.display.getHeader() == null) {
             return;
         }
+
         this.display.getSender().sendMessage(this.display.getHeader());
+
+        ContentFilter filter = this.display.getFilter();
+        if (filter.hasFilter()) {
+            this.display.getSender().sendMessage(String.format("[ %s ]", filter.getFormattedString()));
+        }
     }
 
     /**
