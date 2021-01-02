@@ -66,7 +66,7 @@ public class ShowSelectedPage extends ShowPage {
     }
 
     private boolean pageOutOfRange() {
-        if (this.display.getPageToShow() < 0 || this.display.getPageToShow() > totalPages) {
+        if (this.display.getPageToShow() < 1 || this.display.getPageToShow() > totalPages) {
             this.display.getSender().sendMessage((totalPages == 1)
                     ? "There is only 1 page."
                     : String.format("Please enter a page from 1 to %s.", totalPages));
