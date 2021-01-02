@@ -13,6 +13,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.inline.ListDisplay;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,28 +42,20 @@ public class GeneratorCommand extends MultiverseCommand {
     }
 
     public static void showAvailableGenerator(@NotNull CommandSender sender) {
-        List<String> generators = Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
+        new ListDisplay().withSender(sender)
+                .withHeader(String.format("%s--- Available Generator Plugins ---", ChatColor.GOLD))
+                .withCreator(getGeneratorContent())
+                .withColors(new ColorAlternator(ChatColor.YELLOW, ChatColor.WHITE))
+                .withEmptyMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED))
+                .build()
+                .run();
+    }
+
+    private static ContentCreator<List<String>> getGeneratorContent() {
+        return () -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                 .filter(Plugin::isEnabled)
                 .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
                 .map(plugin -> plugin.getDescription().getName())
                 .collect(Collectors.toList());
-
-        if (generators.size() == 0) {
-             sender.sendMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED));
-            return;
-        }
-
-        //TODO ACF: Use List Display
-        StringBuilder loadedGens = new StringBuilder();
-        boolean altColor = false;
-        for (String s : generators) {
-            loadedGens.append(altColor ? ChatColor.YELLOW : ChatColor.WHITE)
-                    .append(s)
-                    .append(' ');
-            altColor ^= true;
-        }
-
-        sender.sendMessage(String.format("%s--- Available Generator Plugins ---", ChatColor.AQUA));
-        sender.sendMessage(loadedGens.toString());
     }
 }
