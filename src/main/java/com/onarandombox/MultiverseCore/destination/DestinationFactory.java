@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,8 +40,12 @@ public class DestinationFactory {
         this.permTools = new PermissionTools(plugin);
     }
 
-    public MVDestination getPlayerAwareDestination(@NotNull Player teleportee,
+    public MVDestination getPlayerAwareDestination(@Nullable Player teleportee,
                                                    @NotNull String destinationName) {
+
+        if (teleportee == null) {
+            return getDestination(destinationName);
+        }
 
         if (CANNON_PATTERN.matcher(destinationName).matches()) {
             return getDestination(parseCannonDest(teleportee, destinationName));
