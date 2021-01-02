@@ -102,7 +102,7 @@ public class WhoCommand extends MultiverseCommand {
                 .collect(Collectors.toList());
 
             if (players.isEmpty()) {
-                players.add("No players found.");
+                players.add(String.format("%sNo players found.", ChatColor.GRAY));
             }
 
             return players;
@@ -127,6 +127,8 @@ public class WhoCommand extends MultiverseCommand {
                 .map(Player::getDisplayName)
                 .collect(Collectors.joining(", "));
 
-        return (playersInWorld.isEmpty()) ? "No players found." : playersInWorld;
+        return (playersInWorld.isEmpty())
+                ? String.format("%sNo players found.", ChatColor.GRAY)
+                : playersInWorld;
     }
 }
