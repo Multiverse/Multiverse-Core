@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commandTools;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.annotation.Values;
@@ -22,6 +23,7 @@ import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
+import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
@@ -78,10 +80,15 @@ public class MVCommandContexts extends PaperCommandContexts {
             if (context.isOptional()) {
                 return null;
             }
-            throw new InvalidCommandArgument("Command player is null!");
+            // Tho this should not happen as player parsing is handled by derivePlayer.
+            throw new InvalidCommandArgument("Invalid player name!");
         }
 
-        MultiverseWorld world = getPlayerWorld(player, false, "Something went wrong parsing player...");
+        MultiverseWorld world = getPlayerWorld(
+                player,
+                false,
+                String.format("Something went wrong parsing player '%s'...", player.getName())
+        );
 
         return new PlayerWorld(player, world);
     }
@@ -89,17 +96,21 @@ public class MVCommandContexts extends PaperCommandContexts {
     @Nullable
     private MultiverseWorld deriveMultiverseWorld(@NotNull BukkitCommandExecutionContext context) {
         if (!context.hasFlag("other")) {
-            return getPlayerWorld(context.getPlayer(),
+            return getPlayerWorld(
+                    context.getPlayer(),
                     context.isOptional()
-                    , "You cannot run this command from console.");
+                    , "You cannot run this command from console."
+            );
         }
 
         String worldName = context.getFirstArg();
         if (worldName == null) {
             if (context.hasFlag("defaultself")) {
-                return getPlayerWorld(context.getPlayer(),
+                return getPlayerWorld(
+                        context.getPlayer(),
                         context.isOptional()
-                        , "You need to specific a world name from console.");
+                        , "You need to specific a world name from console."
+                );
             }
             if (context.isOptional()) {
                 return null;
@@ -113,6 +124,14 @@ public class MVCommandContexts extends PaperCommandContexts {
                 return getPlayerWorld(context.getPlayer(),
                         context.isOptional(),
                         String.format("World '%s' not found.", worldName));
+            }
+            if (this.worldManager.isValidWorld(worldName)) {
+                CommandSender sender = context.getSender();
+                sender.sendMessage(String.format("%sMultiverse does not know about world '%s' yet. Please import it with %s/mv import %s <env>%s.",
+                        ChatColor.RED, worldName, ChatColor.AQUA, worldName, ChatColor.RED));
+                sender.sendMessage(String.format("See %s/mv help import %sfor more info.",
+                        ChatColor.AQUA, ChatColor.WHITE));
+                throw new InvalidCommandArgument();
             }
             throw new InvalidCommandArgument(String.format("World '%s' not found.", worldName), false);
         }

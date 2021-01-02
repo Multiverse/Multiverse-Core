@@ -21,6 +21,7 @@ import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -68,6 +69,14 @@ public class MVCommandConditions {
         }
 
         if (!this.worldManager.getUnloadedWorlds().contains(worldName)) {
+            if (this.worldManager.isValidWorld(worldName)) {
+                CommandSender sender = executionContext.getSender();
+                sender.sendMessage(String.format("%sMultiverse does not know about world '%s' yet. Please import it with %s/mv import %s <env>%s.",
+                        ChatColor.RED, worldName, ChatColor.AQUA, worldName, ChatColor.RED));
+                sender.sendMessage(String.format("See %s/mv help import %sfor more info.",
+                        ChatColor.AQUA, ChatColor.WHITE));
+                throw new ConditionFailedException();
+            }
             throw new ConditionFailedException(String.format("World '%s' not found.", worldName));
         }
     }
@@ -86,7 +95,7 @@ public class MVCommandConditions {
                                          @NotNull String worldName) {
 
         if (this.worldManager.isMVWorld(worldName)) {
-            executionContext.getSender().sendMessage(String.format("%sMultiverse cannot create %s%sanother %s%sworld named '%s'",
+            executionContext.getSender().sendMessage(String.format("%sMultiverse cannot create %s%sanother %s%sworld named '%s'.",
                     ChatColor.RED, ChatColor.GOLD, ChatColor.UNDERLINE, ChatColor.RESET, ChatColor.RED, worldName));
             throw new ConditionFailedException();
         }
@@ -96,12 +105,15 @@ public class MVCommandConditions {
 
         if (validationResult != WorldValidationResult.DOES_NOT_EXIST && validationResult != WorldValidationResult.NOT_A_DIRECTORY) {
             CommandSender sender = executionContext.getSender();
-            sender.sendMessage(String.format("%sA Folder already exists with this name!", ChatColor.RED));
-
             if (validationResult == WorldValidationResult.VALID) {
-                sender.sendMessage(String.format("%sWorld Folder '%s' already look like a world to me!", ChatColor.RED, worldName));
-                sender.sendMessage(String.format("%sYou can try importing it with %s/mv import", ChatColor.RED, ChatColor.AQUA));
+                sender.sendMessage(String.format("%sWorld Folder '%s' already look like a world to me! You can try importing it with %s/mv import%s.",
+                        ChatColor.RED, worldName, ChatColor.AQUA, ChatColor.RED));
+                sender.sendMessage(String.format("See %s/mv help import %sfor more info.",
+                        ChatColor.AQUA, ChatColor.WHITE));
+                throw new ConditionFailedException();
             }
+
+            sender.sendMessage(String.format("%sA folder already exists with this name!", ChatColor.RED));
             throw new ConditionFailedException();
         }
     }
@@ -133,9 +145,9 @@ public class MVCommandConditions {
             case NAME_BLACKLISTED:
                 throw new ConditionFailedException("World should not be in reserved server folders.");
             case NAME_CONTAINS_DAT:
-                throw new ConditionFailedException("Multiverse cannot have a world name that contains '.dat'");
+                throw new ConditionFailedException("Multiverse cannot have a world name that contains '.dat'.");
             case NAME_INVALID:
-                throw new ConditionFailedException("World name should not contain spaces or special characters!");
+                throw new ConditionFailedException("World name should not contain spaces or special characters! Please rename your world folder.");
         }
     }
 
@@ -146,7 +158,7 @@ public class MVCommandConditions {
             case NOT_A_DIRECTORY:
                 throw new ConditionFailedException(String.format("World folder '%s' does not exist.", worldName));
             case FOLDER_LACK_DAT:
-                throw new ConditionFailedException(String.format("'%s' does not appear to be a world. It is lacking .dat file.", worldName));
+                throw new ConditionFailedException(String.format("'%s' does not appear to be a world! It is lacking .dat file.", worldName));
         }
     }
 
@@ -164,8 +176,10 @@ public class MVCommandConditions {
         }
         catch (IllegalArgumentException e) {
             CommandSender sender = executionContext.getSender();
-            sender.sendMessage(String.format("%sSorry, you can't use %s with '%s'.", ChatColor.RED, actionType, property));
-            sender.sendMessage("Please visit our Github Wiki for more information: https://goo.gl/q1h01S");
+            sender.sendMessage(String.format("%sSorry, you can't use %s with '%s'.",
+                    ChatColor.RED, actionType, property));
+            sender.sendMessage(String.format("%sPlease visit our Github Wiki for more information: https://goo.gl/q1h01S",
+                    ChatColor.AQUA));
             throw new ConditionFailedException();
         }
     }
@@ -180,7 +194,8 @@ public class MVCommandConditions {
         }
 
         if (!this.plugin.getMVPerms().canEnterWorld(player, world)) {
-            throw new ConditionFailedException("You aren't allowed to access to this world!");
+            throw new ConditionFailedException(String.format("You aren't allowed to access to world '%s%s'!",
+                    world.getColoredWorldString(), ChatColor.RED));
         }
     }
 
@@ -190,7 +205,7 @@ public class MVCommandConditions {
 
         String permNode = context.getConfig() + (player.isSender(executionContext.getSender()) ? ".self" : ".other");
         if (!executionContext.getSender().hasPermission(permNode)) {
-            throw new ConditionFailedException("You do not have perm to run this command.");
+            throw new ConditionFailedException("You do not have permission to run this command.");
         }
     }
 }
