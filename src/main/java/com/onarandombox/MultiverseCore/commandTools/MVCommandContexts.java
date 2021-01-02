@@ -411,7 +411,8 @@ public class MVCommandContexts extends PaperCommandContexts {
 
     @NotNull
     private ContentFilter deriveContentFilter(@NotNull BukkitCommandExecutionContext context) {
-        return new ContentFilter(context.popFirstArg());
+        String filterString = context.popFirstArg();
+        return (filterString == null) ? ContentFilter.EMPTY : new ContentFilter(filterString);
     }
 
     @NotNull
