@@ -18,20 +18,23 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.enums.AddProperties;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.inline.KeyValueDisplay;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @CommandAlias("mv")
 @Subcommand("modify")
+//TODO API: Think why properties method for MultiverseWorld is deprecated.
 public class ModifyCommand extends MultiverseCommand {
 
     public ModifyCommand(MultiverseCore plugin) {
@@ -56,91 +59,6 @@ public class ModifyCommand extends MultiverseCommand {
                                    @Syntax("[world]")
                                    @Description("World that you want property change to apply.")
                                    @NotNull @Flags("other,defaultself") MultiverseWorld world) {
-
-        doModifySet(sender, property, value, world);
-    }
-
-    @Subcommand("add")
-    @CommandPermission("multiverse.core.modify.add")
-    @Syntax("<property> <value> [world]")
-    @CommandCompletion("@addProperties @empty @MVWorlds")
-    @Description("Modify various aspects of worlds by adding a property. For more info: https://tinyurl.com/nehhzp6")
-    public void onModifyAddCommand(@NotNull CommandSender sender,
-
-                                   @Syntax("<property>")
-                                   @Description("Property option key.")
-                                   @NotNull @Flags("type=property") @Conditions("validAddProperty:add") String property,
-
-                                   @Syntax("<value>")
-                                   @Description("Property value to add.")
-                                   @NotNull @Flags("type=property value") String value,
-
-                                   @Syntax("[world]")
-                                   @Description("World that you want property change to apply.")
-                                   @NotNull @Flags("other,defaultself") MultiverseWorld world) {
-
-        doModifyAdd(sender, property, value, world);
-    }
-
-    @Subcommand("remove")
-    @CommandPermission("multiverse.core.modify.remove")
-    @Syntax("<property> <value> [world]")
-    @CommandCompletion("@addProperties @empty @MVWorlds")
-    @Description("Modify various aspects of worlds by removing a property. For more info: https://tinyurl.com/nehhzp6")
-    public void onModifyRemoveCommand(@NotNull CommandSender sender,
-
-                                      @Syntax("<property>")
-                                      @Description("Property option key.")
-                                      @NotNull @Flags("type=property") @Conditions("validAddProperty:remove") String property,
-
-                                      @Syntax("<value>")
-                                      @Description("Property value to remove.")
-                                      @NotNull @Flags("type=property value") String value,
-
-                                      @Syntax("[world]")
-                                      @Description("World that you want property change to apply.")
-                                      @NotNull @Flags("other,defaultself") MultiverseWorld world) {
-
-        doModifyRemove(sender, property, value, world);
-    }
-
-    @Subcommand("clear")
-    @CommandPermission("multiverse.core.modify.clear")
-    @Syntax("<property> <value> [world]")
-    @CommandCompletion("@addProperties @empty @MVWorlds")
-    @Description("Modify various aspects of worlds by clearing a property. For more info: https://tinyurl.com/nehhzp6")
-    public void onModifyClearCommand(@NotNull CommandSender sender,
-
-                                     @Syntax("<property>")
-                                     @Description("Property option key.")
-                                     @NotNull @Flags("type=property") @Conditions("validAddProperty:clear") String property,
-
-                                     @Syntax("[world]")
-                                     @Description("World that you want property be cleared.")
-                                     @NotNull @Flags("other,defaultself") MultiverseWorld world) {
-
-        doModifyClear(sender, property, world);
-    }
-
-    @Subcommand("list")
-    @CommandPermission("multiverse.core.modify.list")
-    @Syntax("[world]")
-    @CommandCompletion("@MVWorlds")
-    @Description("Show properties available to set.")
-    public void onModifyClearCommand(@NotNull CommandSender sender,
-
-                                     @Syntax("[world]")
-                                     @Description("World that you want to see current property values set.")
-                                     @NotNull @Flags("other,defaultself") MultiverseWorld world) {
-
-        doModifyList(sender, world);
-    }
-
-    //TODO API: Think why properties method for MultiverseWorld is deprecated.
-    private void doModifySet(@NotNull CommandSender sender,
-                             @NotNull String property,
-                             @NotNull String value,
-                             @NotNull MultiverseWorld world) {
 
         if ((property.equalsIgnoreCase("aliascolor")
                 || property.equalsIgnoreCase("color"))
@@ -168,10 +86,24 @@ public class ModifyCommand extends MultiverseCommand {
         saveWorldConfig(sender);
     }
 
-    private void doModifyAdd(@NotNull CommandSender sender,
-                             @NotNull String property,
-                             @NotNull String value,
-                             @NotNull MultiverseWorld world) {
+    @Subcommand("add")
+    @CommandPermission("multiverse.core.modify.add")
+    @Syntax("<property> <value> [world]")
+    @CommandCompletion("@addProperties @empty @MVWorlds")
+    @Description("Modify various aspects of worlds by adding a property. For more info: https://tinyurl.com/nehhzp6")
+    public void onModifyAddCommand(@NotNull CommandSender sender,
+
+                                   @Syntax("<property>")
+                                   @Description("Property option key.")
+                                   @NotNull @Flags("type=property") @Conditions("validAddProperty:add") String property,
+
+                                   @Syntax("<value>")
+                                   @Description("Property value to add.")
+                                   @NotNull @Flags("type=property value") String value,
+
+                                   @Syntax("[world]")
+                                   @Description("World that you want property change to apply.")
+                                   @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
         if (!world.addToVariable(property, value)) {
             sender.sendMessage(String.format("%s %scould not be added to %s%s%s.",
@@ -185,10 +117,24 @@ public class ModifyCommand extends MultiverseCommand {
         saveWorldConfig(sender);
     }
 
-    private void doModifyRemove(@NotNull CommandSender sender,
-                                @NotNull String property,
-                                @NotNull String value,
-                                @NotNull MultiverseWorld world) {
+    @Subcommand("remove")
+    @CommandPermission("multiverse.core.modify.remove")
+    @Syntax("<property> <value> [world]")
+    @CommandCompletion("@addProperties @empty @MVWorlds")
+    @Description("Modify various aspects of worlds by removing a property. For more info: https://tinyurl.com/nehhzp6")
+    public void onModifyRemoveCommand(@NotNull CommandSender sender,
+
+                                      @Syntax("<property>")
+                                      @Description("Property option key.")
+                                      @NotNull @Flags("type=property") @Conditions("validAddProperty:remove") String property,
+
+                                      @Syntax("<value>")
+                                      @Description("Property value to remove.")
+                                      @NotNull @Flags("type=property value") String value,
+
+                                      @Syntax("[world]")
+                                      @Description("World that you want property change to apply.")
+                                      @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
         if (!world.removeFromVariable(property, value)) {
             sender.sendMessage(String.format("%sThere was an error removing %s%s%s from %s%s%s!",
@@ -202,9 +148,20 @@ public class ModifyCommand extends MultiverseCommand {
         saveWorldConfig(sender);
     }
 
-    private void doModifyClear(@NotNull CommandSender sender,
-                               @NotNull String property,
-                               @NotNull MultiverseWorld world) {
+    @Subcommand("clear")
+    @CommandPermission("multiverse.core.modify.clear")
+    @Syntax("<property> <value> [world]")
+    @CommandCompletion("@addProperties @empty @MVWorlds")
+    @Description("Modify various aspects of worlds by clearing a property. For more info: https://tinyurl.com/nehhzp6")
+    public void onModifyClearCommand(@NotNull CommandSender sender,
+
+                                     @Syntax("<property>")
+                                     @Description("Property option key.")
+                                     @NotNull @Flags("type=property") @Conditions("validAddProperty:clear") String property,
+
+                                     @Syntax("[world]")
+                                     @Description("World that you want property be cleared.")
+                                     @NotNull @Flags("other,defaultself") MultiverseWorld world) {
 
         if (!world.clearList(property)) {
             sender.sendMessage(String.format("%sThere was an error clearing %s%s%s.",
@@ -217,30 +174,47 @@ public class ModifyCommand extends MultiverseCommand {
         saveWorldConfig(sender);
     }
 
-    private void doModifyList(@NotNull CommandSender sender,
-                              @NotNull MultiverseWorld world) {
+    @Subcommand("list")
+    @CommandPermission("multiverse.core.modify.list")
+    @Syntax("[world] [filter]")
+    @CommandCompletion("@MVWorlds")
+    @Description("Show properties available to set.")
+    public void onModifyClearCommand(@NotNull CommandSender sender,
 
-        //TODO ACF: Use KayValueDisplay
-        Collection<String> properties = world.getAllPropertyTypes();
-        List<String> propValues = new ArrayList<>(properties.size());
+                                     @Syntax("[world]")
+                                     @Description("World that you want to see current property values set.")
+                                     @NotNull @Flags("other,defaultself,fallbackself") MultiverseWorld world,
 
-        for (String property : properties) {
-            String value;
-            try {
-                value = world.getPropertyValue(property);
+                                     @NotNull ContentFilter filter) {
+
+        KeyValueDisplay display = new KeyValueDisplay(
+                this.plugin,
+                sender,
+                String.format("%s===[ Property Values for %s%s ]===", ChatColor.GOLD, world.getColoredWorldString(), ChatColor.GOLD),
+                generatorModifyList(world),
+                filter,
+                new ColourAlternator(),
+                " = "
+        );
+
+        display.showContentAsync();
+    }
+
+    private ContentCreator<Map<String, Object>> generatorModifyList(MultiverseWorld world) {
+        return () -> {
+            Collection<String> properties = world.getAllPropertyTypes();
+            Map<String, Object> propMap = new HashMap<>(properties.size());
+            for (String property : properties) {
+                String value;
+                try {
+                    value = world.getPropertyValue(property);
+                } catch (PropertyDoesNotExistException ignored) {
+                    value = String.format("%s!!INAVLID!!", ChatColor.RED);
+                }
+                propMap.put(property, value);
             }
-            catch (PropertyDoesNotExistException ignored) {
-                value = String.format("%s!!INAVLID!!", ChatColor.RED);
-            }
-
-            propValues.add(ChatColor.GREEN + property
-                    + ChatColor.WHITE + " = "
-                    + ChatColor.GOLD + value
-                    + ChatColor.WHITE);
-        }
-
-        sender.sendMessage(String.format("%s===[ Property Values for %s ]===", ChatColor.GOLD, world.getColoredWorldString()));
-        sender.sendMessage(String.join(", ", propValues));
+            return propMap;
+        };
     }
 
     private void saveWorldConfig(@NotNull CommandSender sender) {
