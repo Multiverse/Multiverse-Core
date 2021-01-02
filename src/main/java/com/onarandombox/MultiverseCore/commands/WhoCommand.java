@@ -18,12 +18,17 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commandTools.display.ColourAlternator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
+import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandTools.display.inline.ListDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,14 +76,37 @@ public class WhoCommand extends MultiverseCommand {
 
                              @Syntax("[filter]")
                              @Description("Filter the player names.")
-                             @Nullable @Optional String filter) {
+                             @NotNull ContentFilter filter) {
 
-        Set<Player> visiblePlayers = getVisiblePlayers(player);
+        ListDisplay display = new ListDisplay(
+                this.plugin,
+                sender,
+                String.format("%s===[ Players in %s%s ]===", ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA),
+                buildPlayerList(world, player),
+                filter,
+                new ColourAlternator()
+        );
 
-        sender.sendMessage(String.format("%s--- Players in %s%s ---",
-                ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA));
+        display.showContentAsync();
+    }
 
-        sender.sendMessage(buildPlayerString(world, filter, visiblePlayers));
+    @NotNull
+    private ContentCreator<List<String>> buildPlayerList(@NotNull MultiverseWorld world,
+                                                         @Nullable Player player) {
+
+        return () -> {
+            Set<Player> visiblePlayers = getVisiblePlayers(player);
+            List<String> players = world.getCBWorld().getPlayers().stream()
+                .filter(visiblePlayers::contains)
+                .map(Player::getDisplayName)
+                .collect(Collectors.toList());
+
+            if (players.isEmpty()) {
+                players.add("No players found.");
+            }
+
+            return players;
+        };
     }
 
     @NotNull
