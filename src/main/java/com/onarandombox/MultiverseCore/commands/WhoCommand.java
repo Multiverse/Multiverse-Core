@@ -48,7 +48,7 @@ public class WhoCommand extends MultiverseCommand {
 
                                 @Syntax("[filter]")
                                 @Description("Filter the player names.")
-                                @Nullable @Optional String filter) {
+                                @NotNull ContentFilter filter) {
 
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 
@@ -109,12 +109,12 @@ public class WhoCommand extends MultiverseCommand {
 
     @NotNull
     private String buildPlayerString(@NotNull MultiverseWorld world,
-                                     @Nullable String filter,
+                                     @NotNull ContentFilter filter,
                                      @NotNull Set<Player> visiblePlayers) {
 
         String playersInWorld = world.getCBWorld().getPlayers().stream()
                 .filter(visiblePlayers::contains)
-                .filter(p -> filter == null || p.getDisplayName().contains(filter))
+                .filter(p -> filter.checkMatch(p.getDisplayName()))
                 .map(Player::getDisplayName)
                 .collect(Collectors.joining(", "));
 
