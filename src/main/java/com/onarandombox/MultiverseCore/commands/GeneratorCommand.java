@@ -45,7 +45,7 @@ public class GeneratorCommand extends MultiverseCommand {
         new ListDisplay().withSender(sender)
                 .withHeader(String.format("%s--- Available Generator Plugins ---", ChatColor.GOLD))
                 .withCreator(getGeneratorContent())
-                .withColors(new ColorAlternator(ChatColor.YELLOW, ChatColor.WHITE))
+                .withColors(new ColorAlternator(ChatColor.AQUA, ChatColor.WHITE))
                 .withEmptyMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED))
                 .build()
                 .run();

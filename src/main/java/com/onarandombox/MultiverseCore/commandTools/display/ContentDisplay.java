@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Displays various types of content to sender.
  *
+ * @param <C> Subclass that inherited this abstract class.
  * @param <T> Type of content to display.
  */
 public abstract class ContentDisplay<C extends ContentDisplay<?, T>, T> {
@@ -31,7 +32,7 @@ public abstract class ContentDisplay<C extends ContentDisplay<?, T>, T> {
     }
 
     /**
-     * Set defaults if null and ensure that required fields are not null.
+     * Set defaults if null and ensure that required fields are not null, else throw exception.
      */
     protected void buildValidation() {
         if (this.colours == null) {
@@ -43,7 +44,7 @@ public abstract class ContentDisplay<C extends ContentDisplay<?, T>, T> {
     }
 
     /**
-     * Runnable used to format and display contents to
+     * Runnable used to format and display contents to {@link ContentDisplay#sender}
      *
      * @return {@link ShowRunnable}
      */

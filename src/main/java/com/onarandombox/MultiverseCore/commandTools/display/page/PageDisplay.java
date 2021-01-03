@@ -29,7 +29,6 @@ public class PageDisplay extends ContentDisplay<PageDisplay, List<String>> {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     protected @NotNull ShowPage getShowRunnable() {

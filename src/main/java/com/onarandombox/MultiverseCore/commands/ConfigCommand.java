@@ -44,6 +44,7 @@ public class ConfigCommand extends MultiverseCommand {
         new KeyValueDisplay().withSender(sender)
                 .withHeader(ChatColor.LIGHT_PURPLE + "===[ Multiverse Config ]===")
                 .withCreator(getConfigMap())
+                .withFilter(filter)
                 .withColors(new ColorAlternator(ChatColor.GREEN, ChatColor.GOLD))
                 .build()
                 .runTaskAsynchronously(this.plugin);

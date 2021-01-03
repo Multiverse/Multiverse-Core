@@ -5,20 +5,20 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  *
- * @param <D> {@link ContentDisplay} type that is targted to.
+ * @param <C> {@link ContentDisplay} type that is targted to.
  * @param <T> Type of content its displaying.
  */
-public abstract class ShowRunnable<D extends ContentDisplay<?, T>, T> extends BukkitRunnable {
+public abstract class ShowRunnable<C extends ContentDisplay<?, T>, T> extends BukkitRunnable {
 
-    protected final D display;
+    protected final C display;
     protected T contents;
 
-    protected ShowRunnable(@NotNull D display) {
+    protected ShowRunnable(@NotNull C display) {
         this.display = display;
     }
 
     /**
-     * Run the showing of {@link ContentDisplay}.
+     * Run the showing of a {@link ContentDisplay}.
      */
     @Override
     public void run() {
@@ -50,7 +50,7 @@ public abstract class ShowRunnable<D extends ContentDisplay<?, T>, T> extends Bu
     /**
      * Check if there is anything to show after {@link ShowRunnable#calculateContent()}.
      *
-     * @return True if content is present, false otherwise.
+     * @return True if there is content to show, false otherwise.
      */
     protected abstract boolean hasContentToShow();
 

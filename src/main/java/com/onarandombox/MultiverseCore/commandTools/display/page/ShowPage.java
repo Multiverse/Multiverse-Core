@@ -6,6 +6,9 @@ import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Show multi-line contents.
+ */
 public abstract class ShowPage extends ShowRunnable<PageDisplay, List<String>> {
 
     protected final List<Integer> contentToShowIndex;

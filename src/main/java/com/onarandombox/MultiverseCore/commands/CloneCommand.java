@@ -36,7 +36,7 @@ public class CloneCommand extends MultiverseCommand {
     public void onCloneCommand(@NotNull CommandSender sender,
 
                                @Syntax("<world>")
-                               @Description("Current multiverse world")
+                               @Description("Current multiverse world.")
                                @NotNull @Conditions("isWorldInConfig") String worldName,
 
                                @Syntax("<name>")

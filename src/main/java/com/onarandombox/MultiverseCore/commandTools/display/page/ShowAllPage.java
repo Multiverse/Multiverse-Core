@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.commandTools.display.page;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 
 /**
- * Show a everything from a list content.
+ * Show a everything from a multi-line content.
  */
 public class ShowAllPage extends ShowPage {
 

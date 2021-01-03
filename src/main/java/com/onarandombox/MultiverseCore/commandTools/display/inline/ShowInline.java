@@ -5,11 +5,17 @@ import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ShowInline<D extends ContentDisplay<?, T>, T> extends ShowRunnable<D, T> {
+/**
+ * Show the content inline, separated by comma.
+ *
+ * @param <C>
+ * @param <T>
+ */
+public abstract class ShowInline<C extends ContentDisplay<?, T>, T> extends ShowRunnable<C, T> {
 
     protected final StringBuilder contentBuilder;
 
-    public ShowInline(@NotNull D display) {
+    public ShowInline(@NotNull C display) {
         super(display);
         this.contentBuilder = new StringBuilder();
     }

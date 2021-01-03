@@ -20,7 +20,7 @@ public class ContentFilter {
     private static final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
 
     /**
-     * Basically just means match everything.
+     * Empty filter that matches everything.
      */
     public static ContentFilter EMPTY = new ContentFilter();
 
@@ -41,6 +41,8 @@ public class ContentFilter {
 
     /**
      * Compile regex pattern based on {@link ContentFilter#filterString}.
+     * When prefixed with 'r=', use {@link ContentFilter#filterString} as the full regex pattern.
+     * Else, set to any match that contains the {@link ContentFilter#filterString}.
      */
     private void parseFilter() {
         if (filterString == null) {
@@ -55,7 +57,7 @@ public class ContentFilter {
     }
 
     /**
-     * When prefixed with 'r=', use {@link ContentFilter#filterString} as the full regex pattern.
+     * Compile and store the regex into a {@link Pattern}.
      */
     private void convertToMatcher(@NotNull String regex) {
         try {

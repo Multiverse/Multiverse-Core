@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+/**
+ * Shows a Map inline, with each key value pair separated by a comma.
+ */
 public class ShowKeyValue extends ShowInline<KeyValueDisplay, Map<String, Object>> {
 
     public ShowKeyValue(@NotNull KeyValueDisplay display) {

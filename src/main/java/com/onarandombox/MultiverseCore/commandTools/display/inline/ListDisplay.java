@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Used to display a list, each separated with a comma.
+ */
 public class ListDisplay extends ContentDisplay<ListDisplay, List<String>> {
 
     /**

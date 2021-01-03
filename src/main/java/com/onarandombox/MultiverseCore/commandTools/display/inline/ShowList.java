@@ -4,6 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Show list separated by a comma.
+ */
 public class ShowList extends ShowInline<ListDisplay, List<String>> {
 
     public ShowList(@NotNull ListDisplay display) {

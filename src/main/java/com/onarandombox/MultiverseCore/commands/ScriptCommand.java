@@ -51,7 +51,6 @@ public class ScriptCommand extends MultiverseCommand {
             throw new InvalidCommandArgument("Buscript failed to load while server was starting! Scripts cannot be run.", false);
         }
 
-        //TODO: ACF: Use command complete.
         File file = new File(scriptAPI.getScriptFolder(), targetScript);
         if (!file.exists()) {
             throw new InvalidCommandArgument("That script file does not exist in the Multiverse-Core scripts directory!");
