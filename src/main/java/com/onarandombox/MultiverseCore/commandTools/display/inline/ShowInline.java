@@ -19,17 +19,6 @@ public abstract class ShowInline<C extends InlineDisplay<?, T>, T> extends ShowR
         this.contentBuilder = new StringBuilder();
     }
 
-    @Override
-    protected void display() {
-        showHeader();
-        if (!hasContentToShow()) {
-            this.display.getSender().sendMessage(String.format("%s%s",
-                    this.display.getPrefix(), this.display.getEmptyMessage()));
-            return;
-        }
-        showContent();
-    }
-
     /**
      * {@inheritDoc}
      */

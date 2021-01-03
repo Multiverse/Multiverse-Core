@@ -57,8 +57,7 @@ public class WhoCommand extends MultiverseCommand {
         }
 
         ListDisplay display = new ListDisplay().withSender(sender)
-                .withFilter(filter)
-                .withEmptyMessage(String.format("%sNo players found.", ChatColor.GRAY));
+                .withFilter(filter);
 
         this.plugin.getMVWorldManager().getMVWorlds().stream()
                 .filter(world -> player == null || this.plugin.getMVPerms().canEnterWorld(player, world))
@@ -69,8 +68,11 @@ public class WhoCommand extends MultiverseCommand {
                                     @NotNull ListDisplay display,
                                     @NotNull Set<Player> visiblePlayers) {
 
+        String prefix = String.format("%s%s - ", world.getColoredWorldString(), ChatColor.WHITE);
+
         display.withCreator(buildPlayerList(world, visiblePlayers))
-                .withPrefix(String.format("%s%s - ", world.getColoredWorldString(), ChatColor.WHITE))
+                .withPrefix(prefix)
+                .withEmptyMessage(String.format("%s%sNo players found.", prefix, ChatColor.GRAY))
                 .build()
                 .run();
     }
