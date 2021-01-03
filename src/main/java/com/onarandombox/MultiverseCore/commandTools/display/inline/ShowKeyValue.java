@@ -8,11 +8,8 @@ import java.util.Map;
 
 public class ShowKeyValue extends ShowInline<KeyValueDisplay, Map<String, Object>> {
 
-    private final StringBuilder contentBuilder;
-
     public ShowKeyValue(@NotNull KeyValueDisplay display) {
         super(display);
-        this.contentBuilder = new StringBuilder();
     }
 
     /**
