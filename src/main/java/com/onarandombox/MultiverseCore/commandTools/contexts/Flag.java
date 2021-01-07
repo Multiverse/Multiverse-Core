@@ -43,28 +43,27 @@ public abstract class Flag<T> {
                                  @NotNull CommandSender sender) {
 
             if (genString == null) {
-                return null;
+                sender.sendMessage(String.format("%sYou need to specify a generator for flag '%s'.",
+                        ChatColor.RED, this.getKey()));
+                GeneratorCommand.showAvailableGenerator(sender);
+                throw new InvalidCommandArgument(false);
             }
 
             String[] genArray = genString.split(":");
-            if (genArray.length == 0) {
-                return null;
-            }
-
             String generator = genArray[0];
             String generatorId = (genArray.length > 1) ? genArray[1] : "";
             try {
                 if (plugin.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
                     sender.sendMessage(String.format("%sInvalid generator string '%s'.", ChatColor.RED, genString));
                     GeneratorCommand.showAvailableGenerator(sender);
-                    throw new InvalidCommandArgument(false);
+                    throw new InvalidCommandArgument();
                 }
             }
             catch (Exception e) {
                 e.printStackTrace();
                 Logging.severe("Error occurred when trying to create your world with generator '%s'! Reason: %s",
                         genString, e.getCause());
-                throw new InvalidCommandArgument(false);
+                throw new InvalidCommandArgument();
             }
 
             return genString;
@@ -95,6 +94,13 @@ public abstract class Flag<T> {
                                     @NotNull MultiverseCore plugin,
                                     @NotNull CommandSender sender) {
 
+            if (type == null) {
+                sender.sendMessage(String.format("%sYou need to specify a World Type for flag '%s'.",
+                        ChatColor.RED, this.getKey()));
+                EnvironmentCommand.showWorldTypes(sender);
+                throw new InvalidCommandArgument();
+            }
+
             String typeFromAlias = typeAlias.get(type);
             try {
                 return WorldType.valueOf((typeFromAlias == null) ? type : typeFromAlias);
@@ -102,7 +108,7 @@ public abstract class Flag<T> {
             catch (IllegalArgumentException e) {
                 sender.sendMessage(String.format("%s'%s' is not a valid World Type.", ChatColor.RED, type));
                 EnvironmentCommand.showWorldTypes(sender);
-                throw new InvalidCommandArgument(false);
+                throw new InvalidCommandArgument();
             }
         }
 
@@ -143,7 +149,13 @@ public abstract class Flag<T> {
                                   @NotNull MultiverseCore plugin,
                                   @NotNull CommandSender sender) {
 
-            return value == null || value.equalsIgnoreCase("true");
+            if (value == null) {
+                sender.sendMessage(String.format("%sYou need to specify true or false for flag '%s'.",
+                        ChatColor.RED, this.getKey()));
+                throw new InvalidCommandArgument();
+            }
+
+            return value.equalsIgnoreCase("true");
         }
 
         @Override
@@ -162,6 +174,11 @@ public abstract class Flag<T> {
         public Boolean parseValue(@Nullable String value,
                                   @NotNull MultiverseCore plugin,
                                   @NotNull CommandSender sender) {
+
+            if (value != null) {
+                sender.sendMessage(String.format("'Flag %s' does not require any value.", this.getKey()));
+                throw new InvalidCommandArgument();
+            }
 
             return false;
         }
@@ -222,5 +239,14 @@ public abstract class Flag<T> {
 
     public @NotNull Class<T> getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "Flag{" +
+                "key='" + key + '\'' +
+                ", valueRequirement=" + valueRequirement +
+                ", type=" + type +
+                '}';
     }
 }

@@ -95,9 +95,8 @@ public class MVCommandConditions {
                                          @NotNull String worldName) {
 
         if (this.worldManager.isMVWorld(worldName)) {
-            executionContext.getSender().sendMessage(String.format("%sMultiverse cannot create %s%sanother %s%sworld named '%s'.",
-                    ChatColor.RED, ChatColor.GOLD, ChatColor.UNDERLINE, ChatColor.RESET, ChatColor.RED, worldName));
-            throw new ConditionFailedException();
+            throw new ConditionFailedException(String.format("%sMultiverse cannot create %sanother %s%sworld named '%s'.",
+                    ChatColor.RED, ChatColor.GOLD, ChatColor.RESET, ChatColor.RED, worldName));
         }
 
         WorldValidationResult validationResult = this.worldManager.validateWorld(worldName);

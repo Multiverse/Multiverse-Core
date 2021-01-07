@@ -44,7 +44,7 @@ public class ImportCommand extends MultiverseCommand {
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @Syntax("<name> <env> -g [generator[:id]] [-n]")
-    @CommandCompletion("@potentialWorlds @environments @worldFlags:-g,-n")
+    @CommandCompletion("@potentialWorlds @environments @worldFlags:-g/-n")
     @Description("Imports a new world into multiverse.")
     public void onImportCommand(@NotNull CommandSender sender,
 

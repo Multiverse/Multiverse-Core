@@ -41,7 +41,7 @@ public class CreateCommand extends MultiverseCommand {
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
     @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
-    @CommandCompletion("@empty @environments @worldSettings:-s,-g,-t,-n,-a")
+    @CommandCompletion("@empty @environments @worldFlags:-s/-g/-t/-n/-a")
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
 

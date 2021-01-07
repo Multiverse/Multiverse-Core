@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.commandTools.contexts;
 
 import co.aikar.commands.InvalidCommandArgument;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.enums.FlagValue;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +25,8 @@ public class WorldFlags {
         this.wantedFlags = wantedFlags;
         parseInputFlags(args);
         parseFlagMap(plugin, sender);
+        Logging.finer(String.valueOf(this.inputFlagMap));
+        Logging.finer(String.valueOf(this.flagMap));
     }
 
     /**
@@ -41,31 +43,22 @@ public class WorldFlags {
         Flag<?> currentFlag = null;
         for (String arg : args) {
             Flag<?> flag = Flag.getByKey(arg);
-
-            // When it should be a value
-            if (flag == null) {
-                if (currentFlag == null) {
+            if (currentFlag == null) {
+                if (flag == null) {
                     throw new InvalidCommandArgument(String.format("'%s' is not a valid flag key.", arg));
                 }
-                if (currentFlag.getValueRequirement() == FlagValue.NONE) {
-                    throw new InvalidCommandArgument(String.format("'Flag %s' does not require a value.", arg));
-                }
+                currentFlag = flag;
+            }
+            if (flag == null) {
                 inputFlagMap.put(currentFlag, arg);
                 currentFlag = null;
-                continue;
             }
-
-            // When arg is a flag
-            if (currentFlag != null) {
-                if (currentFlag.getValueRequirement() == FlagValue.REQUIRED) {
-                    throw new InvalidCommandArgument(String.format("You need to specify a value for flag '%s'.", flag.getKey()));
-                }
-                this.inputFlagMap.put(flag, null);
-            }
-            if (!this.wantedFlags.contains(flag)) {
-                throw new InvalidCommandArgument(String.format("'%s' flag is not applicable for this command.", flag.getKey()));
-            }
+            inputFlagMap.put(currentFlag, null);
             currentFlag = flag;
+        }
+
+        if (currentFlag != null) {
+            inputFlagMap.put(currentFlag, null);
         }
     }
 
@@ -76,7 +69,7 @@ public class WorldFlags {
         for (Flag<?> flag : wantedFlags) {
             if (inputFlagMap.containsKey(flag)) {
                 flagMap.put(flag, flag.parseValue(inputFlagMap.get(flag), plugin, sender));
-                return;
+                continue;
             }
             flagMap.put(flag, flag.getDefault());
         }

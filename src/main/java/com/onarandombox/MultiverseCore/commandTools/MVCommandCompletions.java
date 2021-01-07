@@ -84,27 +84,29 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     @NotNull
     private Collection<String> suggestWorldFlags(@NotNull BukkitCommandCompletionContext context) {
         List<String> args = Arrays.asList(context.getContextValue(String[].class));
-        Set<String> flagsKeys = new HashSet<>(Arrays.asList(context.getConfig().split(",")));
+        Set<String> flagsKeys = new HashSet<>(Arrays.asList(context.getConfig().split("/")));
 
-        String mostRecentArg = (args.isEmpty()) ? null : args.get(args.size() - 1);
+        String mostRecentArg = (args.size() <= 1) ? null : args.get(args.size() - 2);
+        if (mostRecentArg == null) {
+            return flagsKeys;
+        }
+
         Flag<?> flag = Flag.getByKey(mostRecentArg);
         if (flag == null) {
             flagsKeys.removeAll(args);
             return flagsKeys;
         }
-
         if (!flagsKeys.contains(mostRecentArg)) {
             return Collections.emptyList();
         }
-
         switch (flag.getValueRequirement()) {
             case REQUIRED:
                 return flag.suggestValue();
             case OPTIONAL:
                 Collection<String> suggestions = flag.suggestValue();
                 flagsKeys.removeAll(args);
-                suggestions.addAll(flagsKeys);
-                return suggestions;
+                flagsKeys.addAll(suggestions);
+                return flagsKeys;
             case NONE:
                 flagsKeys.removeAll(args);
                 return flagsKeys;
@@ -112,8 +114,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
         return Collections.emptyList();
     }
-
-
 
     @NotNull
     private Collection<String> suggestScripts(@NotNull BukkitCommandCompletionContext context) {
