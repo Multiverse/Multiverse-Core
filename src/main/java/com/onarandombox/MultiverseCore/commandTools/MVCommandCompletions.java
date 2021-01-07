@@ -13,6 +13,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -25,6 +26,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Console;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -56,6 +58,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
+        registerAsyncCompletion("worldSettings", this::suggestWorldSettings);
         registerAsyncCompletion("scripts", this::suggestScripts);
         registerAsyncCompletion("subCommands", this::suggestSubCommands);
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
@@ -72,6 +75,14 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("livingEntities", this::suggestEntities);
         registerStaticCompletion("pasteTypes", this::suggestPasteTypes);
         registerStaticCompletion("toggles", this::suggestToggles);
+    }
+
+    @NotNull
+    private Collection<String> suggestWorldSettings(@NotNull BukkitCommandCompletionContext context) {
+        context.getConfig()
+        final String[] contextValue = context.getContextValue(String[].class);
+        Logging.info(Arrays.toString(contextValue));
+        return Collections.emptyList();
     }
 
     @NotNull
