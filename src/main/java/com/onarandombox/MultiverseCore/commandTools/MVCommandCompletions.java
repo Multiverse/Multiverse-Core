@@ -14,10 +14,13 @@ import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.collect.Lists;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commandTools.contexts.Flag;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
+import com.onarandombox.MultiverseCore.enums.FlagValue;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -33,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,7 +62,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
-        registerAsyncCompletion("worldSettings", this::suggestWorldSettings);
+        registerAsyncCompletion("worldFlags", this::suggestWorldFlags);
         registerAsyncCompletion("scripts", this::suggestScripts);
         registerAsyncCompletion("subCommands", this::suggestSubCommands);
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
@@ -78,12 +82,38 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     @NotNull
-    private Collection<String> suggestWorldSettings(@NotNull BukkitCommandCompletionContext context) {
-        context.getConfig()
-        final String[] contextValue = context.getContextValue(String[].class);
-        Logging.info(Arrays.toString(contextValue));
+    private Collection<String> suggestWorldFlags(@NotNull BukkitCommandCompletionContext context) {
+        List<String> args = Arrays.asList(context.getContextValue(String[].class));
+        Set<String> flagsKeys = new HashSet<>(Arrays.asList(context.getConfig().split(",")));
+
+        String mostRecentArg = (args.isEmpty()) ? null : args.get(args.size() - 1);
+        Flag<?> flag = Flag.getByKey(mostRecentArg);
+        if (flag == null) {
+            flagsKeys.removeAll(args);
+            return flagsKeys;
+        }
+
+        if (!flagsKeys.contains(mostRecentArg)) {
+            return Collections.emptyList();
+        }
+
+        switch (flag.getValueRequirement()) {
+            case REQUIRED:
+                return flag.suggestValue();
+            case OPTIONAL:
+                Collection<String> suggestions = flag.suggestValue();
+                flagsKeys.removeAll(args);
+                suggestions.addAll(flagsKeys);
+                return suggestions;
+            case NONE:
+                flagsKeys.removeAll(args);
+                return flagsKeys;
+        }
+
         return Collections.emptyList();
     }
+
+
 
     @NotNull
     private Collection<String> suggestScripts(@NotNull BukkitCommandCompletionContext context) {

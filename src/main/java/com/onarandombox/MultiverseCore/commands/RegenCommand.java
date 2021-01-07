@@ -17,15 +17,22 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commandTools.contexts.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @CommandAlias("mv")
 public class RegenCommand extends MultiverseCommand {
+
+    private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(1) {{
+        add(Flag.SEED);
+    }};
 
     public RegenCommand(MultiverseCore plugin) {
         super(plugin);
@@ -34,7 +41,7 @@ public class RegenCommand extends MultiverseCommand {
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @Syntax("<world> [-s [seed]]")
-    @CommandCompletion("@MVWorlds -s @empty")
+    @CommandCompletion("@MVWorlds @worldFlags:-s")
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(@NotNull CommandSender sender,
 
@@ -46,7 +53,7 @@ public class RegenCommand extends MultiverseCommand {
                                @Description("Other world settings. See: http://gg.gg/nn8lk")
                                @Nullable @Optional String[] flagsArray) {
 
-        WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);
+        WorldFlags flags = new WorldFlags(this.plugin, sender, flagsArray, FLAG_SET);
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(
                 sender,
@@ -65,9 +72,9 @@ public class RegenCommand extends MultiverseCommand {
             //TODO: API should allow regen of unloaded worlds.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
                     world.getName(),
-                    flags.hasFlag("-s"),
-                    flags.getSeed() == null,
-                    flags.getSeed())
+                    flags.isByInput(Flag.SEED),
+                    flags.hasNullValue(Flag.SEED),
+                    flags.getValue(Flag.SEED))
             )
                     ? String.format("%sWorld Regenerated!", ChatColor.GREEN)
                     : String.format("%sWorld could not be regenerated!", ChatColor.RED));

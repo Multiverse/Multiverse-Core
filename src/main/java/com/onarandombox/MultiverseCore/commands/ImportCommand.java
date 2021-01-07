@@ -17,6 +17,7 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandTools.contexts.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -25,8 +26,16 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @CommandAlias("mv")
 public class ImportCommand extends MultiverseCommand {
+
+    private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(2) {{
+        add(Flag.GENERATOR);
+        add(Flag.SPAWN_ADJUST);
+    }};
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
@@ -35,7 +44,7 @@ public class ImportCommand extends MultiverseCommand {
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @Syntax("<name> <env> -g [generator[:id]] [-n]")
-    @CommandCompletion("@potentialWorlds @environments -g|-n")
+    @CommandCompletion("@potentialWorlds @environments @worldFlags:-g,-n")
     @Description("Imports a new world into multiverse.")
     public void onImportCommand(@NotNull CommandSender sender,
 
@@ -51,7 +60,7 @@ public class ImportCommand extends MultiverseCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8c2")
                                 @Nullable @Optional String[] flagsArray) {
 
-        WorldFlags flags = new WorldFlags(sender, this.plugin, flagsArray);
+        WorldFlags flags = new WorldFlags(this.plugin, sender, flagsArray, FLAG_SET);
 
         Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(worldName,
@@ -59,8 +68,8 @@ public class ImportCommand extends MultiverseCommand {
                 null,
                 null,
                 null,
-                flags.getGenerator(),
-                flags.isSpawnAdjust())
+                flags.getValue(Flag.GENERATOR),
+                flags.getValue(Flag.SPAWN_ADJUST))
         )
                 ? String.format("%sComplete!", ChatColor.GREEN)
                 : String.format("%sFailed! See console for more details.", ChatColor.RED));
