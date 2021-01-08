@@ -60,7 +60,6 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core]   enforceaccess: " + plugin.getMVConfig().getEnforceAccess() + '\n'
                 + "[Multiverse-Core]   prefixchat: " + plugin.getMVConfig().getPrefixChat() + '\n'
                 + "[Multiverse-Core]   prefixchatformat: " + plugin.getMVConfig().getPrefixChatFormat() + '\n'
-                + "[Multiverse-Core]   useasyncchat: " + plugin.getMVConfig().getUseAsyncChat() + '\n'
                 + "[Multiverse-Core]   teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + '\n'
                 + "[Multiverse-Core]   firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + '\n'
                 + "[Multiverse-Core]   displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + '\n'
