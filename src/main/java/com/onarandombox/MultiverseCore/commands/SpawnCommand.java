@@ -50,7 +50,7 @@ public class SpawnCommand extends MultiverseCommand {
                 sender.sendMessage("You don't have permission to teleport another player to spawn. (multiverse.core.spawn.other)");
                 return;
             }
-            Player target = this.plugin.getServer().getPlayer(args.get(0));
+            Player target = this.plugin.getServer().getPlayerExact(args.get(0));
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");
                 spawnAccurately(target);

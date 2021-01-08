@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.logging.Level;
 
+import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerChatEvent;
 
@@ -21,7 +22,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 public class MVPlayerChatListener extends MVChatListener {
     public MVPlayerChatListener(MultiverseCore plugin, MVPlayerListener playerListener) {
         super(plugin, playerListener);
-        plugin.log(Level.FINE, "Registered PlayerChatEvent listener.");
+        Logging.fine("Registered PlayerChatEvent listener.");
     }
 
     /**

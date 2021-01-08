@@ -37,7 +37,7 @@ public class CheckCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Player p = this.plugin.getServer().getPlayer(args.get(0));
+        Player p = this.plugin.getServer().getPlayerExact(args.get(0));
         if (p == null) {
             sender.sendMessage("Could not find player " + ChatColor.GREEN + args.get(0));
             sender.sendMessage("Are they online?");

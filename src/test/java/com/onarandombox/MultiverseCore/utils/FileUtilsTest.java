@@ -81,7 +81,7 @@ public class FileUtilsTest {
         assertFalse(Files.isDirectory(targetChildDir));
         assertFalse(Files.isRegularFile(targetChildDirFile));
 
-        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), Logging.getLogger()));
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile()));
 
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
@@ -107,7 +107,7 @@ public class FileUtilsTest {
         assertFalse(Files.isRegularFile(targetChildDirFile));
         assertFalse(Files.isRegularFile(targetChildIgnoreFile));
 
-        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), excludeFiles, Logging.getLogger()));
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), excludeFiles));
 
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
@@ -129,7 +129,7 @@ public class FileUtilsTest {
         assertFalse(Files.isDirectory(targetChildDir));
         assertFalse(Files.isRegularFile(targetChildDirFile));
 
-        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), Logging.getLogger()));
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile()));
 
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
@@ -145,6 +145,6 @@ public class FileUtilsTest {
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
 
-        assertFalse(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), Logging.getLogger()));
+        assertFalse(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile()));
     }
 }

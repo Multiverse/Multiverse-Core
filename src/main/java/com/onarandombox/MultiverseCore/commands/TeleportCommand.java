@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
@@ -58,7 +59,7 @@ public class TeleportCommand extends MultiverseCommand {
         String destinationName;
 
         if (args.size() == 2) {
-            teleportee = this.plugin.getServer().getPlayer(args.get(0));
+            teleportee = this.plugin.getServer().getPlayerExact(args.get(0));
             if (teleportee == null) {
                 this.messaging.sendMessage(sender, String.format("Sorry, I couldn't find player: %s%s",
                         ChatColor.GOLD, args.get(0)), false);
@@ -94,7 +95,7 @@ public class TeleportCommand extends MultiverseCommand {
         MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter, true);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
         if (teleportEvent.isCancelled()) {
-            this.plugin.log(Level.FINE, "Someone else cancelled the MVTeleport Event!!!");
+            Logging.fine("Someone else cancelled the MVTeleport Event!!!");
             return;
         }
 
@@ -162,9 +163,9 @@ public class TeleportCommand extends MultiverseCommand {
                 ((CustomTeleporterDestination)d).getTeleporter() : this.playerTeleporter;
         TeleportResult result = teleportObject.teleport(teleporter, teleportee, d);
         if (result == TeleportResult.FAIL_UNSAFE) {
-            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName()
+            Logging.fine("Could not teleport " + teleportee.getName()
                     + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
-            this.plugin.log(Level.FINE, "Queueing Command");
+            Logging.fine("Queueing Command");
             Class<?>[] paramTypes = { CommandSender.class, Player.class, Location.class };
             List<Object> items = new ArrayList<Object>();
             items.add(teleporter);

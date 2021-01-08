@@ -214,7 +214,7 @@ public class MVWorld implements MultiverseWorld {
         public Double validateChange(String property, Double newValue, Double oldValue,
                 MVWorld object) throws ChangeDeniedException {
             if (newValue <= 0) {
-                plugin.log(Level.FINE, "Someone tried to set a scale <= 0, aborting!");
+                Logging.fine("Someone tried to set a scale <= 0, aborting!");
                 throw new ChangeDeniedException();
             }
             return super.validateChange(property, newValue, oldValue, object);
@@ -297,7 +297,7 @@ public class MVWorld implements MultiverseWorld {
         public GameMode validateChange(String property, GameMode newValue, GameMode oldValue,
                 MVWorld object) throws ChangeDeniedException {
             for (Player p : plugin.getServer().getWorld(getName()).getPlayers()) {
-                plugin.log(Level.FINER, String.format("Setting %s's GameMode to %s",
+                Logging.finer(String.format("Setting %s's GameMode to %s",
                         p.getName(), newValue.toString()));
                 plugin.getPlayerListener().handleGameModeAndFlight(p, MVWorld.this);
             }
@@ -319,16 +319,16 @@ public class MVWorld implements MultiverseWorld {
                 // verify that the location is safe
                 if (!bs.playerCanSpawnHereSafely(newValue)) {
                     // it's not ==> find a better one!
-                    plugin.log(Level.WARNING, String.format("Somebody tried to set the spawn location for '%s' to an unsafe value! Adjusting...", getAlias()));
-                    plugin.log(Level.WARNING, "Old Location: " + plugin.getLocationManipulation().strCoordsRaw(oldValue));
-                    plugin.log(Level.WARNING, "New (unsafe) Location: " + plugin.getLocationManipulation().strCoordsRaw(newValue));
+                    Logging.warning(String.format("Somebody tried to set the spawn location for '%s' to an unsafe value! Adjusting...", getAlias()));
+                    Logging.warning("Old Location: " + plugin.getLocationManipulation().strCoordsRaw(oldValue));
+                    Logging.warning("New (unsafe) Location: " + plugin.getLocationManipulation().strCoordsRaw(newValue));
                     SafeTTeleporter teleporter = plugin.getSafeTTeleporter();
                     newValue = teleporter.getSafeLocation(newValue, SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
                     if (newValue == null) {
-                        plugin.log(Level.WARNING, "Couldn't fix the location. I have to abort the spawn location-change :/");
+                        Logging.warning("Couldn't fix the location. I have to abort the spawn location-change :/");
                         throw new ChangeDeniedException();
                     }
-                    plugin.log(Level.WARNING, "New (safe) Location: " + plugin.getLocationManipulation().strCoordsRaw(newValue));
+                    Logging.warning("New (safe) Location: " + plugin.getLocationManipulation().strCoordsRaw(newValue));
                 }
             }
             return super.validateChange(property, newValue, oldValue, object);
@@ -411,7 +411,7 @@ public class MVWorld implements MultiverseWorld {
             // Add limit bypass to it's parent
             this.limitbypassperm.addParent("mv.bypass.playerlimit.*", true);
         } catch (IllegalArgumentException e) {
-            this.plugin.log(Level.FINER, "Permissions nodes were already added for " + this.name);
+            Logging.finer("Permissions nodes were already added for " + this.name);
         }
     }
 
@@ -422,16 +422,16 @@ public class MVWorld implements MultiverseWorld {
         // Verify that location was safe
         if (!bs.playerCanSpawnHereSafely(location)) {
             if (!this.getAdjustSpawn()) {
-                this.plugin.log(Level.FINE, "Spawn location from world.dat file was unsafe!!");
-                this.plugin.log(Level.FINE, "NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
-                this.plugin.log(Level.FINE, "To turn on spawn adjustment for this world simply type:");
-                this.plugin.log(Level.FINE, "/mvm set adjustspawn true " + this.getAlias());
+                Logging.fine("Spawn location from world.dat file was unsafe!!");
+                Logging.fine("NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
+                Logging.fine("To turn on spawn adjustment for this world simply type:");
+                Logging.fine("/mvm set adjustspawn true " + this.getAlias());
                 return location;
             }
             // If it's not, find a better one.
             SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
-            this.plugin.log(Level.WARNING, "Spawn location from world.dat file was unsafe. Adjusting...");
-            this.plugin.log(Level.WARNING, "Original Location: " + plugin.getLocationManipulation().strCoordsRaw(location));
+            Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
+            Logging.warning("Original Location: " + plugin.getLocationManipulation().strCoordsRaw(location));
             Location newSpawn = teleporter.getSafeLocation(location,
                     SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
             // I think we could also do this, as I think this is what Notch does.
@@ -450,7 +450,7 @@ public class MVWorld implements MultiverseWorld {
                             this.getName(), plugin.getLocationManipulation().locationToString(newerSpawn));
                     return newerSpawn;
                 } else {
-                    this.plugin.log(Level.SEVERE, "Safe spawn NOT found!!!");
+                    Logging.severe("Safe spawn NOT found!!!");
                 }
             }
         }
