@@ -51,6 +51,7 @@ import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -102,6 +103,21 @@ public class WorldManager implements MVWorldManager {
         } else {
             Logging.warning("Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getAvailableWorldGenerators() {
+        return Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
+                .filter(Plugin::isEnabled)
+                .filter(plugin -> this.plugin.getUnsafeCallWrapper().wrap(
+                        () -> plugin.getDefaultWorldGenerator("world", ""),
+                        plugin.getName(),
+                        "Get generator"
+                ) != null)
+                .map(plugin -> plugin.getDescription().getName())
+                .collect(Collectors.toList());
     }
 
     /**
