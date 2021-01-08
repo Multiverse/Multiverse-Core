@@ -101,9 +101,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
         switch (flag.getValueRequirement()) {
             case REQUIRED:
-                return flag.suggestValue();
+                return flag.suggestValue(this.plugin);
             case OPTIONAL:
-                Collection<String> suggestions = flag.suggestValue();
+                Collection<String> suggestions = flag.suggestValue(this.plugin);
                 flagsKeys.removeAll(args);
                 flagsKeys.addAll(suggestions);
                 return flagsKeys;

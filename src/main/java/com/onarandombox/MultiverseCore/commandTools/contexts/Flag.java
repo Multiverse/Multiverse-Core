@@ -6,11 +6,9 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
 import com.onarandombox.MultiverseCore.enums.FlagValue;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class Flag<T> {
 
@@ -28,13 +25,9 @@ public abstract class Flag<T> {
 
     public static final Flag<String> GENERATOR = new Flag<String>("-g", String.class) {
         @Override
-        public @NotNull Collection<String> suggestValue() {
+        public @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin) {
             //TODO ACF: Put in WorldManager.
-            return Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
-                    .filter(Plugin::isEnabled)
-                    .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
-                    .map(plugin -> plugin.getDescription().getName())
-                    .collect(Collectors.toList());
+            return plugin.getMVWorldManager().getAvailableWorldGenerators();
         }
 
         @Override
@@ -45,7 +38,7 @@ public abstract class Flag<T> {
             if (genString == null) {
                 sender.sendMessage(String.format("%sYou need to specify a generator for flag '%s'.",
                         ChatColor.RED, this.getKey()));
-                GeneratorCommand.showAvailableGenerator(sender);
+                GeneratorCommand.showAvailableGenerator(plugin, sender);
                 throw new InvalidCommandArgument(false);
             }
 
@@ -55,7 +48,7 @@ public abstract class Flag<T> {
             try {
                 if (plugin.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
                     sender.sendMessage(String.format("%sInvalid generator string '%s'.", ChatColor.RED, genString));
-                    GeneratorCommand.showAvailableGenerator(sender);
+                    GeneratorCommand.showAvailableGenerator(plugin, sender);
                     throw new InvalidCommandArgument();
                 }
             }
@@ -85,7 +78,7 @@ public abstract class Flag<T> {
         }};
 
         @Override
-        public @NotNull Collection<String> suggestValue() {
+        public @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin) {
             return typeAlias.keySet();
         }
 
@@ -120,7 +113,7 @@ public abstract class Flag<T> {
 
     public static final Flag<String> SEED = new Flag<String>("-s", String.class, FlagValue.OPTIONAL) {
         @Override
-        public @NotNull Collection<String> suggestValue() {
+        public @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin) {
             return Collections.emptyList();
         }
 
@@ -140,7 +133,7 @@ public abstract class Flag<T> {
 
     public static final Flag<Boolean> GENERATE_STRUCTURES = new Flag<Boolean>("-a", Boolean.class) {
         @Override
-        public @NotNull Collection<String> suggestValue() {
+        public @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin) {
             return Arrays.asList("true", "false");
         }
 
@@ -166,7 +159,7 @@ public abstract class Flag<T> {
 
     public static final Flag<Boolean> SPAWN_ADJUST = new Flag<Boolean>("-n", Boolean.class, FlagValue.NONE) {
         @Override
-        public @NotNull Collection<String> suggestValue() {
+        public @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin) {
             return Collections.emptyList();
         }
 
@@ -221,7 +214,7 @@ public abstract class Flag<T> {
         flagMap.put(this.key, this);
     }
 
-    public abstract @NotNull Collection<String> suggestValue();
+    public abstract @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin);
 
     public abstract T parseValue(@Nullable String value,
                                  @NotNull MultiverseCore plugin,

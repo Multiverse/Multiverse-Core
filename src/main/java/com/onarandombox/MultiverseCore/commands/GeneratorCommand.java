@@ -11,21 +11,15 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandTools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandTools.display.inline.ListDisplay;
-import net.milkbowl.vault.chat.Chat;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CommandAlias("mv")
 public class GeneratorCommand extends MultiverseCommand {
@@ -38,24 +32,22 @@ public class GeneratorCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.generator")
     @Description("Shows a list of Loaded Generator Plugins.")
     public void onGeneratorCommand(@NotNull CommandSender sender) {
-        showAvailableGenerator(sender);
+        showAvailableGenerator(this.plugin, sender);
     }
 
-    public static void showAvailableGenerator(@NotNull CommandSender sender) {
+    public static void showAvailableGenerator(@NotNull MultiverseCore plugin,
+                                              @NotNull CommandSender sender) {
+
         new ListDisplay().withSender(sender)
                 .withHeader(String.format("%s--- Available Generator Plugins ---", ChatColor.GOLD))
-                .withCreator(getGeneratorContent())
+                .withCreator(getGeneratorContent(plugin))
                 .withColors(new ColorAlternator(ChatColor.AQUA, ChatColor.WHITE))
                 .withEmptyMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED))
                 .build()
                 .run();
     }
 
-    private static ContentCreator<List<String>> getGeneratorContent() {
-        return () -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
-                .filter(Plugin::isEnabled)
-                .filter(plugin -> plugin.getDefaultWorldGenerator("world", "") != null)
-                .map(plugin -> plugin.getDescription().getName())
-                .collect(Collectors.toList());
+    private static ContentCreator<List<String>> getGeneratorContent(@NotNull MultiverseCore plugin) {
+        return () -> plugin.getMVWorldManager().getAvailableWorldGenerators();
     }
 }
