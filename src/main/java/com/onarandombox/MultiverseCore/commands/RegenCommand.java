@@ -17,8 +17,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.contexts.Flag;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ import java.util.Set;
 public class RegenCommand extends MultiverseCommand {
 
     private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(1) {{
-        add(Flag.SEED);
+        add(MVFlags.SEED);
     }};
 
     public RegenCommand(MultiverseCore plugin) {
@@ -72,9 +73,9 @@ public class RegenCommand extends MultiverseCommand {
             //TODO: API should allow regen of unloaded worlds.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
                     world.getName(),
-                    flags.isByInput(Flag.SEED),
-                    flags.hasNullValue(Flag.SEED),
-                    flags.getValue(Flag.SEED))
+                    flags.isByInput(MVFlags.SEED),
+                    flags.getValue(MVFlags.SEED).equalsIgnoreCase("random"),
+                    flags.getValue(MVFlags.SEED))
             )
                     ? String.format("%sWorld Regenerated!", ChatColor.GREEN)
                     : String.format("%sWorld could not be regenerated!", ChatColor.RED));

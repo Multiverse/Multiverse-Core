@@ -17,8 +17,9 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.contexts.Flag;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -32,7 +33,7 @@ import java.util.Set;
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCommand {
 
-    private static final Set<Flag<?>> FLAG_SET = new HashSet<>(Flag.all());
+    private static final Set<Flag<?>> FLAG_SET = new HashSet<>(MVFlags.all());
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -64,11 +65,11 @@ public class CreateCommand extends MultiverseCommand {
                 worldName,
                 environment,
                 // TODO API: Should Allow WorldFlags object to be passed directly
-                flags.getValue(Flag.SEED),
-                flags.getValue(Flag.WORLD_TYPE),
-                flags.getValue(Flag.GENERATE_STRUCTURES),
-                flags.getValue(Flag.GENERATOR),
-                flags.getValue(Flag.SPAWN_ADJUST))
+                flags.getValue(MVFlags.SEED),
+                flags.getValue(MVFlags.WORLD_TYPE),
+                flags.getValue(MVFlags.GENERATE_STRUCTURES),
+                flags.getValue(MVFlags.GENERATOR),
+                flags.getValue(MVFlags.SPAWN_ADJUST))
         )
                 ? String.format("%sComplete!", ChatColor.GREEN)
                 : String.format("%sFailed! See console for errors.", ChatColor.RED));

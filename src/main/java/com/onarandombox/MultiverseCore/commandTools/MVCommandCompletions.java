@@ -13,14 +13,14 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
-import com.dumptruckman.minecraft.util.Logging;
-import com.google.common.collect.Lists;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.contexts.Flag;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
+import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.NoValueFlag;
+import com.onarandombox.MultiverseCore.commandTools.flag.OptionalFlag;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
-import com.onarandombox.MultiverseCore.enums.FlagValue;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -29,7 +29,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Console;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -91,28 +90,29 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return flagsKeys;
         }
 
-        Flag<?> flag = Flag.getByKey(mostRecentArg);
+        Flag<?> flag = MVFlags.getByKey(mostRecentArg);
         if (flag == null) {
             flagsKeys.removeAll(args);
             return flagsKeys;
         }
+
+        // Its a flag available, but not what we are looking.
         if (!flagsKeys.contains(mostRecentArg)) {
             return Collections.emptyList();
         }
-        switch (flag.getValueRequirement()) {
-            case REQUIRED:
-                return flag.suggestValue(this.plugin);
-            case OPTIONAL:
-                Collection<String> suggestions = flag.suggestValue(this.plugin);
-                flagsKeys.removeAll(args);
-                flagsKeys.addAll(suggestions);
-                return flagsKeys;
-            case NONE:
-                flagsKeys.removeAll(args);
-                return flagsKeys;
-        }
 
-        return Collections.emptyList();
+        // Suggest based on flag type.
+        if (flag instanceof NoValueFlag) {
+            flagsKeys.removeAll(args);
+            return flagsKeys;
+        }
+        if (flag instanceof OptionalFlag) {
+            Collection<String> suggestions = flag.suggestValue(this.plugin);
+            flagsKeys.removeAll(args);
+            flagsKeys.addAll(suggestions);
+            return flagsKeys;
+        }
+        return flag.suggestValue(this.plugin);
     }
 
     @NotNull
