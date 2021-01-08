@@ -30,7 +30,7 @@ public class ShowKeyValue extends ShowInline<KeyValueDisplay, Map<String, Object
                 isFirst = false;
             }
             else {
-                contentBuilder.append(", ");
+                contentBuilder.append(this.display.getSeparator());
             }
             contentBuilder.append(this.display.getColours().getThis())
                     .append(entry.getKey())

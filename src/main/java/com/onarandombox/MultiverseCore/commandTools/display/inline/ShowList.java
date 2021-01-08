@@ -24,7 +24,7 @@ public class ShowList extends ShowInline<ListDisplay, List<String>> {
                 isFirst = false;
             }
             else {
-                contentBuilder.append(", ");
+                contentBuilder.append(this.display.getSeparator());
             }
             contentBuilder.append(this.display.getColours().get())
                     .append(element);

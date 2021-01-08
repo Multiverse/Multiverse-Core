@@ -6,6 +6,9 @@ public abstract class InlineDisplay<C extends InlineDisplay<?, T>, T> extends Co
 
     protected String prefix = "";
     protected String suffix = "";
+    protected String separator = DEFAULT_SEPARATOR;
+
+    public static final String DEFAULT_SEPARATOR = ", ";
 
     public C withPrefix(String prefix) {
         this.prefix = prefix;
@@ -17,11 +20,20 @@ public abstract class InlineDisplay<C extends InlineDisplay<?, T>, T> extends Co
         return (C) this;
     }
 
+    public C withSeparator(String separator) {
+        this.separator = separator;
+        return (C) this;
+    }
+
     public String getPrefix() {
         return prefix;
     }
 
     public String getSuffix() {
         return suffix;
+    }
+
+    public String getSeparator() {
+        return separator;
     }
 }
