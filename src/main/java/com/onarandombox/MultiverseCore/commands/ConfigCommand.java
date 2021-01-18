@@ -61,6 +61,10 @@ public class ConfigCommand extends MultiverseCommand {
             // Don't forget to set the world!
             this.plugin.getMVWorldManager().setFirstSpawnWorld(args.get(1));
         }
+        if (args.get(0).equalsIgnoreCase("joinlocation")) {
+            // Don't forget to set the location!
+            this.plugin.getMVWorldManager().setJoinLocation(args.get(1));
+        }
 
         if (this.plugin.saveMVConfigs()) {
             sender.sendMessage(ChatColor.GREEN + "SUCCESS!" + ChatColor.WHITE + " Values were updated successfully!");

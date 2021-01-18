@@ -12,10 +12,12 @@ import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.WorldProperties;
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,7 +49,6 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -62,6 +63,7 @@ public class WorldManager implements MVWorldManager {
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
     private String firstSpawn;
+    private MVDestination joinLocation;
 
     public WorldManager(MultiverseCore core) {
         this.plugin = core;
@@ -366,6 +368,36 @@ public class WorldManager implements MVWorldManager {
             }
         }
         return world;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setJoinLocation(String destination) {
+        // Probably just mean they dont want join location, so we ignore.
+        if (destination == null || destination.length() == 0) {
+            this.joinLocation = null;
+            return;
+        }
+
+        this.joinLocation = this.plugin.getDestFactory().getDestination(destination);
+        if (this.joinLocation == null || this.joinLocation instanceof InvalidDestination) {
+            Logging.warning("Unable to set join location. Invalid join location: '%s'!", plugin.getMVConfig().getJoinLocation());
+            Logging.warning("See available MV destinations here: https://github.com/Multiverse/Multiverse-Core/wiki/Destinations");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Location getJoinLocation(Player player) {
+        if (this.joinLocation == null || this.joinLocation instanceof InvalidDestination) {
+            Logging.warning("Unable get join location for %s as the join location set is invalid!", player.getName());
+            return null;
+        }
+        return this.joinLocation.getLocation(player);
     }
 
     /**

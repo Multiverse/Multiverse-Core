@@ -66,6 +66,10 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile String firstspawnworld;
     @Property
+    private volatile boolean joinlocationoverride;
+    @Property
+    private volatile String joinlocation;
+    @Property
     private volatile int teleportcooldown;
     @Property
     private volatile boolean defaultportalsearch;
@@ -108,6 +112,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         portalsearchradius = 128;
         autopurge = true;
         idonotwanttodonate = false;
+        joinlocationoverride = false;
+        joinlocation = "";
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -362,5 +368,25 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setShowDonateMessage(boolean showDonateMessage) {
         this.idonotwanttodonate = !showDonateMessage;
+    }
+
+    @Override
+    public boolean getJoinLocationOverride() {
+        return this.joinlocationoverride;
+    }
+
+    @Override
+    public void setJoinLocationOverride(boolean joinLocationOverride) {
+        this.joinlocationoverride = joinLocationOverride;
+    }
+
+    @Override
+    public String getJoinLocation() {
+        return this.joinlocation;
+    }
+
+    @Override
+    public void setJoinLocation(String joinLocation) {
+        this.joinlocation = joinLocation;
     }
 }

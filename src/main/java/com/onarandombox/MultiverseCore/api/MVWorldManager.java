@@ -9,10 +9,12 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
@@ -288,6 +290,21 @@ public interface MVWorldManager {
      * @return The {@link MultiverseWorld} new players should spawn in.
      */
     MultiverseWorld getFirstSpawnWorld();
+
+    /**
+     * Sets location where the player should spawn on join.
+     *
+     * @param destination The target destination based on {@link com.onarandombox.MultiverseCore.destination.DestinationFactory}
+     */
+    void setJoinLocation(String destination);
+
+    /**
+     * Gets preset location where the player should spawn on join.
+     *
+     * @param player The target {@link Player} for the {@link MVDestination}.
+     * @return The preset {@link Location} players should spawn in pm join.
+     */
+    Location getJoinLocation(Player player);
 
     /**
      * Regenerates a world.
