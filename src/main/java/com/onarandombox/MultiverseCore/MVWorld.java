@@ -338,6 +338,7 @@ public class MVWorld implements MultiverseWorld {
     private Permission permission;
     private Permission exempt;
     private Permission ignoreperm;
+    private Permission ignoreonspectator;
     private Permission limitbypassperm;
 
     /**
@@ -393,6 +394,9 @@ public class MVWorld implements MultiverseWorld {
         this.ignoreperm = new Permission("mv.bypass.gamemode." + this.getName(),
                 "Allows players with this permission to ignore gamemode changes.", PermissionDefault.FALSE);
 
+        this.ignoreonspectator = new Permission("mv.bypass.onspectator." + this.getName(),
+                "Allows players with this permission to ignore gamemode changes when being in spectator gamemode.", PermissionDefault.FALSE);
+
         this.exempt = new Permission("multiverse.exempt." + this.getName(),
                 "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
 
@@ -402,12 +406,15 @@ public class MVWorld implements MultiverseWorld {
             this.plugin.getServer().getPluginManager().addPermission(this.permission);
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
             this.plugin.getServer().getPluginManager().addPermission(this.ignoreperm);
+            this.plugin.getServer().getPluginManager().addPermission(this.ignoreonspectator);
             this.plugin.getServer().getPluginManager().addPermission(this.limitbypassperm);
             // Add the permission and exempt to parents.
             this.addToUpperLists(this.permission);
 
             // Add ignore to it's parent:
             this.ignoreperm.addParent("mv.bypass.gamemode.*", true);
+            this.ignoreonspectator.addParent("mv.bypass.onspectator.*", true);
+
             // Add limit bypass to it's parent
             this.limitbypassperm.addParent("mv.bypass.playerlimit.*", true);
         } catch (IllegalArgumentException e) {

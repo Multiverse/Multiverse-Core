@@ -49,6 +49,17 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
+     * Check if a Player can ignore GameMode restrictions while being in survival mode
+     *
+     * @param p The {@link Player} to check.
+     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @return True if they should bypass restrictions.
+     */
+    public boolean cankeepGameModeSpectator(Player p, MultiverseWorld w) {
+        return p.hasPermission("mv.bypass.onspectator." + w.getName());
+    }
+
+    /**
      * Check if a Player can teleport to the Destination world from there current world.
      *
      * @param p The {@link Player} to check.

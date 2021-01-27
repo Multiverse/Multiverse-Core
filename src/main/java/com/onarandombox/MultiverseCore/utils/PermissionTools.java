@@ -10,6 +10,8 @@ package com.onarandombox.MultiverseCore.utils;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -293,7 +295,11 @@ public class PermissionTools {
      */
     public boolean playerCanIgnoreGameModeRestriction(MultiverseWorld toWorld, Player teleportee) {
         if (toWorld != null) {
-            return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
+	    if (teleportee.getGameMode() == GameMode.SPECTATOR) {
+		return this.plugin.getMVPerms().cankeepGameModeSpectator(teleportee, toWorld);
+	    } else {
+                return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
+	    }
         } else {
             // TODO: Determine if this value is false because a world didn't exist
             // or if it was because a world wasn't imported.
