@@ -49,7 +49,7 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
-     * Check if a Player can ignore GameMode restrictions while being in survival mode
+     * Check if a Player can ignore GameMode restrictions while being in spectator mode
      *
      * @param p The {@link Player} to check.
      * @param w The {@link MultiverseWorld} the player wants to teleport to.
