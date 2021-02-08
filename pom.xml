@@ -335,7 +335,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>16.0.2</version>
+            <version>20.1.0</version>
         </dependency>
         <dependency>
             <groupId>de.themoep.idconverter</groupId>
