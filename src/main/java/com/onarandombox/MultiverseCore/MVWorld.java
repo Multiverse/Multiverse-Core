@@ -20,28 +20,20 @@ import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.VirtualProperty;
-import org.bukkit.ChatColor;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.minidev.json.JSONObject;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
-import org.bukkit.WorldType;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * The implementation of a Multiverse handled world.

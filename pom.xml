@@ -23,10 +23,6 @@
             <url>http://repo.onarandombox.com/content/groups/public</url>
         </repository>
         <repository>
-            <id>spigot</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
@@ -279,10 +275,10 @@
 
     <dependencies>
         <dependency>
-           <groupId>org.bukkit</groupId>
-           <artifactId>bukkit</artifactId>
-           <version>1.13.2-R0.1-SNAPSHOT</version>
-           <scope>provided</scope>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <!-- SerializationConfig Dependency -->
         <dependency>
@@ -310,6 +306,12 @@
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>
             <version>11</version>
+        </dependency>
+        <!-- End of CommandHandler Dependency -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
