@@ -5,12 +5,14 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 
 import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
  * Multiverse's {@link org.bukkit.event.Listener} for players.
  */
-public abstract class MVChatListener implements Listener {
+public class MVChatListener implements Listener {
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
@@ -22,10 +24,11 @@ public abstract class MVChatListener implements Listener {
     }
 
     /**
-     * This handles a {@link ChatEvent}.
-     * @param event The {@link ChatEvent}.
+     * This method is called when an a player sends a chat message.
+     * @param event The Event that was fired.
      */
-    public void playerChat(ChatEvent event) {
+    @EventHandler
+    public void playerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
         }

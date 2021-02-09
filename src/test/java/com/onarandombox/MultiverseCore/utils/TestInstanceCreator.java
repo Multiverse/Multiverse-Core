@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.utils;
 import buscript.Buscript;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
@@ -243,6 +244,12 @@ public class TestInstanceCreator {
             Field weatherlistenerfield = MultiverseCore.class.getDeclaredField("weatherListener");
             weatherlistenerfield.setAccessible(true);
             weatherlistenerfield.set(core, wl);
+
+            // Set weatherListener
+            MVChatListener cl = PowerMockito.spy(new MVChatListener(core, pl));
+            Field chatlistenerfield = MultiverseCore.class.getDeclaredField("chatListener");
+            chatlistenerfield.setAccessible(true);
+            chatlistenerfield.set(core, cl);
 
             // Init our command sender
             final Logger commandSenderLogger = Logger.getLogger("CommandSender");

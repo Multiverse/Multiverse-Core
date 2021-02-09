@@ -77,11 +77,9 @@ import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
-import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVMapListener;
-import com.onarandombox.MultiverseCore.listeners.MVPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
@@ -220,7 +218,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private final MVWeatherListener weatherListener = new MVWeatherListener(this);
     private final MVPortalListener portalListener = new MVPortalListener(this);
     private final MVWorldListener worldListener = new MVWorldListener(this);
-    private MVChatListener chatListener;
+    private MVChatListener chatListener = new MVChatListener(this, this.playerListener);
 
     // HashMap to contain information relating to the Players.
     private HashMap<String, MVPlayerSession> playerSessions;
@@ -318,17 +316,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             // A test that had no worlds loaded was being run. This should never happen in production
         }
         this.saveMVConfig();
-        // Register async or sync player chat according to config
-        try {
-            Class.forName("org.bukkit.event.player.AsyncPlayerChatEvent");
-        } catch (ClassNotFoundException e) {
-            getMVConfig().setUseAsyncChat(false);
-        }
-        if (getMVConfig().getUseAsyncChat()) {
-            this.chatListener = new MVAsyncPlayerChatListener(this, this.playerListener);
-        } else {
-            this.chatListener = new MVPlayerChatListener(this, this.playerListener);
-        }
         getServer().getPluginManager().registerEvents(this.chatListener, this);
 
         this.initializeBuscript();
@@ -380,6 +367,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this.playerListener, this);
+        pm.registerEvents(this.chatListener, this);
         pm.registerEvents(this.entityListener, this);
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
