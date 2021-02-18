@@ -152,7 +152,9 @@ public class WorldManager implements MVWorldManager {
          */
         private boolean validCloneParameters() {
             String originalOldName = oldName;
-            oldName = isWorldFromConfig(oldName) ? oldName : getWorldByAliasFromConfig(oldName);
+           if (!isWorldFromConfig(oldName)) {
+               oldName = getWorldByAliasFromConfig(oldName);
+           }
 
             if (oldName == null) {
                 Logging.warning("Old world '%s' does not exist", originalOldName);
