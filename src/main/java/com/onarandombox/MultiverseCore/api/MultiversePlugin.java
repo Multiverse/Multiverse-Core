@@ -116,33 +116,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
     }
 
     @Override
-    public void log(Level level, String msg) {
-        int debugLevel = this.getCore().getMVConfig().getGlobalDebug();
-        if ((level == Level.FINE && debugLevel >= 1) || (level == Level.FINER && debugLevel >= 2)
-                || (level == Level.FINEST && debugLevel >= 3)) {
-            debugLog.log(level, msg);
-        } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            String message = new StringBuilder(getLogTag()).append(msg).toString();
-            this.getServer().getLogger().log(level, message);
-            debugLog.log(level, message);
-        }
-    }
-
-    private String getLogTag() {
-        if (logTag == null)
-            logTag = String.format("[%s]", this.getDescription().getName());
-        return logTag;
-    }
-
-    /**
-     * Sets the debug log-tag.
-     * @param tag The new tag.
-     */
-    protected final void setDebugLogTag(String tag) {
-        this.debugLog.setTag(tag);
-    }
-
-    @Override
     public final String dumpVersionInfo(String buffer) {
         throw new UnsupportedOperationException("This is gone.");
     }

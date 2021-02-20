@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 /**
  * This interface is implemented by every official Multiverse-plugin.
  */
-public interface MVPlugin extends LoggablePlugin {
+public interface MVPlugin {
     /**
      * Adds This plugin's version information to the buffer and returns the new string.
      *
