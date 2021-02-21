@@ -1186,17 +1186,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         return config;
     }
 
-    /**
-     * This method is currently used by other plugins.
-     * It will be removed in 2.4
-     * @return The Multiverse config.
-     * @deprecated This is deprecated.
-     */
-    @Deprecated
-    public static MultiverseCoreConfiguration getStaticConfig() {
-        return MultiverseCoreConfiguration.getInstance();
-    }
-
     @Override
     public Buscript getScriptAPI() {
         return buscript;
