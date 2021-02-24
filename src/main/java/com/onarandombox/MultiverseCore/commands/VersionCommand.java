@@ -64,6 +64,7 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core]   teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + '\n'
                 + "[Multiverse-Core]   firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + '\n'
                 + "[Multiverse-Core]   displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + '\n'
+                + "[Multiverse-Core]   enablebuscript: " + plugin.getMVConfig().getEnableBuscript() + '\n'
                 + "[Multiverse-Core]   globaldebug: " + plugin.getMVConfig().getGlobalDebug() + '\n'
                 + "[Multiverse-Core]   silentstart: " + plugin.getMVConfig().getSilentStart() + '\n'
                 + "[Multiverse-Core]   messagecooldown: " + plugin.getMessaging().getCooldown() + '\n'
