@@ -73,6 +73,7 @@ import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.ExactDestination;
+import com.onarandombox.MultiverseCore.destination.LastLocationDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
@@ -91,6 +92,7 @@ import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.MVPlayerLocation;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
@@ -254,6 +256,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
+        // Set up MVPlayerLocation
+        MVPlayerLocation.init(this);
     }
 
 
@@ -371,6 +375,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.destFactory.registerDestinationType(WorldDestination.class, "");
         this.destFactory.registerDestinationType(WorldDestination.class, "w");
         this.destFactory.registerDestinationType(ExactDestination.class, "e");
+        this.destFactory.registerDestinationType(LastLocationDestination.class, LastLocationDestination.getID());
         this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
         this.destFactory.registerDestinationType(CannonDestination.class, "ca");
         this.destFactory.registerDestinationType(BedDestination.class, "b");

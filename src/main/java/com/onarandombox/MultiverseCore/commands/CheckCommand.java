@@ -43,7 +43,7 @@ public class CheckCommand extends MultiverseCommand {
             sender.sendMessage("Are they online?");
             return;
         }
-        MVDestination dest = this.plugin.getDestFactory().getDestination(args.get(1));
+        MVDestination dest = this.plugin.getDestFactory().getDestination(args.get(1), sender, p);
         if (dest instanceof InvalidDestination) {
             sender.sendMessage(String.format("You asked if '%s' could go to %s%s%s,",
                     args.get(0), ChatColor.GREEN, args.get(0), ChatColor.WHITE));

@@ -12,6 +12,8 @@ import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.pneumaticraft.commandhandler.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -45,9 +47,47 @@ public class DestinationFactory {
      * @return A non-null MVDestination
      */
     public MVDestination getDestination(String destination) {
+        return this.getDestination(destination, null, null);
+    }
+
+    /**
+     * Gets a new destination from a string.
+     * Returns a new InvalidDestination if the string could not be parsed.
+     *
+     * @param destination The destination in string format.
+     * @param sender The instigator.
+     * @param victim The player who is being affected.
+     *
+     * @return A non-null MVDestination
+     */
+    public MVDestination getDestination(String destination, CommandSender sender, Player victim) {
         String idenChar = "";
         if (destination.split(":").length > 1) {
             idenChar = destination.split(":")[0];
+        }
+
+        if (sender != null && victim != null && idenChar.equals("")) {
+            LastLocationDestination mydest = new LastLocationDestination();
+
+            if (!(sender instanceof Player)) {
+                // console is omnipotent
+                mydest.setDestination(this.plugin, destination);
+                return (MVDestination) mydest;
+            }
+
+            if (sender.equals(victim)) {
+                if (this.plugin.getMVPerms().hasPermission(sender, "multiverse.teleport.self."
+                        + mydest.getIdentifier(), true)) {
+                    mydest.setDestination(this.plugin, destination);
+                    return (MVDestination) mydest;
+                }
+            } else {
+                if (this.plugin.getMVPerms().hasPermission(sender, "multiverse.teleport.other."
+                        + mydest.getIdentifier(), true)) {
+                    mydest.setDestination(this.plugin, destination);
+                    return (MVDestination) mydest;
+                }
+            }
         }
 
         if (this.destList.containsKey(idenChar)) {
