@@ -88,6 +88,7 @@ import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
@@ -254,6 +255,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
+        // Setup our CompatibilityLayer
+        CompatibilityLayer.init();
     }
 
 
