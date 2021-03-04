@@ -12,14 +12,13 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -34,8 +33,8 @@ import java.util.Set;
 public class ImportCommand extends MultiverseCommand {
 
     private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(2) {{
-        add(MVFlags.GENERATOR);
-        add(MVFlags.SPAWN_ADJUST);
+        add(Flags.GENERATOR);
+        add(Flags.SPAWN_ADJUST);
     }};
 
     public ImportCommand(MultiverseCore plugin) {
@@ -51,7 +50,7 @@ public class ImportCommand extends MultiverseCommand {
 
                                 @Syntax("<name>")
                                 @Description("Folder name of the world.")
-                                @NotNull @Flags("trim") @Conditions("importableWorldName") String worldName,
+                                @NotNull @co.aikar.commands.annotation.Flags("trim") @Conditions("importableWorldName") String worldName,
 
                                 @Syntax("<env>")
                                 @Description("The world's environment. See: /mv env")
@@ -69,8 +68,8 @@ public class ImportCommand extends MultiverseCommand {
                 null,
                 null,
                 null,
-                flags.getValue(MVFlags.GENERATOR),
-                flags.getValue(MVFlags.SPAWN_ADJUST))
+                flags.getValue(Flags.GENERATOR),
+                flags.getValue(Flags.SPAWN_ADJUST))
         )
                 ? String.format("%sComplete!", ChatColor.GREEN)
                 : String.format("%sFailed! See console for more details.", ChatColor.RED));

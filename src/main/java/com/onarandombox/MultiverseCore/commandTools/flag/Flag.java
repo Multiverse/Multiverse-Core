@@ -19,7 +19,7 @@ public abstract class Flag<T> {
 
         this.key = key;
         this.type = type;
-        MVFlags.flagMap.put(this.key, this);
+        Flags.flagMap.put(this.key, this);
     }
 
     public abstract @NotNull Collection<String> suggestValue(@NotNull MultiverseCore plugin);

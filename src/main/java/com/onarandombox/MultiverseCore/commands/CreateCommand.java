@@ -12,14 +12,16 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagGroup;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagResult;
+import com.onarandombox.MultiverseCore.commandTools.flags.MVFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -27,13 +29,16 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCommand {
 
-    private static final Set<Flag<?>> FLAG_SET = new HashSet<>(MVFlags.all());
+    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
+            MVFlags.WORLD_TYPE,
+            MVFlags.SEED,
+            MVFlags.GENERATOR,
+            MVFlags.GENERATE_STRUCTURES,
+            MVFlags.SPAWN_ADJUST
+    );
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -48,7 +53,7 @@ public class CreateCommand extends MultiverseCommand {
 
                                 @Syntax("<name>")
                                 @Description("New world name.")
-                                @NotNull @Flags("trim") @Conditions("creatableWorldName") String worldName,
+                                @NotNull @co.aikar.commands.annotation.Flags("trim") @Conditions("creatableWorldName") String worldName,
 
                                 @Syntax("<env>")
                                 @Description("The world's environment. See: /mv env")
@@ -58,7 +63,8 @@ public class CreateCommand extends MultiverseCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8bl")
                                 @Nullable @Optional String[] flagsArray) {
 
-        WorldFlags flags = new WorldFlags(this.plugin, sender, flagsArray, FLAG_SET);
+        FlagResult flags = FlagResult.parse(flagsArray, FLAG_GROUP);
+        Logging.info(String.valueOf(flags));
 
         Command.broadcastCommandMessage(sender, String.format("Starting creation of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(

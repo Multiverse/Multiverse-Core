@@ -4,7 +4,7 @@ import co.aikar.commands.InvalidCommandArgument;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
-import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +44,7 @@ public class WorldFlags {
 
         Flag<?> currentFlag = null;
         for (String arg : args) {
-            Flag<?> flag = MVFlags.getByKey(arg);
+            Flag<?> flag = Flags.getByKey(arg);
             if (currentFlag == null) {
                 if (flag == null) {
                     throw new InvalidCommandArgument(String.format("'%s' is not a valid flag key.", arg));

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class MVFlags {
+public class Flags {
 
     protected static final Map<String, Flag<?>> flagMap = new HashMap<>();
 

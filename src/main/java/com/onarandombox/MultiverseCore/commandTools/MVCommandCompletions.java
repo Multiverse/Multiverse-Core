@@ -17,7 +17,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
-import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
 import com.onarandombox.MultiverseCore.commandTools.flag.NoValueFlag;
 import com.onarandombox.MultiverseCore.commandTools.flag.OptionalFlag;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
@@ -90,7 +90,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return flagsKeys;
         }
 
-        Flag<?> flag = MVFlags.getByKey(mostRecentArg);
+        Flag<?> flag = Flags.getByKey(mostRecentArg);
         if (flag == null) {
             flagsKeys.removeAll(args);
             return flagsKeys;

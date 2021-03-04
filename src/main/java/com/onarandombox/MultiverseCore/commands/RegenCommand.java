@@ -11,15 +11,14 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
 import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import com.onarandombox.MultiverseCore.commandTools.flag.MVFlags;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
+import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +31,7 @@ import java.util.Set;
 public class RegenCommand extends MultiverseCommand {
 
     private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(1) {{
-        add(MVFlags.SEED);
+        add(Flags.SEED);
     }};
 
     public RegenCommand(MultiverseCore plugin) {
@@ -48,7 +47,7 @@ public class RegenCommand extends MultiverseCommand {
 
                                @Syntax("<world>")
                                @Description("World that you want to regen.")
-                               @NotNull @Flags("other") MultiverseWorld world,
+                               @NotNull @co.aikar.commands.annotation.Flags("other") MultiverseWorld world,
 
                                @Syntax("[-s [seed]]")
                                @Description("Other world settings. See: http://gg.gg/nn8lk")
@@ -73,9 +72,9 @@ public class RegenCommand extends MultiverseCommand {
             //TODO: API should allow regen of unloaded worlds.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
                     world.getName(),
-                    flags.isByInput(MVFlags.SEED),
-                    flags.getValue(MVFlags.SEED).equalsIgnoreCase("random"),
-                    flags.getValue(MVFlags.SEED))
+                    flags.isByInput(Flags.SEED),
+                    flags.getValue(Flags.SEED).equalsIgnoreCase("random"),
+                    flags.getValue(Flags.SEED))
             )
                     ? String.format("%sWorld Regenerated!", ChatColor.GREEN)
                     : String.format("%sWorld could not be regenerated!", ChatColor.RED));
