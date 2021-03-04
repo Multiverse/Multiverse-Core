@@ -9,7 +9,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Set;
 
@@ -85,7 +84,7 @@ class DummyCommandBlockSender implements CommandSender {
 
     @Override
     public void recalculatePermissions() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
