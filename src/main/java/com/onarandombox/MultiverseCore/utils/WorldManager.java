@@ -385,11 +385,11 @@ public class WorldManager implements MVWorldManager {
             this.worldsFromTheConfig.get(name).cacheVirtualProperties();
             if (unloadBukkit && this.unloadWorldFromBukkit(name, true)) {
                 this.worlds.remove(name);
-                Logging.info("World '%s' was unloaded from memory.", name);
+                Logging.info("World '%s' was unloaded from bukkit.", name);
                 return true;
             } else if (!unloadBukkit){
                 this.worlds.remove(name);
-                Logging.info("World '%s' was unloaded from memory.", name);
+                Logging.info("World '%s' was unloaded from multiverse.", name);
                 return true;
             } else {
                 Logging.warning("World '%s' could not be unloaded. Is it a default world?", name);
