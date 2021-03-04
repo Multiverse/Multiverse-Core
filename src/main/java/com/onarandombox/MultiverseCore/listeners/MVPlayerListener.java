@@ -15,7 +15,9 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.enums.RespawnType;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -69,9 +71,16 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
+        RespawnType respawnType = RespawnType.OTHER;
+        if (event.isBedSpawn()) {
+            respawnType = RespawnType.BED;
+        }
+        if (CompatibilityLayer.isAnchorSpawn(event)) {
+            respawnType = RespawnType.ANCHOR;
+        }
 
-        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-            Logging.fine("Spawning " + event.getPlayer().getName() + " at their bed");
+        if (mvWorld.getBedRespawn() && (respawnType == RespawnType.BED || respawnType == RespawnType.ANCHOR)) {
+            Logging.fine("Spawning %s at their %s", event.getPlayer().getName(), respawnType);
             return;
         }
 

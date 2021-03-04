@@ -50,6 +50,10 @@ public class TestEntryFeeConversion {
         WorldProperties props = new WorldProperties(config);
         assertNull(props.entryfee.getCurrency());
 
+        entryFee.put("currency", 0);
+        props = new WorldProperties(config);
+        assertNull(props.entryfee.getCurrency());
+
         entryFee.put("currency", 1);
         props = new WorldProperties(config);
         assertEquals(Material.STONE, props.entryfee.getCurrency());

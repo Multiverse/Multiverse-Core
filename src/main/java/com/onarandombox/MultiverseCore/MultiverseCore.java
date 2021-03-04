@@ -39,6 +39,7 @@ import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
@@ -216,6 +217,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
+        // Setup our CompatibilityLayer
+        CompatibilityLayer.init();
     }
 
 
@@ -313,13 +316,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * Initializes the buscript javascript library.
      */
     private void initializeBuscript() {
-        try {
-            buscript = new Buscript(this);
-            // Add global variable "multiverse" to javascript environment
-            buscript.setScriptVariable("multiverse", this);
-        } catch (NullPointerException e) {
-            buscript = null;
-            Logging.warning("Buscript failed to load! The script command will be disabled!");
+        buscript = null;
+
+        if (this.getMVConfig().getEnableBuscript()) {
+            try {
+                buscript = new Buscript(this);
+                // Add global variable "multiverse" to javascript environment
+                buscript.setScriptVariable("multiverse", this);
+            } catch (NullPointerException e) {
+                Logging.warning("Buscript failed to load! The script command will be disabled!");
+            }
         }
     }
 

@@ -225,11 +225,18 @@ public class TestInstanceCreator {
             serverfield.set(core, mockServer);
 
             // Set buscript
-            Buscript buscript = PowerMockito.spy(new Buscript(core));
+            Buscript buscript;
             Field buscriptfield = MultiverseCore.class.getDeclaredField("buscript");
             buscriptfield.setAccessible(true);
+
+            try {
+                buscript = PowerMockito.spy(new Buscript(core));
+                when(buscript.getPlugin()).thenReturn(core);
+            } catch (NullPointerException e) {
+                buscript = null;
+            }
+
             buscriptfield.set(core, buscript);
-            when(buscript.getPlugin()).thenReturn(core);
 
             // Set worldManager
             WorldManager wm = PowerMockito.spy(new WorldManager(core));

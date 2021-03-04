@@ -14,7 +14,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
@@ -24,12 +23,9 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerType;
-import net.milkbowl.vault.chat.Chat;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -163,6 +159,7 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core]   firstspawnoverride: " + this.plugin.getMVConfig().getFirstSpawnOverride() + '\n'
                 + "[Multiverse-Core]   displaypermerrors: " + this.plugin.getMVConfig().getDisplayPermErrors() + '\n'
                 + "[Multiverse-Core]   globaldebug: " + this.plugin.getMVConfig().getGlobalDebug() + '\n'
+                + "[Multiverse-Core]   enablebuscript: " + plugin.getMVConfig().getEnableBuscript() + '\n'
                 + "[Multiverse-Core]   silentstart: " + this.plugin.getMVConfig().getSilentStart() + '\n'
                 + "[Multiverse-Core]   messagecooldown: " + this.plugin.getMessaging().getCooldown() + '\n'
                 + "[Multiverse-Core]   version: " + this.plugin.getMVConfig().getVersion() + '\n'
