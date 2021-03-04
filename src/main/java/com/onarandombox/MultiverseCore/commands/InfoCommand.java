@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @CommandAlias("mv")
-public class InfoCommand extends MultiverseCommand {
+public class InfoCommand extends MultiverseCoreCommand {
 
     public InfoCommand(MultiverseCore plugin) {
         super(plugin);

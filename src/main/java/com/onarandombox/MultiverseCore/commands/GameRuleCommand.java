@@ -33,7 +33,7 @@ import java.util.Map;
 
 @CommandAlias("mv")
 @Subcommand("gamerule")
-public class GameRuleCommand extends MultiverseCommand {
+public class GameRuleCommand extends MultiverseCoreCommand {
 
     public GameRuleCommand(MultiverseCore plugin) {
         super(plugin);

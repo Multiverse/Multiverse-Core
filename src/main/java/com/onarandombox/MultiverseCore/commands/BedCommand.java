@@ -10,17 +10,15 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class BedCommand extends MultiverseCommand {
+public class BedCommand extends MultiverseCoreCommand {
 
     public BedCommand(MultiverseCore plugin) {
         super(plugin);

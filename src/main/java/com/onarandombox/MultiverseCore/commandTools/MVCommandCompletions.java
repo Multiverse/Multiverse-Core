@@ -8,18 +8,19 @@
 package com.onarandombox.MultiverseCore.commandTools;
 
 import buscript.Buscript;
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
-import com.onarandombox.MultiverseCore.commandTools.flag.NoValueFlag;
-import com.onarandombox.MultiverseCore.commandTools.flag.OptionalFlag;
+import com.onarandombox.MultiverseCore.commandTools.flags.CommandFlag;
+import com.onarandombox.MultiverseCore.commandTools.flags.CommandFlag.ValueRequirement;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.GameRule;
@@ -35,7 +36,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
-        registerAsyncCompletion("worldFlags", this::suggestWorldFlags);
+        registerAsyncCompletion("flags", this::suggestFlags);
         registerAsyncCompletion("scripts", this::suggestScripts);
         registerAsyncCompletion("subCommands", this::suggestSubCommands);
         registerAsyncCompletion("MVWorlds", this::suggestMVWorlds);
@@ -81,38 +81,35 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     @NotNull
-    private Collection<String> suggestWorldFlags(@NotNull BukkitCommandCompletionContext context) {
-        List<String> args = Arrays.asList(context.getContextValue(String[].class));
-        Set<String> flagsKeys = new HashSet<>(Arrays.asList(context.getConfig().split("/")));
-
-        String mostRecentArg = (args.size() <= 1) ? null : args.get(args.size() - 2);
-        if (mostRecentArg == null) {
-            return flagsKeys;
-        }
-
-        Flag<?> flag = Flags.getByKey(mostRecentArg);
-        if (flag == null) {
-            flagsKeys.removeAll(args);
-            return flagsKeys;
-        }
-
-        // Its a flag available, but not what we are looking.
-        if (!flagsKeys.contains(mostRecentArg)) {
+    private Collection<String> suggestFlags(@NotNull BukkitCommandCompletionContext context) {
+        final MultiverseCommand command = MVCommandReflect.getCommandCompletionContextCommand(context);
+        if (command == null) {
+            Logging.warning("Unable to parse flags as MultiverseCommand not found!");
             return Collections.emptyList();
         }
 
-        // Suggest based on flag type.
-        if (flag instanceof NoValueFlag) {
-            flagsKeys.removeAll(args);
-            return flagsKeys;
+        FlagGroup flagGroup = command.getFlagGroup();
+        String[] args = context.getContextValue(String[].class);
+        CommandFlag<?> flag = flagGroup.getByKey(args[args.length - 1]);
+
+        if (flag == null || flag.getValueRequirement() == ValueRequirement.NONE) {
+            // suggest new flags.
+            return getRemainingFlagIdentifiers(flagGroup, args);
         }
-        if (flag instanceof OptionalFlag) {
-            Collection<String> suggestions = flag.suggestValue(this.plugin);
-            flagsKeys.removeAll(args);
-            flagsKeys.addAll(suggestions);
-            return flagsKeys;
+        if (flag.getValueRequirement() == ValueRequirement.OPTIONAL) {
+            // suggest new flags and values.
+            Collection<String> flagSuggestions = flag.suggestValue();
+            flagSuggestions.addAll(getRemainingFlagIdentifiers(flagGroup, args));
+            return flagSuggestions;
         }
-        return flag.suggestValue(this.plugin);
+        // suggest new values.
+        return flag.suggestValue();
+    }
+
+    private Collection<String> getRemainingFlagIdentifiers(FlagGroup flagGroup, String[] args) {
+        Set<String> identifiersRemaining = new HashSet<>(flagGroup.getFlagIdentifiers());
+        identifiersRemaining.removeAll(Arrays.asList(args));
+        return identifiersRemaining;
     }
 
     @NotNull

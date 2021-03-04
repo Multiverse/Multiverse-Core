@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @CommandAlias("mv")
-public class VersionCommand extends MultiverseCommand {
+public class VersionCommand extends MultiverseCoreCommand {
 
     private static final URLShortener SHORTENER = URLShortenerFactory.getService(URLShortenerType.BITLY);
 

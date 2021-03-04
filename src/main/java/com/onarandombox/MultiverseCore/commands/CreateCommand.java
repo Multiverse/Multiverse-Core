@@ -29,18 +29,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
-public class CreateCommand extends MultiverseCommand {
-
-    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
-            MVFlags.WORLD_TYPE,
-            MVFlags.SEED,
-            MVFlags.GENERATOR,
-            MVFlags.GENERATE_STRUCTURES,
-            MVFlags.SPAWN_ADJUST
-    );
+public class CreateCommand extends MultiverseCoreCommand {
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
+        this.setFlagGroup(FlagGroup.of(
+                MVFlags.WORLD_TYPE,
+                MVFlags.SEED,
+                MVFlags.GENERATOR,
+                MVFlags.GENERATE_STRUCTURES,
+                MVFlags.SPAWN_ADJUST
+        ));
     }
 
     @Subcommand("create")
@@ -62,7 +61,7 @@ public class CreateCommand extends MultiverseCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8bl")
                                 @Nullable @Optional String[] flagsArray) {
 
-        FlagResult flags = FlagResult.parse(flagsArray, FLAG_GROUP);
+        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
         Logging.info(String.valueOf(flags));
 
         Command.broadcastCommandMessage(sender, String.format("Starting creation of world '%s'...", worldName));

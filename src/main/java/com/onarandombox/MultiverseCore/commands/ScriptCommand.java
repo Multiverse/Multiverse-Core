@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 @CommandAlias("mv")
-public class ScriptCommand extends MultiverseCommand {
+public class ScriptCommand extends MultiverseCoreCommand {
 
     public ScriptCommand(MultiverseCore plugin) {
         super(plugin);

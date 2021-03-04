@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class RemoveCommand extends MultiverseCommand {
+public class RemoveCommand extends MultiverseCoreCommand {
 
     public RemoveCommand(MultiverseCore plugin) {
         super(plugin);

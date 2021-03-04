@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class CloneCommand extends MultiverseCommand {
+public class CloneCommand extends MultiverseCoreCommand {
 
     public CloneCommand(MultiverseCore plugin) {
         super(plugin);

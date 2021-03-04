@@ -19,7 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class SilentCommand extends MultiverseCommand {
+public class SilentCommand extends MultiverseCoreCommand {
 
     public SilentCommand(MultiverseCore plugin) {
         super(plugin);

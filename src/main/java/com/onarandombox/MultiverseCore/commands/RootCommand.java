@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class RootCommand extends MultiverseCommand {
+public class RootCommand extends MultiverseCoreCommand {
 
     public RootCommand(MultiverseCore plugin) {
         super(plugin);

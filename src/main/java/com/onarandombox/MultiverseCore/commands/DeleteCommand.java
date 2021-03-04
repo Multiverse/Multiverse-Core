@@ -17,13 +17,12 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class DeleteCommand extends MultiverseCommand {
+public class DeleteCommand extends MultiverseCoreCommand {
 
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @CommandAlias("mv")
-public class ListCommand extends MultiverseCommand {
+public class ListCommand extends MultiverseCoreCommand {
 
     public ListCommand(MultiverseCore plugin) {
         super(plugin);

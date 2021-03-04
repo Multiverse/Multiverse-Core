@@ -27,21 +27,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
-public class ImportCommand extends MultiverseCommand {
-
-    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
-            MVFlags.GENERATOR,
-            MVFlags.SPAWN_ADJUST
-    );
+public class ImportCommand extends MultiverseCoreCommand {
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
+        this.setFlagGroup(FlagGroup.of(MVFlags.GENERATOR, MVFlags.SPAWN_ADJUST));
     }
 
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @Syntax("<name> <env> -g [generator[:id]] [-n]")
-    @CommandCompletion("@potentialWorlds @environments @worldFlags:-g/-n")
+    @CommandCompletion("@potentialWorlds @environments @flags")
     @Description("Imports a new world into multiverse.")
     public void onImportCommand(@NotNull CommandSender sender,
 
@@ -57,7 +53,7 @@ public class ImportCommand extends MultiverseCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8c2")
                                 @Nullable @Optional String[] flagsArray) {
 
-        FlagResult flags = FlagResult.parse(flagsArray, FLAG_GROUP);
+        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
 
         Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(worldName,

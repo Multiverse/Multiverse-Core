@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 @CommandPermission("multiverse.core.debug")
-public class DebugCommand extends MultiverseCommand {
+public class DebugCommand extends MultiverseCoreCommand {
 
     public DebugCommand(MultiverseCore plugin) {
         super(plugin);

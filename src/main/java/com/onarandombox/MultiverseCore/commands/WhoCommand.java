@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @CommandAlias("mv")
-public class WhoCommand extends MultiverseCommand {
+public class WhoCommand extends MultiverseCoreCommand {
 
     public WhoCommand(MultiverseCore plugin) {
         super(plugin);

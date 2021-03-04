@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CommandAlias("mv")
-public class PurgeCommand extends MultiverseCommand {
+public class PurgeCommand extends MultiverseCoreCommand {
 
     public PurgeCommand(MultiverseCore plugin) {
         super(plugin);

@@ -16,7 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 @CommandAlias("mv")
-public class EnvironmentCommand extends MultiverseCommand {
+public class EnvironmentCommand extends MultiverseCoreCommand {
 
     public EnvironmentCommand(MultiverseCore plugin) {
         super(plugin);

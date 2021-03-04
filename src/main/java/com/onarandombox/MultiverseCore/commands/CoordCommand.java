@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class CoordCommand extends MultiverseCommand {
+public class CoordCommand extends MultiverseCoreCommand {
 
     public CoordCommand(MultiverseCore plugin) {
         super(plugin);

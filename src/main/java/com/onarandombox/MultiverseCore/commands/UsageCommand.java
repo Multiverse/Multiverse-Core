@@ -20,7 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class UsageCommand extends MultiverseCommand {
+public class UsageCommand extends MultiverseCoreCommand {
 
     public UsageCommand(MultiverseCore plugin) {
         super(plugin);

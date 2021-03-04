@@ -26,7 +26,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 
-public class SpawnCommand extends MultiverseCommand {
+public class SpawnCommand extends MultiverseCoreCommand {
 
     public SpawnCommand(MultiverseCore plugin) {
         super(plugin);

@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class ConfirmCommand extends MultiverseCommand {
+public class ConfirmCommand extends MultiverseCoreCommand {
 
     public ConfirmCommand(MultiverseCore plugin) {
         super(plugin);

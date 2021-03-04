@@ -34,7 +34,7 @@ import java.util.Map;
 @CommandAlias("mv")
 @Subcommand("modify")
 //TODO API: Think why properties method for MultiverseWorld is deprecated.
-public class ModifyCommand extends MultiverseCommand {
+public class ModifyCommand extends MultiverseCoreCommand {
 
     public ModifyCommand(MultiverseCore plugin) {
         super(plugin);

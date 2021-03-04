@@ -25,14 +25,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @CommandAlias("mv")
-public class RegenCommand extends MultiverseCommand {
-
-    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
-            MVFlags.RANDOM_SEED
-    );
+public class RegenCommand extends MultiverseCoreCommand {
 
     public RegenCommand(MultiverseCore plugin) {
         super(plugin);
+        this.setFlagGroup(FlagGroup.of(MVFlags.RANDOM_SEED));
     }
 
     @Subcommand("regen")
@@ -50,7 +47,7 @@ public class RegenCommand extends MultiverseCommand {
                                @Description("Other world settings. See: http://gg.gg/nn8lk")
                                @Nullable @Optional String[] flagsArray) {
 
-        FlagResult flags = FlagResult.parse(flagsArray, FLAG_GROUP);
+        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(
                 sender,

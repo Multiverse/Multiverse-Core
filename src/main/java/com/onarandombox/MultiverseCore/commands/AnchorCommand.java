@@ -35,7 +35,7 @@ import java.util.Set;
 
 @CommandAlias("mv")
 @Subcommand("anchors")
-public class AnchorCommand extends MultiverseCommand {
+public class AnchorCommand extends MultiverseCoreCommand {
 
     private final AnchorManager anchorManager;
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @CommandAlias("mv")
-public class ReloadCommand extends MultiverseCommand {
+public class ReloadCommand extends MultiverseCoreCommand {
 
     public ReloadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);

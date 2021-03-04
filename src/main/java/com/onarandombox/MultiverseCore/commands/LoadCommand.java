@@ -21,7 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class LoadCommand extends MultiverseCommand {
+public class LoadCommand extends MultiverseCoreCommand {
 
     public LoadCommand(MultiverseCore plugin) {
         super(plugin);

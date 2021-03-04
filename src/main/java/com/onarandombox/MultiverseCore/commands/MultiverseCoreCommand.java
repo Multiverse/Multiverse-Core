@@ -7,14 +7,14 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import co.aikar.commands.BaseCommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandTools.MultiverseCommand;
 
-public abstract class MultiverseCommand extends BaseCommand {
+public abstract class MultiverseCoreCommand extends MultiverseCommand {
 
     protected final MultiverseCore plugin;
 
-    protected MultiverseCommand(MultiverseCore plugin) {
+    protected MultiverseCoreCommand(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 }

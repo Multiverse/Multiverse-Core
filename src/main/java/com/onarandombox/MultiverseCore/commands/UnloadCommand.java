@@ -21,7 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class UnloadCommand extends MultiverseCommand {
+public class UnloadCommand extends MultiverseCoreCommand {
 
     public UnloadCommand(MultiverseCore plugin) {
         super(plugin);

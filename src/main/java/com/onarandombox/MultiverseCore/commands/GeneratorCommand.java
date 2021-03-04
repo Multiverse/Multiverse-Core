@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @CommandAlias("mv")
-public class GeneratorCommand extends MultiverseCommand {
+public class GeneratorCommand extends MultiverseCoreCommand {
 
     public GeneratorCommand(MultiverseCore plugin) {
         super(plugin);

@@ -1,8 +1,10 @@
 package com.onarandombox.MultiverseCore.commandTools.flags;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,10 +15,12 @@ public class FlagGroup {
     }
 
     private final Set<CommandFlag<?>> flags;
+    private final List<String> flagIdentifiers;
     private final Map<String, CommandFlag<?>> keyFlagMap;
 
     private FlagGroup(CommandFlag<?>[] commandFlags) {
-        this.flags = new HashSet<>();
+        this.flags = new HashSet<>(commandFlags.length);
+        this.flagIdentifiers = new ArrayList<>(commandFlags.length);
         this.keyFlagMap = new HashMap<>();
         for (CommandFlag<?> flag : commandFlags) {
             addFlag(flag);
@@ -25,6 +29,7 @@ public class FlagGroup {
 
     private void addFlag(CommandFlag<?> flag) {
         this.flags.add(flag);
+        this.flagIdentifiers.add(flag.getIdentifier());
         this.keyFlagMap.put(flag.getIdentifier(), flag);
         for (String flagAlias : flag.getAliases()) {
             this.keyFlagMap.put(flagAlias, flag);
@@ -37,6 +42,10 @@ public class FlagGroup {
 
     public Collection<CommandFlag<?>> getFlags() {
         return this.flags;
+    }
+
+    public Collection<String> getFlagIdentifiers() {
+        return flagIdentifiers;
     }
 
     @Override

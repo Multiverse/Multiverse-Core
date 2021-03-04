@@ -29,7 +29,7 @@ import java.util.Map;
 @CommandAlias("mv")
 @Subcommand("config")
 @CommandPermission("multiverse.core.config")
-public class ConfigCommand extends MultiverseCommand {
+public class ConfigCommand extends MultiverseCoreCommand {
 
     public ConfigCommand(MultiverseCore plugin) {
         super(plugin);

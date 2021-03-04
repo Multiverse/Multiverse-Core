@@ -76,7 +76,7 @@ public class MVFlags {
         }
     };
 
-    public final static CommandFlag<String> GENERATOR = new RequiredCommandFlag<String>("Generator", "-g", String.class) {
+    public static final CommandFlag<String> GENERATOR = new RequiredCommandFlag<String>("Generator", "-g", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return multiverse.getMVWorldManager().getAvailableWorldGenerators();
@@ -98,7 +98,7 @@ public class MVFlags {
         }
     };
 
-    public final static CommandFlag<Boolean> GENERATE_STRUCTURES = new RequiredCommandFlag<Boolean>("GenerateStructures", "-a", Boolean.class) {
+    public static final CommandFlag<Boolean> GENERATE_STRUCTURES = new RequiredCommandFlag<Boolean>("GenerateStructures", "-a", Boolean.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("true", "false");
@@ -115,7 +115,7 @@ public class MVFlags {
         }
     };
 
-    public final static CommandFlag<Boolean> SPAWN_ADJUST = new NoValueCommandFlag<Boolean>("AdjustSpawn", "-n", Boolean.class) {
+    public static final CommandFlag<Boolean> SPAWN_ADJUST = new NoValueCommandFlag<Boolean>("AdjustSpawn", "-n", Boolean.class) {
         @Override
         public Boolean getValue() throws FlagParseFailedException {
             return false;
