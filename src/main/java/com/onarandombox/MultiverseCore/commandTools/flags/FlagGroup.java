@@ -25,7 +25,7 @@ public class FlagGroup {
 
     private void addFlag(CommandFlag<?> flag) {
         this.flags.add(flag);
-        this.keyFlagMap.put(flag.getName(), flag);
+        this.keyFlagMap.put(flag.getIdentifier(), flag);
         for (String flagAlias : flag.getAliases()) {
             this.keyFlagMap.put(flagAlias, flag);
         }
@@ -37,5 +37,13 @@ public class FlagGroup {
 
     public Collection<CommandFlag<?>> getFlags() {
         return this.flags;
+    }
+
+    @Override
+    public String toString() {
+        return "FlagGroup{" +
+                "flags=" + flags +
+                ", keyFlagMap=" + keyFlagMap +
+                '}';
     }
 }

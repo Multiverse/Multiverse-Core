@@ -16,9 +16,9 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
-import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagGroup;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagResult;
+import com.onarandombox.MultiverseCore.commandTools.flags.MVFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -26,16 +26,13 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @CommandAlias("mv")
 public class ImportCommand extends MultiverseCommand {
 
-    private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(2) {{
-        add(Flags.GENERATOR);
-        add(Flags.SPAWN_ADJUST);
-    }};
+    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
+            MVFlags.GENERATOR,
+            MVFlags.SPAWN_ADJUST
+    );
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
@@ -60,7 +57,7 @@ public class ImportCommand extends MultiverseCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8c2")
                                 @Nullable @Optional String[] flagsArray) {
 
-        WorldFlags flags = new WorldFlags(this.plugin, sender, flagsArray, FLAG_SET);
+        FlagResult flags = FlagResult.parse(flagsArray, FLAG_GROUP);
 
         Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(worldName,
@@ -68,8 +65,8 @@ public class ImportCommand extends MultiverseCommand {
                 null,
                 null,
                 null,
-                flags.getValue(Flags.GENERATOR),
-                flags.getValue(Flags.SPAWN_ADJUST))
+                flags.getValue(MVFlags.GENERATOR),
+                flags.getValue(MVFlags.SPAWN_ADJUST))
         )
                 ? String.format("%sComplete!", ChatColor.GREEN)
                 : String.format("%sFailed! See console for more details.", ChatColor.RED));

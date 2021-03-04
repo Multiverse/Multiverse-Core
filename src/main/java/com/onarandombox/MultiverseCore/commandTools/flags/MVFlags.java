@@ -87,7 +87,11 @@ public class MVFlags {
             String[] genArray = input.split(":");
             String generator = genArray[0];
             String generatorId = (genArray.length > 1) ? genArray[1] : "";
-            if (multiverse.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
+            try {
+                if (multiverse.getMVWorldManager().getChunkGenerator(generator, generatorId, "test") == null) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
                 throw new FlagParseFailedException("Invalid generator string '%s'. See /mv gens for available generators.", input);
             }
             return input;

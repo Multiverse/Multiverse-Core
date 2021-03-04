@@ -16,23 +16,20 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flag;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagGroup;
+import com.onarandombox.MultiverseCore.commandTools.flags.FlagResult;
+import com.onarandombox.MultiverseCore.commandTools.flags.MVFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @CommandAlias("mv")
 public class RegenCommand extends MultiverseCommand {
 
-    private static final Set<Flag<?>> FLAG_SET = new HashSet<Flag<?>>(1) {{
-        add(Flags.SEED);
-    }};
+    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
+            MVFlags.RANDOM_SEED
+    );
 
     public RegenCommand(MultiverseCore plugin) {
         super(plugin);
@@ -53,7 +50,7 @@ public class RegenCommand extends MultiverseCommand {
                                @Description("Other world settings. See: http://gg.gg/nn8lk")
                                @Nullable @Optional String[] flagsArray) {
 
-        WorldFlags flags = new WorldFlags(this.plugin, sender, flagsArray, FLAG_SET);
+        FlagResult flags = FlagResult.parse(flagsArray, FLAG_GROUP);
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(
                 sender,
@@ -64,7 +61,7 @@ public class RegenCommand extends MultiverseCommand {
 
     private Runnable regenRunnable(@NotNull CommandSender sender,
                                    @NotNull MultiverseWorld world,
-                                   @NotNull WorldFlags flags) {
+                                   @NotNull FlagResult flags) {
 
         return () -> {
             sender.sendMessage(String.format("Regening world '%s'...", world.getName()));
@@ -72,9 +69,9 @@ public class RegenCommand extends MultiverseCommand {
             //TODO: API should allow regen of unloaded worlds.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
                     world.getName(),
-                    flags.isByInput(Flags.SEED),
-                    flags.getValue(Flags.SEED).equalsIgnoreCase("random"),
-                    flags.getValue(Flags.SEED))
+                    !flags.isDefaulted(MVFlags.RANDOM_SEED),
+                    !flags.isByUserInput(MVFlags.RANDOM_SEED),
+                    flags.getValue(MVFlags.RANDOM_SEED))
             )
                     ? String.format("%sWorld Regenerated!", ChatColor.GREEN)
                     : String.format("%sWorld could not be regenerated!", ChatColor.RED));

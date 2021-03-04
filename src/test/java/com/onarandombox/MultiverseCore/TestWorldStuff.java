@@ -183,7 +183,8 @@ public class TestWorldStuff {
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
         // Verify
-        verify(mockCommandSender).sendMessage(ChatColor.RED + "Invalid generator string 'BogusGen'.");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "Error: Invalid generator string 'BogusGen'. " +
+                "See /mv gens for available generators.");
     }
 
     @Test

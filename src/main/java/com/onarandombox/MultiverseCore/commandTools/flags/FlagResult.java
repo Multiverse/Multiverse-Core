@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.commandTools.flags;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,8 +10,15 @@ import static com.onarandombox.MultiverseCore.commandTools.flags.CommandFlag.Val
 
 public class FlagResult {
 
-    public static FlagResult parse(String[] args, FlagGroup flagGroup) throws FlagParseFailedException {
+    public static FlagResult parse(@Nullable String[] args,
+                                   @NotNull FlagGroup flagGroup) throws FlagParseFailedException {
+
         FlagResult flagResult = new FlagResult();
+
+        // No args to parse.
+        if (args == null || args.length <= 0) {
+            return flagResult;
+        }
 
         // First arg must be a flag.
         CommandFlag<?> currentFlag = flagGroup.getByKey(args[0]);

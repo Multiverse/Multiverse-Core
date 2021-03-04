@@ -59,6 +59,17 @@ public abstract class CommandFlag<T> {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "CommandFlag{" +
+                "name='" + name + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", type=" + type +
+                ", valueRequirement=" + valueRequirement +
+                ", aliases=" + aliases +
+                '}';
+    }
+
     public enum ValueRequirement {
         NONE,
         OPTIONAL,

@@ -12,13 +12,12 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.contexts.WorldFlags;
-import com.onarandombox.MultiverseCore.commandTools.flag.Flags;
 import com.onarandombox.MultiverseCore.commandTools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandTools.flags.FlagResult;
 import com.onarandombox.MultiverseCore.commandTools.flags.MVFlags;
@@ -53,7 +52,7 @@ public class CreateCommand extends MultiverseCommand {
 
                                 @Syntax("<name>")
                                 @Description("New world name.")
-                                @NotNull @co.aikar.commands.annotation.Flags("trim") @Conditions("creatableWorldName") String worldName,
+                                @NotNull @Flags("trim") @Conditions("creatableWorldName") String worldName,
 
                                 @Syntax("<env>")
                                 @Description("The world's environment. See: /mv env")
@@ -70,7 +69,7 @@ public class CreateCommand extends MultiverseCommand {
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(
                 worldName,
                 environment,
-                // TODO API: Should Allow WorldFlags object to be passed directly
+                // TODO API: Should Allow FlagResult object to be passed directly
                 flags.getValue(MVFlags.SEED),
                 flags.getValue(MVFlags.WORLD_TYPE),
                 flags.getValue(MVFlags.GENERATE_STRUCTURES),
