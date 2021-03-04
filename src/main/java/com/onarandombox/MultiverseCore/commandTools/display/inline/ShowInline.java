@@ -1,7 +1,7 @@
-package com.onarandombox.MultiverseCore.commandTools.display.inline;
+package com.onarandombox.MultiverseCore.commandtools.display.inline;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
+import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandtools.display.ShowRunnable;
 import org.jetbrains.annotations.NotNull;
 
 /**

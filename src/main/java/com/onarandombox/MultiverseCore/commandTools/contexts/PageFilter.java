@@ -5,9 +5,9 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools.contexts;
+package com.onarandombox.MultiverseCore.commandtools.contexts;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
 import org.jetbrains.annotations.NotNull;
 
 /**

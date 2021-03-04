@@ -5,10 +5,10 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools.display.page;
+package com.onarandombox.MultiverseCore.commandtools.display.page;
 
-import com.onarandombox.MultiverseCore.commandTools.contexts.PageFilter;
-import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
+import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
+import com.onarandombox.MultiverseCore.commandtools.display.ContentDisplay;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 

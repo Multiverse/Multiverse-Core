@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools.display;
+package com.onarandombox.MultiverseCore.commandtools.display;
 
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;

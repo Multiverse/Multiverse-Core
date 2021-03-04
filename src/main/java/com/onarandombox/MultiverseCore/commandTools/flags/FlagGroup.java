@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools.flags;
+package com.onarandombox.MultiverseCore.commandtools.flags;
 
 import java.util.ArrayList;
 import java.util.Collection;

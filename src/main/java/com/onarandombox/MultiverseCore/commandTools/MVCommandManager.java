@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandtools;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
@@ -13,8 +13,8 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandTools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.BedCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;

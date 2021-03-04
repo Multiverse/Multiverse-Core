@@ -1,4 +1,4 @@
 /**
  * Main classes used to manage commands.
  */
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandtools;

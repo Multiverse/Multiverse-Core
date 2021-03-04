@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools.flags;
+package com.onarandombox.MultiverseCore.commandtools.flags;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.WorldType;

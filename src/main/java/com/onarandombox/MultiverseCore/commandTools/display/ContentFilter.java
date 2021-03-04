@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools.display;
+package com.onarandombox.MultiverseCore.commandtools.display;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.ChatColor;

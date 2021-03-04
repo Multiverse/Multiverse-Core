@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
-import com.onarandombox.MultiverseCore.commandTools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;

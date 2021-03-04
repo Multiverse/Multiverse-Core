@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools.contexts;
+package com.onarandombox.MultiverseCore.commandtools.contexts;
 
 import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;

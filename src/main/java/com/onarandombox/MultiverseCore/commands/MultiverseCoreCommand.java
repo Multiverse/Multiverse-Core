@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandTools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 
 public abstract class MultiverseCoreCommand extends MultiverseCommand {
 

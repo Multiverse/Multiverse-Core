@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools.display;
+package com.onarandombox.MultiverseCore.commandtools.display;
 
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;

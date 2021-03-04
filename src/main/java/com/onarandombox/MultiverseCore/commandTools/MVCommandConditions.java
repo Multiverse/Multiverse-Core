@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandtools;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
@@ -16,7 +16,7 @@ import co.aikar.commands.ConditionFailedException;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.contexts.PlayerWorld;
+import com.onarandombox.MultiverseCore.commandtools.contexts.PlayerWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import org.bukkit.ChatColor;

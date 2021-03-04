@@ -1,8 +1,7 @@
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandtools;
 
 import co.aikar.commands.CommandCompletionContext;
 import co.aikar.commands.RegisteredCommand;
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.utils.ReflectHelper;
 
 import java.lang.reflect.Field;

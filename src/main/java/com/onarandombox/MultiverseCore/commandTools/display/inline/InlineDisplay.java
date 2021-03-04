@@ -1,6 +1,6 @@
-package com.onarandombox.MultiverseCore.commandTools.display.inline;
+package com.onarandombox.MultiverseCore.commandtools.display.inline;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ContentDisplay;
+import com.onarandombox.MultiverseCore.commandtools.display.ContentDisplay;
 
 public abstract class InlineDisplay<C extends InlineDisplay<?, T>, T> extends ContentDisplay<C, T> {
 

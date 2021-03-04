@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools.flags;
+package com.onarandombox.MultiverseCore.commandtools.flags;
 
 public abstract class OptionalCommandFlag<T> extends CommandFlag<T> {
 

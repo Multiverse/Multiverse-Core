@@ -5,10 +5,9 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools;
+package com.onarandombox.MultiverseCore.commandtools;
 
 import buscript.Buscript;
-import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
@@ -18,9 +17,9 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandTools.flags.CommandFlag;
-import com.onarandombox.MultiverseCore.commandTools.flags.CommandFlag.ValueRequirement;
-import com.onarandombox.MultiverseCore.commandTools.flags.FlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag.ValueRequirement;
+import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.GameRule;

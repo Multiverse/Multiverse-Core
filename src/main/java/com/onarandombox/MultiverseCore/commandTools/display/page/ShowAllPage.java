@@ -1,6 +1,6 @@
-package com.onarandombox.MultiverseCore.commandTools.display.page;
+package com.onarandombox.MultiverseCore.commandtools.display.page;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
 
 /**
  * Show a everything from a multi-line content.

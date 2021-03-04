@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.commandTools.queue;
+package com.onarandombox.MultiverseCore.commandtools.queue;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;

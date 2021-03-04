@@ -1,7 +1,7 @@
-package com.onarandombox.MultiverseCore.commandTools.display.page;
+package com.onarandombox.MultiverseCore.commandtools.display.page;
 
-import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandTools.display.ShowRunnable;
+import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.commandtools.display.ShowRunnable;
 
 import java.util.ArrayList;
 import java.util.List;

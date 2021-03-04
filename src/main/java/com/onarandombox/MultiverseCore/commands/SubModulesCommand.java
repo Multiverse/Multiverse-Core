@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
-import com.onarandombox.MultiverseCore.commandTools.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

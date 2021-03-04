@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandTools.queue;
+package com.onarandombox.MultiverseCore.commandtools.queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
