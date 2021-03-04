@@ -22,6 +22,8 @@ public class EntryFee extends SerializationConfig {
     @Nullable
     private Material currency;
 
+    private final Material DISABLED_MATERIAL = Material.AIR;
+
     public EntryFee() {
         super();
     }
@@ -51,6 +53,9 @@ public class EntryFee extends SerializationConfig {
      */
     @Nullable
     public Material getCurrency() {
+        if (currency == null || currency.equals(DISABLED_MATERIAL)) {
+            return null;
+        }
         return currency;
     }
 
