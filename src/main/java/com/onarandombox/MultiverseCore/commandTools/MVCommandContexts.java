@@ -15,6 +15,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.commandtools.contexts.RequiredPlayer;
 import com.onarandombox.MultiverseCore.commandtools.contexts.GameRuleProperty;
 import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
 import com.onarandombox.MultiverseCore.commandtools.contexts.PlayerWorld;
@@ -56,9 +57,11 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
+        registerContext(RequiredPlayer.class, this::deriveRequiredPlayer);
+        registerIssuerOnlyContext(Player.class, this::derivePlayer);
+
         registerIssuerAwareContext(PlayerWorld.class, this::derivePlayerWorld);
         registerIssuerAwareContext(MultiverseWorld.class, this::deriveMultiverseWorld);
-        registerIssuerAwareContext(Player.class, this::derivePlayer);
         registerContext(World.Environment.class, this::deriveEnvironment);
         registerIssuerAwareContext(GameRuleProperty.class, this::deriveGameRuleProperty);
         registerIssuerAwareContext(MVDestination.class, this::deriveMVDestination);
@@ -68,7 +71,26 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerOptionalContext(PageFilter.class, this::derivePageFilter);
     }
 
-    @Nullable
+    @NotNull
+    private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
+        Player player = context.getPlayer();
+        if (player == null) {
+            throw new InvalidCommandArgument("You must be a player to run this command.");
+        }
+        return player;
+    }
+
+    @NotNull
+    private RequiredPlayer deriveRequiredPlayer(BukkitCommandExecutionContext context) {
+        String playerIdentifier = context.getFirstArg();
+        Player player = getPlayerFromValue(context.getSender(), playerIdentifier);
+        if (player == null) {
+            throw new InvalidCommandArgument("Invalid player name '" + playerIdentifier + "'!");
+        }
+        return new RequiredPlayer(player);
+    }
+
+    @NotNull
     private PlayerWorld derivePlayerWorld(@NotNull BukkitCommandExecutionContext context) {
         Player player = derivePlayer(context);
         if (player == null) {
@@ -180,32 +202,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return targetWorld;
-    }
-
-    @Nullable
-    private Player derivePlayer(@NotNull BukkitCommandExecutionContext context) {
-        if (!context.hasFlag("other")) {
-            return getPlayerFromSelf(context, "You must be a player to run this command.");
-        }
-
-        String playerIdentifier = context.getFirstArg();
-        if (playerIdentifier == null) {
-            if (context.hasFlag("defaultself")) {
-                return getPlayerFromSelf(context, "You need to specify a player from console.");
-            }
-            throw new InvalidCommandArgument("You need to specify a player.");
-        }
-
-        Player player = getPlayerFromValue(context.getSender(), playerIdentifier);
-        if (player == null) {
-            if (context.hasFlag("fallbackself")) {
-                return getPlayerFromSelf(context, String.format("Player '%s' not found.", playerIdentifier));
-            }
-            throw new InvalidCommandArgument(String.format("Player '%s' not found.", playerIdentifier));
-        }
-
-        context.popFirstArg();
-        return player;
     }
 
     @Nullable

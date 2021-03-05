@@ -16,8 +16,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import java.util.logging.Level;
-
 /**
  * Utility-class for permissions.
  */

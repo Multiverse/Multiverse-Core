@@ -50,9 +50,11 @@ public class AnchorCommand extends MultiverseCoreCommand {
     @Description("Create a new anchor point.")
     public void onCreateAnchorCommand(@NotNull Player player,
 
+                                      @NotNull
                                       @Syntax("<name>")
                                       @Description("Name of your new anchor.")
-                                      @NotNull @Single @Flags("type=anchor name") String anchorName) {
+                                      @Flags("type=anchor name")
+                                      @Single String anchorName) {
 
         player.sendMessage((this.plugin.getAnchorManager().saveAnchorLocation(anchorName, player.getLocation()))
 
@@ -71,9 +73,11 @@ public class AnchorCommand extends MultiverseCoreCommand {
     @Description("Delete an existing anchor point.")
     public void onDeleteAnchorCommand(@NotNull CommandSender sender,
 
+                                      @NotNull
                                       @Syntax("<name>")
                                       @Description("Name of anchor you want to delete.")
-                                      @NotNull @Single @Flags("type=anchor name") String anchorName) {
+                                      @Flags("type=anchor name")
+                                      @Single String anchorName) {
 
         sender.sendMessage((this.plugin.getAnchorManager().deleteAnchor(anchorName))
 
@@ -87,7 +91,7 @@ public class AnchorCommand extends MultiverseCoreCommand {
     @Subcommand("list")
     @CommandPermission("multiverse.core.anchor.list")
     @Syntax("[filter] [page]")
-    @Description("Delete an existing anchor point.")
+    @Description("View a list of current anchors.")
     public void onListAnchorCommand(@NotNull CommandSender sender,
                                     @NotNull PageFilter pageFilter) {
 

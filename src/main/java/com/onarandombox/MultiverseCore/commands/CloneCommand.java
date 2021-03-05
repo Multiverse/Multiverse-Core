@@ -35,13 +35,15 @@ public class CloneCommand extends MultiverseCoreCommand {
     @Description("Clones a world.")
     public void onCloneCommand(@NotNull CommandSender sender,
 
+                               @NotNull
                                @Syntax("<world>")
                                @Description("Current multiverse world.")
-                               @NotNull @Conditions("isWorldInConfig") String worldName,
+                               @Conditions("isWorldInConfig") String worldName,
 
+                               @NotNull
                                @Syntax("<name>")
                                @Description("New cloned world name.")
-                               @NotNull @Single @Flags("trim") @Conditions("creatableWorldName") String newWorldName) {
+                               @Single @Flags("trim") @Conditions("creatableWorldName") String newWorldName) {
 
         sender.sendMessage((this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName))
                 ? String.format("%sWorld cloned!", ChatColor.GREEN)

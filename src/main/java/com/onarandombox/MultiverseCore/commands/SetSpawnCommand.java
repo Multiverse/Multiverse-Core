@@ -45,9 +45,11 @@ public class SetSpawnCommand extends MultiverseCoreCommand {
         public void onSetSpawnCommand(@NotNull CommandSender sender,
                                       @Nullable @Optional Player player,
 
+                                      @NotNull
                                       @Syntax("[world x y z [yaw pitch]]")
                                       @Description("New location of spawn.")
-                                      @NotNull @Flags("other,defaultself") MultiverseWorld world,
+                                      @Flags("other,defaultself") MultiverseWorld world,
+
                                       @Nullable @Optional Double x,
                                       @Nullable @Optional Double y,
                                       @Nullable @Optional Double z,
@@ -65,9 +67,11 @@ public class SetSpawnCommand extends MultiverseCoreCommand {
         public void onModifySetSpawnCommand(@NotNull CommandSender sender,
                                             @Nullable @Optional Player player,
 
+                                            @NotNull
                                             @Syntax("[world x y z [yaw pitch]]")
                                             @Description("New location of spawn.")
-                                            @NotNull @Flags("other,defaultself") MultiverseWorld world,
+                                            @Flags("other,defaultself") MultiverseWorld world,
+
                                             @Nullable @Optional Double x,
                                             @Nullable @Optional Double y,
                                             @Nullable @Optional Double z,
@@ -89,15 +93,16 @@ public class SetSpawnCommand extends MultiverseCoreCommand {
         public void onAliasSetSpawnCommand(@NotNull CommandSender sender,
                                            @Nullable @Optional Player player,
 
+                                           @NotNull
                                            @Syntax("[world x y z [yaw pitch]]")
                                            @Description("New location of spawn.")
-                                           @NotNull @Flags("other,defaultself") MultiverseWorld world,
+                                           @Flags("other,defaultself") MultiverseWorld world,
+
                                            @Nullable @Optional Double x,
                                            @Nullable @Optional Double y,
                                            @Nullable @Optional Double z,
                                            @Nullable @Optional Float yaw,
                                            @Nullable @Optional Float pitch) {
-
             doSpawnSet(sender, world, parseLocation(player, world, x, y, z, yaw, pitch));
         }
     }

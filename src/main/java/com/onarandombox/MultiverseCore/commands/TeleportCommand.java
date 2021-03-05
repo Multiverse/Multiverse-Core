@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.destination.CustomTeleporterDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
@@ -155,12 +156,16 @@ public class TeleportCommand extends MultiverseCoreCommand {
 
         TeleportResult result = teleportObject.teleport(teleporter, teleportee, destination);
         if (result == TeleportResult.FAIL_UNSAFE) {
-            Logging.fine("Could not teleport " + teleportee.getName() + " to " + this.plugin.getLocationManipulation().strCoordsRaw(destination.getLocation(teleportee)));
-            this.plugin.getMVCommandManager().getQueueManager().addToQueue(
-                    teleporter,
-                    unsafeTeleportRunnable(teleporter, teleportee, destination.getLocation(teleportee)),
-                    "The location you are trying to teleport to is deemed unsafe, do you still want to try?",
-                    UNSAFE_TELEPORT_EXPIRE_DELAY);
+            Logging.fine("Could not teleport %s to %s.",
+                    teleportee.getName(), this.plugin.getLocationManipulation().strCoordsRaw(destination.getLocation(teleportee)));
+
+            this.plugin.getMVCommandManager().getQueueManager().addToQueue(new QueuedCommand.Builder()
+                    .sender(teleporter)
+                    .action(unsafeTeleportRunnable(teleporter, teleportee, destination.getLocation(teleportee)))
+                    .prompt("The location you are trying to teleport to is deemed unsafe, do you still want to try?")
+                    .validDuration(UNSAFE_TELEPORT_EXPIRE_DELAY)
+                    .build()
+            );
         }
 
         // else: Player was teleported successfully (or the tp event was fired I should say)
@@ -211,8 +216,6 @@ public class TeleportCommand extends MultiverseCoreCommand {
                                             @NotNull Player teleportee,
                                             @NotNull Location location) {
 
-        return () -> {
-            this.plugin.getSafeTTeleporter().safelyTeleport(teleporter, teleportee, location, false);
-        };
+        return () -> this.plugin.getSafeTTeleporter().safelyTeleport(teleporter, teleportee, location, false);
     }
 }

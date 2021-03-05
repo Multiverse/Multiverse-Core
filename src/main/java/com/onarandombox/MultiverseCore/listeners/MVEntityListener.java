@@ -22,8 +22,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
-import java.util.logging.Level;
-
 /**
  * Multiverse's Entity {@link Listener}.
  */

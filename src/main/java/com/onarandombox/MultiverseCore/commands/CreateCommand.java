@@ -13,7 +13,6 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
-import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
@@ -22,11 +21,12 @@ import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
 import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static org.bukkit.World.*;
 
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCoreCommand {
@@ -45,21 +45,25 @@ public class CreateCommand extends MultiverseCoreCommand {
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
     @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
-    @CommandCompletion("@empty @environments @worldFlags:-s/-g/-t/-n/-a")
+    @CommandCompletion("@empty @environments @flags")
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(@NotNull CommandSender sender,
 
+                                @NotNull
                                 @Syntax("<name>")
                                 @Description("New world name.")
-                                @NotNull @Flags("trim") @Conditions("creatableWorldName") String worldName,
+                                @Flags("trim")
+                                @Conditions("creatableWorldName") String worldName,
 
+                                @NotNull
                                 @Syntax("<env>")
                                 @Description("The world's environment. See: /mv env")
-                                @NotNull World.Environment environment,
+                                Environment environment,
 
+                                @Nullable
                                 @Syntax("[world-flags]")
                                 @Description("Other world settings. See: http://gg.gg/nn8bl")
-                                @Nullable @Optional String[] flagsArray) {
+                                String[] flagsArray) {
 
         FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
         Logging.info(String.valueOf(flags));

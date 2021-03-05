@@ -46,9 +46,10 @@ public class GameRuleCommand extends MultiverseCoreCommand {
     @Description("See the list gamerules values for a given world.")
     public void onGameRulesCommand(@NotNull CommandSender sender,
 
+                                   @NotNull
                                    @Syntax("[world]")
                                    @Description("World you want to see game rule info.")
-                                   @NotNull @Flags("other,defaultself, fallbackself") MultiverseWorld world,
+                                   @Flags("other,defaultself, fallbackself") MultiverseWorld world,
 
                                    @NotNull ContentFilter filter) {
 

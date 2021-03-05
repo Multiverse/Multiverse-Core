@@ -40,12 +40,13 @@ public class InfoCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.info")
     @Syntax("[world] [page]")
     @CommandCompletion("@MVWorlds @range:1-5")
-    @Description("")
+    @Description("Display detailed information of the world.")
     public void onInfoCommand(@NotNull CommandSender sender,
 
+                              @NotNull
                               @Syntax("[world]")
                               @Description("World you want to see info.")
-                              @NotNull @Flags("other,defaultself,fallbackself") MultiverseWorld world,
+                              @Flags("other,defaultself,fallbackself") MultiverseWorld world,
 
                               @Syntax("[page]")
                               @Description("Info page to display.")

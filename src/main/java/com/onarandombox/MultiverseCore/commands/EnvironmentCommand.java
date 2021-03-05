@@ -24,7 +24,7 @@ public class EnvironmentCommand extends MultiverseCoreCommand {
 
     @Subcommand("env|environments")
     @CommandPermission("multiverse.core.list.environments")
-    @Description("Lists valid known environments/world types.")
+    @Description("Lists valid known environments and world types.")
     public void onEnvironmentCommand(CommandSender sender) {
         showEnvironments(sender);
         sender.sendMessage("");

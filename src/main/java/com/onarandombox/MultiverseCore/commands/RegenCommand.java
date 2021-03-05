@@ -11,7 +11,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
 import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -39,20 +40,23 @@ public class RegenCommand extends MultiverseCoreCommand {
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(@NotNull CommandSender sender,
 
+                               @NotNull
                                @Syntax("<world>")
                                @Description("World that you want to regen.")
-                               @NotNull @co.aikar.commands.annotation.Flags("other") MultiverseWorld world,
+                               @Flags("other") MultiverseWorld world,
 
+                               @Nullable
                                @Syntax("[-s [seed]]")
                                @Description("Other world settings. See: http://gg.gg/nn8lk")
-                               @Nullable @Optional String[] flagsArray) {
+                               String[] flagsArray) {
 
         FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
 
-        this.plugin.getMVCommandManager().getQueueManager().addToQueue(
-                sender,
-                regenRunnable(sender, world, flags),
-                String.format("Are you sure you want to regen world '%s'?", world.getColoredWorldString())
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(new QueuedCommand.Builder()
+                .sender(sender)
+                .action(regenRunnable(sender, world, flags))
+                .prompt("Are you sure you want to regen world '%s'?", world.getColoredWorldString())
+                .build()
         );
     }
 

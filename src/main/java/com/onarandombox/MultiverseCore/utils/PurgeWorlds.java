@@ -23,7 +23,6 @@ import org.bukkit.entity.Squid;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Utility class that removes animals from worlds that don't belong there.

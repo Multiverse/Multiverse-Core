@@ -52,8 +52,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.File;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)

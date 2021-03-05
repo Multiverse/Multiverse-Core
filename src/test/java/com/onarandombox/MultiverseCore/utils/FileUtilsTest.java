@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.dumptruckman.minecraft.util.Logging;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

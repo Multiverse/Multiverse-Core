@@ -34,9 +34,10 @@ public class UnloadCommand extends MultiverseCoreCommand {
     @Description("Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.")
     public void onUnloadCommand(@NotNull CommandSender sender,
 
+                                @NotNull
                                 @Syntax("<world>")
                                 @Description("Name of world you want to unload.")
-                                @NotNull @Flags("other") MultiverseWorld world) {
+                                @Flags("other") MultiverseWorld world) {
 
         //TODO API: Should be able to use MVWorld object directly
         if (!this.plugin.getMVWorldManager().unloadWorld(world.getName())) {

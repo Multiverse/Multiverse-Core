@@ -25,8 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
-import java.util.logging.Level;
-
 /**
  * The default-implementation of {@link SafeTTeleporter}.
  */

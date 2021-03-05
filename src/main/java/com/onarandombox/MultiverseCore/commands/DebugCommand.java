@@ -30,20 +30,23 @@ public class DebugCommand extends MultiverseCoreCommand {
     }
 
     @Subcommand("debug")
+    @CommandPermission("multiverse.core.debug")
     @Description("Show the current debug level.")
     public void onShowDebugCommand(@NotNull CommandSender sender) {
         displayDebugMode(sender);
     }
 
     @Subcommand("debug")
-    @CommandCompletion("@toggles|@range:3")
+    @CommandPermission("multiverse.core.debug")
     @Syntax("<level>")
+    @CommandCompletion("@toggles|@range:3")
     @Description("Change debug level.")
     public void onChangeDebugCommand(@NotNull CommandSender sender,
 
+                                     @NotNull
                                      @Syntax("<level>")
                                      @Description("Set debug mode level, 0 to 3.")
-                                     @NotNull @Single String debugLevel) {
+                                     @Single String debugLevel) {
 
         int parsedLevel = parseDebugLevel(debugLevel);
         if (parsedLevel == -1) {
@@ -76,7 +79,7 @@ public class DebugCommand extends MultiverseCoreCommand {
     }
 
     private void displayDebugMode(@NotNull CommandSender sender) {
-        final int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
+        int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
         if (debugLevel == 0) {
             sender.sendMessage(String.format("Multiverse Debug mode is %soff", ChatColor.RED));
         }

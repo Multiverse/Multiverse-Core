@@ -60,13 +60,15 @@ public class ConfigCommand extends MultiverseCoreCommand {
     @Description("Set Global MV Variables.")
     public void onSetCommand(@NotNull CommandSender sender,
 
+                             @NotNull
                              @Syntax("<property>")
                              @Description("Config option.")
-                             @NotNull @Values("@MVConfigs") String property,
+                             @Values("@MVConfigs") String property,
 
+                             @NotNull
                              @Syntax("<value>")
                              @Description("New value for the given config option.")
-                             @NotNull @Single String value) {
+                             @Single String value) {
 
         property = property.toLowerCase();
 

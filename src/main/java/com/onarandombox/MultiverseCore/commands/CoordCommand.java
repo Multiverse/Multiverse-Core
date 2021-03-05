@@ -7,17 +7,16 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.contexts.PlayerWorld;
+import com.onarandombox.MultiverseCore.commandtools.contexts.RequiredPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,26 +30,40 @@ public class CoordCommand extends MultiverseCoreCommand {
     }
 
     @Subcommand("coord|coordinate")
-    @CommandPermission("multiverse.core.coord.self,multiverse.core.coord.other")
+    @CommandPermission("multiverse.core.coord.self")
+    @Description("Detailed information on your own where abouts.")
+    public void onCoordCommand(@NotNull Player player) {
+        showCoordInfo(player, player);
+    }
+
+    @Subcommand("coord|coordinate")
+    @CommandPermission("multiverse.core.coord.other")
     @Syntax("[player]")
     @CommandCompletion("@players")
     @Description("Detailed information on the player's where abouts.")
-    public void onCoorCommand(@NotNull CommandSender sender,
+    public void onOtherCoordCommand(@NotNull CommandSender sender,
 
-                              @Syntax("[player]")
-                              @Description("Player you want coordinate info of.")
-                              @NotNull
-                              @Flags("other,defaultself")
-                              @Conditions("selfOtherPerm:multiverse.core.coord") PlayerWorld targetPlayer) {
+                                    @NotNull
+                                    @Syntax("[player]")
+                                    @Description("Player you want coordinate info of.")
+                                    RequiredPlayer player) {
 
-        Player player = targetPlayer.getPlayer();
-        MultiverseWorld world = targetPlayer.getWorld();
+        showCoordInfo(sender, player.get());
+    }
 
-        sender.sendMessage(String.format("%s--- Location Information %s---", ChatColor.AQUA,
-                (targetPlayer.isSender(sender))
-                        ? ""
-                        : String.format("for %s%s%s",ChatColor.YELLOW, player.getName(), ChatColor.AQUA)));
+    private void showCoordInfo(@NotNull CommandSender sender,
+                               @NotNull Player player) {
 
+        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(player.getWorld());
+        if (world == null) {
+            throw new InvalidCommandArgument("Player is not in a multiverse world.");
+        }
+
+        String name = player.equals(sender)
+                ? ""
+                : String.format("for %s%s%s",ChatColor.YELLOW, player.getName(), ChatColor.AQUA);
+
+        sender.sendMessage(String.format("%s--- Location Information %s---", ChatColor.AQUA, name));
         sender.sendMessage(String.format("%sWorld: %s%s", ChatColor.AQUA, ChatColor.WHITE,  world.getName()));
         sender.sendMessage(String.format("%sAlias: %s%s", ChatColor.AQUA, ChatColor.WHITE,  world.getColoredWorldString()));
         sender.sendMessage(String.format("%sWorld Scale: %s%s", ChatColor.AQUA, ChatColor.WHITE, world.getScaling()));

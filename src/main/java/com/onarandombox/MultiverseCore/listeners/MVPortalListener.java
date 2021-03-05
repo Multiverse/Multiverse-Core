@@ -19,8 +19,6 @@ import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
-import java.util.logging.Level;
-
 /**
  * A custom listener for portal related events.
  */

@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -23,7 +22,6 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,20 +38,22 @@ public class ListCommand extends MultiverseCoreCommand {
     @Syntax("[filter] [page]")
     @Description("Displays a listing of all worlds that you can enter.")
     public void onListCommand(@NotNull CommandSender sender,
-                              @Nullable @Optional Player player,
+
                               @NotNull PageFilter pageFilter) {
 
         new PageDisplay().withSender(sender)
                 .withHeader(String.format("%s====[ Multiverse World List ]====", ChatColor.GOLD))
-                .withCreator(getListContents(sender, player))
+                .withCreator(getListContents(sender))
                 .withPageFilter(pageFilter)
                 .build()
                 .runTaskAsynchronously(this.plugin);
     }
 
-    private ContentCreator<List<String>> getListContents(@NotNull CommandSender sender,
-                                           @Nullable @Optional Player player) {
+    private ContentCreator<List<String>> getListContents(@NotNull CommandSender sender) {
         return () -> {
+            Player player = (sender instanceof Player)
+                    ? (Player) sender
+                    : null;
             List<String> worldList =  new ArrayList<>();
             plugin.getMVWorldManager().getMVWorlds().stream()
                     .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))

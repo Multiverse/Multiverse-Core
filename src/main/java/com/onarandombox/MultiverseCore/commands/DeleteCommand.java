@@ -17,6 +17,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -35,17 +36,18 @@ public class DeleteCommand extends MultiverseCoreCommand {
     @Description("Deletes a world on your server PERMANENTLY.")
     public void onDeleteCommand(@NotNull CommandSender sender,
 
+                                @NotNull
                                 @Syntax("<world>")
                                 @Description("Multiverse world you want to delete.")
-                                @NotNull
-                                @Single
                                 @Flags("trim")
-                                @Conditions("isWorldInConfig|validWorldFolder") String worldName) {
+                                @Conditions("isWorldInConfig|validWorldFolder")
+                                @Single String worldName) {
 
-        this.plugin.getMVCommandManager().getQueueManager().addToQueue(
-                sender,
-                deleteRunnable(sender, worldName),
-                String.format("Are you sure you want to delete world '%s'?", worldName)
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(new QueuedCommand.Builder()
+                .sender(sender)
+                .action(deleteRunnable(sender, worldName))
+                .prompt("Are you sure you want to delete world '%s'?", worldName)
+                .build()
         );
     }
 

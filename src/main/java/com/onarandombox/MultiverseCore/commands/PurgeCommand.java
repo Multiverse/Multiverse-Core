@@ -40,9 +40,10 @@ public class PurgeCommand extends MultiverseCoreCommand {
     @Description("Removed the specified type of mob from all worlds.")
     public void onPurgeAllCommand(@NotNull CommandSender sender,
 
+                                  @NotNull
                                   @Syntax("<entities>")
                                   @Description("Entity types that you want to remove from all worlds.")
-                                  @NotNull @Split(",") String[] targetEntities) {
+                                  @Split(",") String[] targetEntities) {
 
         doPurge(sender, this.plugin.getMVWorldManager().getMVWorlds(), targetEntities);
     }
@@ -54,13 +55,15 @@ public class PurgeCommand extends MultiverseCoreCommand {
     @Description("Removed the specified type of mob from the specified world.")
     public void onPurgeCommand(@NotNull CommandSender sender,
 
+                               @NotNull
                                @Syntax("[world]")
                                @Description("World that you want to remove entities.")
-                               @NotNull @Flags("other,defaultself,fallbackself") MultiverseWorld world,
+                               @Flags("other,defaultself,fallbackself") MultiverseWorld world,
 
+                               @NotNull
                                @Syntax("<entities>")
                                @Description("Entity types that you want to remove from a world.")
-                               @NotNull @Split(",") String[] targetEntities) {
+                               @Split(",") String[] targetEntities) {
 
         doPurge(sender, Collections.singleton(world), targetEntities);
     }

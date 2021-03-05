@@ -44,9 +44,10 @@ public class WhoCommand extends MultiverseCoreCommand {
     public void onWhoAllCommand(@NotNull CommandSender sender,
                                 @Nullable @Optional Player player,
 
+                                @NotNull
                                 @Syntax("[filter]")
                                 @Description("Filter the player names.")
-                                @NotNull ContentFilter filter) {
+                                ContentFilter filter) {
 
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 
@@ -84,15 +85,16 @@ public class WhoCommand extends MultiverseCoreCommand {
     public void onWhoCommand(@NotNull CommandSender sender,
                              @Nullable @Optional Player player,
 
+                             @NotNull
                              @Syntax("[world]")
                              @Description("World to show player list.")
-                             @NotNull
                              @Flags("other,defaultself,fallbackself")
                              @Conditions("hasWorldAccess") MultiverseWorld world,
 
+                             @NotNull
                              @Syntax("[filter]")
                              @Description("Filter the player names.")
-                             @NotNull ContentFilter filter) {
+                             ContentFilter filter) {
 
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 

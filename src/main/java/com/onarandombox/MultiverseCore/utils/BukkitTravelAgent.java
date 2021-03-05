@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import java.util.logging.Level;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;

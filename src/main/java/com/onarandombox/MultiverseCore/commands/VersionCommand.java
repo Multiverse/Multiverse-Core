@@ -11,7 +11,6 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -50,13 +49,15 @@ public class VersionCommand extends MultiverseCoreCommand {
     @Description("Dumps version info to the console, optionally to pastal service.")
     public void onVersionCommand(@NotNull CommandSender sender,
 
+                                 @NotNull
                                  @Syntax("[paste-service]")
                                  @Description("Website to upload your version info to.")
-                                 @NotNull PasteServiceType pasteType,
+                                 PasteServiceType pasteType,
 
+                                 @Nullable
                                  @Syntax("[--include-plugin-list]")
                                  @Description("Whether you want to have plugins list in version info.")
-                                 @Nullable @Optional String includePlugin) {
+                                 String includePlugin) {
 
         MVVersionEvent versionEvent = new MVVersionEvent();
         this.addVersionInfoToEvent(versionEvent);

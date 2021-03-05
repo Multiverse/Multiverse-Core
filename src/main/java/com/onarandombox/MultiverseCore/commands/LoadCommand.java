@@ -34,9 +34,11 @@ public class LoadCommand extends MultiverseCoreCommand {
     @Description("Loads a world. World must be already in worlds.yml, else please use /mv import.")
     public void onLoadCommand(@NotNull CommandSender sender,
 
+                              @NotNull
                               @Syntax("<world>")
                               @Description("Name of world you want to load.")
-                              @NotNull @Flags("type=world name") @Conditions("isUnloadedWorld") String worldName) {
+                              @Flags("type=world name")
+                              @Conditions("isUnloadedWorld") String worldName) {
 
         if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
             sender.sendMessage(String.format("Error trying to load world '%s'!", worldName));

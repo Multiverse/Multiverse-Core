@@ -7,8 +7,6 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.logging.Level;
-
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
