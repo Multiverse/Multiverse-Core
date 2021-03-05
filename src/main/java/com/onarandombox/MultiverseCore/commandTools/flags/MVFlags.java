@@ -3,7 +3,9 @@ package com.onarandombox.MultiverseCore.commandtools.flags;
 import co.aikar.commands.InvalidCommandArgument;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
+import org.bukkit.Bukkit;
 import org.bukkit.WorldType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -100,7 +102,15 @@ public class MVFlags {
             ("Generator", "--gen", String.class) {
         @Override
         public Collection<String> suggestValue() {
-            return multiverse.getMVWorldManager().getAvailableWorldGenerators();
+            return Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
+                    .filter(Plugin::isEnabled)
+                    .filter(plugin -> multiverse.getUnsafeCallWrapper().wrap(
+                            () -> plugin.getDefaultWorldGenerator("world", ""),
+                            plugin.getName(),
+                            "Get generator"
+                    ) != null)
+                    .map(plugin -> plugin.getDescription().getName())
+                    .collect(Collectors.toList());
         }
 
         @Override

@@ -159,13 +159,6 @@ public interface MVWorldManager {
     ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName);
 
     /**
-     * Get possible generator plugins.
-     *
-     * @return A list of plugin names that is detected to have a chunk generator.
-     */
-    List<String> getAvailableWorldGenerators();
-
-    /**
      * Returns a list of all the worlds Multiverse knows about.
      *
      * @return A list of {@link MultiverseWorld}.

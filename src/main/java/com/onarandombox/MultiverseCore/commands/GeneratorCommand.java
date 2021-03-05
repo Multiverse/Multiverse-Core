@@ -15,6 +15,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandtools.display.inline.ListDisplay;
+import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -40,14 +41,14 @@ public class GeneratorCommand extends MultiverseCoreCommand {
 
         new ListDisplay().withSender(sender)
                 .withHeader(String.format("%s--- Available Generator Plugins ---", ChatColor.GOLD))
-                .withCreator(getGeneratorContent(plugin))
+                .withCreator(getGeneratorContent())
                 .withColors(new ColorAlternator(ChatColor.AQUA, ChatColor.WHITE))
                 .withEmptyMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED))
                 .build()
                 .run();
     }
 
-    private static ContentCreator<List<String>> getGeneratorContent(@NotNull MultiverseCore plugin) {
-        return () -> plugin.getMVWorldManager().getAvailableWorldGenerators();
+    private static ContentCreator<List<String>> getGeneratorContent() {
+        return () -> (List<String>) MVFlags.GENERATOR.suggestValue();
     }
 }

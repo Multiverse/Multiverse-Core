@@ -107,21 +107,6 @@ public class WorldManager implements MVWorldManager {
 
     /**
      * {@inheritDoc}
-     */
-    public List<String> getAvailableWorldGenerators() {
-        return Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
-                .filter(Plugin::isEnabled)
-                .filter(plugin -> this.plugin.getUnsafeCallWrapper().wrap(
-                        () -> plugin.getDefaultWorldGenerator("world", ""),
-                        plugin.getName(),
-                        "Get generator"
-                ) != null)
-                .map(plugin -> plugin.getDescription().getName())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * {@inheritDoc}
      * @deprecated Use {@link #cloneWorld(String, String)} instead.
      */
     @Override
