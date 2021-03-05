@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class MVFlags {
             ("Seed", "--seed", String.class) {
         @Override
         public Collection<String> suggestValue() {
-            return Arrays.asList("seed", String.valueOf(new Random().nextLong()));
+            return Collections.singleton(String.valueOf(new Random().nextLong()));
         }
 
         @Override
@@ -45,7 +46,7 @@ public class MVFlags {
             ("Seed", "--seed", String.class) {
         @Override
         public Collection<String> suggestValue() {
-            return Arrays.asList("seed", String.valueOf(new Random().nextLong()));
+            return Collections.singletonList(String.valueOf(new Random().nextLong()));
         }
 
         @Override

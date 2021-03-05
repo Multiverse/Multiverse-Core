@@ -95,14 +95,16 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             // suggest new flags.
             return getRemainingFlagIdentifiers(flagGroup, args);
         }
+
+        Collection<String> flagSuggestions = flag.suggestValue();
+
         if (flag.getValueRequirement() == ValueRequirement.OPTIONAL) {
             // suggest new flags and values.
-            Collection<String> flagSuggestions = flag.suggestValue();
             flagSuggestions.addAll(getRemainingFlagIdentifiers(flagGroup, args));
             return flagSuggestions;
         }
         // suggest new values.
-        return flag.suggestValue();
+        return flagSuggestions == null ? Collections.emptySet() : flagSuggestions;
     }
 
     private Collection<String> getRemainingFlagIdentifiers(FlagGroup flagGroup, String[] args) {
