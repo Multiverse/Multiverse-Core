@@ -16,7 +16,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
@@ -31,7 +31,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Arrays;
@@ -45,8 +44,8 @@ public class VersionCommand extends MultiverseCoreCommand {
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
         this.setFlagGroup(FlagGroup.of(
-                MVFlags.PASTE_SERVICE_TYPE,
-                MVFlags.INCLUDE_PLUGIN_LIST
+                CoreFlags.PASTE_SERVICE_TYPE,
+                CoreFlags.INCLUDE_PLUGIN_LIST
         ));
     }
 
@@ -68,7 +67,7 @@ public class VersionCommand extends MultiverseCoreCommand {
         this.addVersionInfoToEvent(versionEvent);
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
 
-        if (flags.getValue(MVFlags.INCLUDE_PLUGIN_LIST)) {
+        if (flags.getValue(CoreFlags.INCLUDE_PLUGIN_LIST)) {
             versionEvent.appendVersionInfo('\n' + "Plugins: " + getPluginList());
             versionEvent.putDetailedVersionInfo("plugins.txt", "Plugins: " + getPluginList());
         }
@@ -80,7 +79,7 @@ public class VersionCommand extends MultiverseCoreCommand {
 
         logToConsole(versionInfo);
 
-        PasteServiceType pasteType = flags.getValue(MVFlags.PASTE_SERVICE_TYPE);
+        PasteServiceType pasteType = flags.getValue(CoreFlags.PASTE_SERVICE_TYPE);
         if (pasteType == PasteServiceType.NONE && !(sender instanceof ConsoleCommandSender)) {
             sender.sendMessage("Version info dumped to console! Please check your server logs.");
             return;

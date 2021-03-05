@@ -15,11 +15,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,11 +33,11 @@ public class CreateCommand extends MultiverseCoreCommand {
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
         this.setFlagGroup(FlagGroup.of(
-                MVFlags.WORLD_TYPE,
-                MVFlags.SEED,
-                MVFlags.GENERATOR,
-                MVFlags.GENERATE_STRUCTURES,
-                MVFlags.SPAWN_ADJUST
+                CoreFlags.WORLD_TYPE,
+                CoreFlags.SEED,
+                CoreFlags.GENERATOR,
+                CoreFlags.GENERATE_STRUCTURES,
+                CoreFlags.SPAWN_ADJUST
         ));
     }
 
@@ -72,11 +71,11 @@ public class CreateCommand extends MultiverseCoreCommand {
                 worldName,
                 environment,
                 // TODO API: Should Allow FlagResult object to be passed directly
-                flags.getValue(MVFlags.SEED),
-                flags.getValue(MVFlags.WORLD_TYPE),
-                flags.getValue(MVFlags.GENERATE_STRUCTURES),
-                flags.getValue(MVFlags.GENERATOR),
-                flags.getValue(MVFlags.SPAWN_ADJUST))
+                flags.getValue(CoreFlags.SEED),
+                flags.getValue(CoreFlags.WORLD_TYPE),
+                flags.getValue(CoreFlags.GENERATE_STRUCTURES),
+                flags.getValue(CoreFlags.GENERATOR),
+                flags.getValue(CoreFlags.SPAWN_ADJUST))
         )
                 ? String.format("%sComplete!", ChatColor.GREEN)
                 : String.format("%sFailed! See console for errors.", ChatColor.RED));

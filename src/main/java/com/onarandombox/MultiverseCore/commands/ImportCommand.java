@@ -17,7 +17,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class ImportCommand extends MultiverseCoreCommand {
 
     public ImportCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setFlagGroup(FlagGroup.of(MVFlags.GENERATOR, MVFlags.SPAWN_ADJUST));
+        this.setFlagGroup(FlagGroup.of(CoreFlags.GENERATOR, CoreFlags.SPAWN_ADJUST));
     }
 
     @Subcommand("import")
@@ -63,8 +63,8 @@ public class ImportCommand extends MultiverseCoreCommand {
                 null,
                 null,
                 null,
-                flags.getValue(MVFlags.GENERATOR),
-                flags.getValue(MVFlags.SPAWN_ADJUST))
+                flags.getValue(CoreFlags.GENERATOR),
+                flags.getValue(CoreFlags.SPAWN_ADJUST))
         )
                 ? String.format("%sComplete!", ChatColor.GREEN)
                 : String.format("%sFailed! See console for more details.", ChatColor.RED));

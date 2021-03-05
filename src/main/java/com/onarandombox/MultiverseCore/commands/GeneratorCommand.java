@@ -15,7 +15,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandtools.display.inline.ListDisplay;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +49,6 @@ public class GeneratorCommand extends MultiverseCoreCommand {
     }
 
     private static ContentCreator<List<String>> getGeneratorContent() {
-        return () -> (List<String>) MVFlags.GENERATOR.suggestValue();
+        return () -> (List<String>) CoreFlags.GENERATOR.suggestValue();
     }
 }

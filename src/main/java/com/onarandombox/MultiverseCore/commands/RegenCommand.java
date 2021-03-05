@@ -18,7 +18,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +30,7 @@ public class RegenCommand extends MultiverseCoreCommand {
 
     public RegenCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setFlagGroup(FlagGroup.of(MVFlags.RANDOM_SEED));
+        this.setFlagGroup(FlagGroup.of(CoreFlags.RANDOM_SEED));
     }
 
     @Subcommand("regen")
@@ -70,9 +70,9 @@ public class RegenCommand extends MultiverseCoreCommand {
             //TODO: API should allow regen of unloaded worlds.
             sender.sendMessage((this.plugin.getMVWorldManager().regenWorld(
                     world.getName(),
-                    !flags.isDefaulted(MVFlags.RANDOM_SEED),
-                    !flags.isByUserInput(MVFlags.RANDOM_SEED),
-                    flags.getValue(MVFlags.RANDOM_SEED))
+                    !flags.isDefaulted(CoreFlags.RANDOM_SEED),
+                    !flags.isByUserInput(CoreFlags.RANDOM_SEED),
+                    flags.getValue(CoreFlags.RANDOM_SEED))
             )
                     ? String.format("%sWorld Regenerated!", ChatColor.GREEN)
                     : String.format("%sWorld could not be regenerated!", ChatColor.RED));

@@ -19,7 +19,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
@@ -220,7 +220,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
         // Setup our static classes
         CompatibilityLayer.init();
-        MVFlags.setCoreInstance(this);
+        CoreFlags.setCoreInstance(this);
     }
 
 
