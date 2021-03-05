@@ -1,14 +1,18 @@
 package com.onarandombox.MultiverseCore.commandtools.flags;
 
+import co.aikar.commands.InvalidCommandArgument;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class MVFlags {
 
@@ -18,7 +22,8 @@ public class MVFlags {
         multiverse = plugin;
     }
 
-    public static final CommandFlag<String> SEED = new RequiredCommandFlag<String>("Seed", "-s", String.class) {
+    public static final CommandFlag<String> SEED = new RequiredCommandFlag<String>
+            ("Seed", "-s", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("seed", String.valueOf(new Random().nextLong()));
@@ -30,7 +35,8 @@ public class MVFlags {
         }
     };
 
-    public static final CommandFlag<String> RANDOM_SEED = new OptionalCommandFlag<String>("Seed", "-s", String.class) {
+    public static final CommandFlag<String> RANDOM_SEED = new OptionalCommandFlag<String>
+            ("Seed", "-s", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("seed", String.valueOf(new Random().nextLong()));
@@ -42,7 +48,8 @@ public class MVFlags {
         }
     };
 
-    public static final CommandFlag<WorldType> WORLD_TYPE = new RequiredCommandFlag<WorldType>("WorldType", "-t", WorldType.class) {
+    public static final CommandFlag<WorldType> WORLD_TYPE = new RequiredCommandFlag<WorldType>
+            ("WorldType", "-t", WorldType.class) {
 
         private final Map<String, WorldType> typeAlias = new HashMap<String, WorldType>(4){{
             put("normal", WorldType.NORMAL);
@@ -76,7 +83,8 @@ public class MVFlags {
         }
     };
 
-    public static final CommandFlag<String> GENERATOR = new RequiredCommandFlag<String>("Generator", "-g", String.class) {
+    public static final CommandFlag<String> GENERATOR = new RequiredCommandFlag<String>
+            ("Generator", "-g", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return multiverse.getMVWorldManager().getAvailableWorldGenerators();
@@ -98,7 +106,8 @@ public class MVFlags {
         }
     };
 
-    public static final CommandFlag<Boolean> GENERATE_STRUCTURES = new RequiredCommandFlag<Boolean>("GenerateStructures", "-a", Boolean.class) {
+    public static final CommandFlag<Boolean> GENERATE_STRUCTURES = new RequiredCommandFlag<Boolean>
+            ("GenerateStructures", "-a", Boolean.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("true", "false");
@@ -115,7 +124,8 @@ public class MVFlags {
         }
     };
 
-    public static final CommandFlag<Boolean> SPAWN_ADJUST = new NoValueCommandFlag<Boolean>("AdjustSpawn", "-n", Boolean.class) {
+    public static final CommandFlag<Boolean> SPAWN_ADJUST = new NoValueCommandFlag<Boolean>
+            ("AdjustSpawn", "-n", Boolean.class) {
         @Override
         public Boolean getValue() throws FlagParseFailedException {
             return false;
@@ -127,5 +137,50 @@ public class MVFlags {
         }
     };
 
+    public static final CommandFlag<PasteServiceType> PASTE_SERVICE_TYPE = new OptionalCommandFlag<PasteServiceType>
+            ("PasteServiceType", "--paste", PasteServiceType.class) {
 
+        private final List<String> pasteTypes = Arrays.stream(PasteServiceType.values())
+                .filter(pt -> pt != PasteServiceType.NONE)
+                .map(p -> p.toString().toLowerCase())
+                .collect(Collectors.toList());
+
+        @Override
+        public Collection<String> suggestValue() {
+            return pasteTypes;
+        }
+
+        @Override
+        public PasteServiceType getValue(@NotNull String input) throws FlagParseFailedException {
+            try {
+                return PasteServiceType.valueOf(input.toUpperCase());
+            }
+            catch (IllegalArgumentException e) {
+                throw new InvalidCommandArgument(String.format("Invalid paste service type '%s'.", input));
+            }
+        }
+
+        @Override
+        public PasteServiceType getValue() throws FlagParseFailedException {
+            return PasteServiceType.PASTEGG;
+        }
+
+        @Override
+        public PasteServiceType getDefaultValue() {
+            return PasteServiceType.NONE;
+        }
+    }.addAlias("-p");
+
+    public static final CommandFlag<Boolean> INCLUDE_PLUGIN_LIST = new NoValueCommandFlag<Boolean>
+            ("IncludePlugins", "--include-plugin-list", Boolean.class) {
+        @Override
+        public Boolean getValue() throws FlagParseFailedException {
+            return true;
+        }
+
+        @Override
+        public Boolean getDefaultValue() {
+            return true;
+        }
+    }.addAlias("-pl");
 }

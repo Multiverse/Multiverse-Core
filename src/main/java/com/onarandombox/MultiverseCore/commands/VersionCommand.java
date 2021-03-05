@@ -14,6 +14,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.FlagResult;
+import com.onarandombox.MultiverseCore.commandtools.flags.MVFlags;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
@@ -25,6 +28,7 @@ import com.onarandombox.MultiverseCore.utils.webpaste.URLShortenerType;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,30 +44,31 @@ public class VersionCommand extends MultiverseCoreCommand {
 
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
+        this.setFlagGroup(FlagGroup.of(
+                MVFlags.PASTE_SERVICE_TYPE,
+                MVFlags.INCLUDE_PLUGIN_LIST
+        ));
     }
 
     @Subcommand("version")
     @CommandPermission("multiverse.core.version")
-    @Syntax("[pastebin|hastebin|pastegg] [--include-plugin-list]")
-    @CommandCompletion("@pasteTypes --include-plugin-list")
+    @Syntax("--paste [pastebin|hastebin|pastegg] [--include-plugin-list]")
+    @CommandCompletion("@flags")
     @Description("Dumps version info to the console, optionally to pastal service.")
     public void onVersionCommand(@NotNull CommandSender sender,
 
                                  @NotNull
                                  @Syntax("[paste-service]")
                                  @Description("Website to upload your version info to.")
-                                 PasteServiceType pasteType,
+                                 String[] flagsArray) {
 
-                                 @Nullable
-                                 @Syntax("[--include-plugin-list]")
-                                 @Description("Whether you want to have plugins list in version info.")
-                                 String includePlugin) {
+        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
 
         MVVersionEvent versionEvent = new MVVersionEvent();
         this.addVersionInfoToEvent(versionEvent);
         this.plugin.getServer().getPluginManager().callEvent(versionEvent);
 
-        if (includePlugin != null && (includePlugin.equalsIgnoreCase("--include-plugin-list") || includePlugin.equalsIgnoreCase("-pl"))) {
+        if (flags.getValue(MVFlags.INCLUDE_PLUGIN_LIST)) {
             versionEvent.appendVersionInfo('\n' + "Plugins: " + getPluginList());
             versionEvent.putDetailedVersionInfo("plugins.txt", "Plugins: " + getPluginList());
         }
@@ -75,7 +80,8 @@ public class VersionCommand extends MultiverseCoreCommand {
 
         logToConsole(versionInfo);
 
-        if (pasteType == PasteServiceType.NONE) {
+        PasteServiceType pasteType = flags.getValue(MVFlags.PASTE_SERVICE_TYPE);
+        if (pasteType == PasteServiceType.NONE && !(sender instanceof ConsoleCommandSender)) {
             sender.sendMessage("Version info dumped to console! Please check your server logs.");
             return;
         }

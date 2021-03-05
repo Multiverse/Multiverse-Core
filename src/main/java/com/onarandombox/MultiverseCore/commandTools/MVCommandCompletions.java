@@ -91,9 +91,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         String[] args = context.getContextValue(String[].class);
         CommandFlag<?> flag = (args.length <= 1) ? null : flagGroup.getByKey(args[args.length - 2]);
 
-        Logging.info(Arrays.toString(args));
-        Logging.info(String.valueOf(flag));
-
         if (flag == null || flag.getValueRequirement() == ValueRequirement.NONE) {
             // suggest new flags.
             return getRemainingFlagIdentifiers(flagGroup, args);
