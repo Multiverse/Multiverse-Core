@@ -16,7 +16,6 @@ import co.aikar.commands.ConditionFailedException;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.contexts.PlayerWorld;
 import com.onarandombox.MultiverseCore.enums.AddProperties;
 import com.onarandombox.MultiverseCore.enums.WorldValidationResult;
 import org.bukkit.ChatColor;
@@ -46,7 +45,6 @@ public class MVCommandConditions {
         conditions.addCondition(String.class, "validWorldFolder", this::checkValidWorldFolder);
         conditions.addCondition(String.class, "validAddProperty", this::checkValidAddProperty);
         conditions.addCondition(MultiverseWorld.class, "hasWorldAccess", this::checkHasWorldAccess);
-        conditions.addCondition(PlayerWorld.class, "selfOtherPerm", this::checkSelfOtherPerm);
     }
 
     private void checkIsMVWorld(@NotNull ConditionContext<BukkitCommandIssuer> context,
@@ -193,16 +191,6 @@ public class MVCommandConditions {
         if (!this.plugin.getMVPerms().canEnterWorld(player, world)) {
             throw new ConditionFailedException(String.format("You aren't allowed to access to world '%s%s'!",
                     world.getColoredWorldString(), ChatColor.RED));
-        }
-    }
-
-    private void checkSelfOtherPerm(@NotNull ConditionContext<BukkitCommandIssuer> context,
-                                    @NotNull BukkitCommandExecutionContext executionContext,
-                                    @NotNull PlayerWorld player) {
-
-        String permNode = context.getConfig() + (player.isSender(executionContext.getSender()) ? ".self" : ".other");
-        if (!executionContext.getSender().hasPermission(permNode)) {
-            throw new ConditionFailedException("You do not have permission to run this command.");
         }
     }
 }

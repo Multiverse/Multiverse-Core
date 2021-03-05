@@ -127,7 +127,5 @@ public class MVFlags {
         }
     };
 
-    static void register(CommandFlag<?> flag) {
 
-    }
 }

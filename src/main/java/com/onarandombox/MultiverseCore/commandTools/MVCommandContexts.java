@@ -18,7 +18,6 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandtools.contexts.RequiredPlayer;
 import com.onarandombox.MultiverseCore.commandtools.contexts.GameRuleProperty;
 import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
-import com.onarandombox.MultiverseCore.commandtools.contexts.PlayerWorld;
 import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandtools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
@@ -60,7 +59,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(RequiredPlayer.class, this::deriveRequiredPlayer);
         registerIssuerOnlyContext(Player.class, this::derivePlayer);
 
-        registerIssuerAwareContext(PlayerWorld.class, this::derivePlayerWorld);
         registerIssuerAwareContext(MultiverseWorld.class, this::deriveMultiverseWorld);
         registerContext(World.Environment.class, this::deriveEnvironment);
         registerIssuerAwareContext(GameRuleProperty.class, this::deriveGameRuleProperty);
@@ -88,26 +86,6 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("Invalid player name '" + playerIdentifier + "'!");
         }
         return new RequiredPlayer(player);
-    }
-
-    @NotNull
-    private PlayerWorld derivePlayerWorld(@NotNull BukkitCommandExecutionContext context) {
-        Player player = derivePlayer(context);
-        if (player == null) {
-            if (context.isOptional()) {
-                return null;
-            }
-            // Tho this should not happen as player parsing is handled by derivePlayer.
-            throw new InvalidCommandArgument("Invalid player name!");
-        }
-
-        MultiverseWorld world = getPlayerWorld(
-                player,
-                false,
-                String.format("Something went wrong parsing player '%s'...", player.getName())
-        );
-
-        return new PlayerWorld(player, world);
     }
 
     @Nullable
