@@ -55,7 +55,7 @@ public class ImportCommand extends MultiverseCoreCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8c2")
                                 String[] flagsArray) {
 
-        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
+        FlagResult flags = this.getFlagGroup().calculateResult(flagsArray);
 
         Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(worldName,

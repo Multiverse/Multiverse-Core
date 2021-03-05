@@ -65,8 +65,7 @@ public class CreateCommand extends MultiverseCoreCommand {
                                 @Description("Other world settings. See: http://gg.gg/nn8bl")
                                 String[] flagsArray) {
 
-        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
-        Logging.info(String.valueOf(flags));
+        FlagResult flags = this.getFlagGroup().calculateResult(flagsArray);
 
         Command.broadcastCommandMessage(sender, String.format("Starting creation of world '%s'...", worldName));
         Command.broadcastCommandMessage(sender, (this.plugin.getMVWorldManager().addWorld(

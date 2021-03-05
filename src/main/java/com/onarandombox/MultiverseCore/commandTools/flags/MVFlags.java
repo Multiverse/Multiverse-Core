@@ -22,8 +22,11 @@ public class MVFlags {
         multiverse = plugin;
     }
 
+    /**
+     * Flag for custom seed.
+     */
     public static final CommandFlag<String> SEED = new RequiredCommandFlag<String>
-            ("Seed", "-s", String.class) {
+            ("Seed", "--seed", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("seed", String.valueOf(new Random().nextLong()));
@@ -33,10 +36,13 @@ public class MVFlags {
         public String getValue(@NotNull String input) throws FlagParseFailedException {
             return input;
         }
-    };
+    }.addAliases("-s");
 
+    /**
+     * Flag for custom seed. No value means random seed.
+     */
     public static final CommandFlag<String> RANDOM_SEED = new OptionalCommandFlag<String>
-            ("Seed", "-s", String.class) {
+            ("Seed", "--seed", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("seed", String.valueOf(new Random().nextLong()));
@@ -46,10 +52,13 @@ public class MVFlags {
         public String getValue(@NotNull String input) throws FlagParseFailedException {
             return input;
         }
-    };
+    }.addAliases("-s");
 
+    /**
+     * Flag for world type used.
+     */
     public static final CommandFlag<WorldType> WORLD_TYPE = new RequiredCommandFlag<WorldType>
-            ("WorldType", "-t", WorldType.class) {
+            ("WorldType", "--type", WorldType.class) {
 
         private final Map<String, WorldType> typeAlias = new HashMap<String, WorldType>(4){{
             put("normal", WorldType.NORMAL);
@@ -81,10 +90,13 @@ public class MVFlags {
         public WorldType getDefaultValue() {
             return WorldType.NORMAL;
         }
-    };
+    }.addAliases("-t");
 
+    /**
+     * Flag for world generator.
+     */
     public static final CommandFlag<String> GENERATOR = new RequiredCommandFlag<String>
-            ("Generator", "-g", String.class) {
+            ("Generator", "--gen", String.class) {
         @Override
         public Collection<String> suggestValue() {
             return multiverse.getMVWorldManager().getAvailableWorldGenerators();
@@ -104,10 +116,13 @@ public class MVFlags {
             }
             return input;
         }
-    };
+    }.addAliases("-g");
 
+    /**
+     * Flag to toggle if world should generate structures.
+     */
     public static final CommandFlag<Boolean> GENERATE_STRUCTURES = new RequiredCommandFlag<Boolean>
-            ("GenerateStructures", "-a", Boolean.class) {
+            ("GenerateStructures", "--structures", Boolean.class) {
         @Override
         public Collection<String> suggestValue() {
             return Arrays.asList("true", "false");
@@ -122,10 +137,13 @@ public class MVFlags {
         public Boolean getDefaultValue() {
             return true;
         }
-    };
+    }.addAliases("--structure", "-a");
 
+    /**
+     * Flag to toggle if world spawn should be adjusted.
+     */
     public static final CommandFlag<Boolean> SPAWN_ADJUST = new NoValueCommandFlag<Boolean>
-            ("AdjustSpawn", "-n", Boolean.class) {
+            ("AdjustSpawn", "--dont-adjust-spawn", Boolean.class) {
         @Override
         public Boolean getValue() throws FlagParseFailedException {
             return false;
@@ -135,8 +153,11 @@ public class MVFlags {
         public Boolean getDefaultValue() {
             return true;
         }
-    };
+    }.addAliases("-n");
 
+    /**
+     * Flag to specify a paste service.
+     */
     public static final CommandFlag<PasteServiceType> PASTE_SERVICE_TYPE = new OptionalCommandFlag<PasteServiceType>
             ("PasteServiceType", "--paste", PasteServiceType.class) {
 
@@ -169,8 +190,11 @@ public class MVFlags {
         public PasteServiceType getDefaultValue() {
             return PasteServiceType.NONE;
         }
-    }.addAlias("-p");
+    }.addAliases("-p");
 
+    /**
+     * Flag to toggle if plugin list should be included.
+     */
     public static final CommandFlag<Boolean> INCLUDE_PLUGIN_LIST = new NoValueCommandFlag<Boolean>
             ("IncludePlugins", "--include-plugin-list", Boolean.class) {
         @Override
@@ -182,5 +206,5 @@ public class MVFlags {
         public Boolean getDefaultValue() {
             return true;
         }
-    }.addAlias("-pl");
+    }.addAliases("-pl");
 }

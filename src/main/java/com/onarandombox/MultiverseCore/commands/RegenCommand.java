@@ -50,7 +50,7 @@ public class RegenCommand extends MultiverseCoreCommand {
                                @Description("Other world settings. See: http://gg.gg/nn8lk")
                                String[] flagsArray) {
 
-        FlagResult flags = FlagResult.parse(flagsArray, this.getFlagGroup());
+        FlagResult flags = this.getFlagGroup().calculateResult(flagsArray);
 
         this.plugin.getMVCommandManager().getQueueManager().addToQueue(new QueuedCommand.Builder()
                 .sender(sender)
