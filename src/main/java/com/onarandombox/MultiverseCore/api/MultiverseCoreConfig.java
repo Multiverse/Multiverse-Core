@@ -239,4 +239,12 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @param idonotwanttodonate True if donation/patreon messages should be shown.
      */
     void setShowDonateMessage(boolean idonotwanttodonate);
+
+    boolean getJoinLocationOverride();
+
+    void setJoinLocationOverride(boolean joinLocationOverride);
+
+    String getJoinLocation();
+
+    void setJoinLocation(String joinLocation);
 }

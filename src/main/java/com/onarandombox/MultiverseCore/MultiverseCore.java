@@ -320,7 +320,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         } catch (NullPointerException e) {
             // A test that had no worlds loaded was being run. This should never happen in production
         }
+
+        // Now set the joinlocation (after the worlds are loaded):
+        this.worldManager.setJoinLocation(getMVConfig().getJoinLocation());
+
         this.saveMVConfig();
+
         // Register async or sync player chat according to config
         try {
             Class.forName("org.bukkit.event.player.AsyncPlayerChatEvent");

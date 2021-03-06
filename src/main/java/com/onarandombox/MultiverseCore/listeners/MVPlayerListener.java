@@ -132,6 +132,11 @@ public class MVPlayerListener implements Listener {
                     && !this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
+                return;
+            }
+            if (this.plugin.getMVConfig().getJoinLocationOverride()) {
+                Logging.fine("Moving player to preset join location: " + this.plugin.getMVConfig().getJoinLocation());
+                this.sendPlayerToJoinLocation(p);
             }
         }
         // Handle the Players GameMode setting for the new world.
@@ -335,6 +340,22 @@ public class MVPlayerListener implements Listener {
                     player.teleport(plugin.getMVWorldManager().getFirstSpawnWorld().getSpawnLocation());
                 }
             }, 1L);
+    }
+
+    private void sendPlayerToJoinLocation(final Player player) {
+        // Remove the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Location joinLocation = plugin.getMVWorldManager().getJoinLocation(player);
+                        if (joinLocation == null) {
+                            Logging.warning("Unable to teleport %s to NULL join location.", player.getName());
+                            return;
+                        }
+                        player.teleport(joinLocation);
+                    }
+                }, 1L);
     }
 
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
