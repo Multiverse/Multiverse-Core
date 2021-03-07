@@ -57,7 +57,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
+        <url>http://ci.benergy10.dev/</url>
     </ciManagement>
 
     <!-- Profiles are used to detect whether this is a local or Jenkins build
