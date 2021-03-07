@@ -8,6 +8,11 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -16,7 +21,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Allows management of Anchor Destinations.
@@ -68,15 +76,26 @@ public class GamerulesCommand extends MultiverseCommand {
             }
         }
 
-        final StringBuilder gameRules = new StringBuilder();
-        for (final String gameRule : world.getGameRules()) {
-            if (gameRules.length() != 0) {
-                gameRules.append(ChatColor.WHITE).append(", ");
+        new ContentDisplay.Builder<Map<String, Object>>()
+                .sender(sender)
+                .header("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE)
+                .contents(getGameRuleMap(world))
+                .displayHandler(DisplayHandlers.INLINE_MAP)
+                .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
+                .setting(DisplaySettings.OPERATOR, ": ")
+                .display();
+    }
+
+    private Map<String, Object> getGameRuleMap(World world) {
+        Map<String, Object> gameRuleMap = new HashMap<>();
+        for (GameRule<?> rule : GameRule.values()) {
+            Object value = world.getGameRuleValue(rule);
+            if (value == null) {
+                gameRuleMap.put(rule.getName(), "null");
+                continue;
             }
-            gameRules.append(ChatColor.AQUA).append(gameRule).append(ChatColor.WHITE).append(": ");
-            gameRules.append(ChatColor.GREEN).append(world.getGameRuleValue(GameRule.getByName(gameRule)));
+            gameRuleMap.put(rule.getName(), value);
         }
-        sender.sendMessage("=== Gamerules for " + ChatColor.AQUA + world.getName() + ChatColor.WHITE + " ===");
-        sender.sendMessage(gameRules.toString());
+        return gameRuleMap;
     }
 }
