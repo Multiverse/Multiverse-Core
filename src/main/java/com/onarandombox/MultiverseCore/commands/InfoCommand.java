@@ -17,16 +17,17 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandtools.display.page.PageDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @CommandAlias("mv")
@@ -52,102 +53,84 @@ public class InfoCommand extends MultiverseCoreCommand {
                               @Description("Info page to display.")
                               @Default("1") int page) {
 
-        new PageDisplay().withSender(sender)
-                .withCreator(buildWorldInfoContent(world))
-                .withColors(new ColorAlternator(ChatColor.YELLOW, ChatColor.AQUA))
-                .withPage(page)
-                .withLinesPerPage(10)
-                .build()
-                .runTaskAsynchronously(this.plugin);
+        new ContentDisplay.Builder<Collection<String>>()
+                .sender(sender)
+                .contents(buildWorldInfoContent(world))
+                .displayHandler(DisplayHandlers.PAGE_LIST)
+                .colorTool(ColorAlternator.with(ChatColor.YELLOW, ChatColor.AQUA)).setting(DisplaySettings.SHOW_PAGE, page)
+                .display();
     }
 
-    private ContentCreator<List<String>> buildWorldInfoContent(MultiverseWorld world) {
-        return () -> {
-            List<String> contents = new ArrayList<>(38);
+    private List<String> buildWorldInfoContent(MultiverseWorld world) {
+        List<String> contents = new ArrayList<>(38);
 
-            // Page 1
-            contents.add(parseHeader("General Info"));
-            contents.add(String.format("World Name: %s%s", ChatColor.WHITE, world.getName()));
-            contents.add(String.format("World Alias: %s%s", ChatColor.WHITE,  world.getColoredWorldString()));
-            contents.add(String.format("Game Mode: %s%s", ChatColor.WHITE, world.getGameMode().toString()));
-            contents.add(String.format("Difficulty: %s%s", ChatColor.WHITE, world.getDifficulty().toString()));
+        // Page 1
+        contents.add(parseHeader("General Info"));
+        contents.add(String.format("World Name: %s%s", ChatColor.WHITE, world.getName()));
+        contents.add(String.format("World Alias: %s%s", ChatColor.WHITE,  world.getColoredWorldString()));
+        contents.add(String.format("Game Mode: %s%s", ChatColor.WHITE, world.getGameMode().toString()));
+        contents.add(String.format("Difficulty: %s%s", ChatColor.WHITE, world.getDifficulty().toString()));
+        contents.add(String.format("Spawn Location: %s%s", ChatColor.WHITE, this.plugin.getLocationManipulation().strCoords(world.getSpawnLocation())));
+        contents.add(String.format("World Seed: %s%s", ChatColor.WHITE, world.getSeed()));
+        String priceString = (world.getPrice() == 0)
+                ? String.format("%sFREE!", ChatColor.GREEN)
+                : plugin.getEconomist().formatPrice(-world.getPrice(), world.getCurrency());
+        contents.add(String.format((world.getPrice() >= 0)
+                ? "Price to enter this world: %s%s"
+                : "Reward for entering this world: %s%s", ChatColor.WHITE, priceString));
+        World respawnWorld = world.getRespawnToWorld();
+        MultiverseWorld respawn = this.plugin.getMVWorldManager().getMVWorld(respawnWorld);
+        String respawnWorldString = (respawn != null)
+                ? respawn.getColoredWorldString()
+                : ChatColor.RED + "!!INVALID!!";
+        contents.add(String.format("Players will respawn in: %s%s", ChatColor.WHITE, respawnWorldString));
+        contents.add(ContentDisplay.LINE_BREAK);
 
-            Location spawn = world.getSpawnLocation();
-            contents.add(String.format("Spawn Location: %s%s", ChatColor.WHITE, this.plugin.getLocationManipulation().strCoords(spawn)));
-            contents.add(String.format("World Scale: %s%s", ChatColor.WHITE, world.getScaling()));
-            contents.add(String.format("World Seed: %s%s", ChatColor.WHITE, world.getSeed()));
+        // Page 2
+        contents.add(parseHeader("More World Settings"));
+        contents.add(String.format("World UID: %s%s", ChatColor.WHITE, world.getCBWorld().getUID()));
+        contents.add(String.format("World Type: %s%s", ChatColor.WHITE, world.getWorldType().toString()));
+        contents.add(String.format("World Scale: %s%s", ChatColor.WHITE, world.getScaling()));
+        contents.add(String.format("Generator: %s%s", ChatColor.WHITE, world.getGenerator()));
+        contents.add(String.format("Structures: %s%s", ChatColor.WHITE, world.getCBWorld().canGenerateStructures()));
+        contents.add(String.format("Weather: %s%s", ChatColor.WHITE, world.isWeatherEnabled()));
+        contents.add(String.format("Players will get hungry: %s%s", ChatColor.WHITE, world.getHunger()));
+        contents.add(String.format("Keep spawn in memory: %s%s", ChatColor.WHITE, world.isKeepingSpawnInMemory()));
+        contents.add(ContentDisplay.LINE_BREAK);
 
-            String priceString = (world.getPrice() == 0)
-                    ? String.format("%sFREE!", ChatColor.GREEN)
-                    : plugin.getEconomist().formatPrice(-world.getPrice(), world.getCurrency());
+        // Page 3
+        contents.add(parseHeader("PVP Settings"));
+        contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.isPVPEnabled()));
+        contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getPVP()));
+        contents.add(ContentDisplay.LINE_BREAK);
 
-            contents.add(String.format((world.getPrice() >= 0)
-                    ? "Price to enter this world: %s%s"
-                    : "Reward for entering this world: %s%s", ChatColor.WHITE, priceString));
+        // Page 4
+        contents.add(parseHeader("Monster Settings"));
+        contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canMonstersSpawn()));
+        contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowMonsters()));
+        contents.add((world.canMonstersSpawn())
+                ? String.format("Monsters that %scannot spawn: %s%s", ChatColor.RED, ChatColor.WHITE, toCommaSeparated(world.getMonsterList()))
+                : String.format("Monsters that %scan spawn: %s%s", ChatColor.GREEN, ChatColor.WHITE, toCommaSeparated(world.getMonsterList())));
+        contents.add(ContentDisplay.LINE_BREAK);
 
-            World respawnWorld = world.getRespawnToWorld();
-            if (respawnWorld != null) {
-                MultiverseWorld respawn = this.plugin.getMVWorldManager().getMVWorld(respawnWorld);
-                String respawnWorldString = (respawn != null)
-                        ? respawn.getColoredWorldString()
-                        : ChatColor.RED + respawnWorld.getName() + " !!INVALID!!";
+        // Page 5
+        contents.add(parseHeader("Animal Settings"));
+        contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canAnimalsSpawn()));
+        contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowAnimals()));
+        contents.add((world.canAnimalsSpawn())
+                ? String.format("Animals that %scannot spawn: %s%s", ChatColor.RED, ChatColor.WHITE, toCommaSeparated(world.getAnimalList()))
+                : String.format("Animals that %scan spawn: %s%s", ChatColor.GREEN, ChatColor.WHITE, toCommaSeparated(world.getAnimalList())));
 
-                contents.add(String.format("Players will respawn in: %s%s", ChatColor.WHITE, respawnWorldString));
-            }
-            contents.add("%lf%");
-
-            // Page 2
-            contents.add(parseHeader("More World Settings"));
-            contents.add(String.format("World UID: %s%s", ChatColor.WHITE, world.getCBWorld().getUID()));
-            contents.add(String.format("World Type: %s%s", ChatColor.WHITE, world.getWorldType().toString()));
-            contents.add(String.format("Generator: %s%s", ChatColor.WHITE, world.getGenerator()));
-            contents.add(String.format("Structures: %s%s", ChatColor.WHITE, world.getCBWorld().canGenerateStructures()));
-            contents.add(String.format("Weather: %s%s", ChatColor.WHITE, world.isWeatherEnabled()));
-            contents.add(String.format("Players will get hungry: %s%s", ChatColor.WHITE, world.getHunger()));
-            contents.add(String.format("Keep spawn in memory: %s%s", ChatColor.WHITE, world.isKeepingSpawnInMemory()));
-            contents.add("%lf%");
-
-            // Page 3
-            contents.add(parseHeader("PVP Settings"));
-            contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.isPVPEnabled()));
-            contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getPVP()));
-            contents.add("%lf%");
-
-            // Page 4
-            contents.add(parseHeader("Monster Settings"));
-            contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canMonstersSpawn()));
-            contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowMonsters()));
-
-            if (!world.getMonsterList().isEmpty()){
-                contents.add((world.canMonstersSpawn())
-                        ? String.format("Monsters that %scannot spawn: %s%s", ChatColor.RED, ChatColor.WHITE, toCommaSeparated(world.getMonsterList()))
-                        : String.format("Monsters that %scan spawn: %s%s", ChatColor.GREEN, ChatColor.WHITE, toCommaSeparated(world.getMonsterList())));
-            }
-
-            contents.add("%lf%");
-
-            // Page 5
-            contents.add(parseHeader("Animal Settings"));
-            contents.add(String.format("Multiverse Setting: %s%s", ChatColor.WHITE, world.canAnimalsSpawn()));
-            contents.add(String.format("Bukkit Setting: %s%s", ChatColor.WHITE, world.getCBWorld().getAllowAnimals()));
-
-            if (!world.getAnimalList().isEmpty()){
-                contents.add((world.canAnimalsSpawn())
-                        ? String.format("Animals that %scannot spawn: %s%s", ChatColor.RED, ChatColor.WHITE, toCommaSeparated(world.getAnimalList()))
-                        : String.format("Animals that %scan spawn: %s%s", ChatColor.GREEN, ChatColor.WHITE, toCommaSeparated(world.getAnimalList())));
-            }
-
-            return contents;
-        };
+        return contents;
     }
 
     private String parseHeader(String header) {
-        return String.format("%s--- %s %s%s %s---", ChatColor.AQUA, header, ChatColor.DARK_PURPLE, "%page%", ChatColor.AQUA);
+        return String.format("%s===[ %s %s]===", ChatColor.AQUA, header, ChatColor.AQUA);
     }
 
     private static String toCommaSeparated(List<String> list) {
         if (list == null || list.size() == 0) {
-            return "";
+            return ChatColor.GRAY + ChatColor.ITALIC.toString() + "none";
         }
         if (list.size() == 1) {
             return list.get(0);

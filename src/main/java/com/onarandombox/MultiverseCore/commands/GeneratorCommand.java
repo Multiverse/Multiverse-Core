@@ -41,6 +41,6 @@ public class GeneratorCommand extends MultiverseCoreCommand {
                 .emptyMessage("%sYou do not have any generator plugins installed.", ChatColor.RED)
                 .displayHandler(DisplayHandlers.INLINE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.WHITE))
-                .display(this.plugin);
+                .display();
     }
 }

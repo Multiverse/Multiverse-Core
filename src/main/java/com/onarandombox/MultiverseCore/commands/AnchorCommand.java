@@ -107,7 +107,7 @@ public class AnchorCommand extends MultiverseCoreCommand {
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.YELLOW, ChatColor.DARK_AQUA))
                 .setting(DisplaySettings.SHOW_PAGE, pageFilter.getPage())
-                .display(this.plugin);
+                .display();
     }
 
     private List<String> buildAnchorList(@NotNull CommandSender sender) {

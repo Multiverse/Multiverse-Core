@@ -1,9 +1,8 @@
 package com.onarandombox.MultiverseCore.displaytools;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -13,10 +12,10 @@ import java.util.WeakHashMap;
 public class ContentDisplay<T> {
 
     public static final String PAGE_PLACEHOLDER = "%page%";
-    public static final String LINE_BREAK_PLACEHOLDER = "%lf%";
+    public static final String LINE_BREAK = "%br%";
 
     private CommandSender sender;
-    private String header = "";
+    private String header;
     private T contents;
     private String emptyMessage = "No matching content to display.";
     private DisplayHandler<T> displayHandler;
@@ -27,7 +26,7 @@ public class ContentDisplay<T> {
     private ContentDisplay() { }
 
     public void send() {
-        Collection<String> formattedContent = this.displayHandler.format(this);
+        Collection<String> formattedContent = (this.contents == null) ? null : this.displayHandler.format(this);
         this.displayHandler.sendHeader(this);
         this.displayHandler.sendSubHeader(this);
         this.displayHandler.sendBody(this, formattedContent);
@@ -38,12 +37,14 @@ public class ContentDisplay<T> {
         return sender;
     }
 
-    @NotNull
     public String getHeader() {
         return header;
     }
 
-    @NotNull
+    public void setHeader(@NotNull String header) {
+        this.header = header;
+    }
+
     public T getContents() {
         return contents;
     }
@@ -68,11 +69,11 @@ public class ContentDisplay<T> {
         return filter;
     }
 
-    public <S> S getSetting(DisplaySetting<S> setting) {
+    public <S> S getSetting(@NotNull DisplaySetting<S> setting) {
         return (S) settingsMap.getOrDefault(setting, setting.defaultValue());
     }
 
-    public <S> void setSetting(DisplaySetting<S> setting, S value) {
+    public <S> void setSetting(@NotNull DisplaySetting<S> setting, S value) {
         this.settingsMap.put(setting, value);
     }
 
@@ -90,14 +91,14 @@ public class ContentDisplay<T> {
             return this;
         }
 
-        @NotNull
+        @Nullable
         public Builder<T> header(@NotNull String header, Object...replacements) {
             this.display.header = String.format(header, replacements);
             return this;
         }
 
         @NotNull
-        public Builder<T> contents(@NotNull T contents) {
+        public Builder<T> contents(@Nullable T contents) {
             this.display.contents = contents;
             return this;
         }

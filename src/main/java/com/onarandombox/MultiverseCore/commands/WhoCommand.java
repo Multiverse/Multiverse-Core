@@ -108,7 +108,7 @@ public class WhoCommand extends MultiverseCoreCommand {
                 .emptyMessage("%sNo players found.", ChatColor.GRAY)
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 //TODO: Filter
-                .display(this.plugin);
+                .display();
     }
 
     @NotNull

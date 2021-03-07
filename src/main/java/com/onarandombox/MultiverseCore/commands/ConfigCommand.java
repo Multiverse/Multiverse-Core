@@ -49,7 +49,7 @@ public class ConfigCommand extends MultiverseCoreCommand {
                 .displayHandler(DisplayHandlers.INLINE_MAP)
                 .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
                 //TODO: Filter
-                .display(this.plugin);
+                .display();
     }
 
     @Subcommand("set")

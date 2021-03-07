@@ -4,6 +4,7 @@ import co.aikar.commands.InvalidCommandArgument;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ public class DisplayHandlers {
      */
     public static final DisplayHandler<Collection<String>> LIST = display -> display.getContents().stream()
             .filter(display.getFilter()::checkMatch)
-            .map(s -> display.getColorTool().get() + s)
+            .map(s -> (ContentDisplay.LINE_BREAK.equals(s)) ? "" : display.getColorTool().get() + s)
             .collect(Collectors.toList());
 
     /**
@@ -30,7 +31,7 @@ public class DisplayHandlers {
      */
     public static final DisplayHandler<Collection<String>> PAGE_LIST = new DisplayHandler<Collection<String>>() {
         @Override
-        public Collection<String> format(ContentDisplay<Collection<String>> display) {
+        public Collection<String> format(@NotNull ContentDisplay<Collection<String>> display) {
             if (dontNeedPaging(display)) {
                 return LIST.format(display);
             }
@@ -41,19 +42,33 @@ public class DisplayHandlers {
             int linesPerPage = display.getSetting(DisplaySettings.LINES_PER_PAGE);
             List<String> content = new ArrayList<>(linesPerPage);
 
+            // Calculate the paging.
             for (String line : display.getContents()) {
+                // Check filter matching.
                 if (!display.getFilter().checkMatch(line)) {
                     continue;
                 }
-                if (pages == targetPage) {
-                    content.add(display.getColorTool().get() + line);
-                }
-                if (++currentLength >= linesPerPage) {
+                // When it's the next page.
+                boolean isLineBreak = ContentDisplay.LINE_BREAK.equals(line);
+                if (isLineBreak || currentLength++ > linesPerPage) {
                     pages++;
                     currentLength = 0;
+                    if (isLineBreak) {
+                        continue;
+                    }
+                }
+                if (pages == targetPage) {
+                    // Let first line be the header when no header defined.
+                    if (display.getHeader() == null) {
+                        display.setHeader(line);
+                        currentLength--;
+                        continue;
+                    }
+                    content.add(display.getColorTool().get() + line);
                 }
             }
 
+            // Page out of range.
             if (targetPage < 1 || targetPage > pages) {
                 if (pages == 1) {
                     throw new InvalidCommandArgument("There is only 1 page!");
@@ -61,6 +76,7 @@ public class DisplayHandlers {
                 throw new InvalidCommandArgument("Please enter a page from 1 to " + pages + ".");
             }
 
+            // Add empty lines to make output length consistent.
             if (display.getSetting(DisplaySettings.DO_END_PADDING)) {
                 IntStream.range(0, linesPerPage - content.size()).forEach(i -> content.add(""));
             }
@@ -70,7 +86,7 @@ public class DisplayHandlers {
         }
 
         @Override
-        public void sendSubHeader(ContentDisplay<Collection<String>> display) {
+        public void sendSubHeader(@NotNull ContentDisplay<Collection<String>> display) {
             if (dontNeedPaging(display)) {
                 LIST.sendSubHeader(display);
                 return;
