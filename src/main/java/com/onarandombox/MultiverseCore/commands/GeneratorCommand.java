@@ -12,15 +12,16 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandtools.display.inline.ListDisplay;
 import com.onarandombox.MultiverseCore.commandtools.flags.CoreFlags;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
 
 @CommandAlias("mv")
 public class GeneratorCommand extends MultiverseCoreCommand {
@@ -33,22 +34,14 @@ public class GeneratorCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.generator")
     @Description("Shows a list of Loaded Generator Plugins.")
     public void onGeneratorCommand(@NotNull CommandSender sender) {
-        showAvailableGenerator(this.plugin, sender);
-    }
-
-    public static void showAvailableGenerator(@NotNull MultiverseCore plugin,
-                                              @NotNull CommandSender sender) {
-
-        new ListDisplay().withSender(sender)
-                .withHeader(String.format("%s--- Available Generator Plugins ---", ChatColor.GOLD))
-                .withCreator(getGeneratorContent())
-                .withColors(new ColorAlternator(ChatColor.AQUA, ChatColor.WHITE))
-                .withEmptyMessage(String.format("%sYou do not have any generator plugins installed.", ChatColor.RED))
-                .build()
-                .run();
-    }
-
-    private static ContentCreator<List<String>> getGeneratorContent() {
-        return () -> (List<String>) CoreFlags.GENERATOR.suggestValue();
+        new ContentDisplay.Builder<Collection<String>>()
+                .sender(sender)
+                .header("%s--- Available Generator Plugins ---", ChatColor.GOLD)
+                .contents(CoreFlags.GENERATOR.suggestValue())
+                .emptyMessage("%sYou do not have any generator plugins installed.", ChatColor.RED)
+                .displayHandler(DisplayHandlers.INLINE_LIST)
+                .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.WHITE))
+                .filter(ContentFilter.getDefault())
+                .display(this.plugin);
     }
 }

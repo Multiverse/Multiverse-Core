@@ -21,12 +21,15 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.commandtools.display.inline.ListDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,7 +74,7 @@ public class WhoCommand extends MultiverseCoreCommand {
 
         String prefix = String.format("%s%s - ", world.getColoredWorldString(), ChatColor.WHITE);
 
-        display.withCreator(buildPlayerList(world, visiblePlayers))
+        display.withCreator(() -> buildPlayerList(world, visiblePlayers))
                 .withPrefix(prefix)
                 .withEmptyMessage(String.format("%s%sNo players found.", prefix, ChatColor.GRAY))
                 .build()
@@ -98,20 +101,21 @@ public class WhoCommand extends MultiverseCoreCommand {
 
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 
-        new ListDisplay().withSender(sender)
-                .withHeader(String.format("%s===[ Players in %s%s ]===", ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA))
-                .withCreator(buildPlayerList(world, visiblePlayers))
-                .withFilter(filter)
-                .withEmptyMessage(String.format("%sNo players found.", ChatColor.GRAY))
-                .build()
-                .runTaskAsynchronously(this.plugin);
+        new ContentDisplay.Builder<Collection<String>>()
+                .sender(sender)
+                .header("%s===[ Players in %s%s ]===", ChatColor.AQUA, world.getColoredWorldString(), ChatColor.AQUA)
+                .contents(buildPlayerList(world, visiblePlayers))
+                .emptyMessage("%sNo players found.", ChatColor.GRAY)
+                .displayHandler(DisplayHandlers.PAGE_LIST)
+                //TODO: Filter
+                .display(this.plugin);
     }
 
     @NotNull
-    private ContentCreator<List<String>> buildPlayerList(@NotNull MultiverseWorld world,
-                                                         @NotNull Set<Player> visiblePlayers) {
+    private List<String> buildPlayerList(@NotNull MultiverseWorld world,
+                                          @NotNull Set<Player> visiblePlayers) {
 
-        return () -> world.getCBWorld().getPlayers().stream()
+        return world.getCBWorld().getPlayers().stream()
             .filter(visiblePlayers::contains)
             .map(Player::getDisplayName)
             .collect(Collectors.toList());

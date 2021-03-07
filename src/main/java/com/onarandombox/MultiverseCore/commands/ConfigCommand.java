@@ -16,10 +16,10 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
 import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandtools.display.inline.KeyValueDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -41,17 +41,15 @@ public class ConfigCommand extends MultiverseCoreCommand {
     public void onShowCommand(@NotNull CommandSender sender,
                               @NotNull ContentFilter filter) {
 
-        new KeyValueDisplay().withSender(sender)
-                .withHeader(ChatColor.LIGHT_PURPLE + "===[ Multiverse Config ]===")
-                .withCreator(getConfigMap())
-                .withFilter(filter)
-                .withColors(new ColorAlternator(ChatColor.GREEN, ChatColor.GOLD))
-                .build()
-                .runTaskAsynchronously(this.plugin);
-    }
-
-    private ContentCreator<Map<String, Object>> getConfigMap() {
-        return () -> this.plugin.getMVConfig().serialize();
+        new ContentDisplay.Builder<Map<String, Object>>()
+                .sender(sender)
+                .header("%s===[ Multiverse Config ]===", ChatColor.LIGHT_PURPLE)
+                .contents(this.plugin.getMVConfig().serialize())
+                .emptyMessage("No config values found.")
+                .displayHandler(DisplayHandlers.INLINE_MAP)
+                .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
+                //TODO: Filter
+                .display(this.plugin);
     }
 
     @Subcommand("set")

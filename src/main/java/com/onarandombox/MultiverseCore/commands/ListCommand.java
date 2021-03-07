@@ -14,9 +14,12 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandtools.display.page.PageDisplay;
 import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -24,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @CommandAlias("mv")
@@ -41,35 +45,35 @@ public class ListCommand extends MultiverseCoreCommand {
 
                               @NotNull PageFilter pageFilter) {
 
-        new PageDisplay().withSender(sender)
-                .withHeader(String.format("%s====[ Multiverse World List ]====", ChatColor.GOLD))
-                .withCreator(getListContents(sender))
-                .withPageFilter(pageFilter)
-                .build()
-                .runTaskAsynchronously(this.plugin);
+        new ContentDisplay.Builder<Collection<String>>()
+                .sender(sender)
+                .header("%s====[ Multiverse World List ]====", ChatColor.GOLD)
+                .contents(getListContents(sender))
+                .displayHandler(DisplayHandlers.PAGE_LIST)
+                .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.GOLD))
+                .filter(ContentFilter.getDefault())
+                .setting(DisplaySettings.SHOW_PAGE, pageFilter.getPage())
+                .display(this.plugin);
     }
 
-    private ContentCreator<List<String>> getListContents(@NotNull CommandSender sender) {
-        return () -> {
-            Player player = (sender instanceof Player)
-                    ? (Player) sender
-                    : null;
-            List<String> worldList =  new ArrayList<>();
-            plugin.getMVWorldManager().getMVWorlds().stream()
-                    .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))
-                    .filter(world -> canSeeWorld(player, world))
-                    .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
-                    .sorted()
-                    .forEach(worldList::add);
+    private List<String> getListContents(@NotNull CommandSender sender) {
+        Player player = (sender instanceof Player) ? (Player) sender : null;
+        List<String> worldList =  new ArrayList<>();
 
-            plugin.getMVWorldManager().getUnloadedWorlds().stream()
-                    .filter(world -> plugin.getMVPerms().hasPermission(sender, "multiverse.access." + world, true))
-                    .map(world -> ChatColor.GRAY + world + " - UNLOADED")
-                    .sorted()
-                    .forEach(worldList::add);
+        this.plugin.getMVWorldManager().getMVWorlds().stream()
+                .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))
+                .filter(world -> canSeeWorld(player, world))
+                .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
+                .sorted()
+                .forEach(worldList::add);
 
-            return worldList;
-        };
+        this.plugin.getMVWorldManager().getUnloadedWorlds().stream()
+                .filter(world -> plugin.getMVPerms().hasPermission(sender, "multiverse.access." + world, true))
+                .map(world -> ChatColor.GRAY + world + " - UNLOADED")
+                .sorted()
+                .forEach(worldList::add);
+
+        return worldList;
     }
 
     private boolean canSeeWorld(Player player, MultiverseWorld world) {
