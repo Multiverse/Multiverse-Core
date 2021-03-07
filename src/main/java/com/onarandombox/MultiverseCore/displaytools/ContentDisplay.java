@@ -3,9 +3,11 @@ package com.onarandombox.MultiverseCore.displaytools;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 public class ContentDisplay<T> {
@@ -14,62 +16,64 @@ public class ContentDisplay<T> {
     public static final String LINE_BREAK_PLACEHOLDER = "%lf%";
 
     private CommandSender sender;
-    private String header;
+    private String header = "";
     private T contents;
-    private String emptyMessage;
+    private String emptyMessage = "No matching content to display.";
     private DisplayHandler<T> displayHandler;
-    private ColorTool colorTool;
-    private ContentFilter filter;
-    private final Map<DisplaySetting<?>, Object> settingsMap;
+    private ColorTool colorTool = ColorTool.DEFAULT;
+    private ContentFilter filter = ContentFilter.DEFAULT;
+    private final Map<DisplaySetting<?>, Object> settingsMap = new WeakHashMap<>();
 
-    private ContentDisplay() {
-        settingsMap = new WeakHashMap<>();
-    }
+    private ContentDisplay() { }
 
-    public void display() {
+    public void send() {
         Collection<String> formattedContent = this.displayHandler.format(this);
-        sendHeader();
-        sendBody(formattedContent);
+        this.displayHandler.sendHeader(this);
+        this.displayHandler.sendSubHeader(this);
+        this.displayHandler.sendBody(this, formattedContent);
     }
 
-    public void sendHeader() {
-        this.sender.sendMessage(this.header);
-    }
-
-    public void sendBody(Collection<String> bodyContent) {
-        this.sender.sendMessage(bodyContent.toArray(new String[0]));
-    }
-
+    @NotNull
     public CommandSender getSender() {
         return sender;
     }
 
+    @NotNull
     public String getHeader() {
         return header;
     }
 
+    @NotNull
     public T getContents() {
         return contents;
     }
 
+    @NotNull
     public String getEmptyMessage() {
         return emptyMessage;
     }
 
+    @NotNull
     public DisplayHandler<T> getDisplayHandler() {
         return displayHandler;
     }
 
+    @NotNull
     public ColorTool getColorTool() {
         return colorTool;
     }
 
+    @NotNull
     public ContentFilter getFilter() {
         return filter;
     }
 
     public <S> S getSetting(DisplaySetting<S> setting) {
         return (S) settingsMap.getOrDefault(setting, setting.defaultValue());
+    }
+
+    public <S> void setSetting(DisplaySetting<S> setting, S value) {
+        this.settingsMap.put(setting, value);
     }
 
     public static class Builder<T> {
@@ -80,52 +84,64 @@ public class ContentDisplay<T> {
             this.display = new ContentDisplay<>();
         }
 
-        public Builder<T> sender(CommandSender sender) {
+        @NotNull
+        public Builder<T> sender(@NotNull CommandSender sender) {
             this.display.sender = sender;
             return this;
         }
 
-        public Builder<T> header(String header, Object...replacements) {
+        @NotNull
+        public Builder<T> header(@NotNull String header, Object...replacements) {
             this.display.header = String.format(header, replacements);
             return this;
         }
 
-        public Builder<T> contents(T contents) {
+        @NotNull
+        public Builder<T> contents(@NotNull T contents) {
             this.display.contents = contents;
             return this;
         }
 
-        public Builder<T> emptyMessage(String emptyMessage, Object...replacements) {
+        @NotNull
+        public Builder<T> emptyMessage(@NotNull String emptyMessage, Object...replacements) {
             this.display.emptyMessage = String.format(emptyMessage, replacements);
             return this;
         }
 
-        public Builder<T> displayHandler(DisplayHandler<T> displayHandler) {
+        @NotNull
+        public Builder<T> displayHandler(@NotNull DisplayHandler<T> displayHandler) {
             this.display.displayHandler = displayHandler;
             return this;
         }
 
-        public Builder<T> colorTool(ColorTool colorTool) {
+        @NotNull
+        public Builder<T> colorTool(@NotNull ColorTool colorTool) {
             this.display.colorTool = colorTool;
             return this;
         }
 
-        public Builder<T> filter(ContentFilter filter) {
+        @NotNull
+        public Builder<T> filter(@NotNull ContentFilter filter) {
             this.display.filter = filter;
             return this;
         }
 
-        public <S> Builder<T> setting(DisplaySetting<S> setting, S value) {
+        @NotNull
+        public <S> Builder<T> setting(@NotNull DisplaySetting<S> setting, S value) {
             this.display.settingsMap.put(setting, value);
             return this;
         }
 
-        public void display() {
-            this.display.display();
+        @NotNull
+        public ContentDisplay<T> build() {
+            Objects.requireNonNull(this.display.sender);
+            Objects.requireNonNull(this.display.contents);
+            Objects.requireNonNull(this.display.displayHandler);
+            return this.display;
         }
 
-        public void display(Plugin plugin) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, this.display::display);
+        public void display() {
+            this.build().send();
         }
     }
 }

@@ -106,7 +106,6 @@ public class AnchorCommand extends MultiverseCoreCommand {
                 .emptyMessage("You do not any anchors set. See /mv anchors create to get started!")
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.YELLOW, ChatColor.DARK_AQUA))
-                .filter(ContentFilter.getDefault())
                 .setting(DisplaySettings.SHOW_PAGE, pageFilter.getPage())
                 .display(this.plugin);
     }

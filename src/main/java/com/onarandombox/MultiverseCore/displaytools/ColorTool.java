@@ -6,4 +6,5 @@ public interface ColorTool {
 
     ChatColor get();
 
+    ColorTool DEFAULT = () -> ChatColor.WHITE;
 }

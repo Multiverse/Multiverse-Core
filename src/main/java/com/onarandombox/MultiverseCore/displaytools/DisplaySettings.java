@@ -5,9 +5,14 @@ import org.bukkit.ChatColor;
 public class DisplaySettings {
 
     /**
-     * The page to display.
+     * Page to display.
      */
     public static final DisplaySetting<Integer> SHOW_PAGE = () -> 1;
+
+    /**
+     * Total pages available to display.
+     */
+    public static final DisplaySetting<Integer> TOTAL_PAGE = () -> 1;
 
     /**
      * The max number of lines per page. This excludes header.

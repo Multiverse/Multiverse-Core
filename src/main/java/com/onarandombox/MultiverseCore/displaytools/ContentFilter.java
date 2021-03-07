@@ -16,10 +16,6 @@ public class ContentFilter {
     public static final ContentFilter DEFAULT = new ContentFilter();
     private static final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
 
-    public static ContentFilter getDefault() {
-        return DEFAULT;
-    }
-
     private String filterString;
     private Pattern filterPattern;
     private boolean exactMatch;

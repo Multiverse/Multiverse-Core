@@ -51,9 +51,8 @@ public class ListCommand extends MultiverseCoreCommand {
                 .contents(getListContents(sender))
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.GOLD))
-                .filter(ContentFilter.getDefault())
                 .setting(DisplaySettings.SHOW_PAGE, pageFilter.getPage())
-                .display(this.plugin);
+                .display();
     }
 
     private List<String> getListContents(@NotNull CommandSender sender) {
