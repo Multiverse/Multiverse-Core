@@ -7,12 +7,13 @@
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
-        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.number>UNKNOWN</project.build.number>
+        <project.bitly-access-token>bitly-access-token</project.bitly-access-token>
     </properties>
 
     <repositories>
-      <!-- Spigot -->
+        <!-- Spigot -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -43,17 +44,177 @@
         </repository>
     </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>doodleproject-repo</id>
+            <name>DoodleProject Maven 2 Repository</name>
+            <url>http://doodleproject.sourceforge.net/maven2/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.onarandombox.com</url>
+    </ciManagement>
+
+    <!-- Profiles are used to detect whether this is a local or Jenkins build
+         and adjust the build number accordingly -->
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <project.build.number>${env.BUILD_NUMBER}</project.build.number>
+            </properties>
+        </profile>
+        <profile>
+            <id>bitly</id>
+            <activation>
+                <property>
+                    <name>env.BITLY_ACCESS_TOKEN</name>
+                </property>
+            </activation>
+            <properties>
+                <project.bitly-access-token>${env.BITLY_ACCESS_TOKEN}</project.bitly-access-token>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>replace-bitly-access-token</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <basedir>${project.build.sourceDirectory}</basedir>
+                            <includes>
+                                <include>com/onarandombox/MultiverseCore/utils/webpaste/BitlyURLShortener.java</include>
+                            </includes>
+                            <replacements>
+                                <replacement>
+                                    <token>bitly-access-token</token>
+                                    <value>${project.bitly-access-token}</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>replace-maven-version-number</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <basedir>${project.build.directory}/classes</basedir>
+                            <includes>
+                                <include>plugin.yml</include>
+                            </includes>
+                            <replacements>
+                                <replacement>
+                                    <token>maven-version-number</token>
+                                    <value>${project.version}-b${project.build.number}</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Jar Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <parallel>methods</parallel>
+                    <threadCount>10</threadCount>
+                    <excludes>
+                        <exclude>**/TestCommandSender.java</exclude>
+                        <exclude>**/TestInstanceCreator.java</exclude>
+                    </excludes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>3.0.0-M3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <enableRulesSummary>true</enableRulesSummary>
+                    <configLocation>${project.basedir}/config/mv_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-jar</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -66,7 +227,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
                                     <pattern>me.main__.util</pattern>
@@ -109,13 +269,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>se.eris</groupId>
+                <artifactId>notnull-instrumenter-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>instrument</goal>
+                            <goal>tests-instrument</goal>
+                        </goals>
+                        <configuration>
+                            <notNull>
+                                <param>org.jetbrains.annotations.NotNull</param>
+                                <param>javax.validation.constraints.NotNull</param>
+                            </notNull>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
     </build>
 
     <dependencies>
@@ -188,7 +361,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -215,7 +388,7 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <version>4.2</version>
+            <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -225,7 +398,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <distributionManagement>
         <repository>
             <id>benergy10</id>
