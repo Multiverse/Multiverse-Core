@@ -1,7 +1,6 @@
 package com.onarandombox.MultiverseCore.displaytools;
 
 import co.aikar.commands.InvalidCommandArgument;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -16,10 +15,15 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Various implementations of {@link DisplayHandler}.
+ */
 public class DisplayHandlers {
 
     /**
      * Standard list display.
+     *
+     * Supported settings: none.
      */
     public static final DisplayHandler<Collection<String>> LIST = display -> display.getContents().stream()
             .filter(display.getFilter()::checkMatch)
@@ -28,6 +32,9 @@ public class DisplayHandlers {
 
     /**
      * List display with paging.
+     *
+     * Supported settings: {@link DisplaySettings#SHOW_PAGE}, {@link DisplaySettings#LINES_PER_PAGE},
+     * {@link DisplaySettings#PAGE_IN_CONSOLE}, {@link DisplaySettings#DO_END_PADDING}.
      */
     public static final DisplayHandler<Collection<String>> PAGE_LIST = new DisplayHandler<Collection<String>>() {
         @Override
@@ -44,7 +51,6 @@ public class DisplayHandlers {
 
             // Calculate the paging.
             for (String line : display.getContents()) {
-                // Check filter matching.
                 if (!display.getFilter().checkMatch(line)) {
                     continue;
                 }
@@ -58,7 +64,7 @@ public class DisplayHandlers {
                     }
                 }
                 if (pages == targetPage) {
-                    // Let first line be the header when no header defined.
+                    // Let first line be the header when no header is defined.
                     if (display.getHeader() == null) {
                         display.setHeader(line);
                         currentLength--;
@@ -115,7 +121,9 @@ public class DisplayHandlers {
     };
 
     /**
-     * Display list inline.
+     * Display a list inline.
+     *
+     * Supported settings: {@link DisplaySettings#SEPARATOR}.
      */
     public static final DisplayHandler<Collection<String>> INLINE_LIST = display -> {
         StringBuilder builder = new StringBuilder();
@@ -138,6 +146,8 @@ public class DisplayHandlers {
 
     /**
      * Display key value pair inline.
+     *
+     * Supported settings: {@link DisplaySettings#SEPARATOR}, {@link DisplaySettings#OPERATOR}.
      */
     public static final DisplayHandler<Map<String, Object>> INLINE_MAP = display -> {
         StringBuilder builder = new StringBuilder();

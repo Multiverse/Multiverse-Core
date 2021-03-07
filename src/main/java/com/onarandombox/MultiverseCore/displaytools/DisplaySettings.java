@@ -2,6 +2,9 @@ package com.onarandombox.MultiverseCore.displaytools;
 
 import org.bukkit.ChatColor;
 
+/**
+ * Collection of {@link DisplaySetting} that are used by various {@link DisplayHandler}.
+ */
 public class DisplaySettings {
 
     /**
@@ -30,7 +33,7 @@ public class DisplaySettings {
     public static final DisplaySetting<Boolean> PAGE_IN_CONSOLE = () -> false;
 
     /**
-     * Inline separator.
+     * Inline separator. E.g. '1, 2, 3'
      */
     public static final DisplaySetting<String> SEPARATOR = () -> ChatColor.WHITE + ", ";
 

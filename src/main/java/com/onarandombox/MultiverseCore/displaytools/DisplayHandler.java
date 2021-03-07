@@ -6,16 +6,37 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+/**
+ * Handles the formatting and sending of all content by the {@link ContentDisplay}.
+ *
+ * @param <T>   Type of content to display.
+ */
 public interface DisplayHandler<T> {
 
+    /**
+     * Formats the raw content into a {@link Collection<String>} for displaying to sender.
+     *
+     * @param display   The responsible {@link ContentDisplay}.
+     * @return The formatted content.
+     */
     Collection<String> format(@NotNull ContentDisplay<T> display);
 
+    /**
+     * Sends the header.
+     *
+     * @param display   The responsible {@link ContentDisplay}.
+     */
     default void sendHeader(@NotNull ContentDisplay<T> display) {
         if (!Strings.isNullOrEmpty(display.getHeader())) {
             display.getSender().sendMessage(display.getHeader());
         }
     }
 
+    /**
+     * Sends info such as filter and page.
+     *
+     * @param display   The responsible {@link ContentDisplay}.
+     */
     default void sendSubHeader(@NotNull ContentDisplay<T> display) {
         if (display.getFilter().hasFilter()) {
             display.getSender().sendMessage(String.format("%s[ %s ]",
@@ -23,6 +44,12 @@ public interface DisplayHandler<T> {
         }
     }
 
+    /**
+     * Sends the content.
+     *
+     * @param display           The responsible {@link ContentDisplay}.
+     * @param formattedContent  The content after being formatted by {@link #format(ContentDisplay)}
+     */
     default void sendBody(@NotNull ContentDisplay<T> display, Collection<String> formattedContent) {
         if (formattedContent == null || formattedContent.size() == 0) {
             display.getSender().sendMessage(display.getEmptyMessage());

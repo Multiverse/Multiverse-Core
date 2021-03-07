@@ -1,5 +1,10 @@
 package com.onarandombox.MultiverseCore.displaytools;
 
+/**
+ * Represents a setting option that can be used by {@link DisplayHandler}.
+ *
+ * @param <T>
+ */
 public interface DisplaySetting<T> {
 
      /**
