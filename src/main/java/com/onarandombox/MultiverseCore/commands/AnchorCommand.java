@@ -17,7 +17,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
+import com.onarandombox.MultiverseCore.commandtools.context.PageFilter;
 import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
 import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
 import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;

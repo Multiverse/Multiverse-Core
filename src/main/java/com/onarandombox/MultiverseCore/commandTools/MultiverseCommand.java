@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
 import co.aikar.commands.BaseCommand;
-import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flag.FlagGroup;
 
 public class MultiverseCommand extends BaseCommand {
 

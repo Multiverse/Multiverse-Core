@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandtools.flags;
+package com.onarandombox.MultiverseCore.commandtools.flag;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag.ValueRequirement;
+import static com.onarandombox.MultiverseCore.commandtools.flag.CommandFlag.ValueRequirement;
 
 public class FlagResult {
 

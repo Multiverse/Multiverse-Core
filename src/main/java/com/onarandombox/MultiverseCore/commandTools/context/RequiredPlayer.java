@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandtools.contexts;
+package com.onarandombox.MultiverseCore.commandtools.context;
 
 import org.bukkit.entity.Player;
 

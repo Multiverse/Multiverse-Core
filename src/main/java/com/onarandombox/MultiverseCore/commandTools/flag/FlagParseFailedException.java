@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.commandtools.flags;
+package com.onarandombox.MultiverseCore.commandtools.flag;
 
 import co.aikar.commands.InvalidCommandArgument;
 
