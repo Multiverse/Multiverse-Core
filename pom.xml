@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onarandombox.multiversecore</groupId>
     <artifactId>Multiverse-Core</artifactId>
-    <version>4.2.3-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
@@ -13,7 +13,7 @@
     </properties>
 
     <repositories>
-      <!-- Spigot -->
+        <!-- Spigot -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -37,6 +37,10 @@
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
     </repositories>
 
@@ -229,10 +233,6 @@
                                     <shadedPattern>com.onarandombox.serializationconfig</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.onarandombox.commandhandler</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>buscript</pattern>
                                     <shadedPattern>com.onarandombox.buscript</shadedPattern>
                                 </relocation>
@@ -255,6 +255,14 @@
                                 <relocation>
                                     <pattern>de.themoep.idconverter</pattern>
                                     <shadedPattern>com.onarandombox.idconverter</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>co.aikar.commands</pattern>
+                                    <shadedPattern>com.onarandombox.acf</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>co.aikar.locales</pattern>
+                                    <shadedPattern>com.onarandombox.locales</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -313,9 +321,9 @@
         <!-- End of Economy Dependency -->
         <!-- Start of CommandHandler Dependency -->
         <dependency>
-            <groupId>com.pneumaticraft.commandhandler</groupId>
-            <artifactId>CommandHandler</artifactId>
-            <version>11</version>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
@@ -392,12 +400,12 @@
     </dependencies>
     <distributionManagement>
         <repository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+            <id>benergy10</id>
+            <url>http://repo.benergy10.dev/repository/minecraft/</url>
         </repository>
         <snapshotRepository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
+            <id>benergy10</id>
+            <url>http://repo.benergy10.dev/repository/minecraft-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

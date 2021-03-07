@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -17,7 +18,6 @@ import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
-import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.entity.Player;
 
 /**
@@ -79,12 +79,12 @@ public interface Core {
     MVPermissions getMVPerms();
 
     /**
-     * Multiverse uses {@link CommandHandler} to make adding and using commands
+     * Multiverse uses {@link MVCommandManager} to make adding and using commands
      * a piece of cake.
      *
-     * @return A non-null {@link CommandHandler}.
+     * @return A non-null {@link MVCommandManager}.
      */
-    CommandHandler getCommandHandler();
+    MVCommandManager getMVCommandManager();
 
     /**
      * Gets the factory class responsible for loading many different destinations
@@ -114,21 +114,6 @@ public interface Core {
      * @return The {@link AnchorManager}
      */
     AnchorManager getAnchorManager();
-
-    /**
-     * Used by queued commands to regenerate a world on a delay.
-     *
-     * @param name Name of the world to regenerate
-     * @param useNewSeed If a new seed should be used
-     * @param randomSeed IF the new seed should be random
-     * @param seed The seed of the world.
-     *
-     * @return True if success, false if fail.
-     *
-     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String)} instead.
-     */
-    @Deprecated
-    Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
 
     /**
      * Decrements the number of plugins that have specifically hooked into core.

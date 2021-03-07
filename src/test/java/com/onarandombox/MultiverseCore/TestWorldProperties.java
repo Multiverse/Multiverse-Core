@@ -22,7 +22,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,8 +52,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.File;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
@@ -102,13 +99,8 @@ public class TestWorldProperties {
 
     @Test
     public void test() throws Exception {
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Import the first world
-        String[] normalArgs = new String[] { "import", "world", "normal" };
-        core.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world normal"));
         verify(mockCommandSender).sendMessage("Starting import of world 'world'...");
         verify(mockCommandSender).sendMessage(ChatColor.GREEN + "Complete!");
 
@@ -119,8 +111,7 @@ public class TestWorldProperties {
 
 
         // Import a second world
-        String[] netherArgs = new String[] { "import", "world_nether", "nether" };
-        core.onCommand(mockCommandSender, mockCommand, "", netherArgs);
+        assertTrue(creator.dispatch(mockCommandSender, "mv import world_nether nether"));
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
         verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage(
                 ChatColor.GREEN + "Complete!");

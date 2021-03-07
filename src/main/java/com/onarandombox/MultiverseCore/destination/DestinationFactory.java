@@ -7,33 +7,76 @@
 
 package com.onarandombox.MultiverseCore.destination;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
-import com.pneumaticraft.commandhandler.Command;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /** A factory class that will create destinations from specific strings. */
 public class DestinationFactory {
-    private MultiverseCore plugin;
-    private Map<String, Class<? extends MVDestination>> destList;
-    private Command teleportCommand;
+    private final MultiverseCore plugin;
+    private final Map<String, Class<? extends MVDestination>> destList;
+    private final Set<String> destPermissions;
+    private final PermissionTools permTools;
+
+    private static final Pattern CANNON_PATTERN = Pattern.compile("(?i)cannon-[\\d]+(\\.[\\d]+)?");
 
     public DestinationFactory(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.destList = new HashMap<String, Class<? extends MVDestination>>();
-        List<Command> cmds = this.plugin.getCommandHandler().getAllCommands();
-        for (Command c : cmds) {
-            if (c instanceof TeleportCommand) {
-                this.teleportCommand = c;
-            }
+        this.destList = new HashMap<>();
+        this.destPermissions = new HashSet<>();
+        this.permTools = new PermissionTools(plugin);
+    }
+
+    public MVDestination getPlayerAwareDestination(@Nullable Player teleportee,
+                                                   @NotNull String destinationName) {
+
+        if (teleportee == null) {
+            return getDestination(destinationName);
         }
+
+        if (CANNON_PATTERN.matcher(destinationName).matches()) {
+            return getDestination(parseCannonDest(teleportee, destinationName));
+        }
+
+        Player targetPlayer = this.plugin.getMVCommandManager()
+                .getCommandContexts()
+                .getPlayerFromValue(teleportee, destinationName);
+
+        if (targetPlayer != null) {
+            return getDestination("pl:" + targetPlayer.getName());
+        }
+
+        return getDestination(destinationName);
+    }
+
+    private String parseCannonDest(@NotNull Player teleportee,
+                                   @NotNull String destinationName) {
+
+        String[] cannonSpeed = destinationName.split("-");
+        try {
+            double speed = Double.parseDouble(cannonSpeed[1]);
+            destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX()
+                    + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":"
+                    + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
+        }
+        catch (Exception e) {
+            destinationName = "i:invalid";
+        }
+
+        return destinationName;
     }
 
     /**
@@ -82,23 +125,32 @@ public class DestinationFactory {
         if (identifier.equals("")) {
             identifier = "w";
         }
-        Permission self = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.self." + identifier);
-        Permission other = this.plugin.getServer().getPluginManager().getPermission("multiverse.teleport.other." + identifier);
-        PermissionTools pt = new PermissionTools(this.plugin);
-        if (self == null) {
-            self = new Permission("multiverse.teleport.self." + identifier,
-                    "Permission to teleport yourself for the " + identifier + " destination.", PermissionDefault.OP);
-            this.plugin.getServer().getPluginManager().addPermission(self);
-            pt.addToParentPerms("multiverse.teleport.self." + identifier);
-        }
-        if (other == null) {
-            other = new Permission("multiverse.teleport.other." + identifier,
-                    "Permission to teleport others for the " + identifier + " destination.", PermissionDefault.OP);
-            this.plugin.getServer().getPluginManager().addPermission(other);
-            pt.addToParentPerms("multiverse.teleport.other." + identifier);
-        }
-        this.teleportCommand.addAdditonalPermission(self);
-        this.teleportCommand.addAdditonalPermission(other);
+
+        addDestPerm("multiverse.teleport.self." + identifier,
+                "Permission to teleport yourself for the " + identifier + " destination.");
+        addDestPerm("multiverse.teleport.other." + identifier,
+                "Permission to teleport other for the " + identifier + " destination.");
+
         return true;
+    }
+
+    private void addDestPerm(String permNode, String description) {
+        if (this.plugin.getServer().getPluginManager().getPermission(permNode) != null) {
+            Logging.fine("Destination permission node " + permNode + " already added.");
+            return;
+        }
+
+        Permission perm = new Permission(permNode, description, PermissionDefault.OP);
+        this.plugin.getServer().getPluginManager().addPermission(perm);
+        permTools.addToParentPerms(permNode);
+        destPermissions.add(permNode);
+    }
+
+    public Collection<String> getIdentifiers() {
+        return destList.keySet();
+    }
+
+    public Set<String> getPermissions() {
+        return destPermissions;
     }
 }

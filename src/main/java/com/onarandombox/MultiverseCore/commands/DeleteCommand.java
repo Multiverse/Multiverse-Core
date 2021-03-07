@@ -1,5 +1,5 @@
 /******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
+ * Multiverse 2 Copyright (c) the Multiverse Team 2020.                       *
  * Multiverse 2 is licensed under the BSD License.                            *
  * For more information please check the README.md file included              *
  * with this project.                                                         *
@@ -7,39 +7,58 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Deletes worlds.
- */
-public class DeleteCommand extends MultiverseCommand {
+@CommandAlias("mv")
+public class DeleteCommand extends MultiverseCoreCommand {
 
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
-        this.setName("Delete World");
-        this.setCommandUsage("/mv delete" + ChatColor.GREEN + " {WORLD}");
-        this.setArgRange(1, 1);
-        this.addKey("mvdelete");
-        this.addKey("mv delete");
-        this.addCommandExample("/mv delete " + ChatColor.GOLD + "MyWorld");
-        this.setPermission("multiverse.core.delete", "Deletes a world on your server. " + ChatColor.RED + "PERMANENTLY.", PermissionDefault.OP);
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        String worldName = args.get(0);
+    @Subcommand("delete")
+    @CommandPermission("multiverse.core.delete")
+    @Syntax("<world>")
+    @CommandCompletion("@MVWorlds|@unloadedWorlds")
+    @Description("Deletes a world on your server PERMANENTLY.")
+    public void onDeleteCommand(@NotNull CommandSender sender,
 
-        Class<?>[] paramTypes = {String.class};
-        List<Object> objectArgs = new ArrayList<Object>(args);
-        this.plugin.getCommandHandler()
-                   .queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
-                                 paramTypes, ChatColor.GREEN + "World '" + worldName + "' Deleted!",
-                                 ChatColor.RED + "World '" + worldName + "' could NOT be deleted!");
+                                @NotNull
+                                @Syntax("<world>")
+                                @Description("Multiverse world you want to delete.")
+                                @Flags("trim")
+                                @Conditions("isWorldInConfig|validWorldFolder")
+                                @Single String worldName) {
+
+        this.plugin.getMVCommandManager().getQueueManager().addToQueue(new QueuedCommand.Builder()
+                .sender(sender)
+                .action(deleteRunnable(sender, worldName))
+                .prompt("Are you sure you want to delete world '%s'?", worldName)
+                .build()
+        );
+    }
+
+    private Runnable deleteRunnable(@NotNull CommandSender sender,
+                                    @NotNull String worldName) {
+
+        return () -> {
+            sender.sendMessage(String.format("Deleting world '%s'...", worldName));
+            sender.sendMessage((this.plugin.getMVWorldManager().deleteWorld(worldName))
+                    ? String.format("%sWorld %s was deleted!", ChatColor.GREEN, worldName)
+                    : String.format("%sThere was an issue deleting '%s'! Please check console for errors.", ChatColor.RED, worldName));
+        };
     }
 }

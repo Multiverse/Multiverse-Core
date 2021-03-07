@@ -41,6 +41,14 @@ public interface LocationManipulation {
     Location stringToLocation(String locationString);
 
     /**
+     * Returns a colored string with x, y, z axis.
+     *
+     * @param l The {@link Location}
+     * @return The {@link String}
+     */
+    String strAxis(Location l);
+
+    /**
      * Returns a colored string with the coords.
      *
      * @param l The {@link Location}
