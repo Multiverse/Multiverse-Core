@@ -13,8 +13,6 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.BedCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
@@ -48,6 +46,8 @@ import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -266,7 +266,8 @@ public class MVCommandManager extends PaperCommandManager {
                                @NotNull String rootCmd) {
 
         sender.sendMessage(String.format("%s%s %s| %sv%s",
-                color.getThis(), description.getName(), ChatColor.DARK_GRAY, color.getThat(), description.getVersion()));
+                color.getThisColor(), description.getName(), ChatColor.DARK_GRAY,
+                color.getThatColor(), description.getVersion()));
 
         sender.sendMessage(String.format("%sSee %s/%s help %sfor commands available.",
                 ChatColor.DARK_GREEN, ChatColor.GREEN, rootCmd, ChatColor.DARK_GREEN));

@@ -91,7 +91,7 @@ public class ContentDisplay<T> {
             return this;
         }
 
-        @Nullable
+        @NotNull
         public Builder<T> header(@NotNull String header, Object...replacements) {
             this.display.header = String.format(header, replacements);
             return this;

@@ -17,10 +17,12 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.commandtools.contexts.GameRuleProperty;
-import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandtools.display.inline.KeyValueDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySetting;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.command.CommandSender;
@@ -53,20 +55,20 @@ public class GameRuleCommand extends MultiverseCoreCommand {
 
                                    @NotNull ContentFilter filter) {
 
-        new KeyValueDisplay().withSender(sender)
-                .withHeader(String.format("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE))
-                .withCreator(getGameRuleMap(world))
-                .withFilter(filter)
-                .withColors(new ColorAlternator(ChatColor.GREEN, ChatColor.GOLD))
-                .withOperator(": ")
-                .build()
-                .runTaskAsynchronously(this.plugin);
+        new ContentDisplay.Builder<Map<String, Object>>()
+                .sender(sender)
+                .header("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE)
+                .contents(getGameRuleMap(world))
+                .displayHandler(DisplayHandlers.INLINE_MAP)
+                .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
+                .setting(DisplaySettings.OPERATOR, ": ")
+                .filter(filter)
+                .display();
     }
 
-    private ContentCreator<Map<String, Object>> getGameRuleMap(MultiverseWorld world) {
-        return () -> new HashMap<String, Object>() {{
+    private Map<String, Object> getGameRuleMap(MultiverseWorld world) {
+        return new HashMap<String, Object>() {{
             Arrays.stream(GameRule.values())
-                    .unordered()
                     .forEach(gr -> {
                         Object value = world.getCBWorld().getGameRuleValue(gr);
                         if (value != null) {

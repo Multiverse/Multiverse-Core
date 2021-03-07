@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
-import com.onarandombox.MultiverseCore.commandtools.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class SubModulesCommand {
             suggestDownload(
                     sender,
                     "Multiverse-NetherPortals",
-                    new ColorAlternator(ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE),
+                    ColorAlternator.with(ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE),
                     "https://dev.bukkit.org/projects/multiverse-netherportals"
             );
         }
@@ -43,7 +43,7 @@ public class SubModulesCommand {
             suggestDownload(
                     sender,
                     "Multiverse-Portals",
-                    new ColorAlternator(ChatColor.DARK_RED, ChatColor.RED),
+                    ColorAlternator.with(ChatColor.DARK_RED, ChatColor.RED),
                     "https://dev.bukkit.org/projects/multiverse-portals"
             );
         }
@@ -61,7 +61,7 @@ public class SubModulesCommand {
             suggestDownload(
                     sender,
                     "Multiverse-Inventories",
-                    new ColorAlternator(ChatColor.DARK_AQUA, ChatColor.AQUA),
+                    ColorAlternator.with(ChatColor.DARK_AQUA, ChatColor.AQUA),
                     "https://dev.bukkit.org/projects/multiverse-inventories"
             );
         }
@@ -73,7 +73,7 @@ public class SubModulesCommand {
                                         @NotNull String downloadLink) {
 
         sender.sendMessage(String.format("%s%s%s is not installed on this server. You can learn more and download it at:",
-                colours.getThis(), pluginName, ChatColor.WHITE));
-        sender.sendMessage(String.format("%s%s", colours.getThat(), downloadLink));
+                colours.getThisColor(), pluginName, ChatColor.WHITE));
+        sender.sendMessage(String.format("%s%s", colours.getThatColor(), downloadLink));
     }
 }

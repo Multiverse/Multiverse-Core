@@ -18,9 +18,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandtools.display.inline.KeyValueDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
+import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
 import com.onarandombox.MultiverseCore.enums.EnglishChatColor;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import org.bukkit.ChatColor;
@@ -201,29 +201,29 @@ public class ModifyCommand extends MultiverseCoreCommand {
 
                                      @NotNull ContentFilter filter) {
 
-        new KeyValueDisplay().withSender(sender)
-                .withHeader(String.format("%s===[ Property Values for %s%s ]===", ChatColor.GOLD, world.getColoredWorldString(), ChatColor.GOLD))
-                .withCreator(generatorModifyList(world))
-                .withFilter(filter)
-                .build()
-                .runTaskAsynchronously(this.plugin);
+        new ContentDisplay.Builder<Map<String, Object>>()
+                .sender(sender)
+                .header("%s===[ Property Values for %s%s ]===", ChatColor.GOLD, world.getColoredWorldString(), ChatColor.GOLD)
+                .contents(generateModifyList(world))
+                .emptyMessage("No properties found.")
+                .displayHandler(DisplayHandlers.INLINE_MAP)
+                .filter(filter)
+                .display();
     }
 
-    private ContentCreator<Map<String, Object>> generatorModifyList(MultiverseWorld world) {
-        return () -> {
-            Collection<String> properties = world.getAllPropertyTypes();
-            Map<String, Object> propMap = new HashMap<>(properties.size());
-            for (String property : properties) {
-                String value;
-                try {
-                    value = world.getPropertyValue(property);
-                } catch (PropertyDoesNotExistException ignored) {
-                    value = String.format("%s!!INAVLID!!", ChatColor.RED);
-                }
-                propMap.put(property, value);
+    private Map<String, Object> generateModifyList(MultiverseWorld world) {
+        Collection<String> properties = world.getAllPropertyTypes();
+        Map<String, Object> propMap = new HashMap<>(properties.size());
+        for (String property : properties) {
+            String value;
+            try {
+                value = world.getPropertyValue(property);
+            } catch (PropertyDoesNotExistException ignored) {
+                value = String.format("%s!!INAVLID!!", ChatColor.RED);
             }
-            return propMap;
-        };
+            propMap.put(property, value);
+        }
+        return propMap;
     }
 
     private void saveWorldConfig() {

@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commandtools.contexts;
 
-import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
 import org.jetbrains.annotations.NotNull;
 
 /**

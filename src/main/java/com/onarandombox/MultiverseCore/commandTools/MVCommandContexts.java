@@ -15,13 +15,12 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.contexts.RequiredPlayer;
+import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.commandtools.contexts.GameRuleProperty;
 import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandtools.display.page.PageDisplay;
-import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commandtools.contexts.RequiredPlayer;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -381,20 +380,20 @@ public class MVCommandContexts extends PaperCommandContexts {
     @NotNull
     private ContentFilter deriveContentFilter(@NotNull BukkitCommandExecutionContext context) {
         String filterString = context.popFirstArg();
-        return (filterString == null) ? ContentFilter.EMPTY : new ContentFilter(filterString);
+        return (filterString == null) ? ContentFilter.DEFAULT : new ContentFilter(filterString);
     }
 
     @NotNull
     private PageFilter derivePageFilter(@NotNull BukkitCommandExecutionContext context) {
         int argLength = context.getArgs().size();
         if (argLength == 0) {
-            return new PageFilter(ContentFilter.EMPTY, 1);
+            return new PageFilter(ContentFilter.DEFAULT, 1);
         }
         if (argLength == 1) {
             String pageOrFilter = context.popFirstArg();
             Optional<Integer> page = tryParseInt(pageOrFilter);
-            return page.map(pgNum -> new PageFilter(ContentFilter.EMPTY, pgNum))
-                    .orElseGet(() -> new PageFilter(new ContentFilter(pageOrFilter), PageDisplay.FIST_PAGE));
+            return page.map(pageNum -> new PageFilter(ContentFilter.DEFAULT, pageNum))
+                    .orElseGet(() -> new PageFilter(new ContentFilter(pageOrFilter), 1));
         }
 
         String filter = context.popFirstArg();

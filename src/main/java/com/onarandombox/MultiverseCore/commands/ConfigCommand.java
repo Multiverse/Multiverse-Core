@@ -16,9 +16,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.Values;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
 import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
 import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
 import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -48,7 +48,7 @@ public class ConfigCommand extends MultiverseCoreCommand {
                 .emptyMessage("No config values found.")
                 .displayHandler(DisplayHandlers.INLINE_MAP)
                 .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
-                //TODO: Filter
+                .filter(filter)
                 .display();
     }
 

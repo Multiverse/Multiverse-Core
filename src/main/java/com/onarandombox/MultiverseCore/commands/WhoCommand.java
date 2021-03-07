@@ -18,11 +18,12 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentCreator;
-import com.onarandombox.MultiverseCore.commandtools.display.ContentFilter;
-import com.onarandombox.MultiverseCore.commandtools.display.inline.ListDisplay;
+import com.onarandombox.MultiverseCore.commandtools.contexts.PageFilter;
 import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
+import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
 import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySetting;
+import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,40 +46,23 @@ public class WhoCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.list.who.all")
     @Syntax("[filter]")
     public void onWhoAllCommand(@NotNull CommandSender sender,
-                                @Nullable @Optional Player player,
 
                                 @NotNull
-                                @Syntax("[filter]")
-                                @Description("Filter the player names.")
-                                ContentFilter filter) {
+                                @Syntax("[filter] [page]")
+                                @Description("Filter and paging.")
+                                PageFilter pageFilter) {
 
+        Player player = (sender instanceof Player) ? (Player) sender : null;
         Set<Player> visiblePlayers = getVisiblePlayers(player);
 
-        sender.sendMessage(String.format("%s--- Worlds and their players --- %s%s/%s",
-                ChatColor.GOLD, ChatColor.AQUA, visiblePlayers.size(), this.plugin.getServer().getMaxPlayers()));
-        if (filter.hasFilter()) {
-            sender.sendMessage(String.format("[ %s ]", filter.getFormattedString()));
-        }
-
-        ListDisplay display = new ListDisplay().withSender(sender)
-                .withFilter(filter);
-
-        this.plugin.getMVWorldManager().getMVWorlds().stream()
-                .filter(world -> player == null || this.plugin.getMVPerms().canEnterWorld(player, world))
-                .forEach(world -> showPLayersInWorld(world, display, visiblePlayers));
-    }
-
-    private void showPLayersInWorld(@NotNull MultiverseWorld world,
-                                    @NotNull ListDisplay display,
-                                    @NotNull Set<Player> visiblePlayers) {
-
-        String prefix = String.format("%s%s - ", world.getColoredWorldString(), ChatColor.WHITE);
-
-        display.withCreator(() -> buildPlayerList(world, visiblePlayers))
-                .withPrefix(prefix)
-                .withEmptyMessage(String.format("%s%sNo players found.", prefix, ChatColor.GRAY))
-                .build()
-                .run();
+        new ContentDisplay.Builder<Collection<String>>()
+                .sender(sender)
+                .header("%s--- Worlds and their players --- %s%s/%s", ChatColor.GOLD, ChatColor.AQUA, visiblePlayers.size(), this.plugin.getServer().getMaxPlayers())
+                .contents(buildAllWorlds(player, visiblePlayers))
+                .displayHandler(DisplayHandlers.PAGE_LIST)
+                .filter(pageFilter.getFilter())
+                .setting(DisplaySettings.SHOW_PAGE, pageFilter.getPage())
+                .display();
     }
 
     @Subcommand("who")
@@ -111,9 +95,25 @@ public class WhoCommand extends MultiverseCoreCommand {
                 .display();
     }
 
+    private List<String> buildAllWorlds(@Nullable Player player,
+                                        @NotNull Set<Player> visiblePlayers) {
+
+        return this.plugin.getMVWorldManager().getMVWorlds().stream()
+                .filter(world -> player == null || this.plugin.getMVPerms().canEnterWorld(player, world))
+                .map(world -> getPLayersInWorld(world, visiblePlayers))
+                .collect(Collectors.toList());
+    }
+
+    private String getPLayersInWorld(@NotNull MultiverseWorld world,
+                                     @NotNull Set<Player> visiblePlayers) {
+
+        return String.format("%s%s - %s",
+                world.getColoredWorldString(), ChatColor.WHITE, buildPlayerList(world, visiblePlayers));
+    }
+
     @NotNull
     private List<String> buildPlayerList(@NotNull MultiverseWorld world,
-                                          @NotNull Set<Player> visiblePlayers) {
+                                         @NotNull Set<Player> visiblePlayers) {
 
         return world.getCBWorld().getPlayers().stream()
             .filter(visiblePlayers::contains)

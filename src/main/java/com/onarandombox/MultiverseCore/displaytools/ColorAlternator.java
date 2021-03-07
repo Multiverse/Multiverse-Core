@@ -30,4 +30,12 @@ public class ColorAlternator implements ColorTool {
     public ChatColor get() {
         return (this.switcher ^= true) ? this.thisColor : this.thatColor;
     }
+
+    public ChatColor getThisColor() {
+        return thisColor;
+    }
+
+    public ChatColor getThatColor() {
+        return thatColor;
+    }
 }
