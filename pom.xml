@@ -229,11 +229,11 @@
     <distributionManagement>
         <repository>
             <id>benergy10</id>
-            <url>https://repo.benergy10.dev/repository/minecraft/</url>
+            <url>http://repo.benergy10.dev/repository/minecraft/</url>
         </repository>
         <snapshotRepository>
             <id>benergy10</id>
-            <url>https://repo.benergy10.dev/repository/minecraft-snapshots/</url>
+            <url>http://repo.benergy10.dev/repository/minecraft-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
