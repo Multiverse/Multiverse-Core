@@ -130,7 +130,7 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Check for valid world name
-        if (!(isValidWorldName(oldName) && isValidWorldName(newName))) {
+        if (!(WorldNameChecker.isValidWorldName(oldName) && WorldNameChecker.isValidWorldName(oldName))) {
             return false;
         }
 
@@ -238,7 +238,9 @@ public class WorldManager implements MVWorldManager {
             return false;
         }
 
-        if (!isValidWorldName(name)) {
+        if (!WorldNameChecker.isValidWorldName(name)) {
+            Logging.warning("Invalid world name '" + name + "'");
+            Logging.warning("World name should not contain spaces or special characters!");
             return false;
         }
 
@@ -422,21 +424,6 @@ public class WorldManager implements MVWorldManager {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Check if the world name is allowed
-     *
-     * @param name   Name of the world
-     * @return True if the world world name is valid based on regex
-     */
-    private boolean isValidWorldName(String name) {
-        if (!worldNamePattern.matcher(name).matches()) {
-            Logging.warning("Invalid world name '" + name + "'");
-            Logging.warning("World name should not contain spaces or special characters!");
-            return false;
-        }
-        return true;
     }
 
     private void brokenWorld(String name) {
