@@ -29,7 +29,6 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Used to teleport players.
@@ -76,22 +75,9 @@ public class TeleportCommand extends MultiverseCommand {
             }
             teleportee = (Player) sender;
         }
-        // Special case for cannons:
-        if (destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
-            String[] cannonSpeed = destinationName.split("-");
-            try {
-                double speed = Double.parseDouble(cannonSpeed[1]);
-                destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX()
-                        + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":"
-                        + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
-            } catch (Exception e) {
-                destinationName = "i:invalid";
-            }
 
-        }
         DestinationFactory df = this.plugin.getDestFactory();
-        MVDestination d = df.getDestination(destinationName);
-
+        MVDestination d = df.getPlayerAwareDestination(teleportee, destinationName);
 
         MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter, true);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
