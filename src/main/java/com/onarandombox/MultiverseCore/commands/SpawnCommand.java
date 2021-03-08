@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -50,7 +51,7 @@ public class SpawnCommand extends MultiverseCommand {
                 sender.sendMessage("You don't have permission to teleport another player to spawn. (multiverse.core.spawn.other)");
                 return;
             }
-            Player target = this.plugin.getServer().getPlayerExact(args.get(0));
+            Player target = PlayerFinder.get(args.get(0), sender);
             if (target != null) {
                 target.sendMessage("Teleporting to this world's spawn...");
                 spawnAccurately(target);

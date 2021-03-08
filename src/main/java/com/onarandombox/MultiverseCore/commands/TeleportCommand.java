@@ -18,6 +18,7 @@ import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -59,7 +60,7 @@ public class TeleportCommand extends MultiverseCommand {
         String destinationName;
 
         if (args.size() == 2) {
-            teleportee = this.plugin.getServer().getPlayerExact(args.get(0));
+            teleportee = PlayerFinder.get(args.get(0), sender);
             if (teleportee == null) {
                 this.messaging.sendMessage(sender, String.format("Sorry, I couldn't find player: %s%s",
                         ChatColor.GOLD, args.get(0)), false);
