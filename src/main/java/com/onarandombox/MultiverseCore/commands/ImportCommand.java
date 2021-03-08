@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.WorldNameChecker;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -45,28 +46,6 @@ public class ImportCommand extends MultiverseCommand {
         this.worldManager = this.plugin.getMVWorldManager();
     }
 
-    /**
-     * A very basic check to see if a folder has a level.dat file.
-     * If it does, we can safely assume it's a world folder.
-     *
-     * @param worldFolder The File that may be a world.
-     * @return True if it looks like a world, false if not.
-     */
-    private static boolean checkIfIsWorld(File worldFolder) {
-        if (worldFolder.isDirectory()) {
-            File[] files = worldFolder.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File file, String name) {
-                    return name.toLowerCase().endsWith(".dat");
-                }
-            });
-            if (files != null && files.length > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private String getPotentialWorlds() {
         File worldFolder = this.plugin.getServer().getWorldContainer();
         if (worldFolder == null) {
@@ -84,7 +63,7 @@ public class ImportCommand extends MultiverseCommand {
         }
         ChatColor currColor = ChatColor.WHITE;
         for (File file : files) {
-            if (file.isDirectory() && checkIfIsWorld(file) && !worldStrings.contains(file.getName())) {
+            if (file.isDirectory() && WorldNameChecker.isValidWorldFolder(file) && !worldStrings.contains(file.getName())) {
                 worldList += currColor + file.getName() + " ";
                 if (currColor == ChatColor.WHITE) {
                     currColor = ChatColor.YELLOW;
@@ -152,7 +131,7 @@ public class ImportCommand extends MultiverseCommand {
             String worldList = this.getPotentialWorlds();
             sender.sendMessage("That world folder does not exist. These look like worlds to me:");
             sender.sendMessage(worldList);
-        } else if (!checkIfIsWorld(worldFile)) {
+        } else if (!WorldNameChecker.isValidWorldFolder(worldFile)) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage(String.format("'%s' does not appear to be a world. It is lacking a .dat file.",
                                              worldName));
