@@ -335,4 +335,11 @@ public interface MVWorldManager {
      * does not exist. {@code includeLoaded} if the world exists and is loaded.
      */
     boolean hasUnloadedWorld(String name, boolean includeLoaded);
+
+    /**
+     * Get all the possible worlds that Multiverse has detected to be importable.
+     *
+     * @return A collection of world names that are deemed importable.
+     */
+    Collection<String> getPotentialWorlds();
 }
