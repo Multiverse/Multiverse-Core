@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import com.onarandombox.MultiverseCore.generators.GeneratorManager;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
 import org.bukkit.World;
@@ -154,7 +155,9 @@ public interface MVWorldManager {
      * @param generatorID The generator id.
      * @param worldName   The worldName to use as the default.
      * @return A {@link ChunkGenerator} or null
+     * @deprecated Use {@link MVGeneratorManager#validateGenerator(String, String)}
      */
+    @Deprecated
     ChunkGenerator getChunkGenerator(String generator, String generatorID, String worldName);
 
     /**
@@ -249,7 +252,9 @@ public interface MVWorldManager {
 
     /**
      * This method populates an internal list and needs to be called after multiverse initialization.
+     * @deprecated This is now done by {@link GeneratorManager}.
      */
+    @Deprecated
     void getDefaultWorldGenerators();
 
     /**

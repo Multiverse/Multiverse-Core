@@ -74,6 +74,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
+    @Deprecated
     public void getDefaultWorldGenerators() {
         this.defaultGens = new HashMap<String, String>();
         File[] files = this.plugin.getServerFolder().listFiles(new FilenameFilter() {
@@ -301,6 +302,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
+    @Deprecated
     public ChunkGenerator getChunkGenerator(String generator, final String generatorID, final String worldName) {
         if (generator == null) {
             return null;
@@ -694,10 +696,7 @@ public class WorldManager implements MVWorldManager {
         for (World w : myWorlds) {
             String name = w.getName();
             if (!worldsFromTheConfig.containsKey(name)) {
-                String generator = null;
-                if (this.defaultGens.containsKey(name)) {
-                    generator = this.defaultGens.get(name);
-                }
+                String generator = this.plugin.getMVGeneratorManager().getDefaultWorldGen(name);
                 this.addWorld(name, w.getEnvironment(), String.valueOf(w.getSeed()), w.getWorldType(), w.canGenerateStructures(), generator);
             }
         }

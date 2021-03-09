@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MVGeneratorManager;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -18,8 +19,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -98,14 +97,26 @@ public class CreateCommand extends MultiverseCommand {
         }
         // Determine if the generator is valid. #918
         if (generator != null) {
-            List<String> genarray = new ArrayList<String>(Arrays.asList(generator.split(":")));
-            if (genarray.size() < 2) {
-                // If there was only one arg specified, pad with another empty one.
-                genarray.add("");
-            }
-            if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), "test") == null) {
+            MVGeneratorManager.TestResult result = this.plugin.getMVGeneratorManager().validateGenerator(generator, worldName);
+            if (result != MVGeneratorManager.TestResult.VALID) {
                 // We have an invalid generator.
-                sender.sendMessage("Invalid generator! '" + generator + "'. " + ChatColor.RED + "Aborting world creation.");
+                switch (result) {
+                    case ERRORS:
+                        sender.sendMessage("An issue occurred while validating generator string '" + generator +
+                                "'! This may indicate an issue with your generator plugin or an invalid generator id. Check console for errors!");
+                        break;
+                    case INVALID_GENERATOR:
+                        sender.sendMessage("Invalid generator string '" + generator +
+                                "'! The generator id you use is probably not supported by your generator plugin.");
+                        break;
+                    case PLUGIN_DOES_NOT_EXIST:
+                        sender.sendMessage("That generator plugin is not installed on your server!");
+                        break;
+                    default:
+                        sender.sendMessage("Invalid generator string '" + generator + "'!");
+                        break;
+                }
+                sender.sendMessage(ChatColor.RED + "Aborting world creation...");
                 return;
             }
         }

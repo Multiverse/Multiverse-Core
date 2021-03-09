@@ -95,6 +95,13 @@ public interface Core {
     DestinationFactory getDestFactory();
 
     /**
+     * Gets the class responsible for managing world generators plugins installed on the server.
+     *
+     * @return A valid {@link MVGeneratorManager}.
+     */
+    MVGeneratorManager getMVGeneratorManager();
+
+    /**
      * Gets the primary class responsible for managing Multiverse Worlds.
      *
      * @return {@link MVWorldManager}.
