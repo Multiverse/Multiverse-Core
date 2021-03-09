@@ -617,6 +617,14 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public MultiverseWorld getMVWorld(String name) {
+        return this.getMVWorld(name, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MultiverseWorld getMVWorld(String name, boolean checkAliases) {
         if (name == null) {
             return null;
         }
@@ -624,7 +632,7 @@ public class WorldManager implements MVWorldManager {
         if (world != null) {
             return world;
         }
-        return this.getMVWorldByAlias(name);
+        return (checkAliases) ? this.getMVWorldByAlias(name) : null;
     }
 
     /**
@@ -633,7 +641,7 @@ public class WorldManager implements MVWorldManager {
     @Override
     public MultiverseWorld getMVWorld(World world) {
         if (world != null) {
-            return this.getMVWorld(world.getName());
+            return this.getMVWorld(world.getName(), false);
         }
         return null;
     }
@@ -658,7 +666,15 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean isMVWorld(final String name) {
-        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+        return this.isMVWorld(name, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMVWorld(final String name, boolean checkAliases) {
+        return this.worlds.containsKey(name) || (checkAliases && this.isMVWorldAlias(name));
     }
 
     /**
