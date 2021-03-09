@@ -22,5 +22,9 @@ public enum PasteServiceType {
     /**
      * @see GitHubPasteService
      */
-    GITHUB
+    GITHUB,
+    /**
+     * No paste service used.
+     */
+    NONE
 }
