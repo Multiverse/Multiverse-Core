@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.destination.CustomTeleporterDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
@@ -165,22 +166,25 @@ public class TeleportCommand extends MultiverseCommand {
         if (result == TeleportResult.FAIL_UNSAFE) {
             Logging.fine("Could not teleport " + teleportee.getName()
                     + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
-            Logging.fine("Queueing Command");
-            Class<?>[] paramTypes = { CommandSender.class, Player.class, Location.class };
-            List<Object> items = new ArrayList<Object>();
-            items.add(teleporter);
-            items.add(teleportee);
-            items.add(d.getLocation(teleportee));
+
             String player = "you";
             if (!teleportee.equals(teleporter)) {
                 player = teleportee.getName();
             }
-            String message = String.format("%sMultiverse %sdid not teleport %s%s %sto %s%s %sbecause it was unsafe.",
-                    ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, player, ChatColor.WHITE, ChatColor.DARK_AQUA, d.getName(), ChatColor.WHITE);
-            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items,
-                    paramTypes, message, "Would you like to try anyway?", "", "", UNSAFE_TELEPORT_EXPIRE_DELAY);
+
+            this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
+                    sender,
+                    doUnsafeTeleport(teleporter, teleportee, d.getLocation(teleportee)),
+                    String.format("%sMultiverse %sdid not teleport %s%s %sto %s%s %sbecause it was unsafe. Would you like to try anyway?",
+                            ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, player, ChatColor.WHITE, ChatColor.DARK_AQUA, d.getName(), ChatColor.WHITE),
+                    UNSAFE_TELEPORT_EXPIRE_DELAY
+            ));
         }
         // else: Player was teleported successfully (or the tp event was fired I should say)
+    }
+
+    private Runnable doUnsafeTeleport(CommandSender teleporter, Player player, Location location) {
+        return () -> this.plugin.getSafeTTeleporter().safelyTeleport(teleporter, player, location, false);
     }
 
     private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {

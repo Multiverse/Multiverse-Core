@@ -68,6 +68,7 @@ import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
@@ -204,6 +205,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
+    private CommandQueueManager commandQueueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
 
@@ -288,6 +290,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
+        this.commandQueueManager = new CommandQueueManager(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
 
@@ -915,6 +918,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public CommandHandler getCommandHandler() {
         return this.commandHandler;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Deprecated
+    public CommandQueueManager getCommandQueueManager() {
+        return commandQueueManager;
     }
 
     /**
