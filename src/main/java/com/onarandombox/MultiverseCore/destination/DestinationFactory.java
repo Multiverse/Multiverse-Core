@@ -21,6 +21,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,5 +164,9 @@ public class DestinationFactory {
         this.teleportCommand.addAdditonalPermission(self);
         this.teleportCommand.addAdditonalPermission(other);
         return true;
+    }
+    
+    public Collection<String> getRegisteredIdentifiers() {
+        return this.destList.keySet();
     }
 }
