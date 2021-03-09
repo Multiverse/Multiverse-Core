@@ -36,19 +36,19 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -617,6 +617,14 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public MultiverseWorld getMVWorld(String name) {
+        return this.getMVWorld(name, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MultiverseWorld getMVWorld(String name, boolean checkAliases) {
         if (name == null) {
             return null;
         }
@@ -624,7 +632,7 @@ public class WorldManager implements MVWorldManager {
         if (world != null) {
             return world;
         }
-        return this.getMVWorldByAlias(name);
+        return (checkAliases) ? this.getMVWorldByAlias(name) : null;
     }
 
     /**
@@ -633,7 +641,7 @@ public class WorldManager implements MVWorldManager {
     @Override
     public MultiverseWorld getMVWorld(World world) {
         if (world != null) {
-            return this.getMVWorld(world.getName());
+            return this.getMVWorld(world.getName(), false);
         }
         return null;
     }
@@ -658,7 +666,15 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean isMVWorld(final String name) {
-        return (this.worlds.containsKey(name) || isMVWorldAlias(name));
+        return this.isMVWorld(name, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMVWorld(final String name, boolean checkAliases) {
+        return this.worlds.containsKey(name) || (checkAliases && this.isMVWorldAlias(name));
     }
 
     /**
@@ -940,4 +956,21 @@ public class WorldManager implements MVWorldManager {
 		}
 		return false;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public Collection<String> getPotentialWorlds() {
+        File worldContainer = this.plugin.getServer().getWorldContainer();
+        if (worldContainer == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(worldContainer.listFiles())
+                .filter(File::isDirectory)
+                .filter(folder -> !this.isMVWorld(folder.getName(), false))
+                .filter(WorldNameChecker::isValidWorldFolder)
+                .map(File::getName)
+                .collect(Collectors.toList());
+    }
 }
