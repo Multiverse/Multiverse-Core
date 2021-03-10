@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/** A factory class that will create destinations from specific strings. */
+/**
+ * A factory class that will create destinations from specific strings.
+ */
 public class DestinationFactory {
 
     private static final Pattern CANNON_PATTERN = Pattern.compile("(?i)cannon-[\\d]+(\\.[\\d]+)?");
@@ -165,7 +167,12 @@ public class DestinationFactory {
         this.teleportCommand.addAdditonalPermission(other);
         return true;
     }
-    
+
+    /**
+     * Gets all the {@link MVDestination} identifiers registered.
+     *
+     * @return A collection of destination identifiers.
+     */
     public Collection<String> getRegisteredIdentifiers() {
         return this.destList.keySet();
     }
