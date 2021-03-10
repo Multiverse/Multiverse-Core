@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -79,12 +80,12 @@ public interface Core {
     MVPermissions getMVPerms();
 
     /**
-     * Multiverse uses {@link CommandHandler} to make adding and using commands
+     * Multiverse uses {@link MVCommandManager} to make adding and using commands
      * a piece of cake.
      *
-     * @return A non-null {@link CommandHandler}.
+     * @return A non-null {@link MVCommandManager}.
      */
-    CommandHandler getCommandHandler();
+    MVCommandManager getCommandManager();
 
     /**
      * Gets the factory class responsible for loading many different destinations
