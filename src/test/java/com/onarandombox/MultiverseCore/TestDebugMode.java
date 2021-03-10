@@ -11,14 +11,12 @@ import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import junit.framework.Assert;
 import org.bukkit.Server;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -29,13 +27,10 @@ import java.io.File;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ MultiverseCore.class, PluginDescriptionFile.class, JavaPluginLoader.class})
 @PowerMockIgnore("javax.script.*")
-@Ignore
 public class TestDebugMode {
     TestInstanceCreator creator;
     Server mockServer;
@@ -70,16 +65,11 @@ public class TestDebugMode {
         File serverDirectory = new File(creator.getCore().getServerFolder(), "world");
         serverDirectory.mkdirs();
 
-        // Initialize a fake command
-        Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("mv");
-
         // Assert debug mode is off
         Assert.assertEquals(0, core.getMVConfig().getGlobalDebug());
 
         // Send the debug command.
-        String[] debugArgs = new String[] { "debug", "3" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
+        this.creator.dispatch(mockCommandSender, "mv debug 3");
 
         Assert.assertEquals(3, core.getMVConfig().getGlobalDebug());
     }
