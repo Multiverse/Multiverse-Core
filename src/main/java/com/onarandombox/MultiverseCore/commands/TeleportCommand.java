@@ -8,18 +8,19 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.destination.CustomTeleporterDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -59,45 +60,47 @@ public class TeleportCommand extends MultiverseCommand {
         String destinationName;
 
         if (args.size() == 2) {
-            teleportee = this.plugin.getServer().getPlayer(args.get(0));
-            if (teleportee == null) {
-                this.messaging.sendMessage(sender, String.format("Sorry, I couldn't find player: %s%s",
-                        ChatColor.GOLD, args.get(0)), false);
-                return;
-            }
-            destinationName = args.get(1);
+            // Add posibility to teleport by command block
+            if (args.get(1).contains("-nearblock")) {
+                BlockCommandSender blockSender = (BlockCommandSender) sender;
 
-        }
-        // Add posibility to teleport by command block
-        else if (args.size() == 4) {
-            Player nearestPlayer = null;
-            double x = Double.valueOf(args.get(0));
-            double y = Double.valueOf(args.get(1));
-            double z = Double.valueOf(args.get(2));
+                Player nearestPlayer = null;
+                double x = blockSender.getBlock().getX();
+                double y = blockSender.getBlock().getY();
+                double z = blockSender.getBlock().getZ();
 
-            double base = 100000;
-            Collection<? extends Player> onlinePlayers = sender.getServer().getOnlinePlayers();
-            if (onlinePlayers.size() > 0) {
-                for (Player onlinePlayer : onlinePlayers) {
-                    double diff = Math.sqrt(
-                            (onlinePlayer.getLocation().getX() - x) * (onlinePlayer.getLocation().getX() - x) +
-                                    (onlinePlayer.getLocation().getY() - y) * (onlinePlayer.getLocation().getY() - y) +
-                                    (onlinePlayer.getLocation().getZ() - z) * (onlinePlayer.getLocation().getZ() - z)
-                    );
+                double base = 100000;
+                Collection<? extends Player> onlinePlayers = sender.getServer().getOnlinePlayers();
+                if (onlinePlayers.size() > 0) {
+                    for (Player onlinePlayer : onlinePlayers) {
+                        double diff = Math.sqrt(
+                                (onlinePlayer.getLocation().getX() - x) * (onlinePlayer.getLocation().getX() - x) +
+                                        (onlinePlayer.getLocation().getY() - y) * (onlinePlayer.getLocation().getY() - y) +
+                                        (onlinePlayer.getLocation().getZ() - z) * (onlinePlayer.getLocation().getZ() - z)
+                        );
 
-                    if (diff <= base) {
-                        diff = (diff * diff) / diff;
-                        base = diff;
-                        nearestPlayer = onlinePlayer.getPlayer();
+                        if (diff <= base) {
+                            diff = (diff * diff) / diff;
+                            base = diff;
+                            nearestPlayer = onlinePlayer.getPlayer();
+                        }
+                    }
+                    if (base < 2) {
+                        teleportee = nearestPlayer;
+                    } else {
+                        return;
                     }
                 }
-                if (base < 2) {
-                    teleportee = nearestPlayer;
-                } else {
+                destinationName = args.get(0);
+            } else {
+                teleportee = this.plugin.getServer().getPlayer(args.get(0));
+                if (teleportee == null) {
+                    this.messaging.sendMessage(sender, String.format("Sorry, I couldn't find player: %s%s",
+                            ChatColor.GOLD, args.get(0)), false);
                     return;
                 }
+                destinationName = args.get(1);
             }
-            destinationName = args.get(3);
         } else {
             destinationName = args.get(0);
             if (!(sender instanceof Player)) {
@@ -170,7 +173,7 @@ public class TeleportCommand extends MultiverseCommand {
                         this.messaging.sendMessages(teleporter, new String[]{
                                 String.format("Sorry you don't have permission to go to the world spawn!"),
                                 String.format("%s  (multiverse.core.spawn.self)",
-                                        ChatColor.RED) }, false);
+                                        ChatColor.RED)}, false);
                         return;
                     }
                 } else {
@@ -179,7 +182,7 @@ public class TeleportCommand extends MultiverseCommand {
                                 String.format("Sorry you don't have permission to send %s to the world spawn!",
                                         teleportee.getDisplayName()),
                                 String.format("%s  (multiverse.core.spawn.other)",
-                                        ChatColor.RED) }, false);
+                                        ChatColor.RED)}, false);
                         return;
                     }
                 }
@@ -191,13 +194,13 @@ public class TeleportCommand extends MultiverseCommand {
             return;
         }
         Teleporter teleportObject = (d instanceof CustomTeleporterDestination) ?
-                ((CustomTeleporterDestination)d).getTeleporter() : this.playerTeleporter;
+                ((CustomTeleporterDestination) d).getTeleporter() : this.playerTeleporter;
         TeleportResult result = teleportObject.teleport(teleporter, teleportee, d);
         if (result == TeleportResult.FAIL_UNSAFE) {
             this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName()
                     + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
             this.plugin.log(Level.FINE, "Queueing Command");
-            Class<?>[] paramTypes = { CommandSender.class, Player.class, Location.class };
+            Class<?>[] paramTypes = {CommandSender.class, Player.class, Location.class};
             List<Object> items = new ArrayList<Object>();
             items.add(teleporter);
             items.add(teleportee);
@@ -221,7 +224,7 @@ public class TeleportCommand extends MultiverseCommand {
                         String.format("%sYou don't have permission to teleport %syourself %sto a %s%s %sDestination",
                                 ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, ChatColor.RED, destination.getType(), ChatColor.WHITE),
                         String.format("%s   (multiverse.teleport.self.%s)",
-                                ChatColor.RED, destination.getIdentifier()) }, false);
+                                ChatColor.RED, destination.getIdentifier())}, false);
                 return false;
             }
         } else {
@@ -230,7 +233,7 @@ public class TeleportCommand extends MultiverseCommand {
                         String.format("You don't have permission to teleport another player to a %s%s Destination.",
                                 ChatColor.GREEN, destination.getType()),
                         String.format("%s(multiverse.teleport.other.%s)",
-                                ChatColor.RED, destination.getIdentifier()) }, false);
+                                ChatColor.RED, destination.getIdentifier())}, false);
                 return false;
             }
         }
