@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.CommandIssuer;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import com.onarandombox.MultiverseCore.messaging.CoreMessageKeys;
 
 /**
  * Generic multiverse core command with handy reference to the plugin instance.
@@ -16,12 +16,11 @@ public abstract class MultiverseCoreCommand extends MultiverseCommand {
         this.plugin = plugin;
     }
 
-    protected boolean saveMVConfigs(CommandSender sender) {
+    protected boolean saveMVConfigs(CommandIssuer issuer) {
         if (this.plugin.saveMVConfigs()) {
             return true;
         }
-        sender.sendMessage(ChatColor.RED + "An error occurred while trying to save Multiverse-Core config.yml. " +
-                "You changes will be temporary!");
+        issuer.sendError(CoreMessageKeys.CONFIG_SAVE_FAILED);
         return false;
     }
 }

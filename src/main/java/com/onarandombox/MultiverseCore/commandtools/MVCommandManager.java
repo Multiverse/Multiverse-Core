@@ -9,6 +9,8 @@ import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 
+import java.util.Locale;
+
 /**
  * Main class to manage permissions.
  */
@@ -19,6 +21,11 @@ public class MVCommandManager extends PaperCommandManager {
     public MVCommandManager(MultiverseCore plugin) {
         super(plugin);
         this.plugin = plugin;
+
+        // Setup locale
+        this.addSupportedLanguage(Locale.ENGLISH);
+        this.locales.addMessageBundles("multiverse-core");
+        this.locales.loadLanguages();
 
         // Register commands
         this.registerCommand(new DebugCommand(plugin));
