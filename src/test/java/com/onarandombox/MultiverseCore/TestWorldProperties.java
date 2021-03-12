@@ -42,6 +42,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -63,6 +64,7 @@ import static org.mockito.Mockito.*;
         PlayerJoinEvent.class, PlayerRespawnEvent.class, EntityRegainHealthEvent.class,
         FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class, JavaPluginLoader.class })
 @PowerMockIgnore("javax.script.*")
+@Ignore
 public class TestWorldProperties {
     private TestInstanceCreator creator;
     private MultiverseCore core;

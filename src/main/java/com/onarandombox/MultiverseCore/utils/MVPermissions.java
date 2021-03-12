@@ -12,7 +12,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.pneumaticraft.commandhandler.PermissionsInterface;
+import com.onarandombox.MultiverseCore.api.PermissionsInterface;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -21,7 +21,6 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Multiverse's {@link PermissionsInterface}.
