@@ -220,6 +220,38 @@ public interface MVWorldManager {
     boolean isMVWorld(World world);
 
     /**
+     * Checks if a world name is the servers default world.
+     *
+     * Generally, default world is defined in level-name of server properties file along with
+     * it's 2 dimensions: [world]_nether, [world]_the_end.
+     *
+     * @param world The world to check.
+     * @return True if world name is a default world, else false.
+     */
+    boolean isDefaultWorld(MultiverseWorld world);
+
+    /**
+     * Checks if a world name is the servers default world.
+     *
+     * Generally, default world is defined in level-name of server properties file along with
+     * it's 2 dimensions: [world]_nether, [world]_the_end.
+     *
+     * @param worldName The name of the world to check.
+     * @return True if world name is a default world, else false.
+     */
+    boolean isDefaultWorld(String worldName);
+
+    /**
+     * Gets all the default world names of the server.
+     *
+     * Generally, default world is defined in level-name of server properties file along with
+     * it's 2 dimensions: [world]_nether, [world]_the_end.
+     *
+     * @return Collection of default world names.
+     */
+    Collection<String> getDefaultWorldNames();
+
+    /**
      * Load the Worlds &amp; Settings from the configuration file.
      *
      * @param forceLoad If set to true, this will perform a total

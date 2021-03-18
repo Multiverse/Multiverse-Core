@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -59,6 +60,7 @@ public class WorldManager implements MVWorldManager {
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
     private Map<String, WorldProperties> worldsFromTheConfig;
+    private Set<String> defaultWorldNames;
     private FileConfiguration configWorlds = null;
     private Map<String, String> defaultGens;
     private String firstSpawn;
@@ -383,6 +385,11 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean unloadWorld(String name, boolean unloadBukkit) {
+        if (this.isDefaultWorld(name)) {
+            Logging.warning("You cannot unload the default worlds.");
+            Logging.warning("Default worlds on your server are: %s", this.defaultWorldNames);
+            return false;
+        }
         if (this.worlds.containsKey(name)) {
             this.worldsFromTheConfig.get(name).cacheVirtualProperties();
             if (unloadBukkit && this.unloadWorldFromBukkit(name, true)) {
@@ -707,6 +714,7 @@ public class WorldManager implements MVWorldManager {
     public void loadDefaultWorlds() {
         this.ensureConfigIsPrepared();
         List<World> myWorlds = this.plugin.getServer().getWorlds();
+        this.defaultWorldNames = new HashSet<>(myWorlds.size());
         for (World w : myWorlds) {
             String name = w.getName();
             if (!worldsFromTheConfig.containsKey(name)) {
@@ -714,9 +722,15 @@ public class WorldManager implements MVWorldManager {
                 if (this.defaultGens.containsKey(name)) {
                     generator = this.defaultGens.get(name);
                 }
-                this.addWorld(name, w.getEnvironment(), String.valueOf(w.getSeed()), w.getWorldType(), w.canGenerateStructures(), generator);
+                if (!this.addWorld(name, w.getEnvironment(), String.valueOf(w.getSeed()), w.getWorldType(), w.canGenerateStructures(), generator)) {
+                    Logging.warning("Error loading default world '%s'!", w.getName());
+                    continue;
+                }
             }
+            this.defaultWorldNames.add(name);
         }
+        this.defaultWorldNames = Collections.unmodifiableSet(this.defaultWorldNames);
+        Logging.fine("Loaded default worlds: %s", this.defaultWorldNames);
     }
 
     private void ensureConfigIsPrepared() {
@@ -724,6 +738,21 @@ public class WorldManager implements MVWorldManager {
         if (this.configWorlds.getConfigurationSection("worlds") == null) {
             this.configWorlds.createSection("worlds");
         }
+    }
+
+    @Override
+    public boolean isDefaultWorld(MultiverseWorld world) {
+        return world != null && this.isDefaultWorld(world.getName());
+    }
+
+    @Override
+    public boolean isDefaultWorld(String worldName) {
+        return this.defaultWorldNames != null && this.defaultWorldNames.contains(worldName);
+    }
+
+    @Override
+    public Collection<String> getDefaultWorldNames() {
+        return this.defaultWorldNames;
     }
 
     /**
