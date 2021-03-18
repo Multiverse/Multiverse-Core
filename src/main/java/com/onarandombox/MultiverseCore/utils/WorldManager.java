@@ -55,7 +55,6 @@ import java.util.stream.Collectors;
  */
 public class WorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
-    private final Pattern worldNamePattern = Pattern.compile("[a-zA-Z0-9/._-]+");
     private final WorldPurger worldPurger;
     private final Map<String, MultiverseWorld> worlds;
     private Map<String, WorldProperties> worldsFromTheConfig;

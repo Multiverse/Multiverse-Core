@@ -135,7 +135,7 @@ public class PlayerFinder {
 
         List<Player> matchedPlayers = getMultiBySelector(playerSelector, sender);
         if (matchedPlayers == null || matchedPlayers.isEmpty()) {
-            Logging.warning("No player found with selector '%s' for %s.", playerSelector, sender.getName());
+            Logging.fine("No player found with selector '%s' for %s.", playerSelector, sender.getName());
             return null;
         }
         if (matchedPlayers.size() > 1) {
