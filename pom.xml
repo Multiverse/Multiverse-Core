@@ -34,10 +34,6 @@
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
         </repository>
-        <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -325,13 +321,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.8</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
