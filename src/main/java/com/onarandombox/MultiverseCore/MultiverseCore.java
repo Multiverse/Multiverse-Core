@@ -364,7 +364,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // Add global variable "multiverse" to javascript environment
                 buscript.setScriptVariable("multiverse", this);
             } catch (NullPointerException e) {
-                Logging.warning("Buscript failed to load! The script command will be disabled!");
+                Logging.warning("Buscript failed to load! The script command will be disabled! " +
+                        "If you would like not to see this message, " +
+                        "use `/mv conf enablebuscript false` to disable Buscript from loading.");
             }
         }
     }

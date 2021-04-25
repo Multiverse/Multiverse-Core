@@ -129,7 +129,7 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Check for valid world name
-        if (!(WorldNameChecker.isValidWorldName(oldName) && WorldNameChecker.isValidWorldName(oldName))) {
+        if (!(WorldNameChecker.isValidWorldName(oldName) && WorldNameChecker.isValidWorldName(newName))) {
             return false;
         }
 
