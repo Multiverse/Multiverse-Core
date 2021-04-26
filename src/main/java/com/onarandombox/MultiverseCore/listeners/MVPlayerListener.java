@@ -7,10 +7,6 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -34,6 +30,9 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Multiverse's {@link Listener} for players.
@@ -313,16 +312,8 @@ public class MVPlayerListener implements Listener {
                     + "' was allowed to go to '" + event.getTo().getWorld().getName()
                     + "' because enforceaccess is off.");
         }
-        if (!plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            try {
-                Class.forName("org.bukkit.TravelAgent");
-                if (event.getPortalTravelAgent() != null) {
-                    event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
-                }
-            } catch (ClassNotFoundException ignore) {
-                Logging.fine("TravelAgent not available for PlayerPortalEvent for " + event.getPlayer().getName());
-            }
-
+        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+            CompatibilityLayer.setPortalSearchRadius(event, this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 
