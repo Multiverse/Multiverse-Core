@@ -8,7 +8,12 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.flag.CoreFlags;
+import com.onarandombox.MultiverseCore.commandtools.flag.FlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flag.FlagParseFailedException;
+import com.onarandombox.MultiverseCore.commandtools.flag.FlagResult;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -26,7 +31,16 @@ import java.util.List;
  * Creates a new world and loads it.
  */
 public class CreateCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+
+    private static final FlagGroup FLAG_GROUP = FlagGroup.of(
+            CoreFlags.SEED,
+            CoreFlags.WORLD_TYPE,
+            CoreFlags.GENERATOR,
+            CoreFlags.GENERATE_STRUCTURES,
+            CoreFlags.SPAWN_ADJUST
+    );
+
+    private final MVWorldManager worldManager;
 
     public CreateCommand(MultiverseCore plugin) {
         super(plugin);
@@ -50,22 +64,7 @@ public class CreateCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
-        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
         String env = args.get(1);
-        String seed = CommandHandler.getFlag("-s", args);
-        String generator = CommandHandler.getFlag("-g", args);
-        boolean allowStructures = true;
-        String structureString = CommandHandler.getFlag("-a", args);
-        if (structureString != null) {
-            allowStructures = Boolean.parseBoolean(structureString);
-        }
-        String typeString = CommandHandler.getFlag("-t", args);
-        boolean useSpawnAdjust = true;
-        for (String s : args) {
-            if (s.equalsIgnoreCase("-n")) {
-                useSpawnAdjust = false;
-            }
-        }
 
         if (this.worldManager.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
@@ -73,6 +72,7 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
 
+        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
         if (worldFile.exists()) {
             sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
             sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
@@ -86,35 +86,28 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
 
-        // If they didn't specify a type, default to NORMAL
-        if (typeString == null) {
-            typeString = "NORMAL";
-        }
-        WorldType type = EnvironmentCommand.getWorldTypeFromString(typeString);
-        if (type == null) {
-            sender.sendMessage(ChatColor.RED + "That is not a valid World Type.");
-            EnvironmentCommand.showWorldTypes(sender);
+        FlagResult flags;
+        try {
+            flags = FLAG_GROUP.calculateResult(args.subList(2, args.size()).toArray(new String[0]));
+        } catch (FlagParseFailedException e) {
+            sender.sendMessage(String.format("%sError: %s", ChatColor.RED, e.getMessage()));
             return;
         }
-        // Determine if the generator is valid. #918
-        if (generator != null) {
-            List<String> genarray = new ArrayList<String>(Arrays.asList(generator.split(":")));
-            if (genarray.size() < 2) {
-                // If there was only one arg specified, pad with another empty one.
-                genarray.add("");
-            }
-            if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), "test") == null) {
-                // We have an invalid generator.
-                sender.sendMessage("Invalid generator! '" + generator + "'. " + ChatColor.RED + "Aborting world creation.");
-                return;
-            }
-        }
+
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
-        if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
+        if (this.worldManager.addWorld(
+                worldName,
+                environment,
+                flags.getValue(CoreFlags.SEED),
+                flags.getValue(CoreFlags.WORLD_TYPE),
+                flags.getValue(CoreFlags.GENERATE_STRUCTURES),
+                flags.getValue(CoreFlags.GENERATOR),
+                flags.getValue(CoreFlags.SPAWN_ADJUST))) {
+
             Command.broadcastCommandMessage(sender, "Complete!");
-        } else {
-            Command.broadcastCommandMessage(sender, "FAILED.");
+            return;
         }
+        Command.broadcastCommandMessage(sender, "FAILED.");
     }
 }
