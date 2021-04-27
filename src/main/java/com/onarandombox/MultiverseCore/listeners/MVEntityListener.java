@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -107,4 +109,17 @@ public class MVEntityListener implements Listener {
         event.setCancelled(this.plugin.getMVWorldManager().getTheWorldPurger().shouldWeKillThisCreature(mvworld, event.getEntity()));
     }
 
+    /**
+     * Handles portal search radius adjustment.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void entityPortal(EntityPortalEvent event) {
+        if (event.isCancelled() || event.getTo() == null) {
+            return;
+        }
+        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+            CompatibilityLayer.setPortalSearchRadius(event, this.plugin.getMVConfig().getPortalSearchRadius());
+        }
+    }
 }
