@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -85,6 +86,15 @@ public interface Core {
      * @return A non-null {@link CommandHandler}.
      */
     CommandHandler getCommandHandler();
+
+    /**
+     * Manager for command that requires /mv confirm before execution.
+     *
+     * @return A non-null {@link CommandQueueManager}.
+     * @deprecated To be moved to new command manager in 5.0.0
+     */
+    @Deprecated
+    CommandQueueManager getCommandQueueManager();
 
     /**
      * Gets the factory class responsible for loading many different destinations

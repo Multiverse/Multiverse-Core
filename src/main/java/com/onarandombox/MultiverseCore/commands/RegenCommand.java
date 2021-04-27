@@ -8,9 +8,11 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +39,30 @@ public class RegenCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Boolean useseed = (!(args.size() == 1));
-        Boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s"));
+        String worldName = args.get(0);
+        boolean useseed = (!(args.size() == 1));
+        boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s"));
         String seed = (args.size() == 3) ? args.get(2) : "";
 
-        Class<?>[] paramTypes = {String.class, Boolean.class, Boolean.class, String.class};
-        List<Object> objectArgs = new ArrayList<Object>();
-        objectArgs.add(args.get(0));
-        objectArgs.add(useseed);
-        objectArgs.add(randomseed);
-        objectArgs.add(seed);
-        this.plugin.getCommandHandler().queueCommand(sender, "mvregen", "regenWorld", objectArgs,
-                paramTypes, ChatColor.GREEN + "World Regenerated!", ChatColor.RED + "World could NOT be regenerated!");
+        this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
+                sender,
+                doWorldRegen(sender, worldName, useseed, randomseed, seed),
+                String.format("Are you sure you want to regen '%s'? You cannot undo this action.", worldName)
+        ));
+    }
+
+    private Runnable doWorldRegen(@NotNull CommandSender sender,
+                                  @NotNull String worldName,
+                                  boolean useSeed,
+                                  boolean randomSeed,
+                                  @NotNull String seed) {
+
+        return () -> {
+            if (this.plugin.getMVWorldManager().regenWorld(worldName, useSeed, randomSeed, seed)) {
+                sender.sendMessage(ChatColor.GREEN + "World Regenerated!");
+                return;
+            }
+            sender.sendMessage(ChatColor.RED + "World could NOT be regenerated!");
+        };
     }
 }
