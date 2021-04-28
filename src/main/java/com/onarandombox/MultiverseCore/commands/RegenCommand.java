@@ -9,12 +9,12 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
+import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +25,8 @@ public class RegenCommand extends MultiverseCommand {
     public RegenCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Regenerates a World");
-        this.setCommandUsage("/mv regen" + ChatColor.GREEN + " {WORLD}" + ChatColor.GOLD + " [-s [SEED]]");
-        this.setArgRange(1, 3);
+        this.setCommandUsage("/mv regen" + ChatColor.GREEN + " {WORLD}" + ChatColor.GOLD + " [-s [SEED]] [--keep-gamerules]");
+        this.setArgRange(1, 4);
         this.addKey("mvregen");
         this.addKey("mv regen");
         this.addCommandExample("You can use the -s with no args to get a new seed:");
@@ -43,10 +43,10 @@ public class RegenCommand extends MultiverseCommand {
         boolean useseed = (!(args.size() == 1));
         boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s"));
         String seed = (args.size() == 3) ? args.get(2) : "";
-
+        boolean keepGamerules = CommandHandler.hasFlag("--keep-gamerules", args);
         this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
                 sender,
-                doWorldRegen(sender, worldName, useseed, randomseed, seed),
+                doWorldRegen(sender, worldName, useseed, randomseed, seed, keepGamerules),
                 String.format("Are you sure you want to regen '%s'? You cannot undo this action.", worldName)
         ));
     }
@@ -55,10 +55,11 @@ public class RegenCommand extends MultiverseCommand {
                                   @NotNull String worldName,
                                   boolean useSeed,
                                   boolean randomSeed,
-                                  @NotNull String seed) {
+                                  @NotNull String seed,
+                                  boolean keepGamerules) {
 
         return () -> {
-            if (this.plugin.getMVWorldManager().regenWorld(worldName, useSeed, randomSeed, seed)) {
+            if (this.plugin.getMVWorldManager().regenWorld(worldName, useSeed, randomSeed, seed, keepGamerules)) {
                 sender.sendMessage(ChatColor.GREEN + "World Regenerated!");
                 return;
             }

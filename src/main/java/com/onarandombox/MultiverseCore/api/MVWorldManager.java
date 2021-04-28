@@ -313,14 +313,27 @@ public interface MVWorldManager {
     /**
      * Regenerates a world.
      *
-     * @param name Name of the world to regenerate
-     * @param useNewSeed If a new seed should be used
-     * @param randomSeed IF the new seed should be random
-     * @param seed The seed of the world.
+     * @param name          Name of the world to regenerate
+     * @param useNewSeed    If a new seed should be used
+     * @param randomSeed    If the new seed should be random
+     * @param seed          The seed of the world.
      *
      * @return True if success, false if fail.
      */
     boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
+
+    /**
+     * Regenerates a world.
+     *
+     * @param name          Name of the world to regenerate
+     * @param useNewSeed    If a new seed should be used
+     * @param randomSeed    If the new seed should be random
+     * @param seed          The seed of the world.
+     * @param keepGameRules If GameRules should be kept on world regen.
+     *
+     * @return True if success, false if fail.
+     */
+    boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed, boolean keepGameRules);
 
     boolean isKeepingSpawnInMemory(World world);
     

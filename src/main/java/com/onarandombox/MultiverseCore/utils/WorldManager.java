@@ -18,6 +18,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -896,12 +897,23 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed) {
+        return regenWorld(name, useNewSeed, randomSeed, seed, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed, boolean keepGameRules) {
         MultiverseWorld world = this.getMVWorld(name);
-        if (world == null)
+        if (world == null) {
+            Logging.warning("Unable to regen a world that does not exist!");
             return false;
+        }
 
         List<Player> ps = world.getCBWorld().getPlayers();
 
+        // Apply new seed if needed.
         if (useNewSeed) {
             long theSeed;
 
@@ -917,19 +929,64 @@ public class WorldManager implements MVWorldManager {
 
             world.setSeed(theSeed);
         }
+
         WorldType type = world.getWorldType();
 
-        if (this.deleteWorld(name, false, false)) {
-            this.doLoad(name, true, type);
-            SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
-            Location newSpawn = world.getSpawnLocation();
-            // Send all players that were in the old world, BACK to it!
-            for (Player p : ps) {
-                teleporter.safelyTeleport(null, p, newSpawn, true);
+        // Save current GameRules if needed.
+        Map<GameRule<?>, Object> gameRuleMap = null;
+        if (keepGameRules) {
+            gameRuleMap = new HashMap<>(GameRule.values().length);
+            World CBWorld = world.getCBWorld();
+            for (GameRule<?> gameRule : GameRule.values()) {
+                // Only save if not default value.
+                Object value = CBWorld.getGameRuleValue(gameRule);
+                if (value != CBWorld.getGameRuleDefault(gameRule)) {
+                    gameRuleMap.put(gameRule, value);
+                }
             }
-            return true;
         }
-        return false;
+
+        // Do the regen.
+        if (!this.deleteWorld(name, false, false)) {
+            Logging.severe("Unable to regen world as world cannot be deleted.");
+            return false;
+        }
+        if (!this.doLoad(name, true, type)) {
+            Logging.severe("Unable to regen world as world cannot be loaded.");
+            return false;
+        }
+
+        // Get new MultiverseWorld reference.
+        world = this.getMVWorld(name);
+
+        // Load back GameRules if needed.
+        if (keepGameRules) {
+            Logging.fine("Restoring previous world's GameRules...");
+            World CBWorld = world.getCBWorld();
+            for (Map.Entry<GameRule<?>, Object> gameRuleEntry : gameRuleMap.entrySet()) {
+                if (!setGameRuleValue(CBWorld, gameRuleEntry.getKey(), gameRuleEntry.getValue())) {
+                    Logging.warning("Unable to set GameRule '%s' to '%s' on regen world.",
+                            gameRuleEntry.getKey().getName(), gameRuleEntry.getValue());
+                }
+            }
+        }
+
+        // Send all players that were in the old world, BACK to it!
+        SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
+        Location newSpawn = world.getSpawnLocation();
+        for (Player p : ps) {
+            teleporter.safelyTeleport(null, p, newSpawn, true);
+        }
+
+        return true;
+    }
+
+    private <T> boolean setGameRuleValue(World world, GameRule<T> gameRule, Object value) {
+        try {
+            return world.setGameRule(gameRule, (T) value);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
