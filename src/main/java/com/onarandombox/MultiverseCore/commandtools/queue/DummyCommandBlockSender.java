@@ -94,7 +94,7 @@ class DummyCommandBlockSender implements CommandSender {
 
     @Override
     public boolean isOp() {
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     @Override
