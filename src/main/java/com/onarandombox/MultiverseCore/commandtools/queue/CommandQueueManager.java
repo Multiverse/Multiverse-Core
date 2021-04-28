@@ -21,7 +21,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Managers the queuing of dangerous commands that needs to use '/mv confirm' before executing.
+ * <p>Manager's the queuing of dangerous commands that requires '/mv confirm' before executing.</p>
+ *
+ * <p>Each sender can only have one command in queue at any given time. When queue command is added
+ * for a sender that already has a command in queue, it will replace the old queue command.</p>
  */
 public class CommandQueueManager {
 
@@ -37,7 +40,7 @@ public class CommandQueueManager {
     }
 
     /**
-     * Adds a queue command into queue.
+     * Adds a {@link QueuedCommand} into queue.
      *
      * @param queuedCommand The queue command to add.
      */
