@@ -13,6 +13,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -32,16 +33,8 @@ public class SimpleWorldPurger implements WorldPurger {
 
     private MultiverseCore plugin;
 
-    private Class<Entity> ambientClass = null;
-
     public SimpleWorldPurger(MultiverseCore plugin) {
         this.plugin = plugin;
-        try {
-            Class entityClass = Class.forName("org.bukkit.entity.Ambient");
-            if (Entity.class.isAssignableFrom(entityClass)) {
-                ambientClass = entityClass;
-            }
-        } catch (ClassNotFoundException ignore) { }
     }
 
     /**
@@ -135,8 +128,7 @@ public class SimpleWorldPurger implements WorldPurger {
             boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
         boolean negate = false;
         boolean specified = false;
-        if (e instanceof Golem || e instanceof Squid || e instanceof Animals
-                || (ambientClass != null && ambientClass.isInstance(e))) {
+        if (e instanceof Golem || e instanceof Squid || e instanceof Animals || e instanceof Ambient) {
             // it's an animal
             if (specifiedAnimals && !negateAnimals) {
                 Logging.finest("Removing an entity because I was told to remove all animals in world %s: %s", e.getWorld().getName(), e);
