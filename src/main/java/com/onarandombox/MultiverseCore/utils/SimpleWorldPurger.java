@@ -16,13 +16,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Golem;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Phantom;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
 
 import java.util.ArrayList;
@@ -149,7 +145,7 @@ public class SimpleWorldPurger implements WorldPurger {
             if (specifiedAnimals)
                 specified = true;
             negate = negateAnimals;
-        } else if (e instanceof Monster || e instanceof Ghast || e instanceof Slime || e instanceof Phantom) {
+        } else if (CompatibilityLayer.isMonsterEntity(e)) {
             // it's a monster
             if (specifiedMonsters && !negateMonsters) {
                 Logging.finest("Removing an entity because I was told to remove all monsters in world %s: %s", e.getWorld().getName(), e);

@@ -1,6 +1,10 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -16,6 +20,7 @@ public class CompatibilityLayer {
     private static boolean useTravelAgent;
     private static Method playerPortalSearchRadius;
     private static Method entityPortalSearchRadius;
+    private static Class phantomClass;
 
     /**
      * Initialise the reflection class, methods and fields.
@@ -25,6 +30,7 @@ public class CompatibilityLayer {
         useTravelAgent = ReflectHelper.hasClass("org.bukkit.TravelAgent");
         playerPortalSearchRadius = ReflectHelper.getMethod(PlayerPortalEvent.class, "setSearchRadius", int.class);
         entityPortalSearchRadius = ReflectHelper.getMethod(EntityPortalEvent.class, "setSearchRadius", int.class);
+        phantomClass = ReflectHelper.getClass("org.bukkit.entity.Phantom");
     }
 
     /**
@@ -102,5 +108,20 @@ public class CompatibilityLayer {
         }
         ReflectHelper.invokeMethod(event, entityPortalSearchRadius, searchRadius);
         Logging.finer("Used new method to set entity portal search radius.");
+    }
+
+    /**
+     * <p>Checks if an entity is a monster.</p>
+     *
+     * <p>Phantom introduced in minecraft 1.13</p>
+     *
+     * @param entity Target entity to check.
+     * @return True if entity is a monster, else false.
+     */
+    public static boolean isMonsterEntity(Entity entity) {
+        return (entity instanceof Monster
+                || entity instanceof Ghast
+                || entity instanceof Slime
+                || (phantomClass != null && phantomClass.isInstance(entity)));
     }
 }
