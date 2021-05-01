@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
+import io.papermc.lib.PaperLib;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Monster;
@@ -123,5 +124,13 @@ public class CompatibilityLayer {
                 || entity instanceof Ghast
                 || entity instanceof Slime
                 || (phantomClass != null && phantomClass.isInstance(entity)));
+    }
+
+    /**
+     *
+     * @return True if using legacy material ids, else false.
+     */
+    public static boolean isUsingLegacyMaterials() {
+        return TestingMode.isDisabled() && PaperLib.getMinecraftVersion() < 13;
     }
 }
