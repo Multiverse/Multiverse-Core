@@ -9,11 +9,10 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,8 +23,6 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
-
-import java.util.logging.Level;
 
 /**
  * The default-implementation of {@link SafeTTeleporter}.
@@ -293,19 +290,19 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     public Location findPortalBlockNextTo(Location l) {
         Block b = l.getWorld().getBlockAt(l);
         Location foundLocation = null;
-        if (b.getType() == Material.NETHER_PORTAL) {
+        if (b.getType() == MVMaterials.NETHER_PORTAL) {
             return l;
         }
-        if (b.getRelative(BlockFace.NORTH).getType() == Material.NETHER_PORTAL) {
+        if (b.getRelative(BlockFace.NORTH).getType() == MVMaterials.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.NORTH).getLocation(), foundLocation);
         }
-        if (b.getRelative(BlockFace.SOUTH).getType() == Material.NETHER_PORTAL) {
+        if (b.getRelative(BlockFace.SOUTH).getType() == MVMaterials.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.SOUTH).getLocation(), foundLocation);
         }
-        if (b.getRelative(BlockFace.EAST).getType() == Material.NETHER_PORTAL) {
+        if (b.getRelative(BlockFace.EAST).getType() == MVMaterials.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.EAST).getLocation(), foundLocation);
         }
-        if (b.getRelative(BlockFace.WEST).getType() == Material.NETHER_PORTAL) {
+        if (b.getRelative(BlockFace.WEST).getType() == MVMaterials.NETHER_PORTAL) {
             foundLocation = getCloserBlock(l, b.getRelative(BlockFace.WEST).getLocation(), foundLocation);
         }
         return foundLocation;

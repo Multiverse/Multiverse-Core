@@ -52,7 +52,7 @@ public class SimpleBlockSafety implements BlockSafety {
     public boolean isBlockAboveAir(Location l) {
         Location downOne = l.clone();
         downOne.setY(downOne.getY() - 1);
-        return (downOne.getBlock().getType() == Material.AIR);
+        return (downOne.getBlock().getType() == MVMaterials.AIR);
     }
 
     /**
@@ -90,12 +90,12 @@ public class SimpleBlockSafety implements BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA) {
+        if (downOne.getBlock().getType() == MVMaterials.LAVA) {
             Logging.finer("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(), isSolidBlock(downOne.getBlock().getType()));
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.FIRE) {
+        if (downOne.getBlock().getType() == MVMaterials.FIRE) {
             Logging.finer("There's fire below! (%s)[%s]", actual.getBlock().getType(), isSolidBlock(actual.getBlock().getType()));
             return false;
         }
@@ -211,10 +211,10 @@ public class SimpleBlockSafety implements BlockSafety {
     @Override
     public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
-        return (currentBlock == Material.POWERED_RAIL
-                || currentBlock == Material.DETECTOR_RAIL
-                || currentBlock == Material.RAIL
-                || currentBlock == Material.ACTIVATOR_RAIL);
+        return (currentBlock == MVMaterials.POWERED_RAIL
+                || currentBlock == MVMaterials.DETECTOR_RAIL
+                || currentBlock == MVMaterials.RAIL
+                || currentBlock == MVMaterials.ACTIVATOR_RAIL);
     }
 
     /**
@@ -229,12 +229,12 @@ public class SimpleBlockSafety implements BlockSafety {
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if (oneBelow.getBlock().getType() == Material.WATER) {
+        if (oneBelow.getBlock().getType() == MVMaterials.WATER) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
-            return (oneBelow.getBlock().getType() == Material.WATER);
+            return (oneBelow.getBlock().getType() == MVMaterials.WATER);
         }
-        if (oneBelow.getBlock().getType() != Material.AIR) {
+        if (oneBelow.getBlock().getType() != MVMaterials.AIR) {
             return false;
         }
         return hasTwoBlocksofWaterBelow(oneBelow);
