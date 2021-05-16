@@ -81,6 +81,12 @@ public class ImportCommand extends MultiverseCommand {
             this.showHelp(sender);
             return;
         }
+		
+		// Make sure the world name doesn't contain the words 'plugins' and '.dat'
+		if(worldName.contains("plugins")||worldName.contains(".dat")){
+			sender.sendMessage(ChatColor.RED + "Multiverse cannot create a world that contains 'plugins' or '.dat'");
+            return;
+		}
 
         // Make sure we don't already know about this world.
         if (this.worldManager.isMVWorld(worldName)) {
