@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Matchers;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,8 +37,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 
-import static junit.framework.Assert.*;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class,
@@ -92,7 +97,7 @@ public class TestWorldStuff {
         // Import the first world. The world folder does not exist.
         plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
         verify(mockCommandSender).sendMessage(ChatColor.RED + "FAILED.");
-        verify(mockCommandSender).sendMessage("That world folder does not exist. These look like worlds to me:");
+        verify(mockCommandSender).sendMessage(ChatColor.RED + "That world folder does not exist. These look like worlds to me:");
 
         // We should still have no worlds.
         assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());

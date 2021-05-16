@@ -17,7 +17,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,15 +54,10 @@ public class ImportCommand extends MultiverseCommand {
 
         return worldList.toString();
     }
-    
-    private String trimWorldName(String userInput) {
-        // Removes relative paths.
-        return userInput.replaceAll("^[./\\\\]+", "");
-    }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        String worldName = trimWorldName(args.get(0));
+        String worldName = args.get(0);
 
         if (worldName.toLowerCase().equals("--list") || worldName.toLowerCase().equals("-l")) {
             String worldList = this.getPotentialWorldStrings();
@@ -82,11 +76,11 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 		
-		// Make sure the world name doesn't contain the words 'plugins' and '.dat'
-		if(worldName.contains("plugins")||worldName.contains(".dat")){
-			sender.sendMessage(ChatColor.RED + "Multiverse cannot create a world that contains 'plugins' or '.dat'");
+        if(!this.plugin.getMVConfig().isAllowUnsafeWorldName() && !WorldNameChecker.isValidWorldName(worldName)) {
+            sender.sendMessage(ChatColor.RED + "Multiverse cannot import the world as the world name '"
+                    + worldName + "' contains spaces or invalid characters!");
             return;
-		}
+        }
 
         // Make sure we don't already know about this world.
         if (this.worldManager.isMVWorld(worldName)) {
@@ -95,7 +89,18 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 
-        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
+        switch (WorldNameChecker.checkFolder(worldName)) {
+            case DOES_NOT_EXIST:
+                sender.sendMessage(ChatColor.RED + "FAILED.");
+                sender.sendMessage(ChatColor.RED + "That world folder does not exist. These look like worlds to me:");
+                sender.sendMessage(this.getPotentialWorldStrings());
+                return;
+            case NOT_A_WORLD:
+                sender.sendMessage(ChatColor.RED + "FAILED.");
+                sender.sendMessage(String.format("%s'%s' does not appear to be a world. It is lacking a .dat file.",
+                        ChatColor.RED, worldName));
+                return;
+        }
 
         String generator = CommandHandler.getFlag("-g", args);
         boolean useSpawnAdjust = true;
@@ -113,25 +118,18 @@ public class ImportCommand extends MultiverseCommand {
             return;
         }
 
-        if (!worldFile.exists()) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            String worldList = this.getPotentialWorldStrings();
-            sender.sendMessage("That world folder does not exist. These look like worlds to me:");
-            sender.sendMessage(worldList);
-        } else if (!WorldNameChecker.isValidWorldFolder(worldFile)) {
-            sender.sendMessage(ChatColor.RED + "FAILED.");
-            sender.sendMessage(String.format("'%s' does not appear to be a world. It is lacking a .dat file.",
-                                             worldName));
-        } else if (env == null) {
+        if (env == null) {
             sender.sendMessage(ChatColor.RED + "FAILED.");
             sender.sendMessage("That world environment did not exist.");
             sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
+            return;
+        }
+
+        Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
+        if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust)) {
+            Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
         } else {
-            Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
-            if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust))
-                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            else
-                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
         }
     }
 }
