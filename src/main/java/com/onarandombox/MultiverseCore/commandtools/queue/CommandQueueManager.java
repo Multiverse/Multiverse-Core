@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * <p>Manager's the queuing of dangerous commands that requires '/mv confirm' before executing.</p>
+ * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>
  *
- * <p>Each sender can only have one command in queue at any given time. When queue command is added
- * for a sender that already has a command in queue, it will replace the old queue command.</p>
+ * <p>Each sender can only have one command in queue at any given time. When a queued command is added
+ * for a sender that already has a command in queue, it will replace the old queued command.</p>
  */
 public class CommandQueueManager {
 
@@ -42,7 +42,7 @@ public class CommandQueueManager {
     /**
      * Adds a {@link QueuedCommand} into queue.
      *
-     * @param queuedCommand The queue command to add.
+     * @param queuedCommand The queued command to add.
      */
     public void addToQueue(QueuedCommand queuedCommand) {
         CommandSender targetSender = parseSender(queuedCommand.getSender());
@@ -60,7 +60,7 @@ public class CommandQueueManager {
     }
 
     /**
-     * Expire task that remove {@link QueuedCommand} from queue after valid duration defined.
+     * Expire task that removes a {@link QueuedCommand} from queue after valid duration defined.
      *
      * @param queuedCommand Command to run the expire task on.
      * @return The expire {@link BukkitTask}.
@@ -133,7 +133,7 @@ public class CommandQueueManager {
 
     /**
      * To allow all CommandBlocks to be a common sender with use of {@link DummyCommandBlockSender}.
-     * So confirm command can be used for a queue command on another command block.
+     * So confirm command can be used for a queued command on another command block.
      *
      * @param sender    The sender to parse.
      * @return The sender, or if its a command block, a {@link DummyCommandBlockSender}.
@@ -149,9 +149,9 @@ public class CommandQueueManager {
     }
 
     /**
-     * Check if sender is a command block.
+     * Checks if the sender is a command block.
      *
-     * @param sender    The sender to check on.
+     * @param sender    The sender to check.
      * @return True if sender is a command block, else false.
      */
     private boolean isCommandBlock(@NotNull CommandSender sender) {
