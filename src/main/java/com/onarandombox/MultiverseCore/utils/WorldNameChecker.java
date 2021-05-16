@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public class WorldNameChecker {
 
-    private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
+    private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9_-]+");
     private static final Set<String> BLACKLIST_NAMES = Collections.unmodifiableSet(new HashSet<String>() {{
         add("plugins");
         add("logs");
