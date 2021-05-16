@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore;
 
-import java.util.Map;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
@@ -9,6 +7,8 @@ import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.Bukkit;
+
+import java.util.Map;
 
 /**
  * Our configuration.
@@ -77,6 +77,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile boolean autopurge;
     @Property
     private volatile boolean idonotwanttodonate;
+    @Property
+    private volatile boolean allowunsafeworldname;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -111,6 +113,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         portalsearchradius = 128;
         autopurge = true;
         idonotwanttodonate = false;
+        allowunsafeworldname = false;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -381,5 +384,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setShowDonateMessage(boolean showDonateMessage) {
         this.idonotwanttodonate = !showDonateMessage;
+    }
+
+    @Override
+    public boolean isAllowUnsafeWorldName() {
+        return allowunsafeworldname;
+    }
+
+    @Override
+    public void setAllowUnsafeWorldName(boolean allowUnsafeWorldName) {
+        this.allowunsafeworldname = allowUnsafeWorldName;
     }
 }

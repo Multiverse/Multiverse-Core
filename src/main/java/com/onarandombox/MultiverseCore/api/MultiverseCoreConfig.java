@@ -239,4 +239,8 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @param idonotwanttodonate True if donation/patreon messages should be shown.
      */
     void setShowDonateMessage(boolean idonotwanttodonate);
+
+    boolean isAllowUnsafeWorldName();
+
+    void setAllowUnsafeWorldName(boolean allowUnsafeWorldName);
 }

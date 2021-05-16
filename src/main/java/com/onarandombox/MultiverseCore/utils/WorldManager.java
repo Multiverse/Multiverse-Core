@@ -48,7 +48,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -130,7 +129,11 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Check for valid world name
-        if (!(WorldNameChecker.isValidWorldName(oldName) && WorldNameChecker.isValidWorldName(newName))) {
+        if (!this.plugin.getMVConfig().isAllowUnsafeWorldName() && !WorldNameChecker.isValidWorldName(newName)) {
+            Logging.warning("Unable to clone world as world name '" + newName + "' is invalid.");
+            Logging.warning("World name should not contain spaces or special characters!");
+            Logging.warning("Enable allowunsafeworldname to bypass the check if you are absolutely sure this world is valid.");
+            Logging.warning("However, MV is not response of any damage to your world if you enable this option.");
             return false;
         }
 
@@ -234,13 +237,12 @@ public class WorldManager implements MVWorldManager {
     @Override
     public boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                             String generator, boolean useSpawnAdjust) {
-        if (name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("logs")) {
-            return false;
-        }
 
-        if (!WorldNameChecker.isValidWorldName(name)) {
-            Logging.warning("Invalid world name '" + name + "'");
+        if (!this.plugin.getMVConfig().isAllowUnsafeWorldName() && !WorldNameChecker.isValidWorldName(name)) {
+            Logging.warning("Unable to add world as world name '" + name + "' is invalid.");
             Logging.warning("World name should not contain spaces or special characters!");
+            Logging.warning("Enable allowunsafeworldname to bypass the check if you are absolutely sure this world is valid.");
+            Logging.warning("However, MV is not response of any damage to your world if you enable this option.");
             return false;
         }
 
