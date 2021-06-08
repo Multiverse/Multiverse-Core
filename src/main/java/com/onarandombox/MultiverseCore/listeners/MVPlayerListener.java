@@ -15,6 +15,8 @@ import com.onarandombox.MultiverseCore.enums.RespawnType;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +32,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -209,7 +212,7 @@ public class MVPlayerListener implements Listener {
 
         // Check if player is allowed to enter the world if we're enforcing permissions
         if (plugin.getMVConfig().getEnforceAccess()) {
-            event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
+        	event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
             if (event.isCancelled() && teleporter != null) {
                 Logging.fine("Player '" + teleportee.getName()
                         + "' was DENIED ACCESS to '" + toWorld.getAlias()
@@ -256,6 +259,12 @@ public class MVPlayerListener implements Listener {
     public void playerPortalCheck(PlayerPortalEvent event) {
         if (event.isCancelled() || event.getFrom() == null) {
             return;
+        }
+        
+        //Don't do anything if disabled in server configurations
+        if ( (!Bukkit.getAllowEnd() && event.getCause() == TeleportCause.END_PORTAL) || (!Bukkit.getAllowNether() && event.getCause() == TeleportCause.NETHER_PORTAL)) {
+        	event.setCancelled(true);
+        	return;
         }
 
         // REMEMBER! getTo MAY be NULL HERE!!!
