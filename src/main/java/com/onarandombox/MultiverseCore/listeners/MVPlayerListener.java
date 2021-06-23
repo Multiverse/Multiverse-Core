@@ -300,7 +300,7 @@ public class MVPlayerListener implements Listener {
                     + "' because they don't have the FUNDS required to enter.");
             return;
         }
-        if (plugin.getMVConfig().getEnforceAccess()) {
+        if (plugin.getMVConfig().getEnforceAccess() && plugin.getMVConfig().getPortalIntercept()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
                 Logging.fine("Player '" + event.getPlayer().getName()
