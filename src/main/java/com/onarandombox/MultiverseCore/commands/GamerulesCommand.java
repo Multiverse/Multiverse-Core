@@ -77,12 +77,11 @@ public class GamerulesCommand extends MultiverseCommand {
         }
 
         ContentDisplay.forContent(getGameRuleMap(world))
-                .sender(sender)
                 .header("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE)
                 .displayHandler(DisplayHandlers.INLINE_MAP)
                 .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
                 .setting(DisplaySettings.OPERATOR, ": ")
-                .display();
+                .show(sender);
     }
 
     private Map<String, Object> getGameRuleMap(World world) {

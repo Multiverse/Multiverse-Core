@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 /**
  * Helps to display contents such as list and maps in a nicely formatted fashion.
@@ -257,9 +258,10 @@ public class ContentDisplay<T> {
         }
 
         /**
-         * Build and send the contents to the sender.
+         * Build and show the content to the sender.
          */
-        public void display() {
+        public void show(CommandSender sender) {
+            this.sender(sender);
             this.build().send();
         }
     }

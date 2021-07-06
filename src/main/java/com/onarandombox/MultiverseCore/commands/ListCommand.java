@@ -69,13 +69,12 @@ public class ListCommand extends MultiverseCommand {
         }
 
         ContentDisplay.forContent(getListContents(sender))
-                .sender(sender)
                 .header("%s====[ Multiverse World List ]====", ChatColor.GOLD)
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.GOLD))
                 .filter(filter)
                 .setting(DisplaySettings.SHOW_PAGE, page)
-                .display();
+                .show(sender);
     }
 
     private Collection<String> getListContents(@NotNull CommandSender sender) {
