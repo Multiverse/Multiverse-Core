@@ -5,6 +5,7 @@ package com.onarandombox.MultiverseCore.displaytools;
  *
  * @param <T>
  */
+@FunctionalInterface
 public interface DisplaySetting<T> {
 
      /**

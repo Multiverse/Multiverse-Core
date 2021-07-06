@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 /**
  * Tools to allow customisation.
  */
+@FunctionalInterface
 public interface ColorTool {
 
     /**

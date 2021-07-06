@@ -11,6 +11,7 @@ import java.util.Collection;
  *
  * @param <T>   Type of content to display.
  */
+@FunctionalInterface
 public interface DisplayHandler<T> {
 
     /**
