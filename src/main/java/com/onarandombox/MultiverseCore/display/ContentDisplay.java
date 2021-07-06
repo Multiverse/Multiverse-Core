@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
@@ -27,6 +28,26 @@ public class ContentDisplay<T> {
      */
     public static <T> Builder<T> forContent(T content) {
         return new Builder<>(content);
+    }
+
+    /**
+     * Creates a ContentDisplay.Builder for the given collection of content.
+     *
+     * @param content The content to be displayed.
+     * @return A new Builder.
+     */
+    public static Builder<Collection<String>> forContent(Collection<String> content) {
+        return new Builder<>(content).displayHandler(DisplayHandlers.LIST);
+    }
+
+    /**
+     * Creates a ContentDisplay.Builder for the given map of content.
+     *
+     * @param content The content to be displayed.
+     * @return A new Builder.
+     */
+    public static Builder<Map<String, Object>> forContent(Map<String, Object> content) {
+        return new Builder<>(content).displayHandler(DisplayHandlers.INLINE_MAP);
     }
 
     private final T contents;
