@@ -23,10 +23,10 @@ public class ContentDisplay<T> {
      * Creates a ContentDisplay.Builder for the given content.
      *
      * @param content The content to be displayed.
-     * @param <U> The type of the content which can be inferred.
+     * @param <T> The type of the content which can be inferred.
      * @return A new Builder.
      */
-    public static <U> Builder<U> forContent(U content) {
+    public static <T> Builder<T> forContent(T content) {
         return new Builder<>(content);
     }
 
