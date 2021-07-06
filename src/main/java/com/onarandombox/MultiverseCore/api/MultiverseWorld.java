@@ -237,6 +237,13 @@ public interface MultiverseWorld {
     String getAlias();
 
     /**
+     * Check whether this world has an custom world string set.
+     *
+     * @return true if there is either custom color, style or alias set, false otherwise.
+     */
+    boolean hasCustomWorldString();
+
+    /**
      * Sets the alias of the world.
      *
      * @param alias A string that is the new alias.

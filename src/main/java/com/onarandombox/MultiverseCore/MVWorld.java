@@ -28,7 +28,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -516,20 +515,44 @@ public class MVWorld implements MultiverseWorld {
      */
     @Override
     public String getColoredWorldString() {
-        if (props.getAlias().length() == 0) {
+        if (!hasCustomAlias()) {
             props.setAlias(this.getName());
         }
 
-        if ((props.getColor() == null) || (props.getColor().getColor() == null)) {
+        if (!hasCustomColor()) {
             this.props.setColor(EnglishChatColor.WHITE);
         }
 
         StringBuilder nameBuilder = new StringBuilder().append(props.getColor().getColor());
-        if (props.getStyle().getColor() != null)
+        if (hasCustomStyle()) {
             nameBuilder.append(props.getStyle().getColor());
-        nameBuilder.append(props.getAlias()).append(ChatColor.WHITE).toString();
+        }
+        nameBuilder.append(props.getAlias()).append(ChatColor.WHITE);
 
         return nameBuilder.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasCustomWorldString() {
+        return hasCustomAlias() || hasCustomColor() || hasCustomStyle();
+    }
+
+    private boolean hasCustomAlias() {
+        return !(props.getAlias() == null
+                || props.getAlias().isEmpty()
+                || name.equals(props.getAlias()));
+    }
+
+    private boolean hasCustomColor() {
+        return props.getColor() != null
+                && props.getColor().getColor() != ChatColor.WHITE;
+    }
+
+    private boolean hasCustomStyle() {
+        return props.getStyle().getColor() != null;
     }
 
     /**
