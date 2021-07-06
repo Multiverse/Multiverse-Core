@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display;
 
 /**
  * Represents a setting option that can be used by {@link DisplayHandler}.

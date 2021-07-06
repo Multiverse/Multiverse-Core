@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;

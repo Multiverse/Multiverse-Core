@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display;
 
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;

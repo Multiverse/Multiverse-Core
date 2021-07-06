@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display;
 
 /**
  * Thrown when an issue occur while formatting content.

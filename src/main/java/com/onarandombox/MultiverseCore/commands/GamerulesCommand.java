@@ -8,11 +8,10 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
-import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
-import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
-import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.display.ContentDisplay;
+import com.onarandombox.MultiverseCore.display.DisplayHandlers;
+import com.onarandombox.MultiverseCore.display.DisplaySettings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -21,7 +20,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
