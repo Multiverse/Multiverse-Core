@@ -68,10 +68,9 @@ public class ListCommand extends MultiverseCommand {
             }
         }
 
-        new ContentDisplay.Builder<Collection<String>>()
+        ContentDisplay.forContent(getListContents(sender))
                 .sender(sender)
                 .header("%s====[ Multiverse World List ]====", ChatColor.GOLD)
-                .contents(getListContents(sender))
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.GOLD))
                 .filter(filter)
@@ -79,7 +78,7 @@ public class ListCommand extends MultiverseCommand {
                 .display();
     }
 
-    private List<String> getListContents(@NotNull CommandSender sender) {
+    private Collection<String> getListContents(@NotNull CommandSender sender) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
 
         List<String> worldList = this.plugin.getMVWorldManager().getMVWorlds().stream()

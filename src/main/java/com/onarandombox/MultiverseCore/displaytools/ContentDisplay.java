@@ -19,16 +19,30 @@ public class ContentDisplay<T> {
 
     public static final String LINE_BREAK = "%br%";
 
+    /**
+     * Creates a ContentDisplay.Builder for the given content.
+     *
+     * @param content The content to be displayed.
+     * @param <U> The type of the content which can be inferred.
+     * @return A new Builder.
+     */
+    public static <U> Builder<U> forContent(U content) {
+        return new Builder<>(content);
+    }
+
+    private final T contents;
+
     private CommandSender sender;
     private String header;
-    private T contents;
     private String emptyMessage = "No matching content to display.";
     private DisplayHandler<T> displayHandler;
     private ColorTool colorTool = ColorTool.DEFAULT;
     private ContentFilter filter = ContentFilter.DEFAULT;
     private final Map<DisplaySetting<?>, Object> settingsMap = new WeakHashMap<>();
 
-    private ContentDisplay() { }
+    private ContentDisplay(T contents) {
+        this.contents = contents;
+    }
 
     /**
      * Do the actual displaying of contents to the sender.
@@ -138,8 +152,8 @@ public class ContentDisplay<T> {
 
         private final ContentDisplay<T> display;
 
-        public Builder() {
-            this.display = new ContentDisplay<>();
+        private Builder(T content) {
+            this.display = new ContentDisplay<>(content);
         }
 
         /**
@@ -164,18 +178,6 @@ public class ContentDisplay<T> {
         @NotNull
         public Builder<T> header(@NotNull String header, Object...replacements) {
             this.display.header = String.format(header, replacements);
-            return this;
-        }
-
-        /**
-         * Sets content to be displayed.
-         *
-         * @param contents  The contents.
-         * @return The builder.
-         */
-        @NotNull
-        public Builder<T> contents(@Nullable T contents) {
-            this.display.contents = contents;
             return this;
         }
 
