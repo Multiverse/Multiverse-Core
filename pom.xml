@@ -20,7 +20,7 @@
         </repository>
         <repository>
             <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public</url>
+            <url>https://repo.onarandombox.com/content/groups/public</url>
         </repository>
         <repository>
             <id>spigot</id>
@@ -49,7 +49,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
+        <url>https://ci.onarandombox.com</url>
     </ciManagement>
 
     <!-- Profiles are used to detect whether this is a local or Jenkins build
