@@ -1,10 +1,13 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display.settings;
+
+import com.onarandombox.MultiverseCore.display.DisplayHandler;
 
 /**
  * Represents a setting option that can be used by {@link DisplayHandler}.
  *
  * @param <T>
  */
+@FunctionalInterface
 public interface DisplaySetting<T> {
 
      /**

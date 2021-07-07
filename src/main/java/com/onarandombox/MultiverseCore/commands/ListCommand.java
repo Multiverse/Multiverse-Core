@@ -7,14 +7,13 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.displaytools.ColorAlternator;
-import com.onarandombox.MultiverseCore.displaytools.ContentDisplay;
-import com.onarandombox.MultiverseCore.displaytools.ContentFilter;
-import com.onarandombox.MultiverseCore.displaytools.DisplayHandlers;
-import com.onarandombox.MultiverseCore.displaytools.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.ColorAlternator;
+import com.onarandombox.MultiverseCore.display.ContentDisplay;
+import com.onarandombox.MultiverseCore.display.ContentFilter;
+import com.onarandombox.MultiverseCore.display.DisplayHandlers;
+import com.onarandombox.MultiverseCore.display.settings.PagedDisplaySettings;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -22,9 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,18 +65,16 @@ public class ListCommand extends MultiverseCommand {
             }
         }
 
-        new ContentDisplay.Builder<Collection<String>>()
-                .sender(sender)
+        ContentDisplay.forContent(getListContents(sender))
                 .header("%s====[ Multiverse World List ]====", ChatColor.GOLD)
-                .contents(getListContents(sender))
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.GOLD))
                 .filter(filter)
-                .setting(DisplaySettings.SHOW_PAGE, page)
-                .display();
+                .setting(PagedDisplaySettings.SHOW_PAGE, page)
+                .show(sender);
     }
 
-    private List<String> getListContents(@NotNull CommandSender sender) {
+    private Collection<String> getListContents(@NotNull CommandSender sender) {
         Player player = (sender instanceof Player) ? (Player) sender : null;
 
         List<String> worldList = this.plugin.getMVWorldManager().getMVWorlds().stream()

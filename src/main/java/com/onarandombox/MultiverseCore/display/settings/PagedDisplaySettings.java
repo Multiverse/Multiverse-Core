@@ -1,11 +1,6 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display.settings;
 
-import org.bukkit.ChatColor;
-
-/**
- * Collection of {@link DisplaySetting} that are used by various {@link DisplayHandler}.
- */
-public class DisplaySettings {
+public class PagedDisplaySettings {
 
     /**
      * Page to display.
@@ -32,13 +27,4 @@ public class DisplaySettings {
      */
     public static final DisplaySetting<Boolean> PAGE_IN_CONSOLE = () -> false;
 
-    /**
-     * Inline separator. E.g. '1, 2, 3'
-     */
-    public static final DisplaySetting<String> SEPARATOR = () -> ChatColor.WHITE + ", ";
-
-    /**
-     * The thing between a key value pair. E.g. 'Me = Smart'
-     */
-    public static final DisplaySetting<String> OPERATOR = () -> ChatColor.WHITE + " = ";
 }

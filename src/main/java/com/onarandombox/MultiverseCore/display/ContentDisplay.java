@@ -1,9 +1,9 @@
-package com.onarandombox.MultiverseCore.displaytools;
+package com.onarandombox.MultiverseCore.display;
 
+import com.onarandombox.MultiverseCore.display.settings.DisplaySetting;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -19,39 +19,66 @@ public class ContentDisplay<T> {
 
     public static final String LINE_BREAK = "%br%";
 
-    private CommandSender sender;
+    /**
+     * Creates a ContentDisplay.Builder for the given content.
+     *
+     * @param content The content to be displayed.
+     * @param <T> The type of the content which can be inferred.
+     * @return A new Builder.
+     */
+    public static <T> Builder<T> forContent(T content) {
+        return new Builder<>(content);
+    }
+
+    /**
+     * Creates a ContentDisplay.Builder for the given collection of content.
+     *
+     * @param content The content to be displayed.
+     * @return A new Builder.
+     */
+    public static Builder<Collection<String>> forContent(Collection<String> content) {
+        return new Builder<>(content).displayHandler(DisplayHandlers.LIST);
+    }
+
+    /**
+     * Creates a ContentDisplay.Builder for the given map of content.
+     *
+     * @param content The content to be displayed.
+     * @return A new Builder.
+     */
+    public static Builder<Map<String, Object>> forContent(Map<String, Object> content) {
+        return new Builder<>(content).displayHandler(DisplayHandlers.INLINE_MAP);
+    }
+
+    private final T contents;
+
     private String header;
-    private T contents;
     private String emptyMessage = "No matching content to display.";
     private DisplayHandler<T> displayHandler;
     private ColorTool colorTool = ColorTool.DEFAULT;
     private ContentFilter filter = ContentFilter.DEFAULT;
     private final Map<DisplaySetting<?>, Object> settingsMap = new WeakHashMap<>();
 
-    private ContentDisplay() { }
-
-    /**
-     * Do the actual displaying of contents to the sender.
-     */
-    public void send() {
-        Collection<String> formattedContent;
-        try {
-            formattedContent = (this.contents == null) ? null : this.displayHandler.format(this);
-        } catch (DisplayFormatException e) {
-            this.sender.sendMessage(String.format("%sError: %s", ChatColor.RED, e.getMessage()));
-            return;
-        }
-        this.displayHandler.sendHeader(this);
-        this.displayHandler.sendSubHeader(this);
-        this.displayHandler.sendBody(this, formattedContent);
+    private ContentDisplay(T contents) {
+        this.contents = contents;
     }
 
     /**
-     * @return Gets the target sender.
+     * Do the actual displaying of contents to the sender.
+     *
+     * @param sender The CommandSender to show the display to.
      */
-    @NotNull
-    public CommandSender getSender() {
-        return sender;
+    public void show(@NotNull CommandSender sender) {
+        Collection<String> formattedContent;
+        try {
+            formattedContent = (this.contents == null) ? null : this.displayHandler.format(sender, this);
+        } catch (DisplayFormatException e) {
+            sender.sendMessage(String.format("%sError: %s", ChatColor.RED, e.getMessage()));
+            return;
+        }
+        this.displayHandler.sendHeader(sender, this);
+        this.displayHandler.sendSubHeader(sender, this);
+        this.displayHandler.sendBody(sender, this, formattedContent);
     }
 
     /**
@@ -138,20 +165,8 @@ public class ContentDisplay<T> {
 
         private final ContentDisplay<T> display;
 
-        public Builder() {
-            this.display = new ContentDisplay<>();
-        }
-
-        /**
-         * Sets target sender to display message to. <b>Required.</b>
-         *
-         * @param sender The target sender.
-         * @return The builder.
-         */
-        @NotNull
-        public Builder<T> sender(@NotNull CommandSender sender) {
-            this.display.sender = sender;
-            return this;
+        private Builder(T content) {
+            this.display = new ContentDisplay<>(content);
         }
 
         /**
@@ -164,18 +179,6 @@ public class ContentDisplay<T> {
         @NotNull
         public Builder<T> header(@NotNull String header, Object...replacements) {
             this.display.header = String.format(header, replacements);
-            return this;
-        }
-
-        /**
-         * Sets content to be displayed.
-         *
-         * @param contents  The contents.
-         * @return The builder.
-         */
-        @NotNull
-        public Builder<T> contents(@Nullable T contents) {
-            this.display.contents = contents;
             return this;
         }
 
@@ -249,16 +252,17 @@ public class ContentDisplay<T> {
          */
         @NotNull
         public ContentDisplay<T> build() {
-            Objects.requireNonNull(this.display.sender);
             Objects.requireNonNull(this.display.displayHandler);
             return this.display;
         }
 
         /**
-         * Build and send the contents to the sender.
+         * Build and show the content to the sender.
+         *
+         * @param sender The CommandSender to show the display to.
          */
-        public void display() {
-            this.build().send();
+        public void show(CommandSender sender) {
+            this.build().show(sender);
         }
     }
 }
