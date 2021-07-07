@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
@@ -68,7 +67,7 @@ public class ContentDisplay<T> {
      *
      * @param sender The CommandSender to show the display to.
      */
-    public void send(@NotNull CommandSender sender) {
+    public void show(@NotNull CommandSender sender) {
         Collection<String> formattedContent;
         try {
             formattedContent = (this.contents == null) ? null : this.displayHandler.format(sender, this);
@@ -262,7 +261,7 @@ public class ContentDisplay<T> {
          * @param sender The CommandSender to show the display to.
          */
         public void show(CommandSender sender) {
-            this.build().send(sender);
+            this.build().show(sender);
         }
     }
 }
