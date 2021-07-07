@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.display.DisplayFormatException;
 import com.onarandombox.MultiverseCore.display.DisplayHandler;
 import com.onarandombox.MultiverseCore.display.DisplaySettings;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -14,7 +15,8 @@ import java.util.Map;
 public class InlineMapDisplayHandler implements DisplayHandler<Map<String, Object>> {
 
     @Override
-    public Collection<String> format(@NotNull ContentDisplay<Map<String, Object>> display)
+    public Collection<String> format(@NotNull CommandSender sender,
+                                     @NotNull ContentDisplay<Map<String, Object>> display)
             throws DisplayFormatException {
         StringBuilder builder = new StringBuilder();
         String separator = display.getSetting(DisplaySettings.SEPARATOR);

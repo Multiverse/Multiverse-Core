@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.display;
 
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -15,48 +16,53 @@ import java.util.Collection;
 public interface DisplayHandler<T> {
 
     /**
-     * Formats the raw content into a {@link Collection<String>} for displaying to sender.
+     * Formats the raw content into a {@link Collection<String>} for displaying to the given sender.
      *
-     * @param display   The responsible {@link ContentDisplay}.
+     * @param sender The {@link CommandSender} who will the content will be displayed to.
+     * @param display The responsible {@link ContentDisplay}.
      * @return The formatted content.
      * @throws DisplayFormatException Issue occurred while formatting content. E.g. invalid page.
      */
-    Collection<String> format(@NotNull ContentDisplay<T> display) throws DisplayFormatException;
+    Collection<String> format(@NotNull CommandSender sender, @NotNull ContentDisplay<T> display)
+            throws DisplayFormatException;
 
     /**
      * Sends the header.
      *
-     * @param display   The responsible {@link ContentDisplay}.
+     * @param sender The {@link CommandSender} who will the header will be displayed to.
+     * @param display The responsible {@link ContentDisplay}.
      */
-    default void sendHeader(@NotNull ContentDisplay<T> display) {
+    default void sendHeader(@NotNull CommandSender sender, @NotNull ContentDisplay<T> display) {
         if (!Strings.isNullOrEmpty(display.getHeader())) {
-            display.getSender().sendMessage(display.getHeader());
+            sender.sendMessage(display.getHeader());
         }
     }
 
     /**
      * Sends info such as filter and page.
      *
-     * @param display   The responsible {@link ContentDisplay}.
+     * @param sender The {@link CommandSender} who will the sub header will be displayed to.
+     * @param display The responsible {@link ContentDisplay}.
      */
-    default void sendSubHeader(@NotNull ContentDisplay<T> display) {
+    default void sendSubHeader(@NotNull CommandSender sender, @NotNull ContentDisplay<T> display) {
         if (display.getFilter().hasFilter()) {
-            display.getSender().sendMessage(String.format("%s[ %s ]",
-                    ChatColor.GRAY, display.getFilter().getFormattedString()));
+            sender.sendMessage(String.format("%s[ %s ]", ChatColor.GRAY, display.getFilter().getFormattedString()));
         }
     }
 
     /**
      * Sends the content.
      *
-     * @param display           The responsible {@link ContentDisplay}.
-     * @param formattedContent  The content after being formatted by {@link #format(ContentDisplay)}
+     * @param sender The {@link CommandSender} who will the body will be displayed to.
+     * @param display The responsible {@link ContentDisplay}.
+     * @param formattedContent The content after being formatted by {@link #format(CommandSender, ContentDisplay)}
      */
-    default void sendBody(@NotNull ContentDisplay<T> display, Collection<String> formattedContent) {
+    default void sendBody(@NotNull CommandSender sender, @NotNull ContentDisplay<T> display,
+                          Collection<String> formattedContent) {
         if (formattedContent == null || formattedContent.size() == 0) {
-            display.getSender().sendMessage(display.getEmptyMessage());
+            sender.sendMessage(display.getEmptyMessage());
             return;
         }
-        display.getSender().sendMessage(formattedContent.toArray(new String[0]));
+        sender.sendMessage(formattedContent.toArray(new String[0]));
     }
 }

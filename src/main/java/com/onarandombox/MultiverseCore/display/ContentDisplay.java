@@ -52,7 +52,6 @@ public class ContentDisplay<T> {
 
     private final T contents;
 
-    private CommandSender sender;
     private String header;
     private String emptyMessage = "No matching content to display.";
     private DisplayHandler<T> displayHandler;
@@ -66,26 +65,20 @@ public class ContentDisplay<T> {
 
     /**
      * Do the actual displaying of contents to the sender.
+     *
+     * @param sender The CommandSender to show the display to.
      */
-    public void send() {
+    public void send(@NotNull CommandSender sender) {
         Collection<String> formattedContent;
         try {
-            formattedContent = (this.contents == null) ? null : this.displayHandler.format(this);
+            formattedContent = (this.contents == null) ? null : this.displayHandler.format(sender, this);
         } catch (DisplayFormatException e) {
-            this.sender.sendMessage(String.format("%sError: %s", ChatColor.RED, e.getMessage()));
+            sender.sendMessage(String.format("%sError: %s", ChatColor.RED, e.getMessage()));
             return;
         }
-        this.displayHandler.sendHeader(this);
-        this.displayHandler.sendSubHeader(this);
-        this.displayHandler.sendBody(this, formattedContent);
-    }
-
-    /**
-     * @return Gets the target sender.
-     */
-    @NotNull
-    public CommandSender getSender() {
-        return sender;
+        this.displayHandler.sendHeader(sender, this);
+        this.displayHandler.sendSubHeader(sender, this);
+        this.displayHandler.sendBody(sender, this, formattedContent);
     }
 
     /**
@@ -177,18 +170,6 @@ public class ContentDisplay<T> {
         }
 
         /**
-         * Sets target sender to display message to. <b>Required.</b>
-         *
-         * @param sender The target sender.
-         * @return The builder.
-         */
-        @NotNull
-        public Builder<T> sender(@NotNull CommandSender sender) {
-            this.display.sender = sender;
-            return this;
-        }
-
-        /**
          * Sets header to be displayed.
          *
          * @param header        The header text.
@@ -271,17 +252,17 @@ public class ContentDisplay<T> {
          */
         @NotNull
         public ContentDisplay<T> build() {
-            Objects.requireNonNull(this.display.sender);
             Objects.requireNonNull(this.display.displayHandler);
             return this.display;
         }
 
         /**
          * Build and show the content to the sender.
+         *
+         * @param sender The CommandSender to show the display to.
          */
         public void show(CommandSender sender) {
-            this.sender(sender);
-            this.build().send();
+            this.build().send(sender);
         }
     }
 }

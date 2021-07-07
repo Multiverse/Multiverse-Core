@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.display.DisplayFormatException;
 import com.onarandombox.MultiverseCore.display.DisplaySettings;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +16,10 @@ import java.util.stream.IntStream;
 public class PagedListDisplayHandler extends ListDisplayHandler {
 
     @Override
-    public Collection<String> format(@NotNull ContentDisplay<Collection<String>> display) throws DisplayFormatException {
-        if (dontNeedPaging(display)) {
-            return super.format(display);
+    public Collection<String> format(@NotNull CommandSender sender, @NotNull ContentDisplay<Collection<String>> display)
+            throws DisplayFormatException {
+        if (dontNeedPaging(sender, display)) {
+            return super.format(sender, display);
         }
 
         int pages = 1;
@@ -74,14 +76,14 @@ public class PagedListDisplayHandler extends ListDisplayHandler {
     }
 
     @Override
-    public void sendSubHeader(@NotNull ContentDisplay<Collection<String>> display) {
-        if (dontNeedPaging(display)) {
-            super.sendSubHeader(display);
+    public void sendSubHeader(@NotNull CommandSender sender, @NotNull ContentDisplay<Collection<String>> display) {
+        if (dontNeedPaging(sender, display)) {
+            super.sendSubHeader(sender, display);
             return;
         }
 
         if (display.getFilter().hasFilter()) {
-            display.getSender().sendMessage(String.format("%s[ Page %s of %s, %s ]",
+            sender.sendMessage(String.format("%s[ Page %s of %s, %s ]",
                     ChatColor.GRAY,
                     display.getSetting(DisplaySettings.SHOW_PAGE),
                     display.getSetting(DisplaySettings.TOTAL_PAGE),
@@ -89,15 +91,15 @@ public class PagedListDisplayHandler extends ListDisplayHandler {
             );
             return;
         }
-        display.getSender().sendMessage(String.format("%s[ Page %s of %s ]",
+        sender.sendMessage(String.format("%s[ Page %s of %s ]",
                 ChatColor.GRAY,
                 display.getSetting(DisplaySettings.SHOW_PAGE),
                 display.getSetting(DisplaySettings.TOTAL_PAGE))
         );
     }
 
-    private boolean dontNeedPaging(ContentDisplay<Collection<String>> display) {
-        return display.getSender() instanceof ConsoleCommandSender
+    private boolean dontNeedPaging(CommandSender sender, ContentDisplay<Collection<String>> display) {
+        return sender instanceof ConsoleCommandSender
                 && !display.getSetting(DisplaySettings.PAGE_IN_CONSOLE);
     }
 }
