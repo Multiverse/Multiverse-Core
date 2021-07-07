@@ -3,7 +3,8 @@ package com.onarandombox.MultiverseCore.display.handlers;
 import com.onarandombox.MultiverseCore.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.display.DisplayFormatException;
 import com.onarandombox.MultiverseCore.display.DisplayHandler;
-import com.onarandombox.MultiverseCore.display.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.settings.InlineDisplaySettings;
+import com.onarandombox.MultiverseCore.display.settings.MapDisplaySettings;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +20,8 @@ public class InlineMapDisplayHandler implements DisplayHandler<Map<String, Objec
                                      @NotNull ContentDisplay<Map<String, Object>> display)
             throws DisplayFormatException {
         StringBuilder builder = new StringBuilder();
-        String separator = display.getSetting(DisplaySettings.SEPARATOR);
-        String operator = display.getSetting(DisplaySettings.OPERATOR);
+        String separator = display.getSetting(InlineDisplaySettings.SEPARATOR);
+        String operator = display.getSetting(MapDisplaySettings.OPERATOR);
 
         for (Iterator<Map.Entry<String, Object>> iterator = display.getContents().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, Object> entry = iterator.next();

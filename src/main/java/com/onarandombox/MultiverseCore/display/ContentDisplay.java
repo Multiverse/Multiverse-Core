@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.display;
 
+import com.onarandombox.MultiverseCore.display.settings.DisplaySetting;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

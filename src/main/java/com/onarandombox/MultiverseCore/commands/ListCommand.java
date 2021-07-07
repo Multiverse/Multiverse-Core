@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.display.ContentFilter;
 import com.onarandombox.MultiverseCore.display.DisplayHandlers;
-import com.onarandombox.MultiverseCore.display.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.settings.PagedDisplaySettings;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -70,7 +70,7 @@ public class ListCommand extends MultiverseCommand {
                 .displayHandler(DisplayHandlers.PAGE_LIST)
                 .colorTool(ColorAlternator.with(ChatColor.AQUA, ChatColor.GOLD))
                 .filter(filter)
-                .setting(DisplaySettings.SHOW_PAGE, page)
+                .setting(PagedDisplaySettings.SHOW_PAGE, page)
                 .show(sender);
     }
 

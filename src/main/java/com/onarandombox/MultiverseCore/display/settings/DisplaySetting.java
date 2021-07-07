@@ -1,4 +1,6 @@
-package com.onarandombox.MultiverseCore.display;
+package com.onarandombox.MultiverseCore.display.settings;
+
+import com.onarandombox.MultiverseCore.display.DisplayHandler;
 
 /**
  * Represents a setting option that can be used by {@link DisplayHandler}.

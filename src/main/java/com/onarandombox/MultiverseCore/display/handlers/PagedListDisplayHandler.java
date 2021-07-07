@@ -2,7 +2,7 @@ package com.onarandombox.MultiverseCore.display.handlers;
 
 import com.onarandombox.MultiverseCore.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.display.DisplayFormatException;
-import com.onarandombox.MultiverseCore.display.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.settings.PagedDisplaySettings;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -24,8 +24,8 @@ public class PagedListDisplayHandler extends ListDisplayHandler {
 
         int pages = 1;
         int currentLength = 0;
-        int targetPage = display.getSetting(DisplaySettings.SHOW_PAGE);
-        int linesPerPage = display.getSetting(DisplaySettings.LINES_PER_PAGE);
+        int targetPage = display.getSetting(PagedDisplaySettings.SHOW_PAGE);
+        int linesPerPage = display.getSetting(PagedDisplaySettings.LINES_PER_PAGE);
         List<String> content = new ArrayList<>(linesPerPage);
 
         // Calculate the paging.
@@ -67,10 +67,10 @@ public class PagedListDisplayHandler extends ListDisplayHandler {
         }
 
         // Add empty lines to make output length consistent.
-        if (display.getSetting(DisplaySettings.DO_END_PADDING)) {
+        if (display.getSetting(PagedDisplaySettings.DO_END_PADDING)) {
             IntStream.range(0, linesPerPage - content.size()).forEach(i -> content.add(""));
         }
-        display.setSetting(DisplaySettings.TOTAL_PAGE, pages);
+        display.setSetting(PagedDisplaySettings.TOTAL_PAGE, pages);
 
         return content;
     }
@@ -85,21 +85,21 @@ public class PagedListDisplayHandler extends ListDisplayHandler {
         if (display.getFilter().hasFilter()) {
             sender.sendMessage(String.format("%s[ Page %s of %s, %s ]",
                     ChatColor.GRAY,
-                    display.getSetting(DisplaySettings.SHOW_PAGE),
-                    display.getSetting(DisplaySettings.TOTAL_PAGE),
+                    display.getSetting(PagedDisplaySettings.SHOW_PAGE),
+                    display.getSetting(PagedDisplaySettings.TOTAL_PAGE),
                     display.getFilter().getFormattedString())
             );
             return;
         }
         sender.sendMessage(String.format("%s[ Page %s of %s ]",
                 ChatColor.GRAY,
-                display.getSetting(DisplaySettings.SHOW_PAGE),
-                display.getSetting(DisplaySettings.TOTAL_PAGE))
+                display.getSetting(PagedDisplaySettings.SHOW_PAGE),
+                display.getSetting(PagedDisplaySettings.TOTAL_PAGE))
         );
     }
 
     private boolean dontNeedPaging(CommandSender sender, ContentDisplay<Collection<String>> display) {
         return sender instanceof ConsoleCommandSender
-                && !display.getSetting(DisplaySettings.PAGE_IN_CONSOLE);
+                && !display.getSetting(PagedDisplaySettings.PAGE_IN_CONSOLE);
     }
 }

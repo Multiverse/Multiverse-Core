@@ -10,8 +10,7 @@ package com.onarandombox.MultiverseCore.commands;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.display.ContentDisplay;
-import com.onarandombox.MultiverseCore.display.DisplayHandlers;
-import com.onarandombox.MultiverseCore.display.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.settings.MapDisplaySettings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -77,7 +76,7 @@ public class GamerulesCommand extends MultiverseCommand {
         ContentDisplay.forContent(getGameRuleMap(world))
                 .header("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE)
                 .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
-                .setting(DisplaySettings.OPERATOR, ": ")
+                .setting(MapDisplaySettings.OPERATOR, ": ")
                 .show(sender);
     }
 

@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.display.handlers;
 import com.onarandombox.MultiverseCore.display.ContentDisplay;
 import com.onarandombox.MultiverseCore.display.DisplayFormatException;
 import com.onarandombox.MultiverseCore.display.DisplayHandler;
-import com.onarandombox.MultiverseCore.display.DisplaySettings;
+import com.onarandombox.MultiverseCore.display.settings.InlineDisplaySettings;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public class InlineListDisplayHandler implements DisplayHandler<Collection<Strin
     public Collection<String> format(@NotNull CommandSender sender, @NotNull ContentDisplay<Collection<String>> display)
             throws DisplayFormatException {
         StringBuilder builder = new StringBuilder();
-        String separator = display.getSetting(DisplaySettings.SEPARATOR);
+        String separator = display.getSetting(InlineDisplaySettings.SEPARATOR);
 
         for (Iterator<String> iterator = display.getContents().iterator(); iterator.hasNext(); ) {
             String content = iterator.next();
