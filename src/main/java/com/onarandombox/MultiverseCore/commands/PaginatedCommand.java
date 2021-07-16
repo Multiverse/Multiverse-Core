@@ -56,7 +56,7 @@ public abstract class PaginatedCommand<T> extends Command {
      * @return String with regex characters escaped
      */
     protected String cleanFilter(String filter) {
-        return REGEX_SPECIAL_CHARS.matcher(filter.toLowerCase()).replaceAll("\\\\$0");
+        return REGEX_SPECIAL_CHARS.matcher(filter).replaceAll("\\\\$0");
     }
 
     /**
