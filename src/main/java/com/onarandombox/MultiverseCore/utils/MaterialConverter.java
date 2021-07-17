@@ -32,11 +32,33 @@ public class MaterialConverter {
      */
     @Nullable
     public static Material convertTypeString(@Nullable String value) {
-        IdMappings.Mapping mapping = IdMappings.getById(value != null ? value : "");
-        if (mapping != null) {
-            return Material.matchMaterial(mapping.getFlatteningType());
-        } else {
-            return Material.matchMaterial(value != null ? value : "");
+        String targetValue = value != null ? value : "";
+
+        IdMappings.Mapping idMapping = IdMappings.getById(targetValue);
+        if (idMapping != null) {
+            return getMappedType(idMapping);
         }
+        IdMappings.Mapping flattenMapping = IdMappings.getByFlatteningType(targetValue);
+        if (flattenMapping != null) {
+            return getMappedType(flattenMapping);
+        }
+        IdMappings.Mapping legacyMapping = IdMappings.getByLegacyType(targetValue);
+        if (legacyMapping != null) {
+            return getMappedType(legacyMapping);
+        }
+
+        return Material.matchMaterial(targetValue);
+    }
+
+    /**
+     * Gets flattened or legacy material type based on what the server supports.
+     *
+     * @param mapping Dynamic material mapping provided by {@link IdMappings}.
+     * @return Material of the mapping.
+     */
+    public static Material getMappedType(IdMappings.Mapping mapping) {
+        return CompatibilityLayer.isUsingLegacyMaterials()
+                ? Material.matchMaterial(mapping.getLegacyType())
+                : Material.matchMaterial(mapping.getFlatteningType());
     }
 }

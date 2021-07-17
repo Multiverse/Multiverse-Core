@@ -34,6 +34,10 @@
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -253,6 +257,10 @@
                                     <pattern>de.themoep.idconverter</pattern>
                                     <shadedPattern>com.onarandombox.idconverter</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>io.papermc.lib</pattern>
+                                    <shadedPattern>com.onarandombox.paperlib</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -338,6 +346,12 @@
             <groupId>de.themoep.idconverter</groupId>
             <artifactId>mappings</artifactId>
             <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>1.0.6</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Start of Test Dependencies -->

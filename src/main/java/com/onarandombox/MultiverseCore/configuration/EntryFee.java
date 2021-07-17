@@ -1,15 +1,15 @@
 package com.onarandombox.MultiverseCore.configuration;
 
-import java.util.Map;
-
+import com.onarandombox.MultiverseCore.utils.MVMaterials;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
-
 import me.main__.util.SerializationConfig.Serializor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * Entryfee-settings.
@@ -22,7 +22,7 @@ public class EntryFee extends SerializationConfig {
     @Nullable
     private Material currency;
 
-    private final Material DISABLED_MATERIAL = Material.AIR;
+    private final Material DISABLED_MATERIAL = MVMaterials.AIR;
 
     public EntryFee() {
         super();

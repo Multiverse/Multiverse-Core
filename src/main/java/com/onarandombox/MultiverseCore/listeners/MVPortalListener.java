@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import org.bukkit.Material;
+import com.onarandombox.MultiverseCore.utils.MVMaterials;
 import org.bukkit.PortalType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +18,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
-
-import java.util.logging.Level;
 
 /**
  * A custom listener for portal related events.
@@ -72,10 +70,10 @@ public class MVPortalListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-        if (event.getClickedBlock().getType() != Material.END_PORTAL_FRAME) {
+        if (event.getClickedBlock().getType() != MVMaterials.END_PORTAL_FRAME) {
             return;
         }
-        if (event.getItem() == null || event.getItem().getType() != Material.ENDER_EYE) {
+        if (event.getItem() == null || event.getItem().getType() != MVMaterials.ENDER_EYE) {
             return;
         }
         MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
