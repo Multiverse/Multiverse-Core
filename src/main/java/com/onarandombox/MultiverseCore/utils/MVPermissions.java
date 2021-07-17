@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.permissions.Permissions;
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -104,18 +105,15 @@ public class MVPermissions implements PermissionsInterface {
             Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }
-        return this.hasPermission(p, "multiverse.access." + w.getName(), false);
+        return Permissions.ACCESS.has(p, w.getName());
     }
 
     private boolean canEnterLocation(Player p, Location l) {
-        if (l == null) {
+        if (l == null)
             return false;
-        }
+
         String worldName = l.getWorld().getName();
-        if (!this.plugin.getMVWorldManager().isMVWorld(worldName)) {
-            return false;
-        }
-        return this.hasPermission(p, "multiverse.access." + worldName, false);
+        return this.plugin.getMVWorldManager().isMVWorld(worldName) && Permissions.ACCESS.has(p, worldName);
     }
 
     /**
