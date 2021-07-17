@@ -78,6 +78,8 @@ import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
+import com.onarandombox.MultiverseCore.generators.GeneratorManager;
+import com.onarandombox.MultiverseCore.api.MVGeneratorManager;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -215,6 +217,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     // Configurations
     private FileConfiguration multiverseConfig = null;
 
+    private MVGeneratorManager generatorManager;
     private final MVWorldManager worldManager = new WorldManager(this);
 
     // Setup the block/player/entity listener.
@@ -282,7 +285,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.messaging = new MVMessaging();
         this.economist = new MVEconomist(this);
         // Load the defaultWorldGenerators
-        this.worldManager.getDefaultWorldGenerators();
+        this.generatorManager = new GeneratorManager(this);
 
         this.registerEvents();
         // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
@@ -1026,6 +1029,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             throw new IllegalArgumentException("That's not a folder!");
 
         this.serverFolder = newServerFolder;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MVGeneratorManager getMVGeneratorManager() {
+        return generatorManager;
     }
 
     /**
