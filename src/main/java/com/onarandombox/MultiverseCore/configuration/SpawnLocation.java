@@ -1,14 +1,10 @@
 package com.onarandombox.MultiverseCore.configuration;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
@@ -18,54 +14,16 @@ import org.bukkit.configuration.serialization.SerializableAs;
  */
 @SerializableAs("MVSpawnLocation")
 public class SpawnLocation extends Location implements ConfigurationSerializable {
-    private Reference<World> worldRef;
-
-    public SpawnLocation(double x, double y, double z) {
-        super(null, x, y, z);
+    public SpawnLocation(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
-    public SpawnLocation(double x, double y, double z, float yaw, float pitch) {
-        super(null, x, y, z, yaw, pitch);
+    public SpawnLocation(World world, double x, double y, double z, float yaw, float pitch) {
+        super(world, x, y, z, yaw, pitch);
     }
 
     public SpawnLocation(Location loc) {
-        this(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public World getWorld() {
-        return (this.worldRef != null) ? this.worldRef.get() : null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setWorld(World world) {
-        this.worldRef = new WeakReference<World>(world);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Chunk getChunk() {
-        if ((this.worldRef != null) && (this.worldRef.get() != null))
-            return this.worldRef.get().getChunkAt(this);
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Block getBlock() {
-        if ((this.worldRef != null) && (this.worldRef.get() != null))
-            return this.worldRef.get().getBlockAt(this);
-        return null;
+        super(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
     }
 
     /**
@@ -93,6 +51,6 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
         double z = ((Number) args.get("z")).doubleValue();
         float pitch = ((Number) args.get("pitch")).floatValue();
         float yaw = ((Number) args.get("yaw")).floatValue();
-        return new SpawnLocation(x, y, z, yaw, pitch);
+        return new SpawnLocation(null, x, y, z, yaw, pitch);
     }
 }
