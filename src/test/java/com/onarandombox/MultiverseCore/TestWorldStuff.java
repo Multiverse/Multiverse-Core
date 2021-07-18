@@ -32,19 +32,12 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.internal.verification.VerificationModeFactory;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class,
-        PluginDescriptionFile.class, JavaPluginLoader.class })
-@PowerMockIgnore("javax.script.*")
 public class TestWorldStuff {
 
     private TestInstanceCreator creator;
