@@ -2,17 +2,16 @@ package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import org.bukkit.Material;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class TestEntryFeeConversion {
 

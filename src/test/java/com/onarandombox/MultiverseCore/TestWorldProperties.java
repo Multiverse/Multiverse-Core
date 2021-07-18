@@ -13,8 +13,6 @@ import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -36,22 +34,25 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.permissions.Permission;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.internal.verification.VerificationModeFactory;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TestWorldProperties {
     private TestInstanceCreator creator;
@@ -112,7 +113,7 @@ public class TestWorldProperties {
         String[] netherArgs = new String[] { "import", "world_nether", "nether" };
         core.onCommand(mockCommandSender, mockCommand, "", netherArgs);
         verify(mockCommandSender).sendMessage("Starting import of world 'world_nether'...");
-        verify(mockCommandSender, VerificationModeFactory.times(2)).sendMessage(
+        verify(mockCommandSender, times(2)).sendMessage(
                 ChatColor.GREEN + "Complete!");
 
         assertEquals(core.getServer().getWorlds().size(), 2);
@@ -212,7 +213,7 @@ public class TestWorldProperties {
         assertTrue(mvWorld.setColor("BLACK"));
         assertFalse(mvWorld.setColor("INVALID COLOR"));
         assertEquals(ChatColor.BLACK, mvWorld.getColor());
-        assertEquals(ChatColor.BLACK.toString() + "alias" + ChatColor.WHITE.toString(), mvWorld.getColoredWorldString());
+        assertEquals(ChatColor.BLACK + "alias" + ChatColor.WHITE, mvWorld.getColoredWorldString());
         mvWorld.setPVPMode(false);
         assertEquals(false, mvWorld.isPVPEnabled());
         assertTrue(mvWorld.setScaling(2D));
@@ -319,7 +320,7 @@ public class TestWorldProperties {
         assertEquals(true, mvWorld.isHidden());
         assertEquals("alias", mvWorld.getAlias());
         assertEquals(ChatColor.GREEN, mvWorld.getColor());
-        assertEquals(ChatColor.GREEN.toString() + "alias" + ChatColor.WHITE.toString(), mvWorld.getColoredWorldString());
+        assertEquals(ChatColor.GREEN + "alias" + ChatColor.WHITE, mvWorld.getColoredWorldString());
         assertEquals(false, mvWorld.isPVPEnabled());
         assertEquals(2D, mvWorld.getScaling(), 0);
         assertSame(worldManager.getMVWorld("world_nether").getCBWorld(),
