@@ -85,12 +85,6 @@ public class TestInstanceCreator {
                     "com.onarandombox.MultiverseCore.MultiverseCore"));
             when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
             core = PowerMockito.spy(new MultiverseCore(mockPluginLoader, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
-            PowerMockito.doAnswer(new Answer<Void>() {
-                @Override
-                public Void answer(InvocationOnMock invocation) throws Throwable {
-                    return null; // don't run metrics in tests
-                }
-            }).when(core, "setupMetrics");
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
