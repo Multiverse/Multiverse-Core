@@ -27,13 +27,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.mockito.ArgumentMatchers;
+import org.mockito.internal.util.reflection.ReflectionMemberAccessor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.MockGateway;
-import org.powermock.reflect.Whitebox;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -44,15 +40,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class TestInstanceCreator {
     private MultiverseCore core;
@@ -69,28 +66,20 @@ public class TestInstanceCreator {
             pluginDirectory.mkdirs();
             assertTrue(pluginDirectory.exists());
 
-            MockGateway.MOCK_STANDARD_METHODS = false;
-
             // Initialize the Mock server.
             mockServer = mock(Server.class);
-            JavaPluginLoader mockPluginLoader = PowerMock.createMock(JavaPluginLoader.class);
-            Whitebox.setInternalState(mockPluginLoader, "server", mockServer);
+            JavaPluginLoader mockPluginLoader = mock(JavaPluginLoader.class);
+            new ReflectionMemberAccessor().set(JavaPluginLoader.class.getDeclaredField("server"), mockPluginLoader, mockServer);
             when(mockServer.getName()).thenReturn("TestBukkit");
             Logger.getLogger("Minecraft").setParent(Util.logger);
             when(mockServer.getLogger()).thenReturn(Util.logger);
             when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
 
             // Return a fake PDF file.
-            PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
+            PluginDescriptionFile pdf = spy(new PluginDescriptionFile("Multiverse-Core", "2.2-Test",
                     "com.onarandombox.MultiverseCore.MultiverseCore"));
             when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
-            core = PowerMockito.spy(new MultiverseCore(mockPluginLoader, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
-            PowerMockito.doAnswer(new Answer<Void>() {
-                @Override
-                public Void answer(InvocationOnMock invocation) throws Throwable {
-                    return null; // don't run metrics in tests
-                }
-            }).when(core, "setupMetrics");
+            core = spy(new MultiverseCore(mockPluginLoader, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
@@ -103,7 +92,7 @@ public class TestInstanceCreator {
             JavaPlugin[] plugins = new JavaPlugin[] { core };
 
             // Mock the Plugin Manager
-            PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
+            PluginManager mockPluginManager = mock(PluginManager.class);
             when(mockPluginManager.getPlugins()).thenReturn(plugins);
             when(mockPluginManager.getPlugin("Multiverse-Core")).thenReturn(core);
             when(mockPluginManager.getPermission(anyString())).thenReturn(null);
@@ -157,7 +146,7 @@ public class TestInstanceCreator {
 
             when(mockServer.getPluginManager()).thenReturn(mockPluginManager);
 
-            when(mockServer.createWorld(ArgumentMatchers.isA(WorldCreator.class))).thenAnswer(
+            when(mockServer.createWorld(isA(WorldCreator.class))).thenAnswer(
                     new Answer<World>() {
                         @Override
                         public World answer(InvocationOnMock invocation) throws Throwable {
@@ -219,7 +208,7 @@ public class TestInstanceCreator {
             buscriptfield.setAccessible(true);
 
             try {
-                buscript = PowerMockito.spy(new Buscript(core));
+                buscript = spy(new Buscript(core));
                 when(buscript.getPlugin()).thenReturn(core);
             } catch (NullPointerException e) {
                 buscript = null;
@@ -228,25 +217,25 @@ public class TestInstanceCreator {
             buscriptfield.set(core, buscript);
 
             // Set worldManager
-            WorldManager wm = PowerMockito.spy(new WorldManager(core));
+            WorldManager wm = spy(new WorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
             worldmanagerfield.setAccessible(true);
             worldmanagerfield.set(core, wm);
 
             // Set playerListener
-            MVPlayerListener pl = PowerMockito.spy(new MVPlayerListener(core));
+            MVPlayerListener pl = spy(new MVPlayerListener(core));
             Field playerlistenerfield = MultiverseCore.class.getDeclaredField("playerListener");
             playerlistenerfield.setAccessible(true);
             playerlistenerfield.set(core, pl);
 
             // Set entityListener
-            MVEntityListener el = PowerMockito.spy(new MVEntityListener(core));
+            MVEntityListener el = spy(new MVEntityListener(core));
             Field entitylistenerfield = MultiverseCore.class.getDeclaredField("entityListener");
             entitylistenerfield.setAccessible(true);
             entitylistenerfield.set(core, el);
 
             // Set weatherListener
-            MVWeatherListener wl = PowerMockito.spy(new MVWeatherListener(core));
+            MVWeatherListener wl = spy(new MVWeatherListener(core));
             Field weatherlistenerfield = MultiverseCore.class.getDeclaredField("weatherListener");
             weatherlistenerfield.setAccessible(true);
             weatherlistenerfield.set(core, wl);
@@ -264,9 +253,9 @@ public class TestInstanceCreator {
             when(commandSender.getServer()).thenReturn(mockServer);
             when(commandSender.getName()).thenReturn("MockCommandSender");
             when(commandSender.isPermissionSet(anyString())).thenReturn(true);
-            when(commandSender.isPermissionSet(ArgumentMatchers.isA(Permission.class))).thenReturn(true);
+            when(commandSender.isPermissionSet(isA(Permission.class))).thenReturn(true);
             when(commandSender.hasPermission(anyString())).thenReturn(true);
-            when(commandSender.hasPermission(ArgumentMatchers.isA(Permission.class))).thenReturn(true);
+            when(commandSender.hasPermission(isA(Permission.class))).thenReturn(true);
             when(commandSender.addAttachment(core)).thenReturn(null);
             when(commandSender.isOp()).thenReturn(true);
 
