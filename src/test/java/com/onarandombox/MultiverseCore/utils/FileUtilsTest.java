@@ -1,16 +1,18 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import com.dumptruckman.minecraft.util.Logging;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FileUtilsTest {
 
@@ -78,12 +80,40 @@ public class FileUtilsTest {
         assertFalse(Files.isDirectory(targetChildDir));
         assertFalse(Files.isRegularFile(targetChildDirFile));
 
-        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), Logging.getLogger()));
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile()));
 
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
         assertTrue(Files.isDirectory(targetChildDir));
         assertTrue(Files.isRegularFile(targetChildDirFile));
+    }
+
+    @Test
+    public void copyFolder_excludingSomeFiles() throws Exception {
+        Path targetDir = tempDir.resolve("target");
+        Path targetFile = targetDir.resolve("parentDirFile.txt");
+        Path targetIgnoreFile = targetDir.resolve("parentIgnoreFile.txt");
+        Path targetChildDir = targetDir.resolve("childDir");
+        Path targetChildDirFile = targetChildDir.resolve("childDirFile.txt");
+        Path targetChildIgnoreFile = targetChildDir.resolve("childIgnoreFile.txt");
+
+        List<String> excludeFiles = new ArrayList<>(Arrays.asList("parentIgnoreFile.txt", "childIgnoreFile.txt"));
+
+        assertFalse(Files.isDirectory(targetDir));
+        assertFalse(Files.isRegularFile(targetFile));
+        assertFalse(Files.isRegularFile(targetIgnoreFile));
+        assertFalse(Files.isDirectory(targetChildDir));
+        assertFalse(Files.isRegularFile(targetChildDirFile));
+        assertFalse(Files.isRegularFile(targetChildIgnoreFile));
+
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), excludeFiles));
+
+        assertTrue(Files.isDirectory(targetDir));
+        assertTrue(Files.isRegularFile(targetFile));
+        assertFalse(Files.isRegularFile(targetIgnoreFile));
+        assertTrue(Files.isDirectory(targetChildDir));
+        assertTrue(Files.exists(targetChildDirFile));
+        assertFalse(Files.isRegularFile(targetChildIgnoreFile));
     }
 
     @Test
@@ -98,7 +128,7 @@ public class FileUtilsTest {
         assertFalse(Files.isDirectory(targetChildDir));
         assertFalse(Files.isRegularFile(targetChildDirFile));
 
-        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), Logging.getLogger()));
+        assertTrue(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile()));
 
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
@@ -106,7 +136,7 @@ public class FileUtilsTest {
         assertTrue(Files.isRegularFile(targetChildDirFile));
     }
 
-    @Test()
+    @Test
     public void copyFolder_intoExistingFolder_whereFileExists() throws Exception {
         Path targetDir = Files.createDirectory(tempDir.resolve("target"));
         Path targetFile = Files.createFile(targetDir.resolve("parentDirFile.txt"));
@@ -114,6 +144,6 @@ public class FileUtilsTest {
         assertTrue(Files.isDirectory(targetDir));
         assertTrue(Files.isRegularFile(targetFile));
 
-        assertFalse(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile(), Logging.getLogger()));
+        assertFalse(FileUtils.copyFolder(parentDir.toFile(), targetDir.toFile()));
     }
 }

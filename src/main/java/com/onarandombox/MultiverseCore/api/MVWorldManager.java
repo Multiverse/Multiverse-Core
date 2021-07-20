@@ -175,6 +175,16 @@ public interface MVWorldManager {
     MultiverseWorld getMVWorld(String name);
 
     /**
+     * Returns a {@link MultiverseWorld} if the world with name given exists, and null if it does not.
+     * This will search optionally for alias names.
+     *
+     * @param name          The name or optionally the alias of the world to get.
+     * @param checkAliases  Indicates whether to check for world alias name.
+     * @return A {@link MultiverseWorld} or null.
+     */
+    MultiverseWorld getMVWorld(String name, boolean checkAliases);
+
+    /**
      * Returns a {@link MultiverseWorld} if it exists, and null if it does not.
      *
      * @param world The Bukkit world to check.
@@ -183,12 +193,23 @@ public interface MVWorldManager {
     MultiverseWorld getMVWorld(World world);
 
     /**
-     * Checks to see if the given name is a valid {@link MultiverseWorld}.
+     * Checks to see if the given name is a valid {@link MultiverseWorld}
+     * Searches based on world name AND alias.
      *
      * @param name The name or alias of the world to check.
      * @return True if the world exists, false if not.
      */
     boolean isMVWorld(String name);
+
+    /**
+     * Checks to see if the given name is a valid {@link MultiverseWorld}.
+     * Optionally searches by alias is specified.
+     *
+     * @param name          The name or alias of the world to check.
+     * @param checkAliases  Indicates whether to check for world alias name.
+     * @return True if the world exists, false if not.
+     */
+    boolean isMVWorld(String name, boolean checkAliases);
 
     /**
      * Checks to see if the given world is a valid {@link MultiverseWorld}.
@@ -292,14 +313,27 @@ public interface MVWorldManager {
     /**
      * Regenerates a world.
      *
-     * @param name Name of the world to regenerate
-     * @param useNewSeed If a new seed should be used
-     * @param randomSeed IF the new seed should be random
-     * @param seed The seed of the world.
+     * @param name          Name of the world to regenerate
+     * @param useNewSeed    If a new seed should be used
+     * @param randomSeed    If the new seed should be random
+     * @param seed          The seed of the world.
      *
      * @return True if success, false if fail.
      */
     boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed);
+
+    /**
+     * Regenerates a world.
+     *
+     * @param name          Name of the world to regenerate
+     * @param useNewSeed    If a new seed should be used
+     * @param randomSeed    If the new seed should be random
+     * @param seed          The seed of the world.
+     * @param keepGameRules If GameRules should be kept on world regen.
+     *
+     * @return True if success, false if fail.
+     */
+    boolean regenWorld(String name, boolean useNewSeed, boolean randomSeed, String seed, boolean keepGameRules);
 
     boolean isKeepingSpawnInMemory(World world);
     
@@ -314,4 +348,11 @@ public interface MVWorldManager {
      * does not exist. {@code includeLoaded} if the world exists and is loaded.
      */
     boolean hasUnloadedWorld(String name, boolean includeLoaded);
+
+    /**
+     * Get all the possible worlds that Multiverse has detected to be importable.
+     *
+     * @return A collection of world names that are deemed importable.
+     */
+    Collection<String> getPotentialWorlds();
 }

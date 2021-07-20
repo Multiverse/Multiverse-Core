@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -87,6 +88,15 @@ public interface Core {
     CommandHandler getCommandHandler();
 
     /**
+     * Manager for command that requires /mv confirm before execution.
+     *
+     * @return A non-null {@link CommandQueueManager}.
+     * @deprecated To be moved to new command manager in 5.0.0
+     */
+    @Deprecated
+    CommandQueueManager getCommandQueueManager();
+
+    /**
      * Gets the factory class responsible for loading many different destinations
      * on demand.
      *
@@ -116,19 +126,37 @@ public interface Core {
     AnchorManager getAnchorManager();
 
     /**
-     * Used by queued commands to regenerate a world on a delay.
+     * Previously used by queued commands to regenerate a world on a delay.
+     * Do not use api method for any other purpose.
      *
-     * @param name Name of the world to regenerate
-     * @param useNewSeed If a new seed should be used
-     * @param randomSeed IF the new seed should be random
-     * @param seed The seed of the world.
+     * @param name          Name of the world to regenerate
+     * @param useNewSeed    If a new seed should be used
+     * @param randomSeed    If the new seed should be random
+     * @param seed          The seed of the world.
      *
      * @return True if success, false if fail.
      *
-     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String)} instead.
+     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String, boolean)} instead.
      */
     @Deprecated
     Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
+
+    /**
+     * Used by queued commands to regenerate a world on a delay.
+     * Do not use api method for any other purpose.
+     *
+     * @param name          Name of the world to regenerate
+     * @param useNewSeed    If a new seed should be used
+     * @param randomSeed    If the new seed should be random
+     * @param seed          The seed of the world.
+     * @param keepGameRules If GameRules should be kept on world regen.
+     *
+     * @return True if success, false if fail.
+     *
+     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String, boolean)} instead.
+     */
+    @Deprecated
+    Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed, Boolean keepGameRules);
 
     /**
      * Decrements the number of plugins that have specifically hooked into core.

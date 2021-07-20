@@ -13,12 +13,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A generic paginated command.
  * @param <T> The type of items on the page.
  */
 public abstract class PaginatedCommand<T> extends Command {
+    private final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
     private static final int DEFAULT_ITEMS_PER_PAGE = 9;
     /**
      * The number of items per page.
@@ -40,11 +42,22 @@ public abstract class PaginatedCommand<T> extends Command {
 
     /**
      * Gets filtered items.
+     *
      * @param availableItems All available items.
      * @param filter The filter-{@link String}.
      * @return A list of items that match the filter.
      */
     protected abstract List<T> getFilteredItems(List<T> availableItems, String filter);
+
+    /**
+     * Escape regex special characters from filter
+     *
+     * @param filter The filter-{@link String}.
+     * @return String with regex characters escaped
+     */
+    protected String cleanFilter(String filter) {
+        return REGEX_SPECIAL_CHARS.matcher(filter).replaceAll("\\\\$0");
+    }
 
     /**
      * Constructs a single string from a list of strings.

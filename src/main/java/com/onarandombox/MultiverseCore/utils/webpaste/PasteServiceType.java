@@ -8,6 +8,10 @@ package com.onarandombox.MultiverseCore.utils.webpaste;
  */
 public enum PasteServiceType {
     /**
+     * @see PasteGGPasteService
+     */
+    PASTEGG,
+    /**
      * @see PastebinPasteService
      */
     PASTEBIN,
@@ -16,7 +20,7 @@ public enum PasteServiceType {
      */
     HASTEBIN,
     /**
-     * @see GithubPasteService
+     * @see GitHubPasteService
      */
     GITHUB
 }

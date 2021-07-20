@@ -7,9 +7,11 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.destination.CustomTeleporterDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
@@ -17,6 +19,7 @@ import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,7 +30,6 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Used to teleport players.
@@ -40,7 +42,7 @@ public class TeleportCommand extends MultiverseCommand {
         Permission menu = new Permission("multiverse.teleport.*", "Allows you to display the teleport menu.", PermissionDefault.OP);
 
         this.setName("Teleport");
-        this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {WORLD}");
+        this.setCommandUsage("/mv tp " + ChatColor.GOLD + "[PLAYER]" + ChatColor.GREEN + " {DESTINATION}");
         this.setArgRange(1, 2);
         this.addKey("mvtp");
         this.addKey("mv tp");
@@ -58,7 +60,7 @@ public class TeleportCommand extends MultiverseCommand {
         String destinationName;
 
         if (args.size() == 2) {
-            teleportee = this.plugin.getServer().getPlayer(args.get(0));
+            teleportee = PlayerFinder.get(args.get(0), sender);
             if (teleportee == null) {
                 this.messaging.sendMessage(sender, String.format("Sorry, I couldn't find player: %s%s",
                         ChatColor.GOLD, args.get(0)), false);
@@ -74,27 +76,14 @@ public class TeleportCommand extends MultiverseCommand {
             }
             teleportee = (Player) sender;
         }
-        // Special case for cannons:
-        if (destinationName.matches("(?i)cannon-[\\d]+(\\.[\\d]+)?")) {
-            String[] cannonSpeed = destinationName.split("-");
-            try {
-                double speed = Double.parseDouble(cannonSpeed[1]);
-                destinationName = "ca:" + teleportee.getWorld().getName() + ":" + teleportee.getLocation().getX()
-                        + "," + teleportee.getLocation().getY() + "," + teleportee.getLocation().getZ() + ":"
-                        + teleportee.getLocation().getPitch() + ":" + teleportee.getLocation().getYaw() + ":" + speed;
-            } catch (Exception e) {
-                destinationName = "i:invalid";
-            }
 
-        }
         DestinationFactory df = this.plugin.getDestFactory();
-        MVDestination d = df.getDestination(destinationName);
-
+        MVDestination d = df.getPlayerAwareDestination(teleportee, destinationName);
 
         MVTeleportEvent teleportEvent = new MVTeleportEvent(d, teleportee, teleporter, true);
         this.plugin.getServer().getPluginManager().callEvent(teleportEvent);
         if (teleportEvent.isCancelled()) {
-            this.plugin.log(Level.FINE, "Someone else cancelled the MVTeleport Event!!!");
+            Logging.fine("Someone else cancelled the MVTeleport Event!!!");
             return;
         }
 
@@ -162,24 +151,27 @@ public class TeleportCommand extends MultiverseCommand {
                 ((CustomTeleporterDestination)d).getTeleporter() : this.playerTeleporter;
         TeleportResult result = teleportObject.teleport(teleporter, teleportee, d);
         if (result == TeleportResult.FAIL_UNSAFE) {
-            this.plugin.log(Level.FINE, "Could not teleport " + teleportee.getName()
+            Logging.fine("Could not teleport " + teleportee.getName()
                     + " to " + plugin.getLocationManipulation().strCoordsRaw(d.getLocation(teleportee)));
-            this.plugin.log(Level.FINE, "Queueing Command");
-            Class<?>[] paramTypes = { CommandSender.class, Player.class, Location.class };
-            List<Object> items = new ArrayList<Object>();
-            items.add(teleporter);
-            items.add(teleportee);
-            items.add(d.getLocation(teleportee));
+
             String player = "you";
             if (!teleportee.equals(teleporter)) {
                 player = teleportee.getName();
             }
-            String message = String.format("%sMultiverse %sdid not teleport %s%s %sto %s%s %sbecause it was unsafe.",
-                    ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, player, ChatColor.WHITE, ChatColor.DARK_AQUA, d.getName(), ChatColor.WHITE);
-            this.plugin.getCommandHandler().queueCommand(sender, "mvteleport", "teleportPlayer", items,
-                    paramTypes, message, "Would you like to try anyway?", "", "", UNSAFE_TELEPORT_EXPIRE_DELAY);
+
+            this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
+                    sender,
+                    doUnsafeTeleport(teleporter, teleportee, d.getLocation(teleportee)),
+                    String.format("%sMultiverse %sdid not teleport %s%s %sto %s%s %sbecause it was unsafe. Would you like to try anyway?",
+                            ChatColor.GREEN, ChatColor.WHITE, ChatColor.AQUA, player, ChatColor.WHITE, ChatColor.DARK_AQUA, d.getName(), ChatColor.WHITE),
+                    UNSAFE_TELEPORT_EXPIRE_DELAY
+            ));
         }
         // else: Player was teleported successfully (or the tp event was fired I should say)
+    }
+
+    private Runnable doUnsafeTeleport(CommandSender teleporter, Player player, Location location) {
+        return () -> this.plugin.getSafeTTeleporter().safelyTeleport(teleporter, player, location, false);
     }
 
     private boolean checkSendPermissions(CommandSender teleporter, Player teleportee, MVDestination destination) {

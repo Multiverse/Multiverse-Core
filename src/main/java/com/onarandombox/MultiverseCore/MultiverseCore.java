@@ -17,11 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import buscript.Buscript;
@@ -34,7 +32,6 @@ import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.AnchorCommand;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
@@ -71,6 +68,7 @@ import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commands.VersionCommand;
 import com.onarandombox.MultiverseCore.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
@@ -91,11 +89,14 @@ import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
+import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
+import com.onarandombox.MultiverseCore.utils.TestingMode;
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
@@ -109,7 +110,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -122,7 +122,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.mcstats.Metrics;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -206,6 +205,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
+    private CommandQueueManager commandQueueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
 
@@ -257,6 +257,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup our SafeTTeleporter
         this.safeTTeleporter = new SimpleSafeTTeleporter(this);
         this.unsafeCallWrapper = new UnsafeCallWrapper(this);
+        // Setup our CompatibilityLayer
+        CompatibilityLayer.init();
     }
 
 
@@ -288,6 +290,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
+        this.commandQueueManager = new CommandQueueManager(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
 
@@ -309,7 +312,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
         } else {
-            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
+            Logging.severe("Your configs were not loaded. Very little will function in Multiverse.");
         }
         this.anchorManager.loadAnchors();
 
@@ -346,104 +349,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         }
     }
 
+    private void setupMetrics() {
+        if (TestingMode.isDisabled()) {
+            MetricsConfigurator.configureMetrics(this);
+        }
+    }
+
     /**
      * Initializes the buscript javascript library.
      */
     private void initializeBuscript() {
-        buscript = new Buscript(this);
-        // Add global variable "multiverse" to javascript environment
-        buscript.setScriptVariable("multiverse", this);
-    }
+        buscript = null;
 
-    /**
-     * Plotter for Environment-Values.
-     */
-    private static final class EnvironmentPlotter extends Metrics.Plotter {
-        private MultiverseCore core;
-        private final Environment env;
-
-        public EnvironmentPlotter(MultiverseCore core, Environment env) {
-            super(envToString(env));
-            this.core = core;
-            this.env = env;
-        }
-
-        private static String envToString(Environment env) {
-            return new StringBuilder().append(env.name().toUpperCase().charAt(0))
-                    .append(env.name().toLowerCase().substring(1)).toString();
-        }
-
-        @Override
-        public int getValue() {
-            int count = 0;
-            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (w.getEnvironment() == env)
-                    count++;
-            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, env));
-            return count;
-        }
-    }
-
-    /**
-     * Plotter for Generator-Values.
-     */
-    private static final class GeneratorPlotter extends Metrics.Plotter {
-        private MultiverseCore core;
-        private final String gen;
-
-        public GeneratorPlotter(MultiverseCore core, String gen) {
-            super(gen);
-            this.core = core;
-            this.gen = gen;
-        }
-
-        @Override
-        public int getValue() {
-            int count = 0;
-            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (gen.equals(w.getGenerator()))
-                    count++;
-            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, gen));
-            return count;
-        }
-    }
-
-    private void setupMetrics() {
-        try {
-            Metrics m = new Metrics(this);
-
-            Metrics.Graph envGraph = m.createGraph("Worlds by environment");
-            for (Environment env : Environment.values())
-                envGraph.addPlotter(new EnvironmentPlotter(this, env));
-
-            Metrics.Graph loadedWorldsGraph = m.createGraph("Worlds by environment");
-            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Loaded worlds") {
-                @Override
-                public int getValue() {
-                    return getMVWorldManager().getMVWorlds().size();
-                }
-            });
-            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Total number of worlds") {
-                @Override
-                public int getValue() {
-                    return getMVWorldManager().getMVWorlds().size()
-                            + getMVWorldManager().getUnloadedWorlds().size();
-                }
-            });
-
-            Set<String> gens = new HashSet<String>();
-            for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds())
-                gens.add(w.getGenerator());
-            gens.remove(null);
-            gens.remove("null");
-            Metrics.Graph genGraph = m.createGraph("Custom Generators");
-            for (String gen : gens)
-                genGraph.addPlotter(new GeneratorPlotter(this, gen));
-
-            m.start();
-            log(Level.FINE, "Metrics have run!");
-        } catch (Exception e) {
-            log(Level.WARNING, "There was an issue while enabling metrics: " + e.getMessage());
+        if (this.getMVConfig().getEnableBuscript()) {
+            try {
+                buscript = new Buscript(this);
+                // Add global variable "multiverse" to javascript environment
+                buscript.setScriptVariable("multiverse", this);
+            } catch (NullPointerException e) {
+                Logging.warning("Buscript failed to load! The script command will be disabled! " +
+                        "If you would like not to see this message, " +
+                        "use `/mv conf enablebuscript false` to disable Buscript from loading.");
+            }
         }
     }
 
@@ -467,7 +394,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvents(this.entityListener, this);
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
-        log(Level.INFO, "We are aware of the warning about the deprecated event. There is no alternative that allows us to do what we need to do. The performance impact is negligible.");
+        Logging.info(ChatColor.GREEN + "We are aware of the warning about the deprecated event. There is no alternative that allows us to do what we need to do and performance impact is negligible. It is safe to ignore.");
         pm.registerEvents(this.worldListener, this);
         pm.registerEvents(new MVMapListener(this), this);
     }
@@ -586,13 +513,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         try {
             wconf.load(worldsFile);
         } catch (IOException e) {
-            log(Level.WARNING, "Cannot load worlds.yml");
+            Logging.warning("Cannot load worlds.yml");
         } catch (InvalidConfigurationException e) {
-            log(Level.WARNING, "Your worlds.yml is invalid!");
+            Logging.warning("Your worlds.yml is invalid!");
         }
 
         if (!wconf.isConfigurationSection("worlds")) { // empty config
-            this.log(Level.FINE, "No worlds to migrate!");
+            Logging.fine("No worlds to migrate!");
             return;
         }
 
@@ -605,7 +532,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // fine
                 newValues.put(entry.getKey(), entry.getValue());
             } else if (entry.getValue() instanceof ConfigurationSection) {
-                this.log(Level.FINE, "Migrating: " + entry.getKey());
+                Logging.fine("Migrating: " + entry.getKey());
                 // we have to migrate this
                 WorldProperties world = new WorldProperties(Collections.EMPTY_MAP);
                 ConfigurationSection section = (ConfigurationSection) entry.getValue();
@@ -771,8 +698,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                     try {
                         difficulty = Difficulty.valueOf(section.getString("difficulty").toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        this.log(Level.WARNING, "Could not parse difficulty: " + section.getString("difficulty"));
-                        this.log(Level.WARNING, "Setting world " + entry.getKey() + " difficulty to NORMAL");
+                        Logging.warning("Could not parse difficulty: " + section.getString("difficulty"));
+                        Logging.warning("Setting world " + entry.getKey() + " difficulty to NORMAL");
                         difficulty = Difficulty.NORMAL;
                     }
                     if (difficulty != null) {
@@ -789,7 +716,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 wasChanged = true;
             } else {
                 // huh?
-                this.log(Level.WARNING, "Removing unknown entry in the config: " + entry);
+                Logging.warning("Removing unknown entry in the config: " + entry);
                 // just don't add to newValues
                 wasChanged = true;
             }
@@ -923,8 +850,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
+     *
+     * @deprecated This is now deprecated, nobody needs it any longer.
+     * All logging is now done with {@link Logging}.
      */
     @Override
+    @Deprecated
     public void log(Level level, String msg) {
         Logging.log(level, msg);
     }
@@ -989,6 +920,15 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public CommandHandler getCommandHandler() {
         return this.commandHandler;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Deprecated
+    public CommandQueueManager getCommandQueueManager() {
+        return commandQueueManager;
     }
 
     /**
@@ -1143,7 +1083,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
             return true;
         } catch (IOException e) {
-            this.log(Level.SEVERE, "Could not save Multiverse config.yml config. Please check your file permissions.");
+            Logging.severe("Could not save Multiverse config.yml config. Please check your file permissions.");
             return false;
         }
     }
@@ -1191,12 +1131,22 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
-     * @deprecated This is deprecated!
+     * @deprecated This is deprecated! Do not use!
      */
     @Override
     @Deprecated
     public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
-        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed);
+        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @deprecated This is deprecated! Do not use!
+     */
+    @Override
+    @Deprecated
+    public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed, Boolean keepGameRules) {
+        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed, keepGameRules);
     }
 
     /**

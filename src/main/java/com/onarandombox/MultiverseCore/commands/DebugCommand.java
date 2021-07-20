@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commands;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -60,7 +61,7 @@ public class DebugCommand extends MultiverseCommand {
             sender.sendMessage("Multiverse Debug mode is " + ChatColor.RED + "OFF");
         } else {
             sender.sendMessage("Multiverse Debug mode is " + ChatColor.GREEN + debugLevel);
-            this.plugin.log(Level.FINE, "Multiverse Debug ENABLED");
+            Logging.fine("Multiverse Debug ENABLED");
         }
     }
 }

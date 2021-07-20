@@ -1,24 +1,19 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Map;
 
 /**
  * Pastes to {@code pastebin.com}.
  */
-public class PastebinPasteService implements PasteService {
+class PastebinPasteService extends PasteService {
+    private final boolean isPrivate;
+    private static final String PASTEBIN_POST_REQUEST = "https://pastebin.com/api/api_post.php";
 
-    private boolean isPrivate;
-
-    public PastebinPasteService(boolean isPrivate) {
+    PastebinPasteService(boolean isPrivate) {
+        super(PASTEBIN_POST_REQUEST);
         this.isPrivate = isPrivate;
     }
 
@@ -26,73 +21,54 @@ public class PastebinPasteService implements PasteService {
      * {@inheritDoc}
      */
     @Override
-    public URL getPostURL() {
+    String encodeData(String data) {
         try {
-            return new URL("http://pastebin.com/api/api_post.php");
-        } catch (MalformedURLException e) {
-            return null; // should never hit here
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String encodeData(String data) {
-        try {
-            String encData = URLEncoder.encode("api_dev_key", "UTF-8") + "=" + URLEncoder.encode("d61d68d31e8e0392b59b50b277411c71", "UTF-8");
-            encData += "&" + URLEncoder.encode("api_option", "UTF-8") + "=" + URLEncoder.encode("paste", "UTF-8");
-            encData += "&" + URLEncoder.encode("api_paste_code", "UTF-8") + "=" + URLEncoder.encode(data, "UTF-8");
-            encData += "&" + URLEncoder.encode("api_paste_private", "UTF-8") + "=" + URLEncoder.encode(this.isPrivate ? "1" : "0", "UTF-8");
-            encData += "&" + URLEncoder.encode("api_paste_format", "UTF-8") + "=" + URLEncoder.encode("yaml", "UTF-8");
-            return encData;
+            return URLEncoder.encode("api_dev_key", "UTF-8") + "=" + URLEncoder.encode("d61d68d31e8e0392b59b50b277411c71", "UTF-8") +
+                    "&" + URLEncoder.encode("api_option", "UTF-8") + "=" + URLEncoder.encode("paste", "UTF-8") +
+                    "&" + URLEncoder.encode("api_paste_code", "UTF-8") + "=" + URLEncoder.encode(data, "UTF-8") +
+                    "&" + URLEncoder.encode("api_paste_private", "UTF-8") + "=" + URLEncoder.encode(this.isPrivate ? "1" : "0", "UTF-8") +
+                    "&" + URLEncoder.encode("api_paste_format", "UTF-8") + "=" + URLEncoder.encode("yaml", "UTF-8") +
+                    "&" + URLEncoder.encode("api_paste_name", "UTF-8") + "=" + URLEncoder.encode("Multiverse-Core Debug Info", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             return ""; // should never hit here
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String encodeData(Map<String, String> data) {
-        return null;
+    String encodeData(Map<String, String> data) {
+        throw new UnsupportedOperationException();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String postData(String encodedData, URL url) throws PasteFailedException {
-        OutputStreamWriter wr = null;
-        BufferedReader rd = null;
+    public String postData(String data) throws PasteFailedException {
         try {
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(encodedData);
-            wr.flush();
-
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            String pastebinUrl = "";
-            while ((line = rd.readLine()) != null) {
-                pastebinUrl = line;
-            }
-            return pastebinUrl;
-        } catch (Exception e) {
+            return this.exec(encodeData(data), ContentType.URLENCODED);
+        } catch (IOException e) {
             throw new PasteFailedException(e);
-        } finally {
-            if (wr != null) {
-                try {
-                    wr.close();
-                } catch (IOException ignore) { }
-            }
-            if (rd != null) {
-                try {
-                    rd.close();
-                } catch (IOException ignore) { }
-            }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String postData(Map<String, String> data) throws PasteFailedException {
+        try {
+            return this.exec(encodeData(data), ContentType.URLENCODED);
+        } catch (IOException e) {
+            throw new PasteFailedException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsMultiFile() {
         return false;
