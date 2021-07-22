@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.enums.MVEnums;
 import com.onarandombox.MultiverseCore.utils.WorldNameChecker;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
@@ -20,6 +21,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Imports a new world of the specified type.
@@ -106,8 +108,8 @@ public class ImportCommand extends MultiverseCommand {
         }
 
         String env = args.get(1);
-        Environment environment = EnvironmentCommand.getEnvFromString(env);
-        if (environment == null) {
+        Optional<Environment> environment = MVEnums.ENVIRONMENT.parseValue(env);
+        if (!environment.isPresent()) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
@@ -128,10 +130,18 @@ public class ImportCommand extends MultiverseCommand {
             sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
         } else {
             Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
-            if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust))
+            if (this.worldManager.addWorld(worldName,
+                    environment.get(),
+                    null,
+                    null,
+                    null,
+                    generator,
+                    useSpawnAdjust)) {
                 Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            else
+            }
+            else {
                 Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            }
         }
     }
 }

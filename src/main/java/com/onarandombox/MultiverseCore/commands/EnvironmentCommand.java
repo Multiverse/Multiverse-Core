@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.enums.MVEnums;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -68,25 +69,11 @@ public class EnvironmentCommand extends MultiverseCommand {
      *
      * @param type The WorldType as a {@link String}
      * @return The WorldType as a {@link WorldType}
+     * @deprecated Use {@link MVEnums#WORLD_TYPE} instead.
      */
+    @Deprecated
     public static WorldType getWorldTypeFromString(String type) {
-        // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (type.equalsIgnoreCase("normal")) {
-            type = "NORMAL";
-        } else if (type.equalsIgnoreCase("flat")) {
-            type = "FLAT";
-        } else if (type.equalsIgnoreCase("largebiomes")) {
-            type = "LARGE_BIOMES";
-        } else if (type.equalsIgnoreCase("amplified")) {
-            type = "AMPLIFIED";
-        }
-        try {
-            // Now that we've converted a potentially unfriendly value
-            // to a friendly one, get it from the ENUM!
-            return WorldType.valueOf(type);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        return MVEnums.WORLD_TYPE.parseValue(type).orElse(null);
     }
 
     /**
@@ -94,25 +81,10 @@ public class EnvironmentCommand extends MultiverseCommand {
      *
      * @param env The environment as {@link String}
      * @return The environment as {@link org.bukkit.World.Environment}
+     * @deprecated Use {@link MVEnums#ENVIRONMENT} instead.
      */
+    @Deprecated
     public static World.Environment getEnvFromString(String env) {
-        env = env.toUpperCase();
-        // Don't reference the enum directly as there aren't that many, and we can be more forgiving to users this way
-        if (env.equalsIgnoreCase("HELL") || env.equalsIgnoreCase("NETHER"))
-            env = "NETHER";
-
-        if (env.equalsIgnoreCase("END") || env.equalsIgnoreCase("THEEND") || env.equalsIgnoreCase("STARWARS"))
-            env = "THE_END";
-
-        if (env.equalsIgnoreCase("NORMAL") || env.equalsIgnoreCase("WORLD"))
-            env = "NORMAL";
-
-        try {
-            // Now that we've converted a potentially unfriendly value
-            // to a friendly one, get it from the ENUM!
-            return World.Environment.valueOf(env);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        return MVEnums.ENVIRONMENT.parseValue(env).orElse(null);
     }
 }

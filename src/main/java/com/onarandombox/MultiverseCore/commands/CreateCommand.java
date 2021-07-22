@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.enums.MVEnums;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Creates a new world and loads it.
@@ -90,23 +92,22 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
 
-        Environment environment = EnvironmentCommand.getEnvFromString(env);
-        if (environment == null) {
+        // Parse Environment.
+        Optional<Environment> environment = MVEnums.ENVIRONMENT.parseValue(env);
+        if (!environment.isPresent()) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
 
-        // If they didn't specify a type, default to NORMAL
-        if (typeString == null) {
-            typeString = "NORMAL";
-        }
-        WorldType type = EnvironmentCommand.getWorldTypeFromString(typeString);
-        if (type == null) {
+        // Parse WorldType. If they didn't specify a type, default to normal.
+        Optional<WorldType> type = MVEnums.WORLD_TYPE.parseValue(typeString == null ? "normal" : typeString);
+        if (!type.isPresent()) {
             sender.sendMessage(ChatColor.RED + "That is not a valid World Type.");
             EnvironmentCommand.showWorldTypes(sender);
             return;
         }
+
         // Determine if the generator is valid. #918
         if (generator != null) {
             List<String> genarray = new ArrayList<String>(Arrays.asList(generator.split(":")));
@@ -122,7 +123,13 @@ public class CreateCommand extends MultiverseCommand {
         }
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
-        if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
+        if (this.worldManager.addWorld(
+                worldName,
+                environment.get(),
+                seed, type.get(),
+                allowStructures,
+                generator,
+                useSpawnAdjust)) {
             Command.broadcastCommandMessage(sender, "Complete!");
         } else {
             Command.broadcastCommandMessage(sender, "FAILED.");
