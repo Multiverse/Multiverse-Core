@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,11 +30,16 @@ public class EnumMapping<T extends Enum<T>> {
     }
 
     @NotNull
-    public Optional<T> parseValue(String value) {
+    public Optional<T> parseValue(@Nullable String value) {
+        if (value == null) {
+            return Optional.empty();
+        }
+
         T enumType = this.enumsMap.get(caseSensitive ? value : value.toLowerCase());
         if (enumType != null) {
             return Optional.of(enumType);
         }
+
         try {
             return Optional.of(Enum.valueOf(enumClass, value));
         } catch (IllegalArgumentException e) {
