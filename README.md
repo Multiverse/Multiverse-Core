@@ -1,6 +1,6 @@
 ![Multiverse 2](config/multiverse2-long.png)
 
-[![Build Status](https://img.shields.io/travis/Multiverse/Multiverse-Core?label=status&logo=travis)](https://travis-ci.org/Multiverse/Multiverse-Core)
+[![Maven CI/CD](https://github.com/Multiverse/Multiverse-Core/actions/workflows/build.yml/badge.svg)](https://github.com/Multiverse/Multiverse-Core/actions/workflows/build.yml)
 [![Release](https://img.shields.io/nexus/r/com.onarandombox.multiversecore/Multiverse-Core?label=release&server=https%3A%2F%2Frepo.onarandombox.com%2F)](https://dev.bukkit.org/projects/multiverse-core)
 [![Dev builds](https://img.shields.io/nexus/s/com.onarandombox.multiversecore/Multiverse-Core?label=dev%20builds&server=http%3A%2F%2Frepo.onarandombox.com%2F)](https://ci.onarandombox.com/job/Multiverse-Core/)
 [![Discord](https://img.shields.io/discord/325459248047980545?label=discord&logo=discord)](https://discord.gg/NZtfKky)
