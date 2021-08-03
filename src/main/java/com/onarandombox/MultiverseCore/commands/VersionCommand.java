@@ -45,8 +45,11 @@ public class VersionCommand extends MultiverseCommand {
         this.addKey("mvver");
         this.addKey("mvv");
         this.addKey("mvversion");
-        this.setPermission("multiverse.core.version",
-                "Dumps version info to the console, optionally to pastebin.com with -b, to hastebin.com using -h, or to paste.gg with -p.", PermissionDefault.TRUE);
+        this.setPermission(
+                "multiverse.core.version",
+                "Dumps version info to the console, optionally to pastebin.com with -b, to hastebin.com using -h, or to paste.gg with -p.",
+                PermissionDefault.OP)
+        ;
     }
 
     private String getLegacyString() {
@@ -64,6 +67,7 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core]   teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + '\n'
                 + "[Multiverse-Core]   firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + '\n'
                 + "[Multiverse-Core]   displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + '\n'
+                + "[Multiverse-Core]   enablebuscript: " + plugin.getMVConfig().getEnableBuscript() + '\n'
                 + "[Multiverse-Core]   globaldebug: " + plugin.getMVConfig().getGlobalDebug() + '\n'
                 + "[Multiverse-Core]   silentstart: " + plugin.getMVConfig().getSilentStart() + '\n'
                 + "[Multiverse-Core]   messagecooldown: " + plugin.getMessaging().getCooldown() + '\n'

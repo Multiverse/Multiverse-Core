@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.Material;
@@ -195,7 +196,7 @@ public class PermissionTools {
      * @return True if they can't go to the world, False if they can.
      */
     public boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
-        this.plugin.log(Level.FINEST, "Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
+        Logging.finest("Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
         if (plugin.getMVConfig().getTeleportIntercept()) {

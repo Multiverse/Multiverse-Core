@@ -7,15 +7,13 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.enums.RespawnType;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -32,6 +30,9 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Multiverse's {@link Listener} for players.
@@ -69,9 +70,16 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
+        RespawnType respawnType = RespawnType.OTHER;
+        if (event.isBedSpawn()) {
+            respawnType = RespawnType.BED;
+        }
+        if (CompatibilityLayer.isAnchorSpawn(event)) {
+            respawnType = RespawnType.ANCHOR;
+        }
 
-        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-            this.plugin.log(Level.FINE, "Spawning " + event.getPlayer().getName() + " at their bed");
+        if (mvWorld.getBedRespawn() && (respawnType == RespawnType.BED || respawnType == RespawnType.ANCHOR)) {
+            Logging.fine("Spawning %s at their %s", event.getPlayer().getName(), respawnType);
             return;
         }
 
@@ -110,15 +118,15 @@ public class MVPlayerListener implements Listener {
     public void playerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
-            this.plugin.log(Level.FINER, "Player joined for the FIRST time!");
+            Logging.finer("Player joined for the FIRST time!");
             if (plugin.getMVConfig().getFirstSpawnOverride()) {
-                this.plugin.log(Level.FINE, "Moving NEW player to(firstspawnoverride): "
+                Logging.fine("Moving NEW player to(firstspawnoverride): "
                         + worldManager.getFirstSpawnWorld().getSpawnLocation());
                 this.sendPlayerToDefaultWorld(p);
             }
             return;
         } else {
-            this.plugin.log(Level.FINER, "Player joined AGAIN!");
+            Logging.finer("Player joined AGAIN!");
             if (this.plugin.getMVConfig().getEnforceAccess() // check this only if we're enforcing access!
                     && !this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
@@ -156,7 +164,7 @@ public class MVPlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerTeleport(PlayerTeleportEvent event) {
-        this.plugin.log(Level.FINER, "Got teleport event for player '"
+        Logging.finer("Got teleport event for player '"
                 + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
         if (event.isCancelled()) {
             return;
@@ -166,25 +174,25 @@ public class MVPlayerListener implements Listener {
         String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
         if (teleporterName != null) {
             if (teleporterName.equals("CONSOLE")) {
-                this.plugin.log(Level.FINER, "We know the teleporter is the console! Magical!");
+                Logging.finer("We know the teleporter is the console! Magical!");
                 teleporter = this.plugin.getServer().getConsoleSender();
             } else {
-                teleporter = this.plugin.getServer().getPlayer(teleporterName);
+                teleporter = this.plugin.getServer().getPlayerExact(teleporterName);
             }
         }
-        this.plugin.log(Level.FINER, "Inferred sender '" + teleporter + "' from name '"
+        Logging.finer("Inferred sender '" + teleporter + "' from name '"
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (toWorld == null) {
-            this.plugin.log(Level.FINE, "Player '" + teleportee.getName() + "' is teleporting to world '"
+            Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
                     + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
                     + "actions will be taken by Multiverse-Core.");
             return;
         }
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Teleporting to the same world.
-            this.plugin.log(Level.FINER, "Player '" + teleportee.getName() + "' is teleporting to the same world.");
+            Logging.finer("Player '" + teleportee.getName() + "' is teleporting to the same world.");
             this.stateSuccess(teleportee.getName(), toWorld.getAlias());
             return;
         }
@@ -192,7 +200,7 @@ public class MVPlayerListener implements Listener {
         // Charge the teleporter
         event.setCancelled(!pt.playerHasMoneyToEnter(fromWorld, toWorld, teleporter, teleportee, true));
         if (event.isCancelled() && teleporter != null) {
-            this.plugin.log(Level.FINE, "Player '" + teleportee.getName()
+            Logging.fine("Player '" + teleportee.getName()
                     + "' was DENIED ACCESS to '" + toWorld.getAlias()
                     + "' because '" + teleporter.getName()
                     + "' don't have the FUNDS required to enter it.");
@@ -203,14 +211,14 @@ public class MVPlayerListener implements Listener {
         if (plugin.getMVConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
             if (event.isCancelled() && teleporter != null) {
-                this.plugin.log(Level.FINE, "Player '" + teleportee.getName()
+                Logging.fine("Player '" + teleportee.getName()
                         + "' was DENIED ACCESS to '" + toWorld.getAlias()
                         + "' because '" + teleporter.getName()
                         + "' don't have: multiverse.access." + event.getTo().getWorld().getName());
                 return;
             }
         } else {
-            this.plugin.log(Level.FINE, "Player '" + teleportee.getName()
+            Logging.fine("Player '" + teleportee.getName()
                     + "' was allowed to go to '" + toWorld.getAlias() + "' because enforceaccess is off.");
         }
 
@@ -220,7 +228,7 @@ public class MVPlayerListener implements Listener {
             if (toWorld.getCBWorld().getPlayers().size() >= toWorld.getPlayerLimit()) {
                 // Ouch the world is full, lets see if the player can bypass that limitation
                 if (!pt.playerCanBypassPlayerLimit(toWorld, teleporter, teleportee)) {
-                    this.plugin.log(Level.FINE, "Player '" + teleportee.getName()
+                    Logging.fine("Player '" + teleportee.getName()
                             + "' was DENIED ACCESS to '" + toWorld.getAlias()
                             + "' because the world is full and '" + teleporter.getName()
                             + "' doesn't have: mv.bypass.playerlimit." + event.getTo().getWorld().getName());
@@ -235,7 +243,7 @@ public class MVPlayerListener implements Listener {
     }
 
     private void stateSuccess(String playerName, String worldName) {
-        this.plugin.log(Level.FINE, "MV-Core is allowing Player '" + playerName
+        Logging.fine("MV-Core is allowing Player '" + playerName
                 + "' to go to '" + worldName + "'.");
     }
 
@@ -282,12 +290,12 @@ public class MVPlayerListener implements Listener {
         MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Portaling to the same world.
-            this.plugin.log(Level.FINER, "Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
+            Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
             return;
         }
         event.setCancelled(!pt.playerHasMoneyToEnter(fromWorld, toWorld, event.getPlayer(), event.getPlayer(), true));
         if (event.isCancelled()) {
-            this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName()
+            Logging.fine("Player '" + event.getPlayer().getName()
                     + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName()
                     + "' because they don't have the FUNDS required to enter.");
             return;
@@ -295,25 +303,17 @@ public class MVPlayerListener implements Listener {
         if (plugin.getMVConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
-                this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName()
+                Logging.fine("Player '" + event.getPlayer().getName()
                         + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName()
                         + "' because they don't have: multiverse.access." + event.getTo().getWorld().getName());
             }
         } else {
-            this.plugin.log(Level.FINE, "Player '" + event.getPlayer().getName()
+            Logging.fine("Player '" + event.getPlayer().getName()
                     + "' was allowed to go to '" + event.getTo().getWorld().getName()
                     + "' because enforceaccess is off.");
         }
-        if (!plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            try {
-                Class.forName("org.bukkit.TravelAgent");
-                if (event.getPortalTravelAgent() != null) {
-                    event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
-                }
-            } catch (ClassNotFoundException ignore) {
-                plugin.log(Level.FINE, "TravelAgent not available for PlayerPortalEvent for " + event.getPlayer().getName());
-            }
-
+        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+            CompatibilityLayer.setPortalSearchRadius(event, this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 
@@ -335,7 +335,7 @@ public class MVPlayerListener implements Listener {
         if (mvWorld != null) {
             this.handleGameModeAndFlight(player, mvWorld);
         } else {
-            this.plugin.log(Level.FINER, "Not handling gamemode and flight for world '" + world.getName()
+            Logging.finer("Not handling gamemode and flight for world '" + world.getName()
                     + "' not managed by Multiverse.");
         }
     }

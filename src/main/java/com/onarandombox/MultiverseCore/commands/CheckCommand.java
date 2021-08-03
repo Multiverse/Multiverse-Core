@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ public class CheckCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Player p = this.plugin.getServer().getPlayer(args.get(0));
+        Player p = PlayerFinder.get(args.get(0), sender);
         if (p == null) {
             sender.sendMessage("Could not find player " + ChatColor.GREEN + args.get(0));
             sender.sendMessage("Are they online?");

@@ -8,9 +8,11 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +37,24 @@ public class DeleteCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
 
-        Class<?>[] paramTypes = {String.class};
-        List<Object> objectArgs = new ArrayList<Object>(args);
-        this.plugin.getCommandHandler()
-                   .queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
-                                 paramTypes, ChatColor.GREEN + "World '" + worldName + "' Deleted!",
-                                 ChatColor.RED + "World '" + worldName + "' could NOT be deleted!");
+        this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
+                sender,
+                deleteRunnable(sender, worldName),
+                String.format("Are you sure you want to delete world '%s'? You cannot undo this action.", worldName)
+        ));
+    }
+
+    private Runnable deleteRunnable(@NotNull CommandSender sender,
+                                    @NotNull String worldName) {
+
+        return () -> {
+            sender.sendMessage(String.format("Deleting world '%s'...", worldName));
+            if (this.plugin.getMVWorldManager().deleteWorld(worldName)) {
+                sender.sendMessage(String.format("%sWorld %s was deleted!", ChatColor.GREEN, worldName));
+                return;
+            }
+            sender.sendMessage(String.format("%sThere was an issue deleting '%s'! Please check console for errors.",
+                    ChatColor.RED, worldName));
+        };
     }
 }

@@ -2,7 +2,7 @@
 name: 🐛 Report a Bug
 about: Report a Multiverse-Core bug. Only use this if you're 100% sure it's something wrong with Multiverse-Core - otherwise, try "Help!".
 title: ''
-labels: 'Bug'
+labels: 'Bug: Unconfirmed'
 assignees: ''
 
 ---
@@ -39,7 +39,7 @@ If you are reporting a bug, please follow the following steps:
 
 * **Server version:** <!-- Insert output of `/version` command -->
 
-* **Full output of `/mv version -b`:** <!-- Replace this with the command output's https://pastebin.com link -->
+* **Full output of `/mv version -p`:** <!-- Replace this with the command output's https://paste.gg/ link -->
 
 * **Server log:** <!-- Upload `logs/latest.log` to https://gist.github.com/ -->
 

@@ -46,10 +46,15 @@ public class CreateCommand extends MultiverseCommand {
         this.addCommandExample("/mv create " + ChatColor.GOLD + "moonworld" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g BukkitFullOfMoon");
         this.worldManager = this.plugin.getMVWorldManager();
     }
-
+	
+	private String trimWorldName(String userInput) {
+        // Removes relative paths.
+        return userInput.replaceAll("^[./\\\\]+", "");
+    }
+	
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        String worldName = args.get(0);
+        String worldName = trimWorldName(args.get(0));
         File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
         String env = args.get(1);
         String seed = CommandHandler.getFlag("-s", args);
@@ -66,7 +71,13 @@ public class CreateCommand extends MultiverseCommand {
                 useSpawnAdjust = false;
             }
         }
-
+		
+		// Make sure the world name doesn't contain the words 'plugins' and '.dat'
+		if(worldName.contains("plugins")||worldName.contains(".dat")){
+			sender.sendMessage(ChatColor.RED + "Multiverse cannot create a world that contains 'plugins' or '.dat'");
+            return;
+		}
+		
         if (this.worldManager.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
                     + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);

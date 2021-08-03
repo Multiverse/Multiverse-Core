@@ -115,6 +115,7 @@ public class InfoCommand extends MultiverseCommand {
         FancyColorScheme colors = new FancyColorScheme(ChatColor.AQUA, ChatColor.AQUA, ChatColor.GOLD, ChatColor.WHITE);
         message.add(new FancyHeader("General Info", colors));
         message.add(new FancyMessage("World Name: ", world.getName(), colors));
+        message.add(new FancyMessage("World UID: ", world.getCBWorld().getUID().toString(), colors));
         message.add(new FancyMessage("World Alias: ", world.getColoredWorldString(), colors));
         message.add(new FancyMessage("Game Mode: ", world.getGameMode().toString(), colors));
         message.add(new FancyMessage("Difficulty: ", world.getDifficulty().toString(), colors));
@@ -151,6 +152,7 @@ public class InfoCommand extends MultiverseCommand {
         message = new ArrayList<FancyText>();
         message.add(new FancyHeader("More World Settings", colors));
         message.add(new FancyMessage("World Type: ", world.getWorldType().toString(), colors));
+        message.add(new FancyMessage("Generator: ", world.getGenerator(), colors));
         message.add(new FancyMessage("Structures: ", world.getCBWorld().canGenerateStructures() + "", colors));
         message.add(new FancyMessage("Weather: ", world.isWeatherEnabled() + "", colors));
         message.add(new FancyMessage("Players will get hungry: ", world.getHunger() + "", colors));
