@@ -49,6 +49,17 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
+     * Check if a Player can ignore Fly restrictions for world they travel to.
+     *
+     * @param p The {@link Player} to check.
+     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @return True if they should bypass restrictions.
+     */
+    public boolean canIgnoreFlyRestriction(Player p, MultiverseWorld w) {
+        return p.hasPermission("mv.bypass.fly." + w.getName());
+    }
+
+    /**
      * Check if a Player can teleport to the Destination world from there current world.
      *
      * @param p The {@link Player} to check.
