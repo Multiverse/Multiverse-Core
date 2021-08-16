@@ -8,9 +8,12 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.display.ColorAlternator;
 import com.onarandombox.MultiverseCore.display.ContentDisplay;
-import com.onarandombox.MultiverseCore.display.settings.MapDisplaySettings;
+import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
+import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
+import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
+import com.onarandombox.MultiverseCore.display.handlers.InlineSendHandler;
+import com.onarandombox.MultiverseCore.display.parsers.MapContentParser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -19,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +35,8 @@ public class GamerulesCommand extends MultiverseCommand {
     public GamerulesCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("List the Minecraft Game Rules for a World.");
-        this.setCommandUsage("/mv gamerules" + ChatColor.GOLD + " [WORLD]");
-        this.setArgRange(0, 1);
+        this.setCommandUsage("/mv gamerules" + ChatColor.GOLD + " [WORLD] [FILTER]");
+        this.setArgRange(0, 2);
         this.addKey("mv gamerules");
         this.addKey("mv rules");
         this.addKey("mvgamerules");
@@ -42,11 +46,13 @@ public class GamerulesCommand extends MultiverseCommand {
         this.setPermission("multiverse.core.gamerule.list", "Allows a player to list gamerules.", PermissionDefault.OP);
     }
 
-
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         // We NEED a world from the command line
-        final Player p;
+        Player p;
+        World world;
+        ContentFilter filter = DefaultContentFilter.INSTANCE;
+
         if (sender instanceof Player) {
             p = (Player) sender;
         } else {
@@ -61,9 +67,20 @@ public class GamerulesCommand extends MultiverseCommand {
             return;
         }
 
-        final World world;
+        // Not the best way, need to fix with ACF soon...
         if (args.size() == 0) {
             world = p.getWorld();
+        } else if (args.size() == 1) {
+            world = Bukkit.getWorld(args.get(0));
+            if (world == null) {
+                if (p == null) {
+                    sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(0)
+                            + ChatColor.WHITE + " does not exist.");
+                    return;
+                }
+                world = p.getWorld();
+                filter = RegexContentFilter.fromString(args.get(0));
+            }
         } else {
             world = Bukkit.getWorld(args.get(0));
             if (world == null) {
@@ -71,25 +88,25 @@ public class GamerulesCommand extends MultiverseCommand {
                         + ChatColor.WHITE + " does not exist.");
                 return;
             }
+            filter = RegexContentFilter.fromString(args.get(1));
         }
 
-        ContentDisplay.forContent(getGameRuleMap(world))
-                .header("=== Gamerules for %s%s%s ===", ChatColor.AQUA, world.getName(), ChatColor.WHITE)
-                .colorTool(ColorAlternator.with(ChatColor.GREEN, ChatColor.GOLD))
-                .setting(MapDisplaySettings.OPERATOR, ": ")
-                .show(sender);
+        ContentDisplay.create()
+                .addContentParser(MapContentParser.forContent(getGameRuleMap(world))
+                        .withKeyColor(ChatColor.GREEN)
+                        .withValueColor(ChatColor.YELLOW))
+                .withSendHandler(InlineSendHandler.create()
+                        .withHeader("====[ Gamerules for %s%s%s ]====", ChatColor.AQUA, world.getName(), ChatColor.WHITE)
+                        .withFilter(filter))
+                .send(sender);
     }
 
     private Map<String, Object> getGameRuleMap(World world) {
         Map<String, Object> gameRuleMap = new HashMap<>();
-        for (GameRule<?> rule : GameRule.values()) {
+        Arrays.stream(GameRule.values()).forEach(rule -> {
             Object value = world.getGameRuleValue(rule);
-            if (value == null) {
-                gameRuleMap.put(rule.getName(), "null");
-                continue;
-            }
             gameRuleMap.put(rule.getName(), value);
-        }
+        });
         return gameRuleMap;
     }
 }
