@@ -20,6 +20,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ListCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        ContentFilter filter = DefaultContentFilter.INSTANCE;
+        ContentFilter filter = DefaultContentFilter.getInstance();
         int page = 1;
 
         // Either page or filter.
@@ -64,7 +65,7 @@ public class ListCommand extends MultiverseCommand {
         }
 
         ContentDisplay.create()
-                .addContentParser(newWorldListContentParser())
+                .addContentParser(new WorldListContentParser())
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse World List ]====", ChatColor.GOLD)
                         .withFilter(filter)
@@ -72,46 +73,48 @@ public class ListCommand extends MultiverseCommand {
                 .send(sender);
     }
 
-    private ContentParser newWorldListContentParser() {
-        return (sender, content) -> {
+    private class WorldListContentParser implements ContentParser {
+
+        @Override
+        public void parse(@NotNull CommandSender sender, @NotNull List<String> content) {
             Player player = (sender instanceof Player) ? (Player) sender : null;
 
-            this.plugin.getMVWorldManager().getMVWorlds().stream()
+            plugin.getMVWorldManager().getMVWorlds().stream()
                     .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))
                     .filter(world -> canSeeWorld(player, world))
                     .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
                     .forEach(content::add);
 
-            this.plugin.getMVWorldManager().getUnloadedWorlds().stream()
+            plugin.getMVWorldManager().getUnloadedWorlds().stream()
                     .filter(world -> plugin.getMVPerms().hasPermission(sender, "multiverse.access." + world, true))
                     .map(world -> ChatColor.GRAY + world + " - UNLOADED")
                     .forEach(content::add);
-        };
-    }
-
-    private boolean canSeeWorld(Player player, MultiverseWorld world) {
-        return !world.isHidden()
-                || player == null
-                || this.plugin.getMVPerms().hasPermission(player, "multiverse.core.modify", true);
-    }
-
-    private String hiddenText(MultiverseWorld world) {
-        return (world.isHidden()) ? String.format("%s[H] ", ChatColor.GRAY) : "";
-    }
-
-    private String parseColouredEnvironment(World.Environment env) {
-        ChatColor color = ChatColor.GOLD;
-        switch (env) {
-            case NETHER:
-                color = ChatColor.RED;
-                break;
-            case NORMAL:
-                color = ChatColor.GREEN;
-                break;
-            case THE_END:
-                color = ChatColor.AQUA;
-                break;
         }
-        return color + env.toString();
+
+        private boolean canSeeWorld(Player player, MultiverseWorld world) {
+            return !world.isHidden()
+                    || player == null
+                    || plugin.getMVPerms().hasPermission(player, "multiverse.core.modify", true);
+        }
+
+        private String hiddenText(MultiverseWorld world) {
+            return (world.isHidden()) ? String.format("%s[H] ", ChatColor.GRAY) : "";
+        }
+
+        private String parseColouredEnvironment(World.Environment env) {
+            ChatColor color = ChatColor.GOLD;
+            switch (env) {
+                case NETHER:
+                    color = ChatColor.RED;
+                    break;
+                case NORMAL:
+                    color = ChatColor.GREEN;
+                    break;
+                case THE_END:
+                    color = ChatColor.AQUA;
+                    break;
+            }
+            return color + env.toString();
+        }
     }
 }

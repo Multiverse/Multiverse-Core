@@ -5,9 +5,16 @@ package com.onarandombox.MultiverseCore.display.filters;
  */
 public class DefaultContentFilter implements ContentFilter {
 
-    public static DefaultContentFilter INSTANCE = new DefaultContentFilter();
+    public static DefaultContentFilter instance;
 
-    public DefaultContentFilter() {
+    public static DefaultContentFilter getInstance() {
+        if (instance == null) {
+            instance = new DefaultContentFilter();
+        }
+        return instance;
+    }
+
+    private DefaultContentFilter() {
     }
 
     /**

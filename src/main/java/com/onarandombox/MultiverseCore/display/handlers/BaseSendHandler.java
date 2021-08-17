@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements SendHandler {
 
     protected String header = "";
-    protected ContentFilter filter = DefaultContentFilter.INSTANCE;
+    protected ContentFilter filter = DefaultContentFilter.getInstance();
 
     /**
      * {@inheritDoc}

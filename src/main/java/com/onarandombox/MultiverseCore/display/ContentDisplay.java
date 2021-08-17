@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.display;
 
+import com.onarandombox.MultiverseCore.display.handlers.DefaultSendHandler;
 import com.onarandombox.MultiverseCore.display.handlers.SendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ContentParser;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,7 @@ public class ContentDisplay {
     }
 
     private final List<ContentParser> contentParsers = new ArrayList<>();
-    private SendHandler sendHandler;
+    private SendHandler sendHandler = DefaultSendHandler.getInstance();
 
     public ContentDisplay() {
     }

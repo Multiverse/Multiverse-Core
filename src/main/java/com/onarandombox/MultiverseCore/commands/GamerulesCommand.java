@@ -22,7 +22,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,7 @@ public class GamerulesCommand extends MultiverseCommand {
         // We NEED a world from the command line
         Player p;
         World world;
-        ContentFilter filter = DefaultContentFilter.INSTANCE;
+        ContentFilter filter = DefaultContentFilter.getInstance();
 
         if (sender instanceof Player) {
             p = (Player) sender;
@@ -103,10 +102,10 @@ public class GamerulesCommand extends MultiverseCommand {
 
     private Map<String, Object> getGameRuleMap(World world) {
         Map<String, Object> gameRuleMap = new HashMap<>();
-        Arrays.stream(GameRule.values()).forEach(rule -> {
+        for (GameRule<?> rule : GameRule.values()) {
             Object value = world.getGameRuleValue(rule);
             gameRuleMap.put(rule.getName(), value);
-        });
+        }
         return gameRuleMap;
     }
 }
