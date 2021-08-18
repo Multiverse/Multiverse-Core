@@ -114,7 +114,7 @@ public class CreateCommand extends MultiverseCommand {
                 // If there was only one arg specified, pad with another empty one.
                 genarray.add("");
             }
-            if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), "test") == null) {
+            if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), worldName) == null) {
                 // We have an invalid generator.
                 sender.sendMessage("Invalid generator! '" + generator + "'. " + ChatColor.RED + "Aborting world creation.");
                 return;
