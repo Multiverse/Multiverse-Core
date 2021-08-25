@@ -1,0 +1,46 @@
+---
+# We care when the source, ci/scripts, and ci/tasks code changes.
+resources:
+  - name: main
+    icon: github
+    type: git
+    source:
+      paths:
+        - src/**
+        - ci/scripts/**
+        - ci/tasks/**
+      branch: main
+      uri: https://github.com/dumptruckman/multiverse-core-testing
+
+groups:
+  - name: deployments
+    jobs:
+      #      - unit-tests
+      - package
+
+jobs:
+
+  #####################
+  ##     TESTING     ##
+  #####################
+  # commented out due to kernel bug
+  #  - name: unit-tests
+  #    serial_groups: [staging]
+  #    plan:
+  #      - get: gls-api-src
+  #        trigger: true
+  #      - task: unit-tests
+  #        file: gls-api-src/ci/tasks/unit-tests.yml
+
+  #####################
+  ##     BUILD       ##
+  #####################
+
+  - name: package
+    build_logs_to_retain: 50
+    plan:
+      - get: main
+        trigger: true
+      #        passed: [unit-tests]
+      - task: maven-package
+        file: ./ci/tasks/maven-package.yml
