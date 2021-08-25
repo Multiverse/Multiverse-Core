@@ -43,4 +43,4 @@ jobs:
         trigger: true
       #        passed: [unit-tests]
       - task: maven-package
-        file: main/ci/tasks/maven-package.yml
+        file: ./ci/tasks/maven-package.yml
