@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onarandombox.multiversecore</groupId>
     <artifactId>Multiverse-Core</artifactId>
-    <version>4.2.3-SNAPSHOT</version>
+    <version>4.3.1-SNAPSHOT</version>
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
@@ -20,7 +20,7 @@
         </repository>
         <repository>
             <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public</url>
+            <url>https://repo.onarandombox.com/content/groups/public</url>
         </repository>
         <repository>
             <id>spigot</id>
@@ -40,7 +40,7 @@
         <pluginRepository>
             <id>doodleproject-repo</id>
             <name>DoodleProject Maven 2 Repository</name>
-            <url>http://doodleproject.sourceforge.net/maven2/release</url>
+            <url>https://doodleproject.sourceforge.net/maven2/release</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -49,7 +49,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
+        <url>https://ci.onarandombox.com</url>
     </ciManagement>
 
     <!-- Profiles are used to detect whether this is a local or Jenkins build
@@ -154,8 +154,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <configuration>
-                    <parallel>methods</parallel>
-                    <threadCount>10</threadCount>
                     <excludes>
                         <exclude>**/TestCommandSender.java</exclude>
                         <exclude>**/TestInstanceCreator.java</exclude>
@@ -348,30 +346,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>2.0.9</version>
-            <type>jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-easymock</artifactId>
-            <version>2.0.9</version>
-            <type>jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <version>2.0.9</version>
-            <type>jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>4.0.2</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.11.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -384,11 +361,11 @@
     <distributionManagement>
         <repository>
             <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse</url>
+            <url>https://repo.onarandombox.com/content/repositories/multiverse</url>
         </repository>
         <snapshotRepository>
             <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
+            <url>https://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

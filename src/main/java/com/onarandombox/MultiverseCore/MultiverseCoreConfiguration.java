@@ -107,7 +107,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         teleportcooldown = 1000;
         this.version = 2.9;
         silentstart = false;
-        defaultportalsearch = false;
+        defaultportalsearch = true;
         portalsearchradius = 128;
         autopurge = true;
         idonotwanttodonate = false;
