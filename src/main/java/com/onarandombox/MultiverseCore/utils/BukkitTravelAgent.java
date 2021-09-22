@@ -6,7 +6,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
 import org.bukkit.Location;
-import org.bukkit.TravelAgent;
 import org.bukkit.event.player.PlayerPortalEvent;
 
 public class BukkitTravelAgent implements TravelAgent {
@@ -102,10 +101,5 @@ public class BukkitTravelAgent implements TravelAgent {
         }
         return newLoc;
 
-    }
-
-    public void setPortalEventTravelAgent(PlayerPortalEvent event) {
-        event.setPortalTravelAgent(this);
-        event.useTravelAgent(true);
     }
 }
