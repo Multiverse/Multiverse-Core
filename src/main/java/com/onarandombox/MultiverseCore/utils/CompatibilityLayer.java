@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 public class CompatibilityLayer {
 
     private static Method checkAnchorSpawn;
-    private static boolean useTravelAgent;
     private static Method playerPortalSearchRadius;
     private static Method entityPortalSearchRadius;
 
@@ -22,7 +21,6 @@ public class CompatibilityLayer {
      */
     public static void init() {
         checkAnchorSpawn = ReflectHelper.getMethod(PlayerRespawnEvent.class, "isAnchorSpawn");
-        useTravelAgent = ReflectHelper.hasClass("org.bukkit.TravelAgent");
         playerPortalSearchRadius = ReflectHelper.getMethod(PlayerPortalEvent.class, "setSearchRadius", int.class);
         entityPortalSearchRadius = ReflectHelper.getMethod(EntityPortalEvent.class, "setSearchRadius", int.class);
     }
@@ -47,16 +45,6 @@ public class CompatibilityLayer {
     }
 
     /**
-     * <p>Gets if Travel Agent is supported on the server's minecraft version.</p>
-     * <p>Removed in minecraft 1.14</p>
-     *
-     * @return True if Travel Agent is supported, else false.
-     */
-    public static boolean isUseTravelAgent() {
-        return useTravelAgent;
-    }
-
-    /**
      * <p>Sets search radius for a PlayerPortalEvent.</p>
      *
      * <p>Use travel agent if available, else using new PlayerPortalEvent.setSearchRadius(int) method
@@ -66,12 +54,6 @@ public class CompatibilityLayer {
      * @param searchRadius  Target search radius to set to.
      */
     public static void setPortalSearchRadius(PlayerPortalEvent event, int searchRadius) {
-        if (useTravelAgent) {
-            event.getPortalTravelAgent().setSearchRadius(searchRadius);
-            event.useTravelAgent(true);
-            Logging.finer("Used travel agent to set player portal search radius.");
-            return;
-        }
         if (playerPortalSearchRadius == null) {
             Logging.warning("Unable to set player portal search radius!");
             return;
@@ -90,12 +72,6 @@ public class CompatibilityLayer {
      * @param searchRadius  Target search radius to set to.
      */
     public static void setPortalSearchRadius(EntityPortalEvent event, int searchRadius) {
-        if (useTravelAgent) {
-            event.getPortalTravelAgent().setSearchRadius(searchRadius);
-            event.useTravelAgent(true);
-            Logging.finer("Used travel agent to set entity portal search radius.");
-            return;
-        }
         if (entityPortalSearchRadius == null) {
             Logging.warning("Unable to set entity portal search radius!");
             return;
