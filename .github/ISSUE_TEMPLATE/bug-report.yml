@@ -1,0 +1,77 @@
+name: 🐛 Report a Bug
+description: Report a problem with Multiverse-Core.
+title: "[Bug]: "
+labels: ["Bug: Unconfirmed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+        If you are having issues with other submodules of Multiverse, please go to their respective git repo:
+            Multiverse-Portals: https://github.com/Multiverse/Multiverse-Portals/issues/new/choose
+            Multiverse-NetherPortals: https://github.com/Multiverse/Multiverse-NetherPortals/issues/new/choose
+            Multiverse-Inventories: https://github.com/Multiverse/Multiverse-Inventories/issues/new/choose
+            Multiverse-SignPortals: https://github.com/Multiverse/Multiverse-SignPortals/issues/new/choose
+
+        Not sure if this is a bug with Multiverse-Core? Feel free to ask on our Discord server: https://discord.gg/NZtfKky
+
+        When completing the report, please out the template in full. Failure to do so will result in your issue being closed.
+  - type: input
+    id: mutliverse-version-info
+    attributes:
+      label: `/mv version -p` output
+      description: Run `/mv version -p` in the console, then copy and paste the link from the output of the command into this box.
+    validations:
+      required: true
+  - type: input
+    id: server-logs
+    attributes:
+      label: Server logs
+      description: >
+        Include full startup log and console error (if any). upload all relevant logs to either https://paste.gg
+        or https://gist.github.com, save and the paste the link in this box.
+    validations:
+      required: true
+  - type: textarea
+    id: server-version
+    attributes:
+      label: Server Version
+      description: Output of `/version` command.
+      placeholder: server version info
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Server Version
+      description: Describe in detail what the bug is about. Include the expected behaviour and actual behaviour.
+      placeholder: "Example: When running `/mv` it cause the server to crash..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce-steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide detailed intructions to trigger the bug.
+      placeholder: |
+        Example:
+          1. Start a server with only multiverse installed.
+          2. Run `/mv` command.
+          3. Players all get kicked with a "server closed" message.
+          ...
+    validations:
+      required: true
+  - type: checkboxes
+    id: agreements
+    attributes:
+      label: Agreements
+      description: Ensure you have done the following being submitting this issue.
+      options:
+        - label: I have searched for and ensured there isn't already an open or resolved issue(s) regarding this.
+          required: true
+        - label: >
+            I was able to reproduce my issue on a freshly setup and up-to-date server with the latest
+            version of Multiverse plugins with no other plugins and with no kinds of other server or client mods.
+          required: true

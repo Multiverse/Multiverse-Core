@@ -1,0 +1,41 @@
+name: 💡 Request a Feature
+description: Suggest a feature you want to see in Multiverse-Core!
+title: "[Idea]: "
+labels: ["Type: Idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your ideas!
+
+        If you are look for other submodules of Multiverse, go to their respective git repo:
+            Multiverse-Portals: https://github.com/Multiverse/Multiverse-Portals/issues/new/choose
+            Multiverse-NetherPortals: https://github.com/Multiverse/Multiverse-NetherPortals/issues/new/choose
+            Multiverse-Inventories: https://github.com/Multiverse/Multiverse-Inventories/issues/new/choose
+            Multiverse-SignPortals: https://github.com/Multiverse/Multiverse-SignPortals/issues/new/choose
+
+        Not sure if your feature fits in Multiverse-Core? Feel free to ask on our Discord server: https://discord.gg/NZtfKky
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the feature
+      description: What feature are you suggesting?
+      placeholder: "Example: I hope multiverse can implement random teleport feature..."
+    validations:
+      required: true
+  - type: textarea
+    id: feature-reasoning
+    attributes:
+      label: How is the feature useful all Multiverse users?
+      description: How is the feature useful to all players, server owners and/or developers?
+      placeholder: "Example: Random teleporting cam be integrated into many multiverse modules such as mv-portals..."
+    validations:
+      required: true
+  - type: checkboxes
+    id: agreements
+    attributes:
+      label: Agreements
+      description: Ensure you have done the following being submitting this issue.
+      options:
+        - label: I have searched for and ensured there isn't already an open issue regarding this.
+          required: true
