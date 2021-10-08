@@ -9,11 +9,11 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.InvalidDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
-
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,8 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
-import java.util.logging.Level;
-
 /**
  * The default-implementation of {@link SafeTTeleporter}.
  */
@@ -37,6 +35,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         this.plugin = plugin;
     }
 
+    private static final Vector DEFAULT_VECTOR = new Vector();
     private static final int DEFAULT_TOLERANCE = 6;
     private static final int DEFAULT_RADIUS = 9;
 
@@ -214,8 +213,11 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
 
         if (safeLoc != null) {
             if (teleportee.teleport(safeLoc)) {
-                if (!d.getVelocity().equals(new Vector(0, 0, 0))) {
-                    teleportee.setVelocity(d.getVelocity());
+                Vector v = d.getVelocity();
+                if (v != null && !DEFAULT_VECTOR.equals(v)) {
+                    Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                        teleportee.setVelocity(d.getVelocity());
+                    }, 1);
                 }
                 return TeleportResult.SUCCESS;
             }
