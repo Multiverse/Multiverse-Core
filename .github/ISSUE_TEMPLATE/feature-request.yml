@@ -26,7 +26,7 @@ body:
   - type: textarea
     id: feature-reasoning
     attributes:
-      label: How is the feature useful all Multiverse users?
+      label: How is the feature useful to all Multiverse users?
       description: How is the feature useful to all players, server owners and/or developers?
       placeholder: "Example: Random teleporting can be integrated into many multiverse modules such as mv-portals..."
     validations:
