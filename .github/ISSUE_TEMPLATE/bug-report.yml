@@ -16,7 +16,7 @@ body:
 
         Not sure if this is a bug with Multiverse-Core? Feel free to ask on our Discord server: https://discord.gg/NZtfKky
 
-        When completing the report, please out the template in full. Failure to do so will result in your issue being closed.
+        When completing the report, please ensure all fields are filled with the correct details requested. Failure to do so will result in your issue being closed.
   - type: input
     id: mutliverse-version-info
     attributes:
@@ -45,7 +45,7 @@ body:
   - type: textarea
     id: bug-description
     attributes:
-      label: Server Version
+      label: Bug Description
       description: Describe in detail what the bug is about. Include the expected behaviour and actual behaviour.
       placeholder: "Example: When running `/mv` it cause the server to crash..."
     validations:
