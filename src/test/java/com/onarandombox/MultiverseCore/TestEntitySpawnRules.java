@@ -101,42 +101,42 @@ public class TestEntitySpawnRules {
     @Test
     public void test() {
         // test 1: no spawning at all allowed
-        adjustSettings(false, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(false, false, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(true);
 
         // test 2: only monsters
-        adjustSettings(false, true, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(false, true, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(false);
 
         // test 3: all spawning allowed
-        adjustSettings(true, true, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(true, true, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(false);
         verify(zombieEvent).setCancelled(false);
 
         // test 4: no spawning with zombie exception
-        adjustSettings(false, false, Collections.EMPTY_LIST, Arrays.asList("ZOMBIE"));
+        adjustSettings(false, false, Collections.emptyList(), Arrays.asList("ZOMBIE"));
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(false);
 
         // test 5: all spawning with sheep exception
-        adjustSettings(true, true, Arrays.asList("SHEEP"), Collections.EMPTY_LIST);
+        adjustSettings(true, true, Arrays.asList("SHEEP"), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(false);
 
         // test 6: eggs
-        adjustSettings(false, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(false, false, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAll(SpawnReason.SPAWNER_EGG);
         verify(sheepEvent, never()).setCancelled(anyBoolean());
