@@ -534,7 +534,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             } else if (entry.getValue() instanceof ConfigurationSection) {
                 Logging.fine("Migrating: " + entry.getKey());
                 // we have to migrate this
-                WorldProperties world = new WorldProperties(Collections.EMPTY_MAP);
+                WorldProperties world = new WorldProperties(Collections.emptyMap());
                 ConfigurationSection section = (ConfigurationSection) entry.getValue();
 
                 // migrate animals and monsters

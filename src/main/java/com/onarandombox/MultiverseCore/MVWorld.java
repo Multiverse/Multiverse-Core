@@ -356,7 +356,7 @@ public class MVWorld implements MultiverseWorld {
 
         @Override
         public Map<String, Object> serialize() {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
 
         /**
