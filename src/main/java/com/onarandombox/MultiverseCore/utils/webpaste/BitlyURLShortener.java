@@ -27,7 +27,6 @@ class BitlyURLShortener extends URLShortener {
     @Override
     String encodeData(String data) {
         JSONObject json = new JSONObject();
-        json.put("domain", "j.mp");
         json.put("long_url", data);
         return json.toJSONString();
     }
