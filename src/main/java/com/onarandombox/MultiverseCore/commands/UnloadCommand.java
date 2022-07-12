@@ -33,10 +33,13 @@ public class UnloadCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        if (this.plugin.getMVWorldManager().unloadWorld(args.get(0))) {
-            Command.broadcastCommandMessage(sender, "Unloaded world '" + args.get(0) + "'!");
-        } else {
-            sender.sendMessage("Error trying to unload world '" + args.get(0) + "'!");
-        }
+        String worldName = args.get(0);
+        this.plugin.getMVWorldManager().addOrRemoveWorldSafely(worldName, "unload", () -> {
+            if (this.plugin.getMVWorldManager().unloadWorld(worldName)) {
+                Command.broadcastCommandMessage(sender, "Unloaded world '" + worldName + "'!");
+            } else {
+                sender.sendMessage("Error trying to unload world '" + worldName + "'!");
+            }
+        });
     }
 }

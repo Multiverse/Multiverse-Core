@@ -47,7 +47,7 @@ public class DeleteCommand extends MultiverseCommand {
     private Runnable deleteRunnable(@NotNull CommandSender sender,
                                     @NotNull String worldName) {
 
-        return () -> {
+        return () -> this.plugin.getMVWorldManager().addOrRemoveWorldSafely(worldName, "delete", () -> {
             sender.sendMessage(String.format("Deleting world '%s'...", worldName));
             if (this.plugin.getMVWorldManager().deleteWorld(worldName)) {
                 sender.sendMessage(String.format("%sWorld %s was deleted!", ChatColor.GREEN, worldName));
@@ -55,6 +55,6 @@ public class DeleteCommand extends MultiverseCommand {
             }
             sender.sendMessage(String.format("%sThere was an issue deleting '%s'! Please check console for errors.",
                     ChatColor.RED, worldName));
-        };
+        });
     }
 }

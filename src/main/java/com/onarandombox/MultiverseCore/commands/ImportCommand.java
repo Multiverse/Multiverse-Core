@@ -127,11 +127,14 @@ public class ImportCommand extends MultiverseCommand {
             sender.sendMessage("That world environment did not exist.");
             sender.sendMessage("For a list of available world types, type: " + ChatColor.AQUA + "/mvenv");
         } else {
-            Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
-            if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, useSpawnAdjust))
-                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
-            else
-                Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            boolean finalUseSpawnAdjust = useSpawnAdjust;
+            this.worldManager.addOrRemoveWorldSafely(worldName, "unload", () -> {
+                Command.broadcastCommandMessage(sender, String.format("Starting import of world '%s'...", worldName));
+                if (this.worldManager.addWorld(worldName, environment, null, null, null, generator, finalUseSpawnAdjust))
+                    Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Complete!");
+                else
+                    Command.broadcastCommandMessage(sender, ChatColor.RED + "Failed!");
+            });
         }
     }
 }

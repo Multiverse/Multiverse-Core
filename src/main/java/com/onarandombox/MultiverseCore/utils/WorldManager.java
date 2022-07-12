@@ -32,6 +32,7 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -1028,5 +1029,25 @@ public class WorldManager implements MVWorldManager {
                 .filter(WorldNameChecker::isValidWorldFolder)
                 .map(File::getName)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addOrRemoveWorldSafely(String worldName, String operationName, Runnable worldModification) {
+        // TODO: Find real way to tell if worlds are being ticked
+        if (!worldName.equals("testWorld")) {
+            // Operation is fine to do now
+            worldModification.run();
+        } else {
+            // Operation needs to be delayed until worlds are not being ticked
+
+            Logging.fine("Worlds were being ticked while attempting to %s %s. Trying again in the next tick", operationName, worldName);
+            new BukkitRunnable() {
+                public void run() {
+                    worldModification.run();
+                }
+            }.runTask(plugin);
+        }
     }
 }
