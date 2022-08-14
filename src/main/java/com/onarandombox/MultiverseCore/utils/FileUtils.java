@@ -68,6 +68,19 @@ public class FileUtils {
         }
     }
 
+    public static boolean deleteWorldContents(File file) {
+        try (Stream<Path> files = Files.walk(file.toPath())){
+            files.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .filter(f -> !f.equals(file) && !f.getName().equals("paper-world.yml"))
+                    .forEach(File::delete);
+            return true;
+        } catch (IOException e) {
+            Logging.warning(e.getMessage());
+            return false;
+        }
+    }
+
     /**
      * Helper method to copy the world-folder.
      * @param source Source-File

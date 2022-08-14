@@ -16,6 +16,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.enums.KeepWorld;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -505,7 +506,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteWorld(String name, boolean removeFromConfig, boolean deleteWorldFolder) {
+    public boolean deleteWorld(String name, boolean removeFromConfig, KeepWorld keepContents) {
         if (this.hasUnloadedWorld(name, false)) {
             // Attempt to load if unloaded so we can actually delete the world
             if (!this.doLoad(name)) {
@@ -540,7 +541,17 @@ public class WorldManager implements MVWorldManager {
         try {
             File worldFile = world.getWorldFolder();
             Logging.finer("deleteWorld(): worldFile: " + worldFile.getAbsolutePath());
-            if (deleteWorldFolder ? FileUtils.deleteFolder(worldFile) : FileUtils.deleteFolderContents(worldFile)) {
+            boolean success;
+
+            if (keepContents.equals(KeepWorld.FOLDER)) {
+                success = FileUtils.deleteFolderContents(worldFile);
+            } else if (keepContents.equals(KeepWorld.CONFIG)) {
+                success = FileUtils.deleteWorldContents(worldFile);
+            } else {
+                success = FileUtils.deleteFolder(worldFile);
+            }
+
+            if (success) {
                 Logging.info("World '%s' was DELETED.", name);
                 return true;
             } else {
@@ -564,7 +575,7 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public boolean deleteWorld(String name, boolean removeFromConfig) {
-        return this.deleteWorld(name, removeFromConfig, true);
+        return this.deleteWorld(name, removeFromConfig, KeepWorld.NONE);
     }
 
     /**
@@ -947,7 +958,7 @@ public class WorldManager implements MVWorldManager {
         }
 
         // Do the regen.
-        if (!this.deleteWorld(name, false, false)) {
+        if (!this.deleteWorld(name, false, KeepWorld.CONFIG)) {
             Logging.severe("Unable to regen world as world cannot be deleted.");
             return false;
         }
