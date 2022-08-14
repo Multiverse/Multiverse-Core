@@ -971,6 +971,11 @@ public class WorldManager implements MVWorldManager {
             }
         }
 
+        // If using a new seed, you will most definitely want the same spawn the world uses.
+        if (useNewSeed && !world.getSpawnLocation().equals(world.getCBWorld().getSpawnLocation())) {
+            world.setSpawnLocation(world.getCBWorld().getSpawnLocation());
+        }
+
         // Send all players that were in the old world, BACK to it!
         SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
         Location newSpawn = world.getSpawnLocation();
