@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import com.onarandombox.MultiverseCore.enums.KeepWorld;
+import com.onarandombox.MultiverseCore.enums.WorldDeleteMode;
 import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
 import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
 import org.bukkit.World;
@@ -109,10 +109,23 @@ public interface MVWorldManager {
      * @param name The name of the world to remove
      * @param removeFromConfig If true(default), we'll remove the entries from the
      *                         config. If false, they'll stay and the world may come back.
-     * @param keepContents The files you want to keep. (Paper configuration, World directory, or nothing)
+     * @param deleteWorldFolder If true, the world folder will be completely deleted. If false,
+     *                          only the contents of the world folder will be deleted
+     * @return True if success, false if failure.
+     * @deprecated Use {@link MVWorldManager#deleteWorld(String, boolean, WorldDeleteMode)}
+     */
+    @Deprecated
+    boolean deleteWorld(String name, boolean removeFromConfig, boolean deleteWorldFolder);
+
+    /**
+     *
+     * @param name The world name
+     * @param removeFromConfig If true(default), we'll remove the entires from the
+     *                         config. If false, they'll stay and the world may come back.
+     * @param whatToDelete What files or folders should be deleted.
      * @return True if success, false if failure.
      */
-    boolean deleteWorld(String name, boolean removeFromConfig, KeepWorld keepContents);
+    boolean deleteWorld(String name, boolean removeFromConfig, WorldDeleteMode whatToDelete);
 
     /**
      * Unload a world from Multiverse.
