@@ -42,7 +42,7 @@ public class RegenCommand extends MultiverseCommand {
         String worldName = args.get(0);
         boolean useseed = (!(args.size() == 1));
         boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s")) ||
-                (args.size() == 3 && args.get(2).equals("--keep-gamerules"));
+                (args.size() == 3 && args.get(2).equalsIgnoreCase("--keep-gamerules"));
         String seed = (args.size() == 3) ? args.get(2) : "";
         boolean keepGamerules = CommandHandler.hasFlag("--keep-gamerules", args);
         this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
