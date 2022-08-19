@@ -37,6 +37,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1035,8 +1037,7 @@ public class WorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     public void addOrRemoveWorldSafely(String worldName, String operationName, Runnable worldModification) {
-        // TODO: Find real way to tell if worlds are being ticked
-        if (!worldName.equals("testWorld")) {
+        if (safeToAddOrRemoveWorld()) {
             // Operation is fine to do now
             worldModification.run();
         } else {
@@ -1048,6 +1049,23 @@ public class WorldManager implements MVWorldManager {
                     worldModification.run();
                 }
             }.runTask(plugin);
+        }
+    }
+
+    private boolean safeToAddOrRemoveWorld(){
+        Method isTickingWorlds;
+        try {
+            isTickingWorlds = Bukkit.class.getMethod("isTickingWorlds");
+        } catch (NoSuchMethodException e) {
+            // Paper fixes aren't active, so it is always considered safe to proceed
+            return true;
+        }
+        // Paper fixes are active, so we need to and can check Bukkit.isTickingWorlds
+        try {
+            return !(boolean) isTickingWorlds.invoke(null);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            // Shouldn't happen, I know I'm using the method correctly
+            throw new RuntimeException(e);
         }
     }
 }
