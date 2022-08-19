@@ -1036,6 +1036,7 @@ public class WorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addOrRemoveWorldSafely(String worldName, String operationName, Runnable worldModification) {
         if (safeToAddOrRemoveWorld()) {
             // Operation is fine to do now
