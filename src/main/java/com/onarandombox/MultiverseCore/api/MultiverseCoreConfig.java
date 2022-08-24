@@ -239,4 +239,16 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      * @param idonotwanttodonate True if donation/patreon messages should be shown.
      */
     void setShowDonateMessage(boolean idonotwanttodonate);
+
+    /**
+     * Sets ignoregamemoderestriction.
+     * @param ignoreGameModeRestriction The new value.
+     */
+    void setIgnoreGameModeRestriction(boolean ignoreGameModeRestriction);
+
+    /**
+     * Gets ignoregamemoderestriction.
+     * @return ignoregamemoderestriction.
+     */
+    boolean getIgnoreGameModeRestriction();
 }

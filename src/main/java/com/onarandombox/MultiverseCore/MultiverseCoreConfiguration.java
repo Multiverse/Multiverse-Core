@@ -77,6 +77,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile boolean autopurge;
     @Property
     private volatile boolean idonotwanttodonate;
+    @Property
+    private volatile boolean ignoregamemoderestriction;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -111,6 +113,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         portalsearchradius = 128;
         autopurge = true;
         idonotwanttodonate = false;
+        ignoregamemoderestriction = false;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -381,5 +384,15 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setShowDonateMessage(boolean showDonateMessage) {
         this.idonotwanttodonate = !showDonateMessage;
+    }
+
+    @Override
+    public boolean getIgnoreGameModeRestriction() {
+        return ignoregamemoderestriction;
+    }
+
+    @Override
+    public void setIgnoreGameModeRestriction(boolean ignoreGameModeRestriction) {
+        this.ignoregamemoderestriction = ignoreGameModeRestriction;
     }
 }

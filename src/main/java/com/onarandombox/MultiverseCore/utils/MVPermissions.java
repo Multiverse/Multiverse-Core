@@ -45,7 +45,7 @@ public class MVPermissions implements PermissionsInterface {
      * @return True if they should bypass restrictions.
      */
     public boolean canIgnoreGameModeRestriction(Player p, MultiverseWorld w) {
-        return p.hasPermission("mv.bypass.gamemode." + w.getName());
+        return p.hasPermission("mv.bypass.gamemode." + w.getName()) || this.plugin.getMVConfig().getIgnoreGameModeRestriction();
     }
 
     /**
