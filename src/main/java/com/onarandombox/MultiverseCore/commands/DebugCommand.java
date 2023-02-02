@@ -5,9 +5,12 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.locale.MVCorei18n;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
@@ -19,6 +22,7 @@ public class DebugCommand extends MultiverseCommand {
 
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
+    @Description("{@@mv-core.debug_info_description}")
     public void onShowDebugCommand(@NotNull CommandIssuer issuer) {
         this.displayDebugMode(issuer);
     }
@@ -26,9 +30,15 @@ public class DebugCommand extends MultiverseCommand {
 
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
+    @Syntax("<{@@mv-core.debug_change_syntax}>")
     @CommandCompletion("@range:3")
+    @Description("{@@mv-core.debug_change_description}")
     public void onChangeDebugCommand(@NotNull CommandIssuer issuer,
-                                     @Conditions("debuglevel") int level) {
+
+                                     @Conditions("debuglevel")
+                                     @Syntax("<{@@mv-core.debug_change_syntax}>")
+                                     @Description("{@@mv-core.debug_change_level_description}")
+                                     int level) {
 
         this.plugin.getMVConfig().setGlobalDebug(level);
         this.plugin.saveMVConfigs();
@@ -38,10 +48,10 @@ public class DebugCommand extends MultiverseCommand {
     private void displayDebugMode(@NotNull CommandIssuer issuer) {
         final int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
         if (debugLevel == 0) {
-            issuer.sendMessage("§fMultiverse Debug mode is §cOFF§f.");
+            issuer.sendInfo(MVCorei18n.DEBUG_INFO_OFF);
             return;
         }
-        issuer.sendMessage("§fMultiverse Debug mode is at §alevel {level}§f.");
+        issuer.sendInfo(MVCorei18n.DEBUG_INFO_ON, "{level}", String.valueOf(debugLevel));
         Logging.fine("Multiverse Debug ENABLED.");
     }
 }
