@@ -9,17 +9,15 @@ package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.onarandombox.MultiverseCore.commandsold.TeleportCommand;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;

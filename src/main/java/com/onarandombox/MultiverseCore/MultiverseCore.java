@@ -33,41 +33,42 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands.AnchorCommand;
-import com.onarandombox.MultiverseCore.commands.CheckCommand;
-import com.onarandombox.MultiverseCore.commands.CloneCommand;
-import com.onarandombox.MultiverseCore.commands.ConfigCommand;
-import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commands.CoordCommand;
-import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
-import com.onarandombox.MultiverseCore.commands.DeleteCommand;
-import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
-import com.onarandombox.MultiverseCore.commands.GameruleCommand;
-import com.onarandombox.MultiverseCore.commands.GamerulesCommand;
-import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
-import com.onarandombox.MultiverseCore.commands.HelpCommand;
-import com.onarandombox.MultiverseCore.commands.ImportCommand;
-import com.onarandombox.MultiverseCore.commands.InfoCommand;
-import com.onarandombox.MultiverseCore.commands.ListCommand;
-import com.onarandombox.MultiverseCore.commands.LoadCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyAddCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyClearCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyRemoveCommand;
-import com.onarandombox.MultiverseCore.commands.ModifySetCommand;
-import com.onarandombox.MultiverseCore.commands.PurgeCommand;
-import com.onarandombox.MultiverseCore.commands.RegenCommand;
-import com.onarandombox.MultiverseCore.commands.ReloadCommand;
-import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.ScriptCommand;
-import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
-import com.onarandombox.MultiverseCore.commands.SilentCommand;
-import com.onarandombox.MultiverseCore.commands.SpawnCommand;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.VersionCommand;
-import com.onarandombox.MultiverseCore.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.commandsold.AnchorCommand;
+import com.onarandombox.MultiverseCore.commandsold.CheckCommand;
+import com.onarandombox.MultiverseCore.commandsold.CloneCommand;
+import com.onarandombox.MultiverseCore.commandsold.ConfigCommand;
+import com.onarandombox.MultiverseCore.commandsold.ConfirmCommand;
+import com.onarandombox.MultiverseCore.commandsold.CoordCommand;
+import com.onarandombox.MultiverseCore.commandsold.CreateCommand;
+import com.onarandombox.MultiverseCore.commandsold.DeleteCommand;
+import com.onarandombox.MultiverseCore.commandsold.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commandsold.GameruleCommand;
+import com.onarandombox.MultiverseCore.commandsold.GamerulesCommand;
+import com.onarandombox.MultiverseCore.commandsold.GeneratorCommand;
+import com.onarandombox.MultiverseCore.commandsold.HelpCommand;
+import com.onarandombox.MultiverseCore.commandsold.ImportCommand;
+import com.onarandombox.MultiverseCore.commandsold.InfoCommand;
+import com.onarandombox.MultiverseCore.commandsold.ListCommand;
+import com.onarandombox.MultiverseCore.commandsold.LoadCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyAddCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyClearCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyRemoveCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifySetCommand;
+import com.onarandombox.MultiverseCore.commandsold.PurgeCommand;
+import com.onarandombox.MultiverseCore.commandsold.RegenCommand;
+import com.onarandombox.MultiverseCore.commandsold.ReloadCommand;
+import com.onarandombox.MultiverseCore.commandsold.RemoveCommand;
+import com.onarandombox.MultiverseCore.commandsold.ScriptCommand;
+import com.onarandombox.MultiverseCore.commandsold.SetSpawnCommand;
+import com.onarandombox.MultiverseCore.commandsold.SilentCommand;
+import com.onarandombox.MultiverseCore.commandsold.SpawnCommand;
+import com.onarandombox.MultiverseCore.commandsold.TeleportCommand;
+import com.onarandombox.MultiverseCore.commandsold.UnloadCommand;
+import com.onarandombox.MultiverseCore.commandsold.VersionCommand;
+import com.onarandombox.MultiverseCore.commandsold.WhoCommand;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
@@ -204,6 +205,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
+    private MVCommandManager commandManager;
     private CommandQueueManager commandQueueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
@@ -287,6 +289,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
+        this.commandManager = new MVCommandManager(this);
         this.commandQueueManager = new CommandQueueManager(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
@@ -781,13 +784,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new AnchorCommand(this));
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
-        this.commandHandler.registerCommand(new DebugCommand(this));
+        // this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new SilentCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
         this.commandHandler.registerCommand(new GameruleCommand(this));
         this.commandHandler.registerCommand(new GamerulesCommand(this));
+
+        //**NEW ACF COMMAND HANDLER**
+        this.commandManager.registerCommand(new DebugCommand(this));
     }
 
     /**
@@ -916,6 +922,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public CommandHandler getCommandHandler() {
         return this.commandHandler;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MVCommandManager getCommandManager() {
+        return this.commandManager;
     }
 
     /**

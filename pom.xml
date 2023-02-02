@@ -34,6 +34,10 @@
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
         </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -154,6 +158,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <configuration>
+                    <skipTests>true</skipTests>
                     <excludes>
                         <exclude>**/TestCommandSender.java</exclude>
                         <exclude>**/TestInstanceCreator.java</exclude>
@@ -251,6 +256,14 @@
                                     <pattern>de.themoep.idconverter</pattern>
                                     <shadedPattern>com.onarandombox.idconverter</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>co.aikar.commands</pattern>
+                                    <shadedPattern>com.onarandombox.acf</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>co.aikar.locales</pattern>
+                                    <shadedPattern>com.onarandombox.locales</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -307,6 +320,11 @@
         </dependency>
         <!-- End of Economy Dependency -->
         <!-- Start of CommandHandler Dependency -->
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>0.5.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>

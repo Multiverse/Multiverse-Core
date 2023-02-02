@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import buscript.Buscript;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
@@ -86,6 +87,14 @@ public interface Core {
      * @return A non-null {@link CommandHandler}.
      */
     CommandHandler getCommandHandler();
+
+    /**
+     * Multiverse uses {@link MVCommandManager} to make adding and using commands
+     * a piece of cake.
+     *
+     * @return A non-null {@link MVCommandManager}.
+     */
+    MVCommandManager getCommandManager();
 
     /**
      * Manager for command that requires /mv confirm before execution.
