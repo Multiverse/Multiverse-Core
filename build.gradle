@@ -1,0 +1,175 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'checkstyle'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.jetbrains.intellij' version '1.1'
+}
+
+version = '4.3.2-SNAPSHOT'
+group = 'com.onarandombox.multiversecore'
+description = 'Multiverse-Core'
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+    }
+
+    maven {
+        url = uri('https://repo.onarandombox.com/content/groups/public')
+    }
+
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/groups/public/')
+    }
+
+    maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
+        url = uri('https://repo.minebench.de/')
+    }
+
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation('org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT') {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    implementation('com.github.MilkBowl:VaultAPI:1.7') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+
+    api('me.main__.util:SerializationConfig:1.7') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+    api('com.pneumaticraft.commandhandler:CommandHandler:11') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+        exclude group: 'junit', module: 'junit'
+    }
+    api 'com.dumptruckman.minecraft:buscript:2.0-SNAPSHOT'
+    api 'org.bstats:bstats-bukkit:2.2.1'
+    api('com.dumptruckman.minecraft:Logging:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    api 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    api 'org.jetbrains:annotations:16.0.2'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:3.11.2'
+    testImplementation 'commons-io:commons-io:2.4'
+}
+
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+            pom {
+                ciManagement {
+                    system = 'jenkins'
+                    url = 'https://ci.onarandombox.com/'
+                }
+            }
+        }
+    }
+}
+
+
+ext.bitlyAccessToken = System.getenv('BITLY_ACCESS_TOKEN') ?: 'bitly-access-token'
+
+task prepareSource(type: Sync) {
+    inputs.property 'bitlyAccessToken', bitlyAccessToken
+    from sourceSets.main.java
+    into "$buildDir/src"
+    filter(ReplaceTokens, tokens: [
+            'bitly-access-token': bitlyAccessToken,
+    ])
+}
+
+compileJava {
+    source = prepareSource.outputs
+}
+
+
+ext.buildNumber = System.getenv('BUILD_NUMBER') ?: 'UNKNOWN'
+
+processResources {
+    def props = [version: "${project.version}-b$buildNumber"]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+
+checkstyle {
+    toolVersion = '6.1.1'
+    configFile file('config/mv_checks.xml')
+    ignoreFailures = true
+}
+
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+}
+
+
+project.configurations.api.canBeResolved = true
+
+shadowJar {
+    relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
+    relocate 'com.pneumaticraft.commandhandler', 'com.onarandombox.commandhandler'
+    relocate 'buscript', 'com.onarandombox.buscript'
+    relocate 'org.bstats', 'com.onarandombox.bstats'
+    relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
+    relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
+    relocate 'org.codehaus.jettison', 'com.onarandombox.jettison'
+    relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
+
+    configurations = [project.configurations.api]
+
+    archiveFileName = "$baseName-$version.$extension"
+}
+
+build.dependsOn shadowJar
+jar.enabled = false
+
+
+intellij {
+    instrumentCode = true
+    downloadSources = false
+}
+
+// disable everything from intellij plugin except instrumentation
+patchPluginXml.enabled = false
+prepareSandbox.enabled = false
+buildSearchableOptions.enabled = false
+jarSearchableOptions.enabled = false
+buildPlugin.enabled = false

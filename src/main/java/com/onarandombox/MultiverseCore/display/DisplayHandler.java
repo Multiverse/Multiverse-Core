@@ -16,7 +16,7 @@ import java.util.Collection;
 public interface DisplayHandler<T> {
 
     /**
-     * Formats the raw content into a {@link Collection<String>} for displaying to the given sender.
+     * Formats the raw content into a {@link Collection} for displaying to the given sender.
      *
      * @param sender The {@link CommandSender} who will the content will be displayed to.
      * @param display The responsible {@link ContentDisplay}.
