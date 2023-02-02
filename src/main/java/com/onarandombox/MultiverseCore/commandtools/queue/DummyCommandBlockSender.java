@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Used by {@link CommandQueueManager}, so different commands block can be recognised as one.
@@ -28,6 +29,16 @@ class DummyCommandBlockSender implements CommandSender {
     }
 
     @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public @NotNull Server getServer() {
         return Bukkit.getServer();
     }
@@ -35,6 +46,12 @@ class DummyCommandBlockSender implements CommandSender {
     @Override
     public @NotNull String getName() {
         return "DummyCommandBlockSender";
+    }
+
+    @NotNull
+    @Override
+    public Spigot spigot() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

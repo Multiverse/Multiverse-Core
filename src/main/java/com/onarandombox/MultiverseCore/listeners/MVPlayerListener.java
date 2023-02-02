@@ -7,13 +7,14 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.enums.RespawnType;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
-import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -30,9 +31,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Multiverse's {@link Listener} for players.
@@ -70,16 +68,8 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-        RespawnType respawnType = RespawnType.OTHER;
-        if (event.isBedSpawn()) {
-            respawnType = RespawnType.BED;
-        }
-        if (CompatibilityLayer.isAnchorSpawn(event)) {
-            respawnType = RespawnType.ANCHOR;
-        }
-
-        if (mvWorld.getBedRespawn() && (respawnType == RespawnType.BED || respawnType == RespawnType.ANCHOR)) {
-            Logging.fine("Spawning %s at their %s", event.getPlayer().getName(), respawnType);
+        if (mvWorld.getBedRespawn() && (event.isBedSpawn() || event.isAnchorSpawn())) {
+            Logging.fine("Spawning %s at their %s.", event.getPlayer().getName(), event.isBedSpawn() ? "BED" : "ANCHOR");
             return;
         }
 
@@ -313,7 +303,7 @@ public class MVPlayerListener implements Listener {
                     + "' because enforceaccess is off.");
         }
         if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            CompatibilityLayer.setPortalSearchRadius(event, this.plugin.getMVConfig().getPortalSearchRadius());
+            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 
