@@ -2,7 +2,7 @@ name: Maven CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, update-actions ]
   pull_request:
     branches: [ main ]
 
