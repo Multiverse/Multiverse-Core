@@ -48,13 +48,13 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile String prefixchatformat;
     @Property
-    private volatile boolean useasyncchat;
-    @Property
     private volatile boolean teleportintercept;
     @Property
     private volatile boolean firstspawnoverride;
     @Property
     private volatile boolean displaypermerrors;
+    @Property
+    private volatile boolean enablebuscript;
     @Property
     private volatile int globaldebug;
     @Property
@@ -93,18 +93,18 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     protected void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
-        useasyncchat = true;
-        prefixchat = true;
+        prefixchat = false;
         prefixchatformat = "[%world%]%chat%";
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
+        enablebuscript = true;
         globaldebug = 0;
         messagecooldown = 5000;
         teleportcooldown = 1000;
         this.version = 2.9;
         silentstart = false;
-        defaultportalsearch = false;
+        defaultportalsearch = true;
         portalsearchradius = 128;
         autopurge = true;
         idonotwanttodonate = false;
@@ -217,6 +217,22 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
+    public boolean getEnableBuscript() {
+        return this.enablebuscript;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEnableBuscript(boolean enableBuscript) {
+        this.enablebuscript = enableBuscript;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setDisplayPermErrors(boolean displayPermErrors) {
         this.displaypermerrors = displayPermErrors;
     }
@@ -301,16 +317,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setTeleportCooldown(int teleportCooldown) {
         this.teleportcooldown = teleportCooldown;
-    }
-
-    @Override
-    public void setUseAsyncChat(boolean useAsyncChat) {
-        this.useasyncchat = useAsyncChat;
-    }
-
-    @Override
-    public boolean getUseAsyncChat() {
-        return this.useasyncchat;
     }
 
     @Override

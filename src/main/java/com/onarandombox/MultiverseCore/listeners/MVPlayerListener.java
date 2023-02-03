@@ -9,7 +9,6 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -69,9 +68,8 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-
-        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-            Logging.fine("Spawning " + event.getPlayer().getName() + " at their bed");
+        if (mvWorld.getBedRespawn() && (event.isBedSpawn() || event.isAnchorSpawn())) {
+            Logging.fine("Spawning %s at their %s.", event.getPlayer().getName(), event.isBedSpawn() ? "BED" : "ANCHOR");
             return;
         }
 
@@ -304,16 +302,8 @@ public class MVPlayerListener implements Listener {
                     + "' was allowed to go to '" + event.getTo().getWorld().getName()
                     + "' because enforceaccess is off.");
         }
-        if (!plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            try {
-                Class.forName("org.bukkit.TravelAgent");
-                if (event.getPortalTravelAgent() != null) {
-                    event.getPortalTravelAgent().setSearchRadius(plugin.getMVConfig().getPortalSearchRadius());
-                }
-            } catch (ClassNotFoundException ignore) {
-                Logging.fine("TravelAgent not available for PlayerPortalEvent for " + event.getPlayer().getName());
-            }
-
+        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 

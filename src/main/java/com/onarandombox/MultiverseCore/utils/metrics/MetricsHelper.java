@@ -1,10 +1,11 @@
 package com.onarandombox.MultiverseCore.utils.metrics;
 
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.MultiLineChart;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-
-import org.bstats.bukkit.Metrics;
 
 enum MetricsHelper {
     ;
@@ -17,16 +18,16 @@ enum MetricsHelper {
         map.put(key, count + 1);
     }
 
-    static Metrics.AdvancedPie createAdvancedPieChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+    static AdvancedPie createAdvancedPieChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
         Map<String, Integer> map = new HashMap<>();
         metricsFunc.accept(map);
-        return new Metrics.AdvancedPie(chartId, () -> map);
+        return new AdvancedPie(chartId, () -> map);
     }
 
-    static Metrics.MultiLineChart createMultiLineChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+    static MultiLineChart createMultiLineChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
         Map<String, Integer> map = new HashMap<>();
         metricsFunc.accept(map);
-        return new Metrics.MultiLineChart(chartId, () -> map);
+        return new MultiLineChart(chartId, () -> map);
     }
 
 }

@@ -11,7 +11,7 @@ import org.bukkit.WorldCreator;
 import org.mockito.ArgumentMatcher;
 
 public class WorldCreatorMatcher implements ArgumentMatcher<WorldCreator> {
-    private WorldCreator worldCreator;
+    private final WorldCreator worldCreator;
     private boolean careAboutSeeds = false;
     private boolean careAboutGenerators = false;
 

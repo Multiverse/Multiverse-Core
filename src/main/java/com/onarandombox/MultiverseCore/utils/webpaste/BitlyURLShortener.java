@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.util.Map;
+
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 
 /**
  * A {@link URLShortener} using {@code bit.ly}. Requires an access token.
@@ -27,7 +27,6 @@ class BitlyURLShortener extends URLShortener {
     @Override
     String encodeData(String data) {
         JSONObject json = new JSONObject();
-        json.put("domain", "j.mp");
         json.put("long_url", data);
         return json.toJSONString();
     }

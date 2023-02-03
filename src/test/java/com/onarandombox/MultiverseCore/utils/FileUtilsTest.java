@@ -1,7 +1,8 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,10 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.dumptruckman.minecraft.util.Logging;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FileUtilsTest {
 
@@ -137,7 +136,7 @@ public class FileUtilsTest {
         assertTrue(Files.isRegularFile(targetChildDirFile));
     }
 
-    @Test()
+    @Test
     public void copyFolder_intoExistingFolder_whereFileExists() throws Exception {
         Path targetDir = Files.createDirectory(tempDir.resolve("target"));
         Path targetFile = Files.createFile(targetDir.resolve("parentDirFile.txt"));

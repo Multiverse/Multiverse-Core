@@ -18,11 +18,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-
-import java.util.logging.Level;
 
 /**
  * Multiverse's Entity {@link Listener}.
@@ -107,4 +106,17 @@ public class MVEntityListener implements Listener {
         event.setCancelled(this.plugin.getMVWorldManager().getTheWorldPurger().shouldWeKillThisCreature(mvworld, event.getEntity()));
     }
 
+    /**
+     * Handles portal search radius adjustment.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void entityPortal(EntityPortalEvent event) {
+        if (event.isCancelled() || event.getTo() == null) {
+            return;
+        }
+        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
+        }
+    }
 }

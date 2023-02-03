@@ -40,6 +40,15 @@ public class SimpleLocationManipulation implements LocationManipulation {
         orientationInts.put("w", 90);
         orientationInts.put("nw", 135);
 
+        orientationInts.put("north", 180);
+        orientationInts.put("northeast", 225);
+        orientationInts.put("east", 270);
+        orientationInts.put("southeast", 315);
+        orientationInts.put("south", 0);
+        orientationInts.put("southwest", 45);
+        orientationInts.put("west", 90);
+        orientationInts.put("northwest", 135);
+
         // "freeze" the map:
         ORIENTATION_INTS = Collections.unmodifiableMap(orientationInts);
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
