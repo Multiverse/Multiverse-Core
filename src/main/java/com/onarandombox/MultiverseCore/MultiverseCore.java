@@ -82,7 +82,6 @@ import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
-import com.onarandombox.MultiverseCore.listeners.MVMapListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
@@ -395,7 +394,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
         pm.registerEvents(this.worldListener, this);
-        pm.registerEvents(new MVMapListener(this), this);
     }
 
     /**
