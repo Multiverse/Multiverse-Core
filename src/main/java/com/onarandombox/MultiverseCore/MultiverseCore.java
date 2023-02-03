@@ -1123,7 +1123,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @return True if success, false if fail.
      */
     public Boolean cloneWorld(String oldName, String newName, String generator) {
-        return this.worldManager.cloneWorld(oldName, newName, generator);
+        return this.worldManager.cloneWorld(oldName, newName);
     }
 
     /**
