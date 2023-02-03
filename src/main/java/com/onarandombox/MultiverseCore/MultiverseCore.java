@@ -7,21 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
@@ -33,41 +18,43 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands.AnchorCommand;
-import com.onarandombox.MultiverseCore.commands.CheckCommand;
-import com.onarandombox.MultiverseCore.commands.CloneCommand;
-import com.onarandombox.MultiverseCore.commands.ConfigCommand;
-import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commands.CoordCommand;
-import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
-import com.onarandombox.MultiverseCore.commands.DeleteCommand;
-import com.onarandombox.MultiverseCore.commands.EnvironmentCommand;
-import com.onarandombox.MultiverseCore.commands.GameruleCommand;
-import com.onarandombox.MultiverseCore.commands.GamerulesCommand;
-import com.onarandombox.MultiverseCore.commands.GeneratorCommand;
-import com.onarandombox.MultiverseCore.commands.HelpCommand;
-import com.onarandombox.MultiverseCore.commands.ImportCommand;
-import com.onarandombox.MultiverseCore.commands.InfoCommand;
-import com.onarandombox.MultiverseCore.commands.ListCommand;
-import com.onarandombox.MultiverseCore.commands.LoadCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyAddCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyClearCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyCommand;
-import com.onarandombox.MultiverseCore.commands.ModifyRemoveCommand;
-import com.onarandombox.MultiverseCore.commands.ModifySetCommand;
-import com.onarandombox.MultiverseCore.commands.PurgeCommand;
-import com.onarandombox.MultiverseCore.commands.RegenCommand;
-import com.onarandombox.MultiverseCore.commands.ReloadCommand;
-import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.ScriptCommand;
-import com.onarandombox.MultiverseCore.commands.SetSpawnCommand;
-import com.onarandombox.MultiverseCore.commands.SilentCommand;
-import com.onarandombox.MultiverseCore.commands.SpawnCommand;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.VersionCommand;
-import com.onarandombox.MultiverseCore.commands.WhoCommand;
+import com.onarandombox.MultiverseCore.commandsold.AnchorCommand;
+import com.onarandombox.MultiverseCore.commandsold.CheckCommand;
+import com.onarandombox.MultiverseCore.commandsold.CloneCommand;
+import com.onarandombox.MultiverseCore.commandsold.ConfigCommand;
+import com.onarandombox.MultiverseCore.commandsold.ConfirmCommand;
+import com.onarandombox.MultiverseCore.commandsold.CoordCommand;
+import com.onarandombox.MultiverseCore.commandsold.CreateCommand;
+import com.onarandombox.MultiverseCore.commandsold.DeleteCommand;
+import com.onarandombox.MultiverseCore.commandsold.EnvironmentCommand;
+import com.onarandombox.MultiverseCore.commandsold.GameruleCommand;
+import com.onarandombox.MultiverseCore.commandsold.GamerulesCommand;
+import com.onarandombox.MultiverseCore.commandsold.GeneratorCommand;
+import com.onarandombox.MultiverseCore.commandsold.HelpCommand;
+import com.onarandombox.MultiverseCore.commandsold.ImportCommand;
+import com.onarandombox.MultiverseCore.commandsold.InfoCommand;
+import com.onarandombox.MultiverseCore.commandsold.ListCommand;
+import com.onarandombox.MultiverseCore.commandsold.LoadCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyAddCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyClearCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifyRemoveCommand;
+import com.onarandombox.MultiverseCore.commandsold.ModifySetCommand;
+import com.onarandombox.MultiverseCore.commandsold.PurgeCommand;
+import com.onarandombox.MultiverseCore.commandsold.RegenCommand;
+import com.onarandombox.MultiverseCore.commandsold.ReloadCommand;
+import com.onarandombox.MultiverseCore.commandsold.RemoveCommand;
+import com.onarandombox.MultiverseCore.commandsold.ScriptCommand;
+import com.onarandombox.MultiverseCore.commandsold.SetSpawnCommand;
+import com.onarandombox.MultiverseCore.commandsold.SilentCommand;
+import com.onarandombox.MultiverseCore.commandsold.SpawnCommand;
+import com.onarandombox.MultiverseCore.commandsold.TeleportCommand;
+import com.onarandombox.MultiverseCore.commandsold.UnloadCommand;
+import com.onarandombox.MultiverseCore.commandsold.VersionCommand;
+import com.onarandombox.MultiverseCore.commandsold.WhoCommand;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
@@ -77,11 +64,8 @@ import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
-import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
-import com.onarandombox.MultiverseCore.listeners.MVMapListener;
-import com.onarandombox.MultiverseCore.listeners.MVPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
@@ -93,13 +77,14 @@ import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
-import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
@@ -119,6 +104,20 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -202,6 +201,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     // Setup our Map for our Commands using the CommandHandler.
     private CommandHandler commandHandler;
+    private MVCommandManager commandManager;
+    private CommandQueueManager commandQueueManager;
 
     private static final String LOG_TAG = "[Multiverse-Core]";
 
@@ -284,6 +285,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Setup the command manager
         this.commandHandler = new CommandHandler(this, this.ph);
+        this.commandManager = new MVCommandManager(this);
+        this.commandQueueManager = new CommandQueueManager(this);
         // Call the Function to assign all the Commands to their Class.
         this.registerCommands();
 
@@ -305,7 +308,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
         } else {
-            this.log(Level.SEVERE, "Your configs were not loaded. Very little will function in Multiverse.");
+            Logging.severe("Your configs were not loaded. Very little will function in Multiverse.");
         }
         this.anchorManager.loadAnchors();
 
@@ -317,17 +320,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             // A test that had no worlds loaded was being run. This should never happen in production
         }
         this.saveMVConfig();
-        // Register async or sync player chat according to config
-        try {
-            Class.forName("org.bukkit.event.player.AsyncPlayerChatEvent");
-        } catch (ClassNotFoundException e) {
-            getMVConfig().setUseAsyncChat(false);
-        }
-        if (getMVConfig().getUseAsyncChat()) {
-            this.chatListener = new MVAsyncPlayerChatListener(this, this.playerListener);
-        } else {
-            this.chatListener = new MVPlayerChatListener(this, this.playerListener);
-        }
+
+        this.chatListener = new MVChatListener(this, this.playerListener);
         getServer().getPluginManager().registerEvents(this.chatListener, this);
 
         this.initializeBuscript();
@@ -343,16 +337,28 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     private void setupMetrics() {
-        MetricsConfigurator.configureMetrics(this);
+        if (TestingMode.isDisabled()) {
+            MetricsConfigurator.configureMetrics(this);
+        }
     }
 
     /**
      * Initializes the buscript javascript library.
      */
     private void initializeBuscript() {
-        buscript = new Buscript(this);
-        // Add global variable "multiverse" to javascript environment
-        buscript.setScriptVariable("multiverse", this);
+        buscript = null;
+
+        if (this.getMVConfig().getEnableBuscript()) {
+            try {
+                buscript = new Buscript(this);
+                // Add global variable "multiverse" to javascript environment
+                buscript.setScriptVariable("multiverse", this);
+            } catch (NullPointerException e) {
+                Logging.warning("Buscript failed to load! The script command will be disabled! " +
+                        "If you would like not to see this message, " +
+                        "use `/mv conf enablebuscript false` to disable Buscript from loading.");
+            }
+        }
     }
 
     private void initializeDestinationFactory() {
@@ -375,9 +381,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvents(this.entityListener, this);
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
-        log(Level.INFO, "We are aware of the warning about the deprecated event. There is no alternative that allows us to do what we need to do. The performance impact is negligible.");
         pm.registerEvents(this.worldListener, this);
-        pm.registerEvents(new MVMapListener(this), this);
     }
 
     /**
@@ -494,13 +498,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         try {
             wconf.load(worldsFile);
         } catch (IOException e) {
-            log(Level.WARNING, "Cannot load worlds.yml");
+            Logging.warning("Cannot load worlds.yml");
         } catch (InvalidConfigurationException e) {
-            log(Level.WARNING, "Your worlds.yml is invalid!");
+            Logging.warning("Your worlds.yml is invalid!");
         }
 
         if (!wconf.isConfigurationSection("worlds")) { // empty config
-            this.log(Level.FINE, "No worlds to migrate!");
+            Logging.fine("No worlds to migrate!");
             return;
         }
 
@@ -513,9 +517,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // fine
                 newValues.put(entry.getKey(), entry.getValue());
             } else if (entry.getValue() instanceof ConfigurationSection) {
-                this.log(Level.FINE, "Migrating: " + entry.getKey());
+                Logging.fine("Migrating: " + entry.getKey());
                 // we have to migrate this
-                WorldProperties world = new WorldProperties(Collections.EMPTY_MAP);
+                WorldProperties world = new WorldProperties(Collections.emptyMap());
                 ConfigurationSection section = (ConfigurationSection) entry.getValue();
 
                 // migrate animals and monsters
@@ -679,8 +683,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                     try {
                         difficulty = Difficulty.valueOf(section.getString("difficulty").toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        this.log(Level.WARNING, "Could not parse difficulty: " + section.getString("difficulty"));
-                        this.log(Level.WARNING, "Setting world " + entry.getKey() + " difficulty to NORMAL");
+                        Logging.warning("Could not parse difficulty: " + section.getString("difficulty"));
+                        Logging.warning("Setting world " + entry.getKey() + " difficulty to NORMAL");
                         difficulty = Difficulty.NORMAL;
                     }
                     if (difficulty != null) {
@@ -697,7 +701,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 wasChanged = true;
             } else {
                 // huh?
-                this.log(Level.WARNING, "Removing unknown entry in the config: " + entry);
+                Logging.warning("Removing unknown entry in the config: " + entry);
                 // just don't add to newValues
                 wasChanged = true;
             }
@@ -766,13 +770,16 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new AnchorCommand(this));
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
-        this.commandHandler.registerCommand(new DebugCommand(this));
+        // this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new SilentCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
         this.commandHandler.registerCommand(new GameruleCommand(this));
         this.commandHandler.registerCommand(new GamerulesCommand(this));
+
+        //**NEW ACF COMMAND HANDLER**
+        this.commandManager.registerCommand(new DebugCommand(this));
     }
 
     /**
@@ -833,43 +840,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public void log(Level level, String msg) {
-        Logging.log(level, msg);
-    }
-
-    /**
-     * Logs a message at the specified level.
-     *
-     * @param level The Log-{@link Level}.
-     * @param msg The message to log.
-     *
-     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
-     * messages will appear to originate from Multiverse-Core.
-     */
-    @Deprecated
-    public static void staticLog(Level level, String msg) {
-        Logging.log(level, msg);
-    }
-
-    /**
-     * Print messages to the Debug Log, if the servers in Debug Mode then we also want to print the messages to the
-     * standard Server Console.
-     *
-     * @param level The Log-{@link Level}
-     * @param msg The message
-     *
-     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
-     * messages will appear to originate from Multiverse-Core.
-     */
-    @Deprecated
-    public static void staticDebugLog(Level level, String msg) {
-        Logging.log(level, msg);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getAuthors() {
         String authors = "";
         List<String> auths = this.getDescription().getAuthors();
@@ -900,13 +870,20 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Gets the log-tag.
-     *
-     * @return The log-tag
+     * {@inheritDoc}
      */
-    // TODO this should be static!
-    public String getTag() {
-        return MultiverseCore.LOG_TAG;
+    @Override
+    public MVCommandManager getCommandManager() {
+        return this.commandManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Deprecated
+    public CommandQueueManager getCommandQueueManager() {
+        return commandQueueManager;
     }
 
     /**
@@ -1051,7 +1028,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
             return true;
         } catch (IOException e) {
-            this.log(Level.SEVERE, "Could not save Multiverse config.yml config. Please check your file permissions.");
+            Logging.severe("Could not save Multiverse config.yml config. Please check your file permissions.");
             return false;
         }
     }
@@ -1094,17 +1071,27 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * @return True if success, false if fail.
      */
     public Boolean cloneWorld(String oldName, String newName, String generator) {
-        return this.worldManager.cloneWorld(oldName, newName, generator);
+        return this.worldManager.cloneWorld(oldName, newName);
     }
 
     /**
      * {@inheritDoc}
-     * @deprecated This is deprecated!
+     * @deprecated This is deprecated! Do not use!
      */
     @Override
     @Deprecated
     public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
-        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed);
+        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @deprecated This is deprecated! Do not use!
+     */
+    @Override
+    @Deprecated
+    public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed, Boolean keepGameRules) {
+        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed, keepGameRules);
     }
 
     /**
@@ -1172,17 +1159,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public MultiverseCoreConfig getMVConfig() {
         return config;
-    }
-
-    /**
-     * This method is currently used by other plugins.
-     * It will be removed in 2.4
-     * @return The Multiverse config.
-     * @deprecated This is deprecated.
-     */
-    @Deprecated
-    public static MultiverseCoreConfiguration getStaticConfig() {
-        return MultiverseCoreConfiguration.getInstance();
     }
 
     @Override

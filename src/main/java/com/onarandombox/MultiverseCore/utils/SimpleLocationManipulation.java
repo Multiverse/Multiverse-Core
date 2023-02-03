@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -39,6 +40,15 @@ public class SimpleLocationManipulation implements LocationManipulation {
         orientationInts.put("w", 90);
         orientationInts.put("nw", 135);
 
+        orientationInts.put("north", 180);
+        orientationInts.put("northeast", 225);
+        orientationInts.put("east", 270);
+        orientationInts.put("southeast", 315);
+        orientationInts.put("south", 0);
+        orientationInts.put("southwest", 45);
+        orientationInts.put("west", 90);
+        orientationInts.put("northwest", 135);
+
         // "freeze" the map:
         ORIENTATION_INTS = Collections.unmodifiableMap(orientationInts);
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
@@ -52,7 +62,7 @@ public class SimpleLocationManipulation implements LocationManipulation {
         if (location == null) {
             return "";
         }
-        return String.format("%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
+        return String.format(Locale.ENGLISH, "%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
                 location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 

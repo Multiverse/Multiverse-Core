@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
 /**
- * Thrown when pasting failed.
+ * Thrown when pasting fails.
  */
 public class PasteFailedException extends Exception {
     public PasteFailedException() {

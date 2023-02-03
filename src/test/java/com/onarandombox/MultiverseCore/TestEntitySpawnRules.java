@@ -7,35 +7,29 @@ import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MultiverseCore.class, PluginDescriptionFile.class, JavaPluginLoader.class})
-@PowerMockIgnore("javax.script.*")
 public class TestEntitySpawnRules {
     TestInstanceCreator creator;
     MultiverseCore core;
@@ -107,42 +101,42 @@ public class TestEntitySpawnRules {
     @Test
     public void test() {
         // test 1: no spawning at all allowed
-        adjustSettings(false, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(false, false, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(true);
 
         // test 2: only monsters
-        adjustSettings(false, true, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(false, true, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(false);
 
         // test 3: all spawning allowed
-        adjustSettings(true, true, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(true, true, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(false);
         verify(zombieEvent).setCancelled(false);
 
         // test 4: no spawning with zombie exception
-        adjustSettings(false, false, Collections.EMPTY_LIST, Arrays.asList("ZOMBIE"));
+        adjustSettings(false, false, Collections.emptyList(), Arrays.asList("ZOMBIE"));
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(false);
 
         // test 5: all spawning with sheep exception
-        adjustSettings(true, true, Arrays.asList("SHEEP"), Collections.EMPTY_LIST);
+        adjustSettings(true, true, Arrays.asList("SHEEP"), Collections.emptyList());
         createAnimals();
         spawnAllNatural();
         verify(sheepEvent).setCancelled(true);
         verify(zombieEvent).setCancelled(false);
 
         // test 6: eggs
-        adjustSettings(false, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        adjustSettings(false, false, Collections.emptyList(), Collections.emptyList());
         createAnimals();
         spawnAll(SpawnReason.SPAWNER_EGG);
         verify(sheepEvent, never()).setCancelled(anyBoolean());
@@ -157,6 +151,6 @@ public class TestEntitySpawnRules {
         when(zombie.getType()).thenReturn(EntityType.ZOMBIE);
         when(zombie.getWorld()).thenReturn(this.cbworld);
 
-        when(cbworld.getEntities()).thenReturn(Arrays.asList((Entity) sheep, (Entity) zombie));
+        when(cbworld.getEntities()).thenReturn(Arrays.asList(sheep, zombie));
     }
 }
