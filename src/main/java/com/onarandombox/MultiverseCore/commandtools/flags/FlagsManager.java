@@ -9,28 +9,49 @@ import java.util.Map;
 import java.util.Set;
 
 import co.aikar.commands.InvalidCommandArgument;
-import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * Manages all the flag groups and parsing.
+ */
 public class FlagsManager {
-
-    private final MVCommandManager commandManager;
     private final Map<String, FlagGroup> flagGroupMap;
 
-    public FlagsManager(MVCommandManager commandManager) {
-        this.commandManager = commandManager;
+    /**
+     * Creates a new FlagsManager.
+     */
+    public FlagsManager() {
         flagGroupMap = new HashMap<>();
     }
 
-    public void registerFlagGroup(FlagGroup flagGroup) {
+    /**
+     * Registers a flag group.
+     *
+     * @param flagGroup The target flag group to register.
+     */
+    public void registerFlagGroup(@NotNull FlagGroup flagGroup) {
         flagGroupMap.put(flagGroup.getName(), flagGroup);
     }
 
-    public FlagGroup getFlagGroup(String groupName) {
+    /**
+     *  Get a flag group by name.
+     *
+     * @param groupName The target flag group name.
+     * @return The flag group if found, null otherwise.
+     */
+    public @Nullable FlagGroup getFlagGroup(@Nullable String groupName) {
         return this.flagGroupMap.get(groupName);
     }
 
-    public Collection<String> suggest(String groupName, String[] flags) {
+    /**
+     * Autocompletes suggestions for flags.
+     *
+     * @param groupName The target flag group name.
+     * @param flags The current flags so far.
+     * @return The list of suggestions.
+     */
+    public @NotNull Collection<String> suggest(@Nullable String groupName, @NotNull String[] flags) {
         FlagGroup flagGroup = this.getFlagGroup(groupName);
         if (flagGroup == null) {
             return Collections.emptyList();
@@ -54,8 +75,14 @@ public class FlagsManager {
         return suggestions;
     }
 
-    @NotNull
-    private Set<String> getRemainingFlagKeys(FlagGroup flagGroup, String[] flags) {
+    /**
+     * Gets the flags keys that has not been used yet.
+     *
+     * @param flagGroup The target flag group.
+     * @param flags The current flags so far.
+     * @return The remaining flag keys.
+     */
+    private @NotNull Set<String> getRemainingFlagKeys(@NotNull FlagGroup flagGroup, @NotNull String[] flags) {
         Set<String> keysRemaining = new HashSet<>(flagGroup.getKeys());
         for (String flag : flags) {
             MVFlag mvFlag = flagGroup.getFlagByKey(flag);
@@ -66,7 +93,16 @@ public class FlagsManager {
         return keysRemaining;
     }
 
-    public ParsedFlags parse(String groupName, String[] flags) {
+    /**
+     * Parses the flags.
+     *
+     * @param groupName The target flag group name.
+     * @param flags The flags to parse.
+     * @return The parsed flags.
+     *
+     * @throws InvalidCommandArgument If the flags are invalid.
+     */
+    public @NotNull ParsedFlags parse(@Nullable String groupName, @NotNull String[] flags) {
         ParsedFlags parsedFlags = new ParsedFlags();
         FlagGroup flagGroup = this.getFlagGroup(groupName);
         if (flagGroup == null) {

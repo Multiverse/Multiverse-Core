@@ -9,6 +9,7 @@ import co.aikar.commands.CommandContexts;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.FlagsManager;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Main class to manage permissions.
@@ -18,7 +19,7 @@ public class MVCommandManager extends PaperCommandManager {
     private final MultiverseCore plugin;
     private FlagsManager flagsManager;
 
-    public MVCommandManager(MultiverseCore plugin) {
+    public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
         this.plugin = plugin;
 
@@ -28,9 +29,14 @@ public class MVCommandManager extends PaperCommandManager {
         this.locales.loadLanguages();
     }
 
-    public FlagsManager getFlagsManager() {
+    /**
+     * Gets class responsible for flag handling.
+     *
+     * @return A not-null {@link FlagsManager}.
+     */
+    public synchronized @NotNull FlagsManager getFlagsManager() {
         if (this.flagsManager == null) {
-            this.flagsManager = new FlagsManager(this);
+            this.flagsManager = new FlagsManager();
         }
         return flagsManager;
     }
@@ -41,7 +47,7 @@ public class MVCommandManager extends PaperCommandManager {
      * @return A not-null {@link CommandContexts}.
      */
     @Override
-    public synchronized CommandContexts<BukkitCommandExecutionContext> getCommandContexts() {
+    public synchronized @NotNull CommandContexts<BukkitCommandExecutionContext> getCommandContexts() {
         if (this.contexts == null) {
             this.contexts = new MVCommandContexts(this);
         }
@@ -54,7 +60,7 @@ public class MVCommandManager extends PaperCommandManager {
      * @return A not-null {@link CommandCompletions}.
      */
     @Override
-    public synchronized CommandCompletions<BukkitCommandCompletionContext> getCommandCompletions() {
+    public synchronized @NotNull CommandCompletions<BukkitCommandCompletionContext> getCommandCompletions() {
         if (this.completions == null) {
             this.completions = new MVCommandCompletions(this);
         }

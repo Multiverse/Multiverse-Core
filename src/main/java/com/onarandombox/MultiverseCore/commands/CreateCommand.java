@@ -26,11 +26,12 @@ import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandException;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCommand {
 
-    public CreateCommand(MultiverseCore plugin) {
+    public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 
         this.plugin.getCommandManager().getFlagsManager().registerFlagGroup(FlagGroup.builder("mvcreate")
@@ -78,23 +79,24 @@ public class CreateCommand extends MultiverseCommand {
 
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
-    @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
     @CommandCompletion("WORLDNAME  @flags:groupName=mvcreate")
+    @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
     @Description("") //TODO
     public void onCreateCommand(CommandIssuer issuer,
 
+                                @Flags("trim")
                                 @Syntax("<name>")
                                 @Description("") //TODO
-                                @Flags("trim")
                                 String worldName,
 
                                 @Syntax("<env>")
                                 @Description("") //TODO
                                 World.Environment environment,
 
+                                @Optional
                                 @Syntax("[world-flags]")
                                 @Description("") //TODO
-                                @Optional String[] flags
+                                String[] flags
     ) {
         ParsedFlags parsedFlags = this.plugin.getCommandManager().getFlagsManager().parse("mvcreate", flags);
 

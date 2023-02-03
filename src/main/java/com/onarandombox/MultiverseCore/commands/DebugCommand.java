@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandAlias("mv")
 public class DebugCommand extends MultiverseCommand {
 
-    public DebugCommand(MultiverseCore plugin) {
+    public DebugCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
 
