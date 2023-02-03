@@ -7,6 +7,10 @@
 
 package com.onarandombox.MultiverseCore.commandsold;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
@@ -25,10 +29,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Dumps version info to the console.
@@ -63,7 +63,6 @@ public class VersionCommand extends MultiverseCommand {
                 + "[Multiverse-Core]   enforceaccess: " + plugin.getMVConfig().getEnforceAccess() + '\n'
                 + "[Multiverse-Core]   prefixchat: " + plugin.getMVConfig().getPrefixChat() + '\n'
                 + "[Multiverse-Core]   prefixchatformat: " + plugin.getMVConfig().getPrefixChatFormat() + '\n'
-                + "[Multiverse-Core]   useasyncchat: " + plugin.getMVConfig().getUseAsyncChat() + '\n'
                 + "[Multiverse-Core]   teleportintercept: " + plugin.getMVConfig().getTeleportIntercept() + '\n'
                 + "[Multiverse-Core]   firstspawnoverride: " + plugin.getMVConfig().getFirstSpawnOverride() + '\n'
                 + "[Multiverse-Core]   displaypermerrors: " + plugin.getMVConfig().getDisplayPermErrors() + '\n'
