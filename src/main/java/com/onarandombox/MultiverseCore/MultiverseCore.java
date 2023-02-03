@@ -7,21 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
@@ -119,6 +104,20 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -839,47 +838,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
-     *
-     * @deprecated This is now deprecated, nobody needs it any longer.
-     * All logging is now done with {@link Logging}.
-     */
-    @Override
-    @Deprecated
-    public void log(Level level, String msg) {
-        Logging.log(level, msg);
-    }
-
-    /**
-     * Logs a message at the specified level.
-     *
-     * @param level The Log-{@link Level}.
-     * @param msg The message to log.
-     *
-     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
-     * messages will appear to originate from Multiverse-Core.
-     */
-    @Deprecated
-    public static void staticLog(Level level, String msg) {
-        Logging.log(level, msg);
-    }
-
-    /**
-     * Print messages to the Debug Log, if the servers in Debug Mode then we also want to print the messages to the
-     * standard Server Console.
-     *
-     * @param level The Log-{@link Level}
-     * @param msg The message
-     *
-     * @deprecated Replaced by {@link Logging}.  Please refrain from using this from a third party plugin as the
-     * messages will appear to originate from Multiverse-Core.
-     */
-    @Deprecated
-    public static void staticDebugLog(Level level, String msg) {
-        Logging.log(level, msg);
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public String getAuthors() {
@@ -926,16 +884,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Deprecated
     public CommandQueueManager getCommandQueueManager() {
         return commandQueueManager;
-    }
-
-    /**
-     * Gets the log-tag.
-     *
-     * @return The log-tag
-     */
-    // TODO this should be static!
-    public String getTag() {
-        return MultiverseCore.LOG_TAG;
     }
 
     /**
