@@ -27,7 +27,6 @@ public class DebugCommand extends MultiverseCommand {
         this.displayDebugMode(issuer);
     }
 
-
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @Syntax("<{@@mv-core.debug_change_syntax}>")

@@ -33,6 +33,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commandsold.AnchorCommand;
 import com.onarandombox.MultiverseCore.commandsold.CheckCommand;
@@ -40,7 +41,6 @@ import com.onarandombox.MultiverseCore.commandsold.CloneCommand;
 import com.onarandombox.MultiverseCore.commandsold.ConfigCommand;
 import com.onarandombox.MultiverseCore.commandsold.ConfirmCommand;
 import com.onarandombox.MultiverseCore.commandsold.CoordCommand;
-import com.onarandombox.MultiverseCore.commandsold.CreateCommand;
 import com.onarandombox.MultiverseCore.commandsold.DeleteCommand;
 import com.onarandombox.MultiverseCore.commandsold.EnvironmentCommand;
 import com.onarandombox.MultiverseCore.commandsold.GameruleCommand;
@@ -757,7 +757,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new VersionCommand(this));
         this.commandHandler.registerCommand(new ListCommand(this));
         this.commandHandler.registerCommand(new InfoCommand(this));
-        this.commandHandler.registerCommand(new CreateCommand(this));
+        // this.commandHandler.registerCommand(new CreateCommand(this));
         this.commandHandler.registerCommand(new CloneCommand(this));
         this.commandHandler.registerCommand(new ImportCommand(this));
         this.commandHandler.registerCommand(new ReloadCommand(this));
@@ -794,6 +794,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         //**NEW ACF COMMAND HANDLER**
         this.commandManager.registerCommand(new DebugCommand(this));
+        this.commandManager.registerCommand(new CreateCommand(this));
     }
 
     /**

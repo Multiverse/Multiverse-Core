@@ -8,6 +8,7 @@ import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.flags.FlagsManager;
 
 /**
  * Main class to manage permissions.
@@ -15,6 +16,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
+    private FlagsManager flagsManager;
 
     public MVCommandManager(MultiverseCore plugin) {
         super(plugin);
@@ -24,6 +26,13 @@ public class MVCommandManager extends PaperCommandManager {
         this.addSupportedLanguage(Locale.ENGLISH);
         this.locales.addMessageBundles("multiverse-core");
         this.locales.loadLanguages();
+    }
+
+    public FlagsManager getFlagsManager() {
+        if (this.flagsManager == null) {
+            this.flagsManager = new FlagsManager(this);
+        }
+        return flagsManager;
     }
 
     /**
