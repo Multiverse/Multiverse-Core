@@ -330,6 +330,12 @@
             <artifactId>CommandHandler</artifactId>
             <version>11</version>
         </dependency>
+        <!-- End of CommandHandler Dependency -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.4.1</version>
+        </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>buscript</artifactId>
