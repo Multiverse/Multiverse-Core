@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.utils.DebugLog;
 import com.pneumaticraft.commandhandler.CommandHandler;
 
 /**
@@ -20,11 +18,6 @@ import com.pneumaticraft.commandhandler.CommandHandler;
  */
 public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
     private MultiverseCore core;
-    /**
-     * Prefix for standard log entrys.
-     */
-    protected String logTag;
-    private DebugLog debugLog;
 
     /**
      * {@inheritDoc}
@@ -58,8 +51,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        debugLog = new DebugLog(this.getDescription().getName(), getDataFolder() + File.separator + "debug.log");
-        debugLog.setTag(String.format("[%s-Debug]", this.getDescription().getName()));
 
         this.onPluginEnable();
     }
