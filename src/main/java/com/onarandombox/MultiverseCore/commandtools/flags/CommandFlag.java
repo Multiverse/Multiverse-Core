@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents a flag.
  */
-public class MVFlag {
+public class CommandFlag {
     /**
      * A builder for a flag.
      *
@@ -28,7 +28,7 @@ public class MVFlag {
      *
      * @param builder The builder.
      */
-    protected MVFlag(@NotNull Builder<?> builder) {
+    protected CommandFlag(@NotNull Builder<?> builder) {
         key = builder.key;
         aliases = builder.aliases;
     }
@@ -86,8 +86,8 @@ public class MVFlag {
          *
          * @return The flag.
          */
-        public @NotNull MVFlag build(){
-            return new MVFlag(this);
+        public @NotNull CommandFlag build(){
+            return new CommandFlag(this);
         }
     }
 }

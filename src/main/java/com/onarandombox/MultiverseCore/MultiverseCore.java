@@ -7,6 +7,20 @@
 
 package com.onarandombox.MultiverseCore;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
@@ -104,20 +118,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -743,7 +743,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new VersionCommand(this));
         this.commandHandler.registerCommand(new ListCommand(this));
         this.commandHandler.registerCommand(new InfoCommand(this));
-        // this.commandHandler.registerCommand(new CreateCommand(this));
         this.commandHandler.registerCommand(new CloneCommand(this));
         this.commandHandler.registerCommand(new ImportCommand(this));
         this.commandHandler.registerCommand(new ReloadCommand(this));
@@ -770,7 +769,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new AnchorCommand(this));
         // Misc Commands
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
-        // this.commandHandler.registerCommand(new DebugCommand(this));
         this.commandHandler.registerCommand(new SilentCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
         this.commandHandler.registerCommand(new CheckCommand(this));

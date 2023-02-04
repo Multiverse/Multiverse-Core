@@ -8,7 +8,7 @@ import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandtools.flags.FlagsManager;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
-    private FlagsManager flagsManager;
+    private CommandFlagsManager flagsManager;
 
     public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
@@ -32,11 +32,11 @@ public class MVCommandManager extends PaperCommandManager {
     /**
      * Gets class responsible for flag handling.
      *
-     * @return A not-null {@link FlagsManager}.
+     * @return A not-null {@link CommandFlagsManager}.
      */
-    public synchronized @NotNull FlagsManager getFlagsManager() {
+    public synchronized @NotNull CommandFlagsManager getFlagsManager() {
         if (this.flagsManager == null) {
-            this.flagsManager = new FlagsManager();
+            this.flagsManager = new CommandFlagsManager();
         }
         return flagsManager;
     }

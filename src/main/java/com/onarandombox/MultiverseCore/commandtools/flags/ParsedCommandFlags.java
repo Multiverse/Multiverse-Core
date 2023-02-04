@@ -9,11 +9,13 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Object to contain the results of the flags present and its values.
  */
-public class ParsedFlags
+public class ParsedCommandFlags
 {
+    public static final ParsedCommandFlags EMPTY = new ParsedCommandFlags();
+
     private final Map<String, Object> flagValues;
 
-    public ParsedFlags() {
+    public ParsedCommandFlags() {
         flagValues = new HashMap<>();
     }
 

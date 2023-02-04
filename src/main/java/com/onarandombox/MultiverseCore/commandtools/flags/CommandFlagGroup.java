@@ -2,8 +2,10 @@ package com.onarandombox.MultiverseCore.commandtools.flags;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A group of flags.
  */
-public class FlagGroup {
+public class CommandFlagGroup {
     /**
      * A builder for a flag group.
      *
@@ -23,18 +25,16 @@ public class FlagGroup {
     }
 
     private final String name;
-    private final List<MVFlag> flags;
     private final List<String> keys;
-    private final Map<String, MVFlag> keysFlagMap;
+    private final Map<String, CommandFlag> keysFlagMap;
 
     /**
      * Creates a new flag group.
      *
      * @param builder The builder.
      */
-    protected FlagGroup(@NotNull Builder builder) {
+    protected CommandFlagGroup(@NotNull Builder builder) {
         name = builder.name;
-        flags = builder.flags;
         keys = builder.keys;
         keysFlagMap = builder.keysFlagMap;
     }
@@ -49,30 +49,30 @@ public class FlagGroup {
     }
 
     /**
-     * Get the flags contained within in this group.
+     * Check if this group contains a flag with the given key. Works with alias keys.
      *
-     * @return The flags in this group.
+     * @param key The key to check.
+     * @return True if the group contains a flag with the given key, false otherwise.
      */
-    public @NotNull List<MVFlag> getFlags() {
-        return flags;
+    public boolean hasKey(@Nullable String key) {
+        return keysFlagMap.containsKey(key);
     }
 
     /**
-     * Get the keys of the flags contained within in this group. Does not include aliases.
+     * Get the remaining keys after the given flags have been removed. Works with alias keys.
      *
-     * @return The keys of the flags in this group.
+     * @param flags The flags to remove.
+     * @return The remaining keys.
      */
-    public @NotNull List<String> getKeys() {
-        return keys;
-    }
-
-    /**
-     * Get the keys and flags contained within in this group.
-     *
-     * @return The keys and flags in this group.
-     */
-    public @NotNull Map<String, MVFlag>getKeysFlagMap() {
-        return keysFlagMap;
+    public @NotNull Set<String> getRemainingKeys(@NotNull String[] flags) {
+        Set<String> keysRemaining = new HashSet<>(this.keys);
+        for (String flag : flags) {
+            CommandFlag mvFlag = this.getFlagByKey(flag);
+            if (mvFlag != null) {
+                keysRemaining.remove(mvFlag.getKey());
+            }
+        }
+        return keysRemaining;
     }
 
     /**
@@ -81,18 +81,17 @@ public class FlagGroup {
      * @param key The key of the flag.
      * @return The flag if found, null otherwise.
      */
-    public @Nullable MVFlag getFlagByKey(String key) {
+    public @Nullable CommandFlag getFlagByKey(String key) {
         return keysFlagMap.get(key);
     }
 
     /**
-     * A builder for {@link FlagGroup}.
+     * A builder for {@link CommandFlagGroup}.
      */
     public static class Builder {
         private final String name;
-        private final List<MVFlag> flags;
         private final List<String> keys;
-        private final Map<String, MVFlag> keysFlagMap;
+        private final Map<String, CommandFlag> keysFlagMap;
 
         /**
          * Creates a new builder.
@@ -101,7 +100,6 @@ public class FlagGroup {
          */
         public Builder(@NotNull String name) {
             this.name = name;
-            this.flags = new ArrayList<>();
             this.keys = new ArrayList<>();
             this.keysFlagMap = new HashMap<>();
         }
@@ -112,8 +110,7 @@ public class FlagGroup {
          * @param flag The flag to add.
          * @return The builder.
          */
-        public @NotNull Builder add(MVFlag flag) {
-            flags.add(flag);
+        public @NotNull Builder add(CommandFlag flag) {
             keys.add(flag.getKey());
             keysFlagMap.put(flag.getKey(), flag);
             flag.getAliases().forEach((alias) -> keysFlagMap.put(alias, flag));
@@ -125,8 +122,8 @@ public class FlagGroup {
          *
          * @return The flag group.
          */
-        public @NotNull FlagGroup build() {
-            return new FlagGroup(this);
+        public @NotNull CommandFlagGroup build() {
+            return new CommandFlagGroup(this);
         }
     }
 }

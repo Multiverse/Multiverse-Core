@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param <T> The type of the value.
  */
-public class MVValueFlag<T> extends MVFlag {
+public class CommandValueFlag<T> extends CommandFlag {
     /**
      * A builder for a flag.
      *
@@ -35,7 +35,7 @@ public class MVValueFlag<T> extends MVFlag {
      *
      * @param builder The builder.
      */
-    protected MVValueFlag(@NotNull Builder<T, ?> builder) {
+    protected CommandValueFlag(@NotNull Builder<T, ?> builder) {
         super(builder);
         type = builder.type;
         optional = builder.optional;
@@ -95,7 +95,7 @@ public class MVValueFlag<T> extends MVFlag {
      * @param <T> The type of the value.
      * @param <S> The type of the builder.
      */
-    public static class Builder<T, S extends Builder<T, S>> extends MVFlag.Builder<S> {
+    public static class Builder<T, S extends Builder<T, S>> extends CommandFlag.Builder<S> {
         private final Class<T> type;
         private boolean optional = false;
         private T defaultValue = null;
@@ -162,11 +162,11 @@ public class MVValueFlag<T> extends MVFlag {
          * @return The flag.
          */
         @Override
-        public @NotNull MVFlag build() {
+        public @NotNull CommandFlag build() {
             if (context == null && !String.class.equals(type)) {
                 throw new IllegalStateException("Context is required for none-string value flags");
             }
-            return new MVValueFlag<>(this);
+            return new CommandValueFlag<>(this);
         }
     }
 }

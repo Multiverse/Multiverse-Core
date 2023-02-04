@@ -12,15 +12,14 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.commandtools.flags.FlagGroup;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVFlag;
-import com.onarandombox.MultiverseCore.commandtools.flags.MVValueFlag;
-import com.onarandombox.MultiverseCore.commandtools.flags.ParsedFlags;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -34,12 +33,12 @@ public class CreateCommand extends MultiverseCommand {
     public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 
-        this.plugin.getCommandManager().getFlagsManager().registerFlagGroup(FlagGroup.builder("mvcreate")
-                .add(MVValueFlag.builder("--seed", String.class)
+        this.flagsManager.registerFlagGroup(CommandFlagGroup.builder("mvcreate")
+                .add(CommandValueFlag.builder("--seed", String.class)
                         .addAlias("-s")
                         .completion(() -> Collections.singleton(String.valueOf(new Random().nextLong())))
                         .build())
-                .add(MVValueFlag.builder("--generator", String.class)
+                .add(CommandValueFlag.builder("--generator", String.class)
                         .addAlias("-g")
                         .completion(() -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                                 .filter(Plugin::isEnabled)
@@ -51,7 +50,7 @@ public class CreateCommand extends MultiverseCommand {
                                 .map(genplugin -> genplugin.getDescription().getName())
                                 .collect(Collectors.toList()))
                         .build())
-                .add(MVValueFlag.builder("--world-type", WorldType.class)
+                .add(CommandValueFlag.builder("--world-type", WorldType.class)
                         .addAlias("-t")
                         .context((value) -> {
                             try {
@@ -68,10 +67,10 @@ public class CreateCommand extends MultiverseCommand {
                             return types;
                         })
                         .build())
-                .add(MVFlag.builder("--adjust-spawn")
+                .add(CommandFlag.builder("--adjust-spawn")
                         .addAlias("-n")
                         .build())
-                .add(MVFlag.builder("--no-structures")
+                .add(CommandFlag.builder("--no-structures")
                         .addAlias("-a")
                         .build())
                 .build());
@@ -84,7 +83,6 @@ public class CreateCommand extends MultiverseCommand {
     @Description("") //TODO
     public void onCreateCommand(CommandIssuer issuer,
 
-                                @Flags("trim")
                                 @Syntax("<name>")
                                 @Description("") //TODO
                                 String worldName,
@@ -98,7 +96,7 @@ public class CreateCommand extends MultiverseCommand {
                                 @Description("") //TODO
                                 String[] flags
     ) {
-        ParsedFlags parsedFlags = this.plugin.getCommandManager().getFlagsManager().parse("mvcreate", flags);
+        ParsedCommandFlags parsedFlags = this.plugin.getCommandManager().getFlagsManager().parse("mvcreate", flags);
 
         issuer.sendMessage(worldName + " " + environment.toString());
         issuer.sendMessage("--seed: " + parsedFlags.hasFlag("--seed") + " " + String.valueOf(parsedFlags.flagValue("--seed", String.class)));
