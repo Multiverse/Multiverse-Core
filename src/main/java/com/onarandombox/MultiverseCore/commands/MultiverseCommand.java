@@ -3,7 +3,9 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.BaseCommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
+import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,9 +17,20 @@ public class MultiverseCommand extends BaseCommand {
     protected final MVWorldManager worldManager;
     protected final CommandFlagsManager flagsManager;
 
+    private String flagGroupName;
+
     protected MultiverseCommand(@NotNull MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
         this.flagsManager = plugin.getCommandManager().getFlagsManager();
+    }
+
+    protected void registerFlagGroup(@NotNull CommandFlagGroup flagGroup) {
+        flagsManager.registerFlagGroup(flagGroup);
+        flagGroupName = flagGroup.getName();
+    }
+
+    protected @NotNull ParsedCommandFlags parseFlags(@NotNull String[] flags) {
+        return flagsManager.parse(flagGroupName, flags);
     }
 }

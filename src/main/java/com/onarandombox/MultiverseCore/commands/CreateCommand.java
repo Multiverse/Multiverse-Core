@@ -33,7 +33,7 @@ public class CreateCommand extends MultiverseCommand {
     public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 
-        this.flagsManager.registerFlagGroup(CommandFlagGroup.builder("mvcreate")
+        registerFlagGroup(CommandFlagGroup.builder("mvcreate")
                 .add(CommandValueFlag.builder("--seed", String.class)
                         .addAlias("-s")
                         .completion(() -> Collections.singleton(String.valueOf(new Random().nextLong())))
@@ -96,7 +96,7 @@ public class CreateCommand extends MultiverseCommand {
                                 @Description("") //TODO
                                 String[] flags
     ) {
-        ParsedCommandFlags parsedFlags = this.plugin.getCommandManager().getFlagsManager().parse("mvcreate", flags);
+        ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         issuer.sendMessage(worldName + " " + environment.toString());
         issuer.sendMessage("--seed: " + parsedFlags.hasFlag("--seed") + " " + String.valueOf(parsedFlags.flagValue("--seed", String.class)));
