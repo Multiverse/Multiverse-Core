@@ -97,16 +97,6 @@ public class WorldManager implements MVWorldManager {
 
     /**
      * {@inheritDoc}
-     * @deprecated Use {@link #cloneWorld(String, String)} instead.
-     */
-    @Override
-    @Deprecated
-    public boolean cloneWorld(String oldName, String newName, String generator) {
-        return this.cloneWorld(oldName, newName);
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public boolean cloneWorld(String oldName, String newName) {
@@ -782,16 +772,6 @@ public class WorldManager implements MVWorldManager {
             special = new Permission("mv.bypass.gamemode.*", PermissionDefault.FALSE);
             this.plugin.getServer().getPluginManager().addPermission(special);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated This is deprecated!
-     */
-    @Override
-    @Deprecated
-    public PurgeWorlds getWorldPurger() {
-        return new PurgeWorlds(plugin);
     }
 
     /**

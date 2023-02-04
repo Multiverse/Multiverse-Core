@@ -62,18 +62,6 @@ public interface MVWorldManager {
     /**
      * Make a copy of a world.
      *
-     * @param oldName            Name of world to be copied
-     * @param newName            Name of world to be created
-     * @param generator          The Custom generator plugin to use. Ignored.
-     * @return True if the world is copied successfully, false if not.
-     * @deprecated Use {@link #cloneWorld(String, String)} instead.
-     */
-    @Deprecated
-    boolean cloneWorld(String oldName, String newName, String generator);
-
-    /**
-     * Make a copy of a world.
-     *
      * @param oldName
      *            Name of world to be copied
      * @param newName
@@ -235,18 +223,8 @@ public interface MVWorldManager {
     void loadDefaultWorlds();
 
     /**
-     * Return the World Purger.
-     *
-     * @return A valid {@link PurgeWorlds}.
-     * @deprecated {@link PurgeWorlds} is deprecated!
-     */
-    @Deprecated
-    PurgeWorlds getWorldPurger();
-
-    /**
      * Gets the {@link WorldPurger}.
      * <p>
-     * TODO: Remove {@link #getWorldPurger()} and replace it with this method.
      * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
      * @see WorldPurger
      * @see SimpleWorldPurger

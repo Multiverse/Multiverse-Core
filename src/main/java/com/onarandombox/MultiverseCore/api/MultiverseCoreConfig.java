@@ -159,18 +159,6 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
     boolean getEnforceAccess();
 
     /**
-     * Sets useasyncchat.
-     * @param useAsyncChat The new value.
-     */
-    void setUseAsyncChat(boolean useAsyncChat);
-
-    /**
-     * Gets useasyncchat.
-     * @return useasyncchat.
-     */
-    boolean getUseAsyncChat();
-
-    /**
      * Sets whether to suppress startup messages.
      *
      * @param silentStart true to suppress messages.
