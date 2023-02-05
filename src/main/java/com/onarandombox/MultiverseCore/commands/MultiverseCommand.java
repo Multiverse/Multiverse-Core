@@ -26,6 +26,9 @@ public class MultiverseCommand extends BaseCommand {
     }
 
     protected void registerFlagGroup(@NotNull CommandFlagGroup flagGroup) {
+        if (flagGroupName != null) {
+            throw new IllegalStateException("Flag group already registered! (name: " + flagGroupName + ")");
+        }
         flagsManager.registerFlagGroup(flagGroup);
         flagGroupName = flagGroup.getName();
     }
