@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandAlias("mv")
 public class DebugCommand extends MultiverseCommand {
 
-    public DebugCommand(MultiverseCore plugin) {
+    public DebugCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
 
@@ -26,7 +26,6 @@ public class DebugCommand extends MultiverseCommand {
     public void onShowDebugCommand(@NotNull CommandIssuer issuer) {
         this.displayDebugMode(issuer);
     }
-
 
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
