@@ -7,6 +7,20 @@
 
 package com.onarandombox.MultiverseCore;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
@@ -19,6 +33,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
+import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commandsold.AnchorCommand;
 import com.onarandombox.MultiverseCore.commandsold.CheckCommand;
 import com.onarandombox.MultiverseCore.commandsold.CloneCommand;
@@ -49,7 +64,6 @@ import com.onarandombox.MultiverseCore.commandsold.ScriptCommand;
 import com.onarandombox.MultiverseCore.commandsold.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.commandsold.SilentCommand;
 import com.onarandombox.MultiverseCore.commandsold.SpawnCommand;
-import com.onarandombox.MultiverseCore.commandsold.TeleportCommand;
 import com.onarandombox.MultiverseCore.commandsold.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandsold.VersionCommand;
 import com.onarandombox.MultiverseCore.commandsold.WhoCommand;
@@ -59,9 +73,10 @@ import com.onarandombox.MultiverseCore.destination.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.BedDestination;
 import com.onarandombox.MultiverseCore.destination.CannonDestination;
 import com.onarandombox.MultiverseCore.destination.DestinationFactory;
+import com.onarandombox.MultiverseCore.destination.DestinationsManager;
 import com.onarandombox.MultiverseCore.destination.ExactDestination;
+import com.onarandombox.MultiverseCore.destination.NewWorldDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
-import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
@@ -104,20 +119,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The implementation of the Multiverse-{@link Core}.
@@ -228,6 +229,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private Buscript buscript;
     private int pluginCount;
     private DestinationFactory destFactory;
+    private DestinationsManager destinationsManager;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -363,13 +365,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     private void initializeDestinationFactory() {
         this.destFactory = new DestinationFactory(this);
-        this.destFactory.registerDestinationType(WorldDestination.class, "");
-        this.destFactory.registerDestinationType(WorldDestination.class, "w");
         this.destFactory.registerDestinationType(ExactDestination.class, "e");
         this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
         this.destFactory.registerDestinationType(CannonDestination.class, "ca");
         this.destFactory.registerDestinationType(BedDestination.class, "b");
         this.destFactory.registerDestinationType(AnchorDestination.class, "a");
+
+        this.destinationsManager = new DestinationsManager(this);
+        this.destinationsManager.registerDestination(new NewWorldDestination(this));
     }
 
     /**
@@ -749,7 +752,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new ReloadCommand(this));
         this.commandHandler.registerCommand(new SetSpawnCommand(this));
         this.commandHandler.registerCommand(new CoordCommand(this));
-        this.commandHandler.registerCommand(new TeleportCommand(this));
+        this.commandHandler.registerCommand(new com.onarandombox.MultiverseCore.commandsold.TeleportCommand(this));
         this.commandHandler.registerCommand(new WhoCommand(this));
         this.commandHandler.registerCommand(new SpawnCommand(this));
         // Dangerous Commands
@@ -779,6 +782,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new GamerulesCommand(this));
 
         //**NEW ACF COMMAND HANDLER**
+        this.commandManager.registerCommand(new TeleportCommand(this));
         this.commandManager.registerCommand(new DebugCommand(this));
     }
 
@@ -938,6 +942,14 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public DestinationFactory getDestFactory() {
         return this.destFactory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DestinationsManager getDestinationsManager() {
+        return this.destinationsManager;
     }
 
     /**

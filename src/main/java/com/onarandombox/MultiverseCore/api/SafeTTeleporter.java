@@ -1,10 +1,11 @@
 package com.onarandombox.MultiverseCore.api;
 
+import co.aikar.commands.BukkitCommandIssuer;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import com.onarandombox.MultiverseCore.enums.TeleportResult;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-
-import com.onarandombox.MultiverseCore.enums.TeleportResult;
 
 /**
  * Used to safely teleport people.
@@ -38,6 +39,8 @@ public interface SafeTTeleporter extends Teleporter {
      */
     TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d);
 
+    TeleportResult safelyTeleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination);
+
     /**
      * Safely teleport the entity to the Location. This may perform checks to
      * see if the place is safe, and if
@@ -60,6 +63,8 @@ public interface SafeTTeleporter extends Teleporter {
      * @return A new location to spawn the entity at.
      */
     Location getSafeLocation(Entity e, MVDestination d);
+
+    Location getSafeLocation(Entity e, DestinationInstance destinationInstance);
 
     /**
      * Finds a portal-block next to the specified {@link Location}.
