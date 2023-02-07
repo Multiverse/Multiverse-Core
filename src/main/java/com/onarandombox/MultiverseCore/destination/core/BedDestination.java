@@ -25,16 +25,16 @@ public class BedDestination implements Destination<BedDestinationInstance> {
     }
 
     @Override
-    public @Nullable BedDestinationInstance getDestinationInstance(String destParams) {
-        Player player = PlayerFinder.get(destParams);
-        if (player == null && !destParams.equals(OWN_BED_STRING)) {
+    public @Nullable BedDestinationInstance getDestinationInstance(String destinationParams) {
+        Player player = PlayerFinder.get(destinationParams);
+        if (player == null && !destinationParams.equals(OWN_BED_STRING)) {
             return null;
         }
         return new BedDestinationInstance(player);
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         List<String> collect = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         collect.add(OWN_BED_STRING);
         return collect;

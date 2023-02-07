@@ -26,7 +26,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("No destination specified.");
         }
 
-        ParsedDestination<?> parsedDestination = plugin.getDestinationsManager().parseDestination(destination);
+        ParsedDestination<?> parsedDestination = plugin.getDestinationsProvider().parseDestination(destination);
         if (parsedDestination == null) {
             throw new InvalidCommandArgument("The destination " + destination + " is not valid.");
         }

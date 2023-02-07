@@ -25,8 +25,8 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
     }
 
     @Override
-    public @Nullable ExactDestinationInstance getDestinationInstance(String destParams) {
-        String[] items = destParams.split(":");
+    public @Nullable ExactDestinationInstance getDestinationInstance(String destinationParams) {
+        String[] items = destinationParams.split(":");
         if (items.length < 2) {
             return null;
         }
@@ -70,7 +70,7 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Collections.singleton("");
     }
 

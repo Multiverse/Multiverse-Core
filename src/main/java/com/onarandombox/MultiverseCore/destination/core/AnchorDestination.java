@@ -24,16 +24,16 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
 
     @Nullable
     @Override
-    public AnchorDestinationInstance getDestinationInstance(String destParams) {
-        Location anchorLocation = this.plugin.getAnchorManager().getAnchorLocation(destParams);
+    public AnchorDestinationInstance getDestinationInstance(String destinationParams) {
+        Location anchorLocation = this.plugin.getAnchorManager().getAnchorLocation(destinationParams);
         if (anchorLocation == null) {
             return null;
         }
-        return new AnchorDestinationInstance(destParams, anchorLocation);
+        return new AnchorDestinationInstance(destinationParams, anchorLocation);
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return this.plugin.getAnchorManager().getAnchors(issuer.getPlayer());
     }
 

@@ -18,14 +18,14 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DestinationsManager {
+public class DestinationsProvider {
     private static final String SEPARATOR = ":";
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
 
     private final MultiverseCore plugin;
     private final Map<String, Destination<?>> destinationMap;
 
-    public DestinationsManager(MultiverseCore plugin) {
+    public DestinationsProvider(MultiverseCore plugin) {
         this.plugin = plugin;
         this.destinationMap = new HashMap<>();
     }
@@ -52,27 +52,27 @@ public class DestinationsManager {
                 .collect(Collectors.toList());
     }
 
-    public ParsedDestination<?> parseDestination(String deststring) {
-        String[] items = deststring.split(SEPARATOR, 2);
+    public ParsedDestination<?> parseDestination(String destinationString) {
+        String[] items = destinationString.split(SEPARATOR, 2);
 
-        String idStr = items[0];
-        String destParams;
+        String idString = items[0];
+        String destinationParams;
         Destination<?> destination;
 
         if (items.length < 2) {
             // Assume world destination
             destination = this.getDestinationById("w");
-            destParams = items[0];
+            destinationParams = items[0];
         } else {
-            destination = this.getDestinationById(idStr);
-            destParams = items[1];
+            destination = this.getDestinationById(idString);
+            destinationParams = items[1];
         }
 
         if (destination == null) {
             return null;
         }
 
-        DestinationInstance destinationInstance = destination.getDestinationInstance(destParams);
+        DestinationInstance destinationInstance = destination.getDestinationInstance(destinationParams);
         if (destinationInstance == null) {
             return null;
         }

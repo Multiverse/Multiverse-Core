@@ -30,7 +30,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return Collections.emptyList();
         }
 
-        return this.plugin.getDestinationsManager()
+        return this.plugin.getDestinationsProvider()
                 .suggestDestinations((BukkitCommandIssuer)context.getIssuer(), context.getInput());
     }
 

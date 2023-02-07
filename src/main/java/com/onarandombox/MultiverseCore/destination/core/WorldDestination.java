@@ -25,8 +25,8 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
     }
 
     @Override
-    public @Nullable WorldDestinationInstance getDestinationInstance(String destParams) {
-        String[] items = destParams.split(":");
+    public @Nullable WorldDestinationInstance getDestinationInstance(String destinationParams) {
+        String[] items = destinationParams.split(":");
         if (items.length > 3) {
             return null;
         }
@@ -44,7 +44,7 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         // Autocomplete of worlds is done by MVCommandCompletion without prefix
         return Collections.emptyList();
     }

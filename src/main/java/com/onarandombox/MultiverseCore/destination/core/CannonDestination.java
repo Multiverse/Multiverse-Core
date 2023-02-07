@@ -25,8 +25,8 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
     }
 
     @Override
-    public @Nullable CannonDestinationInstance getDestinationInstance(String destParams) {
-        String[] params = destParams.split(":");
+    public @Nullable CannonDestinationInstance getDestinationInstance(String destinationParams) {
+        String[] params = destinationParams.split(":");
         if (params.length != 5) {
             return null;
         }
@@ -67,7 +67,7 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Collections.singleton("");
     }
 

@@ -35,6 +35,6 @@ public class CheckCommand extends MultiverseCommand {
     ) {
         issuer.sendMessage("Checking " + player + " to " + destination + "...");
         //TODO More detailed output on permissions required.
-        this.plugin.getDestinationsManager().checkTeleportPermissions(issuer, player, destination);
+        this.plugin.getDestinationsProvider().checkTeleportPermissions(issuer, player, destination);
     }
 }

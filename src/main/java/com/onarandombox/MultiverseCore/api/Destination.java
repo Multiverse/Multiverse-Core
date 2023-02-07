@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 public interface Destination<T extends DestinationInstance> {
     @NotNull String getIdentifier();
 
-    @Nullable T getDestinationInstance(String destParams);
+    @Nullable T getDestinationInstance(String destinationParams);
 
-    @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams);
+    @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams);
 
     boolean checkTeleportSafety();
 

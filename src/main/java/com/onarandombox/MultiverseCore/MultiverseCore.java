@@ -73,7 +73,7 @@ import com.onarandombox.MultiverseCore.destination.core.BedDestination;
 import com.onarandombox.MultiverseCore.destination.core.CannonDestination;
 import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
-import com.onarandombox.MultiverseCore.destination.DestinationsManager;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
@@ -226,7 +226,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private MVEconomist economist;
     private Buscript buscript;
     private int pluginCount;
-    private DestinationsManager destinationsManager;
+    private DestinationsProvider destinationsProvider;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -361,13 +361,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     private void initializeDestinationFactory() {
-        this.destinationsManager = new DestinationsManager(this);
-        this.destinationsManager.registerDestination(new AnchorDestination(this));
-        this.destinationsManager.registerDestination(new BedDestination());
-        this.destinationsManager.registerDestination(new CannonDestination(this));
-        this.destinationsManager.registerDestination(new ExactDestination(this));
-        this.destinationsManager.registerDestination(new PlayerDestination());
-        this.destinationsManager.registerDestination(new WorldDestination(this));
+        this.destinationsProvider = new DestinationsProvider(this);
+        this.destinationsProvider.registerDestination(new AnchorDestination(this));
+        this.destinationsProvider.registerDestination(new BedDestination());
+        this.destinationsProvider.registerDestination(new CannonDestination(this));
+        this.destinationsProvider.registerDestination(new ExactDestination(this));
+        this.destinationsProvider.registerDestination(new PlayerDestination());
+        this.destinationsProvider.registerDestination(new WorldDestination(this));
     }
 
     /**
@@ -932,8 +932,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public DestinationsManager getDestinationsManager() {
-        return this.destinationsManager;
+    public DestinationsProvider getDestinationsProvider() {
+        return this.destinationsProvider;
     }
 
     /**

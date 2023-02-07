@@ -37,11 +37,11 @@ public class TeleportCommand extends MultiverseCommand {
         issuer.sendMessage("Teleporting "
                 + (((BukkitCommandIssuer) issuer).getPlayer() == player ? "you" : player.getName())
                 + " to " + destination + "...");
-        this.plugin.getDestinationsManager().playerTeleport((BukkitCommandIssuer) issuer, player, destination);
+        this.plugin.getDestinationsProvider().playerTeleport((BukkitCommandIssuer) issuer, player, destination);
     }
 
     @Override
     public boolean hasPermission(CommandIssuer issuer) {
-        return this.plugin.getDestinationsManager().hasAnyTeleportPermission(issuer);
+        return this.plugin.getDestinationsProvider().hasAnyTeleportPermission(issuer);
     }
 }

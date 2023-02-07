@@ -19,8 +19,8 @@ public class PlayerDestination implements Destination<PlayerDestinationInstance>
     }
 
     @Override
-    public @Nullable PlayerDestinationInstance getDestinationInstance(String destParams) {
-        Player player = PlayerFinder.get(destParams);
+    public @Nullable PlayerDestinationInstance getDestinationInstance(String destinationParams) {
+        Player player = PlayerFinder.get(destinationParams);
         if (player == null) {
             return null;
         }
@@ -28,7 +28,7 @@ public class PlayerDestination implements Destination<PlayerDestinationInstance>
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
     }
 
