@@ -32,6 +32,6 @@ public class PlayerDestinationInstance implements DestinationInstance {
 
     @Override
     public @NotNull String serialise() {
-        return player.getUniqueId().toString();
+        return player.getName();
     }
 }

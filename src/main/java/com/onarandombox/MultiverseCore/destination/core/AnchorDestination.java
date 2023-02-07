@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import java.util.Collection;
-import java.util.Collections;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.Teleporter;
@@ -33,8 +33,8 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@Nullable String destParams) {
-        return Collections.emptyList();
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+        return this.plugin.getAnchorManager().getAnchors(issuer.getPlayer());
     }
 
     @Override

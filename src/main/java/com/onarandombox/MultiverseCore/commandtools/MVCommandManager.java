@@ -49,7 +49,7 @@ public class MVCommandManager extends PaperCommandManager {
     @Override
     public synchronized @NotNull CommandContexts<BukkitCommandExecutionContext> getCommandContexts() {
         if (this.contexts == null) {
-            this.contexts = new MVCommandContexts(this);
+            this.contexts = new MVCommandContexts(this, plugin);
         }
         return this.contexts;
     }
@@ -62,7 +62,7 @@ public class MVCommandManager extends PaperCommandManager {
     @Override
     public synchronized @NotNull CommandCompletions<BukkitCommandCompletionContext> getCommandCompletions() {
         if (this.completions == null) {
-            this.completions = new MVCommandCompletions(this);
+            this.completions = new MVCommandCompletions(this, plugin);
         }
         return this.completions;
     }

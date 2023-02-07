@@ -1,11 +1,13 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.Teleporter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +28,8 @@ public class PlayerDestination implements Destination<PlayerDestinationInstance>
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@Nullable String destParams) {
-        return Collections.emptyList();
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+        return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
     }
 
     @Override

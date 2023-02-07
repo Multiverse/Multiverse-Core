@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.destination.core;
 import java.util.Collection;
 import java.util.Collections;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -66,8 +67,8 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@Nullable String destParams) {
-        return Collections.emptyList();
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+        return Collections.singleton("");
     }
 
     @Override

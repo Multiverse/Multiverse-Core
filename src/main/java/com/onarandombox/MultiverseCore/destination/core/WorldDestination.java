@@ -1,8 +1,9 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -43,8 +44,10 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
     }
 
     @Override
-    public @NotNull Collection<String> suggestDestinations(@Nullable String destParams) {
-        return Collections.emptyList();
+    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
+        return this.plugin.getMVWorldManager().getMVWorlds().stream()
+                .map(MultiverseWorld::getName)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.destination;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
@@ -15,6 +15,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DestinationsManager {
     private static final String SEPARATOR = ":";
@@ -39,23 +41,31 @@ public class DestinationsManager {
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "other." + destination.getIdentifier()));
     }
 
-    public Collection<String> suggestDestinations(String deststring) {
-        //TODO
-        return Collections.emptyList();
+    public Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String deststring) {
+        return destinationMap.values().stream()
+                .map(destination -> destination.suggestDestinations(issuer, deststring).stream()
+                        .map(s -> destination.getIdentifier() + SEPARATOR + s)
+                        .collect(Collectors.toList()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public ParsedDestination<?> parseDestination(String deststring) {
-        //TODO Parse destination without ID, such as world and player name
-
         String[] items = deststring.split(SEPARATOR, 2);
-        if (items.length < 2) {
-            return null;
-        }
 
         String idStr = items[0];
-        String destParams = items[1];
+        String destParams;
+        Destination<?> destination;
 
-        Destination<?> destination = this.getDestinationById(idStr);
+        if (items.length < 2) {
+            // Assume world destination
+            destination = this.getDestinationById("w");
+            destParams = items[0];
+        } else {
+            destination = this.getDestinationById(idStr);
+            destParams = items[1];
+        }
+
         if (destination == null) {
             return null;
         }

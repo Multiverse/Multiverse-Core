@@ -39,17 +39,21 @@ public class PlayerFinder {
      * @return The player if found, else null.
      */
     @Nullable
-    public static Player get(@NotNull String playerIdentifier,
-                             @NotNull CommandSender sender) {
+    public static Player get(@Nullable String playerIdentifier, @NotNull CommandSender sender) {
+        if (playerIdentifier == null) {
+            return null;
+        }
 
         Player targetPlayer = getByName(playerIdentifier);
         if (targetPlayer != null) {
             return targetPlayer;
         }
+
         targetPlayer = getByUuid(playerIdentifier);
         if (targetPlayer != null) {
             return targetPlayer;
         }
+
         return getBySelector(playerIdentifier, sender);
     }
 

@@ -5,6 +5,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -18,27 +19,24 @@ public class TeleportCommand extends MultiverseCommand {
         super(plugin);
     }
 
-    @Subcommand("tp|teleport")
+    @Subcommand("teleport|tp")
     @Syntax("[player] <destination>")
-    @CommandCompletion("@players") //TODO
+    @CommandCompletion("@players|@mvworlds|@destinations @mvworlds|@destinations")
     @Description("Allows you to the teleport to a location on your server!")
-    public void doTeleportCommand(@NotNull CommandIssuer issuer,
+    public void onTeleportCommand(@NotNull CommandIssuer issuer,
 
+                                  @Flags("resolve=issueraware")
                                   @Syntax("[player]")
                                   @Description("Target player to teleport.")
                                   Player player,
 
                                   @Syntax("<destination>")
                                   @Description("Location, can be a world name.")
-                                  String destinationString
+                                  ParsedDestination<?> destination
     ) {
-        ParsedDestination<?> parsedDestination = this.plugin.getDestinationsManager().parseDestination(destinationString);
-        if (parsedDestination == null) {
-            issuer.sendMessage("Invalid destination: " + destinationString);
-            return;
-        }
-
-        issuer.sendMessage("Teleporting " + ((BukkitCommandIssuer) issuer).getPlayer() + " to " + parsedDestination + "...");
-        this.plugin.getDestinationsManager().playerTeleport((BukkitCommandIssuer) issuer, player, parsedDestination);
+        issuer.sendMessage("Teleporting "
+                + (((BukkitCommandIssuer) issuer).getPlayer() == player ? "you" : player.getName())
+                + " to " + destination + "...");
+        this.plugin.getDestinationsManager().playerTeleport((BukkitCommandIssuer) issuer, player, destination);
     }
 }
