@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
@@ -34,7 +35,9 @@ public class BedDestination implements Destination<BedDestinationInstance> {
 
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
-        return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        List<String> collect = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        collect.add(OWN_BED_STRING);
+        return collect;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -45,9 +45,8 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
 
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destParams) {
-        return this.plugin.getMVWorldManager().getMVWorlds().stream()
-                .map(MultiverseWorld::getName)
-                .collect(Collectors.toList());
+        // Autocomplete of worlds is done by MVCommandCompletion without prefix
+        return Collections.emptyList();
     }
 
     @Override

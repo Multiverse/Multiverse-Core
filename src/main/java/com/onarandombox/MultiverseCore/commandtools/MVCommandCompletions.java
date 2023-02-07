@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
@@ -25,6 +26,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
+        if (context.hasConfig("playeronly") && !context.getIssuer().isPlayer()) {
+            return Collections.emptyList();
+        }
+
         return this.plugin.getDestinationsManager()
                 .suggestDestinations((BukkitCommandIssuer)context.getIssuer(), context.getInput());
     }
@@ -35,6 +40,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestMVWorlds(BukkitCommandCompletionContext context) {
+        if (context.hasConfig("playeronly") && !context.getIssuer().isPlayer()) {
+            return Collections.emptyList();
+        }
+
         return this.plugin.getMVWorldManager().getMVWorlds()
                 .stream()
                 .map(MultiverseWorld::getName)

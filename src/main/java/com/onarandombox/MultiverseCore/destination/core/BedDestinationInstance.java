@@ -33,7 +33,7 @@ public class BedDestinationInstance implements DestinationInstance {
 
     @Override
     public @Nullable String getFinerPermissionSuffix() {
-        return null;
+        return player != null ? player.getName() : BedDestination.OWN_BED_STRING;
     }
 
     @Override
