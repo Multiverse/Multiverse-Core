@@ -1,6 +1,7 @@
-package com.onarandombox.MultiverseCore.destination;
+package com.onarandombox.MultiverseCore.destination.core;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
@@ -9,11 +10,11 @@ import com.onarandombox.MultiverseCore.api.Teleporter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class NewWorldDestination implements Destination<NewWorldDestinationInstance> {
+public class WorldDestination implements Destination<WorldDestinationInstance> {
 
     private final MultiverseCore plugin;
 
-    public NewWorldDestination(MultiverseCore plugin) {
+    public WorldDestination(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
@@ -23,7 +24,7 @@ public class NewWorldDestination implements Destination<NewWorldDestinationInsta
     }
 
     @Override
-    public @Nullable NewWorldDestinationInstance getDestinationInstance(String destParams) {
+    public @Nullable WorldDestinationInstance getDestinationInstance(String destParams) {
         String[] items = destParams.split(":");
         if (items.length > 3) {
             return null;
@@ -38,12 +39,12 @@ public class NewWorldDestination implements Destination<NewWorldDestinationInsta
         String direction = (items.length == 2) ? items[1] : null;
         float yaw = direction != null ? this.plugin.getLocationManipulation().getYaw(direction) : -1;
 
-        return new NewWorldDestinationInstance(world, direction, yaw);
+        return new WorldDestinationInstance(world, direction, yaw);
     }
 
     @Override
     public @NotNull Collection<String> suggestDestinations(@Nullable String destParams) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

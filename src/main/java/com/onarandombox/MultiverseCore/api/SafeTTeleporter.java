@@ -32,13 +32,11 @@ public interface SafeTTeleporter extends Teleporter {
      * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if
      * it's not, will adjust the final destination accordingly.
      *
-     * @param teleporter Person who performed the teleport command.
-     * @param teleportee Entity to teleport
-     * @param d          Destination to teleport them to
+     * @param teleporter    Person who performed the teleport command.
+     * @param teleportee    Entity to teleport
+     * @param destination   Destination to teleport them to
      * @return true for success, false for failure
      */
-    TeleportResult safelyTeleport(CommandSender teleporter, Entity teleportee, MVDestination d);
-
     TeleportResult safelyTeleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination);
 
     /**
@@ -58,13 +56,11 @@ public interface SafeTTeleporter extends Teleporter {
     /**
      * Returns a safe location for the entity to spawn at.
      *
-     * @param e The entity to spawn
-     * @param d The MVDestination to take the entity to.
+     * @param entity        The entity to spawn
+     * @param destination   The MVDestination to take the entity to.
      * @return A new location to spawn the entity at.
      */
-    Location getSafeLocation(Entity e, MVDestination d);
-
-    Location getSafeLocation(Entity e, DestinationInstance destinationInstance);
+    Location getSafeLocation(Entity entity, DestinationInstance destination);
 
     /**
      * Finds a portal-block next to the specified {@link Location}.

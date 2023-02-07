@@ -1,17 +1,17 @@
 package com.onarandombox.MultiverseCore.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Helper class to get {@link Player} from name, UUID or Selectors.
@@ -20,6 +20,16 @@ public class PlayerFinder {
 
     private static final Pattern UUID_REGEX = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     private static final Pattern COMMA_SPLIT = Pattern.compile(",");
+
+    /**
+     * Get a {@link Player} based on an identifier of name UUID or selector.
+     *
+     * @param playerIdentifier  An identifier of name UUID or selector.
+     * @return The player if found, else null.
+     */
+    public static Player get(@NotNull String playerIdentifier) {
+        return get(playerIdentifier, Bukkit.getConsoleSender());
+    }
 
     /**
      * Get a {@link Player} based on an identifier of name UUID or selector.

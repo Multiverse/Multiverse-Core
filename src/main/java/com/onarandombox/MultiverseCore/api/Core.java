@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.api;
 import buscript.Buscript;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
-import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.DestinationsManager;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
@@ -105,14 +104,6 @@ public interface Core {
      */
     @Deprecated
     CommandQueueManager getCommandQueueManager();
-
-    /**
-     * Gets the factory class responsible for loading many different destinations
-     * on demand.
-     *
-     * @return A valid {@link DestinationFactory}.
-     */
-    DestinationFactory getDestFactory();
 
     /**
      * Gets the manager class responsible for loading many different destinations

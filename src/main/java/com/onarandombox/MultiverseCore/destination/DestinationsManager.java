@@ -47,7 +47,7 @@ public class DestinationsManager {
     public ParsedDestination<?> parseDestination(String deststring) {
         //TODO Parse destination without ID, such as world and player name
 
-        String[] items = deststring.split(SEPARATOR);
+        String[] items = deststring.split(SEPARATOR, 2);
         if (items.length < 2) {
             return null;
         }
