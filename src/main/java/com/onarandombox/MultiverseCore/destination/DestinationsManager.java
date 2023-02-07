@@ -43,6 +43,8 @@ public class DestinationsManager {
 
     public Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String deststring) {
         return destinationMap.values().stream()
+                .filter(destination -> issuer.hasPermission(PERMISSION_PREFIX + "self." + destination.getIdentifier())
+                        || issuer.hasPermission(PERMISSION_PREFIX + "other." + destination.getIdentifier()))
                 .map(destination -> destination.suggestDestinations(issuer, deststring).stream()
                         .map(s -> destination.getIdentifier() + SEPARATOR + s)
                         .collect(Collectors.toList()))
@@ -119,5 +121,19 @@ public class DestinationsManager {
         }
 
         return true;
+    }
+
+    public boolean hasAnyTeleportPermission(CommandIssuer issuer) {
+        for (Destination<?> destination : this.destinationMap.values()) {
+            String permission = PERMISSION_PREFIX + "self." + destination.getIdentifier();
+            if (issuer.hasPermission(permission)) {
+                return true;
+            }
+            permission = PERMISSION_PREFIX + "other." + destination.getIdentifier();
+            if (issuer.hasPermission(permission)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
