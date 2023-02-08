@@ -768,15 +768,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Deprecated
-    public CommandQueueManager getCommandQueueManager() {
-        return commandQueueManager;
-    }
-
-    /**
      * Shows a message that the given world is not a MultiverseWorld.
      *
      * @param sender The {@link CommandSender} that should receive the message

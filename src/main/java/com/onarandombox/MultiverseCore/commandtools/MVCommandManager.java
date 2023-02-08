@@ -9,6 +9,7 @@ import co.aikar.commands.CommandContexts;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
+import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,6 +19,7 @@ public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
     private CommandFlagsManager flagsManager;
+    private CommandQueueManager commandQueueManager;
 
     public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
@@ -39,6 +41,18 @@ public class MVCommandManager extends PaperCommandManager {
             this.flagsManager = new CommandFlagsManager();
         }
         return flagsManager;
+    }
+
+    /**
+     * Manager for command that requires /mv confirm before execution.
+     *
+     * @return A non-null {@link CommandQueueManager}.
+     */
+    public synchronized @NotNull CommandQueueManager getCommandQueueManager() {
+        if (this.commandQueueManager == null) {
+            this.commandQueueManager = new CommandQueueManager(this.plugin);
+        }
+        return commandQueueManager;
     }
 
     /**
