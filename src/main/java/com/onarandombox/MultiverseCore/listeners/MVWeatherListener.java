@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.ThunderChangeEvent;
@@ -33,7 +33,7 @@ public class MVWeatherListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
             event.setCancelled((event.toWeatherState() && !world.isWeatherEnabled()));
@@ -49,7 +49,7 @@ public class MVWeatherListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld().getName());
         if (world != null) {
             // If it's going to start raining and we have weather disabled
             event.setCancelled((event.toThunderState() && !world.isWeatherEnabled()));

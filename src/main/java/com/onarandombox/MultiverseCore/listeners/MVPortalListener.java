@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.block.BlockState;
@@ -38,7 +38,7 @@ public class MVPortalListener implements Listener {
     public void portalForm(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s", event.getWorld().getName(), event.getReason());
 
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.", event.getWorld().getName());
             return;
@@ -94,7 +94,7 @@ public class MVPortalListener implements Listener {
             return;
         }
 
-        MultiverseWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
+        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
                     event.getPlayer().getWorld().getName());

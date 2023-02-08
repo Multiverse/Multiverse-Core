@@ -9,11 +9,12 @@ package com.onarandombox.MultiverseCore;
 
 import java.io.File;
 
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
+import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
+import com.onarandombox.MultiverseCore.world.WorldProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -124,11 +125,11 @@ public class TestWorldProperties {
         // ////////////////////////////////////////////////
         // let's set some world-properties
         // we can test the API with this, too :D
-        MVWorldManager worldManager = core.getMVWorldManager();
+        WorldManager worldManager = core.getMVWorldManager();
         assertNotNull(worldManager);
 
-        MultiverseWorld mvWorld = worldManager.getMVWorld("world");
-        MultiverseWorld netherWorld = worldManager.getMVWorld("world_nether");
+        MVWorld mvWorld = worldManager.getMVWorld("world");
+        MVWorld netherWorld = worldManager.getMVWorld("world_nether");
         assertNotNull(mvWorld);
         assertNotNull(netherWorld);
         assertSame(mvWorld, worldManager.getFirstSpawnWorld());
@@ -340,7 +341,7 @@ public class TestWorldProperties {
         assertEquals(new SpawnLocation(1, 1, 1), mvWorld.getSpawnLocation());
     }
 
-    public void createEvents(MultiverseWorld mvWorld) {
+    public void createEvents(MVWorld mvWorld) {
         final World world = mvWorld.getCBWorld();
         //// Weather events
         // weather change

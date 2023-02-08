@@ -8,8 +8,8 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
  */
 public class MVWorldListener implements Listener {
     private MultiverseCore plugin;
-    private MVWorldManager worldManager;
+    private WorldManager worldManager;
 
     public MVWorldListener(MultiverseCore plugin) {
         this.plugin = plugin;
@@ -56,7 +56,7 @@ public class MVWorldListener implements Listener {
             if (this.plugin.getMVWorldManager().getUnloadedWorlds().contains(world.getName())) {
                 this.plugin.getMVWorldManager().loadWorld(world.getName());
             }
-            MultiverseWorld mvWorld = plugin.getMVWorldManager().getMVWorld(world);
+            MVWorld mvWorld = plugin.getMVWorldManager().getMVWorld(world);
             if (mvWorld != null) {
                 // This is where we can temporarily fix those pesky property issues!
                 world.setPVP(mvWorld.isPVPEnabled());

@@ -8,7 +8,7 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.jetbrains.annotations.NotNull;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -46,7 +46,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
         return this.plugin.getMVWorldManager().getMVWorlds()
                 .stream()
-                .map(MultiverseWorld::getName)
+                .map(MVWorld::getName)
                 .collect(Collectors.toList());
     }
 }

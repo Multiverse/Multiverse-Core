@@ -9,10 +9,11 @@ package com.onarandombox.MultiverseCore.utils;
 
 import buscript.Buscript;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.world.SimpleWorldManager;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -217,7 +218,7 @@ public class TestInstanceCreator {
             buscriptfield.set(core, buscript);
 
             // Set worldManager
-            WorldManager wm = spy(new WorldManager(core));
+            SimpleWorldManager wm = spy(new SimpleWorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
             worldmanagerfield.setAccessible(true);
             worldmanagerfield.set(core, wm);
@@ -276,9 +277,9 @@ public class TestInstanceCreator {
     }
 
     public boolean tearDown() {
-        List<MultiverseWorld> worlds = new ArrayList<MultiverseWorld>(core.getMVWorldManager()
+        List<MVWorld> worlds = new ArrayList<MVWorld>(core.getMVWorldManager()
                 .getMVWorlds());
-        for (MultiverseWorld world : worlds) {
+        for (MVWorld world : worlds) {
             core.getMVWorldManager().deleteWorld(world.getName());
         }
 

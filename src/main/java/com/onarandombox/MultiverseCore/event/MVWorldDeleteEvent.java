@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.event;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -12,10 +12,10 @@ import org.bukkit.event.HandlerList;
 public class MVWorldDeleteEvent extends Event implements Cancellable {
     private boolean cancelled = false;
 
-    private final MultiverseWorld world;
+    private final MVWorld world;
     private final boolean removeFromConfig;
 
-    public MVWorldDeleteEvent(MultiverseWorld world, boolean removeFromConfig) {
+    public MVWorldDeleteEvent(MVWorld world, boolean removeFromConfig) {
         if (world == null)
             throw new IllegalArgumentException("world can't be null!");
 
@@ -60,9 +60,9 @@ public class MVWorldDeleteEvent extends Event implements Cancellable {
     /**
      * Gets the world that's about to be deleted.
      *
-     * @return That {@link MultiverseWorld}.
+     * @return That {@link MVWorld}.
      */
-    public MultiverseWorld getWorld() {
+    public MVWorld getWorld() {
         return world;
     }
 

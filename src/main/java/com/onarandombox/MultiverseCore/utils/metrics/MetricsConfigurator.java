@@ -6,8 +6,8 @@ import java.util.function.Consumer;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
@@ -30,11 +30,11 @@ public class MetricsConfigurator {
         this.metrics = new Metrics(plugin, PLUGIN_ID);
     }
 
-    private MVWorldManager getWorldManager() {
+    private WorldManager getWorldManager() {
         return plugin.getMVWorldManager();
     }
 
-    private Collection<MultiverseWorld> getMVWorlds() {
+    private Collection<MVWorld> getMVWorlds() {
         return getWorldManager().getMVWorlds();
     }
 
@@ -53,20 +53,20 @@ public class MetricsConfigurator {
 
     private void addCustomGeneratorsMetric() {
         addAdvancedPieMetric("custom_generators", map -> {
-            for (MultiverseWorld w : getMVWorlds()) {
+            for (MVWorld w : getMVWorlds()) {
                 MetricsHelper.incrementCount(map, getGeneratorName(w));
             }
         });
     }
 
-    private String getGeneratorName(MultiverseWorld world) {
+    private String getGeneratorName(MVWorld world) {
         String gen = world.getGenerator();
         return (gen != null && !gen.equalsIgnoreCase("null")) ? gen.split(":")[0] : NO_GENERATOR_NAME;
     }
 
     private void addEnvironmentsMetric() {
         addAdvancedPieMetric("environments", map -> {
-            for (MultiverseWorld w : getMVWorlds()) {
+            for (MVWorld w : getMVWorlds()) {
                 MetricsHelper.incrementCount(map, titleCaseEnv(w.getEnvironment()));
             }
         });

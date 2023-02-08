@@ -12,8 +12,8 @@ import java.util.List;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -27,7 +27,7 @@ import org.bukkit.permissions.PermissionDefault;
 public class MVPermissions {
 
     private MultiverseCore plugin;
-    private MVWorldManager worldMgr;
+    private WorldManager worldMgr;
 
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
@@ -39,10 +39,10 @@ public class MVPermissions {
      * Check if a Player can ignore GameMode restrictions for world they travel to.
      *
      * @param p The {@link Player} to check.
-     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @param w The {@link MVWorld} the player wants to teleport to.
      * @return True if they should bypass restrictions.
      */
-    public boolean canIgnoreGameModeRestriction(Player p, MultiverseWorld w) {
+    public boolean canIgnoreGameModeRestriction(Player p, MVWorld w) {
         return p.hasPermission("mv.bypass.gamemode." + w.getName());
     }
 
@@ -50,10 +50,10 @@ public class MVPermissions {
      * Check if a Player can teleport to the Destination world from there current world.
      *
      * @param p The {@link Player} to check.
-     * @param w The {@link MultiverseWorld} the player wants to teleport to.
-     * @return Whether the player can teleport to the given {@link MultiverseWorld}.
+     * @param w The {@link MVWorld} the player wants to teleport to.
+     * @return Whether the player can teleport to the given {@link MVWorld}.
      */
-    public boolean canTravelFromWorld(Player p, MultiverseWorld w) {
+    public boolean canTravelFromWorld(Player p, MVWorld w) {
         List<String> blackList = w.getWorldBlacklist();
 
         boolean returnValue = true;
@@ -93,10 +93,10 @@ public class MVPermissions {
      * Check if the Player has the permissions to enter this world.
      *
      * @param p The {@link Player} player that wants to enter
-     * @param w The {@link MultiverseWorld} he wants to enter
+     * @param w The {@link MVWorld} he wants to enter
      * @return Whether he has the permission to enter the world
      */
-    public boolean canEnterWorld(Player p, MultiverseWorld w) {
+    public boolean canEnterWorld(Player p, MVWorld w) {
         // If we're not enforcing access, anyone can enter.
         if (!plugin.getMVConfig().getEnforceAccess()) {
             Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());

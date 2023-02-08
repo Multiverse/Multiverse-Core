@@ -12,39 +12,39 @@ public interface WorldPurger {
     /**
      * Synchronizes the given worlds with their settings.
      *
-     * @param worlds A list of {@link MultiverseWorld}
+     * @param worlds A list of {@link MVWorld}
      */
-    void purgeWorlds(List<MultiverseWorld> worlds);
+    void purgeWorlds(List<MVWorld> worlds);
 
     /**
-     * Convenience method for {@link #purgeWorld(MultiverseWorld, java.util.List, boolean, boolean)} that takes the settings from the world-config.
+     * Convenience method for {@link #purgeWorld(MVWorld, java.util.List, boolean, boolean)} that takes the settings from the world-config.
      *
-     * @param world The {@link MultiverseWorld}.
+     * @param world The {@link MVWorld}.
      */
-    void purgeWorld(MultiverseWorld world);
+    void purgeWorld(MVWorld world);
 
     /**
      * Clear all animals/monsters that do not belong to a world according to the config.
      *
-     * @param mvworld The {@link MultiverseWorld}.
+     * @param mvworld The {@link MVWorld}.
      * @param thingsToKill A {@link List} of animals/monsters to be killed.
      * @param negateAnimals Whether the monsters in the list should be negated.
      * @param negateMonsters Whether the animals in the list should be negated.
      */
-    void purgeWorld(MultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals,
-            boolean negateMonsters);
+    void purgeWorld(MVWorld mvworld, List<String> thingsToKill, boolean negateAnimals,
+                    boolean negateMonsters);
 
     /**
      * Clear all animals/monsters that do not belong to a world according to the config.
      *
-     * @param mvworld The {@link MultiverseWorld}.
+     * @param mvworld The {@link MVWorld}.
      * @param thingsToKill A {@link List} of animals/monsters to be killed.
      * @param negateAnimals Whether the monsters in the list should be negated.
      * @param negateMonsters Whether the animals in the list should be negated.
      * @param sender The {@link CommandSender} that initiated the action. He will/should be notified.
      */
-    void purgeWorld(MultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals,
-            boolean negateMonsters, CommandSender sender);
+    void purgeWorld(MVWorld mvworld, List<String> thingsToKill, boolean negateAnimals,
+                    boolean negateMonsters, CommandSender sender);
 
     /**
      * Determines whether the specified creature should be killed.
@@ -64,5 +64,5 @@ public interface WorldPurger {
      * @param e The creature.
      * @return {@code true} if the creature should be killed, otherwise {@code false}.
      */
-    boolean shouldWeKillThisCreature(MultiverseWorld w, Entity e);
+    boolean shouldWeKillThisCreature(MVWorld w, Entity e);
 }

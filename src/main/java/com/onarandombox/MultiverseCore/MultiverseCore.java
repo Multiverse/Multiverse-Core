@@ -19,13 +19,13 @@ import java.util.Map;
 
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
-import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.api.MVPlugin;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVConfig;
+import com.onarandombox.MultiverseCore.api.MVCore;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.WorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
@@ -39,6 +39,7 @@ import com.onarandombox.MultiverseCore.destination.core.CannonDestination;
 import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
+import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -47,17 +48,16 @@ import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
-import com.onarandombox.MultiverseCore.utils.AnchorManager;
-import com.onarandombox.MultiverseCore.utils.MVEconomist;
+import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
+import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
+import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
-import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
-import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
-import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
-import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
+import com.onarandombox.MultiverseCore.world.SimpleWorldManager;
+import com.onarandombox.MultiverseCore.world.WorldProperties;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -69,9 +69,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
 /**
- * The implementation of the Multiverse-{@link Core}.
+ * The implementation of the Multiverse-{@link MVCore}.
  */
-public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
+public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 24;
 
     // Setup various managers
@@ -85,7 +85,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private final MVPermissions mvPermissions = new MVPermissions(this);
     private SafeTTeleporter safeTTeleporter = new SimpleSafeTTeleporter(this);
     private final UnsafeCallWrapper unsafeCallWrapper = new UnsafeCallWrapper(this);
-    private final MVWorldManager worldManager = new WorldManager(this);
+    private final WorldManager worldManager = new SimpleWorldManager(this);
 
     // Configurations
     private FileConfiguration multiverseConfig;
@@ -146,7 +146,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Now set the firstspawnworld (after the worlds are loaded):
         this.worldManager.setFirstSpawnWorld(getMVConfig().getFirstSpawnWorld());
-        MultiverseWorld firstSpawnWorld = this.worldManager.getFirstSpawnWorld();
+        MVWorld firstSpawnWorld = this.worldManager.getFirstSpawnWorld();
         if (firstSpawnWorld != null) {
             getMVConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
         }
@@ -361,7 +361,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public MVWorldManager getMVWorldManager() {
+    public WorldManager getMVWorldManager() {
         return this.worldManager;
     }
 
@@ -497,7 +497,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public MultiverseCoreConfig getMVConfig() {
+    public MVConfig getMVConfig() {
         return config;
     }
 

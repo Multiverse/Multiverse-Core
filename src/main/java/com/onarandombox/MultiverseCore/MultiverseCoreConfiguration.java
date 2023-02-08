@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.util.Map;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
+import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 /**
  * Our configuration.
  */
-public class MultiverseCoreConfiguration extends SerializationConfig implements MultiverseCoreConfig {
+public class MultiverseCoreConfiguration extends SerializationConfig implements MVConfig {
     private static MultiverseCoreConfiguration instance;
 
     /**
@@ -35,6 +35,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * Gets the statically saved instance.
      * @return The statically saved instance.
      */
+    @Deprecated
     public static MultiverseCoreConfiguration getInstance() {
         if (instance == null)
             throw new IllegalStateException("The instance wasn't set!");

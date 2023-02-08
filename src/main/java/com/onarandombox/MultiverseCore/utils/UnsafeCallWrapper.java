@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVCore;
 
 import java.util.concurrent.Callable;
 
@@ -9,9 +9,9 @@ import java.util.concurrent.Callable;
  * Wraps calls that could result in exceptions that are not Multiverse's fault.
  */
 public class UnsafeCallWrapper {
-    private final Core core;
+    private final MVCore core;
 
-    public UnsafeCallWrapper(Core core) {
+    public UnsafeCallWrapper(MVCore core) {
         this.core = core;
     }
 

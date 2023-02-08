@@ -2,7 +2,7 @@ package com.onarandombox.MultiverseCore.api;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
-import com.onarandombox.MultiverseCore.enums.TeleportResult;
+import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
 import org.bukkit.entity.Entity;
 
 public interface Teleporter {

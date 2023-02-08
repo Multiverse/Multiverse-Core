@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
@@ -249,7 +249,7 @@ public class TestWorldStuff {
 
         // Ensure that the default worlds have been created.
         assertEquals(3, creator.getCore().getMVWorldManager().getMVWorlds().size());
-        MultiverseWorld mainWorld = creator.getCore().getMVWorldManager().getMVWorld("world");
+        MVWorld mainWorld = creator.getCore().getMVWorldManager().getMVWorld("world");
 
         // Ensure that the default mode was normal.
         assertEquals(GameMode.SURVIVAL, mainWorld.getGameMode());
