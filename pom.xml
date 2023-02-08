@@ -311,7 +311,7 @@
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
+            <version>1.7.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- End of Economy Dependency -->
@@ -325,7 +325,7 @@
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
-            <version>2.4.1</version>
+            <version>2.4.8</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>

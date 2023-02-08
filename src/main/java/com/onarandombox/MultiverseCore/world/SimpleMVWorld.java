@@ -27,6 +27,7 @@ import com.onarandombox.MultiverseCore.world.configuration.WorldPropertyValidato
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.VirtualProperty;
+import net.minidev.json.JSONObject;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -41,7 +42,6 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
 
 /**
  * The implementation of a Multiverse handled world.
