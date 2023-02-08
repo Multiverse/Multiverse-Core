@@ -13,13 +13,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlayerDestination implements Destination<PlayerDestinationInstance> {
+    /**
+     * Creates a new instance of the PlayerDestination.
+     */
+    public PlayerDestination() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String getIdentifier() {
         return "pl";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public @Nullable PlayerDestinationInstance getDestinationInstance(String destinationParams) {
+    public @Nullable PlayerDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         Player player = PlayerFinder.get(destinationParams);
         if (player == null) {
             return null;
@@ -27,16 +39,25 @@ public class PlayerDestination implements Destination<PlayerDestinationInstance>
         return new PlayerDestinationInstance(player);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean checkTeleportSafety() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Teleporter getTeleporter() {
         return null;

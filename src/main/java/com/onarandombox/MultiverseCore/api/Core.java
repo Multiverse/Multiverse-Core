@@ -106,7 +106,7 @@ public interface Core {
     CommandQueueManager getCommandQueueManager();
 
     /**
-     * Gets the manager class responsible for loading many different destinations
+     * Gets the class responsible for loading many different destinations
      * on demand.
      *
      * @return A valid {@link DestinationsProvider}.

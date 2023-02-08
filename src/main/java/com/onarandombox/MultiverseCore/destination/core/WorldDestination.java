@@ -15,17 +15,28 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
 
     private final MultiverseCore plugin;
 
+    /**
+     * Constructor.
+     *
+     * @param plugin The MultiverseCore plugin.
+     */
     public WorldDestination(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String getIdentifier() {
         return "w";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public @Nullable WorldDestinationInstance getDestinationInstance(String destinationParams) {
+    public @Nullable WorldDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         String[] items = destinationParams.split(":");
         if (items.length > 3) {
             return null;
@@ -43,17 +54,26 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
         return new WorldDestinationInstance(world, direction, yaw);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         // Autocomplete of worlds is done by MVCommandCompletion without prefix
         return Collections.emptyList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean checkTeleportSafety() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Teleporter getTeleporter() {
         return null;

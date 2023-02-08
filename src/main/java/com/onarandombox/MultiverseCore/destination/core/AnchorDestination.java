@@ -13,18 +13,28 @@ import org.jetbrains.annotations.Nullable;
 public class AnchorDestination implements Destination<AnchorDestinationInstance> {
     private final MultiverseCore plugin;
 
+    /**
+     * Constructor.
+     *
+     * @param plugin The MultiverseCore plugin.
+     */
     public AnchorDestination(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String getIdentifier() {
         return "a";
     }
 
-    @Nullable
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public AnchorDestinationInstance getDestinationInstance(String destinationParams) {
+    public @Nullable AnchorDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         Location anchorLocation = this.plugin.getAnchorManager().getAnchorLocation(destinationParams);
         if (anchorLocation == null) {
             return null;
@@ -32,16 +42,25 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
         return new AnchorDestinationInstance(destinationParams, anchorLocation);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return this.plugin.getAnchorManager().getAnchors(issuer.getPlayer());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean checkTeleportSafety() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Teleporter getTeleporter() {
         return null;

@@ -13,12 +13,20 @@ public class WorldDestinationInstance implements DestinationInstance {
     private final String direction;
     private final float yaw;
 
+    /**
+     * Constructor.
+     *
+     * @param world The world to teleport to.
+     */
     public WorldDestinationInstance(@NotNull MultiverseWorld world, @Nullable String direction, float yaw) {
         this.world = world;
         this.direction = direction;
         this.yaw = yaw;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Location getLocation(@NotNull Entity teleportee) {
         Location worldLoc = world.getSpawnLocation();
@@ -29,16 +37,25 @@ public class WorldDestinationInstance implements DestinationInstance {
         return worldLoc;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Vector getVelocity(@NotNull Entity teleportee) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable String getFinerPermissionSuffix() {
         return world.getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String serialise() {
         if (this.direction != null) {

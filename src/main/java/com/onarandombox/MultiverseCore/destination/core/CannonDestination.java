@@ -15,17 +15,28 @@ import org.jetbrains.annotations.Nullable;
 public class CannonDestination implements Destination<CannonDestinationInstance> {
     private final MultiverseCore plugin;
 
+    /**
+     * Constructor.
+     *
+     * @param plugin The MultiverseCore plugin.
+     */
     public CannonDestination(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String getIdentifier() {
         return "ca";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public @Nullable CannonDestinationInstance getDestinationInstance(String destinationParams) {
+    public @Nullable CannonDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         String[] params = destinationParams.split(":");
         if (params.length != 5) {
             return null;
@@ -66,16 +77,25 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
         return new CannonDestinationInstance(location, dSpeed);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Collections.singleton("");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean checkTeleportSafety() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Teleporter getTeleporter() {
         return null;

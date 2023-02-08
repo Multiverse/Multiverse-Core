@@ -11,16 +11,28 @@ public class CannonDestinationInstance implements DestinationInstance {
     private final Location location;
     private final double speed;
 
+    /**
+     * Constructor.
+     *
+     * @param location The location to teleport to.
+     * @param speed The speed to fire the player at.
+     */
     public CannonDestinationInstance(@NotNull Location location, double speed) {
         this.location = location;
         this.speed = speed;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Location getLocation(@NotNull Entity teleportee) {
         return location;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Vector getVelocity(@NotNull Entity teleportee) {
         double pitchRadians = Math.toRadians(location.getPitch());
@@ -34,11 +46,17 @@ public class CannonDestinationInstance implements DestinationInstance {
         return new Vector(x, y, z);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable String getFinerPermissionSuffix() {
         return location.getWorld().getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String serialise() {
         return location.getWorld().getName() + ":" + location.getX() + "," + location.getY()

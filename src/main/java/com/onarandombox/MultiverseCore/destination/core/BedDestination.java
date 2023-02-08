@@ -19,13 +19,19 @@ public class BedDestination implements Destination<BedDestinationInstance> {
     public BedDestination() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String getIdentifier() {
         return "b";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public @Nullable BedDestinationInstance getDestinationInstance(String destinationParams) {
+    public @Nullable BedDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         Player player = PlayerFinder.get(destinationParams);
         if (player == null && !destinationParams.equals(OWN_BED_STRING)) {
             return null;
@@ -33,6 +39,9 @@ public class BedDestination implements Destination<BedDestinationInstance> {
         return new BedDestinationInstance(player);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         List<String> collect = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
@@ -40,11 +49,17 @@ public class BedDestination implements Destination<BedDestinationInstance> {
         return collect;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean checkTeleportSafety() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Teleporter getTeleporter() {
         return null;

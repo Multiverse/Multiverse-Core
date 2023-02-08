@@ -15,17 +15,28 @@ import org.jetbrains.annotations.Nullable;
 public class ExactDestination implements Destination<ExactDestinationInstance> {
     private final MultiverseCore plugin;
 
+    /**
+     * Constructor.
+     *
+     * @param plugin The MultiverseCore plugin.
+     */
     public ExactDestination(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String getIdentifier() {
         return "e";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public @Nullable ExactDestinationInstance getDestinationInstance(String destinationParams) {
+    public @Nullable ExactDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         String[] items = destinationParams.split(":");
         if (items.length < 2) {
             return null;
@@ -69,16 +80,25 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
         return new ExactDestinationInstance(location);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Collections.singleton("");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean checkTeleportSafety() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @Nullable Teleporter getTeleporter() {
         return null;
