@@ -1,10 +1,18 @@
 package com.onarandombox.MultiverseCore.api;
 
-import com.onarandombox.MultiverseCore.api.MVDestination;
+import co.aikar.commands.BukkitCommandIssuer;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.enums.TeleportResult;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 
 public interface Teleporter {
-    TeleportResult teleport(CommandSender teleporter, Player teleportee, MVDestination destination);
+    /**
+     * Teleport the entity to the Multiverse Destination.
+     *
+     * @param teleporter    Person who performed the teleport command.
+     * @param teleportee    Entity to teleport
+     * @param destination   Destination to teleport them to
+     * @return true for success, false for failure
+     */
+    TeleportResult teleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination);
 }

@@ -34,8 +34,8 @@ import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
+import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commandsold.AnchorCommand;
-import com.onarandombox.MultiverseCore.commandsold.CheckCommand;
 import com.onarandombox.MultiverseCore.commandsold.CloneCommand;
 import com.onarandombox.MultiverseCore.commandsold.ConfigCommand;
 import com.onarandombox.MultiverseCore.commandsold.ConfirmCommand;
@@ -63,19 +63,18 @@ import com.onarandombox.MultiverseCore.commandsold.ScriptCommand;
 import com.onarandombox.MultiverseCore.commandsold.SetSpawnCommand;
 import com.onarandombox.MultiverseCore.commandsold.SilentCommand;
 import com.onarandombox.MultiverseCore.commandsold.SpawnCommand;
-import com.onarandombox.MultiverseCore.commandsold.TeleportCommand;
 import com.onarandombox.MultiverseCore.commandsold.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandsold.VersionCommand;
 import com.onarandombox.MultiverseCore.commandsold.WhoCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
-import com.onarandombox.MultiverseCore.destination.AnchorDestination;
-import com.onarandombox.MultiverseCore.destination.BedDestination;
-import com.onarandombox.MultiverseCore.destination.CannonDestination;
-import com.onarandombox.MultiverseCore.destination.DestinationFactory;
-import com.onarandombox.MultiverseCore.destination.ExactDestination;
-import com.onarandombox.MultiverseCore.destination.PlayerDestination;
-import com.onarandombox.MultiverseCore.destination.WorldDestination;
+import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
+import com.onarandombox.MultiverseCore.destination.core.BedDestination;
+import com.onarandombox.MultiverseCore.destination.core.CannonDestination;
+import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
+import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
@@ -227,7 +226,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private MVEconomist economist;
     private Buscript buscript;
     private int pluginCount;
-    private DestinationFactory destFactory;
+    private DestinationsProvider destinationsProvider;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -362,14 +361,13 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     private void initializeDestinationFactory() {
-        this.destFactory = new DestinationFactory(this);
-        this.destFactory.registerDestinationType(WorldDestination.class, "");
-        this.destFactory.registerDestinationType(WorldDestination.class, "w");
-        this.destFactory.registerDestinationType(ExactDestination.class, "e");
-        this.destFactory.registerDestinationType(PlayerDestination.class, "pl");
-        this.destFactory.registerDestinationType(CannonDestination.class, "ca");
-        this.destFactory.registerDestinationType(BedDestination.class, "b");
-        this.destFactory.registerDestinationType(AnchorDestination.class, "a");
+        this.destinationsProvider = new DestinationsProvider(this);
+        this.destinationsProvider.registerDestination(new AnchorDestination(this));
+        this.destinationsProvider.registerDestination(new BedDestination());
+        this.destinationsProvider.registerDestination(new CannonDestination(this));
+        this.destinationsProvider.registerDestination(new ExactDestination(this));
+        this.destinationsProvider.registerDestination(new PlayerDestination());
+        this.destinationsProvider.registerDestination(new WorldDestination(this));
     }
 
     /**
@@ -748,7 +746,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new ReloadCommand(this));
         this.commandHandler.registerCommand(new SetSpawnCommand(this));
         this.commandHandler.registerCommand(new CoordCommand(this));
-        this.commandHandler.registerCommand(new TeleportCommand(this));
         this.commandHandler.registerCommand(new WhoCommand(this));
         this.commandHandler.registerCommand(new SpawnCommand(this));
         // Dangerous Commands
@@ -771,12 +768,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.commandHandler.registerCommand(new EnvironmentCommand(this));
         this.commandHandler.registerCommand(new SilentCommand(this));
         this.commandHandler.registerCommand(new GeneratorCommand(this));
-        this.commandHandler.registerCommand(new CheckCommand(this));
         this.commandHandler.registerCommand(new ScriptCommand(this));
         this.commandHandler.registerCommand(new GameruleCommand(this));
         this.commandHandler.registerCommand(new GamerulesCommand(this));
 
         //**NEW ACF COMMAND HANDLER**
+        this.commandManager.registerCommand(new TeleportCommand(this));
         this.commandManager.registerCommand(new DebugCommand(this));
         this.commandManager.registerCommand(new CreateCommand(this));
     }
@@ -935,8 +932,8 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public DestinationFactory getDestFactory() {
-        return this.destFactory;
+    public DestinationsProvider getDestinationsProvider() {
+        return this.destinationsProvider;
     }
 
     /**

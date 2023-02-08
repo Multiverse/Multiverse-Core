@@ -16,6 +16,7 @@ import org.bukkit.util.Vector;
  * A destination API for Multiverse
  * Any plugin can add these to MV and when they are, any action that uses them (portals, MVTP, etc.) can use them!
  */
+@Deprecated
 public interface MVDestination {
     /**
      * Returns the identifier or prefix that is required for this destination.

@@ -1,17 +1,17 @@
 package com.onarandombox.MultiverseCore.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Helper class to get {@link Player} from name, UUID or Selectors.
@@ -25,21 +25,35 @@ public class PlayerFinder {
      * Get a {@link Player} based on an identifier of name UUID or selector.
      *
      * @param playerIdentifier  An identifier of name UUID or selector.
+     * @return The player if found, else null.
+     */
+    public static Player get(@NotNull String playerIdentifier) {
+        return get(playerIdentifier, Bukkit.getConsoleSender());
+    }
+
+    /**
+     * Get a {@link Player} based on an identifier of name UUID or selector.
+     *
+     * @param playerIdentifier  An identifier of name UUID or selector.
      * @param sender            Target sender for selector.
      * @return The player if found, else null.
      */
     @Nullable
-    public static Player get(@NotNull String playerIdentifier,
-                             @NotNull CommandSender sender) {
+    public static Player get(@Nullable String playerIdentifier, @NotNull CommandSender sender) {
+        if (playerIdentifier == null) {
+            return null;
+        }
 
         Player targetPlayer = getByName(playerIdentifier);
         if (targetPlayer != null) {
             return targetPlayer;
         }
+
         targetPlayer = getByUuid(playerIdentifier);
         if (targetPlayer != null) {
             return targetPlayer;
         }
+
         return getBySelector(playerIdentifier, sender);
     }
 
