@@ -279,11 +279,11 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         }
         if (entity instanceof Player) {
             Player p = (Player) entity;
-            this.plugin.getMessaging().sendMessage(p, "No safe locations found!", false);
+            p.sendMessage("No safe locations found!");
             Logging.finer("No safe location found for " + p.getName());
         } else if (entity.getPassenger() instanceof Player) {
             Player p = (Player) entity.getPassenger();
-            this.plugin.getMessaging().sendMessage(p, "No safe locations found!", false);
+            p.sendMessage("No safe locations found!");
             Logging.finer("No safe location found for " + p.getName());
         }
         Logging.fine("Sorry champ, you're basically trying to teleport into a minefield. I should just kill you now.");

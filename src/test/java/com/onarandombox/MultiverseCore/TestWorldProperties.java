@@ -305,7 +305,7 @@ public class TestWorldProperties {
         /* ****************************************** *
          *           Test saving/loading
          * ****************************************** */
-        assertTrue(core.saveMVConfigs());
+        assertTrue(core.saveAllConfigs());
         // change a value here
         FileConfiguration config = YamlConfiguration.loadConfiguration(new File(core.getDataFolder(), "worlds.yml"));
         WorldProperties worldObj = (WorldProperties) config.get("worlds.world");

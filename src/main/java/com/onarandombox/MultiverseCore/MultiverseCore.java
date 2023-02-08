@@ -13,29 +13,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
-import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
-import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.core.BedDestination;
@@ -44,7 +40,6 @@ import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
-import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
@@ -56,25 +51,15 @@ import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
-import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
-import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
-import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.ChatColor;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -88,146 +73,55 @@ import org.bukkit.plugin.java.JavaPluginLoader;
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private static final int PROTOCOL = 24;
-    // TODO: Investigate if this one is really needed to be static.
-    // Doubt it. -- FernFerret
-    private static Map<String, String> teleportQueue = new HashMap<String, String>();
 
-    private AnchorManager anchorManager = new AnchorManager(this);
-    // TODO please let's make this non-static
+    // Setup various managers
+    private final AnchorManager anchorManager = new AnchorManager(this);
+    private BlockSafety blockSafety = new SimpleBlockSafety(this);
+    private Buscript buscript;
+    private MVCommandManager commandManager;
+    private DestinationsProvider destinationsProvider;
+    private MVEconomist economist;
+    private LocationManipulation locationManipulation = new SimpleLocationManipulation();
+    private final MVPermissions mvPermissions = new MVPermissions(this);
+    private SafeTTeleporter safeTTeleporter = new SimpleSafeTTeleporter(this);
+    private final UnsafeCallWrapper unsafeCallWrapper = new UnsafeCallWrapper(this);
+    private final MVWorldManager worldManager = new WorldManager(this);
+
+    // Configurations
+    private FileConfiguration multiverseConfig;
     private volatile MultiverseCoreConfiguration config;
 
+    // Listeners
+    private MVChatListener chatListener;
+    private final MVEntityListener entityListener = new MVEntityListener(this);
+    private final MVPlayerListener playerListener = new MVPlayerListener(this);
+    private final MVPortalListener portalListener = new MVPortalListener(this);
+    private final MVWeatherListener weatherListener = new MVWeatherListener(this);
+    private final MVWorldListener worldListener = new MVWorldListener(this);
+    private final MVWorldInitListener worldInitListener = new MVWorldInitListener(this);
+
+    // Counter for the number of plugins that have registered with us
+    private int pluginCount;
+
+    /**
+     * This is the constructor for the MultiverseCore.
+     */
     public MultiverseCore() {
         super();
     }
 
-    /**
-     * This is for unit testing.
-     * @param loader The PluginLoader to use.
-     * @param description The Description file to use.
-     * @param dataFolder The folder that other datafiles can be found in.
-     * @param file The location of the plugin.
-     */
-    public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
-    }
-
-    /**
-     * This method is used to find out who is teleporting a player.
-     * @param playerName The teleported player (the teleportee).
-     * @return The player that teleported the other one (the teleporter).
-     */
-    public static String getPlayerTeleporter(String playerName) {
-        if (teleportQueue.containsKey(playerName)) {
-            String teleportee = teleportQueue.get(playerName);
-            teleportQueue.remove(playerName);
-            return teleportee;
-        }
-        return null;
-    }
-
-    /**
-     * This method is used to add a teleportation to the teleportQueue.
-     *
-     * @param teleporter The name of the player that initiated the teleportation.
-     * @param teleportee The name of the player that was teleported.
-     */
-    public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
-        Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
-        teleportQueue.put(teleportee, teleporter);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated This is now deprecated, nobody needs it any longer.
-     * All version info-dumping is now done with {@link MVVersionEvent}.
-     */
-    @Override
-    @Deprecated
-    public String dumpVersionInfo(String buffer) {
-        return buffer;
-    }
-
-    @Override
-    public MultiverseCore getCore() {
-        return this;
-    }
-
-    @Override
-    public void setCore(MultiverseCore core) {
-        // This method is required by the interface (so core is effectively a plugin of itself) and therefore
-        // this is never used.
-    }
-
-    @Override
-    public int getProtocolVersion() {
-        return MultiverseCore.PROTOCOL;
-    }
-
-    // Setup our Map for our Commands using the CommandHandler.
-    private MVCommandManager commandManager;
-    private CommandQueueManager commandQueueManager;
-
-    private static final String LOG_TAG = "[Multiverse-Core]";
-
-    // Multiverse Permissions Handler
-    private MVPermissions ph;
-
-    // Configurations
-    private FileConfiguration multiverseConfig = null;
-
-    private final MVWorldManager worldManager = new WorldManager(this);
-
-    // Setup the block/player/entity listener.
-    private final MVPlayerListener playerListener = new MVPlayerListener(this);
-    private final MVEntityListener entityListener = new MVEntityListener(this);
-    private final MVWeatherListener weatherListener = new MVWeatherListener(this);
-    private final MVPortalListener portalListener = new MVPortalListener(this);
-    private final MVWorldListener worldListener = new MVWorldListener(this);
-    private MVChatListener chatListener;
-
-    // HashMap to contain information relating to the Players.
-    private HashMap<String, MVPlayerSession> playerSessions;
-    private MVEconomist economist;
-    private Buscript buscript;
-    private int pluginCount;
-    private DestinationsProvider destinationsProvider;
-    private MultiverseMessaging messaging;
-    private BlockSafety blockSafety;
-    private LocationManipulation locationManipulation;
-    private SafeTTeleporter safeTTeleporter;
-    private UnsafeCallWrapper unsafeCallWrapper;
-
-    private File serverFolder = new File(System.getProperty("user.dir"));
-
     @Override
     public void onLoad() {
-        // Register our config
-        SerializationConfig.registerAll(MultiverseCoreConfiguration.class);
-        // Register our world
-        SerializationConfig.registerAll(WorldProperties.class);
         // Create our DataFolder
         getDataFolder().mkdirs();
-        // Setup our Debug Log
+
+        // Setup our Logging
         Logging.init(this);
+
+        // Register our config classes
+        SerializationConfig.registerAll(MultiverseCoreConfiguration.class);
+        SerializationConfig.registerAll(WorldProperties.class);
         SerializationConfig.initLogging(Logging.getLogger());
-        // Setup our BlockSafety
-        this.blockSafety = new SimpleBlockSafety(this);
-        // Setup our LocationManipulation
-        this.locationManipulation = new SimpleLocationManipulation();
-        // Setup our SafeTTeleporter
-        this.safeTTeleporter = new SimpleSafeTTeleporter(this);
-        this.unsafeCallWrapper = new UnsafeCallWrapper(this);
-    }
-
-
-    @Override
-    @Deprecated
-    public VaultHandler getVaultHandler() {
-        return getEconomist().getVaultHandler();
-    }
-
-    public MVEconomist getEconomist() {
-        return economist;
     }
 
     /**
@@ -235,94 +129,81 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new MVWorldInitListener(this), this);
-
-        this.economist = new MVEconomist(this);
-        // Load the defaultWorldGenerators
-        this.worldManager.getDefaultWorldGenerators();
-
-        this.registerEvents();
-        // Setup Permissions, we'll do an initial check for the Permissions plugin then fall back on isOP().
-        this.ph = new MVPermissions(this);
-
-        // Setup the command manager
-        this.commandManager = new MVCommandManager(this);
-        this.commandQueueManager = new CommandQueueManager(this);
-        // Call the Function to assign all the Commands to their Class.
-        this.registerCommands();
-
-        // Initialize the Destination factor AFTER the commands
-        this.initializeDestinationFactory();
-
-        this.playerSessions = new HashMap<String, MVPlayerSession>();
-
-        // Start the Update Checker
-        // updateCheck = new UpdateChecker(this.getDescription().getName(), this.getDescription().getVersion());
-
-        // Call the Function to load all the Worlds and setup the HashMap
-        // When called with null, it tries to load ALL
-        // this function will be called every time a plugin registers a new envtype with MV
-        // Setup & Load our Configuration files.
-        loadConfigs();
-        if (this.multiverseConfig != null) {
-            Logging.setShowingConfig(!getMVConfig().getSilentStart());
-            this.worldManager.loadDefaultWorlds();
-            this.worldManager.loadWorlds(true);
-        } else {
-            Logging.severe("Your configs were not loaded. Very little will function in Multiverse.");
+        // Load our configs first as we need them for everything else.
+        this.loadConfigs();
+        if (this.multiverseConfig == null) {
+            Logging.severe("Your configs were not loaded.");
+            Logging.severe("Please check your configs and restart the server.");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
         }
-        this.anchorManager.loadAnchors();
+
+        Logging.setShowingConfig(!getMVConfig().getSilentStart());
+
+        this.worldManager.getDefaultWorldGenerators();
+        this.worldManager.loadDefaultWorlds();
+        this.worldManager.loadWorlds(true);
 
         // Now set the firstspawnworld (after the worlds are loaded):
         this.worldManager.setFirstSpawnWorld(getMVConfig().getFirstSpawnWorld());
-        try {
-            getMVConfig().setFirstSpawnWorld(this.worldManager.getFirstSpawnWorld().getName());
-        } catch (NullPointerException e) {
-            // A test that had no worlds loaded was being run. This should never happen in production
+        MultiverseWorld firstSpawnWorld = this.worldManager.getFirstSpawnWorld();
+        if (firstSpawnWorld != null) {
+            getMVConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
         }
-        this.saveMVConfig();
 
-        this.chatListener = new MVChatListener(this, this.playerListener);
-        getServer().getPluginManager().registerEvents(this.chatListener, this);
+        //Setup economy here so vault is loaded
+        this.economist = new MVEconomist(this);
 
-        this.initializeBuscript();
+        // Init all the other stuff
+        this.anchorManager.loadAnchors();
+        this.registerEvents();
+        this.registerCommands();
+        this.registerDestinations();
         this.setupMetrics();
-
-        // Output a little snippet to show it's enabled.
-        Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
-
-        if (getMVConfig().isShowingDonateMessage()) {
-            getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
-            getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
-        }
-    }
-
-    private void setupMetrics() {
-        if (TestingMode.isDisabled()) {
-            MetricsConfigurator.configureMetrics(this);
-        }
+        this.initializeBuscript();
+        this.saveMVConfig();
+        this.logEnableMessage();
     }
 
     /**
-     * Initializes the buscript javascript library.
+     * {@inheritDoc}
      */
-    private void initializeBuscript() {
-        buscript = null;
-
-        if (this.getMVConfig().getEnableBuscript()) {
-            try {
-                buscript = new Buscript(this);
-                // Add global variable "multiverse" to javascript environment
-                buscript.setScriptVariable("multiverse", this);
-            } catch (NullPointerException e) {
-                Logging.warning("Buscript failed to load! The script command will be disabled! " +
-                        "If you would like not to see this message, " +
-                        "use `/mv conf enablebuscript false` to disable Buscript from loading.");
-            }
-        }
+    @Override
+    public void onDisable() {
+        this.saveAllConfigs();
+        Logging.shutdown();
     }
 
-    private void initializeDestinationFactory() {
+    /**
+     * Function to Register all the Events needed.
+     */
+    private void registerEvents() {
+        PluginManager pluginManager = getServer().getPluginManager();
+        this.chatListener = new MVChatListener(this, this.playerListener);
+        pluginManager.registerEvents(this.chatListener, this);
+        pluginManager.registerEvents(this.entityListener, this);
+        pluginManager.registerEvents(this.playerListener, this);
+        pluginManager.registerEvents(this.portalListener, this);
+        pluginManager.registerEvents(this.weatherListener, this);
+        pluginManager.registerEvents(this.worldListener, this);
+        pluginManager.registerEvents(this.worldInitListener, this);
+    }
+
+    /**
+     * Register Multiverse-Core commands to Command Manager.
+     */
+    private void registerCommands() {
+        this.commandManager = new MVCommandManager(this);
+        this.commandManager.registerCommand(new CheckCommand(this));
+        this.commandManager.registerCommand(new CreateCommand(this));
+        this.commandManager.registerCommand(new DebugCommand(this));
+        this.commandManager.registerCommand(new TeleportCommand(this));
+    }
+
+    /**
+     * Register all the destinations.
+     */
+    private void registerDestinations() {
         this.destinationsProvider = new DestinationsProvider(this);
         this.destinationsProvider.registerDestination(new AnchorDestination(this));
         this.destinationsProvider.registerDestination(new BedDestination());
@@ -333,356 +214,42 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Function to Register all the Events needed.
+     * Setup bstats Metrics.
      */
-    private void registerEvents() {
-        PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(this.playerListener, this);
-        pm.registerEvents(this.entityListener, this);
-        pm.registerEvents(this.weatherListener, this);
-        pm.registerEvents(this.portalListener, this);
-        pm.registerEvents(this.worldListener, this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void loadConfigs() {
-        // Now grab the Configuration Files.
-        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        InputStream resourceURL = this.getClass().getResourceAsStream("/defaults/config.yml");
-
-        // Read in our default config with UTF-8 now
-        Configuration coreDefaults;
-        try {
-            coreDefaults = YamlConfiguration.loadConfiguration(new BufferedReader(new InputStreamReader(resourceURL, "UTF-8")));
-            this.multiverseConfig.setDefaults(coreDefaults);
-        } catch (UnsupportedEncodingException e) {
-            Logging.severe("Couldn't load default config with UTF-8 encoding. Details follow:");
-            e.printStackTrace();
-            Logging.severe("Default configs NOT loaded.");
-        }
-
-        this.multiverseConfig.options().copyDefaults(false);
-        this.multiverseConfig.options().copyHeader(true);
-
-        MultiverseCoreConfiguration wantedConfig = null;
-        try {
-            wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
-        } catch (Exception ignore) {
-        } finally {
-            config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
-        }
-        this.migrateWorldConfig();
-        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
-
-        this.messaging.setCooldown(getMVConfig().getMessageCooldown());
-
-        // Remove old values.
-        this.multiverseConfig.set("enforcegamemodes", null);
-        this.multiverseConfig.set("bedrespawn", null);
-        this.multiverseConfig.set("opfallback", null);
-
-        // Old Config Format
-        this.migrate22Values();
-        this.saveMVConfigs();
-
-        int level = Logging.getDebugLevel();
-        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
-        if (level != Logging.getDebugLevel()) {
-            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
+    private void setupMetrics() {
+        if (TestingMode.isDisabled()) {
+            MetricsConfigurator.configureMetrics(this);
         }
     }
 
     /**
-     * Thes are the MV config 2.0-2.2 values,
-     * they should be migrated to the new format.
+     * Initializes the buscript javascript library.
      */
-    private void migrate22Values() {
-        if (this.multiverseConfig.isSet("worldnameprefix")) {
-            Logging.config("Migrating 'worldnameprefix'...");
-            this.getMVConfig().setPrefixChat(this.multiverseConfig.getBoolean("worldnameprefix"));
-            this.multiverseConfig.set("worldnameprefix", null);
-        }
-        if (this.multiverseConfig.isSet("firstspawnworld")) {
-            Logging.config("Migrating 'firstspawnworld'...");
-            this.getMVConfig().setFirstSpawnWorld(this.multiverseConfig.getString("firstspawnworld"));
-            this.multiverseConfig.set("firstspawnworld", null);
-        }
-        if (this.multiverseConfig.isSet("enforceaccess")) {
-            Logging.config("Migrating 'enforceaccess'...");
-            this.getMVConfig().setEnforceAccess(this.multiverseConfig.getBoolean("enforceaccess"));
-            this.multiverseConfig.set("enforceaccess", null);
-        }
-        if (this.multiverseConfig.isSet("displaypermerrors")) {
-            Logging.config("Migrating 'displaypermerrors'...");
-            this.getMVConfig().setDisplayPermErrors(this.multiverseConfig.getBoolean("displaypermerrors"));
-            this.multiverseConfig.set("displaypermerrors", null);
-        }
-        if (this.multiverseConfig.isSet("teleportintercept")) {
-            Logging.config("Migrating 'teleportintercept'...");
-            this.getMVConfig().setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
-            this.multiverseConfig.set("teleportintercept", null);
-        }
-        if (this.multiverseConfig.isSet("firstspawnoverride")) {
-            Logging.config("Migrating 'firstspawnoverride'...");
-            this.getMVConfig().setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
-            this.multiverseConfig.set("firstspawnoverride", null);
-        }
-        if (this.multiverseConfig.isSet("messagecooldown")) {
-            Logging.config("Migrating 'messagecooldown'...");
-            this.getMVConfig().setMessageCooldown(this.multiverseConfig.getInt("messagecooldown"));
-            this.multiverseConfig.set("messagecooldown", null);
-        }
-        if (this.multiverseConfig.isSet("debug")) {
-            Logging.config("Migrating 'debug'...");
-            this.getMVConfig().setGlobalDebug(this.multiverseConfig.getInt("debug"));
-            this.multiverseConfig.set("debug", null);
-        }
-        if (this.multiverseConfig.isSet("version")) {
-            Logging.config("Migrating 'version'...");
-            this.multiverseConfig.set("version", null);
-        }
-    }
-
-    private static final char PATH_SEPARATOR = '\uF8FF';
-
-    /**
-     * Migrate the worlds.yml to SerializationConfig.
-     */
-    private void migrateWorldConfig() { // SUPPRESS CHECKSTYLE: MethodLength
-        FileConfiguration wconf = new YamlConfiguration();
-        wconf.options().pathSeparator(PATH_SEPARATOR);
-        File worldsFile = new File(getDataFolder(), "worlds.yml");
-        try {
-            wconf.load(worldsFile);
-        } catch (IOException e) {
-            Logging.warning("Cannot load worlds.yml");
-        } catch (InvalidConfigurationException e) {
-            Logging.warning("Your worlds.yml is invalid!");
-        }
-
-        if (!wconf.isConfigurationSection("worlds")) { // empty config
-            Logging.fine("No worlds to migrate!");
+    private void initializeBuscript() {
+        if (!this.getMVConfig().getEnableBuscript()) {
             return;
         }
 
-        Map<String, Object> values = wconf.getConfigurationSection("worlds").getValues(false);
-
-        boolean wasChanged = false;
-        Map<String, Object> newValues = new LinkedHashMap<String, Object>(values.size());
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
-            if (entry.getValue() instanceof WorldProperties) {
-                // fine
-                newValues.put(entry.getKey(), entry.getValue());
-            } else if (entry.getValue() instanceof ConfigurationSection) {
-                Logging.fine("Migrating: " + entry.getKey());
-                // we have to migrate this
-                WorldProperties world = new WorldProperties(Collections.emptyMap());
-                ConfigurationSection section = (ConfigurationSection) entry.getValue();
-
-                // migrate animals and monsters
-                if (section.isConfigurationSection("animals")) {
-                    ConfigurationSection animalSection = section.getConfigurationSection("animals");
-                    if (animalSection.contains("spawn")) {
-                        if (animalSection.isBoolean("spawn"))
-                            world.setAllowAnimalSpawn(animalSection.getBoolean("spawn"));
-                        else
-                            world.setAllowAnimalSpawn(Boolean.parseBoolean(animalSection.getString("spawn")));
-                    }
-                    if (animalSection.isList("exceptions")) {
-                        world.getAnimalList().clear();
-                        world.getAnimalList().addAll(animalSection.getStringList("exceptions"));
-                    }
-                }
-                if (section.isConfigurationSection("monsters")) {
-                    ConfigurationSection monsterSection = section.getConfigurationSection("monsters");
-                    if (monsterSection.contains("spawn")) {
-                        if (monsterSection.isBoolean("spawn"))
-                            world.setAllowMonsterSpawn(monsterSection.getBoolean("spawn"));
-                        else
-                            world.setAllowMonsterSpawn(Boolean.parseBoolean(monsterSection.getString("spawn")));
-                    }
-                    if (monsterSection.isList("exceptions")) {
-                        world.getMonsterList().clear();
-                        world.getMonsterList().addAll(monsterSection.getStringList("exceptions"));
-                    }
-                }
-
-                // migrate entryfee
-                if (section.isConfigurationSection("entryfee")) {
-                    ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
-                    if (feeSection.isInt("currency")) {
-                        world.setCurrency(MaterialConverter.convertConfigType(feeSection, "currency"));
-                    }
-
-                    if (feeSection.isDouble("amount"))
-                        world.setPrice(feeSection.getDouble("amount"));
-                    else if (feeSection.isInt("amount"))
-                        world.setPrice(feeSection.getInt("amount"));
-                }
-
-                // migrate pvp
-                if (section.isBoolean("pvp")) {
-                    world.setPVPMode(section.getBoolean("pvp"));
-                }
-
-                // migrate alias
-                if (section.isConfigurationSection("alias")) {
-                    ConfigurationSection aliasSection = section.getConfigurationSection("alias");
-                    if (aliasSection.isString("color"))
-                        world.setColor(aliasSection.getString("color"));
-                    if (aliasSection.isString("name"))
-                        world.setAlias(aliasSection.getString("name"));
-                }
-
-                // migrate worldblacklist
-                if (section.isList("worldblacklist")) {
-                    world.getWorldBlacklist().clear();
-                    world.getWorldBlacklist().addAll(section.getStringList("worldblacklist"));
-                }
-
-                // migrate scale
-                if (section.isDouble("scale")) {
-                    world.setScaling(section.getDouble("scale"));
-                }
-
-                // migrate gamemode
-                if (section.isString("gamemode")) {
-                    final GameMode gameMode = GameMode.valueOf(section.getString("gamemode").toUpperCase());
-                    if (gameMode != null) {
-                        world.setGameMode(gameMode);
-                    }
-                }
-
-                // migrate hunger
-                if (section.isBoolean("hunger")) {
-                    world.setHunger(section.getBoolean("hunger"));
-                }
-
-                // migrate hidden
-                if (section.isBoolean("hidden")) {
-                    world.setHidden(section.getBoolean("hidden"));
-                }
-
-                // migrate autoheal
-                if (section.isBoolean("autoheal")) {
-                    world.setAutoHeal(section.getBoolean("autoheal"));
-                }
-
-                // migrate portalform
-                if (section.isString("portalform")) {
-                    try {
-                        world.setProperty("portalform", section.getString("portalform"), true);
-                    } catch (NoSuchPropertyException e) {
-                        throw new RuntimeException("Who forgot to update the migrator?", e);
-                    }
-                }
-
-                // migrate environment
-                if (section.isString("environment")) {
-                    try {
-                        world.setProperty("environment", section.getString("environment"), true);
-                    } catch (NoSuchPropertyException e) {
-                        throw new RuntimeException("Who forgot to update the migrator?", e);
-                    }
-                }
-
-                // migrate generator
-                if (section.isString("generator")) {
-                    world.setGenerator(section.getString("generator"));
-                }
-
-                // migrate seed
-                if (section.isLong("seed")) {
-                    world.setSeed(section.getLong("seed"));
-                }
-
-                // migrate weather
-                if (section.isBoolean("allowweather")) {
-                    world.setEnableWeather(section.getBoolean("allowweather"));
-                }
-
-                // migrate adjustspawn
-                if (section.isBoolean("adjustspawn")) {
-                    world.setAdjustSpawn(section.getBoolean("adjustspawn"));
-                }
-
-                // migrate autoload
-                if (section.isBoolean("autoload")) {
-                    world.setAutoLoad(section.getBoolean("autoload"));
-                }
-
-                // migrate bedrespawn
-                if (section.isBoolean("bedrespawn")) {
-                    world.setBedRespawn(section.getBoolean("bedrespawn"));
-                }
-
-                // migrate spawn
-                if (section.isConfigurationSection("spawn")) {
-                    ConfigurationSection spawnSect = section.getConfigurationSection("spawn");
-                    Location spawnLoc = new NullLocation();
-                    if (spawnSect.isDouble("yaw"))
-                        spawnLoc.setYaw((float) spawnSect.getDouble("yaw"));
-                    if (spawnSect.isDouble("pitch"))
-                        spawnLoc.setPitch((float) spawnSect.getDouble("pitch"));
-                    if (spawnSect.isDouble("x"))
-                        spawnLoc.setX(spawnSect.getDouble("x"));
-                    if (spawnSect.isDouble("y"))
-                        spawnLoc.setY(spawnSect.getDouble("y"));
-                    if (spawnSect.isDouble("z"))
-                        spawnLoc.setZ(spawnSect.getDouble("z"));
-
-                    world.setSpawnLocation(spawnLoc);
-                }
-
-                // migrate difficulty
-                if (section.isString("difficulty")) {
-                    Difficulty difficulty;
-                    try {
-                        difficulty = Difficulty.valueOf(section.getString("difficulty").toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        Logging.warning("Could not parse difficulty: " + section.getString("difficulty"));
-                        Logging.warning("Setting world " + entry.getKey() + " difficulty to NORMAL");
-                        difficulty = Difficulty.NORMAL;
-                    }
-                    if (difficulty != null) {
-                        world.setDifficulty(difficulty);
-                    }
-                }
-
-                // migrate keepspawninmemory
-                if (section.isBoolean("keepspawninmemory")) {
-                    world.setKeepSpawnInMemory(section.getBoolean("keepspawninmemory"));
-                }
-
-                newValues.put(entry.getKey(), world);
-                wasChanged = true;
-            } else {
-                // huh?
-                Logging.warning("Removing unknown entry in the config: " + entry);
-                // just don't add to newValues
-                wasChanged = true;
-            }
+        try {
+            buscript = new Buscript(this);
+            // Add global variable "multiverse" to javascript environment
+            buscript.setScriptVariable("multiverse", this);
+        } catch (NullPointerException e) {
+            Logging.warning("Buscript failed to load! The script command will be disabled! " +
+                    "If you would like not to see this message, " +
+                    "use `/mv conf enablebuscript false` to disable Buscript from loading.");
         }
+    }
 
-        if (wasChanged) {
-            // clear config
-            wconf.set("worlds", null);
+    /**
+     * Logs the enable message.
+     */
+    private void logEnableMessage() {
+        Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
 
-            // and rebuild it
-            ConfigurationSection rootSection = wconf.createSection("worlds");
-            for (Map.Entry<String, Object> entry : newValues.entrySet()) {
-                rootSection.set(entry.getKey(), entry.getValue());
-            }
-
-            try {
-                wconf.save(new File(getDataFolder(), "worlds.yml"));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        if (getMVConfig().isShowingDonateMessage()) {
+            getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+            getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
     }
 
@@ -690,40 +257,32 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public MultiverseMessaging getMessaging() {
-        return this.messaging;
-    }
-
-    /**
-     * Register Multiverse-Core commands to Command Manager.
-     */
-    private void registerCommands() {
-        this.commandManager.registerCommand(new CheckCommand(this));
-        this.commandManager.registerCommand(new CreateCommand(this));
-        this.commandManager.registerCommand(new DebugCommand(this));
-        this.commandManager.registerCommand(new TeleportCommand(this));
+    public MultiverseCore getCore() {
+        return this;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDisable() {
-        this.saveMVConfigs();
-        Logging.shutdown();
+    public void setCore(MultiverseCore core) {
+        // This method is required by the interface (so core is effectively a plugin of itself) and therefore
+        // this is never used.
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MVPlayerSession getPlayerSession(Player player) {
-        if (this.playerSessions.containsKey(player.getName())) {
-            return this.playerSessions.get(player.getName());
-        } else {
-            this.playerSessions.put(player.getName(), new MVPlayerSession(player, getMVConfig()));
-            return this.playerSessions.get(player.getName());
-        }
+    public int getProtocolVersion() {
+        return MultiverseCore.PROTOCOL;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public MVEconomist getEconomist() {
+        return economist;
     }
 
     /**
@@ -731,7 +290,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public MVPermissions getMVPerms() {
-        return this.ph;
+        return this.mvPermissions;
     }
 
     /**
@@ -739,24 +298,23 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      */
     @Override
     public String getAuthors() {
-        String authors = "";
-        List<String> auths = this.getDescription().getAuthors();
-        if (auths.size() == 0) {
+        List<String> authorsList = this.getDescription().getAuthors();
+        if (authorsList.size() == 0) {
             return "";
         }
 
-        if (auths.size() == 1) {
-            return auths.get(0);
-        }
+        StringBuilder authors = new StringBuilder();
+        authors.append(authorsList.get(0));
 
-        for (int i = 0; i < auths.size(); i++) {
-            if (i == this.getDescription().getAuthors().size() - 1) {
-                authors += " and " + this.getDescription().getAuthors().get(i);
+        for (int i = 1; i < authorsList.size(); i++) {
+            if (i == authorsList.size() - 1) {
+                authors.append(" and ").append(authorsList.get(i));
             } else {
-                authors += ", " + this.getDescription().getAuthors().get(i);
+                authors.append(", ").append(authorsList.get(i));
             }
         }
-        return authors.substring(2);
+
+        return authors.toString();
     }
 
     /**
@@ -765,28 +323,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     @Override
     public MVCommandManager getCommandManager() {
         return this.commandManager;
-    }
-
-    /**
-     * Shows a message that the given world is not a MultiverseWorld.
-     *
-     * @param sender The {@link CommandSender} that should receive the message
-     * @param worldName The name of the invalid world
-     */
-    public void showNotMVWorldMessage(CommandSender sender, String worldName) {
-        sender.sendMessage("Multiverse doesn't know about " + ChatColor.DARK_AQUA + worldName + ChatColor.WHITE + " yet.");
-        sender.sendMessage("Type " + ChatColor.DARK_AQUA + "/mv import ?" + ChatColor.WHITE + " for help!");
-    }
-
-    /**
-     * Removes a player-session.
-     *
-     * @param player The {@link Player} that owned the session.
-     */
-    public void removePlayerSession(Player player) {
-        if (this.playerSessions.containsKey(player.getName())) {
-            this.playerSessions.remove(player.getName());
-        }
     }
 
     /**
@@ -822,44 +358,239 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * This is a convenience method to allow the QueuedCommand system to call it. You should NEVER call this directly.
-     *
-     * @param teleporter The Person requesting that the teleport should happen.
-     * @param p          Player The Person being teleported.
-     * @param l          The potentially unsafe location.
+     * {@inheritDoc}
      */
-    public void teleportPlayer(CommandSender teleporter, Player p, Location l) {
-        // This command is the override, and MUST NOT TELEPORT SAFELY
-        this.getSafeTTeleporter().safelyTeleport(teleporter, p, l, false);
+    @Override
+    public MVWorldManager getMVWorldManager() {
+        return this.worldManager;
     }
 
-    /**
-     * Gets the server's root-folder as {@link File}.
-     *
-     * @return The server's root-folder
-     */
-    public File getServerFolder() {
-        return serverFolder;
-    }
 
     /**
-     * Sets this server's root-folder.
-     *
-     * @param newServerFolder The new server-root
+     * {@inheritDoc}
      */
-    public void setServerFolder(File newServerFolder) {
-        if (!newServerFolder.isDirectory())
-            throw new IllegalArgumentException("That's not a folder!");
+    @Override
+    public void loadConfigs() {
+        // Now grab the Configuration Files.
+        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+        InputStream resourceURL = this.getClass().getResourceAsStream("/defaults/config.yml");
 
-        this.serverFolder = newServerFolder;
+        // Read in our default config with UTF-8 now
+        Configuration coreDefaults;
+        try {
+            coreDefaults = YamlConfiguration.loadConfiguration(new BufferedReader(new InputStreamReader(resourceURL, "UTF-8")));
+            this.multiverseConfig.setDefaults(coreDefaults);
+        } catch (UnsupportedEncodingException e) {
+            Logging.severe("Couldn't load default config with UTF-8 encoding. Details follow:");
+            e.printStackTrace();
+            Logging.severe("Default configs NOT loaded.");
+        }
+
+        this.multiverseConfig.options().copyDefaults(false);
+        this.multiverseConfig.options().copyHeader(true);
+
+        MultiverseCoreConfiguration wantedConfig = null;
+        try {
+            wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
+        } catch (Exception ignore) {
+        } finally {
+            config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
+        }
+        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
+
+        int level = Logging.getDebugLevel();
+        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+        if (level != Logging.getDebugLevel()) {
+            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MVWorldManager getMVWorldManager() {
-        return this.worldManager;
+    public boolean saveMVConfig() {
+        try {
+            this.multiverseConfig.set("multiverse-configuration", getMVConfig());
+            this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
+            return true;
+        } catch (IOException e) {
+            Logging.severe("Could not save Multiverse config.yml config. Please check your file permissions.");
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean saveAllConfigs() {
+        return this.saveMVConfig() && this.worldManager.saveWorldsConfig();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AnchorManager getAnchorManager() {
+        return this.anchorManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BlockSafety getBlockSafety() {
+        return blockSafety;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBlockSafety(BlockSafety blockSafety) {
+        if (blockSafety == null) {
+            throw new NullPointerException("block safety may not be null.");
+        }
+        this.blockSafety = blockSafety;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LocationManipulation getLocationManipulation() {
+        return locationManipulation;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setLocationManipulation(LocationManipulation locationManipulation) {
+        if (locationManipulation == null) {
+            throw new NullPointerException("location manipulation may not be null.");
+        }
+        this.locationManipulation = locationManipulation;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SafeTTeleporter getSafeTTeleporter() {
+        return safeTTeleporter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSafeTTeleporter(SafeTTeleporter safeTTeleporter) {
+        if (safeTTeleporter == null) {
+            throw new NullPointerException("safeTTeleporter may not be null.");
+        }
+        this.safeTTeleporter = safeTTeleporter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MultiverseCoreConfig getMVConfig() {
+        return config;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Buscript getScriptAPI() {
+        return buscript;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UnsafeCallWrapper getUnsafeCallWrapper() {
+        return this.unsafeCallWrapper;
+    }
+
+
+    //TODO - Extract MVPlayerSession to a separate class - END
+    private final HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MVPlayerSession getPlayerSession(Player player) {
+        if (this.playerSessions.containsKey(player.getName())) {
+            return this.playerSessions.get(player.getName());
+        } else {
+            this.playerSessions.put(player.getName(), new MVPlayerSession(player, getMVConfig()));
+            return this.playerSessions.get(player.getName());
+        }
+    }
+
+    /**
+     * Removes a player-session.
+     *
+     * @param player The {@link Player} that owned the session.
+     */
+    public void removePlayerSession(Player player) {
+        if (this.playerSessions.containsKey(player.getName())) {
+            this.playerSessions.remove(player.getName());
+        }
+    }
+    //TODO - Extract MVPlayerSession to a separate class - END
+
+
+    //TODO: REMOVE THIS STATIC CRAP - START
+    private static final Map<String, String> teleportQueue = new HashMap<String, String>();
+
+    /**
+     * This method is used to add a teleportation to the teleportQueue.
+     *
+     * @param teleporter The name of the player that initiated the teleportation.
+     * @param teleportee The name of the player that was teleported.
+     */
+    public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
+        Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
+        teleportQueue.put(teleportee, teleporter);
+    }
+
+    /**
+     * This method is used to find out who is teleporting a player.
+     * @param playerName The teleported player (the teleportee).
+     * @return The player that teleported the other one (the teleporter).
+     */
+    public static String getPlayerTeleporter(String playerName) {
+        if (teleportQueue.containsKey(playerName)) {
+            String teleportee = teleportQueue.get(playerName);
+            teleportQueue.remove(playerName);
+            return teleportee;
+        }
+        return null;
+    }
+    //TODO: REMOVE THIS STATIC CRAP - END
+
+
+    // For testing purposes only //
+
+    private File serverFolder = new File(System.getProperty("user.dir"));
+
+    /**
+     * This is for unit testing.
+     *
+     * @param loader The PluginLoader to use.
+     * @param description The Description file to use.
+     * @param dataFolder The folder that other datafiles can be found in.
+     * @param file The location of the plugin.
+     */
+    public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
     }
 
     /**
@@ -899,155 +630,23 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     /**
-     * Saves the Multiverse-Config.
+     * Gets the server's root-folder as {@link File}.
      *
-     * @return Whether the Multiverse-Config was successfully saved
+     * @return The server's root-folder
      */
-    public boolean saveMVConfig() {
-        try {
-            this.multiverseConfig.set("multiverse-configuration", getMVConfig());
-            this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
-            return true;
-        } catch (IOException e) {
-            Logging.severe("Could not save Multiverse config.yml config. Please check your file permissions.");
-            return false;
-        }
+    public File getServerFolder() {
+        return serverFolder;
     }
 
     /**
-     * Saves the world config.
+     * Sets this server's root-folder.
      *
-     * @return Whether the world-config was successfully saved
+     * @param newServerFolder The new server-root
      */
-    public boolean saveWorldConfig() {
-        return this.worldManager.saveWorldsConfig();
-    }
+    public void setServerFolder(File newServerFolder) {
+        if (!newServerFolder.isDirectory())
+            throw new IllegalArgumentException("That's not a folder!");
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean saveMVConfigs() {
-        return this.saveMVConfig() && this.saveWorldConfig();
-    }
-
-    /**
-     * NOT deprecated for the time as queued commands use this.
-     * However, this is not in the API and other plugins should therefore not use it.
-     *
-     * @param name World to delete
-     * @return True if success, false if fail.
-     */
-    public Boolean deleteWorld(String name) {
-        return this.worldManager.deleteWorld(name);
-    }
-
-    /**
-     * NOT deprecated for the time as queued commands use this.
-     * However, this is not in the API and other plugins should therefore not use it.
-     *
-     * @param oldName   World to copy
-     * @param newName   World to create
-     * @param generator The Custom generator plugin to use.
-     * @return True if success, false if fail.
-     */
-    public Boolean cloneWorld(String oldName, String newName, String generator) {
-        return this.worldManager.cloneWorld(oldName, newName);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated This is deprecated! Do not use!
-     */
-    @Override
-    @Deprecated
-    public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed) {
-        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed, false);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated This is deprecated! Do not use!
-     */
-    @Override
-    @Deprecated
-    public Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed, Boolean keepGameRules) {
-        return this.worldManager.regenWorld(name, useNewSeed, randomSeed, seed, keepGameRules);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public AnchorManager getAnchorManager() {
-        return this.anchorManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public BlockSafety getBlockSafety() {
-        return blockSafety;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setBlockSafety(BlockSafety bs) {
-        if (bs == null) {
-            throw new NullPointerException("block safety may not be null.");
-        }
-        this.blockSafety = bs;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public LocationManipulation getLocationManipulation() {
-        return locationManipulation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLocationManipulation(LocationManipulation locationManipulation) {
-        this.locationManipulation = locationManipulation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SafeTTeleporter getSafeTTeleporter() {
-        return safeTTeleporter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSafeTTeleporter(SafeTTeleporter safeTTeleporter) {
-        this.safeTTeleporter = safeTTeleporter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MultiverseCoreConfig getMVConfig() {
-        return config;
-    }
-
-    @Override
-    public Buscript getScriptAPI() {
-        return buscript;
-    }
-
-    public UnsafeCallWrapper getUnsafeCallWrapper() {
-        return this.unsafeCallWrapper;
+        this.serverFolder = newServerFolder;
     }
 }

@@ -40,7 +40,7 @@ public class DebugCommand extends MultiverseCommand {
                                      int level) {
 
         this.plugin.getMVConfig().setGlobalDebug(level);
-        this.plugin.saveMVConfigs();
+        this.plugin.saveAllConfigs();
         this.displayDebugMode(issuer);
     }
 

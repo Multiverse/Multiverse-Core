@@ -17,7 +17,7 @@ import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.VaultHandler;
+import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import org.bukkit.entity.Player;
 
 /**
@@ -26,17 +26,6 @@ import org.bukkit.entity.Player;
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
 public interface Core {
-
-    /**
-     * Returns the Vault handler used by Multiverse.  The returned object will have all methods necessary for
-     * interfacing with Vault.
-     *
-     * @return the Vault handler for Multiverse.
-     * @deprecated we are now using {@link #getEconomist()} for all economy needs.
-     */
-    @Deprecated
-    VaultHandler getVaultHandler();
-
     /**
      * Retrieves Multiverse's friendly economist. The economist can be used for dealing with economies without
      * worrying about any of the messy details.
@@ -52,12 +41,11 @@ public interface Core {
     void loadConfigs();
 
     /**
-     * Gets the Multiverse message system. This allows you to send messages
-     * to users at specified intervals.
+     * Gets the {@link UnsafeCallWrapper} class.
      *
-     * @return The loaded {@link MultiverseMessaging}.
+     * @return A non-null {@link UnsafeCallWrapper}.
      */
-    MultiverseMessaging getMessaging();
+    UnsafeCallWrapper getUnsafeCallWrapper();
 
     /**
      * Gets the {@link MVPlayerSession} for the given player.
@@ -102,11 +90,18 @@ public interface Core {
     MVWorldManager getMVWorldManager();
 
     /**
+     * Saves the Multiverse-Config.
+     *
+     * @return Whether the Multiverse-Config was successfully saved
+     */
+    boolean saveMVConfig();
+
+    /**
      * Saves all configs.
      *
      * @return Whether the config was successfully saved
      */
-    boolean saveMVConfigs();
+    boolean saveAllConfigs();
 
     /**
      * Gets the {@link AnchorManager}.
@@ -114,39 +109,6 @@ public interface Core {
      * @return The {@link AnchorManager}
      */
     AnchorManager getAnchorManager();
-
-    /**
-     * Previously used by queued commands to regenerate a world on a delay.
-     * Do not use api method for any other purpose.
-     *
-     * @param name          Name of the world to regenerate
-     * @param useNewSeed    If a new seed should be used
-     * @param randomSeed    If the new seed should be random
-     * @param seed          The seed of the world.
-     *
-     * @return True if success, false if fail.
-     *
-     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String, boolean)} instead.
-     */
-    @Deprecated
-    Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed);
-
-    /**
-     * Used by queued commands to regenerate a world on a delay.
-     * Do not use api method for any other purpose.
-     *
-     * @param name          Name of the world to regenerate
-     * @param useNewSeed    If a new seed should be used
-     * @param randomSeed    If the new seed should be random
-     * @param seed          The seed of the world.
-     * @param keepGameRules If GameRules should be kept on world regen.
-     *
-     * @return True if success, false if fail.
-     *
-     * @deprecated Use {@link MVWorldManager#regenWorld(String, boolean, boolean, String, boolean)} instead.
-     */
-    @Deprecated
-    Boolean regenWorld(String name, Boolean useNewSeed, Boolean randomSeed, String seed, Boolean keepGameRules);
 
     /**
      * Decrements the number of plugins that have specifically hooked into core.

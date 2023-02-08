@@ -82,11 +82,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
     protected abstract void onPluginEnable();
 
     @Override
-    public final String dumpVersionInfo(String buffer) {
-        throw new UnsupportedOperationException("This is gone.");
-    }
-
-    @Override
     public final MultiverseCore getCore() {
         if (this.core == null)
             throw new IllegalStateException("Core is null!");
