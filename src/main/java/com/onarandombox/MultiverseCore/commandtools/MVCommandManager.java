@@ -25,6 +25,9 @@ public class MVCommandManager extends PaperCommandManager {
         super(plugin);
         this.plugin = plugin;
 
+        // Setup conditions
+        MVCommandConditions.load(this, plugin);
+
         // Setup locale
         this.addSupportedLanguage(Locale.ENGLISH);
         this.locales.addMessageBundles("multiverse-core");

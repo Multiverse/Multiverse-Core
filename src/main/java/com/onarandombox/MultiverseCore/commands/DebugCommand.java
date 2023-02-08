@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class DebugCommand extends MultiverseCommand {
-
     public DebugCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
@@ -23,7 +22,7 @@ public class DebugCommand extends MultiverseCommand {
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @Description("{@@mv-core.debug_info_description}")
-    public void onShowDebugCommand(@NotNull CommandIssuer issuer) {
+    public void onShowDebugCommand(BukkitCommandIssuer issuer) {
         this.displayDebugMode(issuer);
     }
 
@@ -32,7 +31,7 @@ public class DebugCommand extends MultiverseCommand {
     @Syntax("<{@@mv-core.debug_change_syntax}>")
     @CommandCompletion("@range:3")
     @Description("{@@mv-core.debug_change_description}")
-    public void onChangeDebugCommand(@NotNull CommandIssuer issuer,
+    public void onChangeDebugCommand(BukkitCommandIssuer issuer,
 
                                      @Conditions("debuglevel")
                                      @Syntax("<{@@mv-core.debug_change_syntax}>")
@@ -44,7 +43,7 @@ public class DebugCommand extends MultiverseCommand {
         this.displayDebugMode(issuer);
     }
 
-    private void displayDebugMode(@NotNull CommandIssuer issuer) {
+    private void displayDebugMode(BukkitCommandIssuer issuer) {
         final int debugLevel = this.plugin.getMVConfig().getGlobalDebug();
         if (debugLevel == 0) {
             issuer.sendInfo(MVCorei18n.DEBUG_INFO_OFF);

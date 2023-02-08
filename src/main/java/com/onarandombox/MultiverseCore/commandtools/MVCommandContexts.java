@@ -1,10 +1,12 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.entity.Player;
@@ -16,6 +18,8 @@ public class MVCommandContexts extends PaperCommandContexts {
         super(mvCommandManager);
         this.plugin = plugin;
 
+        registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
+        registerContext(MVWorld.class, this::parseMVWorld);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
     }
@@ -32,6 +36,15 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return parsedDestination;
+    }
+
+    private MVWorld parseMVWorld(BukkitCommandExecutionContext context) {
+        String worldName = context.popFirstArg();
+        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+        if (world == null) {
+            throw new InvalidCommandArgument("World " + worldName + " is not a multiverse world.");
+        }
+        return world;
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {

@@ -25,12 +25,18 @@ import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.WorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.WorldManager;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
+import com.onarandombox.MultiverseCore.commands.CloneCommand;
+import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
+import com.onarandombox.MultiverseCore.commands.DeleteCommand;
+import com.onarandombox.MultiverseCore.commands.LoadCommand;
+import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
+import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
@@ -195,9 +201,15 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void registerCommands() {
         this.commandManager = new MVCommandManager(this);
         this.commandManager.registerCommand(new CheckCommand(this));
+        this.commandManager.registerCommand(new CloneCommand(this));
+        this.commandManager.registerCommand(new ConfirmCommand(this));
         this.commandManager.registerCommand(new CreateCommand(this));
         this.commandManager.registerCommand(new DebugCommand(this));
+        this.commandManager.registerCommand(new DeleteCommand(this));
+        this.commandManager.registerCommand(new LoadCommand(this));
+        this.commandManager.registerCommand(new RegenCommand(this));
         this.commandManager.registerCommand(new TeleportCommand(this));
+        this.commandManager.registerCommand(new UnloadCommand(this));
     }
 
     /**

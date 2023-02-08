@@ -7,20 +7,22 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
-import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandException;
@@ -29,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCommand {
-
     public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 
@@ -78,31 +79,49 @@ public class CreateCommand extends MultiverseCommand {
 
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
-    @CommandCompletion("WORLDNAME  @flags:groupName=mvcreate")
-    @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
-    @Description("") //TODO
-    public void onCreateCommand(CommandIssuer issuer,
+    @CommandCompletion("@empty  @flags:groupName=mvcreate")
+    @Syntax("<name> <env> --seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+    @Description("Creates a new world and loads it.")
+    public void onCreateCommand(BukkitCommandIssuer issuer,
 
+                                @Conditions("worldname:type=new")
                                 @Syntax("<name>")
-                                @Description("") //TODO
+                                @Description("New world name.")
                                 String worldName,
 
                                 @Syntax("<env>")
-                                @Description("") //TODO
+                                @Description("The world's environment. See: /mv env")
                                 World.Environment environment,
 
                                 @Optional
-                                @Syntax("[world-flags]")
-                                @Description("") //TODO
+                                @Syntax("--seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+                                @Description("Additional world settings. See http://gg.gg/nn8bl for all possible flags.")
                                 String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendMessage(worldName + " " + environment.toString());
-        issuer.sendMessage("--seed: " + parsedFlags.hasFlag("--seed") + " " + String.valueOf(parsedFlags.flagValue("--seed", String.class)));
-        issuer.sendMessage("--generator: " + parsedFlags.hasFlag("--generator") + " " + String.valueOf(parsedFlags.flagValue("--generator", String.class)));
-        issuer.sendMessage("--world-type: " + parsedFlags.hasFlag("--world-type") + " " + String.valueOf(parsedFlags.flagValue("--world-type", WorldType.class)));
-        issuer.sendMessage("--adjust-spawn: " + parsedFlags.hasFlag("--adjust-spawn") + " " + String.valueOf(parsedFlags.flagValue("--adjust-spawn", String.class)));
-        issuer.sendMessage("--no-structures: " + parsedFlags.hasFlag("--no-structures") + " " + String.valueOf(parsedFlags.flagValue("--no-structures", String.class)));
+        issuer.sendMessage("Creating world " + worldName + " with the following properties:");
+        issuer.sendMessage("Environment: " + environment.name());
+        issuer.sendMessage("Seed: " + parsedFlags.flagValue("--seed", "RANDOM", String.class));
+        issuer.sendMessage("World Type: " + parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class).name());
+        issuer.sendMessage("Adjust Spawn: " + parsedFlags.hasFlag("--adjust-spawn"));
+        issuer.sendMessage("Generator: " + parsedFlags.flagValue("--generator", String.class));
+        issuer.sendMessage("Structures: " + !parsedFlags.hasFlag("--no-structures"));
+
+        issuer.sendMessage(ChatColor.ITALIC + "Creating world...");
+
+        if (!worldManager.addWorld(
+                worldName,
+                environment,
+                parsedFlags.flagValue("--seed", String.class),
+                parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class),
+                parsedFlags.hasFlag("--adjust-spawn"),
+                parsedFlags.flagValue("--generator", String.class),
+                parsedFlags.hasFlag("--no-structures")
+        )) {
+            issuer.sendMessage("World creation failed! See console for details.");
+            return;
+        }
+        issuer.sendMessage("World " + worldName + " created successfully!");
     }
 }
