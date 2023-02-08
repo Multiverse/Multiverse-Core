@@ -54,7 +54,6 @@ import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.utils.AnchorManager;
 import com.onarandombox.MultiverseCore.utils.MVEconomist;
-import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.MaterialConverter;
@@ -238,7 +237,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new MVWorldInitListener(this), this);
 
-        this.messaging = new MVMessaging();
         this.economist = new MVEconomist(this);
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
