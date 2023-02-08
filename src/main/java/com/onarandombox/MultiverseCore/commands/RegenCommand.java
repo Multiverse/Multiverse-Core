@@ -40,8 +40,8 @@ public class RegenCommand extends MultiverseCommand {
 
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
-    @Syntax("<world> --seed [seed] --keep-gamerules")
     @CommandCompletion("@mvworlds:type=includeunloaded @flags:groupName=mvregen")
+    @Syntax("<world> --seed [seed] --keep-gamerules")
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(BukkitCommandIssuer issuer,
 
