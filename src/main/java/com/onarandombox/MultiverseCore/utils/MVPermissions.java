@@ -7,12 +7,13 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import java.util.List;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -20,13 +21,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.List;
-import java.util.logging.Level;
-
 /**
- * Multiverse's {@link PermissionsInterface}.
+ * Multiverse's permission checker
  */
-public class MVPermissions implements PermissionsInterface {
+public class MVPermissions {
 
     private MultiverseCore plugin;
     private MVWorldManager worldMgr;
@@ -234,7 +232,6 @@ public class MVPermissions implements PermissionsInterface {
      * @param isOpRequired deprecated This is not used for anything anymore.
      * @return True if they have that permission or any parent.
      */
-    @Override
     public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
         if (!(sender instanceof Player)) {
             return true;
@@ -312,17 +309,8 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
-     * Gets the type of this {@link PermissionsInterface}.
-     * @return The type of this {@link PermissionsInterface}.
-     */
-    public String getType() {
-        return "Bukkit Permissions (SuperPerms)";
-    }
-
-    /**
      * {@inheritDoc}
      */
-    @Override
     public boolean hasAnyPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
             if (this.hasPermission(sender, node, isOpRequired)) {
@@ -335,7 +323,6 @@ public class MVPermissions implements PermissionsInterface {
     /**
      * {@inheritDoc}
      */
-    @Override
     public boolean hasAllPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
             if (!this.hasPermission(sender, node, isOpRequired)) {

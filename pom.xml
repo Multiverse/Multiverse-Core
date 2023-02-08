@@ -229,10 +229,6 @@
                                     <shadedPattern>com.onarandombox.serializationconfig</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.onarandombox.commandhandler</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>buscript</pattern>
                                     <shadedPattern>com.onarandombox.buscript</shadedPattern>
                                 </relocation>
@@ -324,11 +320,6 @@
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.pneumaticraft.commandhandler</groupId>
-            <artifactId>CommandHandler</artifactId>
-            <version>11</version>
         </dependency>
         <!-- End of CommandHandler Dependency -->
         <dependency>

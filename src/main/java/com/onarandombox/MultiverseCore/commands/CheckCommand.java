@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class CheckCommand extends MultiverseCommand {
-    protected CheckCommand(@NotNull MultiverseCore plugin) {
+    public CheckCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
 

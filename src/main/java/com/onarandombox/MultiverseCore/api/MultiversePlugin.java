@@ -2,16 +2,10 @@ package com.onarandombox.MultiverseCore.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.pneumaticraft.commandhandler.CommandHandler;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Make things easier for MV-Plugins!
@@ -86,25 +80,6 @@ public abstract class MultiversePlugin extends JavaPlugin implements MVPlugin {
      * @see #onEnable()
      */
     protected abstract void onPluginEnable();
-
-    /**
-     * You can register commands here.
-     * @param handler The CommandHandler.
-     */
-    protected abstract void registerCommands(CommandHandler handler);
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!this.isEnabled()) {
-            sender.sendMessage("This plugin is Disabled!");
-            return true;
-        }
-
-        ArrayList<String> allArgs = new ArrayList<String>(args.length + 1);
-        allArgs.add(command.getName());
-        allArgs.addAll(Arrays.asList(args));
-        return this.getCore().getCommandHandler().locateAndRunCommand(sender, allArgs);
-    }
 
     @Override
     public final String dumpVersionInfo(String buffer) {

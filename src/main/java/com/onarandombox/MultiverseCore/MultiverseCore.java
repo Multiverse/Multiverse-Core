@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,48 +30,18 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
 import com.onarandombox.MultiverseCore.api.MultiverseMessaging;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.commands.CheckCommand;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commandsold.AnchorCommand;
-import com.onarandombox.MultiverseCore.commandsold.CloneCommand;
-import com.onarandombox.MultiverseCore.commandsold.ConfigCommand;
-import com.onarandombox.MultiverseCore.commandsold.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commandsold.CoordCommand;
-import com.onarandombox.MultiverseCore.commandsold.DeleteCommand;
-import com.onarandombox.MultiverseCore.commandsold.EnvironmentCommand;
-import com.onarandombox.MultiverseCore.commandsold.GameruleCommand;
-import com.onarandombox.MultiverseCore.commandsold.GamerulesCommand;
-import com.onarandombox.MultiverseCore.commandsold.GeneratorCommand;
-import com.onarandombox.MultiverseCore.commandsold.HelpCommand;
-import com.onarandombox.MultiverseCore.commandsold.ImportCommand;
-import com.onarandombox.MultiverseCore.commandsold.InfoCommand;
-import com.onarandombox.MultiverseCore.commandsold.ListCommand;
-import com.onarandombox.MultiverseCore.commandsold.LoadCommand;
-import com.onarandombox.MultiverseCore.commandsold.ModifyAddCommand;
-import com.onarandombox.MultiverseCore.commandsold.ModifyClearCommand;
-import com.onarandombox.MultiverseCore.commandsold.ModifyCommand;
-import com.onarandombox.MultiverseCore.commandsold.ModifyRemoveCommand;
-import com.onarandombox.MultiverseCore.commandsold.ModifySetCommand;
-import com.onarandombox.MultiverseCore.commandsold.PurgeCommand;
-import com.onarandombox.MultiverseCore.commandsold.RegenCommand;
-import com.onarandombox.MultiverseCore.commandsold.ReloadCommand;
-import com.onarandombox.MultiverseCore.commandsold.RemoveCommand;
-import com.onarandombox.MultiverseCore.commandsold.ScriptCommand;
-import com.onarandombox.MultiverseCore.commandsold.SetSpawnCommand;
-import com.onarandombox.MultiverseCore.commandsold.SilentCommand;
-import com.onarandombox.MultiverseCore.commandsold.SpawnCommand;
-import com.onarandombox.MultiverseCore.commandsold.UnloadCommand;
-import com.onarandombox.MultiverseCore.commandsold.VersionCommand;
-import com.onarandombox.MultiverseCore.commandsold.WhoCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.core.BedDestination;
 import com.onarandombox.MultiverseCore.destination.core.CannonDestination;
 import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
-import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
@@ -98,14 +66,12 @@ import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
 import com.onarandombox.MultiverseCore.utils.WorldManager;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
-import com.pneumaticraft.commandhandler.CommandHandler;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -199,7 +165,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     }
 
     // Setup our Map for our Commands using the CommandHandler.
-    private CommandHandler commandHandler;
     private MVCommandManager commandManager;
     private CommandQueueManager commandQueueManager;
 
@@ -283,7 +248,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         this.ph = new MVPermissions(this);
 
         // Setup the command manager
-        this.commandHandler = new CommandHandler(this, this.ph);
         this.commandManager = new MVCommandManager(this);
         this.commandQueueManager = new CommandQueueManager(this);
         // Call the Function to assign all the Commands to their Class.
@@ -736,46 +700,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        // Intro Commands
-        this.commandHandler.registerCommand(new HelpCommand(this));
-        this.commandHandler.registerCommand(new VersionCommand(this));
-        this.commandHandler.registerCommand(new ListCommand(this));
-        this.commandHandler.registerCommand(new InfoCommand(this));
-        this.commandHandler.registerCommand(new CloneCommand(this));
-        this.commandHandler.registerCommand(new ImportCommand(this));
-        this.commandHandler.registerCommand(new ReloadCommand(this));
-        this.commandHandler.registerCommand(new SetSpawnCommand(this));
-        this.commandHandler.registerCommand(new CoordCommand(this));
-        this.commandHandler.registerCommand(new WhoCommand(this));
-        this.commandHandler.registerCommand(new SpawnCommand(this));
-        // Dangerous Commands
-        this.commandHandler.registerCommand(new UnloadCommand(this));
-        this.commandHandler.registerCommand(new LoadCommand(this));
-        this.commandHandler.registerCommand(new RemoveCommand(this));
-        this.commandHandler.registerCommand(new DeleteCommand(this));
-        this.commandHandler.registerCommand(new RegenCommand(this));
-        this.commandHandler.registerCommand(new ConfirmCommand(this));
-        // Modification commands
-        this.commandHandler.registerCommand(new ModifyCommand(this));
-        this.commandHandler.registerCommand(new PurgeCommand(this));
-        this.commandHandler.registerCommand(new ModifyAddCommand(this));
-        this.commandHandler.registerCommand(new ModifySetCommand(this));
-        this.commandHandler.registerCommand(new ModifyRemoveCommand(this));
-        this.commandHandler.registerCommand(new ModifyClearCommand(this));
-        this.commandHandler.registerCommand(new ConfigCommand(this));
-        this.commandHandler.registerCommand(new AnchorCommand(this));
-        // Misc Commands
-        this.commandHandler.registerCommand(new EnvironmentCommand(this));
-        this.commandHandler.registerCommand(new SilentCommand(this));
-        this.commandHandler.registerCommand(new GeneratorCommand(this));
-        this.commandHandler.registerCommand(new ScriptCommand(this));
-        this.commandHandler.registerCommand(new GameruleCommand(this));
-        this.commandHandler.registerCommand(new GamerulesCommand(this));
-
-        //**NEW ACF COMMAND HANDLER**
-        this.commandManager.registerCommand(new TeleportCommand(this));
-        this.commandManager.registerCommand(new DebugCommand(this));
+        this.commandManager.registerCommand(new CheckCommand(this));
         this.commandManager.registerCommand(new CreateCommand(this));
+        this.commandManager.registerCommand(new DebugCommand(this));
+        this.commandManager.registerCommand(new TeleportCommand(this));
     }
 
     /**
@@ -812,30 +740,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
      * {@inheritDoc}
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (!this.isEnabled()) {
-            sender.sendMessage("This plugin is Disabled!");
-            return true;
-        }
-        ArrayList<String> allArgs = new ArrayList<String>(Arrays.asList(args));
-        allArgs.add(0, command.getName());
-        try {
-            return this.commandHandler.locateAndRunCommand(sender, allArgs, getMVConfig().getDisplayPermErrors());
-        } catch (Exception e) {
-            e.printStackTrace();
-            sender.sendMessage(ChatColor.RED + "An internal error occurred when attempting to perform this command.");
-            if (sender.isOp())
-                sender.sendMessage(ChatColor.RED + "Details were printed to the server console and logs, please add that to your bug report.");
-            else
-                sender.sendMessage(ChatColor.RED + "Try again and contact the server owner or an admin if this problem persists.");
-            return true;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getAuthors() {
         String authors = "";
         List<String> auths = this.getDescription().getAuthors();
@@ -855,14 +759,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             }
         }
         return authors.substring(2);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CommandHandler getCommandHandler() {
-        return this.commandHandler;
     }
 
     /**

@@ -19,7 +19,6 @@ import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.VaultHandler;
-import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.entity.Player;
 
 /**
@@ -79,14 +78,6 @@ public interface Core {
      * @return A non-null {@link MVPermissions}.
      */
     MVPermissions getMVPerms();
-
-    /**
-     * Multiverse uses {@link CommandHandler} to make adding and using commands
-     * a piece of cake.
-     *
-     * @return A non-null {@link CommandHandler}.
-     */
-    CommandHandler getCommandHandler();
 
     /**
      * Multiverse uses {@link MVCommandManager} to make adding and using commands
