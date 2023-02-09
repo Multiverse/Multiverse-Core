@@ -26,7 +26,7 @@ public class LoadCommand extends MultiverseCommand {
     public void onLoadCommand(BukkitCommandIssuer issuer,
 
                               @Single
-                              @Conditions("worldname:scope=unloaded")
+                              @Conditions("validWorldName:scope=unloaded")
                               @Syntax("<world>")
                               @Description("Name of world you want to load.")
                               String worldName

@@ -26,13 +26,13 @@ public class CloneCommand extends MultiverseCommand {
     @Description("Clones a world.")
     public void onCloneCommand(CommandIssuer issuer,
 
-                               @Conditions("worldname:scope=both")
+                               @Conditions("validWorldName:scope=both")
                                @Syntax("<world>")
                                @Description("The target world to clone.")
                                String worldName,
 
                                @Single
-                               @Conditions("worldname:scope=new")
+                               @Conditions("validWorldName:scope=new")
                                @Syntax("<new world name>")
                                @Description("The new cloned world name.")
                                String newWorldName

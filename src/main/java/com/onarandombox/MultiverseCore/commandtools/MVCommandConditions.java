@@ -24,12 +24,12 @@ public class MVCommandConditions {
         CommandConditions<BukkitCommandIssuer, BukkitCommandExecutionContext, BukkitConditionContext> conditions
                 = commandManager.getCommandConditions();
 
-        conditions.addCondition(String.class, "worldname", this::checkWorldName);
+        conditions.addCondition(String.class, "validWorldName", this::checkValidWorldName);
     }
 
-    private void checkWorldName(ConditionContext<BukkitCommandIssuer> context,
-                                BukkitCommandExecutionContext executionContext,
-                                String worldName
+    private void checkValidWorldName(ConditionContext<BukkitCommandIssuer> context,
+                                     BukkitCommandExecutionContext executionContext,
+                                     String worldName
     ) {
         String scope = context.getConfigValue("scope", "loaded");
 

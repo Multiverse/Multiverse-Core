@@ -28,7 +28,7 @@ public class DeleteCommand extends MultiverseCommand {
     public void onDeleteCommand(BukkitCommandIssuer issuer,
 
                                 @Single
-                                @Conditions("worldname:scope=both")
+                                @Conditions("validWorldName:scope=both")
                                 @Syntax("<world>")
                                 @Description("The world you want to delete.")
                                 String worldName

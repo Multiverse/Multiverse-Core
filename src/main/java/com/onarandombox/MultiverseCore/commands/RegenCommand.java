@@ -45,7 +45,7 @@ public class RegenCommand extends MultiverseCommand {
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(BukkitCommandIssuer issuer,
 
-                               @Conditions("worldname:scope=both")
+                               @Conditions("validWorldName:scope=both")
                                @Syntax("<world>")
                                @Description("World that you want to regen.")
                                String worldName,
