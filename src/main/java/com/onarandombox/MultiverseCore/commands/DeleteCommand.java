@@ -33,7 +33,7 @@ public class DeleteCommand extends MultiverseCommand {
                                 @Description("The world you want to delete.")
                                 String worldName
     ) {
-        this.plugin.getCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendMessage(String.format("Deleting world '%s'...", worldName));

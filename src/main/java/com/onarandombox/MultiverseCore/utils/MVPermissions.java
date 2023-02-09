@@ -12,7 +12,7 @@ import java.util.List;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -27,7 +27,7 @@ import org.bukkit.permissions.PermissionDefault;
 public class MVPermissions {
 
     private MultiverseCore plugin;
-    private WorldManager worldMgr;
+    private MVWorldManager worldMgr;
 
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;

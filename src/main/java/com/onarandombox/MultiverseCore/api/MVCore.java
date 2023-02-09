@@ -72,7 +72,7 @@ public interface MVCore extends MVPlugin {
      *
      * @return A non-null {@link MVCommandManager}.
      */
-    MVCommandManager getCommandManager();
+    MVCommandManager getMVCommandManager();
 
     /**
      * Gets the class responsible for loading many different destinations
@@ -85,9 +85,9 @@ public interface MVCore extends MVPlugin {
     /**
      * Gets the primary class responsible for managing Multiverse Worlds.
      *
-     * @return {@link WorldManager}.
+     * @return {@link MVWorldManager}.
      */
-    WorldManager getMVWorldManager();
+    MVWorldManager getMVWorldManager();
 
     /**
      * Saves the Multiverse-Config.

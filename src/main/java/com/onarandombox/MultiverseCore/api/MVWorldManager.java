@@ -24,7 +24,7 @@ import org.bukkit.generator.ChunkGenerator;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
-public interface WorldManager {
+public interface MVWorldManager {
     /**
      * Add a new World to the Multiverse Setup.
      *
@@ -224,7 +224,7 @@ public interface WorldManager {
     /**
      * Gets the {@link WorldPurger}.
      * <p>
-     * @return The {@link WorldPurger} this {@link WorldManager} is using.
+     * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
      * @see WorldPurger
      * @see SimpleWorldPurger
      */

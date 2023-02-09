@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
@@ -37,7 +37,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  */
 public class MVPlayerListener implements Listener {
     private final MultiverseCore plugin;
-    private final WorldManager worldManager;
+    private final MVWorldManager worldManager;
     private final PermissionTools pt;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();

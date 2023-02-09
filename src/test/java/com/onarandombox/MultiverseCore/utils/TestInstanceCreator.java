@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.world.SimpleWorldManager;
+import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -218,7 +218,7 @@ public class TestInstanceCreator {
             buscriptfield.set(core, buscript);
 
             // Set worldManager
-            SimpleWorldManager wm = spy(new SimpleWorldManager(core));
+            SimpleMVWorldManager wm = spy(new SimpleMVWorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
             worldmanagerfield.setAccessible(true);
             worldmanagerfield.set(core, wm);

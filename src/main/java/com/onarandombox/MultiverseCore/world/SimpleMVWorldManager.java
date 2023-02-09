@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
@@ -52,7 +52,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * Public facing API to add/remove Multiverse worlds.
  */
-public class SimpleWorldManager implements WorldManager {
+public class SimpleMVWorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
     private final WorldPurger worldPurger;
     private final Map<String, MVWorld> worlds;
@@ -61,7 +61,7 @@ public class SimpleWorldManager implements WorldManager {
     private Map<String, String> defaultGens;
     private String firstSpawn;
 
-    public SimpleWorldManager(MultiverseCore core) {
+    public SimpleMVWorldManager(MultiverseCore core) {
         this.plugin = core;
         this.worldsFromTheConfig = new HashMap<String, WorldProperties>();
         this.worlds = new ConcurrentHashMap<String, MVWorld>();
@@ -968,8 +968,8 @@ public class SimpleWorldManager implements WorldManager {
     }
 
     /**
-     * Gets the {@link FileConfiguration} that this {@link SimpleWorldManager} is using.
-     * @return The {@link FileConfiguration} that this {@link SimpleWorldManager} is using.
+     * Gets the {@link FileConfiguration} that this {@link SimpleMVWorldManager} is using.
+     * @return The {@link FileConfiguration} that this {@link SimpleMVWorldManager} is using.
      */
     public FileConfiguration getConfigWorlds() {
         return this.configWorlds;

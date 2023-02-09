@@ -57,7 +57,7 @@ public class RegenCommand extends MultiverseCommand {
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        this.plugin.getCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendMessage(String.format("Regenerating world '%s'...", worldName));

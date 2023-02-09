@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -28,7 +28,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
  */
 public class MVEntityListener implements Listener {
     private MultiverseCore plugin;
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;

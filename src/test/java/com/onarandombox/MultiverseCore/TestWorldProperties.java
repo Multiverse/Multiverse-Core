@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore;
 
 import java.io.File;
 
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
@@ -125,7 +125,7 @@ public class TestWorldProperties {
         // ////////////////////////////////////////////////
         // let's set some world-properties
         // we can test the API with this, too :D
-        WorldManager worldManager = core.getMVWorldManager();
+        MVWorldManager worldManager = core.getMVWorldManager();
         assertNotNull(worldManager);
 
         MVWorld mvWorld = worldManager.getMVWorld("world");

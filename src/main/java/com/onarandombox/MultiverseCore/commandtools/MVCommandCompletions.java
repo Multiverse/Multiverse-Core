@@ -10,13 +10,13 @@ import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.jetbrains.annotations.NotNull;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
     protected final MVCommandManager commandManager;
     private final MultiverseCore plugin;
-    private final WorldManager worldManager;
+    private final MVWorldManager worldManager;
 
     public MVCommandCompletions(MVCommandManager mvCommandManager, MultiverseCore plugin) {
         super(mvCommandManager);

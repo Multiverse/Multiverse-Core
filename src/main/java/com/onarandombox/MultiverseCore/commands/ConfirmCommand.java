@@ -18,6 +18,6 @@ public class ConfirmCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.confirm")
     @Description("Confirms dangerous commands before executing them.")
     public void onConfirmCommand(@NotNull BukkitCommandIssuer issuer) {
-        this.plugin.getCommandManager().getCommandQueueManager().runQueuedCommand(issuer.getIssuer());
+        this.plugin.getMVCommandManager().getCommandQueueManager().runQueuedCommand(issuer.getIssuer());
     }
 }

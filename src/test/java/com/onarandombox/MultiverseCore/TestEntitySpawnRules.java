@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
@@ -55,7 +55,7 @@ public class TestEntitySpawnRules {
         cbworld = MockWorldFactory.makeNewMockWorld("world", World.Environment.NORMAL, WorldType.NORMAL);
         when(mvWorld.getCBWorld()).thenReturn(cbworld);
 
-        WorldManager worldman = mock(WorldManager.class);
+        MVWorldManager worldman = mock(MVWorldManager.class);
         when(worldman.isMVWorld(anyString())).thenReturn(true);
         when(worldman.getMVWorld(anyString())).thenReturn(mvWorld);
         Field worldmanfield = MVEntityListener.class.getDeclaredField("worldManager");

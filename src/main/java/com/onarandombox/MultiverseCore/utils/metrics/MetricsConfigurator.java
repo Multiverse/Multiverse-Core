@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
@@ -30,7 +30,7 @@ public class MetricsConfigurator {
         this.metrics = new Metrics(plugin, PLUGIN_ID);
     }
 
-    private WorldManager getWorldManager() {
+    private MVWorldManager getWorldManager() {
         return plugin.getMVWorldManager();
     }
 

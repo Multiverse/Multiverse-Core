@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 
 import org.bukkit.ChatColor;
@@ -14,7 +14,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  */
 public class MVChatListener implements Listener {
     private final MultiverseCore plugin;
-    private final WorldManager worldManager;
+    private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
 
     public MVChatListener(MultiverseCore plugin, MVPlayerListener playerListener) {

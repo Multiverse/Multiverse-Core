@@ -8,7 +8,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -21,7 +21,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
  */
 public class MVWorldListener implements Listener {
     private MultiverseCore plugin;
-    private WorldManager worldManager;
+    private MVWorldManager worldManager;
 
     public MVWorldListener(MultiverseCore plugin) {
         this.plugin = plugin;

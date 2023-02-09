@@ -26,7 +26,7 @@ import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.api.WorldManager;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
 import com.onarandombox.MultiverseCore.commands.CloneCommand;
 import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
@@ -62,7 +62,7 @@ import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
-import com.onarandombox.MultiverseCore.world.SimpleWorldManager;
+import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.configuration.Configuration;
@@ -91,7 +91,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private final MVPermissions mvPermissions = new MVPermissions(this);
     private SafeTTeleporter safeTTeleporter = new SimpleSafeTTeleporter(this);
     private final UnsafeCallWrapper unsafeCallWrapper = new UnsafeCallWrapper(this);
-    private final WorldManager worldManager = new SimpleWorldManager(this);
+    private final MVWorldManager worldManager = new SimpleMVWorldManager(this);
 
     // Configurations
     private FileConfiguration multiverseConfig;
@@ -333,7 +333,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
-    public MVCommandManager getCommandManager() {
+    public MVCommandManager getMVCommandManager() {
         return this.commandManager;
     }
 
@@ -373,7 +373,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
-    public WorldManager getMVWorldManager() {
+    public MVWorldManager getMVWorldManager() {
         return this.worldManager;
     }
 
