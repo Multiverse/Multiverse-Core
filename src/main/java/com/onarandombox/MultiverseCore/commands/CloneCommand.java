@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,25 +21,25 @@ public class CloneCommand extends MultiverseCommand {
 
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
-    @Syntax("<world> <new world name>")
     @CommandCompletion("@mvworlds:scope=both @empty")
+    @Syntax("<world> <new world name>")
     @Description("Clones a world.")
     public void onCloneCommand(CommandIssuer issuer,
 
-                               @NotNull
+                               @Conditions("worldname:scope=both")
                                @Syntax("<world>")
                                @Description("The target world to clone.")
-                               MVWorld world,
+                               String worldName,
 
                                @Single
                                @Conditions("worldname:scope=new")
-                               @Syntax("<name>")
+                               @Syntax("<new world name>")
                                @Description("The new cloned world name.")
                                String newWorldName
     ) {
-        issuer.sendMessage(String.format("Cloning world '%s' to '%s'...", world.getName(), newWorldName));
+        issuer.sendMessage(String.format("Cloning world '%s' to '%s'...", worldName, newWorldName));
 
-        if (!this.plugin.getMVWorldManager().cloneWorld(world.getName(), newWorldName)) {
+        if (!this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName)) {
             issuer.sendMessage(String.format("%sWorld could not be cloned! See console for more details.", ChatColor.RED));
             return;
         }
