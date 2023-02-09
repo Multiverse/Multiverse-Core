@@ -28,7 +28,7 @@ public class PlayerFinder {
      * @param playerIdentifier  An identifier of name UUID or selector.
      * @return The player if found, else null.
      */
-    public static Player get(@NotNull String playerIdentifier) {
+    public static @Nullable Player get(@Nullable String playerIdentifier) {
         return get(playerIdentifier, Bukkit.getConsoleSender());
     }
 
@@ -39,8 +39,7 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return The player if found, else null.
      */
-    @Nullable
-    public static Player get(@Nullable String playerIdentifier, @NotNull CommandSender sender) {
+    public static @Nullable Player get(@Nullable String playerIdentifier, @NotNull CommandSender sender) {
         if (playerIdentifier == null) {
             return null;
         }
@@ -62,10 +61,22 @@ public class PlayerFinder {
      * Get multiple {@link Player} based on many identifiers of name UUID or selector.
      *
      * @param playerIdentifiers An identifier of multiple names, UUIDs or selectors, separated by comma.
+     * @return A list of all the {@link Player} found.
+     */
+    public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers) {
+        return getMulti(playerIdentifiers, Bukkit.getConsoleSender());
+    }
+
+    /**
+     * Get multiple {@link Player} based on many identifiers of name UUID or selector.
+     *
+     * @param playerIdentifiers An identifier of multiple names, UUIDs or selectors, separated by comma.
      * @param sender            Target sender for selector.
      * @return A list of all the {@link Player} found.
      */
-    public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers, @NotNull CommandSender sender) {
+    public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers,
+                                                 @NotNull CommandSender sender
+    ) {
         List<Player> playerResults = new ArrayList<>();
 
         if (playerIdentifiers == null || Strings.isNullOrEmpty(playerIdentifiers)) {
@@ -109,8 +120,7 @@ public class PlayerFinder {
      * @param playerUuid    UUID of a player.
      * @return The player if found, else null.
      */
-    @Nullable
-    public static Player getByUuid(@NotNull String playerUuid) {
+    public static @Nullable Player getByUuid(@NotNull String playerUuid) {
         if (!UUID_REGEX.matcher(playerUuid).matches()) {
             return null;
         }
@@ -129,8 +139,7 @@ public class PlayerFinder {
      * @param playerUuid    UUID of a player.
      * @return The player if found, else null.
      */
-    @Nullable
-    public static Player getByUuid(@NotNull UUID playerUuid) {
+    public static @Nullable Player getByUuid(@NotNull UUID playerUuid) {
         return Bukkit.getPlayer(playerUuid);
     }
 
@@ -142,10 +151,9 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return The player if only one found, else null.
      */
-    @Nullable
-    public static Player getBySelector(@NotNull String playerSelector,
-                                       @NotNull CommandSender sender) {
-
+    public static @Nullable Player getBySelector(@NotNull String playerSelector,
+                                                 @NotNull CommandSender sender
+    ) {
         List<Player> matchedPlayers = getMultiBySelector(playerSelector, sender);
         if (matchedPlayers == null || matchedPlayers.isEmpty()) {
             Logging.fine("No player found with selector '%s' for %s.", playerSelector, sender.getName());
@@ -167,10 +175,9 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return A list of all the {@link Player} found.
      */
-    @Nullable
-    public static List<Player> getMultiBySelector(@NotNull String playerSelector,
-                                                  @NotNull CommandSender sender) {
-
+    public static @Nullable List<Player> getMultiBySelector(@NotNull String playerSelector,
+                                                            @NotNull CommandSender sender
+    ) {
         if (playerSelector.charAt(0) != '@') {
             return null;
         }
