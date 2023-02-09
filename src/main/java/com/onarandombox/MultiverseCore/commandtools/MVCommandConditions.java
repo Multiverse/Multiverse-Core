@@ -57,7 +57,7 @@ public class MVCommandConditions {
                 break;
             // World that are does not exist
             case "new":
-                if (this.plugin.getMVWorldManager().isMVWorld(worldName)) {
+                if (this.plugin.getMVWorldManager().hasUnloadedWorld(worldName, true)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' already exists!");
                 }
                 switch (WorldNameChecker.checkName(worldName)) {
