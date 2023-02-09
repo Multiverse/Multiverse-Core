@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.base.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -64,16 +65,14 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return A list of all the {@link Player} found.
      */
-    @Nullable
-    public static List<Player> getMulti(@NotNull String playerIdentifiers,
-                                        @NotNull CommandSender sender) {
+    public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers, @NotNull CommandSender sender) {
+        List<Player> playerResults = new ArrayList<>();
 
-        String[] playerIdentifierArray = COMMA_SPLIT.split(playerIdentifiers);
-        if (playerIdentifierArray == null || playerIdentifierArray.length == 0) {
-            return null;
+        if (playerIdentifiers == null || Strings.isNullOrEmpty(playerIdentifiers)) {
+            return playerResults;
         }
 
-        List<Player> playerResults = new ArrayList<>();
+        String[] playerIdentifierArray = COMMA_SPLIT.split(playerIdentifiers);
         for (String playerIdentifier : playerIdentifierArray) {
             Player targetPlayer = getByName(playerIdentifier);
             if (targetPlayer != null) {

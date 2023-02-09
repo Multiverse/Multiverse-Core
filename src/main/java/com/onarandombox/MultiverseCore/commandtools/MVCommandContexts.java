@@ -22,6 +22,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(MVWorld.class, this::parseMVWorld);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
+        registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
 
     private ParsedDestination<?> parseDestination(BukkitCommandExecutionContext context) {
@@ -84,6 +85,51 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (player != null) {
             context.popFirstArg();
             return player;
+        }
+        if (!context.isOptional()) {
+            return null;
+        }
+        throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
+    }
+
+
+    private Player[] parsePlayerArray(BukkitCommandExecutionContext context) {
+        String resolve = context.getFlagValue("resolve", "");
+
+        // Get player based on sender only
+        if (resolve.equals("issuerOnly")) {
+            if (context.getIssuer().isPlayer()) {
+                return new Player[]{context.getIssuer().getPlayer()};
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("This command can only be used by a player.");
+        }
+
+        String playerIdentifier = context.getFirstArg();
+        Player[] players = PlayerFinder.getMulti(playerIdentifier, context.getSender()).toArray(new Player[0]);
+
+        // Get player based on input, fallback to sender if input is not a player
+        if (resolve.equals("issuerAware")) {
+            if (players.length > 0) {
+                context.popFirstArg();
+                return players;
+            }
+            if (context.getIssuer().isPlayer()) {
+                return new Player[]{context.getIssuer().getPlayer()};
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Invalid player: " + playerIdentifier
+                    + ". Either specify an online player or use this command as a player.");
+        }
+
+        // Get player based on input only
+        if (players.length > 0) {
+            context.popFirstArg();
+            return players;
         }
         if (!context.isOptional()) {
             return null;

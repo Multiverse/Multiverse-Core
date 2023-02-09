@@ -27,16 +27,19 @@ public class TeleportCommand extends MultiverseCommand {
                                   @Flags("resolve=issuerAware")
                                   @Syntax("[player]")
                                   @Description("Target player to teleport.")
-                                  Player player,
+                                  Player[] players,
 
                                   @Syntax("<destination>")
                                   @Description("Location, can be a world name.")
                                   ParsedDestination<?> destination
     ) {
-        issuer.sendMessage("Teleporting "
-                + (issuer.getPlayer() == player ? "you" : player.getName())
-                + " to " + destination + "...");
-        this.plugin.getDestinationsProvider().playerTeleport(issuer, player, destination);
+        // TODO Add warning if teleporting too many players at once.
+        for (Player player : players) {
+            issuer.sendMessage("Teleporting "
+                    + (issuer.getPlayer() == player ? "you" : player.getName())
+                    + " to " + destination + "...");
+            this.plugin.getDestinationsProvider().playerTeleport(issuer, player, destination);
+        }
     }
 
     @Override
