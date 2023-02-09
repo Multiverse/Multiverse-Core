@@ -11,7 +11,6 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class TeleportCommand extends MultiverseCommand {
@@ -20,12 +19,12 @@ public class TeleportCommand extends MultiverseCommand {
     }
 
     @Subcommand("teleport|tp")
+    @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
-    @CommandCompletion("@players|@mvworlds:playeronly|@destinations:playeronly @mvworlds|@destinations")
     @Description("Allows you to the teleport to a location on your server!")
-    public void onTeleportCommand(@NotNull CommandIssuer issuer,
+    public void onTeleportCommand(BukkitCommandIssuer issuer,
 
-                                  @Flags("resolve=issueraware")
+                                  @Flags("resolve=issuerAware")
                                   @Syntax("[player]")
                                   @Description("Target player to teleport.")
                                   Player player,
@@ -35,9 +34,9 @@ public class TeleportCommand extends MultiverseCommand {
                                   ParsedDestination<?> destination
     ) {
         issuer.sendMessage("Teleporting "
-                + (((BukkitCommandIssuer) issuer).getPlayer() == player ? "you" : player.getName())
+                + (issuer.getPlayer() == player ? "you" : player.getName())
                 + " to " + destination + "...");
-        this.plugin.getDestinationsProvider().playerTeleport((BukkitCommandIssuer) issuer, player, destination);
+        this.plugin.getDestinationsProvider().playerTeleport(issuer, player, destination);
     }
 
     @Override

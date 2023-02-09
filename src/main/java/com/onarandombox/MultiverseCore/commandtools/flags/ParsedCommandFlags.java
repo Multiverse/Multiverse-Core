@@ -39,6 +39,10 @@ public class ParsedCommandFlags
         return this.flagValues.containsKey(key);
     }
 
+    public boolean hasFlagValue(@Nullable String key) {
+        return flagValue(key, Object.class) != null;
+    }
+
     /**
      * Get the value of a flag.
      *
@@ -48,5 +52,10 @@ public class ParsedCommandFlags
     public @Nullable <T> T flagValue(@Nullable String key, @NotNull Class<T> type) {
         Object value = this.flagValues.get(key);
         return (T) value;
+    }
+
+    public @NotNull <T> T flagValue(@Nullable String key, @NotNull T defaultValue, @NotNull Class<T> type) {
+        T value = flagValue(key, type);
+        return value != null ? value : defaultValue;
     }
 }

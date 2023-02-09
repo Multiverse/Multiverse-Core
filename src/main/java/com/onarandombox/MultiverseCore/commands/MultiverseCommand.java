@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
  * A base command for Multiverse.
  */
 public class MultiverseCommand extends BaseCommand {
-
     protected final MultiverseCore plugin;
     protected final WorldManager worldManager;
     protected final CommandFlagsManager flagsManager;

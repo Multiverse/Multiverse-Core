@@ -7,29 +7,30 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
-import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
+import com.onarandombox.MultiverseCore.locale.MVCorei18n;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.command.CommandException;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCommand {
-
     public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 
@@ -56,7 +57,7 @@ public class CreateCommand extends MultiverseCommand {
                             try {
                                 return WorldType.valueOf(value.toUpperCase());
                             } catch (IllegalArgumentException e) {
-                                throw new CommandException("Invalid world type: " + value);
+                                throw new InvalidCommandArgument("Invalid world type: " + value);
                             }
                         })
                         .completion(() -> {
@@ -78,31 +79,49 @@ public class CreateCommand extends MultiverseCommand {
 
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
-    @CommandCompletion("WORLDNAME  @flags:groupName=mvcreate")
-    @Syntax("<name> <env> -s [seed] -g [generator[:id]] -t [worldtype] [-n] -a [true|false]")
-    @Description("") //TODO
-    public void onCreateCommand(CommandIssuer issuer,
+    @CommandCompletion("@empty  @flags:groupName=mvcreate")
+    @Syntax("<name> <environment> --seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+    @Description("{@@mv-core.create_description}")
+    public void onCreateCommand(BukkitCommandIssuer issuer,
 
+                                @Conditions("worldname:scope=new")
                                 @Syntax("<name>")
-                                @Description("") //TODO
+                                @Description("{@@mv-core.create_name_description}")
                                 String worldName,
 
-                                @Syntax("<env>")
-                                @Description("") //TODO
+                                @Syntax("<environment>")
+                                @Description("{@@mv-core.create_environment_description}")
                                 World.Environment environment,
 
                                 @Optional
-                                @Syntax("[world-flags]")
-                                @Description("") //TODO
+                                @Syntax("--seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+                                @Description("{@@mv-core.create_flags_description}")
                                 String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendMessage(worldName + " " + environment.toString());
-        issuer.sendMessage("--seed: " + parsedFlags.hasFlag("--seed") + " " + String.valueOf(parsedFlags.flagValue("--seed", String.class)));
-        issuer.sendMessage("--generator: " + parsedFlags.hasFlag("--generator") + " " + String.valueOf(parsedFlags.flagValue("--generator", String.class)));
-        issuer.sendMessage("--world-type: " + parsedFlags.hasFlag("--world-type") + " " + String.valueOf(parsedFlags.flagValue("--world-type", WorldType.class)));
-        issuer.sendMessage("--adjust-spawn: " + parsedFlags.hasFlag("--adjust-spawn") + " " + String.valueOf(parsedFlags.flagValue("--adjust-spawn", String.class)));
-        issuer.sendMessage("--no-structures: " + parsedFlags.hasFlag("--no-structures") + " " + String.valueOf(parsedFlags.flagValue("--no-structures", String.class)));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES, "{worldName}", worldName);
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ENVIRONMENT, "{environment}", environment.name());
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_SEED, "{seed}", parsedFlags.flagValue("--seed", "RANDOM", String.class));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_WORLDTYPE, "{worldType}", parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class).name());
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ADJUSTSPAWN, "{adjustSpawn}", String.valueOf(parsedFlags.hasFlag("--adjust-spawn")));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR, "{generator}", parsedFlags.flagValue("--generator", "null", String.class));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES, "{structures}", String.valueOf(!parsedFlags.hasFlag("--no-structures")));
+
+        issuer.sendInfo(MVCorei18n.CREATE_LOADING);
+
+        if (!worldManager.addWorld(
+                worldName,
+                environment,
+                parsedFlags.flagValue("--seed", String.class),
+                parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class),
+                parsedFlags.hasFlag("--adjust-spawn"),
+                parsedFlags.flagValue("--generator", String.class),
+                parsedFlags.hasFlag("--no-structures")
+        )) {
+            issuer.sendError(MVCorei18n.CREATE_FAILED, "{worldName}", worldName);
+            return;
+        }
+        issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, "{worldName}", worldName);
     }
 }

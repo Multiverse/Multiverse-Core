@@ -4,15 +4,26 @@ import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
 public enum MVCorei18n implements MessageKeyProvider {
+    CONFIG_SAVE_FAILED,
 
-        CONFIG_SAVE_FAILED,
-        DEBUG_INFO_OFF,
-        DEBUG_INFO_ON;
+    CREATE_PROPERTIES,
+    CREATE_PROPERTIES_ENVIRONMENT,
+    CREATE_PROPERTIES_SEED,
+    CREATE_PROPERTIES_WORLDTYPE,
+    CREATE_PROPERTIES_ADJUSTSPAWN,
+    CREATE_PROPERTIES_GENERATOR,
+    CREATE_PROPERTIES_STRUCTURES,
+    CREATE_LOADING,
+    CREATE_FAILED,
+    CREATE_SUCCESS,
 
-        private final MessageKey key = MessageKey.of("mv-core." + this.name().toLowerCase());
+    DEBUG_INFO_OFF,
+    DEBUG_INFO_ON;
 
-        @Override
-        public MessageKey getMessageKey() {
-            return this.key;
-        }
+    private final MessageKey key = MessageKey.of("mv-core." + this.name().toLowerCase());
+
+    @Override
+    public MessageKey getMessageKey() {
+        return this.key;
     }
+}

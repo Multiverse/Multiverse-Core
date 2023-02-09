@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -23,7 +23,7 @@ public class CheckCommand extends MultiverseCommand {
     @CommandCompletion("@players @destinations|@mvworlds")
     @Syntax("<player> <destination>")
     @Description("Checks if a player can teleport to a destination.")
-    public void onCheckCommand(CommandIssuer issuer,
+    public void onCheckCommand(BukkitCommandIssuer issuer,
 
                                @Syntax("<player>")
                                @Description("Player to check destination on.")
