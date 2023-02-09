@@ -84,7 +84,7 @@ public class CreateCommand extends MultiverseCommand {
     @Description("Creates a new world and loads it.")
     public void onCreateCommand(BukkitCommandIssuer issuer,
 
-                                @Conditions("worldname:type=new")
+                                @Conditions("worldname:scope=new")
                                 @Syntax("<name>")
                                 @Description("New world name.")
                                 String worldName,

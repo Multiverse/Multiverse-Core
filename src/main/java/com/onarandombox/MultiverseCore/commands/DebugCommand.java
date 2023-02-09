@@ -4,7 +4,6 @@ import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -33,7 +32,6 @@ public class DebugCommand extends MultiverseCommand {
     @Description("{@@mv-core.debug_change_description}")
     public void onChangeDebugCommand(BukkitCommandIssuer issuer,
 
-                                     @Conditions("debuglevel")
                                      @Syntax("<{@@mv-core.debug_change_syntax}>")
                                      @Description("{@@mv-core.debug_change_level_description}")
                                      int level) {

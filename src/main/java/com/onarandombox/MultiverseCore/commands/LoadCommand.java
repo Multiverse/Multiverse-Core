@@ -20,13 +20,13 @@ public class LoadCommand extends MultiverseCommand {
 
     @Subcommand("load")
     @CommandPermission("multiverse.core.load")
-    @CommandCompletion("@mvworlds:type=unloaded")
+    @CommandCompletion("@mvworlds:scope=unloaded")
     @Syntax("<world>")
     @Description("Loads a world. World must be already in worlds.yml, else please use /mv import.")
     public void onLoadCommand(BukkitCommandIssuer issuer,
 
                               @Single
-                              @Conditions("worldname:type=unloaded")
+                              @Conditions("worldname:scope=unloaded")
                               @Syntax("<world>")
                               @Description("Name of world you want to load.")
                               String worldName

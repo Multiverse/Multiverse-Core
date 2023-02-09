@@ -51,7 +51,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         String resolve = context.getFlagValue("resolve", "");
 
         // Get player based on sender only
-        if (resolve.equals("issueronly")) {
+        if (resolve.equals("issuerOnly")) {
             if (context.getIssuer().isPlayer()) {
                 return context.getIssuer().getPlayer();
             }
@@ -65,7 +65,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         Player player = PlayerFinder.get(playerIdentifier, context.getSender());
 
         // Get player based on input, fallback to sender if input is not a player
-        if (resolve.equals("issueraware")) {
+        if (resolve.equals("issuerAware")) {
             if (player != null) {
                 context.popFirstArg();
                 return player;

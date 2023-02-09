@@ -25,7 +25,7 @@ public class UnloadCommand extends MultiverseCommand {
     public void onUnloadCommand(BukkitCommandIssuer issuer,
 
                                 @Syntax("<world>")
-                                @Description("Name of world you want to unload.")
+                                @Description("Name of the world you want to unload.")
                                 MVWorld world
     ) {
         issuer.sendMessage(String.format("Unloading world '%s'...", world.getColoredWorldString()));

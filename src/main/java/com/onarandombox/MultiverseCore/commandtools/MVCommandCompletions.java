@@ -30,7 +30,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
-        if (context.hasConfig("playeronly") && !context.getIssuer().isPlayer()) {
+        if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
             return Collections.emptyList();
         }
 
@@ -44,16 +44,14 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestMVWorlds(BukkitCommandCompletionContext context) {
-        if (context.hasConfig("playeronly") && !context.getIssuer().isPlayer()) {
+        if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
             return Collections.emptyList();
         }
 
-        String type = context.getConfig("type", "loaded");
-
+        String scope = context.getConfig("scope", "loaded");
         List<String> worlds = new ArrayList<>();
-
-        switch (type) {
-            case "includeunloaded":
+        switch (scope) {
+            case "both":
                 worlds.addAll(worldManager.getUnloadedWorlds());
             case "loaded":
                 worldManager.getMVWorlds()

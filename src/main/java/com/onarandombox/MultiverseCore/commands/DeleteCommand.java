@@ -23,14 +23,14 @@ public class DeleteCommand extends MultiverseCommand {
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
     @Syntax("<world>")
-    @CommandCompletion("@mvworlds:type=includeunloaded")
+    @CommandCompletion("@mvworlds:scope=both")
     @Description("Deletes a world on your server PERMANENTLY.")
     public void onDeleteCommand(BukkitCommandIssuer issuer,
 
                                 @Single
-                                @Conditions("worldname:type=includeunloaded")
+                                @Conditions("worldname:scope=both")
                                 @Syntax("<world>")
-                                @Description("Multiverse world you want to delete.")
+                                @Description("The world you want to delete.")
                                 String worldName
     ) {
         this.plugin.getCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(

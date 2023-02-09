@@ -30,19 +30,13 @@ public class MVCommandConditions {
                                 BukkitCommandExecutionContext executionContext,
                                 String worldName
     ) {
-        String type = context.getConfigValue("type", "loaded");
+        String scope = context.getConfigValue("scope", "loaded");
 
-        switch (type) {
+        switch (scope) {
             // Worlds that are loaded
             case "loaded":
                 if (!this.plugin.getMVWorldManager().isMVWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist or is not loaded!");
-                }
-                break;
-            // World that are loaded or unloaded
-            case "includeunloaded":
-                if (!this.plugin.getMVWorldManager().hasUnloadedWorld(worldName, true)) {
-                    throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
                 }
                 break;
             // Worlds that are unloaded
@@ -54,6 +48,12 @@ public class MVCommandConditions {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
                 }
                 break;
+            // World that are loaded or unloaded
+            case "both":
+                if (!this.plugin.getMVWorldManager().hasUnloadedWorld(worldName, true)) {
+                    throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
+                }
+                break;
             // World that are does not exist
             case "new":
                 if (this.plugin.getMVWorldManager().isMVWorld(worldName)) {
@@ -62,7 +62,7 @@ public class MVCommandConditions {
                 break;
             // Probably a typo happened here
             default:
-                throw new ConditionFailedException("Unknown type '" + type + "'!");
+                throw new ConditionFailedException("Unknown scope '" + scope + "'!");
         }
     }
 }

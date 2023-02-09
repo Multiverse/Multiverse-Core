@@ -22,20 +22,20 @@ public class CloneCommand extends MultiverseCommand {
 
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
-    @Syntax("<world> <new-world-name>")
-    @CommandCompletion("@mvworlds:type=includeunloaded @empty")
+    @Syntax("<world> <new world name>")
+    @CommandCompletion("@mvworlds:scope=both @empty")
     @Description("Clones a world.")
     public void onCloneCommand(CommandIssuer issuer,
 
                                @NotNull
                                @Syntax("<world>")
-                               @Description("Current multiverse world.")
+                               @Description("The target world to clone.")
                                MVWorld world,
 
                                @Single
-                               @Conditions("worldname:type=new")
+                               @Conditions("worldname:scope=new")
                                @Syntax("<name>")
-                               @Description("New cloned world name.")
+                               @Description("The new cloned world name.")
                                String newWorldName
     ) {
         issuer.sendMessage(String.format("Cloning world '%s' to '%s'...", world.getName(), newWorldName));
@@ -44,6 +44,6 @@ public class CloneCommand extends MultiverseCommand {
             issuer.sendMessage(String.format("%sWorld could not be cloned! See console for more details.", ChatColor.RED));
             return;
         }
-        issuer.sendMessage(String.format("%sWorld cloned!", ChatColor.GREEN));
+        issuer.sendMessage(String.format("%sCloned world '%s'!", ChatColor.GREEN, newWorldName));
     }
 }

@@ -20,11 +20,11 @@ public class TeleportCommand extends MultiverseCommand {
 
     @Subcommand("teleport|tp")
     @Syntax("[player] <destination>")
-    @CommandCompletion("@players|@mvworlds:playeronly|@destinations:playeronly @mvworlds|@destinations")
+    @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Description("Allows you to the teleport to a location on your server!")
     public void onTeleportCommand(BukkitCommandIssuer issuer,
 
-                                  @Flags("resolve=issueraware")
+                                  @Flags("resolve=issuerAware")
                                   @Syntax("[player]")
                                   @Description("Target player to teleport.")
                                   Player player,

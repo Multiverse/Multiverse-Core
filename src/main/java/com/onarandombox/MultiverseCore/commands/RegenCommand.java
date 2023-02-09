@@ -40,12 +40,12 @@ public class RegenCommand extends MultiverseCommand {
 
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
-    @CommandCompletion("@mvworlds:type=includeunloaded @flags:groupName=mvregen")
+    @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvregen")
     @Syntax("<world> --seed [seed] --keep-gamerules")
     @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
     public void onRegenCommand(BukkitCommandIssuer issuer,
 
-                               @Conditions("worldname:type=includeunloaded")
+                               @Conditions("worldname:scope=both")
                                @Syntax("<world>")
                                @Description("World that you want to regen.")
                                String worldName,
@@ -64,7 +64,7 @@ public class RegenCommand extends MultiverseCommand {
                     if (!this.plugin.getMVWorldManager().regenWorld(
                             worldName,
                             parsedFlags.hasFlag("--seed"),
-                            parsedFlags.hasFlagValue("--seed"),
+                            !parsedFlags.hasFlagValue("--seed"),
                             parsedFlags.flagValue("--seed", String.class),
                             parsedFlags.hasFlag("--keep-gamerules")
                     )) {
