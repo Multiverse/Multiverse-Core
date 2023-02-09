@@ -27,8 +27,8 @@ public class DebugCommand extends MultiverseCommand {
 
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
-    @Syntax("<{@@mv-core.debug_change_syntax}>")
     @CommandCompletion("@range:3")
+    @Syntax("<{@@mv-core.debug_change_syntax}>")
     @Description("{@@mv-core.debug_change_description}")
     public void onChangeDebugCommand(BukkitCommandIssuer issuer,
 

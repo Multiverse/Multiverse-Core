@@ -22,8 +22,8 @@ public class DeleteCommand extends MultiverseCommand {
 
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
-    @Syntax("<world>")
     @CommandCompletion("@mvworlds:scope=both")
+    @Syntax("<world>")
     @Description("Deletes a world on your server PERMANENTLY.")
     public void onDeleteCommand(BukkitCommandIssuer issuer,
 
