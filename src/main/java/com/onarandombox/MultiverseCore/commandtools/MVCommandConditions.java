@@ -7,6 +7,7 @@ import co.aikar.commands.CommandConditions;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.world.WorldNameChecker;
 
 public class MVCommandConditions {
     static void load(MVCommandManager commandManager, MultiverseCore plugin) {
@@ -58,6 +59,12 @@ public class MVCommandConditions {
             case "new":
                 if (this.plugin.getMVWorldManager().isMVWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' already exists!");
+                }
+                switch (WorldNameChecker.checkName(worldName)) {
+                    case INVALID_CHARS:
+                        throw new ConditionFailedException("World name '" + worldName + "' contains invalid characters!");
+                    case BLACKLISTED:
+                        throw new ConditionFailedException("World name '" + worldName + "' is used for critical server operations and is blacklisted!");
                 }
                 break;
             // Probably a typo happened here
