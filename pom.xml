@@ -229,10 +229,6 @@
                                     <shadedPattern>com.onarandombox.serializationconfig</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>buscript</pattern>
-                                    <shadedPattern>com.onarandombox.buscript</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>com.onarandombox.bstats</shadedPattern>
                                 </relocation>
@@ -326,11 +322,6 @@
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
             <version>2.4.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>buscript</artifactId>
-            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>

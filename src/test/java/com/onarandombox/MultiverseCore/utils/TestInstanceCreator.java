@@ -7,7 +7,14 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import buscript.Buscript;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -31,14 +38,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.mockito.internal.util.reflection.ReflectionMemberAccessor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
@@ -202,20 +201,6 @@ public class TestInstanceCreator {
             Field serverfield = JavaPlugin.class.getDeclaredField("server");
             serverfield.setAccessible(true);
             serverfield.set(core, mockServer);
-
-            // Set buscript
-            Buscript buscript;
-            Field buscriptfield = MultiverseCore.class.getDeclaredField("buscript");
-            buscriptfield.setAccessible(true);
-
-            try {
-                buscript = spy(new Buscript(core));
-                when(buscript.getPlugin()).thenReturn(core);
-            } catch (NullPointerException e) {
-                buscript = null;
-            }
-
-            buscriptfield.set(core, buscript);
 
             // Set worldManager
             SimpleMVWorldManager wm = spy(new SimpleMVWorldManager(core));

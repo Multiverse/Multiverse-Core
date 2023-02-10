@@ -7,16 +7,15 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import buscript.Buscript;
+import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
-import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import org.bukkit.entity.Player;
 
@@ -187,11 +186,4 @@ public interface MVCore extends MVPlugin {
      * @return The configuration.
      */
     MVConfig getMVConfig();
-
-    /**
-     * Gets the buscript object for Multiverse.  This is what handles Javascript processing.
-     *
-     * @return The Multiverse buscript object.
-     */
-    Buscript getScriptAPI();
 }
