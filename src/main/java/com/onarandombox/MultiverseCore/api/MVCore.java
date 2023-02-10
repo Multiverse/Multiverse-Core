@@ -14,7 +14,8 @@ import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.PermissionsTool;
+import com.onarandombox.MultiverseCore.utils.PlayerActionChecker;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 
 /**
@@ -43,14 +44,6 @@ public interface MVCore extends MVPlugin {
      * @return A non-null {@link UnsafeCallWrapper}.
      */
     UnsafeCallWrapper getUnsafeCallWrapper();
-
-    /**
-     * Multiverse uses an advanced permissions setup, this object
-     * simplifies getting/setting permissions.
-     *
-     * @return A non-null {@link MVPermissions}.
-     */
-    MVPermissions getMVPerms();
 
     /**
      * Multiverse uses {@link MVCommandManager} to make adding and using commands
@@ -112,6 +105,10 @@ public interface MVCore extends MVPlugin {
      * @return The number if plugins that have hooked into core.
      */
     int getPluginCount();
+
+    PermissionsTool getPermissionsTool();
+
+    PlayerActionChecker getPlayerActionChecker();
 
     /**
      * Gets the {@link BlockSafety} this {@link MVCore} is using.

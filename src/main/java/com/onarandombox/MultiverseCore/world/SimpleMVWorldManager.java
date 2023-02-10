@@ -726,25 +726,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
-            // Remove all world permissions.
-            Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
-            Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
-            for (MVWorld w : this.worlds.values()) {
-                // Remove this world from the master list
-                if (allAccess != null) {
-                    allAccess.getChildren().remove(w.getAccessPermission().getName());
-                }
-                if (allExempt != null) {
-                    allExempt.getChildren().remove(w.getAccessPermission().getName());
-                }
-                this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
-                this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
-                // Special namespace for gamemodes
-                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
-            }
-            // Recalc the all permission
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allExempt);
+            this.plugin.getPermissionsTool().removeAllMVWorldPermissions();
             this.worlds.clear();
         }
 

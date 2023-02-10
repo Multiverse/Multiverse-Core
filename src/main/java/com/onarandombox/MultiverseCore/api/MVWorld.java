@@ -20,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -199,34 +198,6 @@ public interface MVWorld {
     @Deprecated
     boolean clearList(String property);
     // end of old config stuff
-
-    // permission stuff
-    /**
-     * Gets the lowercased name of the world. This method is required, since the permissables
-     * lowercase all permissions when recalculating.
-     * <p>
-     * Note: This also means if a user has worlds named: world and WORLD, that they can both
-     * exist, and both be teleported to independently, but their permissions **cannot** be
-     * uniqueified at this time. See bug report #.
-     *
-     * @return The lowercased name of the world.
-     */
-    String getPermissibleName();
-
-    /**
-     * Gets the permission required to enter this world.
-     *
-     * @return The permission required to be exempt from charges to/from this world.
-     */
-    Permission getAccessPermission();
-
-    /**
-     * Gets the permission required to be exempt when entering.
-     *
-     * @return The permission required to be exempt when entering.
-     */
-    Permission getExemptPermission();
-    // end of permission stuff
 
     /**
      * Gets the alias of this world.

@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.event;
 
-import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,13 +20,13 @@ import org.bukkit.event.HandlerList;
  * Event that gets called when a player use the /mvtp command.
  */
 public class MVTeleportEvent extends Event implements Cancellable {
-    private Player teleportee;
-    private CommandSender teleporter;
-    private MVDestination dest;
-    private boolean useSafeTeleport;
+    private final Player teleportee;
+    private final CommandSender teleporter;
+    private final ParsedDestination<?> dest;
+    private final boolean useSafeTeleport;
     private boolean isCancelled;
 
-    public MVTeleportEvent(MVDestination dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
+    public MVTeleportEvent(ParsedDestination<?> dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
         this.teleportee = teleportee;
         this.teleporter = teleporter;
         this.dest = dest;
@@ -83,7 +83,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
      *
      * @return The destination the player will spawn at.
      */
-    public MVDestination getDestination() {
+    public ParsedDestination<?> getDestination() {
         return this.dest;
     }
 

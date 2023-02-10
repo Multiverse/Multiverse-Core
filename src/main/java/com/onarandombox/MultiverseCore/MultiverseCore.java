@@ -62,7 +62,8 @@ import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
+import com.onarandombox.MultiverseCore.utils.PermissionsTool;
+import com.onarandombox.MultiverseCore.utils.PlayerActionChecker;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
@@ -90,7 +91,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private DestinationsProvider destinationsProvider;
     private MVEconomist economist;
     private LocationManipulation locationManipulation = new SimpleLocationManipulation();
-    private final MVPermissions mvPermissions = new MVPermissions(this);
+    private final PermissionsTool permissionsTool = new PermissionsTool(this);
+    private PlayerActionChecker playerActionChecker;
     private SafeTTeleporter safeTTeleporter = new SimpleSafeTTeleporter(this);
     private final UnsafeCallWrapper unsafeCallWrapper = new UnsafeCallWrapper(this);
     private final MVWorldManager worldManager = new SimpleMVWorldManager(this);
@@ -102,7 +104,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     // Listeners
     private MVChatListener chatListener;
     private final MVEntityListener entityListener = new MVEntityListener(this);
-    private final MVPlayerListener playerListener = new MVPlayerListener(this);
+    private MVPlayerListener playerListener;
     private final MVPortalListener portalListener = new MVPortalListener(this);
     private final MVWeatherListener weatherListener = new MVWeatherListener(this);
     private final MVWorldListener worldListener = new MVWorldListener(this);
@@ -137,6 +139,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onEnable() {
+        this.permissionsTool.setUpPermissions();
+        this.playerActionChecker = new PlayerActionChecker(this);
+
         // Load our configs first as we need them for everything else.
         this.loadConfigs();
         if (this.multiverseConfig == null) {
@@ -186,6 +191,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerEvents() {
         PluginManager pluginManager = getServer().getPluginManager();
+        this.playerListener = new MVPlayerListener(this);
         this.chatListener = new MVChatListener(this, this.playerListener);
         pluginManager.registerEvents(this.chatListener, this);
         pluginManager.registerEvents(this.entityListener, this);
@@ -274,12 +280,14 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return economist;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public MVPermissions getMVPerms() {
-        return this.mvPermissions;
+    public PermissionsTool getPermissionsTool() {
+        return permissionsTool;
+    }
+
+    @Override
+    public PlayerActionChecker getPlayerActionChecker() {
+        return playerActionChecker;
     }
 
     /**

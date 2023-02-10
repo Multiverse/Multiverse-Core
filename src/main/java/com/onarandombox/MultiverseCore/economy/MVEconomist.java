@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.economy;
 
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -28,6 +29,10 @@ public class MVEconomist {
      */
     public boolean isUsingEconomyPlugin() {
         return getVaultHandler().hasEconomy();
+    }
+
+    public String formatPrice(MVWorld world) {
+        return formatPrice(world.getPrice(), world.getCurrency());
     }
 
     /**
@@ -73,6 +78,29 @@ public class MVEconomist {
             return getVaultHandler().getEconomy().has(player, amount);
         } else {
             return ItemEconomy.hasEnough(player, amount, currency);
+        }
+    }
+
+    public void payEntryFee(Player player, MVWorld world) {
+        payEntryFee(player, world.getPrice(), world.getCurrency());
+    }
+
+    /**
+     * Pays for a given amount of currency either from the player's economy account or inventory if the currency
+     *
+     * @param player    the player to take currency from.
+     * @param price     the amount to take.
+     * @param currency  the type of currency.
+     */
+    public void payEntryFee(Player player, double price, Material currency) {
+        if (price == 0D) {
+            return;
+        }
+
+        if (price < 0) {
+            this.deposit(player, -price, currency);
+        } else {
+            this.withdraw(player, price, currency);
         }
     }
 
