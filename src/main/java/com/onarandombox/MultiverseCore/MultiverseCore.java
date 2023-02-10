@@ -25,8 +25,8 @@ import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
 import com.onarandombox.MultiverseCore.commands.CloneCommand;
 import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
@@ -35,6 +35,7 @@ import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands.LoadCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
+import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
@@ -208,6 +209,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.commandManager.registerCommand(new DeleteCommand(this));
         this.commandManager.registerCommand(new LoadCommand(this));
         this.commandManager.registerCommand(new RegenCommand(this));
+        this.commandManager.registerCommand(new ReloadCommand(this));
         this.commandManager.registerCommand(new TeleportCommand(this));
         this.commandManager.registerCommand(new UnloadCommand(this));
     }
