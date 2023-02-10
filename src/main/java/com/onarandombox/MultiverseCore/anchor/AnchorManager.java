@@ -7,14 +7,6 @@
 
 package com.onarandombox.MultiverseCore.anchor;
 
-import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -22,7 +14,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
+
+import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 /**
  * Manages anchors.
@@ -140,18 +140,15 @@ public class AnchorManager {
             if (ancLoc == null) {
                 continue;
             }
-            String worldPerm = "multiverse.access." + ancLoc.getWorld().getName();
-            // Add to the list if we're not enforcing access
-            // OR
-            // We are enforcing access and the user has the permission.
-            if (!this.plugin.getMVConfig().getEnforceAccess() ||
-                    (this.plugin.getMVConfig().getEnforceAccess() && p.hasPermission(worldPerm))) {
-                myAnchors.add(anchor);
-            } else {
-                Logging.finer(String.format("Not adding anchor %s to the list, user %s doesn't have the %s " +
-                        "permission and 'enforceaccess' is enabled!",
-                        anchor, p.getName(), worldPerm));
+            MVWorld mvWorld = this.plugin.getMVWorldManager().getMVWorld(ancLoc.getWorld());
+            if (mvWorld != null) {
+                if (!this.plugin.getPlayerActionChecker().hasAccessToWorld(p, mvWorld).isSuccessful()) {
+                    Logging.finer("Player '%s' does not have access to anchor '%s' in world '%s'.",
+                            p.getName(), anchor, mvWorld.getName());
+                    continue;
+                }
             }
+            myAnchors.add(anchor);
         }
         return Collections.unmodifiableSet(myAnchors);
     }

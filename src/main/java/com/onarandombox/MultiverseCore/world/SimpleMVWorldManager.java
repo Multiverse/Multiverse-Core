@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
@@ -45,8 +45,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -722,7 +720,6 @@ public class SimpleMVWorldManager implements MVWorldManager {
         // Basic Counter to count how many Worlds we are loading.
         int count = 0;
         this.ensureConfigIsPrepared();
-        this.ensureSecondNamespaceIsPrepared();
 
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
@@ -744,14 +741,6 @@ public class SimpleMVWorldManager implements MVWorldManager {
         // Simple Output to the Console to show how many Worlds were loaded.
         Logging.config("%s - World(s) loaded.", count);
         this.saveWorldsConfig();
-    }
-
-    private void ensureSecondNamespaceIsPrepared() {
-        Permission special = this.plugin.getServer().getPluginManager().getPermission("mv.bypass.gamemode.*");
-        if (special == null) {
-            special = new Permission("mv.bypass.gamemode.*", PermissionDefault.FALSE);
-            this.plugin.getServer().getPluginManager().addPermission(special);
-        }
     }
 
     /**
