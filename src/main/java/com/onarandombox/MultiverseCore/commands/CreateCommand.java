@@ -81,21 +81,21 @@ public class CreateCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.create")
     @CommandCompletion("@empty  @flags:groupName=mvcreate")
     @Syntax("<name> <environment> --seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
-    @Description("{@@mv-core.create_description}")
+    @Description("{@@mv-core.create.description}")
     public void onCreateCommand(BukkitCommandIssuer issuer,
 
                                 @Conditions("validWorldName:scope=new")
                                 @Syntax("<name>")
-                                @Description("{@@mv-core.create_name_description}")
+                                @Description("{@@mv-core.create.name.description}")
                                 String worldName,
 
                                 @Syntax("<environment>")
-                                @Description("{@@mv-core.create_environment_description}")
+                                @Description("{@@mv-core.create.environment.description}")
                                 World.Environment environment,
 
                                 @Optional
                                 @Syntax("--seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
-                                @Description("{@@mv-core.create_flags_description}")
+                                @Description("{@@mv-core.create.flags.description}")
                                 String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);

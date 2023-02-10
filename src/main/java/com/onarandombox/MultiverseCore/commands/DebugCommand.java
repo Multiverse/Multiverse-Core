@@ -20,7 +20,7 @@ public class DebugCommand extends MultiverseCommand {
 
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
-    @Description("{@@mv-core.debug_info_description}")
+    @Description("{@@mv-core.debug.info.description}")
     public void onShowDebugCommand(BukkitCommandIssuer issuer) {
         this.displayDebugMode(issuer);
     }
@@ -28,12 +28,12 @@ public class DebugCommand extends MultiverseCommand {
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @CommandCompletion("@range:3")
-    @Syntax("<{@@mv-core.debug_change_syntax}>")
-    @Description("{@@mv-core.debug_change_description}")
+    @Syntax("<{@@mv-core.debug.change.syntax}>")
+    @Description("{@@mv-core.debug.change.description}")
     public void onChangeDebugCommand(BukkitCommandIssuer issuer,
 
-                                     @Syntax("<{@@mv-core.debug_change_syntax}>")
-                                     @Description("{@@mv-core.debug_change_level_description}")
+                                     @Syntax("<{@@mv-core.debug.change.syntax}>")
+                                     @Description("{@@mv-core.debug.change.level.description}")
                                      int level) {
 
         this.plugin.getMVConfig().setGlobalDebug(level);

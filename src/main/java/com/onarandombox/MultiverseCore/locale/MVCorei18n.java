@@ -20,7 +20,7 @@ public enum MVCorei18n implements MessageKeyProvider {
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
-    private final MessageKey key = MessageKey.of("mv-core." + this.name().toLowerCase());
+    private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.').toLowerCase());
 
     @Override
     public MessageKey getMessageKey() {
