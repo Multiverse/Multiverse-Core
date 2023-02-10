@@ -12,6 +12,9 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A utility class for registering and checking permissions.
+ */
 public class PermissionsTool {
     private static final String TELEPORT_PERM_PREFIX = "multiverse.teleport.";
 
@@ -26,11 +29,17 @@ public class PermissionsTool {
         this.plugin = plugin;
     }
 
+    /**
+     * Sets up the permissions for Multiverse.
+     */
     public void setUpPermissions() {
         this.pluginManager = this.plugin.getServer().getPluginManager();
         setUpWorldPermissionWildcards();
     }
 
+    /**
+     * Set up the world permissions wildcards.
+     */
     private void setUpWorldPermissionWildcards() {
         this.worldAccessPermission = new Permission("multiverse.access.*",
                 "Allows access to all worlds",
@@ -57,6 +66,11 @@ public class PermissionsTool {
         Logging.finer("Registered world permissions wildcard.");
     }
 
+    /**
+     * Registers the permissions for a world.
+     *
+     * @param world The world to register permissions for.
+     */
     public void registerMVWorldPermissions(MVWorld world) {
         Permission accessPermission = new Permission("multiverse.access." + world.getName(),
                 "Allows access to " + world.getName(),
@@ -89,6 +103,11 @@ public class PermissionsTool {
         Logging.finer("Registered permissions for '" + world.getName() + "'");
     }
 
+    /**
+     * Unregisters the permissions for a world.
+     *
+     * @param world The world to remove permissions for.
+     */
     public void removeMVWorldPermissions(MVWorld world) {
         Permission accessPermission = pluginManager.getPermission("multiverse.access." + world.getName());
         if (accessPermission != null) {
@@ -112,6 +131,9 @@ public class PermissionsTool {
         }
     }
 
+    /**
+     * Removes all Multiverse World related permissions.
+     */
     public void removeAllMVWorldPermissions() {
         this.worldAccessPermission.getChildren().keySet().forEach(pluginManager::removePermission);
         this.bypassGameModePermission.getChildren().keySet().forEach(pluginManager::removePermission);
@@ -126,6 +148,11 @@ public class PermissionsTool {
         setUpWorldPermissionWildcards();
     }
 
+    /**
+     * Registers the permissions for a destination.
+     *
+     * @param destination The destination to register permissions for.
+     */
     public void registerDestinationTeleportPermissions(Destination<?> destination) {
         try {
             pluginManager.addPermission(new Permission(TELEPORT_PERM_PREFIX + "self." + destination.getIdentifier(), PermissionDefault.OP));
@@ -138,6 +165,12 @@ public class PermissionsTool {
         Logging.finer("Registered permissions for '" + destination.getIdentifier() + "'");
     }
 
+    /**
+     * Registers the finer permissions for a destination.
+     *
+     * @param destination   The destination to register permissions for.
+     * @param finerSuffix   The finer suffix to register.
+     */
     public void registerFinerDestinationTeleportPermissions(Destination<?> destination, String finerSuffix) {
         String finerPermissionName = TELEPORT_PERM_PREFIX + "self." + destination.getIdentifier() + "." + finerSuffix;
         if (pluginManager.getPermission(finerPermissionName) != null) {
@@ -160,26 +193,69 @@ public class PermissionsTool {
         Logging.finer("Registered finer permissions '" + finerPermissionName + "' for '" + destination.getIdentifier() + "'");
     }
 
+    /**
+     * Checks if a player has the permission to bypass the player limit.
+     *
+     * @param sender    The player to check.
+     * @param toWorld   The world to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasBypassPlayerLimit(@NotNull CommandSender sender, @NotNull MVWorld toWorld) {
         return hasPermission(sender, "mv.bypass.playerlimit." + toWorld.getName());
     }
 
+    /**
+     * Checks if a player has the permission to bypass the entry fee.
+     *
+     * @param sender    The player to check.
+     * @param toWorld   The world to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasBypassEntryFee(@NotNull CommandSender sender, @NotNull MVWorld toWorld) {
         return hasPermission(sender, "multiverse.exempt." + toWorld.getName());
     }
 
+    /**
+     * Checks if a player has the permission to bypass the game mode enforcement.
+     *
+     * @param sender    The player to check.
+     * @param toWorld   The world to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasBypassGameModeEnforcement(@NotNull CommandSender sender, @NotNull MVWorld toWorld) {
         return hasPermission(sender, "mv.bypass.gamemode." + toWorld.getName());
     }
 
+    /**
+     * Checks if a player has the permission to access the world.
+     *
+     * @param sender    The player to check.
+     * @param toWorld   The world to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasWorldAccess(@NotNull CommandSender sender, @NotNull MVWorld toWorld) {
         return hasPermission(sender, "multiverse.access." + toWorld.getName());
     }
 
+    /**
+     * Checks if a player has the permission to teleport to a destination.
+     *
+     * @param teleportee    The player to check.
+     * @param destination   The destination to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasDestinationTeleportPermission(@NotNull CommandSender teleportee, @NotNull Destination<?> destination) {
         return hasDestinationTeleportPermission(null, teleportee, destination);
     }
 
+    /**
+     * Checks if a player has the permission to teleport to a destination.
+     *
+     * @param teleporter    The player who is teleporting the other player.
+     * @param teleportee    The player to check.
+     * @param destination   The destination to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasDestinationTeleportPermission(@Nullable CommandSender teleporter,
                                                     @NotNull CommandSender teleportee,
                                                     @NotNull Destination<?> destination
@@ -190,10 +266,25 @@ public class PermissionsTool {
         return hasPermission(teleporter, TELEPORT_PERM_PREFIX + "other." + destination.getIdentifier());
     }
 
+    /**
+     * Checks if a player has the permission to teleport to a destination.
+     *
+     * @param teleportee    The player to check.
+     * @param destination   The destination to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasFinerDestinationTeleportPermission(@NotNull CommandSender teleportee, @NotNull ParsedDestination<?> destination) {
         return hasFinerDestinationTeleportPermission(null, teleportee, destination);
     }
 
+    /**
+     * Checks if a player has the permission to teleport to a destination.
+     *
+     * @param teleporter    The player who is teleporting the other player.
+     * @param teleportee    The player to check.
+     * @param destination   The destination to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasFinerDestinationTeleportPermission(@Nullable CommandSender teleporter,
                                                          @NotNull CommandSender teleportee,
                                                          @NotNull ParsedDestination<?> destination
@@ -208,12 +299,25 @@ public class PermissionsTool {
                 + destination.getDestinationInstance().getFinerPermissionSuffix());
     }
 
+    /**
+     * Checks if a player has the permission to teleport to at least 1 destination type.
+     *
+     * @param sender    The player to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     public boolean hasAnyDestinationTeleportPermissions(@NotNull CommandSender sender) {
         return this.plugin.getDestinationsProvider().getRegisteredDestinations().stream()
                 .anyMatch(destination -> hasDestinationTeleportPermission(sender, this.plugin.getServer().getConsoleSender(), destination)
                         || hasDestinationTeleportPermission(sender, destination));
     }
 
+    /**
+     * Internal method to check if a player has a permission and does logging.
+     *
+     * @param sender        The sender to check.
+     * @param permission    The permission to check.
+     * @return True if the player has the permission, false otherwise.
+     */
     private boolean hasPermission(@NotNull CommandSender sender, @NotNull String permission) {
         if (sender.hasPermission(permission)) {
             Logging.finer("Checking to see if sender [" + sender.getName() + "] has permission [" + permission + "]... YES");

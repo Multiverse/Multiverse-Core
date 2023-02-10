@@ -297,7 +297,7 @@ public class SimpleMVWorld implements MVWorld {
             for (Player p : plugin.getServer().getWorld(getName()).getPlayers()) {
                 Logging.finer(String.format("Setting %s's GameMode to %s",
                         p.getName(), newValue.toString()));
-                plugin.getPlayerListener().handleGameModeAndFlight(p, SimpleMVWorld.this);
+                plugin.getPlayerListener().applyGameModeAndFlight(p, SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);
         }

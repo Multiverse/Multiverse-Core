@@ -2,6 +2,9 @@ package com.onarandombox.MultiverseCore.utils.actioncheck;
 
 import com.onarandombox.MultiverseCore.api.action.ActionResult;
 
+/**
+ * The result of an player action check for {@link PlayerActionChecker}
+ */
 public enum ActionCheckResult implements ActionResult {
     NULL_WORLD(false),
     NULL_LOCATION(false),
@@ -10,7 +13,7 @@ public enum ActionCheckResult implements ActionResult {
     CAN_USE_DESTINATION(true),
     NO_DESTINATION_PERMISSION(false),
 
-    NOT_MV_WORLD(true),
+    NOT_FROM_MVWORLD(true),
     SAME_WORLD(true),
 
     HAS_WORLD_ACCESS(true),
@@ -41,15 +44,25 @@ public enum ActionCheckResult implements ActionResult {
         this.isSuccessful = isSuccessful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isSuccessful() {
         return isSuccessful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasResult(ActionResult result) {
         return result == this;

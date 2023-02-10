@@ -31,6 +31,12 @@ public class MVEconomist {
         return getVaultHandler().hasEconomy();
     }
 
+    /**
+     * Formats the amount to a human readable currency string.
+     *
+     * @param world the world to get the price and currency from.
+     * @return the human readable currency string.
+     */
     public String formatPrice(MVWorld world) {
         return formatPrice(world.getPrice(), world.getCurrency());
     }
@@ -81,6 +87,12 @@ public class MVEconomist {
         }
     }
 
+    /**
+     * Pays for a given amount of currency either from the player's economy account or inventory if the currency.
+     *
+     * @param player    the player to deposit currency into.
+     * @param world     the world to take entry fee from.
+     */
     public void payEntryFee(Player player, MVWorld world) {
         payEntryFee(player, world.getPrice(), world.getCurrency());
     }

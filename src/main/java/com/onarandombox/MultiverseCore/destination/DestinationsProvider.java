@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.destination;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -109,7 +110,7 @@ public class DestinationsProvider {
     }
 
     public @NotNull Collection<Destination<?>> getRegisteredDestinations() {
-        return this.destinationMap.values();
+        return Collections.unmodifiableCollection(this.destinationMap.values());
     }
 
     /**

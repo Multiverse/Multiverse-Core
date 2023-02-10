@@ -277,7 +277,7 @@ public class MVPlayerListener implements Listener {
      * @param player The {@link Player}.
      * @param world The world the player is in.
      */
-    public void handleGameModeAndFlight(@NotNull Player player, @NotNull MVWorld world) {
+    private void handleGameModeAndFlight(@NotNull Player player, @NotNull MVWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(
@@ -286,7 +286,13 @@ public class MVPlayerListener implements Listener {
                 1L);
     }
 
-    private void applyGameModeAndFlight(@NotNull Player player, @NotNull MVWorld world) {
+    /**
+     * Applies the gamemode and flight for the specified {@link Player}.
+     *
+     * @param player The {@link Player}.
+     * @param world The world the player is in.
+     */
+    public void applyGameModeAndFlight(@NotNull Player player, @NotNull MVWorld world) {
         if (MVPlayerListener.this.actionChecker.canKeepGameMode(player, world).isSuccessful()) {
             Logging.fine("Player: " + player.getName() + " is IMMUNE to gamemode changes!");
             return;
@@ -317,6 +323,15 @@ public class MVPlayerListener implements Listener {
         }
     }
 
+    /**
+     * Sends the reason for the teleportation failure to the sender.
+     *
+     * @param sender        The sender of the command.
+     * @param teleportee    The player being teleported.
+     * @param fromWorld     The world the player is teleporting from.
+     * @param toWorld       The world the player is teleporting to.
+     * @param result        The result of the teleportation.
+     */
     private void tellReason(@NotNull CommandSender sender,
                             @NotNull Player teleportee,
                             @Nullable MVWorld fromWorld,

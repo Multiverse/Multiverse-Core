@@ -280,11 +280,17 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return economist;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PermissionsTool getPermissionsTool() {
         return permissionsTool;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PlayerActionChecker getPlayerActionChecker() {
         return playerActionChecker;
