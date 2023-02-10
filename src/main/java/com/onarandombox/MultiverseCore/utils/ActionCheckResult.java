@@ -23,6 +23,7 @@ public enum ActionCheckResult implements ActionResult {
     CANNOT_PAY_ENTRY_FEE(false),
     FREE_ENTRY(true),
 
+    NO_PLAYERLIMIT(true),
     WITHIN_PLAYERLIMIT(true),
     EXCEED_PLAYERLIMIT(false),
     BYPASS_PLAYERLIMIT(true),

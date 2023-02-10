@@ -152,7 +152,10 @@ public class PlayerActionChecker {
     }
 
     public ActionCheckResult isWithinPlayerLimit(@NotNull CommandSender sender, @NotNull MVWorld toWorld) {
-        if (toWorld.getPlayerLimit() < 0 || toWorld.getCBWorld().getPlayers().size() <= toWorld.getPlayerLimit()) {
+        if (toWorld.getPlayerLimit() <= -1) {
+            return ActionCheckResult.NO_PLAYERLIMIT;
+        }
+        if (toWorld.getPlayerLimit() > toWorld.getCBWorld().getPlayers().size()) {
             return ActionCheckResult.WITHIN_PLAYERLIMIT;
         }
         return permissionsTool.hasBypassPlayerLimit(sender, toWorld)
