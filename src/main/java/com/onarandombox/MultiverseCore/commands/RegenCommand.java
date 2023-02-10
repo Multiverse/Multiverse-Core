@@ -22,7 +22,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class RegenCommand extends MultiverseCommand {
+public class RegenCommand extends MultiverseCoreCommand {
     public RegenCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 

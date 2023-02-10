@@ -14,7 +14,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class ReloadCommand extends MultiverseCommand {
+public class ReloadCommand extends MultiverseCoreCommand {
     public ReloadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

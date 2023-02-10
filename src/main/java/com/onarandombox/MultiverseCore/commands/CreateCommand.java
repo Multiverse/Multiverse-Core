@@ -30,7 +30,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class CreateCommand extends MultiverseCommand {
+public class CreateCommand extends MultiverseCoreCommand {
     public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 
