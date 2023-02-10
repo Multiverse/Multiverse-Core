@@ -1,10 +1,11 @@
-package com.onarandombox.MultiverseCore.utils;
+package com.onarandombox.MultiverseCore.utils.actioncheck;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.action.ActionResponse;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
-import com.onarandombox.MultiverseCore.utils.action.ActionResponse;
+import com.onarandombox.MultiverseCore.utils.PermissionsTool;
 import com.onarandombox.MultiverseCore.world.configuration.EntryFee;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.utils.action;
+package com.onarandombox.MultiverseCore.api.action;
 
 import java.util.HashSet;
 import java.util.Set;

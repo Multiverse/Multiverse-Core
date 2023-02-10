@@ -1,6 +1,6 @@
-package com.onarandombox.MultiverseCore.utils;
+package com.onarandombox.MultiverseCore.utils.actioncheck;
 
-import com.onarandombox.MultiverseCore.utils.action.ActionResult;
+import com.onarandombox.MultiverseCore.api.action.ActionResult;
 
 public enum ActionCheckResult implements ActionResult {
     NULL_WORLD(false),
