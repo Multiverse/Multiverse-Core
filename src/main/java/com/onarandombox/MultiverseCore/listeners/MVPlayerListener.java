@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
@@ -28,7 +28,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -137,15 +136,6 @@ public class MVPlayerListener implements Listener {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
         playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
-    }
-
-    /**
-     * This method is called when a player quits the game.
-     * @param event The Event that was fired.
-     */
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent event) {
-        this.plugin.removePlayerSession(event.getPlayer());
     }
 
     /**

@@ -15,18 +15,6 @@ public interface MVConfig extends ConfigurationSerializable {
     boolean setConfigProperty(String property, String value);
 
     /**
-     * Sets portalCooldown.
-     * @param portalCooldown The new value.
-     */
-    void setTeleportCooldown(int portalCooldown);
-
-    /**
-     * Gets portalCooldown.
-     * @return portalCooldown.
-     */
-    int getTeleportCooldown();
-
-    /**
      * Sets firstSpawnWorld.
      * @param firstSpawnWorld The new value.
      */
@@ -49,18 +37,6 @@ public interface MVConfig extends ConfigurationSerializable {
      * @return version.
      */
     double getVersion();
-
-    /**
-     * Sets messageCooldown.
-     * @param messageCooldown The new value.
-     */
-    void setMessageCooldown(int messageCooldown);
-
-    /**
-     * Gets messageCooldown.
-     * @return messageCooldown.
-     */
-    int getMessageCooldown();
 
     /**
      * Sets globalDebug.
