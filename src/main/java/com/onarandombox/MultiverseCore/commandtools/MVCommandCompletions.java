@@ -72,7 +72,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestGamerules(BukkitCommandCompletionContext context) {
 
         // Changes Collection of GameRules to Collection of Strings
-        Collection<String> gameRules = new ArrayList<>(Collections.emptyList());
+        Collection<String> gameRules = new ArrayList<>();
 
         for (GameRule<?> currentRule : GameRule.values()) {
             gameRules.add(currentRule.getName());
