@@ -62,6 +62,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             case "unloaded":
                 worlds.addAll(worldManager.getUnloadedWorlds());
                 break;
+            case "potential":
+                worlds.addAll(worldManager.getPotentialWorlds());
+                break;
         }
 
         return worlds;
