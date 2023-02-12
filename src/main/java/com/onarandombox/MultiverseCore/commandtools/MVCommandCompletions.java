@@ -11,6 +11,7 @@ import co.aikar.commands.PaperCommandCompletions;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -27,6 +28,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerAsyncCompletion("flags", this::suggestFlags);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
+        registerAsyncCompletion("gamerules", this::suggestGamerules);
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
@@ -65,5 +67,17 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
 
         return worlds;
+    }
+
+    private Collection<String> suggestGamerules(BukkitCommandCompletionContext context) {
+
+        // Changes Collection of GameRules to Collection of Strings
+        Collection<String> gameRules = new ArrayList<>(Collections.emptyList());
+
+        for (GameRule<?> currentRule : GameRule.values()) {
+            gameRules.add(currentRule.getName());
+        }
+
+        return gameRules;
     }
 }
