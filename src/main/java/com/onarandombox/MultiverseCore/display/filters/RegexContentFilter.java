@@ -69,7 +69,12 @@ public class RegexContentFilter implements ContentFilter {
             return false;
         }
         String text = ChatColor.stripColor(String.valueOf(value));
-        return regexPattern.matcher(text).find();
+        try {
+            return regexPattern.matcher(text).find();
+        } catch (PatternSyntaxException ignored) {
+            Logging.fine("Error parsing regex '%s' for input '%s'", regexString, text);
+            return false;
+        }
     }
 
     /**
