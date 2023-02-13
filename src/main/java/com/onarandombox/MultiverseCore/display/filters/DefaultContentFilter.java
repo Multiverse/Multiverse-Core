@@ -32,4 +32,9 @@ public class DefaultContentFilter implements ContentFilter {
     public boolean needToFilter() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "N/A";
+    }
 }

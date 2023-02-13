@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+
+import co.aikar.commands.BukkitCommandIssuer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handles the sending of all content to the command sender.
@@ -16,5 +16,5 @@ public interface SendHandler {
      * @param sender    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    void send(@NotNull CommandSender sender, @NotNull List<String> content);
+    void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);
 }
