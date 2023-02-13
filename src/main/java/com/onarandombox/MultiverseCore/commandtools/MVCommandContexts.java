@@ -8,6 +8,9 @@ import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
+import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
+import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.entity.Player;
 
@@ -19,10 +22,19 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.plugin = plugin;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
+        registerOptionalContext(ContentFilter.class, this::parseContentFilter);
         registerContext(MVWorld.class, this::parseMVWorld);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+    }
+
+    private ContentFilter parseContentFilter(BukkitCommandExecutionContext context) {
+        if (Strings.isNullOrEmpty(context.getFirstArg())) {
+            return DefaultContentFilter.getInstance();
+        }
+        String filterString = context.popFirstArg();
+        return RegexContentFilter.fromString(filterString);
     }
 
     private ParsedDestination<?> parseDestination(BukkitCommandExecutionContext context) {
