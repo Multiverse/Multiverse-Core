@@ -85,6 +85,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         // Get world based on input only
         if (world != null) {
+            context.popFirstArg();
             return world;
         }
         if (!context.isOptional()) {
