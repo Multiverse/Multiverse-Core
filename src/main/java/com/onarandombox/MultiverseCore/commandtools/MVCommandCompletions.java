@@ -1,9 +1,7 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandIssuer;
@@ -28,7 +26,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerAsyncCompletion("flags", this::suggestFlags);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
-        registerAsyncCompletion("gamerules", this::suggestGamerules);
+        // Only updates on first load, helps with lag
+        registerStaticCompletion("gamerules", this::suggestGamerules);
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
@@ -69,15 +68,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         return worlds;
     }
 
-    private Collection<String> suggestGamerules(BukkitCommandCompletionContext context) {
-
-        // Changes Collection of GameRules to Collection of Strings
-        Collection<String> gameRules = new ArrayList<>();
-
-        for (GameRule<?> currentRule : GameRule.values()) {
-            gameRules.add(currentRule.getName());
-        }
-
-        return gameRules;
+    private Collection<String> suggestGamerules() {
+        return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
     }
 }
