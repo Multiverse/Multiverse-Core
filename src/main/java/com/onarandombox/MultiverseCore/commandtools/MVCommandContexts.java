@@ -23,7 +23,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
-        registerContext(MVWorld.class, this::parseMVWorld);
+        registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
@@ -52,12 +52,45 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     private MVWorld parseMVWorld(BukkitCommandExecutionContext context) {
-        String worldName = context.popFirstArg();
-        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
-        if (world == null) {
-            throw new InvalidCommandArgument("World " + worldName + " is not a multiverse world.");
+        String resolve = context.getFlagValue("resolve", "");
+
+        // Get world based on sender only
+        if (resolve.equals("issuerOnly")) {
+            if (context.getIssuer().isPlayer()) {
+                return plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
         }
-        return world;
+
+        String worldName = context.getFirstArg();
+        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+
+        // Get world based on input, fallback to sender if input is not a world
+        if (resolve.equals("issuerAware")) {
+            if (world != null) {
+                context.popFirstArg();
+                return world;
+            }
+            if (context.getIssuer().isPlayer()) {
+                return plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+        }
+
+        // Get world based on input only
+        if (world != null) {
+            return world;
+        }
+        if (!context.isOptional()) {
+            return null;
+        }
+        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {
