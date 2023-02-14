@@ -27,6 +27,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(ParsedDestination.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
         registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
+        registerIssuerAwareContext(MVWorld[].class, this::parseMVWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
@@ -103,6 +104,57 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (world != null) {
             context.popFirstArg();
             return world;
+        }
+        if (!context.isOptional()) {
+            return null;
+        }
+        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+    }
+
+    private MVWorld[] parseMVWorldArray(BukkitCommandExecutionContext context) {
+        String resolve = context.getFlagValue("resolve", "");
+
+        MVWorld playerWorld = null;
+        if (context.getIssuer().isPlayer()) {
+            playerWorld = plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+        }
+
+        // Get world based on sender only
+        if (resolve.equals("issuerOnly")) {
+            if (playerWorld != null) {
+                return new MVWorld[]{playerWorld};
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
+        }
+
+        String worldName = context.getFirstArg();
+        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+        MVWorld[] worlds = "*".equals(worldName)
+                ? plugin.getMVWorldManager().getMVWorlds().toArray(new MVWorld[0])
+                : (world != null ? new MVWorld[]{world} : null);
+
+        // Get world based on input, fallback to sender if input is not a world
+        if (resolve.equals("issuerAware")) {
+            if (worlds != null) {
+                context.popFirstArg();
+                return worlds;
+            }
+            if (playerWorld != null) {
+                return new MVWorld[]{playerWorld};
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+        }
+
+        // Get world based on input only
+        if (worlds != null) {
+            context.popFirstArg();
+            return worlds;
         }
         if (!context.isOptional()) {
             return null;

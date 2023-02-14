@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -35,43 +35,26 @@ public class GameruleCommand extends MultiverseCoreCommand {
                                   @Description("Value of gamerule")
                                   String value,
 
-                                  @Optional
+                                  @Flags("resolve=issuerAware")
                                   @Syntax("[World or *]")
                                   @Description("World to apply gamerule to, current world by default")
-                                  String worldOrAll
+                                  MVWorld[] worlds
     ) {
-        // Single world
-        if (!worldOrAll.equals("*")) {
-
-            final MVWorld worldToChangeGameruleIn = worldManager.getMVWorld(worldOrAll);
-
-            // Confirm inputted world exists, no clue why IntelliJ thinks it cannot be null...
-            if (worldToChangeGameruleIn.equals(null)) {
-                issuer.sendMessage(ChatColor.RED + "World: " + worldOrAll + " does not exist");
+        boolean success = true;
+        for(MVWorld world : worlds) {
+            // Set gamerules and add false to list if it fails
+            if (!world.getCBWorld().setGameRule(gamerule, value)) {
+                issuer.sendMessage(ChatColor.RED + "Failed to set gamerule " + gamerule.getName() + " to " + value + " in " + world.getName() + ". It should be a " + gamerule.getType());
+                success = false;
             }
-
-            // Change the game rule, send an error if it fails telling the user what data type is expected
-            if (worldToChangeGameruleIn.getCBWorld().setGameRule(gamerule, value)) {
-                issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule + " to " + value + " in " + worldToChangeGameruleIn.getName());
-            } else {
-                issuer.sendMessage(ChatColor.RED + "Failed to set " + gamerule + " to " + value + ". Expected a " + gamerule.getType());
+        }
+        // Tell user if it was successful
+        if (success) {
+            if (worlds.length == 1) {
+                issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule.getName() + " to " + value + " in " + worlds[0].getName());
             }
-
-        // All worlds
-        } else {
-            boolean success = true;
-
-            for(MVWorld world : worldManager.getMVWorlds()) {
-
-                // Set gamerules and add false to list if it fails
-                if (!world.getCBWorld().setGameRule(gamerule, value)) {
-                    issuer.sendMessage(ChatColor.RED + "Failed to set gamerule " + gamerule + " to " + value + " in " + world.getName() + ". It should be a " + gamerule.getType());
-                    success = false;
-                }
-            }
-            // Tell user if it was successful
-            if (success) {
-                issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule + " to " + value + " in all worlds.");
+            else if (worlds.length > 1) {
+                issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule.getName() + " to " + value + " in " + worlds.length + " worlds.");
             }
         }
     }
