@@ -28,21 +28,18 @@ public class GameruleCommand extends MultiverseCoreCommand {
     public void onGameruleCommand(BukkitCommandIssuer issuer,
 
                                   @Syntax("<Gamerule>")
-                                @Description("Gamerule to set")
-                                String gamerule,
+                                  @Description("Gamerule to set")
+                                  GameRule gamerule,
 
                                   @Syntax("<Value>")
-                                @Description("Value of gamerule")
-                                String value,
+                                  @Description("Value of gamerule")
+                                  String value,
 
                                   @Optional
-                                @Syntax("[World or *]")
-                                @Description("World to apply gamerule to, current world by default")
-                                String worldOrAll
+                                  @Syntax("[World or *]")
+                                  @Description("World to apply gamerule to, current world by default")
+                                  String worldOrAll
     ) {
-
-        final GameRule gameRuleObject = GameRule.getByName(gamerule);
-
         // Single world
         if (!worldOrAll.equals("*")) {
 
@@ -54,10 +51,10 @@ public class GameruleCommand extends MultiverseCoreCommand {
             }
 
             // Change the game rule, send an error if it fails telling the user what data type is expected
-            if (worldToChangeGameruleIn.getCBWorld().setGameRule(gameRuleObject, value)) {
+            if (worldToChangeGameruleIn.getCBWorld().setGameRule(gamerule, value)) {
                 issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule + " to " + value + " in " + worldToChangeGameruleIn.getName());
             } else {
-                issuer.sendMessage(ChatColor.RED + "Failed to set " + gamerule + " to " + value + ". Expected a " + gameRuleObject.getType());
+                issuer.sendMessage(ChatColor.RED + "Failed to set " + gamerule + " to " + value + ". Expected a " + gamerule.getType());
             }
 
         // All worlds
@@ -67,8 +64,8 @@ public class GameruleCommand extends MultiverseCoreCommand {
             for(MVWorld world : worldManager.getMVWorlds()) {
 
                 // Set gamerules and add false to list if it fails
-                if (!world.getCBWorld().setGameRule(gameRuleObject, value)) {
-                    issuer.sendMessage(ChatColor.RED + "Failed to set gamerule " + gamerule + " to " + value + " in " + world.getName() + ". It should be a " + gameRuleObject.getType());
+                if (!world.getCBWorld().setGameRule(gamerule, value)) {
+                    issuer.sendMessage(ChatColor.RED + "Failed to set gamerule " + gamerule + " to " + value + " in " + world.getName() + ". It should be a " + gamerule.getType());
                     success = false;
                 }
             }

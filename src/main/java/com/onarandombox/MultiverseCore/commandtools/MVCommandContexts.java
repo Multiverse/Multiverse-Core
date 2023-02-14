@@ -12,6 +12,7 @@ import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
+import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 
 public class MVCommandContexts extends PaperCommandContexts {
@@ -23,8 +24,9 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
-        registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
         registerContext(ParsedDestination.class, this::parseDestination);
+        registerContext(GameRule.class, this::parseGameRule);
+        registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
@@ -49,6 +51,20 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return parsedDestination;
+    }
+
+    private GameRule<?> parseGameRule(BukkitCommandExecutionContext context) {
+        String gameRuleName = context.popFirstArg();
+        if (Strings.isNullOrEmpty(gameRuleName)) {
+            throw new InvalidCommandArgument("No game rule specified.");
+        }
+
+        GameRule<?> gameRule = GameRule.getByName(gameRuleName);
+        if (gameRule == null) {
+            throw new InvalidCommandArgument("The game rule " + gameRuleName + " is not valid.");
+        }
+
+        return gameRule;
     }
 
     private MVWorld parseMVWorld(BukkitCommandExecutionContext context) {
