@@ -4,9 +4,11 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
+import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
@@ -26,6 +28,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
+        registerContext(GameRuleValue.class, this::parseGameRuleValue);
         registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
         registerIssuerAwareContext(MVWorld[].class, this::parseMVWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
@@ -66,6 +69,29 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return gameRule;
+    }
+
+    private GameRuleValue parseGameRuleValue(BukkitCommandExecutionContext context) {
+        GameRule<?> gameRule = (GameRule<?>) context.getResolvedArg(GameRule.class);
+        if (gameRule == null) {
+            throw new InvalidCommandArgument("No game rule specified.");
+        }
+        String valueString = context.getFirstArg();
+        if (Strings.isNullOrEmpty(valueString)) {
+            throw new InvalidCommandArgument("No game rule value specified.");
+        }
+
+        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(gameRule.getType());
+        if (resolver == null) {
+            return new GameRuleValue(valueString);
+        }
+
+        Object resolvedValue = resolver.getContext(context);
+        if (resolvedValue == null) {
+            throw new InvalidCommandArgument("The game rule value " + valueString + " is not valid for game rule " + gameRule.getName() + ".");
+        }
+
+        return new GameRuleValue(resolvedValue);
     }
 
     private MVWorld parseMVWorld(BukkitCommandExecutionContext context) {
