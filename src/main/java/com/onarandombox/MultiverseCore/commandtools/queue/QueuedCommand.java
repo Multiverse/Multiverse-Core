@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.commandtools.queue;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,18 @@ public class QueuedCommand {
     private final String prompt;
     private final int validDuration;
     private BukkitTask expireTask;
+
+    public QueuedCommand(BukkitCommandIssuer issuer, Runnable action) {
+        this(issuer.getIssuer(), action, DEFAULT_PROMPT_MESSAGE, DEFAULT_VALID_TIME);
+    }
+
+    public QueuedCommand(BukkitCommandIssuer issuer, Runnable action, String prompt) {
+        this(issuer.getIssuer(), action, prompt, DEFAULT_VALID_TIME);
+    }
+
+    public QueuedCommand(BukkitCommandIssuer issuer, Runnable action, int validDuration) {
+        this(issuer.getIssuer(), action, DEFAULT_PROMPT_MESSAGE, validDuration);
+    }
 
     public QueuedCommand(CommandSender sender, Runnable action) {
         this(sender, action, DEFAULT_PROMPT_MESSAGE, DEFAULT_VALID_TIME);

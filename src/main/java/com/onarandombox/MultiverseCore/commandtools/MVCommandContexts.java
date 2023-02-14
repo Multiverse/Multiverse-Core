@@ -8,6 +8,9 @@ import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
+import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
+import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import org.bukkit.entity.Player;
 
@@ -19,10 +22,19 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.plugin = plugin;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
-        registerContext(MVWorld.class, this::parseMVWorld);
+        registerOptionalContext(ContentFilter.class, this::parseContentFilter);
+        registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+    }
+
+    private ContentFilter parseContentFilter(BukkitCommandExecutionContext context) {
+        if (Strings.isNullOrEmpty(context.getFirstArg())) {
+            return DefaultContentFilter.getInstance();
+        }
+        String filterString = context.popFirstArg();
+        return RegexContentFilter.fromString(filterString);
     }
 
     private ParsedDestination<?> parseDestination(BukkitCommandExecutionContext context) {
@@ -40,12 +52,46 @@ public class MVCommandContexts extends PaperCommandContexts {
     }
 
     private MVWorld parseMVWorld(BukkitCommandExecutionContext context) {
-        String worldName = context.popFirstArg();
-        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
-        if (world == null) {
-            throw new InvalidCommandArgument("World " + worldName + " is not a multiverse world.");
+        String resolve = context.getFlagValue("resolve", "");
+
+        // Get world based on sender only
+        if (resolve.equals("issuerOnly")) {
+            if (context.getIssuer().isPlayer()) {
+                return plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
         }
-        return world;
+
+        String worldName = context.getFirstArg();
+        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+
+        // Get world based on input, fallback to sender if input is not a world
+        if (resolve.equals("issuerAware")) {
+            if (world != null) {
+                context.popFirstArg();
+                return world;
+            }
+            if (context.getIssuer().isPlayer()) {
+                return plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+        }
+
+        // Get world based on input only
+        if (world != null) {
+            context.popFirstArg();
+            return world;
+        }
+        if (!context.isOptional()) {
+            return null;
+        }
+        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {

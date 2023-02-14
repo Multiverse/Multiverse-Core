@@ -1,14 +1,14 @@
 package com.onarandombox.MultiverseCore.display;
 
-import com.onarandombox.MultiverseCore.display.handlers.DefaultSendHandler;
-import com.onarandombox.MultiverseCore.display.handlers.SendHandler;
-import com.onarandombox.MultiverseCore.display.parsers.ContentParser;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import co.aikar.commands.BukkitCommandIssuer;
+import com.onarandombox.MultiverseCore.display.handlers.DefaultSendHandler;
+import com.onarandombox.MultiverseCore.display.handlers.SendHandler;
+import com.onarandombox.MultiverseCore.display.parsers.ContentProvider;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Helps to display contents such as list and maps in a nicely formatted fashion.
@@ -25,7 +25,7 @@ public class ContentDisplay {
         return new ContentDisplay();
     }
 
-    private final List<ContentParser> contentParsers = new ArrayList<>();
+    private final List<ContentProvider> contentParsers = new ArrayList<>();
     private SendHandler sendHandler = DefaultSendHandler.getInstance();
 
     public ContentDisplay() {
@@ -38,7 +38,7 @@ public class ContentDisplay {
      * @return Same {@link ContentDisplay} for method chaining.
      */
     @NotNull
-    public ContentDisplay addContentParser(@NotNull ContentParser parser) {
+    public ContentDisplay addContent(@NotNull ContentProvider parser) {
         contentParsers.add(parser);
         return this;
     }
@@ -58,12 +58,12 @@ public class ContentDisplay {
     /**
      * Format and display the message to command sender.
      *
-     * @param sender    The target command sender to show the display to.
+     * @param issuer    The target command sender to show the display to.
      */
-    public void send(@NotNull CommandSender sender) {
+    public void send(@NotNull BukkitCommandIssuer issuer) {
         Objects.requireNonNull(sendHandler, "No send handler set for content display");
         List<String> parsedContent = new ArrayList<>();
-        contentParsers.forEach(parser -> parser.parse(sender, parsedContent));
-        sendHandler.send(sender, parsedContent);
+        contentParsers.forEach(parser -> parsedContent.addAll(parser.parse(issuer)));
+        sendHandler.send(issuer, parsedContent);
     }
 }
