@@ -59,7 +59,6 @@ import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
@@ -69,7 +68,6 @@ import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -502,35 +500,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     public UnsafeCallWrapper getUnsafeCallWrapper() {
         return this.unsafeCallWrapper;
     }
-
-
-    //TODO - Extract MVPlayerSession to a separate class - END
-    private final HashMap<String, MVPlayerSession> playerSessions = new HashMap<String, MVPlayerSession>();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MVPlayerSession getPlayerSession(Player player) {
-        if (this.playerSessions.containsKey(player.getName())) {
-            return this.playerSessions.get(player.getName());
-        } else {
-            this.playerSessions.put(player.getName(), new MVPlayerSession(player, getMVConfig()));
-            return this.playerSessions.get(player.getName());
-        }
-    }
-
-    /**
-     * Removes a player-session.
-     *
-     * @param player The {@link Player} that owned the session.
-     */
-    public void removePlayerSession(Player player) {
-        if (this.playerSessions.containsKey(player.getName())) {
-            this.playerSessions.remove(player.getName());
-        }
-    }
-    //TODO - Extract MVPlayerSession to a separate class - END
 
 
     //TODO: REMOVE THIS STATIC CRAP - START

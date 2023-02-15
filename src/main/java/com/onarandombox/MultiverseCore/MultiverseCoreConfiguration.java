@@ -59,13 +59,9 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile boolean silentstart;
     @Property
-    private volatile int messagecooldown;
-    @Property
     private volatile double version;
     @Property
     private volatile String firstspawnworld;
-    @Property
-    private volatile int teleportcooldown;
     @Property
     private volatile boolean defaultportalsearch;
     @Property
@@ -98,8 +94,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         firstspawnoverride = true;
         displaypermerrors = true;
         globaldebug = 0;
-        messagecooldown = 5000;
-        teleportcooldown = 1000;
         this.version = 2.9;
         silentstart = false;
         defaultportalsearch = true;
@@ -241,22 +235,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
-    public int getMessageCooldown() {
-        return this.messagecooldown;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setMessageCooldown(int messageCooldown) {
-        this.messagecooldown = messageCooldown;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public double getVersion() {
         return this.version;
     }
@@ -283,22 +261,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setFirstSpawnWorld(String firstSpawnWorld) {
         this.firstspawnworld = firstSpawnWorld;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTeleportCooldown() {
-        return this.teleportcooldown;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTeleportCooldown(int teleportCooldown) {
-        this.teleportcooldown = teleportCooldown;
     }
 
     @Override
