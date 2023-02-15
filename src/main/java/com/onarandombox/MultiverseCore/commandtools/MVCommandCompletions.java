@@ -55,6 +55,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 context.getConfig("groupName", ""), context.getContextValue(String[].class));
     }
 
+    private Collection<String> suggestGamerules() {
+        return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
+    }
+
     private Collection<String> suggestMVWorlds(BukkitCommandCompletionContext context) {
         if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
             return Collections.emptyList();
@@ -91,9 +95,5 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 break;
         }
         return worlds;
-    }
-
-    private Collection<String> suggestGamerules() {
-        return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
     }
 }
