@@ -15,6 +15,7 @@ import com.google.common.collect.Sets;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,9 +32,13 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerAsyncCompletion("flags", this::suggestFlags);
-        registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
-        // Only updates on first load, helps with lag
         registerStaticCompletion("gamerules", this::suggestGamerules);
+        registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
+
+        setDefaultCompletion("destinations", ParsedDestination.class);
+        setDefaultCompletion("flags", String[].class);
+        setDefaultCompletion("gamerules", GameRule.class);
+        setDefaultCompletion("mvworlds", MVWorld.class);
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
