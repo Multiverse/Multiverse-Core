@@ -95,4 +95,18 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
         float yaw = ((Number) args.get("yaw")).floatValue();
         return new SpawnLocation(x, y, z, yaw, pitch);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "Location{world=" + getWorld()
+                + ",x=" + this.getX()
+                + ",y=" + this.getY()
+                + ",z=" + this.getZ()
+                + ",pitch=" + this.getPitch()
+                + ",yaw=" + this.getYaw()
+                + '}';
+    }
 }
