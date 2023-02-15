@@ -23,7 +23,7 @@ public class GameruleCommand extends MultiverseCoreCommand {
 
     @Subcommand("gamerule")
     @CommandPermission("multiverse.core.gamerule")
-    @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds|*")
+    @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
     @Description("Changes a gamerule in one or more worlds")
     public void onGameruleCommand(BukkitCommandIssuer issuer,

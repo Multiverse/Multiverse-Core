@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
@@ -156,17 +159,25 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
         }
 
-        String worldName = context.getFirstArg();
-        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
-        MVWorld[] worlds = "*".equals(worldName)
-                ? plugin.getMVWorldManager().getMVWorlds().toArray(new MVWorld[0])
-                : (world != null ? new MVWorld[]{world} : null);
+        String worldStrings = context.getFirstArg();
+        String[] worldNames = worldStrings.split(",");
+        Set<MVWorld> worlds = new HashSet<>(worldNames.length);
+        for (String worldName : worldNames) {
+            if ("*".equals(worldName)) {
+                return plugin.getMVWorldManager().getMVWorlds().toArray(new MVWorld[0]);
+            }
+            MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+            if (world == null) {
+                throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+            }
+            worlds.add(world);
+        }
 
         // Get world based on input, fallback to sender if input is not a world
         if (resolve.equals("issuerAware")) {
-            if (worlds != null) {
+            if (!worlds.isEmpty()) {
                 context.popFirstArg();
-                return worlds;
+                return worlds.toArray(new MVWorld[0]);
             }
             if (playerWorld != null) {
                 return new MVWorld[]{playerWorld};
@@ -178,14 +189,14 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         // Get world based on input only
-        if (worlds != null) {
+        if (!worlds.isEmpty()) {
             context.popFirstArg();
-            return worlds;
+            return worlds.toArray(new MVWorld[0]);
         }
         if (!context.isOptional()) {
             return null;
         }
-        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+        throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {
