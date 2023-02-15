@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements SendHandler {
 
     protected String header = "";
-    protected ContentFilter filter = DefaultContentFilter.getInstance();
+    protected ContentFilter filter = DefaultContentFilter.get();
     protected String noContentMessage = String.format("%sThere is no content to display.", ChatColor.RED);
 
     /**

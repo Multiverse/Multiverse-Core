@@ -35,7 +35,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      */
     @Override
     public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
-        if (!paginate || (issuer instanceof ConsoleCommandSender && !paginateInConsole)) {
+        if (!paginate || (issuer.getIssuer() instanceof ConsoleCommandSender && !paginateInConsole)) {
             sendNormal(issuer, content);
             return;
         }

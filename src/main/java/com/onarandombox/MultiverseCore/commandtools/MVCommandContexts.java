@@ -40,7 +40,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
     private ContentFilter parseContentFilter(BukkitCommandExecutionContext context) {
         if (Strings.isNullOrEmpty(context.getFirstArg())) {
-            return DefaultContentFilter.getInstance();
+            return DefaultContentFilter.get();
         }
         String filterString = context.popFirstArg();
         return RegexContentFilter.fromString(filterString);

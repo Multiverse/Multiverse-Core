@@ -7,7 +7,7 @@ public class DefaultContentFilter implements ContentFilter {
 
     public static DefaultContentFilter instance;
 
-    public static DefaultContentFilter getInstance() {
+    public static DefaultContentFilter get() {
         if (instance == null) {
             instance = new DefaultContentFilter();
         }

@@ -68,11 +68,11 @@ public class RegexContentFilter implements ContentFilter {
         if (!hasValidRegex()) {
             return false;
         }
-        String text = ChatColor.stripColor(String.valueOf(value));
+        String text = ChatColor.stripColor(String.valueOf(value)).toLowerCase();
         try {
             return regexPattern.matcher(text).find();
         } catch (PatternSyntaxException ignored) {
-            Logging.fine("Error parsing regex '%s' for input '%s'", regexString, text);
+            Logging.warning("Error parsing regex '%s' for input '%s'", regexString, text);
             return false;
         }
     }

@@ -18,4 +18,11 @@ public interface ContentFilter {
      * @return True if content should be filtered, false otherwise.
      */
     boolean needToFilter();
+
+    /**
+     * Gets the string representation of this filter.
+     *
+     * @return The string representation of this filter.
+     */
+    String toString();
 }

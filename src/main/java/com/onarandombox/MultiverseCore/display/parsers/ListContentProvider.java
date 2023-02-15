@@ -27,7 +27,7 @@ public class ListContentProvider<T> implements ContentProvider {
 
     private final List<T> list;
 
-    private String format = "%s";
+    private String format = null;
 
     public ListContentProvider(List<T> list) {
         this.list = list;
@@ -38,6 +38,9 @@ public class ListContentProvider<T> implements ContentProvider {
      */
     @Override
     public Collection<String> parse(@NotNull BukkitCommandIssuer issuer) {
+        if (format == null) {
+            return list.stream().map(Object::toString).collect(Collectors.toList());
+        }
         return list.stream().map(element -> String.format(format, element)).collect(Collectors.toList());
     }
 
