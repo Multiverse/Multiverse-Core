@@ -33,6 +33,7 @@ import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
 import com.onarandombox.MultiverseCore.commands.DeleteCommand;
 import com.onarandombox.MultiverseCore.commands.GameruleCommand;
+import com.onarandombox.MultiverseCore.commands.ListCommand;
 import com.onarandombox.MultiverseCore.commands.LoadCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
@@ -204,6 +205,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.commandManager.registerCommand(new DebugCommand(this));
         this.commandManager.registerCommand(new DeleteCommand(this));
         this.commandManager.registerCommand(new GameruleCommand(this));
+        this.commandManager.registerCommand(new ListCommand(this));
         this.commandManager.registerCommand(new LoadCommand(this));
         this.commandManager.registerCommand(new RegenCommand(this));
         this.commandManager.registerCommand(new ReloadCommand(this));
