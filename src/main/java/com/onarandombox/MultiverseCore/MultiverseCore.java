@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
@@ -85,7 +84,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     // Setup various managers
     private final AnchorManager anchorManager = new AnchorManager(this);
     private BlockSafety blockSafety = new SimpleBlockSafety(this);
-    private Buscript buscript;
     private MVCommandManager commandManager;
     private DestinationsProvider destinationsProvider;
     private MVEconomist economist;
@@ -168,7 +166,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.registerCommands();
         this.registerDestinations();
         this.setupMetrics();
-        this.initializeBuscript();
         this.saveMVConfig();
         this.logEnableMessage();
     }
@@ -235,25 +232,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
             MetricsConfigurator.configureMetrics(this);
-        }
-    }
-
-    /**
-     * Initializes the buscript javascript library.
-     */
-    private void initializeBuscript() {
-        if (!this.getMVConfig().getEnableBuscript()) {
-            return;
-        }
-
-        try {
-            buscript = new Buscript(this);
-            // Add global variable "multiverse" to javascript environment
-            buscript.setScriptVariable("multiverse", this);
-        } catch (NullPointerException e) {
-            Logging.warning("Buscript failed to load! The script command will be disabled! " +
-                    "If you would like not to see this message, " +
-                    "use `/mv conf enablebuscript false` to disable Buscript from loading.");
         }
     }
 
@@ -515,14 +493,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public MVConfig getMVConfig() {
         return config;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Buscript getScriptAPI() {
-        return buscript;
     }
 
     /**

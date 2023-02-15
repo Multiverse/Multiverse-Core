@@ -87,18 +87,6 @@ public interface MVConfig extends ConfigurationSerializable {
     boolean getDisplayPermErrors();
 
     /**
-     * Sets enableBuscript.
-     * @param enableBuscript The new value.
-     */
-    void setEnableBuscript(boolean enableBuscript);
-
-    /**
-     * Gets enableBuscript.
-     * @return enableBuscript.
-     */
-    boolean getEnableBuscript();
-
-    /**
      * Sets firstSpawnOverride.
      * @param firstSpawnOverride The new value.
      */
