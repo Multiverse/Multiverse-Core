@@ -164,7 +164,8 @@ public class MVCommandContexts extends PaperCommandContexts {
         Set<MVWorld> worlds = new HashSet<>(worldNames.length);
         for (String worldName : worldNames) {
             if ("*".equals(worldName)) {
-                return plugin.getMVWorldManager().getMVWorlds().toArray(new MVWorld[0]);
+                worlds.addAll(plugin.getMVWorldManager().getMVWorlds());
+                break;
             }
             MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
             if (world == null) {
