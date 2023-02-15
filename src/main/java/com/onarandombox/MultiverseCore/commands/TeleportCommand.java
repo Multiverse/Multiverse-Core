@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import org.bukkit.entity.Player;
 
 @CommandAlias("mv")
-public class TeleportCommand extends MultiverseCommand {
+public class TeleportCommand extends MultiverseCoreCommand {
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
     }

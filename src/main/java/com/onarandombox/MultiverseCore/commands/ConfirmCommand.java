@@ -9,7 +9,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class ConfirmCommand extends MultiverseCommand {
+public class ConfirmCommand extends MultiverseCoreCommand {
     public ConfirmCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.locale.MVCorei18n;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class DebugCommand extends MultiverseCommand {
+public class DebugCommand extends MultiverseCoreCommand {
     public DebugCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

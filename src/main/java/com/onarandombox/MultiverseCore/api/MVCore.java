@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import buscript.Buscript;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
@@ -174,11 +173,4 @@ public interface MVCore extends MVPlugin {
      * @return The configuration.
      */
     MVConfig getMVConfig();
-
-    /**
-     * Gets the buscript object for Multiverse.  This is what handles Javascript processing.
-     *
-     * @return The Multiverse buscript object.
-     */
-    Buscript getScriptAPI();
 }

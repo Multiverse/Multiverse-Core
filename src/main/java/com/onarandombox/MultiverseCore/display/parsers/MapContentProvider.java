@@ -1,11 +1,12 @@
 package com.onarandombox.MultiverseCore.display.parsers;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import co.aikar.commands.BukkitCommandIssuer;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Simple parser for map object.
@@ -13,7 +14,7 @@ import java.util.Map;
  * @param <K>   Key type.
  * @param <V>   Value type.
  */
-public class MapContentParser<K, V> implements ContentParser {
+public class MapContentProvider<K, V> implements ContentProvider {
 
     /**
      * New map content parser for the given map.
@@ -21,10 +22,10 @@ public class MapContentParser<K, V> implements ContentParser {
      * @param map   The map object to parse.
      * @param <K>   Key type.
      * @param <V>   Value type.
-     * @return New {@link MapContentParser} instance.
+     * @return New {@link MapContentProvider} instance.
      */
-    public static <K, V> MapContentParser<K, V> forContent(Map<K, V> map) {
-        return new MapContentParser<>(map);
+    public static <K, V> MapContentProvider<K, V> forContent(Map<K, V> map) {
+        return new MapContentProvider<>(map);
     }
 
     private final Map<K, V> map;
@@ -34,7 +35,7 @@ public class MapContentParser<K, V> implements ContentParser {
     private ChatColor valueColor = ChatColor.WHITE;
     private String separator = ": ";
 
-    public MapContentParser(Map<K, V> map) {
+    public MapContentProvider(Map<K, V> map) {
         this.map = map;
     }
 
@@ -42,17 +43,19 @@ public class MapContentParser<K, V> implements ContentParser {
      * {@inheritDoc}
      */
     @Override
-    public void parse(@NotNull CommandSender sender, @NotNull List<String> content) {
-        map.forEach((k, v) -> content.add(String.format(format, keyColor, k, separator, valueColor, v)));
+    public Collection<String> parse(@NotNull BukkitCommandIssuer issuer) {
+        return map.entrySet().stream()
+                .map(e -> String.format(format, keyColor, e.getKey(), separator, valueColor, e.getValue()))
+                .collect(Collectors.toList());
     }
 
     /**
      * Sets the format that will be used to parse each map entry. Uses java string format pattern.
      *
      * @param format    The format to use.
-     * @return Same {@link MapContentParser} for method chaining.
+     * @return Same {@link MapContentProvider} for method chaining.
      */
-    public MapContentParser<K, V> withFormat(String format) {
+    public MapContentProvider<K, V> withFormat(String format) {
         this.format = format;
         return this;
     }
@@ -61,9 +64,9 @@ public class MapContentParser<K, V> implements ContentParser {
      * Sets the color for the key text.
      *
      * @param keyColor  The color to use.
-     * @return Same {@link MapContentParser} for method chaining.
+     * @return Same {@link MapContentProvider} for method chaining.
      */
-    public MapContentParser<K, V> withKeyColor(ChatColor keyColor) {
+    public MapContentProvider<K, V> withKeyColor(ChatColor keyColor) {
         this.keyColor = keyColor;
         return this;
     }
@@ -72,9 +75,9 @@ public class MapContentParser<K, V> implements ContentParser {
      * Sets the color for the value text.
      *
      * @param valueColor    The color to use.
-     * @return Same {@link MapContentParser} for method chaining.
+     * @return Same {@link MapContentProvider} for method chaining.
      */
-    public MapContentParser<K, V> withValueColor(ChatColor valueColor) {
+    public MapContentProvider<K, V> withValueColor(ChatColor valueColor) {
         this.valueColor = valueColor;
         return this;
     }
@@ -83,9 +86,9 @@ public class MapContentParser<K, V> implements ContentParser {
      * Sets the separator between each key value pairing.
      *
      * @param separator The separator to use.
-     * @return Same {@link MapContentParser} for method chaining.
+     * @return Same {@link MapContentProvider} for method chaining.
      */
-    public MapContentParser<K, V> withSeparator(String separator) {
+    public MapContentProvider<K, V> withSeparator(String separator) {
         this.separator = separator;
         return this;
     }

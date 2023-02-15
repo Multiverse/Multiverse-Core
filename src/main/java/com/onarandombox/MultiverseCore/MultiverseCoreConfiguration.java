@@ -55,8 +55,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile boolean displaypermerrors;
     @Property
-    private volatile boolean enablebuscript;
-    @Property
     private volatile int globaldebug;
     @Property
     private volatile boolean silentstart;
@@ -95,7 +93,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
-        enablebuscript = true;
         globaldebug = 0;
         this.version = 2.9;
         silentstart = false;
@@ -206,22 +203,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public boolean getDisplayPermErrors() {
         return this.displaypermerrors;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean getEnableBuscript() {
-        return this.enablebuscript;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setEnableBuscript(boolean enableBuscript) {
-        this.enablebuscript = enableBuscript;
     }
 
     /**

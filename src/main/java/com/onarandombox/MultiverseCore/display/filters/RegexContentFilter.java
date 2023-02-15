@@ -1,13 +1,13 @@
 package com.onarandombox.MultiverseCore.display.filters;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Filter content and text based on regex matching.
@@ -34,7 +34,7 @@ public class RegexContentFilter implements ContentFilter {
             return new RegexContentFilter(filterString.substring(2));
         }
         String cleanedFilter = REGEX_SPECIAL_CHARS.matcher(filterString.toLowerCase()).replaceAll("\\\\$0");
-        return new RegexContentFilter("(?i).*" + cleanedFilter + ".*");
+        return new RegexContentFilter(cleanedFilter);
     }
 
     private final String regexString;
@@ -69,7 +69,12 @@ public class RegexContentFilter implements ContentFilter {
             return false;
         }
         String text = ChatColor.stripColor(String.valueOf(value));
-        return regexPattern.matcher(text).find();
+        try {
+            return regexPattern.matcher(text).find();
+        } catch (PatternSyntaxException ignored) {
+            Logging.fine("Error parsing regex '%s' for input '%s'", regexString, text);
+            return false;
+        }
     }
 
     /**

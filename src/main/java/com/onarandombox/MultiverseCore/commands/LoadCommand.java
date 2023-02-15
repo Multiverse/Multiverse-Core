@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class LoadCommand extends MultiverseCommand {
+public class LoadCommand extends MultiverseCoreCommand {
     public LoadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

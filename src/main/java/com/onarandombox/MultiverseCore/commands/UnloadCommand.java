@@ -12,7 +12,7 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class UnloadCommand extends MultiverseCommand {
+public class UnloadCommand extends MultiverseCoreCommand {
     public UnloadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

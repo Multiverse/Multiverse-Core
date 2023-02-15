@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class CheckCommand extends MultiverseCommand {
+public class CheckCommand extends MultiverseCoreCommand {
     public CheckCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

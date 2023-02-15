@@ -1,14 +1,15 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import co.aikar.commands.BukkitCommandIssuer;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base implementation of {@link SendHandler} with some common parameters.
@@ -19,29 +20,30 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
 
     protected String header = "";
     protected ContentFilter filter = DefaultContentFilter.getInstance();
+    protected String noContentMessage = String.format("%sThere is no content to display.", ChatColor.RED);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void send(@NotNull CommandSender sender, @NotNull List<String> content) {
-        sendHeader(sender);
+    public void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+        sendHeader(issuer);
         List<String> filteredContent = filterContent(content);
-        if (filteredContent.isEmpty()) {
-            sender.sendMessage(String.format("%sThere is no content to display.", ChatColor.RED));
+        if (filteredContent.isEmpty() && !Strings.isNullOrEmpty(noContentMessage)) {
+            issuer.sendMessage(noContentMessage);
             return;
         }
-        sendContent(sender, filteredContent);
+        sendContent(issuer, filteredContent);
     }
 
     /**
      * Sends the header if header is present.
      *
-     * @param sender    The target which the header will be displayed to.
+     * @param issuer    The target which the header will be displayed to.
      */
-    protected void sendHeader(CommandSender sender) {
+    protected void sendHeader(BukkitCommandIssuer issuer) {
         if (!Strings.isNullOrEmpty(header)) {
-            sender.sendMessage(header);
+            issuer.sendMessage(header);
         }
     }
 
@@ -61,10 +63,10 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
     /**
      * Display the contents.
      *
-     * @param sender    The target which the content will be displayed to.
+     * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    protected abstract void sendContent(@NotNull CommandSender sender, @NotNull List<String> content);
+    protected abstract void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);
 
     /**
      * Sets header to be displayed.
@@ -89,11 +91,26 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
         return (T) this;
     }
 
+    /**
+     * Sets the message to be displayed when there is no content to display.
+     *
+     * @param message   The message to display. Null to disable.
+     * @return Same {@link T} for method chaining.
+     */
+    public T noContentMessage(@Nullable String message) {
+        this.noContentMessage = message;
+        return (T) this;
+    }
+
     public String getHeader() {
         return header;
     }
 
     public ContentFilter getFilter() {
         return filter;
+    }
+
+    public String getNoContentMessage() {
+        return noContentMessage;
     }
 }

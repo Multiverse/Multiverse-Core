@@ -15,7 +15,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
-public class DeleteCommand extends MultiverseCommand {
+public class DeleteCommand extends MultiverseCoreCommand {
     public DeleteCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
