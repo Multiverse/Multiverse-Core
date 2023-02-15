@@ -1,9 +1,7 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandIssuer;
@@ -11,6 +9,7 @@ import co.aikar.commands.PaperCommandCompletions;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
 
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -27,6 +26,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerAsyncCompletion("flags", this::suggestFlags);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
+        // Only updates on first load, helps with lag
+        registerStaticCompletion("gamerules", this::suggestGamerules);
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
@@ -65,5 +66,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
 
         return worlds;
+    }
+
+    private Collection<String> suggestGamerules() {
+        return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
     }
 }
