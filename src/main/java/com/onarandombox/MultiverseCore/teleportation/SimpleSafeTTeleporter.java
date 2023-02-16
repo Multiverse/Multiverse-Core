@@ -208,7 +208,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
 
         MultiverseCore.addPlayerToTeleportQueue(teleporter.getIssuer().getName(), teleporteePlayer.getName());
 
-        Location safeLoc = destination.getDestinationInstance().getLocation(teleportee);
+        Location safeLoc = destination.getLocation(teleportee);
         if (destination.getDestination().checkTeleportSafety()) {
             safeLoc = this.getSafeLocation(teleportee, destination.getDestinationInstance());
         }

@@ -380,7 +380,7 @@ public class SimpleMVWorld implements MVWorld {
 
         @Override
         public String toString() {
-            return "NULL LOCATION";
+            return "Location{null}";
         };
     }
 

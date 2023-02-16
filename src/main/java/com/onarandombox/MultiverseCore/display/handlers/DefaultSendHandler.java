@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+
+import co.aikar.commands.BukkitCommandIssuer;
+import org.jetbrains.annotations.NotNull;
 
 public class DefaultSendHandler implements SendHandler {
 
@@ -23,7 +23,7 @@ public class DefaultSendHandler implements SendHandler {
      * {@inheritDoc}
      */
     @Override
-    public void send(@NotNull CommandSender sender, @NotNull List<String> content) {
-        sender.sendMessage(content.toArray(new String[0]));
+    public void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+        content.forEach(issuer::sendMessage);
     }
 }

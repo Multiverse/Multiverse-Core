@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
+import java.util.List;
+
+import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Display content as a list with optional pagination.
@@ -34,50 +34,44 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * {@inheritDoc}
      */
     @Override
-    public void sendContent(@NotNull CommandSender sender,
-                            @NotNull List<String> content) {
-
-        if (!paginate || (sender instanceof ConsoleCommandSender && !paginateInConsole)) {
-            sendNormal(sender, content);
+    public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+        if (!paginate || (issuer.getIssuer() instanceof ConsoleCommandSender && !paginateInConsole)) {
+            sendNormal(issuer, content);
             return;
         }
-        sendPaged(sender, content);
+        sendPaged(issuer, content);
     }
 
     /**
      * Send content list without pagination.
      *
-     * @param sender    The target which the content will be displayed to.
+     * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    private void sendNormal(@NotNull CommandSender sender,
-                            @NotNull List<String> content) {
-
+    private void sendNormal(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
-            sender.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
+            issuer.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
         }
-        sender.sendMessage(content.toArray(new String[0]));
+        content.forEach(issuer::sendMessage);
     }
 
     /**
      * Send content list with pagination.
      *
-     * @param sender    The target which the content will be displayed to.
+     * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    private void sendPaged(@NotNull CommandSender sender,
-                           @NotNull List<String> content) {
-
+    private void sendPaged(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
         int totalPages = (content.size() + linesPerPage - 1) / linesPerPage; // Basically just divide round up
         if (targetPage < 1 || targetPage > totalPages) {
-            sender.sendMessage(String.format("%sInvalid page number. Please enter a page number between 1 and %s", ChatColor.RED, totalPages));
+            issuer.sendMessage(String.format("%sInvalid page number. Please enter a page number between 1 and %s", ChatColor.RED, totalPages));
             return;
         }
 
         if (filter.needToFilter()) {
-            sender.sendMessage(String.format("%s[Page %s of %s] [Filter '%s']", ChatColor.GRAY, targetPage, totalPages, filter));
+            issuer.sendMessage(String.format("%s[Page %s of %s] [Filter '%s']", ChatColor.GRAY, targetPage, totalPages, filter));
         } else {
-            sender.sendMessage(String.format("%s[Page %s of %s]", ChatColor.GRAY, targetPage, totalPages));
+            issuer.sendMessage(String.format("%s[Page %s of %s]", ChatColor.GRAY, targetPage, totalPages));
         }
 
         int startIndex = (targetPage - 1) * linesPerPage;
@@ -89,7 +83,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
                 pageContent.add("");
             }
         }
-        sender.sendMessage(pageContent.toArray(new String[0]));
+        pageContent.forEach(issuer::sendMessage);
     }
 
     /**

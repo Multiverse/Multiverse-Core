@@ -1,10 +1,10 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+
+import co.aikar.commands.BukkitCommandIssuer;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Display the contents in a single line.
@@ -21,6 +21,7 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
     }
 
     private String delimiter = ChatColor.WHITE + ", ";
+    private String prefix = null;
 
     public InlineSendHandler() {
     }
@@ -29,11 +30,15 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
      * {@inheritDoc}
      */
     @Override
-    public void sendContent(@NotNull CommandSender sender, @NotNull List<String> content) {
+    public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
-            sender.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
+            issuer.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
         }
-        sender.sendMessage(String.join(delimiter, content));
+        String message = String.join(delimiter, content);
+        if (prefix != null) {
+            message = prefix + message;
+        }
+        issuer.sendMessage(message);
     }
 
     /**
@@ -47,7 +52,16 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
         return this;
     }
 
+    public InlineSendHandler withPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
     public String getDelimiter() {
         return delimiter;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 }

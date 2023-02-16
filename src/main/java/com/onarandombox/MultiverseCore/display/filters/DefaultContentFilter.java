@@ -7,7 +7,7 @@ public class DefaultContentFilter implements ContentFilter {
 
     public static DefaultContentFilter instance;
 
-    public static DefaultContentFilter getInstance() {
+    public static DefaultContentFilter get() {
         if (instance == null) {
             instance = new DefaultContentFilter();
         }
@@ -31,5 +31,10 @@ public class DefaultContentFilter implements ContentFilter {
     @Override
     public boolean needToFilter() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "N/A";
     }
 }

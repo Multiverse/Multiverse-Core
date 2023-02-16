@@ -7,18 +7,15 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import buscript.Buscript;
+import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
-import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
+import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
-import org.bukkit.entity.Player;
 
 /**
  * Multiverse 2 Core API
@@ -46,17 +43,6 @@ public interface MVCore extends MVPlugin {
      * @return A non-null {@link UnsafeCallWrapper}.
      */
     UnsafeCallWrapper getUnsafeCallWrapper();
-
-    /**
-     * Gets the {@link MVPlayerSession} for the given player.
-     * This will also create a player session if one does not exist
-     * for a player.
-     *
-     * @param player The player's session to grab.
-     *
-     * @return The corresponding {@link MVPlayerSession}.
-     */
-    MVPlayerSession getPlayerSession(Player player);
 
     /**
      * Multiverse uses an advanced permissions setup, this object
@@ -187,11 +173,4 @@ public interface MVCore extends MVPlugin {
      * @return The configuration.
      */
     MVConfig getMVConfig();
-
-    /**
-     * Gets the buscript object for Multiverse.  This is what handles Javascript processing.
-     *
-     * @return The Multiverse buscript object.
-     */
-    Buscript getScriptAPI();
 }
