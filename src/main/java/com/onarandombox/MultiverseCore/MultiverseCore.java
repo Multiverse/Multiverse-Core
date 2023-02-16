@@ -164,6 +164,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.anchorManager.loadAnchors();
         this.registerEvents();
         this.registerCommands();
+        this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
         this.saveMVConfig();
@@ -213,6 +214,14 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.commandManager.registerCommand(new RemoveCommand(this));
         this.commandManager.registerCommand(new TeleportCommand(this));
         this.commandManager.registerCommand(new UnloadCommand(this));
+    }
+
+    /**
+     * Resgister locales
+     */
+    private void setUpLocales() {
+        this.commandManager.getLocales().addFileResClassLoader(this);
+        this.commandManager.getLocales().addMessageBundles("multiverse-core");
     }
 
     /**

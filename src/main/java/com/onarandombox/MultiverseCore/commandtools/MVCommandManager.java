@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.Locale;
-
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
@@ -10,6 +8,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.locale.PluginLocales;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,6 +19,7 @@ public class MVCommandManager extends PaperCommandManager {
     private final MultiverseCore plugin;
     private CommandFlagsManager flagsManager;
     private CommandQueueManager commandQueueManager;
+    private PluginLocales pluginLocales;
 
     public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
@@ -27,11 +27,6 @@ public class MVCommandManager extends PaperCommandManager {
 
         // Setup conditions
         MVCommandConditions.load(this, plugin);
-
-        // Setup locale
-        this.addSupportedLanguage(Locale.ENGLISH);
-        this.locales.addMessageBundles("multiverse-core");
-        this.locales.loadLanguages();
     }
 
     /**
@@ -44,6 +39,16 @@ public class MVCommandManager extends PaperCommandManager {
             this.flagsManager = new CommandFlagsManager();
         }
         return flagsManager;
+    }
+
+    @Override
+    public PluginLocales getLocales() {
+        if (this.pluginLocales == null) {
+            this.pluginLocales = new PluginLocales(this);
+            this.locales = pluginLocales; // For parent class
+            this.pluginLocales.loadLanguages();
+        }
+        return this.pluginLocales;
     }
 
     /**
