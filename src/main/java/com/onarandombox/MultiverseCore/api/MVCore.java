@@ -114,13 +114,6 @@ public interface MVCore extends MVPlugin {
     int getPluginCount();
 
     /**
-     * Parse the Authors Array into a readable String with ',' and 'and'.
-     *
-     * @return The readable authors-{@link String}
-     */
-    String getAuthors();
-
-    /**
      * Gets the {@link BlockSafety} this {@link MVCore} is using.
      * @return The {@link BlockSafety} this {@link MVCore} is using.
      * @see BlockSafety

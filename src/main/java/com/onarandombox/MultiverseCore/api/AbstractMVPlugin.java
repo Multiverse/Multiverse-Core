@@ -1,95 +1,105 @@
 package com.onarandombox.MultiverseCore.api;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Make things easier for MV-Plugins!
+ * Make things easier for Multiverse Plugins.
  */
 public abstract class AbstractMVPlugin extends JavaPlugin implements MVPlugin {
-    private MultiverseCore core;
+    private MVCore core;
 
     /**
      * {@inheritDoc}
      *
-     * Note: You can't override this, use {@link #onPluginEnable()} instead!
-     * @see #onPluginEnable()
+     * Note: You should not override this, use {@link #onMVPluginEnable()} instead!
+     * @see #onMVPluginEnable()
      */
     @Override
     public final void onEnable() {
-        MultiverseCore theCore = (MultiverseCore) this.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        if (theCore == null) {
-            this.getLogger().severe("Core not found! The plugin dev needs to add a dependency!");
-            this.getLogger().severe("Disabling!");
+        MVCore mvCore = (MVCore) this.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        if (mvCore == null) {
+            Logging.severe("Core not found! You must have Multiverse-Core installed to use this plugin!");
+            Logging.severe("Grab a copy at: ");
+            Logging.severe("https://dev.bukkit.org/projects/multiverse-core");
+            Logging.severe("Disabling!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if (theCore.getProtocolVersion() < this.getProtocolVersion()) {
-            this.getLogger().severe("You need a newer version of Multiverse-Core!");
-            this.getLogger().severe("Disabling!");
+        if (mvCore.getProtocolVersion() < this.getProtocolVersion()) {
+            Logging.severe("Your Multiverse-Core is OUT OF DATE");
+            Logging.severe("This version of " + this.getDescription().getName() + " requires Protocol Level: " + this.getProtocolVersion());
+            Logging.severe("Your of Core Protocol Level is: " + this.core.getProtocolVersion());
+            Logging.severe("Grab an updated copy at: ");
+            Logging.severe("https://dev.bukkit.org/projects/multiverse-core");
+            Logging.severe("Disabling!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        this.setCore(theCore);
-
-        this.getServer().getLogger().info(String.format("%s - Version %s enabled - By %s",
-                this.getDescription().getName(), this.getDescription().getVersion(), getAuthors()));
-        getDataFolder().mkdirs();
-        File debugLogFile = new File(getDataFolder(), "debug.log");
-        try {
-            debugLogFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        this.onPluginEnable();
+        this.core = mvCore;
+        this.core.incrementPluginCount();
+        this.onMVPluginEnable();
+        Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), getProtocolVersion(), getAuthors());
     }
 
     /**
-     * Parse the Authors Array into a readable String with ',' and 'and'.
+     * {@inheritDoc}
      *
-     * @return The readable authors-{@link String}
+     * Note: You should not override this, use {@link #onMVPluginDisable()} instead!
+     * @see #onMVPluginDisable()
      */
-    protected String getAuthors() {
-        String authors = "";
-        List<String> auths = this.getDescription().getAuthors();
-        if (auths.size() == 0) {
-            return "";
-        }
-
-        if (auths.size() == 1) {
-            return auths.get(0);
-        }
-
-        for (int i = 0; i < auths.size(); i++) {
-            if (i == this.getDescription().getAuthors().size() - 1) {
-                authors += " and " + this.getDescription().getAuthors().get(i);
-            } else {
-                authors += ", " + this.getDescription().getAuthors().get(i);
-            }
-        }
-        return authors.substring(2);
+    @Override
+    public void onDisable() {
+        this.core.decrementPluginCount();
+        this.onMVPluginDisable();
     }
 
     /**
      * Called when the plugin is enabled.
      * @see #onEnable()
      */
-    protected abstract void onPluginEnable();
+    protected abstract void onMVPluginEnable();
 
+    /**
+     * Called when the plugin is disabled.
+     * @see #onDisable()
+     */
+    protected abstract void onMVPluginDisable();
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final MultiverseCore getCore() {
-        if (this.core == null)
-            throw new IllegalStateException("Core is null!");
-        return this.core;
+    public String getAuthors() {
+        List<String> authorsList = this.getDescription().getAuthors();
+        if (authorsList.size() == 0) {
+            return "";
+        }
+
+        StringBuilder authors = new StringBuilder();
+        authors.append(authorsList.get(0));
+
+        for (int i = 1; i < authorsList.size(); i++) {
+            if (i == authorsList.size() - 1) {
+                authors.append(" and ").append(authorsList.get(i));
+            } else {
+                authors.append(", ").append(authorsList.get(i));
+            }
+        }
+
+        return authors.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final void setCore(MultiverseCore core) {
-        this.core = core;
+    public final MVCore getCore() {
+        if (this.core == null) {
+            throw new IllegalStateException("MVCore is null!");
+        }
+        return this.core;
     }
 }

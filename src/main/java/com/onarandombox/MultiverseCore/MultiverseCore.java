@@ -249,17 +249,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
-    public MultiverseCore getCore() {
+    public MVCore getCore() {
         return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setCore(MultiverseCore core) {
-        // This method is required by the interface (so core is effectively a plugin of itself) and therefore
-        // this is never used.
     }
 
     /**

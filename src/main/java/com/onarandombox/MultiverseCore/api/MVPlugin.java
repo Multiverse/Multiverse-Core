@@ -7,8 +7,6 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-
 /**
  * This interface is implemented by every official Multiverse-plugin.
  */
@@ -18,14 +16,7 @@ public interface MVPlugin {
      *
      * @return A valid {@link com.onarandombox.MultiverseCore}.
      */
-    MultiverseCore getCore();
-
-    /**
-     * Sets the reference to MultiverseCore.
-     *
-     * @param core A valid {@link com.onarandombox.MultiverseCore}.
-     */
-    void setCore(MultiverseCore core);
+    MVCore getCore();
 
     /**
      * Allows Multiverse or a plugin to query another Multiverse plugin to see what version its protocol is. This
@@ -35,4 +26,11 @@ public interface MVPlugin {
      * @return The Integer protocol version.
      */
     int getProtocolVersion();
+
+    /**
+     * Parse the Authors Array into a readable String with ',' and 'and'.
+     *
+     * @return The readable authors-{@link String}
+     */
+    String getAuthors();
 }
