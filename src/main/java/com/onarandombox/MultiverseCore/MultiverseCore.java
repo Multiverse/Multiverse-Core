@@ -77,7 +77,7 @@ import org.bukkit.plugin.java.JavaPluginLoader;
  * The implementation of the Multiverse-{@link MVCore}.
  */
 public class MultiverseCore extends JavaPlugin implements MVCore {
-    private static final int PROTOCOL = 24;
+    private static final int PROTOCOL = 50;
 
     // Setup various managers
     private final AnchorManager anchorManager = new AnchorManager(this);
@@ -258,7 +258,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public int getProtocolVersion() {
-        return MultiverseCore.PROTOCOL;
+        return PROTOCOL;
     }
 
     /**
