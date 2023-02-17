@@ -220,6 +220,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Resgister locales
      */
     private void setUpLocales() {
+        this.commandManager.usePerIssuerLocale(true, true);
         this.commandManager.getLocales().addFileResClassLoader(this);
         this.commandManager.getLocales().addMessageBundles("multiverse-core");
     }
