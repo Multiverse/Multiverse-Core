@@ -56,7 +56,7 @@ public class ImportCommand extends MultiverseCoreCommand {
 
                                 @Conditions("validWorldName:scope=new")
                                 @Syntax("<name>")
-                                @Description("Folder name of the world.")
+                                @Description("Name of the world folder.")
                                 String worldName,
 
                                 @Syntax("<env>")
@@ -65,7 +65,7 @@ public class ImportCommand extends MultiverseCoreCommand {
 
                                 @Optional
                                 @Syntax("--generator [generator[:id]] --adjust-spawn")
-                                @Description("Other world settings. See: http://gg.gg/nn8c2")
+                                @Description("Other world settings. See: https://gg.gg/nn8c2")
                                 String[] flags) {
 
         ParsedCommandFlags parsedFlags = parseFlags(flags);
