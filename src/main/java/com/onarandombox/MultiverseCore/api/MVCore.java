@@ -14,10 +14,9 @@ import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
 import com.onarandombox.MultiverseCore.utils.PermissionsTool;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
-import com.onarandombox.MultiverseCore.utils.actioncheck.PlayerActionChecker;
+import com.onarandombox.MultiverseCore.utils.player.PlayerActionChecker;
 
 /**
  * Multiverse 2 Core API

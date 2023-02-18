@@ -6,11 +6,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A response that have multiple results.
  */
 public class ActionResponse implements ActionResult {
+    public static ActionResponse create() {
+        return new ActionResponse();
+    }
+
+    public static ActionResponse create(boolean continueIfFail) {
+        return new ActionResponse(continueIfFail);
+    }
+
+    public static ActionResponse of(ActionResult result) {
+        return new ActionResponse().addResult(result);
+    }
+
     private final Set<ActionResult> results;
     private final boolean continueIfFail;
 
@@ -79,7 +92,7 @@ public class ActionResponse implements ActionResult {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasResult(ActionResult result) {
+    public boolean hasResult(@Nullable ActionResult result) {
         return results.contains(result);
     }
 

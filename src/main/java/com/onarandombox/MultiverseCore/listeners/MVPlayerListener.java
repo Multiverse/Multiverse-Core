@@ -16,11 +16,15 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.api.action.ActionResponse;
-import com.onarandombox.MultiverseCore.utils.actioncheck.ActionCheckResult;
-import com.onarandombox.MultiverseCore.utils.actioncheck.PlayerActionChecker;
 import com.onarandombox.MultiverseCore.api.action.ActionResult;
+import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.utils.player.PlayerActionChecker;
+import com.onarandombox.MultiverseCore.utils.player.checkresult.BlacklistResult;
+import com.onarandombox.MultiverseCore.utils.player.checkresult.EntryFeeResult;
+import com.onarandombox.MultiverseCore.utils.player.checkresult.NullPlaceResult;
+import com.onarandombox.MultiverseCore.utils.player.checkresult.PlayerLimitResult;
+import com.onarandombox.MultiverseCore.utils.player.checkresult.WorldAccessResult;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -204,7 +208,7 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-        if (actionCheckResponse.hasResult(ActionCheckResult.ENOUGH_MONEY)) {
+        if (actionCheckResponse.hasResult(EntryFeeResult.ENOUGH_MONEY)) {
             double price = toWorld.getPrice();
             Material currency = toWorld.getCurrency();
             this.plugin.getEconomist().payEntryFee((Player) teleporter, price, currency);
@@ -252,7 +256,7 @@ public class MVPlayerListener implements Listener {
 
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld());
-        ActionResponse actionCheckResponse = this.actionChecker.canGoFromToWorld(event.getPlayer(), fromWorld, toWorld);
+        ActionResponse actionCheckResponse = this.actionChecker.canGoFromToWorld(event.getPlayer(), event.getPlayer(), fromWorld, toWorld);
         Logging.fine(actionCheckResponse.toString());
         if (!actionCheckResponse.isSuccessful()) {
             tellReason(event.getPlayer(), event.getPlayer(), fromWorld, toWorld, actionCheckResponse);
@@ -341,33 +345,33 @@ public class MVPlayerListener implements Listener {
         BukkitCommandIssuer issuer = this.plugin.getMVCommandManager().getCommandIssuer(sender);
         String targetName = issuer.getIssuer() == teleportee ? "You" : teleportee.getName();
 
-        if (result.hasResult(ActionCheckResult.NULL_DESTINATION)) {
+        if (result.hasResult(NullPlaceResult.NULL_DESTINATION)) {
             issuer.sendMessage(targetName + " cannot be teleported to because the destination is null.");
             return;
         }
-        if (result.hasResult(ActionCheckResult.NULL_LOCATION)) {
+        if (result.hasResult(NullPlaceResult.NULL_LOCATION)) {
             issuer.sendMessage(targetName + " cannot be teleported to because the location is null.");
             return;
         }
-        if (result.hasResult(ActionCheckResult.NULL_WORLD)) {
+        if (result.hasResult(NullPlaceResult.NULL_WORLD)) {
             issuer.sendMessage(targetName + " cannot be teleported because the world is null.");
             return;
         }
 
-        if (result.hasResult(ActionCheckResult.NO_WORLD_ACCESS)) {
+        if (result.hasResult(WorldAccessResult.NO_WORLD_ACCESS)) {
             issuer.sendMessage(targetName + " cannot be teleported to because you does not have access to " + toWorld.getName());
         }
-        if (result.hasResult(ActionCheckResult.EXCEED_PLAYERLIMIT)) {
+        if (result.hasResult(PlayerLimitResult.EXCEED_PLAYERLIMIT)) {
             issuer.sendMessage(targetName + " cannot cannot enter " + toWorld.getName() + " because it is full.");
         }
-        if (result.hasResult(ActionCheckResult.NOT_ENOUGH_MONEY)) {
+        if (result.hasResult(EntryFeeResult.NOT_ENOUGH_MONEY)) {
             issuer.sendMessage("You do not have enough money to pay for " + targetName + " to enter " + toWorld.getName());
             issuer.sendMessage("The entry fee required is " + this.plugin.getEconomist().formatPrice(toWorld));
         }
-        if (result.hasResult(ActionCheckResult.CANNOT_PAY_ENTRY_FEE)) {
+        if (result.hasResult(EntryFeeResult.CANNOT_PAY_ENTRY_FEE)) {
             issuer.sendMessage("You do not have the ability to pay the entry fee for " + targetName + " to enter " + toWorld.getName());
         }
-        if (result.hasResult(ActionCheckResult.BLACKLISTED)) {
+        if (result.hasResult(BlacklistResult.BLACKLISTED)) {
             if (toWorld.equals(fromWorld)) {
                 issuer.sendMessage(targetName + " cannot teleport within " + toWorld.getName() + " because it is blacklisted.");
             } else {

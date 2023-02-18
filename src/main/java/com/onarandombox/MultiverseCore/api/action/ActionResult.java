@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.api.action;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Represents one or more action result.
  */
@@ -24,5 +26,5 @@ public interface ActionResult {
      * @param result    The result to check.
      * @return true if the result is in the response.
      */
-    boolean hasResult(ActionResult result);
+    boolean hasResult(@Nullable ActionResult result);
 }
