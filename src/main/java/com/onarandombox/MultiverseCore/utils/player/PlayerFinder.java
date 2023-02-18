@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.utils;
+package com.onarandombox.MultiverseCore.utils.player;
 
 import java.util.ArrayList;
 import java.util.List;

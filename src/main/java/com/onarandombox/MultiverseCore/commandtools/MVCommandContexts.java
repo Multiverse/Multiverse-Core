@@ -16,7 +16,7 @@ import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
-import com.onarandombox.MultiverseCore.utils.PlayerFinder;
+import com.onarandombox.MultiverseCore.utils.player.PlayerFinder;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 

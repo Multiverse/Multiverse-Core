@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.Teleporter;
-import com.onarandombox.MultiverseCore.utils.PlayerFinder;
+import com.onarandombox.MultiverseCore.utils.player.PlayerFinder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
