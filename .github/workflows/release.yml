@@ -1,0 +1,19 @@
+name: Create Release Version
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release_on_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        uses: rymndhng/release-on-push-action@v0.27.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          bump_version_scheme: norelease
+          tag_prefix: v
+          release_name: "Release <RELEASE_VERSION>"
+          use_github_release_notes: true
