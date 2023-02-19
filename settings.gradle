@@ -3,3 +3,12 @@
  */
 
 rootProject.name = 'Multiverse-Core'
+
+// Disable the tasks we don't from the IntelliJ plugin
+startParameter.excludedTaskNames = [
+		'patchPluginXml',
+		'prepareSandbox',
+		'buildSearchableOptions',
+		'jarSearchableOptions',
+		'buildPlugin',
+]

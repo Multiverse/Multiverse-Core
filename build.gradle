@@ -166,10 +166,3 @@ intellij {
     instrumentCode = true
     downloadSources = false
 }
-
-// disable everything from intellij plugin except instrumentation
-patchPluginXml.enabled = false
-prepareSandbox.enabled = false
-buildSearchableOptions.enabled = false
-jarSearchableOptions.enabled = false
-buildPlugin.enabled = false
