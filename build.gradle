@@ -8,7 +8,7 @@ plugins {
     id 'org.jetbrains.intellij' version '1.1'
 }
 
-version = '4.3.2-SNAPSHOT'
+version = System.getenv('GITHUB_VERSION')?.substring(1) ?: 'local'
 group = 'com.onarandombox.multiversecore'
 description = 'Multiverse-Core'
 
@@ -85,15 +85,26 @@ tasks.withType(Javadoc) {
 }
 
 
+configurations {
+    [apiElements, runtimeElements].each {
+        it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+        it.outgoing.artifact(shadowJar)
+    }
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
-            from(components.java)
-            pom {
-                ciManagement {
-                    system = 'jenkins'
-                    url = 'https://ci.onarandombox.com/'
-                }
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Multiverse/Multiverse-Core"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
@@ -115,11 +126,8 @@ compileJava {
     source = prepareSource.outputs
 }
 
-
-ext.buildNumber = System.getenv('BUILD_NUMBER') ?: 'UNKNOWN'
-
 processResources {
-    def props = [version: "${project.version}-b$buildNumber"]
+    def props = [version: "${project.version}"]
     inputs.properties props
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
