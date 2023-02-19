@@ -27,4 +27,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Multiverse-Core-SNAPSHOT
-        path: build/libs/Multiverse-Core-4.3.2-SNAPSHOT.jar
+        # Can use build\/libs\/Multiverse-Core-(\d\.\d\.\d)(-SNAPSHOT|).jar if it ever supports regex
+        path: build/libs/**
+        # If there's nothing there then something must have gone awry
+        if-no-files-found: error
