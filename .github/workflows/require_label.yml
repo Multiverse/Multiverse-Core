@@ -15,4 +15,4 @@ jobs:
         with:
           mode: exactly
           count: 1
-          labels: "Release: Major, Release: Minor, Release: Patch, No release"
+          labels: "release:major, release:minor, release:patch, no release"
