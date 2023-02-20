@@ -1,0 +1,197 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'checkstyle'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+version = System.getenv('GITHUB_VERSION') ?: 'local'
+group = 'com.onarandombox.multiversecore'
+description = 'Multiverse-Core'
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+    }
+
+    maven {
+        url = uri('https://repo.onarandombox.com/content/groups/public')
+    }
+
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/groups/public/')
+    }
+
+    maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
+        url = uri('https://repo.minebench.de/')
+    }
+
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+
+    maven {
+        name = 'aikar repo'
+        url = uri('https://repo.aikar.co/content/groups/aikar/')
+    }
+
+    maven {
+        name = 'glaremasters repo'
+        url = 'https://repo.glaremasters.me/repository/towny/'
+    }
+}
+
+dependencies {
+    // Spigot
+    implementation('org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT') {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    // Economy
+    implementation('com.github.MilkBowl:VaultAPI:1.7.1') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+
+    // Command Framework
+    api 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+
+    // Config
+    api('me.main__.util:SerializationConfig:1.7') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+    api('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.0') {
+        exclude group: 'org.spigotmc', module: 'spigot-api'
+    }
+
+    // Utils
+    api('com.dumptruckman.minecraft:Logging:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    api 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    api 'org.bstats:bstats-bukkit:2.2.1'
+    api 'net.minidev:json-smart:2.4.8'
+    api 'org.jetbrains:annotations:22.0.0'
+
+    // Tests
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'org.mockito:mockito-core:3.11.2'
+    testImplementation 'commons-io:commons-io:2.7'
+}
+
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+
+configurations {
+    [apiElements, runtimeElements].each {
+        it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+        it.outgoing.artifact(shadowJar)
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Multiverse/Multiverse-Core"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+
+ext.bitlyAccessToken = System.getenv('BITLY_ACCESS_TOKEN') ?: 'bitly-access-token'
+
+task prepareSource(type: Sync) {
+    inputs.property 'bitlyAccessToken', bitlyAccessToken
+    from sourceSets.main.java
+    into "$buildDir/src"
+    filter(ReplaceTokens, tokens: [
+            'bitly-access-token': bitlyAccessToken,
+    ])
+}
+
+compileJava {
+    source = prepareSource.outputs
+}
+
+processResources {
+    def props = [version: "${project.version}"]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+
+    // This task should never be skipped. The tests depend on this having been run but we want the new version number
+    // that is created after tests are run and before we run again to publish.
+    outputs.upToDateWhen { false }
+}
+
+
+checkstyle {
+    toolVersion = '6.1.1'
+    configFile file('config/mv_checks.xml')
+    ignoreFailures = true
+}
+
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+}
+
+
+project.configurations.api.canBeResolved = true
+
+shadowJar {
+    relocate 'co.alkar.commands', 'com.onarandombox.acf'
+    relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
+    relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
+    relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
+    relocate 'io.github.townyadvanced.commentedconfiguration', 'com.onarandombox.commentedconfiguration'
+    relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
+    relocate 'org.bstats', 'com.onarandombox.bstats'
+
+    configurations = [project.configurations.api]
+
+    archiveFileName = "$baseName-$version.$extension"
+}
+
+build.dependsOn shadowJar
+jar.enabled = false
+
+
+// Excludes all test
+// TODO: Remove this when we have tests for MV5
+test {
+    exclude '**/*'
+}
