@@ -43,11 +43,9 @@ jobs:
           echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
 
       - name: Upload release artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: svenstaro/upload-release-action@v2
         with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: build/libs/multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          file: build/libs/multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
           asset_name: multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/java-archive
+          tag: ${{ steps.get_release.outputs.tag_name }}
