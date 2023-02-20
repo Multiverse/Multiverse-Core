@@ -28,10 +28,10 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Publish package
+      - name: Build package
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publish
+          arguments: build
         env:
           GITHUB_VERSION: ${{ steps.get_release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
