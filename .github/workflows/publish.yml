@@ -36,12 +36,6 @@ jobs:
           GITHUB_VERSION: ${{ steps.get_release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fix the upload URL
-        run: |
-          UPLOAD_URL=${{ steps.get_release.outputs.upload_url }}
-          UPLOAD_URL=${UPLOAD_URL//\{?name,label\}}
-          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
-
       - name: Upload release artifact
         uses: svenstaro/upload-release-action@v2
         with:
