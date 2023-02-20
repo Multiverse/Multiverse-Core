@@ -29,33 +29,9 @@ jobs:
       - name: Create release
         uses: rymndhng/release-on-push-action@v0.27.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           bump_version_scheme: norelease
           tag_prefix: v
           release_name: "Release <RELEASE_VERSION>"
           use_github_release_notes: true
-
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Publish package
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
-        env:
-          GITHUB_VERSION: ${{ steps.get_release.outputs.tag }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload release artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: build/libs/Multiverse-Core-${{ steps.get_release.outputs.tag }}.jar
-          asset_name: Multiverse-Core-${{ steps.get_release.outputs.tag }}.jar
-          asset_content_type: application/java-archive
