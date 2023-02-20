@@ -4,7 +4,7 @@ authors: ['dumptruckman', 'Rigby', 'fernferret', 'lithium3141', 'main--']
 website: 'https://dev.bukkit.org/projects/multiverse-core'
 softdepend: ['Vault']
 api-version: 1.13
-version: maven-version-number
+version: ${version}
 commands:
   mv:
     description: Generic Multiverse Command

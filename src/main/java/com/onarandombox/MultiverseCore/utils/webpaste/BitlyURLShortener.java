@@ -11,7 +11,7 @@ import java.util.Map;
  * A {@link URLShortener} using {@code bit.ly}. Requires an access token.
  */
 class BitlyURLShortener extends URLShortener {
-    private static final String ACCESS_TOKEN = "Bearer bitly-access-token";
+    private static final String ACCESS_TOKEN = "Bearer @bitly-access-token@";
     private static final String BITLY_POST_REQUEST = "https://api-ssl.bitly.com/v4/shorten";
 
     BitlyURLShortener() {
