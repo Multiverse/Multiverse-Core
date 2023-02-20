@@ -56,13 +56,17 @@ public class DestinationsProvider {
                                                            @Nullable String deststring
     ) {
         return destinationMap.values().stream()
-                .filter(destination -> this.plugin.getPermissionsTool().hasDestinationTeleportPermission(null, issuer.getIssuer(), destination)
-                        || this.plugin.getPermissionsTool().hasDestinationTeleportPermission(issuer.getIssuer(), this.plugin.getServer().getConsoleSender(), destination))
+                .filter(destination -> hasSelfOrOtherTeleportPermission(issuer, destination))
                 .map(destination -> destination.suggestDestinations(issuer, deststring).stream()
                         .map(s -> destination.getIdentifier() + SEPARATOR + s)
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasSelfOrOtherTeleportPermission(@NotNull BukkitCommandIssuer issuer, Destination<?> destination) {
+        return this.plugin.getPermissionsTool().hasDestinationTeleportPermission(issuer.getIssuer(), destination)
+                || this.plugin.getPermissionsTool().hasDestinationTeleportPermission(issuer.getIssuer(), this.plugin.getServer().getConsoleSender(), destination);
     }
 
     /**

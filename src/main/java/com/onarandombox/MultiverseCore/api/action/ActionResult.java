@@ -21,6 +21,13 @@ public interface ActionResult {
     boolean isSuccessful();
 
     /**
+     * Check if the result is unsuccessful.
+     *
+     * @return true if the result is unsuccessful.
+     */
+    boolean isUnsuccessful();
+
+    /**
      * Check if the result is in the response.
      *
      * @param result    The result to check.

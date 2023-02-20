@@ -96,6 +96,9 @@ public class PlayerActionChecker {
         if (location == null) {
             return ActionResponse.of(NullPlaceResult.NULL_LOCATION);
         }
+        if (location.getWorld() == null) {
+            return ActionResponse.of(NullPlaceResult.NULL_WORLD);
+        }
         MVWorld toWorld = this.worldManager.getMVWorld(location.getWorld());
         return canGoToWorld(teleporter, teleportee, toWorld);
     }
@@ -113,7 +116,7 @@ public class PlayerActionChecker {
                                        @NotNull MVWorld toWorld
     ) {
         MVWorld fromWorld = this.worldManager.getMVWorld(teleportee.getWorld());
-        return canGoFromToWorld(teleporter, teleportee, fromWorld, toWorld);
+        return canGoFromWorldToWorld(teleporter, teleportee, fromWorld, toWorld);
     }
 
     /**
@@ -124,13 +127,13 @@ public class PlayerActionChecker {
      * @param toWorld      The world to teleport to.
      * @return One or more of the above action results.
      */
-    public ActionResponse canGoFromToWorld(@Nullable CommandSender teleporter,
-                                           @NotNull CommandSender teleportee,
-                                           @Nullable MVWorld fromWorld,
-                                           @Nullable MVWorld toWorld
+    public ActionResponse canGoFromWorldToWorld(@Nullable CommandSender teleporter,
+                                                @NotNull CommandSender teleportee,
+                                                @Nullable MVWorld fromWorld,
+                                                @Nullable MVWorld toWorld
     ) {
         if (toWorld == null) {
-            return ActionResponse.of(NullPlaceResult.NULL_WORLD);
+            return ActionResponse.of(NullPlaceResult.NOT_MV_WORLD);
         }
 
         CommandSender targetSender = (teleporter == null) ? teleportee : teleporter;
@@ -229,6 +232,9 @@ public class PlayerActionChecker {
      * @return The action check result.
      */
     public GameModeResult canKeepGameMode(@NotNull Player player, @NotNull MVWorld toWorld) {
+        if (player.getGameMode().equals(toWorld.getGameMode())) {
+            return GameModeResult.KEEP_GAME_MODE;
+        }
         //TODO: Add config option disable game mode enforcement
         return permissionsTool.hasBypassGameModeEnforcement(player, toWorld)
                 ? GameModeResult.KEEP_GAME_MODE : GameModeResult.ENFORCE_GAME_MODE;

@@ -14,6 +14,11 @@ public class GameModeResult extends SimpleActionResult {
     public static final GameModeResult BYPASS_ENFORCE_GAME_MODE = new GameModeResult("BYPASS_ENFORCE_GAME_MODE", true);
 
     /**
+     * The player's game mode is the same as the destination's game mode.
+     */
+    public static final GameModeResult SAME_GAME_MODE = new GameModeResult("SAME_GAME_MODE", true);
+
+    /**
      * The player's game mode should be enforced.
      */
     public static final GameModeResult ENFORCE_GAME_MODE = new GameModeResult("ENFORCE_GAME_MODE", false);

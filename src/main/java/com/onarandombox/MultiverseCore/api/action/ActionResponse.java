@@ -12,16 +12,36 @@ import org.jetbrains.annotations.Nullable;
  * A response that have multiple results.
  */
 public class ActionResponse implements ActionResult {
+
+    /**
+     * Create a new {@link ActionResponse} instance.
+     * Does not continue if one result is not successful.
+     *
+     * @return The new {@link ActionResponse} instance.
+     */
     public static ActionResponse create() {
-        return new ActionResponse();
+        return new ActionResponse(false);
     }
 
+    /**
+     * Create a new {@link ActionResponse} instance.
+     *
+     * @param continueIfFail If true, the response will continue to add results even if one of the results is not successful.
+     * @return The new {@link ActionResponse} instance.
+     */
     public static ActionResponse create(boolean continueIfFail) {
         return new ActionResponse(continueIfFail);
     }
 
+    /**
+     * Create a response with a single result.
+     * Does not continue if one result is not successful.
+     *
+     * @param result    The result.
+     * @return The new {@link ActionResponse} instance.
+     */
     public static ActionResponse of(ActionResult result) {
-        return new ActionResponse().addResult(result);
+        return new ActionResponse(false).addResult(result);
     }
 
     private final Set<ActionResult> results;
@@ -29,14 +49,10 @@ public class ActionResponse implements ActionResult {
 
     private boolean isSuccessful = true;
 
-    public ActionResponse() {
-        this(false);
-    }
-
     /**
      * @param continueIfFail If true, the response will continue to add results even if one of the results is not successful.
      */
-    public ActionResponse(boolean continueIfFail) {
+    protected ActionResponse(boolean continueIfFail) {
         this.results = new HashSet<>();
         this.continueIfFail = continueIfFail;
     }
@@ -66,7 +82,7 @@ public class ActionResponse implements ActionResult {
         }
 
         results.add(result);
-        if (!result.isSuccessful()) {
+        if (result.isUnsuccessful()) {
             isSuccessful = false;
         }
         return this;
@@ -86,6 +102,14 @@ public class ActionResponse implements ActionResult {
     @Override
     public boolean isSuccessful() {
         return isSuccessful;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isUnsuccessful() {
+        return !isSuccessful;
     }
 
     /**

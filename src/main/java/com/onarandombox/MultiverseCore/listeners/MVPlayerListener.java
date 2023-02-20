@@ -22,6 +22,7 @@ import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.player.PlayerActionChecker;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.BlacklistResult;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.EntryFeeResult;
+import com.onarandombox.MultiverseCore.utils.player.checkresult.GameModeResult;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.NullPlaceResult;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.PlayerLimitResult;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.WorldAccessResult;
@@ -135,7 +136,7 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-        if (!this.plugin.getPlayerActionChecker().hasAccessToWorld(player, world).isSuccessful()) {
+        if (this.plugin.getPlayerActionChecker().hasAccessToWorld(player, world).isUnsuccessful()) {
             player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
             this.sendPlayerToDefaultWorld(player);
         }
@@ -200,9 +201,15 @@ public class MVPlayerListener implements Listener {
 
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld());
-        ActionResponse actionCheckResponse = this.actionChecker.canGoFromToWorld(teleporter, teleportee, fromWorld, toWorld);
+        ActionResponse actionCheckResponse = this.actionChecker.canGoFromWorldToWorld(teleporter, teleportee, fromWorld, toWorld);
         Logging.fine(actionCheckResponse.toString());
-        if (!actionCheckResponse.isSuccessful()) {
+
+        if (actionCheckResponse.hasResult(NullPlaceResult.NOT_MV_WORLD)) {
+            Logging.fine("Player '" + teleportee.getName() + "' is teleporting to a non-MV world. Ignoring.");
+            return;
+        }
+
+        if (actionCheckResponse.isUnsuccessful()) {
             tellReason(teleporter, teleportee, fromWorld, toWorld, actionCheckResponse);
             event.setCancelled(true);
             return;
@@ -256,9 +263,9 @@ public class MVPlayerListener implements Listener {
 
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld());
-        ActionResponse actionCheckResponse = this.actionChecker.canGoFromToWorld(event.getPlayer(), event.getPlayer(), fromWorld, toWorld);
+        ActionResponse actionCheckResponse = this.actionChecker.canGoFromWorldToWorld(event.getPlayer(), event.getPlayer(), fromWorld, toWorld);
         Logging.fine(actionCheckResponse.toString());
-        if (!actionCheckResponse.isSuccessful()) {
+        if (actionCheckResponse.isUnsuccessful()) {
             tellReason(event.getPlayer(), event.getPlayer(), fromWorld, toWorld, actionCheckResponse);
             event.setCancelled(true);
             return;
@@ -297,8 +304,9 @@ public class MVPlayerListener implements Listener {
      * @param world The world the player is in.
      */
     public void applyGameModeAndFlight(@NotNull Player player, @NotNull MVWorld world) {
-        if (MVPlayerListener.this.actionChecker.canKeepGameMode(player, world).isSuccessful()) {
-            Logging.fine("Player: " + player.getName() + " is IMMUNE to gamemode changes!");
+        GameModeResult keepGameModeResult = MVPlayerListener.this.actionChecker.canKeepGameMode(player, world);
+        if (keepGameModeResult.isSuccessful()) {
+            Logging.fine("Player: " + player.getName() + " can keep their gamemode. " + "Reason: " + keepGameModeResult.getName());
             return;
         }
 
@@ -309,8 +317,7 @@ public class MVPlayerListener implements Listener {
             return;
         }
         Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
-        Logging.finest("From World: %s", player.getWorld());
-        Logging.finest("To World: %s", world);
+        Logging.finest("From World: %s --> To World: %s", player.getWorld());
         player.setGameMode(world.getGameMode());
 
         // Check if their flight mode should change
@@ -347,17 +354,13 @@ public class MVPlayerListener implements Listener {
 
         if (result.hasResult(NullPlaceResult.NULL_DESTINATION)) {
             issuer.sendMessage(targetName + " cannot be teleported to because the destination is null.");
-            return;
         }
         if (result.hasResult(NullPlaceResult.NULL_LOCATION)) {
             issuer.sendMessage(targetName + " cannot be teleported to because the location is null.");
-            return;
         }
         if (result.hasResult(NullPlaceResult.NULL_WORLD)) {
             issuer.sendMessage(targetName + " cannot be teleported because the world is null.");
-            return;
         }
-
         if (result.hasResult(WorldAccessResult.NO_WORLD_ACCESS)) {
             issuer.sendMessage(targetName + " cannot be teleported to because you does not have access to " + toWorld.getName());
         }
