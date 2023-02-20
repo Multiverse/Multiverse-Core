@@ -362,7 +362,7 @@ public class MVPlayerListener implements Listener {
             issuer.sendMessage(targetName + " cannot be teleported to because you does not have access to " + toWorld.getName());
         }
         if (result.hasResult(PlayerLimitResult.EXCEED_PLAYERLIMIT)) {
-            issuer.sendMessage(targetName + " cannot cannot enter " + toWorld.getName() + " because it is full.");
+            issuer.sendMessage(targetName + " cannot enter " + toWorld.getName() + " because it is full.");
         }
         if (result.hasResult(EntryFeeResult.NOT_ENOUGH_MONEY)) {
             issuer.sendMessage("You do not have enough money to pay for " + targetName + " to enter " + toWorld.getName());
