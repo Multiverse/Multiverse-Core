@@ -36,18 +36,10 @@ jobs:
           GITHUB_VERSION: ${{ steps.get_release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fix the upload URL
-        run: |
-          UPLOAD_URL=${{ steps.get_release.outputs.upload_url }}
-          UPLOAD_URL=${UPLOAD_URL//\{?name,label\}}
-          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
-
       - name: Upload release artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: shogo82148/actions-upload-release-asset@v1
         with:
-          upload_url: ${{ env.UPLOAD_URL }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: build/libs/multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
           asset_name: multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/java-archive
