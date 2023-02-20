@@ -8,6 +8,24 @@ jobs:
   release_on_push:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Test & Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean build -x assemble -x shadowJar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create release
         uses: rymndhng/release-on-push-action@v0.27.0
         env:
@@ -17,3 +35,27 @@ jobs:
           tag_prefix: v
           release_name: "Release <RELEASE_VERSION>"
           use_github_release_notes: true
+
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Publish package
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
+        env:
+          GITHUB_VERSION: ${{ steps.get_release.outputs.tag }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: build/libs/Multiverse-Core-${{ steps.get_release.outputs.tag }}.jar
+          asset_name: Multiverse-Core-${{ steps.get_release.outputs.tag }}.jar
+          asset_content_type: application/java-archive
