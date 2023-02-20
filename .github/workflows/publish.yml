@@ -33,7 +33,7 @@ jobs:
         with:
           arguments: publish
         env:
-          GITHUB_VERSION: ${{ steps.get_release.outputs.tag }}
+          GITHUB_VERSION: ${{ steps.get_release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload release artifact
