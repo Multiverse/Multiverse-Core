@@ -42,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: build/libs/Multiverse-Core-${{ steps.get_release.outputs.tag }}.jar
-          asset_name: Multiverse-Core-${{ steps.get_release.outputs.tag }}.jar
+          asset_path: build/libs/multiverse-core-${{ steps.get_release.outputs.tag }}.jar
+          asset_name: multiverse-core-${{ steps.get_release.outputs.tag }}.jar
           asset_content_type: application/java-archive
