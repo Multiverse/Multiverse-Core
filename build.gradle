@@ -5,7 +5,6 @@ plugins {
     id 'maven-publish'
     id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'org.jetbrains.intellij' version '1.1'
 }
 
 version = System.getenv('GITHUB_VERSION')?.substring(1) ?: 'local'
@@ -133,6 +132,10 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+
+    // This task should never be skipped. The tests depend on this having been run but we want the new version number
+    // that is created after tests are run and before we run again to publish.
+    outputs.upToDateWhen { false }
 }
 
 
@@ -168,9 +171,3 @@ shadowJar {
 
 build.dependsOn shadowJar
 jar.enabled = false
-
-
-intellij {
-    instrumentCode = true
-    downloadSources = false
-}
