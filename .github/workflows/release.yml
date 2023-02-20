@@ -32,6 +32,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           bump_version_scheme: norelease
-          tag_prefix: v
+          tag_prefix: ''
           release_name: "Release <RELEASE_VERSION>"
           use_github_release_notes: true
