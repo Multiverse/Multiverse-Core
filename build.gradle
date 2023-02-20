@@ -177,6 +177,7 @@ shadowJar {
     relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
     relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
     relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
+    relocate 'io.github.townyadvanced.commentedconfiguration', 'com.onarandombox.commentedconfiguration'
     relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
     relocate 'org.bstats', 'com.onarandombox.bstats'
 
