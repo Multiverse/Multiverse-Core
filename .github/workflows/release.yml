@@ -1,4 +1,4 @@
-name: Create Release Version
+name: Create Release Version & Publish Package
 
 on:
   push:
@@ -27,11 +27,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release
+        id: release
         uses: rymndhng/release-on-push-action@v0.27.0
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           bump_version_scheme: norelease
           tag_prefix: ''
           release_name: "Release <RELEASE_VERSION>"
           use_github_release_notes: true
+
+      - name: Publish package
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
+        env:
+          GITHUB_VERSION: ${{ steps.release.outputs.tag_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifact
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/libs/multiverse-core-${{ steps.release.outputs.tag_name }}.jar
+          asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
+          tag: ${{ steps.release.outputs.tag_name }}
