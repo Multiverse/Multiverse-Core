@@ -43,3 +43,4 @@ jobs:
           file: build/libs/multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
           asset_name: multiverse-core-${{ steps.get_release.outputs.tag_name }}.jar
           tag: ${{ steps.get_release.outputs.tag_name }}
+          override: true
