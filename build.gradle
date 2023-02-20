@@ -5,7 +5,6 @@ plugins {
     id 'maven-publish'
     id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'org.jetbrains.intellij' version '1.1'
 }
 
 version = System.getenv('GITHUB_VERSION')?.substring(1) ?: 'local'
@@ -168,9 +167,3 @@ shadowJar {
 
 build.dependsOn shadowJar
 jar.enabled = false
-
-
-intellij {
-    instrumentCode = true
-    downloadSources = false
-}
