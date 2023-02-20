@@ -21,9 +21,9 @@ Now it's time to create your very own Multiverse server, do check out our [Wiki]
 
 Building
 ========
-Simply build the source with maven:
+Simply build the source with Gradle:
 ```
-$ mvn install
+./gradlew build
 ```
 More details are available on the [build instructions wiki page](https://github.com/Multiverse/Multiverse-Core/wiki/Building).
 
