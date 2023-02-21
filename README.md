@@ -34,7 +34,7 @@ Simply build the source with Gradle:
 More details are available on the [build instructions wiki page](https://github.com/Multiverse/Multiverse-Core/wiki/Building).
 
 
-# Contributing
+## Contributing
 
 **Want to help improve Multiverse?** There are several ways you can support and contribute to the project.
 * Take a look at our "Bug: Unconfirmed" issues, where you can find issues that need extra testing and investigation.
@@ -45,6 +45,5 @@ More details are available on the [build instructions wiki page](https://github.
 
 Additionally, we would like to give a big thanks to everyone that has supported Multiverse over the years, as well as those in the years to come. Thank you!
 
-License
-=======
+## License
 Multiverse-Core is licensed under BSD-3-Clause License. Please see [LICENSE.md](LICENSE.md) for more info.
