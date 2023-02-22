@@ -7,12 +7,13 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
+import java.util.List;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.pneumaticraft.commandhandler.PermissionsInterface;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -20,13 +21,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.List;
-import java.util.logging.Level;
-
 /**
- * Multiverse's {@link PermissionsInterface}.
+ * Multiverse's permission checker
  */
-public class MVPermissions implements PermissionsInterface {
+public class MVPermissions {
 
     private MultiverseCore plugin;
     private MVWorldManager worldMgr;
@@ -41,10 +39,10 @@ public class MVPermissions implements PermissionsInterface {
      * Check if a Player can ignore GameMode restrictions for world they travel to.
      *
      * @param p The {@link Player} to check.
-     * @param w The {@link MultiverseWorld} the player wants to teleport to.
+     * @param w The {@link MVWorld} the player wants to teleport to.
      * @return True if they should bypass restrictions.
      */
-    public boolean canIgnoreGameModeRestriction(Player p, MultiverseWorld w) {
+    public boolean canIgnoreGameModeRestriction(Player p, MVWorld w) {
         return p.hasPermission("mv.bypass.gamemode." + w.getName());
     }
 
@@ -52,10 +50,10 @@ public class MVPermissions implements PermissionsInterface {
      * Check if a Player can teleport to the Destination world from there current world.
      *
      * @param p The {@link Player} to check.
-     * @param w The {@link MultiverseWorld} the player wants to teleport to.
-     * @return Whether the player can teleport to the given {@link MultiverseWorld}.
+     * @param w The {@link MVWorld} the player wants to teleport to.
+     * @return Whether the player can teleport to the given {@link MVWorld}.
      */
-    public boolean canTravelFromWorld(Player p, MultiverseWorld w) {
+    public boolean canTravelFromWorld(Player p, MVWorld w) {
         List<String> blackList = w.getWorldBlacklist();
 
         boolean returnValue = true;
@@ -95,10 +93,10 @@ public class MVPermissions implements PermissionsInterface {
      * Check if the Player has the permissions to enter this world.
      *
      * @param p The {@link Player} player that wants to enter
-     * @param w The {@link MultiverseWorld} he wants to enter
+     * @param w The {@link MVWorld} he wants to enter
      * @return Whether he has the permission to enter the world
      */
-    public boolean canEnterWorld(Player p, MultiverseWorld w) {
+    public boolean canEnterWorld(Player p, MVWorld w) {
         // If we're not enforcing access, anyone can enter.
         if (!plugin.getMVConfig().getEnforceAccess()) {
             Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());
@@ -234,7 +232,6 @@ public class MVPermissions implements PermissionsInterface {
      * @param isOpRequired deprecated This is not used for anything anymore.
      * @return True if they have that permission or any parent.
      */
-    @Override
     public boolean hasPermission(CommandSender sender, String node, boolean isOpRequired) {
         if (!(sender instanceof Player)) {
             return true;
@@ -312,17 +309,8 @@ public class MVPermissions implements PermissionsInterface {
     }
 
     /**
-     * Gets the type of this {@link PermissionsInterface}.
-     * @return The type of this {@link PermissionsInterface}.
-     */
-    public String getType() {
-        return "Bukkit Permissions (SuperPerms)";
-    }
-
-    /**
      * {@inheritDoc}
      */
-    @Override
     public boolean hasAnyPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
             if (this.hasPermission(sender, node, isOpRequired)) {
@@ -335,7 +323,6 @@ public class MVPermissions implements PermissionsInterface {
     /**
      * {@inheritDoc}
      */
-    @Override
     public boolean hasAllPermission(CommandSender sender, List<String> nodes, boolean isOpRequired) {
         for (String node : nodes) {
             if (!this.hasPermission(sender, node, isOpRequired)) {

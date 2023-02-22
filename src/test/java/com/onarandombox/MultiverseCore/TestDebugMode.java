@@ -7,7 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import junit.framework.Assert;
 import org.bukkit.Server;
@@ -47,7 +47,7 @@ public class TestDebugMode {
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
-        Core core = (Core) plugin;
+        MVCore core = (MVCore) plugin;
 
         // Make sure Core is not null
         assertNotNull(plugin);

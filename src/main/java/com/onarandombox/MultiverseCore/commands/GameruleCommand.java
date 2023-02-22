@@ -1,116 +1,63 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.bukkit.Bukkit;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-/**
- * Allows management of Anchor Destinations.
- */
-public class GameruleCommand extends MultiverseCommand {
-
-    public GameruleCommand(MultiverseCore plugin) {
+@CommandAlias("mv")
+public class GameruleCommand extends MultiverseCoreCommand {
+    public GameruleCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
-        this.setName("Set a Minecraft Game Rule for a World.");
-        this.setCommandUsage("/mv gamerule " + ChatColor.GREEN + "{RULE} {VALUE}" + ChatColor.GOLD + " [WORLD]");
-        this.setArgRange(2, 3);
-        this.addKey("mv gamerule");
-        this.addKey("mv rule");
-        this.addKey("mvgamerule");
-        this.addKey("mvrule");
-        this.addCommandExample("/mv gamerule " + ChatColor.GREEN + "doMobLoot false");
-        this.addCommandExample("/mvrule " + ChatColor.GREEN + "keepInventory true " + ChatColor.RED + "world_nether");
-        this.setPermission("multiverse.core.gamerule.set", "Allows a player to set a gamerule.", PermissionDefault.OP);
     }
 
+    @Subcommand("gamerule")
+    @CommandPermission("multiverse.core.gamerule")
+    @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")
+    @Syntax("<Gamerule> <Gamerule value> [World or *]")
+    @Description("Changes a gamerule in one or more worlds")
+    public void onGameruleCommand(BukkitCommandIssuer issuer,
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        // We NEED a world from the command line
-        final Player p;
-        if (sender instanceof Player) {
-            p = (Player) sender;
-        } else {
-            p = null;
-        }
+                                  @Syntax("<Gamerule>")
+                                  @Description("Gamerule to set")
+                                  GameRule gamerule,
 
-        if (args.size() == 2 && p == null) {
-            sender.sendMessage("From the command line, WORLD is required.");
-            sender.sendMessage(this.getCommandDesc());
-            sender.sendMessage(this.getCommandUsage());
-            sender.sendMessage("Nothing changed.");
-            return;
-        }
+                                  @Syntax("<Value>")
+                                  @Description("Value of gamerule")
+                                  GameRuleValue gameRuleValue,
 
-        final GameRule gameRule = GameRule.getByName(args.get(0));
-        final String value = args.get(1);
-        final World world;
-        if (args.size() == 2) {
-            world = p.getWorld();
-        } else {
-            world = Bukkit.getWorld(args.get(2));
-            if (world == null) {
-                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " World " + ChatColor.AQUA + args.get(2)
-                        + ChatColor.WHITE + " does not exist.");
-                return;
+                                  @Flags("resolve=issuerAware")
+                                  @Syntax("[World or *]")
+                                  @Description("World to apply gamerule to, current world by default")
+                                  MVWorld[] worlds
+    ) {
+        Object value = gameRuleValue.getValue();
+        boolean success = true;
+        for(MVWorld world : worlds) {
+            // Set gamerules and add false to list if it fails
+            if (!world.getCBWorld().setGameRule(gamerule, value)) {
+                issuer.sendMessage(ChatColor.RED + "Failed to set gamerule " + gamerule.getName() + " to " + value + " in " + world.getName() + ". It should be a " + gamerule.getType());
+                success = false;
             }
         }
-
-        if (gameRule == null) {
-            sender.sendMessage(ChatColor.RED + "Failure! " + ChatColor.AQUA + args.get(0) + ChatColor.WHITE
-                    + " is not a valid gamerule.");
-        } else {
-            if (gameRule.getType() == Boolean.class) {
-                boolean booleanValue;
-                if (value.equalsIgnoreCase("true")) {
-                    booleanValue = true;
-                } else if (value.equalsIgnoreCase("false")) {
-                    booleanValue = false;
-                } else {
-                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to true or false.");
-                    return;
-                }
-
-                if (!world.setGameRule(gameRule, booleanValue)) {
-                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "something went wrong.");
-                    return;
-                }
-            } else if (gameRule.getType() == Integer.class) {
-                try {
-                    if (!world.setGameRule(gameRule, Integer.parseInt(value))) {
-                        throw new NumberFormatException();
-                    }
-                } catch (NumberFormatException e) {
-                    sender.sendMessage(getErrorMessage(gameRule.getName(), value) + "it can only be set to a positive integer.");
-                    return;
-                }
-            } else {
-                sender.sendMessage(ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
-                        + ChatColor.WHITE + " isn't supported yet, please let us know about it.");
-                return;
+        // Tell user if it was successful
+        if (success) {
+            if (worlds.length == 1) {
+                issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule.getName() + " to " + value + " in " + worlds[0].getName());
             }
-
-            sender.sendMessage(ChatColor.GREEN + "Success!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule.getName()
-                    + ChatColor.WHITE + " was set to " + ChatColor.GREEN + value + ChatColor.WHITE + ".");
+            else if (worlds.length > 1) {
+                issuer.sendMessage(ChatColor.GREEN + "Successfully set " + gamerule.getName() + " to " + value + " in " + worlds.length + " worlds.");
+            }
         }
-    }
-
-    private String getErrorMessage(String gameRule, String value) {
-        return ChatColor.RED + "Failure!" + ChatColor.WHITE + " Gamerule " + ChatColor.AQUA + gameRule
-                + ChatColor.WHITE + " could not be set to " + ChatColor.RED + value + ChatColor.WHITE + ", ";
     }
 }

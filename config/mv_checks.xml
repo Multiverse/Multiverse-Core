@@ -69,7 +69,7 @@
         <module name="TypeName"/>
         <module name="AvoidStarImport">
             <property name="severity" value="warning"/>
-            <property name="excludes" value="com.onarandombox.MultiverseCore.utils,com.onarandombox.MultiverseCore.configuration,com.onarandombox.MultiverseCore.commands,com.onarandombox.MultiverseCore.destination"/>
+            <property name="excludes" value="com.onarandombox.MultiverseCore.utils,com.onarandombox.MultiverseCore.configuration,com.onarandombox.MultiverseCore.commandsold,com.onarandombox.MultiverseCore.destination"/>
         </module>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>

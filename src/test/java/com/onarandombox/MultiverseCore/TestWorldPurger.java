@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import org.bukkit.World;
@@ -24,7 +24,7 @@ public class TestWorldPurger {
     MultiverseCore core;
     WorldPurger purger;
 
-    MultiverseWorld mvWorld;
+    MVWorld mvWorld;
     World cbworld;
 
     Sheep sheep;
@@ -37,7 +37,7 @@ public class TestWorldPurger {
         core = creator.getCore();
         purger = core.getMVWorldManager().getTheWorldPurger();
         core.getMVConfig().setGlobalDebug(3);
-        mvWorld = mock(MultiverseWorld.class);
+        mvWorld = mock(MVWorld.class);
         cbworld = mock(World.class);
         when(mvWorld.getCBWorld()).thenReturn(cbworld);
     }

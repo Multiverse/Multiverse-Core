@@ -7,17 +7,16 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import com.onarandombox.MultiverseCore.utils.PurgeWorlds;
-import com.onarandombox.MultiverseCore.utils.SimpleWorldPurger;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
+import com.onarandombox.MultiverseCore.world.SimpleWorldPurger;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Multiverse 2 World Manager API
@@ -58,18 +57,6 @@ public interface MVWorldManager {
      */
     boolean addWorld(String name, Environment env, String seedString, WorldType type, Boolean generateStructures,
                      String generator, boolean useSpawnAdjust);
-
-    /**
-     * Make a copy of a world.
-     *
-     * @param oldName            Name of world to be copied
-     * @param newName            Name of world to be created
-     * @param generator          The Custom generator plugin to use. Ignored.
-     * @return True if the world is copied successfully, false if not.
-     * @deprecated Use {@link #cloneWorld(String, String)} instead.
-     */
-    @Deprecated
-    boolean cloneWorld(String oldName, String newName, String generator);
 
     /**
      * Make a copy of a world.
@@ -160,40 +147,40 @@ public interface MVWorldManager {
     /**
      * Returns a list of all the worlds Multiverse knows about.
      *
-     * @return A list of {@link MultiverseWorld}.
+     * @return A list of {@link MVWorld}.
      */
-    Collection<MultiverseWorld> getMVWorlds();
+    Collection<MVWorld> getMVWorlds();
 
 
     /**
-     * Returns a {@link MultiverseWorld} if it exists, and null if it does not.
+     * Returns a {@link MVWorld} if it exists, and null if it does not.
      * This will search name AND alias.
      *
      * @param name The name or alias of the world to get.
-     * @return A {@link MultiverseWorld} or null.
+     * @return A {@link MVWorld} or null.
      */
-    MultiverseWorld getMVWorld(String name);
+    MVWorld getMVWorld(String name);
 
     /**
-     * Returns a {@link MultiverseWorld} if the world with name given exists, and null if it does not.
+     * Returns a {@link MVWorld} if the world with name given exists, and null if it does not.
      * This will search optionally for alias names.
      *
      * @param name          The name or optionally the alias of the world to get.
      * @param checkAliases  Indicates whether to check for world alias name.
-     * @return A {@link MultiverseWorld} or null.
+     * @return A {@link MVWorld} or null.
      */
-    MultiverseWorld getMVWorld(String name, boolean checkAliases);
+    MVWorld getMVWorld(String name, boolean checkAliases);
 
     /**
-     * Returns a {@link MultiverseWorld} if it exists, and null if it does not.
+     * Returns a {@link MVWorld} if it exists, and null if it does not.
      *
      * @param world The Bukkit world to check.
-     * @return A {@link MultiverseWorld} or null.
+     * @return A {@link MVWorld} or null.
      */
-    MultiverseWorld getMVWorld(World world);
+    MVWorld getMVWorld(World world);
 
     /**
-     * Checks to see if the given name is a valid {@link MultiverseWorld}
+     * Checks to see if the given name is a valid {@link MVWorld}
      * Searches based on world name AND alias.
      *
      * @param name The name or alias of the world to check.
@@ -202,7 +189,7 @@ public interface MVWorldManager {
     boolean isMVWorld(String name);
 
     /**
-     * Checks to see if the given name is a valid {@link MultiverseWorld}.
+     * Checks to see if the given name is a valid {@link MVWorld}.
      * Optionally searches by alias is specified.
      *
      * @param name          The name or alias of the world to check.
@@ -212,7 +199,7 @@ public interface MVWorldManager {
     boolean isMVWorld(String name, boolean checkAliases);
 
     /**
-     * Checks to see if the given world is a valid {@link MultiverseWorld}.
+     * Checks to see if the given world is a valid {@link MVWorld}.
      *
      * @param world The Bukkit world to check.
      * @return True if the world has been loaded into MV2, false if not.
@@ -235,18 +222,8 @@ public interface MVWorldManager {
     void loadDefaultWorlds();
 
     /**
-     * Return the World Purger.
-     *
-     * @return A valid {@link PurgeWorlds}.
-     * @deprecated {@link PurgeWorlds} is deprecated!
-     */
-    @Deprecated
-    PurgeWorlds getWorldPurger();
-
-    /**
      * Gets the {@link WorldPurger}.
      * <p>
-     * TODO: Remove {@link #getWorldPurger()} and replace it with this method.
      * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
      * @see WorldPurger
      * @see SimpleWorldPurger
@@ -259,7 +236,7 @@ public interface MVWorldManager {
      *
      * @return A Multiverse world that players will spawn in or null if no MV world has been set.
      */
-    MultiverseWorld getSpawnWorld();
+    MVWorld getSpawnWorld();
 
     /**
      * Gets the list of worlds in the config, but unloaded.
@@ -306,9 +283,9 @@ public interface MVWorldManager {
     /**
      * Gets the world players should spawn in first.
      *
-     * @return The {@link MultiverseWorld} new players should spawn in.
+     * @return The {@link MVWorld} new players should spawn in.
      */
-    MultiverseWorld getFirstSpawnWorld();
+    MVWorld getFirstSpawnWorld();
 
     /**
      * Regenerates a world.

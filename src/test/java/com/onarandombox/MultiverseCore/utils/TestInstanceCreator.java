@@ -7,12 +7,20 @@
 
 package com.onarandombox.MultiverseCore.utils;
 
-import buscript.Buscript;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
+import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,14 +38,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.mockito.internal.util.reflection.ReflectionMemberAccessor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
@@ -202,22 +202,8 @@ public class TestInstanceCreator {
             serverfield.setAccessible(true);
             serverfield.set(core, mockServer);
 
-            // Set buscript
-            Buscript buscript;
-            Field buscriptfield = MultiverseCore.class.getDeclaredField("buscript");
-            buscriptfield.setAccessible(true);
-
-            try {
-                buscript = spy(new Buscript(core));
-                when(buscript.getPlugin()).thenReturn(core);
-            } catch (NullPointerException e) {
-                buscript = null;
-            }
-
-            buscriptfield.set(core, buscript);
-
             // Set worldManager
-            WorldManager wm = spy(new WorldManager(core));
+            SimpleMVWorldManager wm = spy(new SimpleMVWorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
             worldmanagerfield.setAccessible(true);
             worldmanagerfield.set(core, wm);
@@ -276,9 +262,9 @@ public class TestInstanceCreator {
     }
 
     public boolean tearDown() {
-        List<MultiverseWorld> worlds = new ArrayList<MultiverseWorld>(core.getMVWorldManager()
+        List<MVWorld> worlds = new ArrayList<MVWorld>(core.getMVWorldManager()
                 .getMVWorlds());
-        for (MultiverseWorld world : worlds) {
+        for (MVWorld world : worlds) {
             core.getMVWorldManager().deleteWorld(world.getName());
         }
 

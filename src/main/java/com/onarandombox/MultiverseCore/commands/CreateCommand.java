@@ -1,131 +1,127 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.pneumaticraft.commandhandler.CommandHandler;
-import org.bukkit.ChatColor;
-import org.bukkit.World.Environment;
-import org.bukkit.WorldType;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
-/**
- * Creates a new world and loads it.
- */
-public class CreateCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
+import com.onarandombox.MultiverseCore.locale.MVCorei18n;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldType;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-    public CreateCommand(MultiverseCore plugin) {
+@CommandAlias("mv")
+public class CreateCommand extends MultiverseCoreCommand {
+    public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
-        this.setName("Create World");
-        this.setCommandUsage(String.format("/mv create %s{NAME} {ENV} %s-s [SEED] -g [GENERATOR[:ID]] -t [WORLDTYPE] [-n] -a [true|false]",
-                ChatColor.GREEN, ChatColor.GOLD));
-        this.setArgRange(2, 11); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-        this.addKey("mvcreate");
-        this.addKey("mvc");
-        this.addKey("mv create");
-        this.setPermission("multiverse.core.create", "Creates a new world and loads it.", PermissionDefault.OP);
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "world" + ChatColor.GREEN + " normal");
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "lavaland" + ChatColor.RED + " nether");
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "starwars" + ChatColor.AQUA + " end");
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "flatroom" + ChatColor.GREEN + " normal" + ChatColor.AQUA + " -t flat");
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "gargamel" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -s gargamel");
-        this.addCommandExample("/mv create " + ChatColor.GOLD + "moonworld" + ChatColor.GREEN + " normal" + ChatColor.DARK_AQUA + " -g BukkitFullOfMoon");
-        this.worldManager = this.plugin.getMVWorldManager();
+
+        registerFlagGroup(CommandFlagGroup.builder("mvcreate")
+                .add(CommandValueFlag.builder("--seed", String.class)
+                        .addAlias("-s")
+                        .completion(() -> Collections.singleton(String.valueOf(new Random().nextLong())))
+                        .build())
+                .add(CommandValueFlag.builder("--generator", String.class)
+                        .addAlias("-g")
+                        .completion(() -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
+                                .filter(Plugin::isEnabled)
+                                .filter(genplugin -> this.plugin.getUnsafeCallWrapper().wrap(
+                                        () -> genplugin.getDefaultWorldGenerator("world", ""),
+                                        genplugin.getName(),
+                                        "Get generator"
+                                ) != null)
+                                .map(genplugin -> genplugin.getDescription().getName())
+                                .collect(Collectors.toList()))
+                        .build())
+                .add(CommandValueFlag.builder("--world-type", WorldType.class)
+                        .addAlias("-t")
+                        .context((value) -> {
+                            try {
+                                return WorldType.valueOf(value.toUpperCase());
+                            } catch (IllegalArgumentException e) {
+                                throw new InvalidCommandArgument("Invalid world type: " + value);
+                            }
+                        })
+                        .completion(() -> {
+                            List<String> types = new ArrayList<>();
+                            for (WorldType type : WorldType.values()) {
+                                types.add(type.name().toLowerCase());
+                            }
+                            return types;
+                        })
+                        .build())
+                .add(CommandFlag.builder("--adjust-spawn")
+                        .addAlias("-n")
+                        .build())
+                .add(CommandFlag.builder("--no-structures")
+                        .addAlias("-a")
+                        .build())
+                .build());
     }
-	
-	private String trimWorldName(String userInput) {
-        // Removes relative paths.
-        return userInput.replaceAll("^[./\\\\]+", "");
-    }
-	
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        String worldName = trimWorldName(args.get(0));
-        File worldFile = new File(this.plugin.getServer().getWorldContainer(), worldName);
-        String env = args.get(1);
-        String seed = CommandHandler.getFlag("-s", args);
-        String generator = CommandHandler.getFlag("-g", args);
-        boolean allowStructures = true;
-        String structureString = CommandHandler.getFlag("-a", args);
-        if (structureString != null) {
-            allowStructures = Boolean.parseBoolean(structureString);
-        }
-        String typeString = CommandHandler.getFlag("-t", args);
-        boolean useSpawnAdjust = true;
-        for (String s : args) {
-            if (s.equalsIgnoreCase("-n")) {
-                useSpawnAdjust = false;
-            }
-        }
-		
-		// Make sure the world name doesn't contain the words 'plugins' and '.dat'
-		if(worldName.contains("plugins")||worldName.contains(".dat")){
-			sender.sendMessage(ChatColor.RED + "Multiverse cannot create a world that contains 'plugins' or '.dat'");
-            return;
-		}
-		
-        if (this.worldManager.isMVWorld(worldName)) {
-            sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
-                    + "another" + ChatColor.RESET + ChatColor.RED + " world named " + worldName);
-            return;
-        }
 
-        if (worldFile.exists()) {
-            sender.sendMessage(ChatColor.RED + "A Folder/World already exists with this name!");
-            sender.sendMessage(ChatColor.RED + "If you are confident it is a world you can import with /mvimport");
+    @Subcommand("create")
+    @CommandPermission("multiverse.core.create")
+    @CommandCompletion("@empty  @flags:groupName=mvcreate")
+    @Syntax("<name> <environment> --seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+    @Description("{@@mv-core.create.description}")
+    public void onCreateCommand(BukkitCommandIssuer issuer,
+
+                                @Conditions("validWorldName:scope=new")
+                                @Syntax("<name>")
+                                @Description("{@@mv-core.create.name.description}")
+                                String worldName,
+
+                                @Syntax("<environment>")
+                                @Description("{@@mv-core.create.environment.description}")
+                                World.Environment environment,
+
+                                @Optional
+                                @Syntax("--seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+                                @Description("{@@mv-core.create.flags.description}")
+                                String[] flags
+    ) {
+        ParsedCommandFlags parsedFlags = parseFlags(flags);
+
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES, "{worldName}", worldName);
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ENVIRONMENT, "{environment}", environment.name());
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_SEED, "{seed}", parsedFlags.flagValue("--seed", "RANDOM", String.class));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_WORLDTYPE, "{worldType}", parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class).name());
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ADJUSTSPAWN, "{adjustSpawn}", String.valueOf(parsedFlags.hasFlag("--adjust-spawn")));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR, "{generator}", parsedFlags.flagValue("--generator", "null", String.class));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES, "{structures}", String.valueOf(!parsedFlags.hasFlag("--no-structures")));
+
+        issuer.sendInfo(MVCorei18n.CREATE_LOADING);
+
+        if (!worldManager.addWorld(
+                worldName,
+                environment,
+                parsedFlags.flagValue("--seed", String.class),
+                parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class),
+                parsedFlags.hasFlag("--adjust-spawn"),
+                parsedFlags.flagValue("--generator", String.class),
+                parsedFlags.hasFlag("--no-structures")
+        )) {
+            issuer.sendError(MVCorei18n.CREATE_FAILED, "{worldName}", worldName);
             return;
         }
-
-        Environment environment = EnvironmentCommand.getEnvFromString(env);
-        if (environment == null) {
-            sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
-            EnvironmentCommand.showEnvironments(sender);
-            return;
-        }
-
-        // If they didn't specify a type, default to NORMAL
-        if (typeString == null) {
-            typeString = "NORMAL";
-        }
-        WorldType type = EnvironmentCommand.getWorldTypeFromString(typeString);
-        if (type == null) {
-            sender.sendMessage(ChatColor.RED + "That is not a valid World Type.");
-            EnvironmentCommand.showWorldTypes(sender);
-            return;
-        }
-        // Determine if the generator is valid. #918
-        if (generator != null) {
-            List<String> genarray = new ArrayList<String>(Arrays.asList(generator.split(":")));
-            if (genarray.size() < 2) {
-                // If there was only one arg specified, pad with another empty one.
-                genarray.add("");
-            }
-            if (this.worldManager.getChunkGenerator(genarray.get(0), genarray.get(1), "test") == null) {
-                // We have an invalid generator.
-                sender.sendMessage("Invalid generator! '" + generator + "'. " + ChatColor.RED + "Aborting world creation.");
-                return;
-            }
-        }
-        Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
-
-        if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
-            Command.broadcastCommandMessage(sender, "Complete!");
-        } else {
-            Command.broadcastCommandMessage(sender, "FAILED.");
-        }
+        issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, "{worldName}", worldName);
     }
 }

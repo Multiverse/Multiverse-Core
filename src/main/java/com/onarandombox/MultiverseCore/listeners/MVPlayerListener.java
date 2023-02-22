@@ -7,13 +7,14 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.enums.RespawnType;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
-import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -27,12 +28,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Multiverse's {@link Listener} for players.
@@ -64,27 +61,19 @@ public class MVPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
         World world = event.getPlayer().getWorld();
-        MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
         if (mvWorld == null) {
             return;
         }
 
-        RespawnType respawnType = RespawnType.OTHER;
-        if (event.isBedSpawn()) {
-            respawnType = RespawnType.BED;
-        }
-        if (CompatibilityLayer.isAnchorSpawn(event)) {
-            respawnType = RespawnType.ANCHOR;
-        }
-
-        if (mvWorld.getBedRespawn() && (respawnType == RespawnType.BED || respawnType == RespawnType.ANCHOR)) {
-            Logging.fine("Spawning %s at their %s", event.getPlayer().getName(), respawnType);
+        if (mvWorld.getBedRespawn() && (event.isBedSpawn() || event.isAnchorSpawn())) {
+            Logging.fine("Spawning %s at their %s.", event.getPlayer().getName(), event.isBedSpawn() ? "BED" : "ANCHOR");
             return;
         }
 
         // Get the instance of the World the player should respawn at.
-        MultiverseWorld respawnWorld = null;
+        MVWorld respawnWorld = null;
         if (this.worldManager.isMVWorld(mvWorld.getRespawnToWorld())) {
             respawnWorld = this.worldManager.getMVWorld(mvWorld.getRespawnToWorld());
         }
@@ -103,7 +92,7 @@ public class MVPlayerListener implements Listener {
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
-        MultiverseWorld mvw = this.worldManager.getMVWorld(w.getName());
+        MVWorld mvw = this.worldManager.getMVWorld(w.getName());
         if (mvw != null) {
             return mvw.getSpawnLocation();
         }
@@ -150,15 +139,6 @@ public class MVPlayerListener implements Listener {
     }
 
     /**
-     * This method is called when a player quits the game.
-     * @param event The Event that was fired.
-     */
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent event) {
-        this.plugin.removePlayerSession(event.getPlayer());
-    }
-
-    /**
      * This method is called when a player teleports anywhere.
      * @param event The Event that was fired.
      */
@@ -182,8 +162,8 @@ public class MVPlayerListener implements Listener {
         }
         Logging.finer("Inferred sender '" + teleporter + "' from name '"
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
-        MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
-        MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
+        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
                     + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
@@ -286,8 +266,8 @@ public class MVPlayerListener implements Listener {
         if (event.getTo() == null) {
             return;
         }
-        MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
-        MultiverseWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
+        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Portaling to the same world.
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
@@ -313,7 +293,7 @@ public class MVPlayerListener implements Listener {
                     + "' because enforceaccess is off.");
         }
         if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            CompatibilityLayer.setPortalSearchRadius(event, this.plugin.getMVConfig().getPortalSearchRadius());
+            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 
@@ -331,7 +311,7 @@ public class MVPlayerListener implements Listener {
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameModeAndFlight(Player player, World world) {
 
-        MultiverseWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameModeAndFlight(player, mvWorld);
         } else {
@@ -345,7 +325,7 @@ public class MVPlayerListener implements Listener {
      * @param player The {@link Player}.
      * @param world The world the player is in.
      */
-    public void handleGameModeAndFlight(final Player player, final MultiverseWorld world) {
+    public void handleGameModeAndFlight(final Player player, final MVWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,

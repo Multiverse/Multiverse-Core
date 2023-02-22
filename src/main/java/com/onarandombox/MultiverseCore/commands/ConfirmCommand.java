@@ -1,39 +1,23 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-/**
- * Confirms actions.
- */
-public class ConfirmCommand extends MultiverseCommand {
-
-    public ConfirmCommand(MultiverseCore plugin) {
+@CommandAlias("mv")
+public class ConfirmCommand extends MultiverseCoreCommand {
+    public ConfirmCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
-        // Any command that is dangerous should require op
-        this.setName("Confirms a command that could destroy life, the universe and everything.");
-        this.setCommandUsage("/mv confirm");
-        this.setArgRange(0, 0);
-        this.addKey("mvconfirm");
-        this.addKey("mv confirm");
-        this.addCommandExample("/mv confirm");
-        this.setPermission("multiverse.core.confirm", "If you have not been prompted to use this, it will not do anything.", PermissionDefault.OP);
-
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        this.plugin.getCommandQueueManager().runQueuedCommand(sender);
+    @Subcommand("confirm")
+    @CommandPermission("multiverse.core.confirm")
+    @Description("Confirms dangerous commands before executing them.")
+    public void onConfirmCommand(@NotNull BukkitCommandIssuer issuer) {
+        this.plugin.getMVCommandManager().getCommandQueueManager().runQueuedCommand(issuer.getIssuer());
     }
-
 }

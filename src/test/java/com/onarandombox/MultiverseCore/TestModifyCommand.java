@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import org.bukkit.Server;
 import org.bukkit.World.Environment;
@@ -44,7 +44,7 @@ public class TestModifyCommand {
         Command cmd = mock(Command.class);
         when(cmd.getName()).thenReturn("mv");
 
-        MultiverseWorld world = core.getMVWorldManager().getMVWorld("world");
+        MVWorld world = core.getMVWorldManager().getMVWorld("world");
         assertNotNull(world);
 
         assertFalse(world.isHidden()); // ensure it's not hidden now

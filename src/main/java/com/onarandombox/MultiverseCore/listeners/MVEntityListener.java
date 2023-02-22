@@ -10,8 +10,7 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.utils.CompatibilityLayer;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,8 +22,6 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-
-import java.util.logging.Level;
 
 /**
  * Multiverse's Entity {@link Listener}.
@@ -49,7 +46,7 @@ public class MVEntityListener implements Listener {
         }
         if (event.getEntity() instanceof Player) {
             Player p = (Player) event.getEntity();
-            MultiverseWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
+            MVWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
             if (w != null && !w.getHunger()) {
                 // If the world has hunger set to false, do not let the level go down
                 if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
@@ -69,7 +66,7 @@ public class MVEntityListener implements Listener {
             return;
         }
         RegainReason reason = event.getRegainReason();
-        MultiverseWorld world = this.worldManager.getMVWorld(event.getEntity().getLocation().getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getEntity().getLocation().getWorld());
         if (world != null && reason == RegainReason.REGEN && !world.getAutoHeal()) {
             event.setCancelled(true);
         }
@@ -105,7 +102,7 @@ public class MVEntityListener implements Listener {
             return;
         }
 
-        MultiverseWorld mvworld = this.worldManager.getMVWorld(world.getName());
+        MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
         event.setCancelled(this.plugin.getMVWorldManager().getTheWorldPurger().shouldWeKillThisCreature(mvworld, event.getEntity()));
     }
 
@@ -119,7 +116,7 @@ public class MVEntityListener implements Listener {
             return;
         }
         if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            CompatibilityLayer.setPortalSearchRadius(event, this.plugin.getMVConfig().getPortalSearchRadius());
+            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
 }

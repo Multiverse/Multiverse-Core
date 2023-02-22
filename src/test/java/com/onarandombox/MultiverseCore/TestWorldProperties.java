@@ -7,12 +7,14 @@
 
 package com.onarandombox.MultiverseCore;
 
+import java.io.File;
+
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.onarandombox.MultiverseCore.configuration.SpawnLocation;
-import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
+import com.onarandombox.MultiverseCore.world.WorldProperties;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -37,8 +39,6 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -128,8 +128,8 @@ public class TestWorldProperties {
         MVWorldManager worldManager = core.getMVWorldManager();
         assertNotNull(worldManager);
 
-        MultiverseWorld mvWorld = worldManager.getMVWorld("world");
-        MultiverseWorld netherWorld = worldManager.getMVWorld("world_nether");
+        MVWorld mvWorld = worldManager.getMVWorld("world");
+        MVWorld netherWorld = worldManager.getMVWorld("world_nether");
         assertNotNull(mvWorld);
         assertNotNull(netherWorld);
         assertSame(mvWorld, worldManager.getFirstSpawnWorld());
@@ -178,10 +178,10 @@ public class TestWorldProperties {
 
         // call player chat event
         core.getMVConfig().setPrefixChat(true);
-        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
+        core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
         core.getMVConfig().setPrefixChat(false);
-        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
+        core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 
         // call player join events
@@ -272,15 +272,15 @@ public class TestWorldProperties {
 
         // call player chat event
         core.getMVConfig().setPrefixChat(true);
-        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
+        core.getChatListener().playerChat(playerChatEvent);
         // never because it's hidden!
         verify(playerChatEvent, never()).setFormat(
                 "[" + mvWorld.getColoredWorldString() + "]" + "format");
         mvWorld.setHidden(false);
-        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
+        core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
         core.getMVConfig().setPrefixChat(false);
-        ((MVAsyncPlayerChatListener) core.getChatListener()).playerChat(playerChatEvent);
+        core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
         mvWorld.setHidden(true); // reset hidden-state
 
@@ -306,7 +306,7 @@ public class TestWorldProperties {
         /* ****************************************** *
          *           Test saving/loading
          * ****************************************** */
-        assertTrue(core.saveMVConfigs());
+        assertTrue(core.saveAllConfigs());
         // change a value here
         FileConfiguration config = YamlConfiguration.loadConfiguration(new File(core.getDataFolder(), "worlds.yml"));
         WorldProperties worldObj = (WorldProperties) config.get("worlds.world");
@@ -341,7 +341,7 @@ public class TestWorldProperties {
         assertEquals(new SpawnLocation(1, 1, 1), mvWorld.getSpawnLocation());
     }
 
-    public void createEvents(MultiverseWorld mvWorld) {
+    public void createEvents(MVWorld mvWorld) {
         final World world = mvWorld.getCBWorld();
         //// Weather events
         // weather change

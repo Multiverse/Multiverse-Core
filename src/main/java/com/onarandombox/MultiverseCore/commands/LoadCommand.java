@@ -1,42 +1,42 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-/**
- * Loads a world into Multiverse.
- */
-public class LoadCommand extends MultiverseCommand {
-
-    public LoadCommand(MultiverseCore plugin) {
+@CommandAlias("mv")
+public class LoadCommand extends MultiverseCoreCommand {
+    public LoadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
-        this.setName("Load World");
-        this.setCommandUsage("/mv load" + ChatColor.GREEN + " {WORLD}");
-        this.setArgRange(1, 1);
-        this.addKey("mvload");
-        this.addKey("mv load");
-        this.addCommandExample("/mv load " + ChatColor.GREEN + "MyUnloadedWorld");
-        this.setPermission("multiverse.core.load", "Loads a world into Multiverse.", PermissionDefault.OP);
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        if (this.plugin.getMVWorldManager().loadWorld(args.get(0))) {
-            Command.broadcastCommandMessage(sender, "Loaded world '" + args.get(0) + "'!");
-        } else {
-            sender.sendMessage("Error trying to load world '" + args.get(0) + "'!");
+    @Subcommand("load")
+    @CommandPermission("multiverse.core.load")
+    @CommandCompletion("@mvworlds:scope=unloaded")
+    @Syntax("<world>")
+    @Description("Loads a world. World must be already in worlds.yml, else please use /mv import.")
+    public void onLoadCommand(BukkitCommandIssuer issuer,
+
+                              @Single
+                              @Conditions("validWorldName:scope=unloaded")
+                              @Syntax("<world>")
+                              @Description("Name of world you want to load.")
+                              String worldName
+    ) {
+        issuer.sendMessage(String.format("Loading world '%s'...", worldName));
+
+        if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
+            issuer.sendMessage(String.format("Error trying to load world '%s'!", worldName));
+            return;
         }
+        issuer.sendMessage(String.format("Loaded world '%s'!", worldName));
     }
 }

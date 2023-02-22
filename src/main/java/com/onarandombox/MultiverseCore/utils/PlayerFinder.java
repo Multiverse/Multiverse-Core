@@ -1,17 +1,18 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import com.dumptruckman.minecraft.util.Logging;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.base.Strings;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class to get {@link Player} from name, UUID or Selectors.
@@ -25,22 +26,45 @@ public class PlayerFinder {
      * Get a {@link Player} based on an identifier of name UUID or selector.
      *
      * @param playerIdentifier  An identifier of name UUID or selector.
+     * @return The player if found, else null.
+     */
+    public static @Nullable Player get(@Nullable String playerIdentifier) {
+        return get(playerIdentifier, Bukkit.getConsoleSender());
+    }
+
+    /**
+     * Get a {@link Player} based on an identifier of name UUID or selector.
+     *
+     * @param playerIdentifier  An identifier of name UUID or selector.
      * @param sender            Target sender for selector.
      * @return The player if found, else null.
      */
-    @Nullable
-    public static Player get(@NotNull String playerIdentifier,
-                             @NotNull CommandSender sender) {
+    public static @Nullable Player get(@Nullable String playerIdentifier, @NotNull CommandSender sender) {
+        if (playerIdentifier == null) {
+            return null;
+        }
 
         Player targetPlayer = getByName(playerIdentifier);
         if (targetPlayer != null) {
             return targetPlayer;
         }
+
         targetPlayer = getByUuid(playerIdentifier);
         if (targetPlayer != null) {
             return targetPlayer;
         }
+
         return getBySelector(playerIdentifier, sender);
+    }
+
+    /**
+     * Get multiple {@link Player} based on many identifiers of name UUID or selector.
+     *
+     * @param playerIdentifiers An identifier of multiple names, UUIDs or selectors, separated by comma.
+     * @return A list of all the {@link Player} found.
+     */
+    public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers) {
+        return getMulti(playerIdentifiers, Bukkit.getConsoleSender());
     }
 
     /**
@@ -50,16 +74,16 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return A list of all the {@link Player} found.
      */
-    @Nullable
-    public static List<Player> getMulti(@NotNull String playerIdentifiers,
-                                        @NotNull CommandSender sender) {
+    public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers,
+                                                 @NotNull CommandSender sender
+    ) {
+        List<Player> playerResults = new ArrayList<>();
 
-        String[] playerIdentifierArray = COMMA_SPLIT.split(playerIdentifiers);
-        if (playerIdentifierArray == null || playerIdentifierArray.length == 0) {
-            return null;
+        if (playerIdentifiers == null || Strings.isNullOrEmpty(playerIdentifiers)) {
+            return playerResults;
         }
 
-        List<Player> playerResults = new ArrayList<>();
+        String[] playerIdentifierArray = COMMA_SPLIT.split(playerIdentifiers);
         for (String playerIdentifier : playerIdentifierArray) {
             Player targetPlayer = getByName(playerIdentifier);
             if (targetPlayer != null) {
@@ -96,8 +120,7 @@ public class PlayerFinder {
      * @param playerUuid    UUID of a player.
      * @return The player if found, else null.
      */
-    @Nullable
-    public static Player getByUuid(@NotNull String playerUuid) {
+    public static @Nullable Player getByUuid(@NotNull String playerUuid) {
         if (!UUID_REGEX.matcher(playerUuid).matches()) {
             return null;
         }
@@ -116,8 +139,7 @@ public class PlayerFinder {
      * @param playerUuid    UUID of a player.
      * @return The player if found, else null.
      */
-    @Nullable
-    public static Player getByUuid(@NotNull UUID playerUuid) {
+    public static @Nullable Player getByUuid(@NotNull UUID playerUuid) {
         return Bukkit.getPlayer(playerUuid);
     }
 
@@ -129,10 +151,9 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return The player if only one found, else null.
      */
-    @Nullable
-    public static Player getBySelector(@NotNull String playerSelector,
-                                       @NotNull CommandSender sender) {
-
+    public static @Nullable Player getBySelector(@NotNull String playerSelector,
+                                                 @NotNull CommandSender sender
+    ) {
         List<Player> matchedPlayers = getMultiBySelector(playerSelector, sender);
         if (matchedPlayers == null || matchedPlayers.isEmpty()) {
             Logging.fine("No player found with selector '%s' for %s.", playerSelector, sender.getName());
@@ -154,10 +175,9 @@ public class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return A list of all the {@link Player} found.
      */
-    @Nullable
-    public static List<Player> getMultiBySelector(@NotNull String playerSelector,
-                                                  @NotNull CommandSender sender) {
-
+    public static @Nullable List<Player> getMultiBySelector(@NotNull String playerSelector,
+                                                            @NotNull CommandSender sender
+    ) {
         if (playerSelector.charAt(0) != '@') {
             return null;
         }

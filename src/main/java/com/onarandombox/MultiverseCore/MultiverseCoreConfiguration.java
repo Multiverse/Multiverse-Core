@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore;
 import java.util.Map;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.api.MultiverseCoreConfig;
+import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 /**
  * Our configuration.
  */
-public class MultiverseCoreConfiguration extends SerializationConfig implements MultiverseCoreConfig {
+public class MultiverseCoreConfiguration extends SerializationConfig implements MVConfig {
     private static MultiverseCoreConfiguration instance;
 
     /**
@@ -35,6 +35,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * Gets the statically saved instance.
      * @return The statically saved instance.
      */
+    @Deprecated
     public static MultiverseCoreConfiguration getInstance() {
         if (instance == null)
             throw new IllegalStateException("The instance wasn't set!");
@@ -48,27 +49,19 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile String prefixchatformat;
     @Property
-    private volatile boolean useasyncchat;
-    @Property
     private volatile boolean teleportintercept;
     @Property
     private volatile boolean firstspawnoverride;
     @Property
     private volatile boolean displaypermerrors;
     @Property
-    private volatile boolean enablebuscript;
-    @Property
     private volatile int globaldebug;
     @Property
     private volatile boolean silentstart;
     @Property
-    private volatile int messagecooldown;
-    @Property
     private volatile double version;
     @Property
     private volatile String firstspawnworld;
-    @Property
-    private volatile int teleportcooldown;
     @Property
     private volatile boolean defaultportalsearch;
     @Property
@@ -95,16 +88,12 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     protected void setDefaults() {
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         enforceaccess = false;
-        useasyncchat = true;
         prefixchat = false;
         prefixchatformat = "[%world%]%chat%";
         teleportintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
-        enablebuscript = true;
         globaldebug = 0;
-        messagecooldown = 5000;
-        teleportcooldown = 1000;
         this.version = 2.9;
         silentstart = false;
         defaultportalsearch = true;
@@ -220,22 +209,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
      * {@inheritDoc}
      */
     @Override
-    public boolean getEnableBuscript() {
-        return this.enablebuscript;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setEnableBuscript(boolean enableBuscript) {
-        this.enablebuscript = enableBuscript;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void setDisplayPermErrors(boolean displayPermErrors) {
         this.displaypermerrors = displayPermErrors;
     }
@@ -256,22 +229,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         this.globaldebug = globalDebug;
         Logging.setDebugLevel(globalDebug);
         Bukkit.getPluginManager().callEvent(new MVDebugModeEvent(globalDebug));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getMessageCooldown() {
-        return this.messagecooldown;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setMessageCooldown(int messageCooldown) {
-        this.messagecooldown = messageCooldown;
     }
 
     /**
@@ -304,32 +261,6 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setFirstSpawnWorld(String firstSpawnWorld) {
         this.firstspawnworld = firstSpawnWorld;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTeleportCooldown() {
-        return this.teleportcooldown;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTeleportCooldown(int teleportCooldown) {
-        this.teleportcooldown = teleportCooldown;
-    }
-
-    @Override
-    public void setUseAsyncChat(boolean useAsyncChat) {
-        this.useasyncchat = useAsyncChat;
-    }
-
-    @Override
-    public boolean getUseAsyncChat() {
-        return this.useasyncchat;
     }
 
     @Override

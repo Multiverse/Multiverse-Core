@@ -1,55 +1,48 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
-
+import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Creates a clone of a world.
- */
-public class CloneCommand extends MultiverseCommand {
-    private MVWorldManager worldManager;
-
-    public CloneCommand(MultiverseCore plugin) {
+@CommandAlias("mv")
+public class CloneCommand extends MultiverseCoreCommand {
+    public CloneCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
-        this.setName("Clone World");
-        this.setCommandUsage("/mv clone" + ChatColor.GREEN + " {TARGET} {NAME}" + ChatColor.GOLD + " -g [GENERATOR[:ID]]");
-        this.setArgRange(2, 4); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-        this.addKey("mvclone");
-        this.addKey("mvcl");
-        this.addKey("mv cl");
-        this.addKey("mv clone");
-        this.addCommandExample("/mv clone " + ChatColor.GOLD + "world" + ChatColor.GREEN + " world_backup");
-        this.addCommandExample("/mv clone " + ChatColor.GOLD + "skyblock_pristine" + ChatColor.GREEN + " skyblock");
-        this.setPermission("multiverse.core.clone", "Clones a world.", PermissionDefault.OP);
-        this.worldManager = this.plugin.getMVWorldManager();
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        String oldName = args.get(0);
-	    if (!this.worldManager.hasUnloadedWorld(oldName, true)) {
-            // If no world was found, we can't clone.
-            sender.sendMessage("Sorry, Multiverse doesn't know about world " + oldName + ", so we can't clone it!");
-            sender.sendMessage("Check the " + ChatColor.GREEN + "/mv list" + ChatColor.WHITE + " command to verify it is listed.");
+    @Subcommand("clone")
+    @CommandPermission("multiverse.core.clone")
+    @CommandCompletion("@mvworlds:scope=both @empty")
+    @Syntax("<world> <new world name>")
+    @Description("Clones a world.")
+    public void onCloneCommand(CommandIssuer issuer,
+
+                               @Conditions("validWorldName:scope=both")
+                               @Syntax("<world>")
+                               @Description("The target world to clone.")
+                               String worldName,
+
+                               @Single
+                               @Conditions("validWorldName:scope=new")
+                               @Syntax("<new world name>")
+                               @Description("The new cloned world name.")
+                               String newWorldName
+    ) {
+        issuer.sendMessage(String.format("Cloning world '%s' to '%s'...", worldName, newWorldName));
+
+        if (!this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName)) {
+            issuer.sendMessage(String.format("%sWorld could not be cloned! See console for more details.", ChatColor.RED));
             return;
         }
-        if (this.plugin.getMVWorldManager().cloneWorld(oldName, args.get(1))) {
-            sender.sendMessage(ChatColor.GREEN + "World cloned!");
-        } else {
-            sender.sendMessage(ChatColor.RED + "World could NOT be cloned!");
-        }
+        issuer.sendMessage(String.format("%sCloned world '%s'!", ChatColor.GREEN, newWorldName));
     }
 }

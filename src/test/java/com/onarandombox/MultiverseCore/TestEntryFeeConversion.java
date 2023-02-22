@@ -1,13 +1,14 @@
 package com.onarandombox.MultiverseCore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
+import com.onarandombox.MultiverseCore.world.WorldProperties;
 import org.bukkit.Material;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -41,22 +42,22 @@ public class TestEntryFeeConversion {
     public void testConvertIntegerCurrencyToMaterialCurrency() {
         entryFee.put("currency", -1);
         WorldProperties props = new WorldProperties(config);
-        assertNull(props.entryfee.getCurrency());
+        assertNull(props.getCurrency());
 
         entryFee.put("currency", 0);
         props = new WorldProperties(config);
-        assertNull(props.entryfee.getCurrency());
+        assertNull(props.getCurrency());
 
         entryFee.put("currency", 1);
         props = new WorldProperties(config);
-        assertEquals(Material.STONE, props.entryfee.getCurrency());
+        assertEquals(Material.STONE, props.getCurrency());
 
         entryFee.put("currency", "1");
         props = new WorldProperties(config);
-        assertEquals(Material.STONE, props.entryfee.getCurrency());
+        assertEquals(Material.STONE, props.getCurrency());
 
         entryFee.put("currency", "stone");
         props = new WorldProperties(config);
-        assertEquals(Material.STONE, props.entryfee.getCurrency());
+        assertEquals(Material.STONE, props.getCurrency());
     }
 }

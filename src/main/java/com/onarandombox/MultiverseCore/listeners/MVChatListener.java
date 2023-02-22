@@ -2,15 +2,17 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 
 import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
  * Multiverse's {@link org.bukkit.event.Listener} for players.
  */
-public abstract class MVChatListener implements Listener {
+public class MVChatListener implements Listener {
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
@@ -22,10 +24,11 @@ public abstract class MVChatListener implements Listener {
     }
 
     /**
-     * This handles a {@link ChatEvent}.
-     * @param event The {@link ChatEvent}.
+     * This handles a {@link AsyncPlayerChatEvent}.
+     * @param event The {@link AsyncPlayerChatEvent}.
      */
-    public void playerChat(ChatEvent event) {
+    @EventHandler
+    public void playerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -42,7 +45,7 @@ public abstract class MVChatListener implements Listener {
             if (!this.worldManager.isMVWorld(world)) {
                 return;
             }
-            MultiverseWorld mvworld = this.worldManager.getMVWorld(world);
+            MVWorld mvworld = this.worldManager.getMVWorld(world);
             if (mvworld.isHidden()) {
                 return;
             }

@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
@@ -35,7 +35,7 @@ public class TestEntitySpawnRules {
     MultiverseCore core;
     MVEntityListener listener;
 
-    MultiverseWorld mvWorld;
+    MVWorld mvWorld;
     World cbworld;
 
     Sheep sheep;
@@ -51,7 +51,7 @@ public class TestEntitySpawnRules {
         core = creator.getCore();
         listener = core.getEntityListener();
 
-        mvWorld = mock(MultiverseWorld.class);
+        mvWorld = mock(MVWorld.class);
         cbworld = MockWorldFactory.makeNewMockWorld("world", World.Environment.NORMAL, WorldType.NORMAL);
         when(mvWorld.getCBWorld()).thenReturn(cbworld);
 

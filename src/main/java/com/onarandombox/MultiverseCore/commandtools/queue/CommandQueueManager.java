@@ -7,6 +7,9 @@
 
 package com.onarandombox.MultiverseCore.commandtools.queue;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
@@ -16,9 +19,6 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>
@@ -50,7 +50,7 @@ public class CommandQueueManager {
         // Since only one command is stored in queue per sender, we remove the old one.
         this.removeFromQueue(targetSender);
 
-        Logging.finer("Add new command to queue for sender %s.", targetSender);
+        Logging.finer("Add new command to queue for sender %s.", targetSender.getName());
         this.queuedCommandMap.put(targetSender, queuedCommand);
         queuedCommand.setExpireTask(runExpireLater(queuedCommand));
 
@@ -140,7 +140,7 @@ public class CommandQueueManager {
      */
     @NotNull
     private CommandSender parseSender(@NotNull CommandSender sender) {
-        Logging.fine(sender.getClass().getName());
+        Logging.finer("Sender is of class %s.", sender.getClass().getName());
         if (isCommandBlock(sender)) {
             Logging.finer("Is command block.");
             return COMMAND_BLOCK;

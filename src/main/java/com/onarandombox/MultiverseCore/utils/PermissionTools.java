@@ -9,14 +9,13 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
-
-import java.util.logging.Level;
 
 /**
  * Utility-class for permissions.
@@ -92,15 +91,15 @@ public class PermissionTools {
     }
 
     /**
-     * Checks if the given {@link Player} has enough money to enter the specified {@link MultiverseWorld}.
-     * @param fromWorld The {@link MultiverseWorld} the player is coming from.
-     * @param toWorld The {@link MultiverseWorld} the player is going to.
+     * Checks if the given {@link Player} has enough money to enter the specified {@link MVWorld}.
+     * @param fromWorld The {@link MVWorld} the player is coming from.
+     * @param toWorld The {@link MVWorld} the player is going to.
      * @param teleporter The teleporter.
      * @param teleportee The teleportee.
      * @param pay If the player has to pay the money.
      * @return True if the player can enter the world.
      */
-    public boolean playerHasMoneyToEnter(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
+    public boolean playerHasMoneyToEnter(MVWorld fromWorld, MVWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
         Player teleporterPlayer;
         if (plugin.getMVConfig().getTeleportIntercept()) {
             if (teleporter instanceof ConsoleCommandSender) {
@@ -195,7 +194,7 @@ public class PermissionTools {
      * @param teleportee The player going somewhere.
      * @return True if they can't go to the world, False if they can.
      */
-    public boolean playerCanGoFromTo(MultiverseWorld fromWorld, MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
+    public boolean playerCanGoFromTo(MVWorld fromWorld, MVWorld toWorld, CommandSender teleporter, Player teleportee) {
         Logging.finest("Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
@@ -266,7 +265,7 @@ public class PermissionTools {
      * @param teleportee The player travelling.
      * @return True if they can bypass the player limit.
      */
-    public boolean playerCanBypassPlayerLimit(MultiverseWorld toWorld, CommandSender teleporter, Player teleportee) {
+    public boolean playerCanBypassPlayerLimit(MVWorld toWorld, CommandSender teleporter, Player teleportee) {
         if (teleporter == null) {
             teleporter = teleportee;
         }
@@ -291,7 +290,7 @@ public class PermissionTools {
      * @param teleportee player travelling.
      * @return True if they should bypass restrictions
      */
-    public boolean playerCanIgnoreGameModeRestriction(MultiverseWorld toWorld, Player teleportee) {
+    public boolean playerCanIgnoreGameModeRestriction(MVWorld toWorld, Player teleportee) {
         if (toWorld != null) {
             return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
         } else {
