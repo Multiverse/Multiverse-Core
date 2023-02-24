@@ -28,7 +28,7 @@ jobs:
 
       - name: Create release
         id: release
-        uses: rymndhng/release-on-push-action@v0.27.0
+        uses: Multiverse/release-on-push-action@support_prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
