@@ -37,13 +37,9 @@ jobs:
           release_name: "Release <RELEASE_VERSION>"
           use_github_release_notes: true
 
-      - name: Get PR labels
-        id: pr-labels
-        uses: joerick/pr-labels-action@v1.0.7
-
       - name: Modify version scheme
         run: |
-            if [[ "${{ steps.pr-labels.outputs.labels }}" == *"prerelease"* ]]; then
+            if [[ "${{ steps.release.outputs.tag_name }}" == *"pre"* ]]; then
                 echo "Replacing prerelease version scheme with SNAPSHOT"
                 echo "VERSION=$(echo ${{ steps.release.outputs.tag_name }} | sed -E 's/-pre.*/-SNAPSHOT/')" >> $GITHUB_ENV
             else
