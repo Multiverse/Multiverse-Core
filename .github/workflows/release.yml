@@ -34,7 +34,7 @@ jobs:
         with:
           bump_version_scheme: norelease
           tag_prefix: ''
-          release_name: "Release <RELEASE_VERSION>"
+          release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
 
       - name: Modify version scheme
