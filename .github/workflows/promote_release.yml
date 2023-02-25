@@ -11,9 +11,9 @@ on:
         required: true
         type: choice
         options:
+          - 'patch'
           - 'minor'
           - 'major'
-          - 'patch'
 
 jobs:
   release_on_push:
