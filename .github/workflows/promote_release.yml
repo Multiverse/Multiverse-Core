@@ -71,7 +71,6 @@ jobs:
           tag_prefix: ''
           release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
-          dry_run: true
 
 #      - name: Publish package
 #        uses: gradle/gradle-build-action@v2
