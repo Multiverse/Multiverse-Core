@@ -62,15 +62,15 @@ jobs:
 
       - name: Create release
         id: release
-        uses: Multiverse/release-on-push-action@support_prerelease
+        uses: Multiverse/release-on-push-action@support_ref_input
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_SHA: ${{ steps.get-release.outputs.target_commitish }}
         with:
           bump_version_scheme: ${{ github.event.inputs.version-bump }}
           tag_prefix: ''
           release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
+          ref: ${{ steps.get-release.outputs.target_commitish }}
 
       - name: Publish package
         uses: gradle/gradle-build-action@v2
