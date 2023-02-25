@@ -47,7 +47,7 @@ jobs:
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: clean build -x test
+          arguments: clean build -x test -x checkstyleMain -x checkstyleTest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_VERSION: ${{ env.VERSION }}
