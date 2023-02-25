@@ -67,7 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_SHA: ${{ steps.get-release.outputs.tag_name }}
         with:
-          bump_version_scheme: ${{ github.event.inputs.version-bump }}}
+          bump_version_scheme: ${{ github.event.inputs.version-bump }}
           tag_prefix: ''
           release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
