@@ -54,12 +54,12 @@ jobs:
 
       - name: Create release
         id: release
-        uses: Multiverse/release-on-push-action@support_prerelease
+        uses: Multiverse/release-on-push-action@support_promote
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_SHA: ${{ steps.get-release.outputs.tag_name }}
         with:
-          bump_version_scheme: norelease
+          bump_version_scheme: promote
           tag_prefix: ''
           release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
