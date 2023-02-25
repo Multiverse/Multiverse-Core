@@ -6,6 +6,14 @@ on:
       version:
         description: 'Version to promote'
         required: true
+      version-bump:
+        description: 'Version bump to apply - should usually match the version bump used for the prerelease since last release'
+        required: true
+        type: choice
+        options:
+          - 'minor'
+          - 'major'
+          - 'patch'
 
 jobs:
   release_on_push:
@@ -54,12 +62,12 @@ jobs:
 
       - name: Create release
         id: release
-        uses: Multiverse/release-on-push-action@support_promote
+        uses: Multiverse/release-on-push-action@support_prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_SHA: ${{ steps.get-release.outputs.tag_name }}
         with:
-          bump_version_scheme: promote
+          bump_version_scheme: ${{ github.event.inputs.version-bump }}}
           tag_prefix: ''
           release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
