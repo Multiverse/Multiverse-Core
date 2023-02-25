@@ -65,7 +65,7 @@ jobs:
         uses: Multiverse/release-on-push-action@support_prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_SHA: ${{ steps.get-release.outputs.tag_name }}
+          GITHUB_SHA: ${{ steps.get-release.outputs.target_commitish }}
         with:
           bump_version_scheme: ${{ github.event.inputs.version-bump }}
           tag_prefix: ''
