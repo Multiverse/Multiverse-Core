@@ -78,6 +78,7 @@ jobs:
           arguments: publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_VERSION: ${{ env.VERSION }}
 
       - name: Upload release artifact
         uses: svenstaro/upload-release-action@v2
