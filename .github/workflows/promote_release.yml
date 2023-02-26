@@ -16,7 +16,7 @@ on:
           - 'major'
 
 jobs:
-  release_on_push:
+  manually_promote_release:
     runs-on: ubuntu-latest
     steps:
       - name: Verify input version is prerelease
