@@ -1,5 +1,6 @@
-![Multiverse 2](config/multiverse2-long.png)
-
+<p align="center">
+<img src="config/multiverse2-long.png" alt="Multiverse Logo">
+</p>
 
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/multiverse-core)
 [![bukkit](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/bukkit_vector.svg)](https://dev.bukkit.org/projects/multiverse-core)
