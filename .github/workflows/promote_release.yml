@@ -62,7 +62,7 @@ jobs:
 
       - name: Create release
         id: release
-        uses: Multiverse/release-on-push-action@support_ref_input
+        uses: Multiverse/release-on-push-action@skip_prs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -71,6 +71,7 @@ jobs:
           release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
           ref: ${{ steps.get-release.outputs.target_commitish }}
+          skip_prs: true
 
       - name: Publish package
         uses: gradle/gradle-build-action@v2
