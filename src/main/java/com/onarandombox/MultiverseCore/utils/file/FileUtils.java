@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.onarandombox.MultiverseCore.utils;
+package com.onarandombox.MultiverseCore.utils.file;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 

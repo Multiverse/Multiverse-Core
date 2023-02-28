@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.Locale;
-
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
@@ -20,6 +18,7 @@ public class MVCommandManager extends PaperCommandManager {
     private final MultiverseCore plugin;
     private CommandFlagsManager flagsManager;
     private CommandQueueManager commandQueueManager;
+    private PluginLocales pluginLocales;
 
     public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
@@ -27,11 +26,6 @@ public class MVCommandManager extends PaperCommandManager {
 
         // Setup conditions
         MVCommandConditions.load(this, plugin);
-
-        // Setup locale
-        this.addSupportedLanguage(Locale.ENGLISH);
-        this.locales.addMessageBundles("multiverse-core");
-        this.locales.loadLanguages();
     }
 
     /**
@@ -44,6 +38,21 @@ public class MVCommandManager extends PaperCommandManager {
             this.flagsManager = new CommandFlagsManager();
         }
         return flagsManager;
+    }
+
+    /**
+     * Gets class responsible for locale handling.
+     *
+     * @return A not-null {@link PluginLocales}.
+     */
+    @Override
+    public PluginLocales getLocales() {
+        if (this.pluginLocales == null) {
+            this.pluginLocales = new PluginLocales(this);
+            this.locales = pluginLocales; // For parent class
+            this.pluginLocales.loadLanguages();
+        }
+        return this.pluginLocales;
     }
 
     /**
