@@ -13,21 +13,17 @@ import org.bukkit.plugin.Plugin;
  * A class loader that loads resources from the plugin's locales folder.
  */
 public class FileResClassLoader extends ClassLoader {
-    private static final String DEFAULT_LOCALE_FOLDER_PATH = "locales";
-    private final transient File localesFolder;
 
-    public FileResClassLoader(final Plugin plugin) {
-        this(plugin, DEFAULT_LOCALE_FOLDER_PATH);
-    }
+    private final transient File targetFolder;
 
-    public FileResClassLoader(final Plugin plugin, final String localesFolderPath) {
+    public FileResClassLoader(final Plugin plugin, final String subFolder) {
         super(plugin.getClass().getClassLoader());
-        this.localesFolder = new File(plugin.getDataFolder(), localesFolderPath);
+        this.targetFolder = new File(plugin.getDataFolder(), subFolder);
     }
 
     @Override
     public URL getResource(final String string) {
-        final File file = new File(localesFolder, string);
+        final File file = new File(targetFolder, string);
         if (file.exists()) {
             try {
                 return file.toURI().toURL();
@@ -39,7 +35,7 @@ public class FileResClassLoader extends ClassLoader {
 
     @Override
     public InputStream getResourceAsStream(final String string) {
-        final File file = new File(localesFolder, string);
+        final File file = new File(targetFolder, string);
         if (file.exists()) {
             try {
                 return new FileInputStream(file);
