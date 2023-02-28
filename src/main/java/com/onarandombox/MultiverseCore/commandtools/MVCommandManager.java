@@ -1,9 +1,13 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
+import java.util.List;
+
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
@@ -91,5 +95,19 @@ public class MVCommandManager extends PaperCommandManager {
             this.completions = new MVCommandCompletions(this, plugin);
         }
         return this.completions;
+    }
+
+    /**
+     * Standardise usage command formatting for all mv modules.
+     *
+     * @param help The target {@link CommandHelp}.
+     */
+    public void showUsage(@NotNull CommandHelp help) {
+        List<HelpEntry> entries = help.getHelpEntries();
+        if (entries.size() == 1) {
+            this.plugin.getMVCommandManager().getHelpFormatter().showDetailedHelp(help, entries.get(0));
+            return;
+        }
+        help.showHelp();
     }
 }

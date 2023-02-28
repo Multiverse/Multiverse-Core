@@ -38,8 +38,10 @@ import com.onarandombox.MultiverseCore.commands.LoadCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
+import com.onarandombox.MultiverseCore.commands.RootCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
+import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
@@ -164,7 +166,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.anchorManager.loadAnchors();
         this.registerEvents();
         this.registerCommands();
-        this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
         this.saveMVConfig();
@@ -214,15 +215,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.commandManager.registerCommand(new RemoveCommand(this));
         this.commandManager.registerCommand(new TeleportCommand(this));
         this.commandManager.registerCommand(new UnloadCommand(this));
-    }
-
-    /**
-     * Resgister locales
-     */
-    private void setUpLocales() {
-        this.commandManager.usePerIssuerLocale(true, true);
-        this.commandManager.getLocales().addFileResClassLoader(this);
-        this.commandManager.getLocales().addMessageBundles("multiverse-core");
     }
 
     /**
