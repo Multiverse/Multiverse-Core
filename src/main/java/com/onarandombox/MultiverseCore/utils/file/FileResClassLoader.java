@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.locale;
+package com.onarandombox.MultiverseCore.utils.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,11 +16,20 @@ public class FileResClassLoader extends ClassLoader {
 
     private final transient File targetFolder;
 
+    /**
+     * Creates a new FileResClassLoader.
+     *
+     * @param plugin    The plugin to load resources from.
+     * @param subFolder The subfolder to load resources from.
+     */
     public FileResClassLoader(final Plugin plugin, final String subFolder) {
         super(plugin.getClass().getClassLoader());
         this.targetFolder = new File(plugin.getDataFolder(), subFolder);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public URL getResource(final String string) {
         final File file = new File(targetFolder, string);
@@ -33,6 +42,9 @@ public class FileResClassLoader extends ClassLoader {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public InputStream getResourceAsStream(final String string) {
         final File file = new File(targetFolder, string);

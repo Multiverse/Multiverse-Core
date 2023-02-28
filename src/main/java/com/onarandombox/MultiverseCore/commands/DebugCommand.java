@@ -9,7 +9,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.locale.MVCorei18n;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")

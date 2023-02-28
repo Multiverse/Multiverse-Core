@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.utils;
 
+import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

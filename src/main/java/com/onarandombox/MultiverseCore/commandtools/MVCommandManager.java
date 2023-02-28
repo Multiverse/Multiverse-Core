@@ -8,7 +8,6 @@ import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
-import com.onarandombox.MultiverseCore.locale.PluginLocales;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -41,6 +40,11 @@ public class MVCommandManager extends PaperCommandManager {
         return flagsManager;
     }
 
+    /**
+     * Gets class responsible for locale handling.
+     *
+     * @return A not-null {@link PluginLocales}.
+     */
     @Override
     public PluginLocales getLocales() {
         if (this.pluginLocales == null) {
