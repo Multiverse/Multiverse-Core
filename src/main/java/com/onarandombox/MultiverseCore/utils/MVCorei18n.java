@@ -8,6 +8,11 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // check command
     CHECK_CHECKING,
+
+    // clone command
+    CLONE_CLONING,
+    CLONE_FAILED,
+    CLONE_SUCCESS,
     CREATE_PROPERTIES,
     CREATE_PROPERTIES_ENVIRONMENT,
     CREATE_PROPERTIES_SEED,
