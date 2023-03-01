@@ -58,6 +58,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     // remove command
     REMOVE_FAILED,
     REMOVE_SUCCESS,
+
+    // root MV command
+    ROOT_TITLE,
+    ROOT_HELP,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
