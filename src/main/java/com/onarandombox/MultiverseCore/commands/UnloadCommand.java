@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
@@ -21,20 +22,23 @@ public class UnloadCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.unload")
     @CommandCompletion("@mvworlds")
     @Syntax("<world>")
-    @Description("Unloads a world from Multiverse. This does NOT remove the world folder. This does NOT remove it from the config file.")
+    @Description("{@@mv-core.unload.description}")
     public void onUnloadCommand(BukkitCommandIssuer issuer,
 
                                 @Syntax("<world>")
-                                @Description("Name of the world you want to unload.")
+                                @Description("{@@mv-core.unload.world.description}")
                                 MVWorld world
     ) {
-        issuer.sendMessage(String.format("Unloading world '%s'...", world.getColoredWorldString()));
+        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING,
+                "{world}", world.getColoredWorldString());
 
         //TODO API: Should be able to use MVWorld object directly
         if (!this.plugin.getMVWorldManager().unloadWorld(world.getName())) {
-            issuer.sendMessage(String.format("Error unloading world '%s'! See console for more details.", world.getColoredWorldString()));
+            issuer.sendInfo(MVCorei18n.UNLOAD_FAILURE,
+                    "{world}", world.getColoredWorldString());
             return;
         }
-        issuer.sendMessage(String.format("Unloaded world '%s'!", world.getColoredWorldString()));
+        issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS,
+                "{world}", world.getColoredWorldString());
     }
 }

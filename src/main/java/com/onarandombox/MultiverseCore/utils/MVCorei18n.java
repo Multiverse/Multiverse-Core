@@ -65,6 +65,11 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // teleport command
     TELEPORT_SUCCESS,
+
+    // unload command
+    UNLOAD_UNLOADING,
+    UNLOAD_FAILURE,
+    UNLOAD_SUCCESS,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
