@@ -34,6 +34,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     GAMERULE_FAILED,
     GAMERULE_SUCCESS_SINGLE,
     GAMERULE_SUCCESS_MULTIPLE,
+
+    // import command
+    IMPORT_IMPORTING,
+    IMPORT_FAILED,
+    IMPORT_SUCCESS,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 

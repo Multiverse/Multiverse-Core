@@ -13,10 +13,12 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -51,26 +53,27 @@ public class ImportCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.import")
     @CommandCompletion("@mvworlds:scope=potential  @flags:groupName=mvimport")
     @Syntax("<name> <env> --generator [generator[:id]] --adjust-spawn")
-    @Description("Imports a existing world folder.")
+    @Description("{@@mv-core.import.description")
     public void onImportCommand(BukkitCommandIssuer issuer,
 
                                 @Conditions("validWorldName:scope=new")
                                 @Syntax("<name>")
-                                @Description("Name of the world folder.")
+                                @Description("{@@mv-core.import.name.description}")
                                 String worldName,
 
                                 @Syntax("<env>")
-                                @Description("The world's environment. See: /mv env")
+                                @Description("{@@mv-core.import.env.description}")
                                 World.Environment environment,
 
                                 @Optional
                                 @Syntax("--generator [generator[:id]] --adjust-spawn")
-                                @Description("Other world settings. See: https://gg.gg/nn8c2")
+                                @Description("{@@mv-core.import.other.description}")
                                 String[] flags) {
 
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendMessage(String.format("Starting import of world '%s'...", worldName));
+        issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING,
+                "{world}", worldName);
 
         if (!this.worldManager.addWorld(
                 worldName, environment,
@@ -80,9 +83,9 @@ public class ImportCommand extends MultiverseCoreCommand {
                 parsedFlags.flagValue("--generator", String.class),
                 parsedFlags.hasFlag("--adjust-spawn"))
         ) {
-            issuer.sendMessage(String.format("%sFailed! See console for more details.", ChatColor.RED));
+            issuer.sendInfo(MVCorei18n.IMPORT_FAILED);
             return;
         }
-        issuer.sendMessage(String.format("%sComplete!", ChatColor.GREEN));
+        issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS);
     }
 }
