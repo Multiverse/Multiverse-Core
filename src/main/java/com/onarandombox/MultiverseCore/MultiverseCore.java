@@ -38,10 +38,8 @@ import com.onarandombox.MultiverseCore.commands.LoadCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.RootCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
@@ -62,7 +60,7 @@ import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.PermissionsTool;
+import com.onarandombox.MultiverseCore.utils.permission.PermissionsRegistrar;
 import com.onarandombox.MultiverseCore.utils.player.PlayerActionChecker;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
@@ -91,7 +89,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private DestinationsProvider destinationsProvider;
     private MVEconomist economist;
     private LocationManipulation locationManipulation = new SimpleLocationManipulation();
-    private final PermissionsTool permissionsTool = new PermissionsTool(this);
     private PlayerActionChecker playerActionChecker;
     private SafeTTeleporter safeTTeleporter = new SimpleSafeTTeleporter(this);
     private final UnsafeCallWrapper unsafeCallWrapper = new UnsafeCallWrapper(this);
@@ -139,7 +136,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onEnable() {
-        this.permissionsTool.setUpPermissions();
+        PermissionsRegistrar.setup();
         this.playerActionChecker = new PlayerActionChecker(this);
 
         // Load our configs first as we need them for everything else.
@@ -278,14 +275,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     public MVEconomist getEconomist() {
         return economist;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PermissionsTool getPermissionsTool() {
-        return permissionsTool;
     }
 
     /**

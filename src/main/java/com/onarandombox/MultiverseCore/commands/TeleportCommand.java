@@ -35,7 +35,7 @@ public class TeleportCommand extends MultiverseCoreCommand {
     ) {
         // TODO Add warning if teleporting too many players at once.
         for (Player player : players) {
-            if (!this.plugin.getPlayerActionChecker().canUseDestinationToTeleport(issuer.getIssuer(), player, destination).asBoolean()) {
+            if (!this.plugin.getPlayerActionChecker().canUseParsedDestination(issuer.getIssuer(), player, destination).asBoolean()) {
                 issuer.sendMessage("You don't have permission to use this destination.");
                 continue;
             }
@@ -48,6 +48,7 @@ public class TeleportCommand extends MultiverseCoreCommand {
 
     @Override
     public boolean hasPermission(CommandIssuer issuer) {
-        return this.plugin.getPermissionsTool().hasAnyDestinationTeleportPermissions(issuer.getIssuer());
+        return this.plugin.getDestinationsProvider().getRegisteredDestinations().stream()
+                .anyMatch(destination -> this.plugin.getPlayerActionChecker().canUseDestinationType(issuer.getIssuer(), destination).asBoolean());
     }
 }

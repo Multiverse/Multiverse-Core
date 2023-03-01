@@ -14,7 +14,6 @@ import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.PermissionsTool;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.player.PlayerActionChecker;
 
@@ -105,13 +104,6 @@ public interface MVCore extends MVPlugin {
      * @return The number if plugins that have hooked into core.
      */
     int getPluginCount();
-
-    /**
-     * Gets the {@link PermissionsTool} instance.
-     *
-     * @return The {@link PermissionsTool} instance.
-     */
-    PermissionsTool getPermissionsTool();
 
     /**
      * Gets the {@link PlayerActionChecker} instance.

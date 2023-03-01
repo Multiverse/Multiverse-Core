@@ -33,6 +33,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
+import com.onarandombox.MultiverseCore.utils.permission.PermissionsRegistrar;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -723,7 +724,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
-            this.plugin.getPermissionsTool().removeAllMVWorldPermissions();
+            PermissionsRegistrar.removeAllWorldPermissions();
             this.worlds.clear();
         }
 

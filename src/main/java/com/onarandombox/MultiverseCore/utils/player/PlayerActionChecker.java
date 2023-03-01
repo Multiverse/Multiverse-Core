@@ -1,11 +1,12 @@
 package com.onarandombox.MultiverseCore.utils.player;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.operation.OperationResultChain;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
-import com.onarandombox.MultiverseCore.utils.PermissionsTool;
+import com.onarandombox.MultiverseCore.utils.permission.PermissionsChecker;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.BlacklistResult;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.EntryFeeResult;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.GameModeResult;
@@ -29,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerActionChecker {
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
-    private final PermissionsTool permissionsTool;
 
     /**
      * Creates a new PlayerActionChecker.
@@ -39,7 +39,30 @@ public class PlayerActionChecker {
     public PlayerActionChecker(@NotNull MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
-        this.permissionsTool = plugin.getPermissionsTool();
+    }
+
+    public UseDestinationResult canUseDestinationType(@NotNull CommandSender teleportee,
+                                                      @NotNull Destination<?> destination
+    ) {
+        return canUseDestinationType(teleportee, teleportee, destination);
+    }
+
+    public UseDestinationResult canUseDestinationType(@Nullable CommandSender teleporter,
+                                                      @NotNull CommandSender teleportee,
+                                                      @NotNull Destination<?> destination
+    ) {
+        if (teleporter == null || teleporter.equals(teleportee)) {
+            return PermissionsChecker.hasTeleportSelfPermission(teleportee, destination)
+                    ? UseDestinationResult.CAN_USE_DESTINATION : UseDestinationResult.NO_DESTINATION_PERMISSION;
+        }
+        return PermissionsChecker.hasTeleportOtherPermission(teleporter, destination)
+                ? UseDestinationResult.CAN_USE_DESTINATION : UseDestinationResult.NO_DESTINATION_PERMISSION;
+    }
+
+    public UseDestinationResult canUseParsedDestination(@NotNull CommandSender teleportee,
+                                                        @NotNull ParsedDestination<?> destination
+    ) {
+        return canUseParsedDestination(teleportee, teleportee, destination);
     }
 
     /**
@@ -50,16 +73,21 @@ public class PlayerActionChecker {
      * @param destination   The destination to teleport to.
      * @return The result of the check.
      */
-    public UseDestinationResult canUseDestinationToTeleport(@NotNull CommandSender teleporter,
-                                                            @NotNull CommandSender teleportee,
-                                                            @NotNull ParsedDestination<?> destination
+    public UseDestinationResult canUseParsedDestination(@Nullable CommandSender teleporter,
+                                                        @NotNull CommandSender teleportee,
+                                                        @NotNull ParsedDestination<?> destination
     ) {
-        if (!permissionsTool.hasDestinationTeleportPermission(teleporter, teleportee, destination.getDestination())) {
-            return UseDestinationResult.NO_DESTINATION_PERMISSION;
+        UseDestinationResult result = canUseDestinationType(teleporter, teleportee, destination.getDestination());
+        if (!result.asBoolean()) {
+            return result;
         }
-        //TODO Config whether to use finer permission
-        return permissionsTool.hasFinerDestinationTeleportPermission(teleporter, teleportee, destination)
-                ? UseDestinationResult.CAN_USE_DESTINATION : UseDestinationResult.NO_DESTINATION_PERMISSION;
+
+        if (teleporter == null || teleporter.equals(teleportee)) {
+            return PermissionsChecker.hasTeleportSelfFinerPermission(teleportee, destination)
+                    ? UseDestinationResult.CAN_USE_DESTINATION : UseDestinationResult.NO_DESTINATION_PERMISSION_FINER;
+        }
+        return PermissionsChecker.hasTeleportOtherFinerPermission(teleporter, destination)
+                ? UseDestinationResult.CAN_USE_DESTINATION : UseDestinationResult.NO_DESTINATION_PERMISSION_FINER;
     }
 
     /**
@@ -156,7 +184,7 @@ public class PlayerActionChecker {
         if (!this.plugin.getMVConfig().getEnforceAccess()) {
             return WorldAccessResult.NO_ENFORCE_WORLD_ACCESS;
         }
-        return permissionsTool.hasWorldAccess(sender, toWorld)
+        return PermissionsChecker.hasWorldAccessPermission(sender, toWorld)
                 ? WorldAccessResult.HAS_WORLD_ACCESS : WorldAccessResult.NO_WORLD_ACCESS;
     }
 
@@ -183,7 +211,7 @@ public class PlayerActionChecker {
             return EntryFeeResult.FREE_ENTRY;
         }
         Player player = (Player) sender;
-        if (permissionsTool.hasBypassEntryFee(player, toWorld)) {
+        if (PermissionsChecker.hasWorldExemptPermission(player, toWorld)) {
             return EntryFeeResult.EXEMPT_FROM_ENTRY_FEE;
         }
         return this.plugin.getEconomist().isPlayerWealthyEnough(player, price, currency)
@@ -204,7 +232,7 @@ public class PlayerActionChecker {
         if (toWorld.getPlayerLimit() > toWorld.getCBWorld().getPlayers().size()) {
             return PlayerLimitResult.WITHIN_PLAYERLIMIT;
         }
-        return permissionsTool.hasBypassPlayerLimit(sender, toWorld)
+        return PermissionsChecker.hasWorldPlayerLimitBypassPermission(sender, toWorld)
                 ? PlayerLimitResult.BYPASS_PLAYERLIMIT : PlayerLimitResult.EXCEED_PLAYERLIMIT;
     }
 
@@ -236,7 +264,7 @@ public class PlayerActionChecker {
             return GameModeResult.KEEP_GAME_MODE;
         }
         //TODO: Add config option disable game mode enforcement
-        return permissionsTool.hasBypassGameModeEnforcement(player, toWorld)
+        return PermissionsChecker.hasWorldGamemodeBypassPermission(player, toWorld)
                 ? GameModeResult.KEEP_GAME_MODE : GameModeResult.ENFORCE_GAME_MODE;
     }
 }

@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import com.onarandombox.MultiverseCore.utils.permission.PermissionsRegistrar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ public class DestinationsProvider {
      */
     public void registerDestination(@NotNull Destination<?> destination) {
         this.destinationMap.put(destination.getIdentifier(), destination);
-        this.plugin.getPermissionsTool().registerDestinationTeleportPermissions(destination);
+        PermissionsRegistrar.registerDestinationPermissions(destination);
     }
 
     /**
@@ -56,17 +57,12 @@ public class DestinationsProvider {
                                                            @Nullable String deststring
     ) {
         return destinationMap.values().stream()
-                .filter(destination -> hasSelfOrOtherTeleportPermission(issuer, destination))
+                //.filter(destination -> this.plugin.getPlayerActionChecker().canUseDestinationToTeleport(issuer, destination))
                 .map(destination -> destination.suggestDestinations(issuer, deststring).stream()
                         .map(s -> destination.getIdentifier() + SEPARATOR + s)
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-    }
-
-    private boolean hasSelfOrOtherTeleportPermission(@NotNull BukkitCommandIssuer issuer, Destination<?> destination) {
-        return this.plugin.getPermissionsTool().hasDestinationTeleportPermission(issuer.getIssuer(), destination)
-                || this.plugin.getPermissionsTool().hasDestinationTeleportPermission(issuer.getIssuer(), this.plugin.getServer().getConsoleSender(), destination);
     }
 
     /**

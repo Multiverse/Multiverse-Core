@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import com.onarandombox.MultiverseCore.utils.permission.PermissionsRegistrar;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.world.configuration.EnglishChatColor;
 import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
@@ -85,7 +86,7 @@ public class SimpleMVWorld implements MVWorld {
         this.props.environment = world.getEnvironment();
         this.props.seed = world.getSeed();
 
-        this.plugin.getPermissionsTool().registerMVWorldPermissions(this);
+        PermissionsRegistrar.registerWorldPermissions(this);
 
         this.props.flushChanges();
 
