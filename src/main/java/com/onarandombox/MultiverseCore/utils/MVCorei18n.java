@@ -39,6 +39,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     IMPORT_IMPORTING,
     IMPORT_FAILED,
     IMPORT_SUCCESS,
+
+    // load command
+    LOAD_LOADING,
+    LOAD_FAILED,
+    LOAD_SUCCESS,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
