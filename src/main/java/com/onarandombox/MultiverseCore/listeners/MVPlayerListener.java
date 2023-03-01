@@ -16,8 +16,8 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.action.ActionResponse;
-import com.onarandombox.MultiverseCore.api.action.ActionResult;
+import com.onarandombox.MultiverseCore.api.operation.OperationResultChain;
+import com.onarandombox.MultiverseCore.api.operation.OperationResult;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.player.PlayerActionChecker;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.BlacklistResult;
@@ -136,7 +136,7 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-        if (this.plugin.getPlayerActionChecker().hasAccessToWorld(player, world).isUnsuccessful()) {
+        if (!this.plugin.getPlayerActionChecker().hasAccessToWorld(player, world).asBoolean()) {
             player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
             this.sendPlayerToDefaultWorld(player);
         }
@@ -201,7 +201,7 @@ public class MVPlayerListener implements Listener {
 
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld());
-        ActionResponse actionCheckResponse = this.actionChecker.canGoFromWorldToWorld(teleporter, teleportee, fromWorld, toWorld);
+        OperationResultChain actionCheckResponse = this.actionChecker.canGoFromWorldToWorld(teleporter, teleportee, fromWorld, toWorld);
         Logging.fine(actionCheckResponse.toString());
 
         if (actionCheckResponse.hasResult(NullPlaceResult.NOT_MV_WORLD)) {
@@ -209,7 +209,7 @@ public class MVPlayerListener implements Listener {
             return;
         }
 
-        if (actionCheckResponse.isUnsuccessful()) {
+        if (!actionCheckResponse.asBoolean()) {
             tellReason(teleporter, teleportee, fromWorld, toWorld, actionCheckResponse);
             event.setCancelled(true);
             return;
@@ -263,9 +263,9 @@ public class MVPlayerListener implements Listener {
 
         MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld());
         MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld());
-        ActionResponse actionCheckResponse = this.actionChecker.canGoFromWorldToWorld(event.getPlayer(), event.getPlayer(), fromWorld, toWorld);
+        OperationResultChain actionCheckResponse = this.actionChecker.canGoFromWorldToWorld(event.getPlayer(), event.getPlayer(), fromWorld, toWorld);
         Logging.fine(actionCheckResponse.toString());
-        if (actionCheckResponse.isUnsuccessful()) {
+        if (!actionCheckResponse.asBoolean()) {
             tellReason(event.getPlayer(), event.getPlayer(), fromWorld, toWorld, actionCheckResponse);
             event.setCancelled(true);
             return;
@@ -305,7 +305,7 @@ public class MVPlayerListener implements Listener {
      */
     public void applyGameModeAndFlight(@NotNull Player player, @NotNull MVWorld world) {
         GameModeResult keepGameModeResult = MVPlayerListener.this.actionChecker.canKeepGameMode(player, world);
-        if (keepGameModeResult.isSuccessful()) {
+        if (keepGameModeResult.asBoolean()) {
             Logging.fine("Player: " + player.getName() + " can keep their gamemode. " + "Reason: " + keepGameModeResult.getName());
             return;
         }
@@ -347,7 +347,7 @@ public class MVPlayerListener implements Listener {
                             @NotNull Player teleportee,
                             @Nullable MVWorld fromWorld,
                             @Nullable MVWorld toWorld,
-                            @NotNull ActionResult result
+                            @NotNull OperationResult result
     ) {
         BukkitCommandIssuer issuer = this.plugin.getMVCommandManager().getCommandIssuer(sender);
         String targetName = issuer.getIssuer() == teleportee ? "You" : teleportee.getName();

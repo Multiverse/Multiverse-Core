@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.player.checkresult;
 
-import com.onarandombox.MultiverseCore.api.action.SimpleActionResult;
+import com.onarandombox.MultiverseCore.api.operation.SimpleOperationResult;
 
-public class EntryFeeResult extends SimpleActionResult {
+public class EntryFeeResult extends SimpleOperationResult {
     /**
      * Sender is in the same world. Don't charge them.
      */

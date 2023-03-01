@@ -142,7 +142,7 @@ public class AnchorManager {
             }
             MVWorld mvWorld = this.plugin.getMVWorldManager().getMVWorld(ancLoc.getWorld());
             if (mvWorld != null) {
-                if (this.plugin.getPlayerActionChecker().hasAccessToWorld(p, mvWorld).isUnsuccessful()) {
+                if (!this.plugin.getPlayerActionChecker().hasAccessToWorld(p, mvWorld).asBoolean()) {
                     Logging.finer("Player '%s' does not have access to anchor '%s' in world '%s'.",
                             p.getName(), anchor, mvWorld.getName());
                     continue;

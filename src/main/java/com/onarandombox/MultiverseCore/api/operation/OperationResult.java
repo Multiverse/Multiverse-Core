@@ -1,11 +1,11 @@
-package com.onarandombox.MultiverseCore.api.action;
+package com.onarandombox.MultiverseCore.api.operation;
 
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents one or more action result.
  */
-public interface ActionResult {
+public interface OperationResult {
     /**
      * Get the name of the result.
      *
@@ -18,14 +18,7 @@ public interface ActionResult {
      *
      * @return true if the result is successful.
      */
-    boolean isSuccessful();
-
-    /**
-     * Check if the result is unsuccessful.
-     *
-     * @return true if the result is unsuccessful.
-     */
-    boolean isUnsuccessful();
+    boolean asBoolean();
 
     /**
      * Check if the result is in the response.
@@ -33,5 +26,5 @@ public interface ActionResult {
      * @param result    The result to check.
      * @return true if the result is in the response.
      */
-    boolean hasResult(@Nullable ActionResult result);
+    boolean hasResult(@Nullable OperationResult result);
 }

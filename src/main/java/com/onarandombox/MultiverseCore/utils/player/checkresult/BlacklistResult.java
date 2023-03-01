@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.player.checkresult;
 
-import com.onarandombox.MultiverseCore.api.action.SimpleActionResult;
+import com.onarandombox.MultiverseCore.api.operation.SimpleOperationResult;
 
-public class BlacklistResult extends SimpleActionResult {
+public class BlacklistResult extends SimpleOperationResult {
     /**
      * Player coming from a world that is not managed by Multiverse.
      */

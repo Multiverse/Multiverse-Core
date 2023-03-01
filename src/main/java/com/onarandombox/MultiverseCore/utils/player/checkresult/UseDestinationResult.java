@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.player.checkresult;
 
-import com.onarandombox.MultiverseCore.api.action.SimpleActionResult;
+import com.onarandombox.MultiverseCore.api.operation.SimpleOperationResult;
 
-public class UseDestinationResult extends SimpleActionResult {
+public class UseDestinationResult extends SimpleOperationResult {
     /**
      * The result of a check if a player can use a destination.
      */

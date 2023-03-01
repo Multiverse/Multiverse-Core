@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.api.action;
+package com.onarandombox.MultiverseCore.api.operation;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,26 +11,26 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A response that have multiple results.
  */
-public class ActionResponse implements ActionResult {
+public class OperationResultChain implements OperationResult {
 
     /**
-     * Create a new {@link ActionResponse} instance.
+     * Create a new {@link OperationResultChain} instance.
      * Does not continue if one result is not successful.
      *
-     * @return The new {@link ActionResponse} instance.
+     * @return The new {@link OperationResultChain} instance.
      */
-    public static ActionResponse create() {
-        return new ActionResponse(false);
+    public static OperationResultChain create() {
+        return new OperationResultChain(false);
     }
 
     /**
-     * Create a new {@link ActionResponse} instance.
+     * Create a new {@link OperationResultChain} instance.
      *
      * @param continueIfFail If true, the response will continue to add results even if one of the results is not successful.
-     * @return The new {@link ActionResponse} instance.
+     * @return The new {@link OperationResultChain} instance.
      */
-    public static ActionResponse create(boolean continueIfFail) {
-        return new ActionResponse(continueIfFail);
+    public static OperationResultChain create(boolean continueIfFail) {
+        return new OperationResultChain(continueIfFail);
     }
 
     /**
@@ -38,13 +38,13 @@ public class ActionResponse implements ActionResult {
      * Does not continue if one result is not successful.
      *
      * @param result    The result.
-     * @return The new {@link ActionResponse} instance.
+     * @return The new {@link OperationResultChain} instance.
      */
-    public static ActionResponse of(ActionResult result) {
-        return new ActionResponse(false).addResult(result);
+    public static OperationResultChain of(OperationResult result) {
+        return new OperationResultChain(false).addResult(result);
     }
 
-    private final Set<ActionResult> results;
+    private final Set<OperationResult> results;
     private final boolean continueIfFail;
 
     private boolean isSuccessful = true;
@@ -52,7 +52,7 @@ public class ActionResponse implements ActionResult {
     /**
      * @param continueIfFail If true, the response will continue to add results even if one of the results is not successful.
      */
-    protected ActionResponse(boolean continueIfFail) {
+    protected OperationResultChain(boolean continueIfFail) {
         this.results = new HashSet<>();
         this.continueIfFail = continueIfFail;
     }
@@ -63,7 +63,7 @@ public class ActionResponse implements ActionResult {
      * @param resultSupplier    The supplier of the result.
      * @return self
      */
-    public @NotNull ActionResponse then(Supplier<ActionResult> resultSupplier) {
+    public @NotNull OperationResultChain then(Supplier<OperationResult> resultSupplier) {
         if (!continueIfFail && !isSuccessful) {
             return this;
         }
@@ -76,13 +76,13 @@ public class ActionResponse implements ActionResult {
      * @param result    The result.
      * @return self
      */
-    public @NotNull ActionResponse addResult(ActionResult result) {
+    public @NotNull OperationResultChain addResult(OperationResult result) {
         if (!continueIfFail && !isSuccessful) {
             return this;
         }
 
         results.add(result);
-        if (result.isUnsuccessful()) {
+        if (!result.asBoolean()) {
             isSuccessful = false;
         }
         return this;
@@ -93,14 +93,14 @@ public class ActionResponse implements ActionResult {
      */
     @Override
     public String getName() {
-        return results.stream().map(ActionResult::getName).collect(Collectors.joining(", "));
+        return results.stream().map(OperationResult::getName).collect(Collectors.joining(", "));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isSuccessful() {
+    public boolean asBoolean() {
         return isSuccessful;
     }
 
@@ -108,15 +108,7 @@ public class ActionResponse implements ActionResult {
      * {@inheritDoc}
      */
     @Override
-    public boolean isUnsuccessful() {
-        return !isSuccessful;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasResult(@Nullable ActionResult result) {
+    public boolean hasResult(@Nullable OperationResult result) {
         return results.contains(result);
     }
 

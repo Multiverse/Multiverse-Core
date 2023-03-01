@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.player.checkresult;
 
-import com.onarandombox.MultiverseCore.api.action.SimpleActionResult;
+import com.onarandombox.MultiverseCore.api.operation.SimpleOperationResult;
 
-public class GameModeResult extends SimpleActionResult {
+public class GameModeResult extends SimpleOperationResult {
     /**
      * The player's game mode should be kept.
      */

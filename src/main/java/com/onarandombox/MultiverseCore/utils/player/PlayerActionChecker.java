@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.utils.player;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.action.ActionResponse;
+import com.onarandombox.MultiverseCore.api.operation.OperationResultChain;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.utils.PermissionsTool;
 import com.onarandombox.MultiverseCore.utils.player.checkresult.BlacklistResult;
@@ -70,12 +70,12 @@ public class PlayerActionChecker {
      * @param destination   The destination to teleport to.
      * @return One or more of the above action results.
      */
-    public ActionResponse canGoToDestination(@Nullable CommandSender teleporter,
-                                             @NotNull Player teleportee,
-                                             @Nullable ParsedDestination<?> destination
+    public OperationResultChain canGoToDestination(@Nullable CommandSender teleporter,
+                                                   @NotNull Player teleportee,
+                                                   @Nullable ParsedDestination<?> destination
     ) {
         if (destination == null) {
-            return ActionResponse.of(NullPlaceResult.NULL_DESTINATION);
+            return OperationResultChain.of(NullPlaceResult.NULL_DESTINATION);
         }
         Location location = destination.getDestinationInstance().getLocation(teleportee);
         return canGoToLocation(teleporter, teleportee, location);
@@ -89,15 +89,15 @@ public class PlayerActionChecker {
      * @param location      The location to teleport to.
      * @return One or more of the above action results.
      */
-    public ActionResponse canGoToLocation(@Nullable CommandSender teleporter,
-                                          @NotNull Player teleportee,
-                                          @Nullable Location location
+    public OperationResultChain canGoToLocation(@Nullable CommandSender teleporter,
+                                                @NotNull Player teleportee,
+                                                @Nullable Location location
     ) {
         if (location == null) {
-            return ActionResponse.of(NullPlaceResult.NULL_LOCATION);
+            return OperationResultChain.of(NullPlaceResult.NULL_LOCATION);
         }
         if (location.getWorld() == null) {
-            return ActionResponse.of(NullPlaceResult.NULL_WORLD);
+            return OperationResultChain.of(NullPlaceResult.NULL_WORLD);
         }
         MVWorld toWorld = this.worldManager.getMVWorld(location.getWorld());
         return canGoToWorld(teleporter, teleportee, toWorld);
@@ -111,9 +111,9 @@ public class PlayerActionChecker {
      * @param toWorld      The world to teleport to.
      * @return One or more of the above action results.
      */
-    public ActionResponse canGoToWorld(@Nullable CommandSender teleporter,
-                                       @NotNull Player teleportee,
-                                       @NotNull MVWorld toWorld
+    public OperationResultChain canGoToWorld(@Nullable CommandSender teleporter,
+                                             @NotNull Player teleportee,
+                                             @NotNull MVWorld toWorld
     ) {
         MVWorld fromWorld = this.worldManager.getMVWorld(teleportee.getWorld());
         return canGoFromWorldToWorld(teleporter, teleportee, fromWorld, toWorld);
@@ -127,18 +127,18 @@ public class PlayerActionChecker {
      * @param toWorld      The world to teleport to.
      * @return One or more of the above action results.
      */
-    public ActionResponse canGoFromWorldToWorld(@Nullable CommandSender teleporter,
-                                                @NotNull CommandSender teleportee,
-                                                @Nullable MVWorld fromWorld,
-                                                @Nullable MVWorld toWorld
+    public OperationResultChain canGoFromWorldToWorld(@Nullable CommandSender teleporter,
+                                                      @NotNull CommandSender teleportee,
+                                                      @Nullable MVWorld fromWorld,
+                                                      @Nullable MVWorld toWorld
     ) {
         if (toWorld == null) {
-            return ActionResponse.of(NullPlaceResult.NOT_MV_WORLD);
+            return OperationResultChain.of(NullPlaceResult.NOT_MV_WORLD);
         }
 
         CommandSender targetSender = (teleporter == null) ? teleportee : teleporter;
 
-        return ActionResponse.create(true)
+        return OperationResultChain.create(true)
                 .then(() -> hasAccessToWorld(targetSender, toWorld))
                 .then(() -> isWithinPlayerLimit(targetSender, toWorld))
                 .then(() -> isNotBlacklisted(fromWorld, toWorld))

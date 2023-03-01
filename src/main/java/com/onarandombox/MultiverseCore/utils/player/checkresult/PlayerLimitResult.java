@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.player.checkresult;
 
-import com.onarandombox.MultiverseCore.api.action.SimpleActionResult;
+import com.onarandombox.MultiverseCore.api.operation.SimpleOperationResult;
 
-public class PlayerLimitResult extends SimpleActionResult {
+public class PlayerLimitResult extends SimpleOperationResult {
     /**
      * World does not have a player limit.
      */

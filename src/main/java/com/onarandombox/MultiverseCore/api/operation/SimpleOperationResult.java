@@ -1,11 +1,11 @@
-package com.onarandombox.MultiverseCore.api.action;
+package com.onarandombox.MultiverseCore.api.operation;
 
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A simple implementation of {@link ActionResult}.
+ * A simple implementation of {@link OperationResult}.
  */
-public class SimpleActionResult implements ActionResult {
+public class SimpleOperationResult implements OperationResult {
 
     /**
      * Creates a new ActionResult that is successful with the given name.
@@ -13,8 +13,8 @@ public class SimpleActionResult implements ActionResult {
      * @param name  The name of the result.
      * @return The new ActionResult.
      */
-    public static ActionResult forSuccess(String name) {
-        return new SimpleActionResult(name, true);
+    public static OperationResult forSuccess(String name) {
+        return new SimpleOperationResult(name, true);
     }
 
     /**
@@ -23,8 +23,8 @@ public class SimpleActionResult implements ActionResult {
      * @param name  The name of the result.
      * @return The new ActionResult.
      */
-    public static ActionResult forFailure(String name) {
-        return new SimpleActionResult(name, false);
+    public static OperationResult forFailure(String name) {
+        return new SimpleOperationResult(name, false);
     }
 
     /**
@@ -34,12 +34,12 @@ public class SimpleActionResult implements ActionResult {
      * @param isSuccessful  true if the result is successful.
      * @return The new ActionResult.
      */
-    public static ActionResult of(String name, boolean isSuccessful) {
-        return new SimpleActionResult(name, isSuccessful);
+    public static OperationResult of(String name, boolean isSuccessful) {
+        return new SimpleOperationResult(name, isSuccessful);
     }
 
     private final String name;
-    private final boolean isSuccessful;
+    private final boolean booleanState;
 
     /**
      * Creates a new ActionResult.
@@ -47,9 +47,9 @@ public class SimpleActionResult implements ActionResult {
      * @param name          The name of the result.
      * @param isSuccessful  true if the result is successful.
      */
-    protected SimpleActionResult(String name, boolean isSuccessful) {
+    protected SimpleOperationResult(String name, boolean isSuccessful) {
         this.name = name;
-        this.isSuccessful = isSuccessful;
+        this.booleanState = isSuccessful;
     }
 
     /**
@@ -64,23 +64,15 @@ public class SimpleActionResult implements ActionResult {
      * {@inheritDoc}
      */
     @Override
-    public boolean isSuccessful() {
-        return isSuccessful;
+    public boolean asBoolean() {
+        return booleanState;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isUnsuccessful() {
-        return !isSuccessful;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasResult(@Nullable ActionResult result) {
+    public boolean hasResult(@Nullable OperationResult result) {
         return result == this;
     }
 
@@ -88,7 +80,7 @@ public class SimpleActionResult implements ActionResult {
     public String toString() {
         return "SimpleActionResult{" +
                 "name='" + name + '\'' +
-                ", isSuccessful=" + isSuccessful +
+                ", booleanState=" + booleanState +
                 '}';
     }
 }

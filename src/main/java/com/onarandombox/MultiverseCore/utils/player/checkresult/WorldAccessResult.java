@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.player.checkresult;
 
-import com.onarandombox.MultiverseCore.api.action.SimpleActionResult;
+import com.onarandombox.MultiverseCore.api.operation.SimpleOperationResult;
 
-public class WorldAccessResult extends SimpleActionResult {
+public class WorldAccessResult extends SimpleOperationResult {
     /**
      * Enforce world access is disabled.
      */
