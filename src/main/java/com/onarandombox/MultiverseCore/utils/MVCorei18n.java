@@ -62,6 +62,9 @@ public enum MVCorei18n implements MessageKeyProvider {
     // root MV command
     ROOT_TITLE,
     ROOT_HELP,
+
+    // teleport command
+    TELEPORT_SUCCESS,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
