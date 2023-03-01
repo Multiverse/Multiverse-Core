@@ -24,6 +24,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     CREATE_FAILED,
     CREATE_SUCCESS,
 
+    // delete command
+    DELETE_DELETING,
+    DELETE_FAILED,
+    DELETE_SUCCESS,
+    DELETE_PROMPT,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 

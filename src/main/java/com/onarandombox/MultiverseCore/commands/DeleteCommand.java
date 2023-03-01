@@ -10,7 +10,9 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +26,7 @@ public class DeleteCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.delete")
     @CommandCompletion("@mvworlds:scope=both")
     @Syntax("<world>")
-    @Description("Deletes a world on your server PERMANENTLY.")
+    @Description("{@@mv-core.delete.description}")
     public void onDeleteCommand(BukkitCommandIssuer issuer,
 
                                 @Single
@@ -36,14 +38,17 @@ public class DeleteCommand extends MultiverseCoreCommand {
         this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
-                    issuer.sendMessage(String.format("Deleting world '%s'...", worldName));
+                    issuer.sendInfo(MVCorei18n.DELETE_DELETING,
+                            "{world}", worldName);
                     if (!this.plugin.getMVWorldManager().deleteWorld(worldName)) {
-                        issuer.sendMessage(String.format("%sThere was an issue deleting '%s'! Please check console for errors.", ChatColor.RED, worldName));
+                        issuer.sendInfo(MVCorei18n.DELETE_FAILED,
+                                "{world}", worldName);
                         return;
                     }
-                    issuer.sendMessage(String.format("%sWorld %s was deleted!", ChatColor.GREEN, worldName));
+                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS,
+                            "{world}", worldName);
                 },
-                "Are you sure you want to delete world '" + worldName + "'?"
+                "{@@mv-core.delete.prompt}".replace("{world}", worldName)
         ));
     }
 }
