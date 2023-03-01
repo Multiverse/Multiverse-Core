@@ -44,6 +44,12 @@ public enum MVCorei18n implements MessageKeyProvider {
     LOAD_LOADING,
     LOAD_FAILED,
     LOAD_SUCCESS,
+
+    // regen command
+    REGEN_REGENERATING,
+    REGEN_FAILED,
+    REGEN_SUCCESS,
+    REGEN_PROMPT,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
