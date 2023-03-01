@@ -21,15 +21,15 @@ public class PermissionsRegistrar {
 
     public static void setup() {
         worldPermissions = new ArrayList<>() {{
-            worldAccessPermission = new PrefixPermission("multiverse.access.", "Allows access to a world.");
-            worldGamemodeBypassPermission = new PrefixPermission("mv.bypass.gamemode.", "Allows bypassing of gamemode restrictions.", PermissionDefault.FALSE);
-            worldExemptPermission = new PrefixPermission("multiverse.exempt.", "A player who has this does not pay to enter this world.");
-            worldPlayerLimitBypassPermission = new PrefixPermission("mv.bypass.playerlimit.", "Allows bypassing of player limit restrictions.");
+            add(worldAccessPermission = new PrefixPermission("multiverse.access.", "Allows access to a world."));
+            add(worldGamemodeBypassPermission = new PrefixPermission("mv.bypass.gamemode.", "Allows bypassing of gamemode restrictions.", PermissionDefault.FALSE));
+            add(worldExemptPermission = new PrefixPermission("multiverse.exempt.", "A player who has this does not pay to enter this world."));
+            add(worldPlayerLimitBypassPermission = new PrefixPermission("mv.bypass.playerlimit.", "Allows bypassing of player limit restrictions."));
         }};
 
         destinationPermissions = new ArrayList<>() {{
-            teleportSelfPermission = new PrefixPermission("multiverse.teleport.self.", "Allows teleporting to a world.");
-            teleportOtherPermission = new PrefixPermission("multiverse.teleport.other.", "Allows teleporting other players to a world.");
+            add(teleportSelfPermission = new PrefixPermission("multiverse.teleport.self.", "Allows teleporting to a world."));
+            add(teleportOtherPermission = new PrefixPermission("multiverse.teleport.other.", "Allows teleporting other players to a world."));
         }};
     }
 
@@ -57,15 +57,15 @@ public class PermissionsRegistrar {
         removeAllPrefixPermissions(destinationPermissions);
     }
 
-    private static void removePrefixPermissions(List<PrefixPermission> worldPermissions, String name) {
-        for (PrefixPermission permission : worldPermissions) {
-            permission.removePermission(name);
+    private static void registerPrefixPermissionList(List<PrefixPermission> permissions, String permissionSuffix) {
+        for (PrefixPermission permission : permissions) {
+            permission.registerPermission(permissionSuffix);
         }
     }
 
-    private static void registerPrefixPermissionList(List<PrefixPermission> permissions, String permissionSuffix) {
-        for (PrefixPermission permission : permissions) {
-            permission.registerWildcardPermission();
+    private static void removePrefixPermissions(List<PrefixPermission> worldPermissions, String name) {
+        for (PrefixPermission permission : worldPermissions) {
+            permission.removePermission(name);
         }
     }
 

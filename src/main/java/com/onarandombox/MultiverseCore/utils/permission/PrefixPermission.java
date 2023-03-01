@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.utils.permission;
 
+import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -26,9 +27,10 @@ public class PrefixPermission {
     }
 
     public Permission registerPermission(String permissionSuffix) {
-        String permissionName = permissionPrefix + permissionSuffix;
+        String permissionName = getPermissionName(permissionSuffix);
         Permission permission = pluginManager.getPermission(permissionName);
         if (permission != null) {
+            Logging.warning("Permission already registered: " + permission.getName());
             return permission;
         }
 
@@ -38,6 +40,9 @@ public class PrefixPermission {
             registerWildcardPermission();
         }
         permission.addParent(wildcardPermission, true);
+        pluginManager.recalculatePermissionDefaults(permission);
+        pluginManager.recalculatePermissionDefaults(wildcardPermission);
+        Logging.finest("Registered permission: " + permission.getName());
         return permission;
     }
 
@@ -49,6 +54,7 @@ public class PrefixPermission {
         }
         wildcardPermission = new Permission(permissionName, description, permissionDefault);
         pluginManager.addPermission(wildcardPermission);
+        pluginManager.recalculatePermissionDefaults(wildcardPermission);
     }
 
     public boolean removePermission(String permissionSuffix) {
@@ -68,8 +74,10 @@ public class PrefixPermission {
 
     public boolean removeAllPermissions() {
         try {
-            wildcardPermission.getChildren().forEach((child, value) -> pluginManager.removePermission(child));
-            pluginManager.removePermission(wildcardPermission);
+            if (wildcardPermission != null) {
+                wildcardPermission.getChildren().forEach((child, value) -> pluginManager.removePermission(child));
+                pluginManager.removePermission(wildcardPermission);
+            }
         } catch (IllegalArgumentException e) {
             return false;
         }
