@@ -54,6 +54,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     // reload command
     RELOAD_RELOADING,
     RELOAD_SUCCESS,
+
+    // remove command
+    REMOVE_FAILED,
+    REMOVE_SUCCESS,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
