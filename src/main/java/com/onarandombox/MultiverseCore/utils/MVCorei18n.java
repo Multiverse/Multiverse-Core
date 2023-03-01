@@ -4,6 +4,7 @@ import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
 public enum MVCorei18n implements MessageKeyProvider {
+    // config status
     CONFIG_SAVE_FAILED,
 
     // check command
@@ -13,6 +14,8 @@ public enum MVCorei18n implements MessageKeyProvider {
     CLONE_CLONING,
     CLONE_FAILED,
     CLONE_SUCCESS,
+
+    // create command
     CREATE_PROPERTIES,
     CREATE_PROPERTIES_ENVIRONMENT,
     CREATE_PROPERTIES_SEED,
@@ -70,6 +73,8 @@ public enum MVCorei18n implements MessageKeyProvider {
     UNLOAD_UNLOADING,
     UNLOAD_FAILURE,
     UNLOAD_SUCCESS,
+
+    // debug command
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
