@@ -29,6 +29,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     DELETE_FAILED,
     DELETE_SUCCESS,
     DELETE_PROMPT,
+
+    // gamerule command
+    GAMERULE_FAILED,
+    GAMERULE_SUCCESS_SINGLE,
+    GAMERULE_SUCCESS_MULTIPLE,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON;
 
