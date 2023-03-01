@@ -6,6 +6,8 @@ import co.aikar.locales.MessageKeyProvider;
 public enum MVCorei18n implements MessageKeyProvider {
     CONFIG_SAVE_FAILED,
 
+    // check command
+    CHECK_CHECKING,
     CREATE_PROPERTIES,
     CREATE_PROPERTIES_ENVIRONMENT,
     CREATE_PROPERTIES_SEED,
