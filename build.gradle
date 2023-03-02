@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    implementation('org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT') {
+    compileOnly('org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT') {
         exclude group: 'junit', module: 'junit'
     }
 
@@ -66,6 +66,9 @@ dependencies {
     api 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
     api 'org.jetbrains:annotations:16.0.2'
 
+    testImplementation('org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT') {
+        exclude group: 'junit', module: 'junit'
+    }
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.11.2'
     testImplementation 'commons-io:commons-io:2.4'
