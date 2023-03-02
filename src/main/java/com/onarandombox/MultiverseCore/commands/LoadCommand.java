@@ -36,7 +36,7 @@ public class LoadCommand extends MultiverseCoreCommand {
             "{world}", worldName);
 
         if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
-            issuer.sendInfo(MVCorei18n.LOAD_FAILED,
+            issuer.sendError(MVCorei18n.LOAD_FAILED,
                     "{world}", worldName);
             return;
         }

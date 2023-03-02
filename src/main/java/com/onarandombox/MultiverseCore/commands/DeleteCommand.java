@@ -41,7 +41,7 @@ public class DeleteCommand extends MultiverseCoreCommand {
                     issuer.sendInfo(MVCorei18n.DELETE_DELETING,
                             "{world}", worldName);
                     if (!this.plugin.getMVWorldManager().deleteWorld(worldName)) {
-                        issuer.sendInfo(MVCorei18n.DELETE_FAILED,
+                        issuer.sendError(MVCorei18n.DELETE_FAILED,
                                 "{world}", worldName);
                         return;
                     }

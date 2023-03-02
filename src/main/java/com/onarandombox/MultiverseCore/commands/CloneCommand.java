@@ -43,7 +43,7 @@ public class CloneCommand extends MultiverseCoreCommand {
                 "{newWorld}", newWorldName);
 
         if (!this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName)) {
-            issuer.sendInfo(MVCorei18n.CLONE_FAILED);
+            issuer.sendError(MVCorei18n.CLONE_FAILED);
             return;
         }
         issuer.sendInfo(MVCorei18n.CLONE_SUCCESS,

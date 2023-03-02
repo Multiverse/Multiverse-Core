@@ -47,7 +47,7 @@ public class GameruleCommand extends MultiverseCoreCommand {
         for(MVWorld world : worlds) {
             // Set gamerules and add false to list if it fails
             if (!world.getCBWorld().setGameRule(gamerule, value)) {
-                issuer.sendInfo(MVCorei18n.GAMERULE_FAILED,
+                issuer.sendError(MVCorei18n.GAMERULE_FAILED,
                         "{gamerule}", gamerule.getName(),
                         "{value}", value.toString(),
                         "{world}", world.getName(),

@@ -34,7 +34,7 @@ public class RemoveCommand extends MultiverseCoreCommand {
                                 String worldName
     ) {
         if (!this.plugin.getMVWorldManager().removeWorldFromConfig(worldName)) {
-            issuer.sendInfo(MVCorei18n.REMOVE_FAILED);
+            issuer.sendError(MVCorei18n.REMOVE_FAILED);
             return;
         }
         issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS,

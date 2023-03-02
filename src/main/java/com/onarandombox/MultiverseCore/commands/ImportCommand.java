@@ -83,7 +83,7 @@ public class ImportCommand extends MultiverseCoreCommand {
                 parsedFlags.flagValue("--generator", String.class),
                 parsedFlags.hasFlag("--adjust-spawn"))
         ) {
-            issuer.sendInfo(MVCorei18n.IMPORT_FAILED);
+            issuer.sendError(MVCorei18n.IMPORT_FAILED);
             return;
         }
         issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS);

@@ -70,7 +70,7 @@ public class RegenCommand extends MultiverseCoreCommand {
                             parsedFlags.flagValue("--seed", String.class),
                             parsedFlags.hasFlag("--keep-gamerules")
                     )) {
-                        issuer.sendInfo(MVCorei18n.REGEN_FAILED,
+                        issuer.sendError(MVCorei18n.REGEN_FAILED,
                                 "{world}", worldName);
                         return;
                     }
