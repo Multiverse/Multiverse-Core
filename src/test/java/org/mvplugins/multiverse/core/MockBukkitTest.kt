@@ -21,13 +21,13 @@ class MockBukkitTest {
         plugin = MockBukkit.load(MultiverseCore::class.java)
     }
 
-    @Test
-    fun `MockBukkit loads the plugin`() {
-        assertNotNull(plugin)
-    }
-
     @AfterTest
     fun tearDown() {
         MockBukkit.unmock()
+    }
+
+    @Test
+    fun `MockBukkit loads the plugin`() {
+        assertNotNull(plugin)
     }
 }
