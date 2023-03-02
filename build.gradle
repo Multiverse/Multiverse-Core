@@ -96,9 +96,7 @@ dependencies {
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.mockito:mockito-core:3.11.2'
-    testImplementation 'commons-io:commons-io:2.7'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
     // Old Tests
     oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
@@ -243,3 +241,7 @@ shadowJar {
 
 build.dependsOn shadowJar
 jar.enabled = false
+
+test {
+    useJUnitPlatform()
+}
