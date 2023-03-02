@@ -22,7 +22,7 @@ class MockBukkitTest {
     }
 
     @Test
-    fun test() {
+    fun `MockBukkit loads the plugin`() {
         assertNotNull(plugin)
     }
 
