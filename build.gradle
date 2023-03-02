@@ -43,9 +43,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly('org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT') {
-        exclude group: 'junit', module: 'junit'
-    }
+    compileOnly 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
 
     implementation('com.github.MilkBowl:VaultAPI:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
