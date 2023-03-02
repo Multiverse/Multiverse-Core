@@ -5,13 +5,18 @@ plugins {
     id 'maven-publish'
     id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "org.jetbrains.kotlin.jvm" version "1.8.10"
 }
 
 version = System.getenv('GITHUB_VERSION') ?: 'local'
 group = 'com.onarandombox.multiversecore'
 description = 'Multiverse-Core'
 
-java.sourceCompatibility = JavaVersion.VERSION_11
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
 
 repositories {
     mavenLocal()
@@ -86,6 +91,7 @@ dependencies {
     api 'org.jetbrains:annotations:22.0.0'
 
     // Tests
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
     testImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
@@ -173,6 +179,19 @@ compileJava {
     source = prepareSource.outputs
 }
 
+compileKotlin {
+    // We're not using Kotlin in the plugin itself, just tests!
+    enabled = false
+}
+configurations {
+    compileOnly {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
+    runtimeOnly {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
+}
+
 processResources {
     def props = [version: "${project.version}"]
     inputs.properties props
@@ -214,6 +233,12 @@ shadowJar {
     configurations = [project.configurations.api]
 
     archiveFileName = "$baseName-$version.$extension"
+
+    dependencies {
+        exclude(dependency {
+            it.moduleGroup == 'org.jetbrains.kotlin'
+        })
+    }
 }
 
 build.dependsOn shadowJar
