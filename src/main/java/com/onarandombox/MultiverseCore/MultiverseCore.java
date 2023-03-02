@@ -202,6 +202,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerCommands() {
         this.commandManager = new MVCommandManager(this);
+        this.commandManager.registerCommand(new RootCommand(this));
         this.commandManager.registerCommand(new CheckCommand(this));
         this.commandManager.registerCommand(new CloneCommand(this));
         this.commandManager.registerCommand(new ConfirmCommand(this));
