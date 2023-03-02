@@ -1,0 +1,90 @@
+name: Manually promote last prerelease to release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to promote'
+        required: true
+      version-bump:
+        description: 'Version bump to apply - should usually match the version bump used for the prerelease since last release'
+        required: true
+        type: choice
+        options:
+          - 'patch'
+          - 'minor'
+          - 'major'
+
+jobs:
+  manually_promote_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify input version is prerelease
+        run: |
+          if [[ "${{ github.event.inputs.version }}" != *"pre"* ]]; then
+              echo "Version must be a prerelease"
+              exit 1
+          fi
+
+      - name: Get release info
+        id: get-release
+        uses: cardinalby/git-get-release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ github.event.inputs.version }}
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.get-release.outputs.tag_name }}
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Remove prerelease tag
+        run: |
+          echo "Removing prerelease tag from version"
+          echo "VERSION=$(echo ${{ steps.get-release.outputs.tag_name }} | sed -E 's/-pre.*//')" >> $GITHUB_ENV
+
+      - name: Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean build -x test -x checkstyleMain -x checkstyleTest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_VERSION: ${{ env.VERSION }}
+
+      - name: Create release
+        id: release
+        uses: Multiverse/release-on-push-action@skip_prs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          bump_version_scheme: ${{ github.event.inputs.version-bump }}
+          tag_prefix: ''
+          release_name: "<RELEASE_VERSION>"
+          use_github_release_notes: true
+          ref: ${{ steps.get-release.outputs.target_commitish }}
+          skip_prs: true
+
+      - name: Publish package
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_VERSION: ${{ env.VERSION }}
+
+      - name: Upload release artifact
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/libs/multiverse-core-${{ env.VERSION }}.jar
+          asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
+          tag: ${{ steps.release.outputs.tag_name }}

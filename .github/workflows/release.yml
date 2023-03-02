@@ -28,27 +28,37 @@ jobs:
 
       - name: Create release
         id: release
-        uses: rymndhng/release-on-push-action@v0.27.0
+        uses: Multiverse/release-on-push-action@support_prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           bump_version_scheme: norelease
           tag_prefix: ''
-          release_name: "Release <RELEASE_VERSION>"
+          release_name: "<RELEASE_VERSION>"
           use_github_release_notes: true
+
+      - name: Modify version scheme
+        run: |
+            if [[ "${{ steps.release.outputs.tag_name }}" == *"pre"* ]]; then
+                echo "Replacing prerelease version scheme with SNAPSHOT"
+                echo "VERSION=$(echo ${{ steps.release.outputs.tag_name }} | sed -E 's/-pre.*/-SNAPSHOT/')" >> $GITHUB_ENV
+            else
+                echo "Using release version scheme"
+                echo "VERSION=${{ steps.release.outputs.tag_name }}" >> $GITHUB_ENV
+            fi
 
       - name: Publish package
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publish
         env:
-          GITHUB_VERSION: ${{ steps.release.outputs.tag_name }}
+          GITHUB_VERSION: ${{ env.VERSION }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload release artifact
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/libs/multiverse-core-${{ steps.release.outputs.tag_name }}.jar
+          file: build/libs/multiverse-core-${{ env.VERSION }}.jar
           asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
           tag: ${{ steps.release.outputs.tag_name }}
