@@ -18,12 +18,6 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
-      - name: Get PR number
-        id: pr
-        run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
@@ -32,14 +26,11 @@ jobs:
         with:
           arguments: build
         env:
-          GITHUB_VERSION: pr${{ steps.pr.outputs.pull_request_number }}
+          GITHUB_VERSION: pr${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Staging artifact
-        run: mkdir staging && cp build/libs/*.jar staging
-
       - name: Artifact output
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: multiverse-core-pr${{ steps.pr.outputs.pull_request_number }}
-          path: staging
+          name: multiverse-core-pr${{ github.event.pull_request.number }}
+          path: build/libs/multiverse-core-pr${{ github.event.pull_request.number }}.jar
