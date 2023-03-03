@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -77,7 +78,11 @@ public class RegenCommand extends MultiverseCoreCommand {
                     issuer.sendInfo(MVCorei18n.REGEN_SUCCESS,
                             "{world}", worldName);
                 },
-                "{@@mv-core.regen.prompt}".replace("{world}", worldName)
+                this.plugin.getMVCommandManager().formatMessage(
+                        issuer,
+                        MessageType.INFO,
+                        MVCorei18n.REGEN_PROMPT,
+                        "{world}", worldName)
         ));
     }
 }

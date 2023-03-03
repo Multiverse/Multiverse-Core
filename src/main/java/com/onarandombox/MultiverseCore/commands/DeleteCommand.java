@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -48,7 +49,11 @@ public class DeleteCommand extends MultiverseCoreCommand {
                     issuer.sendInfo(MVCorei18n.DELETE_SUCCESS,
                             "{world}", worldName);
                 },
-                "{@@mv-core.delete.prompt}".replace("{world}", worldName)
+                this.plugin.getMVCommandManager().formatMessage(
+                        issuer,
+                        MessageType.INFO,
+                        MVCorei18n.DELETE_PROMPT,
+                        "{world}", worldName)
         ));
     }
 }
