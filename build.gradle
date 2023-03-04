@@ -82,6 +82,7 @@ dependencies {
     }
 
     // Utils
+    api 'org.glassfish.hk2:hk2-core:3.0.3'
     api('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
@@ -227,6 +228,7 @@ shadowJar {
     relocate 'io.github.townyadvanced.commentedconfiguration', 'com.onarandombox.commentedconfiguration'
     relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
     relocate 'org.bstats', 'com.onarandombox.bstats'
+    relocate 'org.glassfish.hk2', 'com.onarandombox.hk2'
 
     configurations = [project.configurations.api]
 
