@@ -26,4 +26,11 @@ jobs:
         with:
           arguments: build
         env:
+          GITHUB_VERSION: pr${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Artifact output
+        uses: actions/upload-artifact@v3
+        with:
+          name: multiverse-core-pr${{ github.event.pull_request.number }}
+          path: build/libs/multiverse-core-pr${{ github.event.pull_request.number }}.jar
