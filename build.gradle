@@ -107,6 +107,9 @@ dependencies {
     oldTestImplementation 'junit:junit:4.13.1'
     oldTestImplementation 'org.mockito:mockito-core:3.11.2'
     oldTestImplementation 'commons-io:commons-io:2.7'
+
+    // Annotation Processors
+    annotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
 }
 
 
@@ -176,6 +179,7 @@ task prepareSource(type: Sync) {
 
 compileJava {
     source = prepareSource.outputs
+    options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/multiverse-core'
 }
 
 compileKotlin {
