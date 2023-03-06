@@ -22,7 +22,7 @@ public class UsageCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.help")
     @CommandCompletion("@commands:mv")
     @Syntax("[filter] [page]")
-    @Description("Show Multiverse-Core Command usage.")
+    @Description("{@@mv-core.usage.description}")
     public void onUsageCommand(CommandHelp help) {
         if (help.getIssuer().isPlayer()) {
             // Prevent flooding the chat
