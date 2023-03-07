@@ -82,6 +82,7 @@ dependencies {
     }
 
     // Utils
+    api 'io.vavr:vavr:0.10.4'
     api 'org.glassfish.hk2:hk2-core:3.0.3'
     api('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
