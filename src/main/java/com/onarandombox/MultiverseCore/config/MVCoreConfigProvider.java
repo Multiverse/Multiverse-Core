@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.BufferedReader;
@@ -47,6 +48,17 @@ public final class MVCoreConfigProvider {
     @NotNull
     public Option<MVConfig> getConfig() {
         return Option.of(config);
+    }
+
+    /**
+     * Provided to make porting code to use DI easier for now.
+     *
+     * @deprecated Use the {@link #getConfig()} method instead when possible.
+     */
+    @Nullable
+    @Deprecated
+    public MVConfig getConfigUnsafe() {
+        return config;
     }
 
     public void loadConfigs() {
