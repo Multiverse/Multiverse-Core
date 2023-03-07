@@ -81,10 +81,12 @@ import org.glassfish.hk2.api.MultiException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
  */
+@Service
 public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 50;
 

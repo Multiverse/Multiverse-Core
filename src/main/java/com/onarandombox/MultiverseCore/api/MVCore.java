@@ -16,12 +16,14 @@ import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Multiverse 2 Core API
  * <p>
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
+@Contract
 public interface MVCore extends MVPlugin {
     /**
      * Retrieves Multiverse's friendly economist. The economist can be used for dealing with economies without

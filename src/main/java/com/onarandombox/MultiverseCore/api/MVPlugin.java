@@ -7,9 +7,12 @@
 
 package com.onarandombox.MultiverseCore.api;
 
+import org.jvnet.hk2.annotations.Contract;
+
 /**
  * This interface is implemented by every official Multiverse-plugin.
  */
+@Contract
 public interface MVPlugin {
     /**
      * Gets the reference to MultiverseCore.
