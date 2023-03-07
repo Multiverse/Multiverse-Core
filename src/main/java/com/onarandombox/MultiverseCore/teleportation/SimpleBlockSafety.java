@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore.teleportation;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
-import com.onarandombox.MultiverseCore.api.MVCore;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 @Service
 public class SimpleBlockSafety implements BlockSafety {
-    private final MVCore plugin;
+    private final LocationManipulation locationManipulation;
     private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
 
     static {
@@ -45,8 +45,8 @@ public class SimpleBlockSafety implements BlockSafety {
     }
 
     @Inject
-    public SimpleBlockSafety(MVCore plugin) {
-        this.plugin = plugin;
+    public SimpleBlockSafety(LocationManipulation locationManipulation) {
+        this.locationManipulation = locationManipulation;
     }
 
     /**
@@ -252,7 +252,7 @@ public class SimpleBlockSafety implements BlockSafety {
         if (this.isBlockAboveAir(cart.getLocation())) {
             return true;
         }
-        if (this.isEntitiyOnTrack(plugin.getLocationManipulation().getNextBlock(cart))) {
+        if (this.isEntitiyOnTrack(locationManipulation.getNextBlock(cart))) {
             return true;
         }
         return false;
