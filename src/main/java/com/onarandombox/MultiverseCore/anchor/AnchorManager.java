@@ -8,7 +8,9 @@
 package com.onarandombox.MultiverseCore.anchor;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.wrapper.PluginDataFolder;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,13 +32,23 @@ import java.util.Set;
  */
 @Service
 public class AnchorManager {
-    private MultiverseCore plugin;
     private Map<String, Location> anchors;
     private FileConfiguration anchorConfig;
 
+    private final PluginDataFolder dataFolder;
+    private final LocationManipulation locationManipulation;
+    private final MVCoreConfigProvider configProvider;
+
     @Inject
-    public AnchorManager(MultiverseCore plugin) {
-        this.plugin = plugin;
+    public AnchorManager(
+            PluginDataFolder dataFolder,
+            LocationManipulation locationManipulation,
+            MVCoreConfigProvider configProvider
+    ) {
+        this.dataFolder = dataFolder;
+        this.locationManipulation = locationManipulation;
+        this.configProvider = configProvider;
+
         this.anchors = new HashMap<String, Location>();
     }
 
@@ -45,13 +57,13 @@ public class AnchorManager {
      */
     public void loadAnchors() {
         this.anchors = new HashMap<String, Location>();
-        this.anchorConfig = YamlConfiguration.loadConfiguration(new File(this.plugin.getDataFolder(), "anchors.yml"));
+        this.anchorConfig = YamlConfiguration.loadConfiguration(new File(this.dataFolder, "anchors.yml"));
         this.ensureConfigIsPrepared();
         ConfigurationSection anchorsSection = this.anchorConfig.getConfigurationSection("anchors");
         Set<String> anchorKeys = anchorsSection.getKeys(false);
         for (String key : anchorKeys) {
             //world:x,y,z:pitch:yaw
-            Location anchorLocation = plugin.getLocationManipulation().stringToLocation(anchorsSection.getString(key, ""));
+            Location anchorLocation = this.locationManipulation.stringToLocation(anchorsSection.getString(key, ""));
             if (anchorLocation != null) {
                 Logging.config("Loading anchor:  '%s'...", key);
                 this.anchors.put(key, anchorLocation);
@@ -74,7 +86,7 @@ public class AnchorManager {
      */
     public boolean saveAnchors() {
         try {
-            this.anchorConfig.save(new File(this.plugin.getDataFolder(), "anchors.yml"));
+            this.anchorConfig.save(new File(this.dataFolder, "anchors.yml"));
             return true;
         } catch (IOException e) {
             Logging.severe("Failed to save anchors.yml. Please check your file permissions.");
@@ -101,7 +113,7 @@ public class AnchorManager {
      * @return True if the anchor was successfully saved.
      */
     public boolean saveAnchorLocation(String anchor, String location) {
-        Location parsed = plugin.getLocationManipulation().stringToLocation(location);
+        Location parsed = this.locationManipulation.stringToLocation(location);
         return parsed != null && this.saveAnchorLocation(anchor, parsed);
     }
 
@@ -115,7 +127,7 @@ public class AnchorManager {
         if (l == null) {
             return false;
         }
-        this.anchorConfig.set("anchors." + anchor, plugin.getLocationManipulation().locationToString(l));
+        this.anchorConfig.set("anchors." + anchor, this.locationManipulation.locationToString(l));
         this.anchors.put(anchor, l);
         return this.saveAnchors();
     }
@@ -147,8 +159,8 @@ public class AnchorManager {
             // Add to the list if we're not enforcing access
             // OR
             // We are enforcing access and the user has the permission.
-            if (!this.plugin.getMVConfig().getEnforceAccess() ||
-                    (this.plugin.getMVConfig().getEnforceAccess() && p.hasPermission(worldPerm))) {
+            if (!this.configProvider.getConfigUnsafe().getEnforceAccess() ||
+                    (this.configProvider.getConfigUnsafe().getEnforceAccess() && p.hasPermission(worldPerm))) {
                 myAnchors.add(anchor);
             } else {
                 Logging.finer(String.format("Not adding anchor %s to the list, user %s doesn't have the %s " +
