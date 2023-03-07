@@ -5,6 +5,8 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.logging.Logger;
+
 /**
  * The base class for all plugin binders. Initiates the binding of the plugin instance and initially binds it to the
  * {@link Plugin} interface.
@@ -28,6 +30,7 @@ public abstract class PluginBinder<T extends Plugin> extends AbstractBinder {
     protected final void configure() {
         var bindingBuilder = bindPlugin(getPlugin());
         bindingBuilder.to(Plugin.class);
+        bind(plugin.getLogger()).to(Logger.class);
     }
 
     private ScopedBindingBuilder<T> bindPlugin(T plugin) {
