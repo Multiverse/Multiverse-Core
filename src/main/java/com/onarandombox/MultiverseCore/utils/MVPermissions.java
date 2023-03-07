@@ -14,25 +14,28 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's permission checker
  */
+@Service
 public class MVPermissions {
 
     private MultiverseCore plugin;
     private MVWorldManager worldMgr;
 
+    @Inject
     public MVPermissions(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldMgr = plugin.getMVWorldManager();
-
     }
 
     /**

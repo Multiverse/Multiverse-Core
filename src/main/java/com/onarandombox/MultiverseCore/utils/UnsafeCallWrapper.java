@@ -2,15 +2,19 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVCore;
+import jakarta.inject.Inject;
+import org.jvnet.hk2.annotations.Service;
 
 import java.util.concurrent.Callable;
 
 /**
  * Wraps calls that could result in exceptions that are not Multiverse's fault.
  */
+@Service
 public class UnsafeCallWrapper {
     private final MVCore core;
 
+    @Inject
     public UnsafeCallWrapper(MVCore core) {
         this.core = core;
     }

@@ -13,6 +13,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,13 +25,16 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * The default-implementation of {@link SafeTTeleporter}.
  */
+@Service
 public class SimpleSafeTTeleporter implements SafeTTeleporter {
     private MultiverseCore plugin;
 
+    @Inject
     public SimpleSafeTTeleporter(MultiverseCore plugin) {
         this.plugin = plugin;
     }

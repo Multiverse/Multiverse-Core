@@ -12,11 +12,14 @@ import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Main class to manage permissions.
  */
+@Service
 public class MVCommandManager extends PaperCommandManager {
 
     private final MultiverseCore plugin;
@@ -24,6 +27,7 @@ public class MVCommandManager extends PaperCommandManager {
     private CommandQueueManager commandQueueManager;
     private PluginLocales pluginLocales;
 
+    @Inject
     public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
         this.plugin = plugin;

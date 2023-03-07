@@ -1,10 +1,12 @@
 package com.onarandombox.MultiverseCore.api;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * The configuration of MultiverseCore.
  */
+@Contract
 public interface MVConfig extends ConfigurationSerializable {
     /**
      * Sets a property using a {@link String}.

@@ -8,24 +8,25 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's World {@link Listener}.
  */
+@Service
 public class MVWorldListener implements Listener {
     private MultiverseCore plugin;
-    private MVWorldManager worldManager;
 
+    @Inject
     public MVWorldListener(MultiverseCore plugin) {
         this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
     }
 
     /**

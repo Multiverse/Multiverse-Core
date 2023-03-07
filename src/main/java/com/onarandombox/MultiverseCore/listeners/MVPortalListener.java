@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.block.BlockState;
@@ -18,14 +19,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * A custom listener for portal related events.
  */
+@Service
 public class MVPortalListener implements Listener {
 
     private MultiverseCore plugin;
 
+    @Inject
     public MVPortalListener(MultiverseCore core) {
         this.plugin = core;
     }

@@ -17,6 +17,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Multiverse 2 World Manager API
@@ -24,6 +25,7 @@ import org.bukkit.generator.ChunkGenerator;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
+@Contract
 public interface MVWorldManager {
     /**
      * Add a new World to the Multiverse Setup.

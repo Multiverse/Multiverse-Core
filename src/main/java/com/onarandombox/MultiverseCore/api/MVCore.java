@@ -128,7 +128,10 @@ public interface MVCore extends MVPlugin {
      * @param blockSafety The new {@link BlockSafety}.
      * @see BlockSafety
      * @see SimpleBlockSafety
+     *
+     * @deprecated Use dependency injection instead.
      */
+    @Deprecated
     void setBlockSafety(BlockSafety blockSafety);
 
     /**
@@ -144,7 +147,10 @@ public interface MVCore extends MVPlugin {
      * @param locationManipulation The new {@link LocationManipulation}.
      * @see LocationManipulation
      * @see SimpleLocationManipulation
+     *
+     * @deprecated Use dependency injection instead.
      */
+    @Deprecated
     void setLocationManipulation(LocationManipulation locationManipulation);
 
     /**
@@ -160,7 +166,10 @@ public interface MVCore extends MVPlugin {
      * @param safeTTeleporter The new {@link SafeTTeleporter}.
      * @see SafeTTeleporter
      * @see SimpleSafeTTeleporter
+     *
+     * @deprecated Use dependency injection instead.
      */
+    @Deprecated
     void setSafeTTeleporter(SafeTTeleporter safeTTeleporter);
 
     /**

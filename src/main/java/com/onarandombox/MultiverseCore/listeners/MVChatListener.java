@@ -4,19 +4,23 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's {@link org.bukkit.event.Listener} for players.
  */
+@Service
 public class MVChatListener implements Listener {
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
 
+    @Inject
     public MVChatListener(MultiverseCore plugin, MVPlayerListener playerListener) {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();

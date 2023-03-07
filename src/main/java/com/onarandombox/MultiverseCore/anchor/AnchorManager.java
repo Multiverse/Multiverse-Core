@@ -9,11 +9,13 @@ package com.onarandombox.MultiverseCore.anchor;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,16 +24,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * Manages anchors.
  */
+@Service
 public class AnchorManager {
     private MultiverseCore plugin;
     private Map<String, Location> anchors;
     private FileConfiguration anchorConfig;
 
+    @Inject
     public AnchorManager(MultiverseCore plugin) {
         this.plugin = plugin;
         this.anchors = new HashMap<String, Location>();

@@ -16,6 +16,7 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+import jakarta.inject.Inject;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,10 +31,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's {@link Listener} for players.
  */
+@Service
 public class MVPlayerListener implements Listener {
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
@@ -41,6 +44,7 @@ public class MVPlayerListener implements Listener {
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
+    @Inject
     public MVPlayerListener(MultiverseCore plugin) {
         this.plugin = plugin;
         worldManager = plugin.getMVWorldManager();

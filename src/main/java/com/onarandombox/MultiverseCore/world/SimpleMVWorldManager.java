@@ -33,6 +33,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -48,10 +49,12 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
  */
+@Service
 public class SimpleMVWorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
     private final WorldPurger worldPurger;
@@ -61,6 +64,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
     private Map<String, String> defaultGens;
     private String firstSpawn;
 
+    @Inject
     public SimpleMVWorldManager(MultiverseCore core) {
         this.plugin = core;
         this.worldsFromTheConfig = new HashMap<String, WorldProperties>();

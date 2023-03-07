@@ -11,16 +11,19 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import jakarta.inject.Inject;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Provides destinations for teleportation.
  */
+@Service
 public class DestinationsProvider {
     private static final String SEPARATOR = ":";
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
@@ -33,6 +36,7 @@ public class DestinationsProvider {
      *
      * @param plugin The plugin.
      */
+    @Inject
     public DestinationsProvider(@NotNull MultiverseCore plugin) {
         this.plugin = plugin;
         this.destinationMap = new HashMap<>();

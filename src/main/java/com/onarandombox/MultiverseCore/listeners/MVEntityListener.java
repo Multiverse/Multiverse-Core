@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,14 +23,17 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's Entity {@link Listener}.
  */
+@Service
 public class MVEntityListener implements Listener {
     private MultiverseCore plugin;
     private MVWorldManager worldManager;
 
+    @Inject
     public MVEntityListener(MultiverseCore plugin) {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();

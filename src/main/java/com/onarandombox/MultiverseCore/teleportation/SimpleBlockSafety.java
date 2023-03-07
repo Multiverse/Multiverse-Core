@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.teleportation;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MVCore;
+import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -18,6 +19,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
+import org.jvnet.hk2.annotations.Service;
 
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -26,6 +28,7 @@ import java.util.Set;
 /**
  * The default-implementation of {@link BlockSafety}.
  */
+@Service
 public class SimpleBlockSafety implements BlockSafety {
     private final MVCore plugin;
     private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
@@ -41,6 +44,7 @@ public class SimpleBlockSafety implements BlockSafety {
         AROUND_BLOCK.add(BlockFace.NORTH_WEST);
     }
 
+    @Inject
     public SimpleBlockSafety(MVCore plugin) {
         this.plugin = plugin;
     }
