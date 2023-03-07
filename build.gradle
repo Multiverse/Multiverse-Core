@@ -68,7 +68,7 @@ dependencies {
     api('me.main__.util:SerializationConfig:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    api('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.0') {
+    api('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
