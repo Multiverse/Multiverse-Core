@@ -16,6 +16,7 @@ import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
 
 /**
@@ -176,5 +177,6 @@ public interface MVCore extends MVPlugin {
      * Gets the {@link MVConfig}.
      * @return The configuration.
      */
+    @Nullable
     MVConfig getMVConfig();
 }

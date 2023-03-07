@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.api.MVPlugin
 import com.onarandombox.MultiverseCore.api.MVWorldManager
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider
 import com.onarandombox.MultiverseCore.economy.MVEconomist
 import com.onarandombox.MultiverseCore.listeners.MVChatListener
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener
@@ -142,5 +143,10 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `MVWorldInitListener is available as a service`() {
         assertNotNull(multiverseCore.getService(MVWorldInitListener::class.java))
+    }
+
+    @Test
+    fun `MVCoreConfigProvider is available as a service`() {
+        assertNotNull(multiverseCore.getService(MVCoreConfigProvider::class.java))
     }
 }

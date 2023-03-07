@@ -7,12 +7,7 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +37,7 @@ import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.core.BedDestination;
@@ -50,7 +46,6 @@ import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
-import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -67,9 +62,6 @@ import com.onarandombox.MultiverseCore.world.WorldProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -109,10 +101,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<UnsafeCallWrapper> unsafeCallWrapper;
     @Inject
     private Provider<MVWorldManager> worldManager;
-
-    // Configurations
-    private FileConfiguration multiverseConfig;
-    private volatile MultiverseCoreConfiguration config;
+    @Inject
+    private MVCoreConfigProvider configProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -147,7 +137,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         // Load our configs first as we need them for everything else.
         this.loadConfigs();
-        if (this.multiverseConfig == null) {
+        if (getMVConfig() == null) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -406,38 +396,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void loadConfigs() {
-        // Now grab the Configuration Files.
-        this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        InputStream resourceURL = this.getClass().getResourceAsStream("/defaults/config.yml");
-
-        // Read in our default config with UTF-8 now
-        Configuration coreDefaults;
-        try {
-            coreDefaults = YamlConfiguration.loadConfiguration(new BufferedReader(new InputStreamReader(resourceURL, "UTF-8")));
-            this.multiverseConfig.setDefaults(coreDefaults);
-        } catch (UnsupportedEncodingException e) {
-            Logging.severe("Couldn't load default config with UTF-8 encoding. Details follow:");
-            e.printStackTrace();
-            Logging.severe("Default configs NOT loaded.");
-        }
-
-        this.multiverseConfig.options().copyDefaults(false);
-        this.multiverseConfig.options().copyHeader(true);
-
-        MultiverseCoreConfiguration wantedConfig = null;
-        try {
-            wantedConfig = (MultiverseCoreConfiguration) multiverseConfig.get("multiverse-configuration");
-        } catch (Exception ignore) {
-        } finally {
-            config = ((wantedConfig == null) ? new MultiverseCoreConfiguration() : wantedConfig);
-        }
-        getMVWorldManager().loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
-
-        int level = Logging.getDebugLevel();
-        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
-        if (level != Logging.getDebugLevel()) {
-            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
-        }
+        configProvider.loadConfigs();
     }
 
     /**
@@ -445,14 +404,13 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public boolean saveMVConfig() {
-        try {
-            this.multiverseConfig.set("multiverse-configuration", getMVConfig());
-            this.multiverseConfig.save(new File(getDataFolder(), "config.yml"));
-            return true;
-        } catch (IOException e) {
-            Logging.severe("Could not save Multiverse config.yml config. Please check your file permissions.");
-            return false;
-        }
+        return configProvider.saveConfig()
+                .map(v -> true)
+                .recover(e -> {
+                    Logging.severe(e.getMessage(), e);
+                    return false;
+                })
+                .get();
     }
 
     /**
@@ -526,8 +484,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
+    @Nullable
     public MVConfig getMVConfig() {
-        return config;
+        return configProvider.getConfig().getOrElse((MVConfig) null);
     }
 
     /**
