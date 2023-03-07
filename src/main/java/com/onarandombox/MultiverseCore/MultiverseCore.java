@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,10 @@ import com.onarandombox.MultiverseCore.commands.LoadCommand;
 import com.onarandombox.MultiverseCore.commands.RegenCommand;
 import com.onarandombox.MultiverseCore.commands.ReloadCommand;
 import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.RootCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
 import com.onarandombox.MultiverseCore.destination.core.BedDestination;
@@ -52,6 +52,7 @@ import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
+import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
@@ -76,6 +77,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.glassfish.hk2.api.MultiException;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
@@ -84,6 +89,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 50;
 
     // Setup various managers
+    private ServiceLocator serviceLocator;
     private final AnchorManager anchorManager = new AnchorManager(this);
     private BlockSafety blockSafety = new SimpleBlockSafety(this);
     private MVCommandManager commandManager;
@@ -137,6 +143,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onEnable() {
+        initializeDependencyInjection();
+
         // Load our configs first as we need them for everything else.
         this.loadConfigs();
         if (this.multiverseConfig == null) {
@@ -179,7 +187,32 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void onDisable() {
         this.saveAllConfigs();
+        shutdownDependencyInjection();
         Logging.shutdown();
+    }
+
+    private void initializeDependencyInjection() {
+        serviceLocator = PluginInjection.createServiceLocator(new MultiverseCorePluginBinder(this))
+                .andThenTry(locator -> {
+                    PluginInjection.enable(this, locator);
+                })
+                .andThen(this::saveLegacyVars)
+                .getOrElseThrow(exception -> {
+                    Logging.severe("Failed to initialize dependency injection");
+                    getServer().getPluginManager().disablePlugin(this);
+                    return new RuntimeException(exception);
+                });
+    }
+
+    private void saveLegacyVars(ServiceLocator locator) {
+        // TODO set up existing things e.g. worldManager = locator.getService(MVWorldManager.class);
+    }
+
+    private void shutdownDependencyInjection() {
+        if (serviceLocator != null) {
+            PluginInjection.disable(this, serviceLocator);
+            serviceLocator = null;
+        }
     }
 
     /**
@@ -610,5 +643,18 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             throw new IllegalArgumentException("That's not a folder!");
 
         this.serverFolder = newServerFolder;
+    }
+
+    /**
+     * Gets the best service from this plugin that implements the given contract or has the given implementation.
+     *
+     * @param contractOrImpl The contract or concrete implementation to get the best instance of
+     * @param qualifiers The set of qualifiers that must match this service definition
+     * @return An instance of the contract or impl. May return null if there is no provider that provides the given
+     * implementation or contract
+     */
+    @Nullable
+    public <T> T getService(@NotNull Class<T> contractOrImpl, Annotation... qualifiers) throws MultiException {
+        return serviceLocator.getService(contractOrImpl, qualifiers);
     }
 }
