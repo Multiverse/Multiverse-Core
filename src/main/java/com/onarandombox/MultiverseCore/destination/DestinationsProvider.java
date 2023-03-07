@@ -10,8 +10,10 @@ import co.aikar.commands.CommandIssuer;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.Teleporter;
 import jakarta.inject.Inject;
+import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -28,17 +30,17 @@ public class DestinationsProvider {
     private static final String SEPARATOR = ":";
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
 
-    private final MultiverseCore plugin;
+    private final PluginManager pluginManager;
+    private final SafeTTeleporter safeTTeleporter;
     private final Map<String, Destination<?>> destinationMap;
 
     /**
      * Creates a new destinations provider.
-     *
-     * @param plugin The plugin.
      */
     @Inject
-    public DestinationsProvider(@NotNull MultiverseCore plugin) {
-        this.plugin = plugin;
+    public DestinationsProvider(@NotNull PluginManager pluginManager, @NotNull SafeTTeleporter safeTTeleporter) {
+        this.pluginManager = pluginManager;
+        this.safeTTeleporter = safeTTeleporter;
         this.destinationMap = new HashMap<>();
     }
 
@@ -53,7 +55,6 @@ public class DestinationsProvider {
     }
 
     private void registerDestinationPerms(@NotNull Destination<?> destination) {
-        PluginManager pluginManager = this.plugin.getServer().getPluginManager();
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "self." + destination.getIdentifier()));
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "other." + destination.getIdentifier()));
     }
@@ -152,7 +153,7 @@ public class DestinationsProvider {
     ) {
         Teleporter teleportHandler = destination.getDestination().getTeleporter();
         if (teleportHandler == null) {
-            teleportHandler = this.plugin.getSafeTTeleporter();
+            teleportHandler = safeTTeleporter;
         }
         teleportHandler.teleport(teleporter, teleportee, destination);
     }
