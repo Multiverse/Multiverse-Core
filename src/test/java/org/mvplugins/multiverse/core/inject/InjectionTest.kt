@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider
 import com.onarandombox.MultiverseCore.economy.MVEconomist
+import com.onarandombox.MultiverseCore.inject.wrapper.PluginDataFolder
 import com.onarandombox.MultiverseCore.listeners.MVChatListener
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener
@@ -28,8 +29,10 @@ import org.bukkit.Server
 import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.Test
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import java.io.File
 import java.util.logging.Logger
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 class InjectionTest : TestWithMockBukkit() {
@@ -59,6 +62,16 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `Logger is available as a service`() {
         assertNotNull(multiverseCore.getService(Logger::class.java));
+    }
+
+    @Test
+    fun `PluginDataFolder is available as a service`() {
+        assertNotNull(multiverseCore.getService(PluginDataFolder::class.java));
+    }
+
+    @Test
+    fun `File is not available as a service`() {
+        assertNull(multiverseCore.getService(File::class.java))
     }
 
     @Test

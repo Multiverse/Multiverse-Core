@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.inject.binder;
 
+import com.onarandombox.MultiverseCore.inject.wrapper.PluginDataFolder;
 import org.bukkit.plugin.Plugin;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
@@ -31,6 +32,7 @@ public abstract class PluginBinder<T extends Plugin> extends AbstractBinder {
         var bindingBuilder = bindPlugin(getPlugin());
         bindingBuilder.to(Plugin.class);
         bind(plugin.getLogger()).to(Logger.class);
+        bind(PluginDataFolder.from(plugin)).to(PluginDataFolder.class);
     }
 
     private ScopedBindingBuilder<T> bindPlugin(T plugin) {
