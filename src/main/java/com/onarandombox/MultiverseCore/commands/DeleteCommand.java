@@ -9,7 +9,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
@@ -18,11 +20,14 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class DeleteCommand extends MultiverseCoreCommand {
+public class DeleteCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
 
     @Inject
-    public DeleteCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public DeleteCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("delete")
@@ -38,11 +43,11 @@ public class DeleteCommand extends MultiverseCoreCommand {
                                 @Description("The world you want to delete.")
                                 String worldName
     ) {
-        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendMessage(String.format("Deleting world '%s'...", worldName));
-                    if (!this.plugin.getMVWorldManager().deleteWorld(worldName)) {
+                    if (!this.worldManager.deleteWorld(worldName)) {
                         issuer.sendMessage(String.format("%sThere was an issue deleting '%s'! Please check console for errors.", ChatColor.RED, worldName));
                         return;
                     }

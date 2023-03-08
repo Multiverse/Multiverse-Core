@@ -803,14 +803,6 @@ public class SimpleMVWorldManager implements MVWorldManager {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public WorldPurger getTheWorldPurger() {
-        return worldPurger;
-    }
-
     private static final char SEPARATOR = '\uF8FF';
 
     public boolean isKeepingSpawnInMemory(World world) {

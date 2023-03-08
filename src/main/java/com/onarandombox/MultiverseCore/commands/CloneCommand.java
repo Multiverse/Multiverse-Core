@@ -9,7 +9,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -17,11 +19,14 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class CloneCommand extends MultiverseCoreCommand {
+public class CloneCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
 
     @Inject
-    public CloneCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("clone")
@@ -44,7 +49,7 @@ public class CloneCommand extends MultiverseCoreCommand {
     ) {
         issuer.sendMessage(String.format("Cloning world '%s' to '%s'...", worldName, newWorldName));
 
-        if (!this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName)) {
+        if (!this.worldManager.cloneWorld(worldName, newWorldName)) {
             issuer.sendMessage(String.format("%sWorld could not be cloned! See console for more details.", ChatColor.RED));
             return;
         }

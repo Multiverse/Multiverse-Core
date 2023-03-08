@@ -9,7 +9,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -17,11 +19,14 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class RemoveCommand extends MultiverseCoreCommand {
+public class RemoveCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
 
     @Inject
-    public RemoveCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public RemoveCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("remove")
@@ -37,7 +42,7 @@ public class RemoveCommand extends MultiverseCoreCommand {
                                 @Description("World you want to remove from mv's knowledge.")
                                 String worldName
     ) {
-        if (!this.plugin.getMVWorldManager().removeWorldFromConfig(worldName)) {
+        if (!this.worldManager.removeWorldFromConfig(worldName)) {
             issuer.sendMessage(String.format("%sError trying to remove world from config!", ChatColor.RED));
             return;
         }

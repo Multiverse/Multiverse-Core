@@ -4,7 +4,9 @@ import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
 import org.bukkit.entity.Entity;
+import org.jvnet.hk2.annotations.Contract;
 
+@Contract
 public interface Teleporter {
     /**
      * Teleport the entity to the Multiverse Destination.

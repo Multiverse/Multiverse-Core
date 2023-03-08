@@ -9,18 +9,23 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class LoadCommand extends MultiverseCoreCommand {
+public class LoadCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
 
     @Inject
-    public LoadCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public LoadCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("load")
@@ -38,7 +43,7 @@ public class LoadCommand extends MultiverseCoreCommand {
     ) {
         issuer.sendMessage(String.format("Loading world '%s'...", worldName));
 
-        if (!this.plugin.getMVWorldManager().loadWorld(worldName)) {
+        if (!this.worldManager.loadWorld(worldName)) {
             issuer.sendMessage(String.format("Error trying to load world '%s'!", worldName));
             return;
         }

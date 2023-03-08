@@ -8,8 +8,8 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
@@ -27,11 +27,11 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class MVPortalListener implements Listener {
 
-    private MultiverseCore plugin;
+    private MVWorldManager worldManager;
 
     @Inject
-    public MVPortalListener(MultiverseCore core) {
-        this.plugin = core;
+    public MVPortalListener(MVWorldManager worldManager) {
+        this.worldManager = worldManager;
     }
 
     /**
@@ -42,7 +42,7 @@ public class MVPortalListener implements Listener {
     public void portalForm(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s", event.getWorld().getName(), event.getReason());
 
-        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getWorld());
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.", event.getWorld().getName());
             return;
@@ -98,7 +98,7 @@ public class MVPortalListener implements Listener {
             return;
         }
 
-        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getPlayer().getWorld());
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
                     event.getPlayer().getWorld().getName());

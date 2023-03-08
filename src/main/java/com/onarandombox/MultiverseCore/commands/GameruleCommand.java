@@ -8,8 +8,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
@@ -19,11 +20,11 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class GameruleCommand extends MultiverseCoreCommand {
+public class GameruleCommand extends MultiverseCommand {
 
     @Inject
-    public GameruleCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public GameruleCommand(@NotNull MVCommandManager commandManager) {
+        super(commandManager);
     }
 
     @Subcommand("gamerule")

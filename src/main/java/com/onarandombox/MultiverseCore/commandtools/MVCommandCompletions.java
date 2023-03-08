@@ -16,23 +16,32 @@ import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
 import com.google.common.collect.Sets;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class MVCommandCompletions extends PaperCommandCompletions {
-    protected final MVCommandManager commandManager;
-    private final MultiverseCore plugin;
-    private final MVWorldManager worldManager;
 
-    public MVCommandCompletions(MVCommandManager mvCommandManager, MultiverseCore plugin) {
+    protected final MVCommandManager commandManager;
+    private final MVWorldManager worldManager;
+    private final DestinationsProvider destinationsProvider;
+
+    @Inject
+    public MVCommandCompletions(
+            @NotNull MVCommandManager mvCommandManager,
+            @NotNull MVWorldManager worldManager,
+            @NotNull DestinationsProvider destinationsProvider
+    ) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
-        this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
+        this.worldManager = worldManager;
+        this.destinationsProvider = destinationsProvider;
 
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
@@ -52,7 +61,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return Collections.emptyList();
         }
 
-        RootCommand rootCommand = this.plugin.getMVCommandManager().getRegisteredRootCommands().stream()
+        RootCommand rootCommand = this.commandManager.getRegisteredRootCommands().stream()
                 .unordered()
                 .filter(c -> c.getCommandName().equals(rootCmdName))
                 .findFirst()
@@ -70,7 +79,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private boolean checkPerms(CommandIssuer issuer, RegisteredCommand<?> command) {
-        return this.plugin.getMVCommandManager().hasPermission(issuer, command.getRequiredPermissions());
+        return this.commandManager.hasPermission(issuer, command.getRequiredPermissions());
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
@@ -78,7 +87,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return Collections.emptyList();
         }
 
-        return this.plugin.getDestinationsProvider()
+        return this.destinationsProvider
                 .suggestDestinations((BukkitCommandIssuer)context.getIssuer(), context.getInput());
     }
 

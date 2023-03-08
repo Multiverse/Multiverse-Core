@@ -12,7 +12,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
@@ -25,11 +27,14 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class RegenCommand extends MultiverseCoreCommand {
+public class RegenCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
 
     @Inject
-    public RegenCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public RegenCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvregen")
                 .add(CommandValueFlag.builder("--seed", String.class)
@@ -62,11 +67,11 @@ public class RegenCommand extends MultiverseCoreCommand {
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendMessage(String.format("Regenerating world '%s'...", worldName));
-                    if (!this.plugin.getMVWorldManager().regenWorld(
+                    if (!this.worldManager.regenWorld(
                             worldName,
                             parsedFlags.hasFlag("--seed"),
                             !parsedFlags.hasFlagValue("--seed"),

@@ -11,7 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class PlayerDestination implements Destination<PlayerDestinationInstance> {
     /**
      * Creates a new instance of the PlayerDestination.

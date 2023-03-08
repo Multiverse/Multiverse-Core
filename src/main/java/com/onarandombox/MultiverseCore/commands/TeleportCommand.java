@@ -8,7 +8,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
@@ -16,11 +18,14 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class TeleportCommand extends MultiverseCoreCommand {
+public class TeleportCommand extends MultiverseCommand {
+
+    private final DestinationsProvider destinationsProvider;
 
     @Inject
-    public TeleportCommand(MultiverseCore plugin) {
-        super(plugin);
+    public TeleportCommand(MVCommandManager commandManager, DestinationsProvider destinationsProvider) {
+        super(commandManager);
+        this.destinationsProvider = destinationsProvider;
     }
 
     @Subcommand("teleport|tp")
@@ -43,12 +48,12 @@ public class TeleportCommand extends MultiverseCoreCommand {
             issuer.sendMessage("Teleporting "
                     + (issuer.getPlayer() == player ? "you" : player.getName())
                     + " to " + destination + "...");
-            this.plugin.getDestinationsProvider().playerTeleport(issuer, player, destination);
+            this.destinationsProvider.playerTeleport(issuer, player, destination);
         }
     }
 
     @Override
     public boolean hasPermission(CommandIssuer issuer) {
-        return this.plugin.getDestinationsProvider().hasAnyTeleportPermission(issuer);
+        return this.destinationsProvider.hasAnyTeleportPermission(issuer);
     }
 }

@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -16,14 +16,18 @@ import org.jvnet.hk2.annotations.Service;
  */
 @Service
 public class MVChatListener implements Listener {
-    private final MultiverseCore plugin;
+    private final MVCoreConfigProvider configProvider;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
 
     @Inject
-    public MVChatListener(MultiverseCore plugin, MVPlayerListener playerListener) {
-        this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
+    public MVChatListener(
+            MVCoreConfigProvider configProvider,
+            MVWorldManager worldManager,
+            MVPlayerListener playerListener
+    ) {
+        this.configProvider = configProvider;
+        this.worldManager = worldManager;
         this.playerListener = playerListener;
     }
 
@@ -38,7 +42,7 @@ public class MVChatListener implements Listener {
         }
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
-        if (plugin.getMVConfig().getPrefixChat()) {
+        if (configProvider.getConfigUnsafe().getPrefixChat()) {
             String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
             if (world == null) {
                 world = event.getPlayer().getWorld().getName();
@@ -56,7 +60,7 @@ public class MVChatListener implements Listener {
             prefix = mvworld.getColoredWorldString();
             String chat = event.getFormat();
             
-            String prefixChatFormat = plugin.getMVConfig().getPrefixChatFormat();
+            String prefixChatFormat = configProvider.getConfigUnsafe().getPrefixChatFormat();
             prefixChatFormat = prefixChatFormat.replace("%world%", prefix).replace("%chat%", chat);
             prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
             

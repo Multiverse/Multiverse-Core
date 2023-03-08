@@ -4,24 +4,26 @@ import java.util.Collection;
 import java.util.Collections;
 
 import co.aikar.commands.BukkitCommandIssuer;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class WorldDestination implements Destination<WorldDestinationInstance> {
 
-    private final MultiverseCore plugin;
+    private final MVWorldManager worldManager;
+    private final LocationManipulation locationManipulation;
 
-    /**
-     * Constructor.
-     *
-     * @param plugin The MultiverseCore plugin.
-     */
-    public WorldDestination(MultiverseCore plugin) {
-        this.plugin = plugin;
+    @Inject
+    public WorldDestination(MVWorldManager worldManager, LocationManipulation locationManipulation) {
+        this.worldManager = worldManager;
+        this.locationManipulation = locationManipulation;
     }
 
     /**
@@ -43,13 +45,13 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
         }
 
         String worldName = items[0];
-        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(worldName);
+        MVWorld world = this.worldManager.getMVWorld(worldName);
         if (world == null) {
             return null;
         }
 
         String direction = (items.length == 2) ? items[1] : null;
-        float yaw = direction != null ? this.plugin.getLocationManipulation().getYaw(direction) : -1;
+        float yaw = direction != null ? this.locationManipulation.getYaw(direction) : -1;
 
         return new WorldDestinationInstance(world, direction, yaw);
     }

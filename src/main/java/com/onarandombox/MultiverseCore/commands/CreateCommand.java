@@ -17,12 +17,15 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -33,11 +36,19 @@ import org.jvnet.hk2.annotations.Service;
 
 @Service
 @CommandAlias("mv")
-public class CreateCommand extends MultiverseCoreCommand {
+public class CreateCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
 
     @Inject
-    public CreateCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public CreateCommand(
+            @NotNull MVCommandManager commandManager,
+            @NotNull MVWorldManager worldManager,
+            @NotNull UnsafeCallWrapper unsafeCallWrapper
+    ) {
+        super(commandManager);
+
+        this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvcreate")
                 .add(CommandValueFlag.builder("--seed", String.class)
@@ -48,7 +59,7 @@ public class CreateCommand extends MultiverseCoreCommand {
                         .addAlias("-g")
                         .completion(() -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                                 .filter(Plugin::isEnabled)
-                                .filter(genplugin -> this.plugin.getUnsafeCallWrapper().wrap(
+                                .filter(genplugin -> unsafeCallWrapper.wrap(
                                         () -> genplugin.getDefaultWorldGenerator("world", ""),
                                         genplugin.getName(),
                                         "Get generator"

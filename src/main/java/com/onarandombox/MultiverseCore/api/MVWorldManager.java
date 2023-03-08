@@ -224,15 +224,6 @@ public interface MVWorldManager {
     void loadDefaultWorlds();
 
     /**
-     * Gets the {@link WorldPurger}.
-     * <p>
-     * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
-     * @see WorldPurger
-     * @see SimpleWorldPurger
-     */
-    WorldPurger getTheWorldPurger();
-
-    /**
      * Gets the world players will spawn in on first join.
      * Currently this always returns worlds.get(0) from Bukkit.
      *

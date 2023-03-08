@@ -35,8 +35,10 @@ public class TestWorldPurger {
         creator = new TestInstanceCreator();
         assertTrue(creator.setUp());
         core = creator.getCore();
+        /* This block is preserved for the transition to MV5, just in case
         purger = core.getMVWorldManager().getTheWorldPurger();
         core.getMVConfig().setGlobalDebug(3);
+         */
         mvWorld = mock(MVWorld.class);
         cbworld = mock(World.class);
         when(mvWorld.getCBWorld()).thenReturn(cbworld);

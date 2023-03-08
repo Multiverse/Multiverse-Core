@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.inject
 import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseCore.anchor.AnchorManager
 import com.onarandombox.MultiverseCore.api.BlockSafety
+import com.onarandombox.MultiverseCore.api.Destination
 import com.onarandombox.MultiverseCore.api.LocationManipulation
 import com.onarandombox.MultiverseCore.api.MVCore
 import com.onarandombox.MultiverseCore.api.MVPlugin
@@ -171,5 +172,12 @@ class InjectionTest : TestWithMockBukkit() {
         val commands = multiverseCore.getAllServices(MultiverseCommand::class.java)
         // TODO come up with a better way to test this like via actually testing the effect of calling each command
         assertEquals(16, commands.size)
+    }
+
+    @Test
+    fun `Destinations are available as services`() {
+        val destinations = multiverseCore.getAllServices(Destination::class.java)
+        // TODO come up with a better way to test this like via actually testing the effect of using each destination
+        assertEquals(6, destinations.size)
     }
 }

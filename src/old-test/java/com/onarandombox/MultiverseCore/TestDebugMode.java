@@ -63,6 +63,7 @@ public class TestDebugMode {
         Command mockCommand = mock(Command.class);
         when(mockCommand.getName()).thenReturn("mv");
 
+        /* This block is preserved for the transition to MV5, just in case
         // Assert debug mode is off
         Assert.assertEquals(0, core.getMVConfig().getGlobalDebug());
 
@@ -71,5 +72,6 @@ public class TestDebugMode {
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
 
         Assert.assertEquals(3, core.getMVConfig().getGlobalDebug());
+         */
     }
 }

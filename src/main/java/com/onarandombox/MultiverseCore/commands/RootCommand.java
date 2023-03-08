@@ -3,18 +3,24 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
-public class RootCommand extends MultiverseCoreCommand {
+public class RootCommand extends MultiverseCommand {
+
+    private final Plugin plugin;
 
     @Inject
-    public RootCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+    public RootCommand(@NotNull MVCommandManager commandManager, @NotNull MultiverseCore plugin) {
+        super(commandManager);
+        this.plugin = plugin;
     }
 
     @CommandAlias("mv")
