@@ -22,21 +22,8 @@ import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands.CheckCommand;
-import com.onarandombox.MultiverseCore.commands.CloneCommand;
-import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commands.CreateCommand;
-import com.onarandombox.MultiverseCore.commands.DebugCommand;
-import com.onarandombox.MultiverseCore.commands.DeleteCommand;
-import com.onarandombox.MultiverseCore.commands.ImportCommand;
-import com.onarandombox.MultiverseCore.commands.GameruleCommand;
-import com.onarandombox.MultiverseCore.commands.LoadCommand;
-import com.onarandombox.MultiverseCore.commands.RegenCommand;
-import com.onarandombox.MultiverseCore.commands.ReloadCommand;
-import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
@@ -223,22 +210,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerCommands() {
         var commandManager = getMVCommandManager();
-        
-        commandManager = new MVCommandManager(this);
-        commandManager.registerCommand(new CheckCommand(this));
-        commandManager.registerCommand(new CloneCommand(this));
-        commandManager.registerCommand(new ConfirmCommand(this));
-        commandManager.registerCommand(new CreateCommand(this));
-        commandManager.registerCommand(new DebugCommand(this));
-        commandManager.registerCommand(new DeleteCommand(this));
-        commandManager.registerCommand(new ImportCommand(this));
-        commandManager.registerCommand(new GameruleCommand(this));
-        commandManager.registerCommand(new LoadCommand(this));
-        commandManager.registerCommand(new RegenCommand(this));
-        commandManager.registerCommand(new ReloadCommand(this));
-        commandManager.registerCommand(new RemoveCommand(this));
-        commandManager.registerCommand(new TeleportCommand(this));
-        commandManager.registerCommand(new UnloadCommand(this));
+        serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
     }
 
     /**
@@ -608,9 +580,28 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * @param qualifiers The set of qualifiers that must match this service definition
      * @return An instance of the contract or impl. May return null if there is no provider that provides the given
      * implementation or contract
+     * @throws MultiException if there was an error during service creation
      */
     @Nullable
     public <T> T getService(@NotNull Class<T> contractOrImpl, Annotation... qualifiers) throws MultiException {
         return serviceLocator.getService(contractOrImpl, qualifiers);
+    }
+
+    /**
+     * Gets all services from this locator that implement this contract or have this implementation and have the
+     * provided qualifiers.
+     *
+     * @param contractOrImpl The contract or concrete implementation to get the best instance of
+     * @param qualifiers The set of qualifiers that must match this service definition
+     * @return A list of services implementing this contract or concrete implementation. May not return null, but may
+     * return an empty list
+     * @throws MultiException if there was an error during service creation
+     */
+    @NotNull
+    public <T> List<T> getAllServices(
+            @NotNull Class<T> contractOrImpl,
+            Annotation... qualifiers
+    ) throws MultiException {
+        return serviceLocator.getAllServices(contractOrImpl, qualifiers);
     }
 }

@@ -11,12 +11,17 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class GameruleCommand extends MultiverseCoreCommand {
+
+    @Inject
     public GameruleCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

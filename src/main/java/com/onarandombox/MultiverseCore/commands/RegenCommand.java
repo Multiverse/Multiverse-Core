@@ -18,11 +18,16 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class RegenCommand extends MultiverseCoreCommand {
+
+    @Inject
     public RegenCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 

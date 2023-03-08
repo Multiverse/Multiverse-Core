@@ -17,14 +17,19 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class ImportCommand extends MultiverseCoreCommand {
+
+    @Inject
     public ImportCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 

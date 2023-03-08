@@ -10,10 +10,15 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class TeleportCommand extends MultiverseCoreCommand {
+
+    @Inject
     public TeleportCommand(MultiverseCore plugin) {
         super(plugin);
     }

@@ -9,10 +9,15 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class UnloadCommand extends MultiverseCoreCommand {
+
+    @Inject
     public UnloadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

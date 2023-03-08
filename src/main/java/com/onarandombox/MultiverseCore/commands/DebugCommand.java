@@ -10,10 +10,15 @@ import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class DebugCommand extends MultiverseCoreCommand {
+
+    @Inject
     public DebugCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

@@ -10,10 +10,15 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class LoadCommand extends MultiverseCoreCommand {
+
+    @Inject
     public LoadCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

@@ -23,14 +23,19 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class CreateCommand extends MultiverseCoreCommand {
+
+    @Inject
     public CreateCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
 

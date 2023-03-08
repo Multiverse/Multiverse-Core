@@ -6,7 +6,9 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Contract;
 
+@Contract
 public abstract class MultiverseCommand extends BaseCommand {
     protected final CommandFlagsManager flagsManager;
     private String flagGroupName;

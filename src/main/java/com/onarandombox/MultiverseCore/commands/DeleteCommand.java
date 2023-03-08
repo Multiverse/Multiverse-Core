@@ -11,11 +11,16 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
 public class DeleteCommand extends MultiverseCoreCommand {
+
+    @Inject
     public DeleteCommand(@NotNull MultiverseCore plugin) {
         super(plugin);
     }

@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.api.MVPlugin
 import com.onarandombox.MultiverseCore.api.MVWorldManager
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider
 import com.onarandombox.MultiverseCore.economy.MVEconomist
 import com.onarandombox.MultiverseCore.inject.wrapper.PluginDataFolder
@@ -26,11 +27,13 @@ import com.onarandombox.MultiverseCore.utils.MVPermissions
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
 import org.bukkit.Server
+import org.bukkit.command.Command
 import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.Test
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import java.io.File
 import java.util.logging.Logger
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertSame
@@ -161,5 +164,12 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `MVCoreConfigProvider is available as a service`() {
         assertNotNull(multiverseCore.getService(MVCoreConfigProvider::class.java))
+    }
+
+    @Test
+    fun `Commands are available as services`() {
+        val commands = multiverseCore.getAllServices(MultiverseCommand::class.java)
+        // TODO come up with a better way to test this like via actually testing the effect of calling each command
+        assertEquals(16, commands.size)
     }
 }
