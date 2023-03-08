@@ -204,16 +204,20 @@ public class TestInstanceCreator {
             serverfield.set(core, mockServer);
 
             // Set worldManager
+            /* This block is preserved for the transition to MV5, just in case
             SimpleMVWorldManager wm = spy(new SimpleMVWorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
             worldmanagerfield.setAccessible(true);
             worldmanagerfield.set(core, wm);
+             */
 
             // Set playerListener
+            /* This block is preserved for the transition to MV5, just in case
             MVPlayerListener pl = spy(new MVPlayerListener(core));
             Field playerlistenerfield = MultiverseCore.class.getDeclaredField("playerListener");
             playerlistenerfield.setAccessible(true);
             playerlistenerfield.set(core, pl);
+            */
 
             // Set entityListener
             MVEntityListener el = spy(new MVEntityListener(core));

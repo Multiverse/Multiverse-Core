@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,16 +40,20 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class MVPlayerListener implements Listener {
     private final MultiverseCore plugin;
-    private final MVWorldManager worldManager;
+    private final Provider<MVWorldManager> worldManagerProvider;
     private final PermissionTools pt;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
     @Inject
-    public MVPlayerListener(MultiverseCore plugin) {
+    public MVPlayerListener(MultiverseCore plugin, Provider<MVWorldManager> worldManagerProvider) {
         this.plugin = plugin;
-        worldManager = plugin.getMVWorldManager();
+        this.worldManagerProvider = worldManagerProvider;
         pt = new PermissionTools(plugin);
+    }
+
+    private MVWorldManager getWorldManager() {
+        return worldManagerProvider.get();
     }
 
     /**
@@ -65,7 +70,7 @@ public class MVPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
         World world = event.getPlayer().getWorld();
-        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName());
         // If it's not a World MV manages we stop.
         if (mvWorld == null) {
             return;
@@ -78,8 +83,8 @@ public class MVPlayerListener implements Listener {
 
         // Get the instance of the World the player should respawn at.
         MVWorld respawnWorld = null;
-        if (this.worldManager.isMVWorld(mvWorld.getRespawnToWorld())) {
-            respawnWorld = this.worldManager.getMVWorld(mvWorld.getRespawnToWorld());
+        if (getWorldManager().isMVWorld(mvWorld.getRespawnToWorld())) {
+            respawnWorld = getWorldManager().getMVWorld(mvWorld.getRespawnToWorld());
         }
 
         // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
@@ -96,7 +101,7 @@ public class MVPlayerListener implements Listener {
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
-        MVWorld mvw = this.worldManager.getMVWorld(w.getName());
+        MVWorld mvw = getWorldManager().getMVWorld(w.getName());
         if (mvw != null) {
             return mvw.getSpawnLocation();
         }
@@ -114,7 +119,7 @@ public class MVPlayerListener implements Listener {
             Logging.finer("Player joined for the FIRST time!");
             if (plugin.getMVConfig().getFirstSpawnOverride()) {
                 Logging.fine("Moving NEW player to(firstspawnoverride): "
-                        + worldManager.getFirstSpawnWorld().getSpawnLocation());
+                        + getWorldManager().getFirstSpawnWorld().getSpawnLocation());
                 this.sendPlayerToDefaultWorld(p);
             }
             return;
@@ -166,8 +171,8 @@ public class MVPlayerListener implements Listener {
         }
         Logging.finer("Inferred sender '" + teleporter + "' from name '"
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
-        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
-        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName());
+        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName());
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
                     + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
@@ -270,8 +275,8 @@ public class MVPlayerListener implements Listener {
         if (event.getTo() == null) {
             return;
         }
-        MVWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
-        MVWorld toWorld = this.worldManager.getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName());
+        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Portaling to the same world.
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
@@ -315,7 +320,7 @@ public class MVPlayerListener implements Listener {
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameModeAndFlight(Player player, World world) {
 
-        MVWorld mvWorld = this.worldManager.getMVWorld(world.getName());
+        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName());
         if (mvWorld != null) {
             this.handleGameModeAndFlight(player, mvWorld);
         } else {

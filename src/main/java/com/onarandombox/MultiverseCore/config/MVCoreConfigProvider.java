@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -35,14 +36,19 @@ public final class MVCoreConfigProvider {
     private volatile MultiverseCoreConfiguration config;
 
     private final Plugin plugin;
-    private final MVWorldManager worldManager;
     private final PluginManager pluginManager;
 
+    private final Provider<MVWorldManager> worldManagerProvider; // TODO remove this dependency
+
     @Inject
-    public MVCoreConfigProvider(MultiverseCore plugin, MVWorldManager worldManager, PluginManager pluginManager) {
+    public MVCoreConfigProvider(
+            MultiverseCore plugin,
+            PluginManager pluginManager,
+            Provider<MVWorldManager> worldManagerProvider
+    ) {
         this.plugin = plugin;
-        this.worldManager = worldManager;
         this.pluginManager = pluginManager;
+        this.worldManagerProvider = worldManagerProvider;
     }
 
     @NotNull
@@ -103,7 +109,7 @@ public final class MVCoreConfigProvider {
     }
 
     private void loadWorldConfigs() {
-        worldManager.loadWorldConfig(new File(plugin.getDataFolder(), WORLDS_CONFIG_FILE));
+        worldManagerProvider.get().loadWorldConfig(new File(plugin.getDataFolder(), WORLDS_CONFIG_FILE));
     }
 
     private void setDebugLevelFromConfig(@NotNull MVConfig config) {
