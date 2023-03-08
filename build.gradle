@@ -226,7 +226,7 @@ javadoc {
 project.configurations.api.canBeResolved = true
 
 shadowJar {
-    relocate 'co.alkar.commands', 'com.onarandombox.acf'
+    relocate 'co.aikar', 'com.onarandombox.acf'
     relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
     relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
     relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
@@ -234,6 +234,11 @@ shadowJar {
     relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
     relocate 'org.bstats', 'com.onarandombox.bstats'
     relocate 'org.glassfish.hk2', 'com.onarandombox.hk2'
+    relocate 'org.jvnet', 'com.onarandombox.jvnet'
+    relocate 'com.sun', 'com.onarandombox.sun'
+    relocate 'io.vavr', 'com.onarandombox.vavr'
+    relocate 'net.minidev', 'com.onarandombox.minidev'
+    relocate 'org.objectweb', 'com.onarandombox.objectweb'
 
     configurations = [project.configurations.api]
 
@@ -242,6 +247,12 @@ shadowJar {
     dependencies {
         exclude(dependency {
             it.moduleGroup == 'org.jetbrains.kotlin'
+        })
+    }
+
+    minimize {
+        exclude(dependency {
+            it.moduleGroup == 'co.aikar'
         })
     }
 }
