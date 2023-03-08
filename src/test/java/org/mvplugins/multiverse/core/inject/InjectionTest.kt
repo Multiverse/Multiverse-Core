@@ -13,7 +13,6 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider
 import com.onarandombox.MultiverseCore.economy.MVEconomist
-import com.onarandombox.MultiverseCore.inject.wrapper.PluginDataFolder
 import com.onarandombox.MultiverseCore.listeners.MVChatListener
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener
@@ -66,16 +65,6 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `Logger is available as a service`() {
         assertNotNull(multiverseCore.getService(Logger::class.java));
-    }
-
-    @Test
-    fun `PluginDataFolder is available as a service`() {
-        assertNotNull(multiverseCore.getService(PluginDataFolder::class.java));
-    }
-
-    @Test
-    fun `File is not available as a service`() {
-        assertNull(multiverseCore.getService(File::class.java))
     }
 
     @Test

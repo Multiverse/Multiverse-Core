@@ -8,15 +8,16 @@
 package com.onarandombox.MultiverseCore.anchor;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
-import com.onarandombox.MultiverseCore.inject.wrapper.PluginDataFolder;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
@@ -35,17 +36,17 @@ public class AnchorManager {
     private Map<String, Location> anchors;
     private FileConfiguration anchorConfig;
 
-    private final PluginDataFolder dataFolder;
+    private final Plugin plugin;
     private final LocationManipulation locationManipulation;
     private final MVCoreConfigProvider configProvider;
 
     @Inject
     public AnchorManager(
-            PluginDataFolder dataFolder,
+            MultiverseCore plugin,
             LocationManipulation locationManipulation,
             MVCoreConfigProvider configProvider
     ) {
-        this.dataFolder = dataFolder;
+        this.plugin = plugin;
         this.locationManipulation = locationManipulation;
         this.configProvider = configProvider;
 
@@ -57,7 +58,7 @@ public class AnchorManager {
      */
     public void loadAnchors() {
         this.anchors = new HashMap<String, Location>();
-        this.anchorConfig = YamlConfiguration.loadConfiguration(new File(this.dataFolder, "anchors.yml"));
+        this.anchorConfig = YamlConfiguration.loadConfiguration(new File(this.plugin.getDataFolder(), "anchors.yml"));
         this.ensureConfigIsPrepared();
         ConfigurationSection anchorsSection = this.anchorConfig.getConfigurationSection("anchors");
         Set<String> anchorKeys = anchorsSection.getKeys(false);
@@ -86,7 +87,7 @@ public class AnchorManager {
      */
     public boolean saveAnchors() {
         try {
-            this.anchorConfig.save(new File(this.dataFolder, "anchors.yml"));
+            this.anchorConfig.save(new File(this.plugin.getDataFolder(), "anchors.yml"));
             return true;
         } catch (IOException e) {
             Logging.severe("Failed to save anchors.yml. Please check your file permissions.");
