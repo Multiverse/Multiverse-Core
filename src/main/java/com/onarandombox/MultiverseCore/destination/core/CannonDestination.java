@@ -19,11 +19,6 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
 
     private final MVWorldManager worldManager;
 
-    /**
-     * Constructor.
-     *
-     * @param plugin The MultiverseCore plugin.
-     */
     @Inject
     public CannonDestination(MVWorldManager worldManager) {
         this.worldManager = worldManager;
