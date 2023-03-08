@@ -27,15 +27,12 @@ import com.onarandombox.MultiverseCore.utils.MVPermissions
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
 import org.bukkit.Server
-import org.bukkit.command.Command
 import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.Test
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import java.io.File
 import java.util.logging.Logger
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 class InjectionTest : TestWithMockBukkit() {
