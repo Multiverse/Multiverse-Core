@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
@@ -26,7 +27,9 @@ public class RootCommand extends MultiverseCommand {
     @CommandAlias("mv")
     public void onRootCommand(CommandIssuer issuer) {
         PluginDescriptionFile description = this.plugin.getDescription();
-        issuer.sendMessage(ChatColor.GREEN + description.getName() + " version " + description.getVersion());
-        issuer.sendMessage(ChatColor.GREEN + "See " + ChatColor.WHITE + "/mv help" + ChatColor.GREEN + " for commands available.");
+        issuer.sendInfo(MVCorei18n.ROOT_TITLE,
+                "{name}", description.getName(),
+                "{version}", description.getVersion());
+        issuer.sendInfo(MVCorei18n.ROOT_HELP);
     }
 }

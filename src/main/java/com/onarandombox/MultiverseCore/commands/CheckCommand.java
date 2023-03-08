@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,18 +33,20 @@ public class CheckCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.check")
     @CommandCompletion("@players @destinations|@mvworlds")
     @Syntax("<player> <destination>")
-    @Description("Checks if a player can teleport to a destination.")
+    @Description("{@@mv-core.check.description}")
     public void onCheckCommand(BukkitCommandIssuer issuer,
 
                                @Syntax("<player>")
-                               @Description("Player to check destination on.")
+                               @Description("{@@mv-core.check.player.description}")
                                Player player,
 
                                @Syntax("<destination>")
-                               @Description("A destination location, e.g. a world name.")
+                               @Description("{@@mv-core.check.destination.description}")
                                ParsedDestination<?> destination
     ) {
-        issuer.sendMessage("Checking " + player + " to " + destination + "...");
+        issuer.sendInfo(MVCorei18n.CHECK_CHECKING,
+                "{player}", player.getName(),
+                "{destination}", destination.toString());
         //TODO More detailed output on permissions required.
         this.destinationsProvider.checkTeleportPermissions(issuer, player, destination);
     }

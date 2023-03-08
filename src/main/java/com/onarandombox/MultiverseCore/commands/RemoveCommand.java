@@ -12,6 +12,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -33,19 +34,20 @@ public class RemoveCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.remove")
     @CommandCompletion("@mvworlds:scope=both")
     @Syntax("<world>")
-    @Description("Unloads a world from Multiverse and removes it from worlds.yml, this does NOT DELETE the world folder.")
+    @Description("{@@mv-core.remove.description}")
     public void onRemoveCommand(BukkitCommandIssuer issuer,
 
                                 @Single
                                 @Conditions("mvworlds:scope=both")
                                 @Syntax("<world>")
-                                @Description("World you want to remove from mv's knowledge.")
+                                @Description("{@@mv-core.remove.world.description}")
                                 String worldName
     ) {
         if (!this.worldManager.removeWorldFromConfig(worldName)) {
-            issuer.sendMessage(String.format("%sError trying to remove world from config!", ChatColor.RED));
+            issuer.sendError(MVCorei18n.REMOVE_FAILED);
             return;
         }
-        issuer.sendMessage(String.format("World '%s' is removed from config!", worldName));
+        issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS,
+                "{world}", worldName);
     }
 }
