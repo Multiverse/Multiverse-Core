@@ -88,7 +88,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         // Load our configs first as we need them for everything else.
         this.loadConfigs();
-        if (!configProvider.isConfigLoaded()) {
+        if (!getConfigProvider().isConfigLoaded()) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -104,10 +104,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         worldManager.loadWorlds(true);
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        worldManager.setFirstSpawnWorld(configProvider.getConfig().getFirstSpawnWorld());
+        worldManager.setFirstSpawnWorld(getConfigProvider().getConfig().getFirstSpawnWorld());
         MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
         if (firstSpawnWorld != null) {
-            configProvider.getConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
+            getConfigProvider().getConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
         }
 
         //Setup economy here so vault is loaded
@@ -156,7 +156,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private boolean shouldShowConfig() {
-        return !configProvider.getConfig().getSilentStart();
+        return !getConfigProvider().getConfig().getSilentStart();
     }
 
     /**
@@ -213,10 +213,14 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
 
-        if (configProvider.getConfig().isShowingDonateMessage()) {
+        if (getConfigProvider().getConfig().isShowingDonateMessage()) {
             getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
+    }
+
+    private MVCoreConfigProvider getConfigProvider() {
+        return configProvider;
     }
 
     /**
@@ -288,7 +292,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void loadConfigs() {
-        configProvider.loadConfigs();
+        getConfigProvider().loadConfigs();
     }
 
     /**
@@ -296,7 +300,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public boolean saveMVConfig() {
-        return configProvider.saveConfig()
+        return getConfigProvider().saveConfig()
                 .map(v -> true)
                 .recover(e -> {
                     Logging.severe(e.getMessage(), e);
