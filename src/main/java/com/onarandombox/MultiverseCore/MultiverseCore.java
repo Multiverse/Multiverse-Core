@@ -53,7 +53,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Inject
     private Provider<MVWorldManager> worldManagerProvider;
     @Inject
-    private MVCoreConfigProvider configProvider;
+    private Provider<MVCoreConfigProvider> configProviderProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -220,7 +220,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private MVCoreConfigProvider getConfigProvider() {
-        return configProvider;
+        return configProviderProvider.get();
     }
 
     /**
