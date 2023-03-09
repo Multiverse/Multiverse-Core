@@ -119,7 +119,9 @@ public final class PluginInjection {
                 .mapTry(dynamicConfigurationService -> {
                     dynamicConfigurationService
                             .getPopulator()
-                            .populate(new ClasspathDescriptorFileFinder(plugin.getClass().getClassLoader()));
+                            .populate(new ClasspathDescriptorFileFinder(
+                                    plugin.getClass().getClassLoader(),
+                                    plugin.getName()));
                     return serviceLocator;
                 });
     }
