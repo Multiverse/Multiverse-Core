@@ -60,6 +60,13 @@ repositories {
 configurations {
     oldTestImplementation.extendsFrom implementation
     oldTestRuntime.extendsFrom runtime
+    relocatedApi
+    compileClasspath.extendsFrom relocatedApi
+    runtimeClasspath.extendsFrom relocatedApi
+    testCompileClasspath.extendsFrom relocatedApi
+    testRuntimeClasspath.extendsFrom relocatedApi
+    oldTestCompileClasspath.extendsFrom relocatedApi
+    oldTestRuntimeClasspath.extendsFrom relocatedApi
 }
 
 dependencies {
@@ -71,26 +78,26 @@ dependencies {
     }
 
     // Command Framework
-    api 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+    relocatedApi 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
 
     // Config
-    api('me.main__.util:SerializationConfig:1.7') {
+    relocatedApi('me.main__.util:SerializationConfig:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    api('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.0') {
+    relocatedApi('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.0') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
     // Utils
-    api 'io.vavr:vavr:0.10.4'
-    api 'org.glassfish.hk2:hk2-core:3.0.3'
-    api('com.dumptruckman.minecraft:Logging:1.1.1') {
+    relocatedApi 'io.vavr:vavr:0.10.4'
+    relocatedApi 'org.glassfish.hk2:hk2-locator:3.0.3'
+    relocatedApi('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    api 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    api 'org.bstats:bstats-bukkit:2.2.1'
-    api 'net.minidev:json-smart:2.4.8'
-    api 'org.jetbrains:annotations:22.0.0'
+    relocatedApi 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    relocatedApi 'org.bstats:bstats-bukkit:2.2.1'
+    relocatedApi 'net.minidev:json-smart:2.4.8'
+    relocatedApi 'org.jetbrains:annotations:22.0.0'
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
@@ -187,13 +194,8 @@ compileKotlin {
     // We're not using Kotlin in the plugin itself, just tests!
     enabled = false
 }
-configurations {
-    compileOnly {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
-    runtimeOnly {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
+configurations.findAll { !it.name.startsWith('test') }.each {
+    it.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
 }
 
 processResources {
@@ -236,8 +238,16 @@ shadowJar {
     relocate 'com.sun', 'com.onarandombox.sun'
     relocate 'net.minidev', 'com.onarandombox.minidev'
     relocate 'org.objectweb', 'com.onarandombox.objectweb'
+    relocate 'io.vavr', 'com.onarandombox.vavr'
+    relocate 'jakarta', 'com.onarandombox.jakarta'
+    relocate 'javassist', 'com.onarandombox.javassist'
+    relocate 'org.aopalliance', 'com.onarandombox.aopalliance'
+    relocate 'org.glassfish', 'com.onarandombox.glassfish'
+    relocate 'org.jvnet', 'com.onarandombox.jvnet'
+    relocate 'org.intellij', 'com.onarandombox.intellij'
+    relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
 
-    configurations = [project.configurations.api]
+    configurations = [project.configurations.api, project.configurations.relocatedApi]
 
     archiveFileName = "$baseName-$version.$extension"
 
