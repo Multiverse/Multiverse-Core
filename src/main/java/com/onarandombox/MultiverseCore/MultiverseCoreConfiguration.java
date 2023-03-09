@@ -14,7 +14,6 @@ import org.jvnet.hk2.annotations.Service;
 /**
  * Our configuration.
  */
-@Service
 public class MultiverseCoreConfiguration extends SerializationConfig implements MVConfig {
     private static MultiverseCoreConfiguration instance;
 
