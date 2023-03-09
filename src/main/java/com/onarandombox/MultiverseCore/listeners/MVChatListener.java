@@ -42,7 +42,7 @@ public class MVChatListener implements Listener {
         }
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
-        if (configProvider.getConfigUnsafe().getPrefixChat()) {
+        if (configProvider.getConfig().getPrefixChat()) {
             String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
             if (world == null) {
                 world = event.getPlayer().getWorld().getName();
@@ -60,7 +60,7 @@ public class MVChatListener implements Listener {
             prefix = mvworld.getColoredWorldString();
             String chat = event.getFormat();
             
-            String prefixChatFormat = configProvider.getConfigUnsafe().getPrefixChatFormat();
+            String prefixChatFormat = configProvider.getConfig().getPrefixChatFormat();
             prefixChatFormat = prefixChatFormat.replace("%world%", prefix).replace("%chat%", chat);
             prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
             

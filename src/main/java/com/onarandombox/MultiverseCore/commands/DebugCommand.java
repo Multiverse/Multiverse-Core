@@ -53,13 +53,13 @@ public class DebugCommand extends MultiverseCommand {
                                      @Description("{@@mv-core.debug.change.level.description}")
                                      int level) {
 
-        this.configProvider.getConfigUnsafe().setGlobalDebug(level);
+        this.configProvider.getConfig().setGlobalDebug(level);
         this.plugin.saveAllConfigs();
         this.displayDebugMode(issuer);
     }
 
     private void displayDebugMode(BukkitCommandIssuer issuer) {
-        final int debugLevel = this.configProvider.getConfigUnsafe().getGlobalDebug();
+        final int debugLevel = this.configProvider.getConfig().getGlobalDebug();
         if (debugLevel == 0) {
             issuer.sendInfo(MVCorei18n.DEBUG_INFO_OFF);
             return;

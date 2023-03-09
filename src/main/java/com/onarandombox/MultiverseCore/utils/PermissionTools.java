@@ -123,7 +123,7 @@ public class PermissionTools {
      */
     public boolean playerHasMoneyToEnter(MVWorld fromWorld, MVWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
         Player teleporterPlayer;
-        if (configProvider.getConfigUnsafe().getTeleportIntercept()) {
+        if (configProvider.getConfig().getTeleportIntercept()) {
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;
             }
@@ -219,7 +219,7 @@ public class PermissionTools {
         Logging.finest("Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
-        if (configProvider.getConfigUnsafe().getTeleportIntercept()) {
+        if (configProvider.getConfig().getTeleportIntercept()) {
             // The console can send anyone anywhere
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;

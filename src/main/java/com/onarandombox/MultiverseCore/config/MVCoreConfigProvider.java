@@ -15,7 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.BufferedReader;
@@ -41,7 +40,7 @@ public final class MVCoreConfigProvider {
     private final Provider<MVWorldManager> worldManagerProvider; // TODO remove this dependency
 
     @Inject
-    public MVCoreConfigProvider(
+    MVCoreConfigProvider(
             MultiverseCore plugin,
             PluginManager pluginManager,
             Provider<MVWorldManager> worldManagerProvider
@@ -51,19 +50,26 @@ public final class MVCoreConfigProvider {
         this.worldManagerProvider = worldManagerProvider;
     }
 
-    @NotNull
-    public Option<MVConfig> getConfig() {
-        return Option.of(config);
+    /**
+     * Checks if the config is loaded.
+     *
+     * @return True if the config is loaded, false otherwise
+     */
+    public boolean isConfigLoaded() {
+        return config != null;
     }
 
     /**
-     * Provided to make porting code to use DI easier for now.
+     * Gets the Core configuration instance.
      *
-     * @deprecated Use the {@link #getConfig()} method instead when possible.
+     * @return The config
+     * @throws IllegalStateException If the config is not loaded
      */
-    @Nullable
-    @Deprecated
-    public MVConfig getConfigUnsafe() {
+    @NotNull
+    public MVConfig getConfig() throws IllegalStateException {
+        if (config == null) {
+            throw new IllegalStateException("Config is not loaded");
+        }
         return config;
     }
 

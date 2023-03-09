@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
@@ -128,8 +127,8 @@ public class MVEntityListener implements Listener {
         if (event.isCancelled() || event.getTo() == null) {
             return;
         }
-        if (!this.configProvider.getConfigUnsafe().isUsingDefaultPortalSearch()) {
-            event.setSearchRadius(this.configProvider.getConfigUnsafe().getPortalSearchRadius());
+        if (!this.configProvider.getConfig().isUsingDefaultPortalSearch()) {
+            event.setSearchRadius(this.configProvider.getConfig().getPortalSearchRadius());
         }
     }
 }

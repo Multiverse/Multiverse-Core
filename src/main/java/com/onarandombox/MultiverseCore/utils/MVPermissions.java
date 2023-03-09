@@ -108,7 +108,7 @@ public class MVPermissions {
      */
     public boolean canEnterWorld(Player p, MVWorld w) {
         // If we're not enforcing access, anyone can enter.
-        if (!configProvider.getConfigUnsafe().getEnforceAccess()) {
+        if (!configProvider.getConfig().getEnforceAccess()) {
             Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }

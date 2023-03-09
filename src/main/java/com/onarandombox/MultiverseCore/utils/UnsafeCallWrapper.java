@@ -40,7 +40,7 @@ public class UnsafeCallWrapper {
             actualFormatArgs[formatArgs.length] = t;
                 Logging.warning(action, actualFormatArgs);
             Logging.warning("This is a bug in %s, NOT a bug in Multiverse!", plugin);
-            if (configProvider.getConfigUnsafe().getGlobalDebug() >= 1)
+            if (configProvider.getConfig().getGlobalDebug() >= 1)
                 t.printStackTrace();
             return null;
         }

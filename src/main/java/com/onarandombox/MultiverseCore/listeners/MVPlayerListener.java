@@ -37,7 +37,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.jvnet.hk2.annotations.Service;
 
 /**
@@ -143,7 +142,7 @@ public class MVPlayerListener implements Listener {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
             Logging.finer("Player joined for the FIRST time!");
-            if (configProvider.getConfigUnsafe().getFirstSpawnOverride()) {
+            if (configProvider.getConfig().getFirstSpawnOverride()) {
                 Logging.fine("Moving NEW player to(firstspawnoverride): "
                         + getWorldManager().getFirstSpawnWorld().getSpawnLocation());
                 this.sendPlayerToDefaultWorld(p);
@@ -151,7 +150,7 @@ public class MVPlayerListener implements Listener {
             return;
         } else {
             Logging.finer("Player joined AGAIN!");
-            if (this.configProvider.getConfigUnsafe().getEnforceAccess() // check this only if we're enforcing access!
+            if (this.configProvider.getConfig().getEnforceAccess() // check this only if we're enforcing access!
                     && !this.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
@@ -223,7 +222,7 @@ public class MVPlayerListener implements Listener {
         }
 
         // Check if player is allowed to enter the world if we're enforcing permissions
-        if (configProvider.getConfigUnsafe().getEnforceAccess()) {
+        if (configProvider.getConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
             if (event.isCancelled() && teleporter != null) {
                 Logging.fine("Player '" + teleportee.getName()
@@ -315,7 +314,7 @@ public class MVPlayerListener implements Listener {
                     + "' because they don't have the FUNDS required to enter.");
             return;
         }
-        if (configProvider.getConfigUnsafe().getEnforceAccess()) {
+        if (configProvider.getConfig().getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
                 Logging.fine("Player '" + event.getPlayer().getName()
@@ -327,8 +326,8 @@ public class MVPlayerListener implements Listener {
                     + "' was allowed to go to '" + event.getTo().getWorld().getName()
                     + "' because enforceaccess is off.");
         }
-        if (!this.configProvider.getConfigUnsafe().isUsingDefaultPortalSearch()) {
-            event.setSearchRadius(this.configProvider.getConfigUnsafe().getPortalSearchRadius());
+        if (!this.configProvider.getConfig().isUsingDefaultPortalSearch()) {
+            event.setSearchRadius(this.configProvider.getConfig().getPortalSearchRadius());
         }
     }
 

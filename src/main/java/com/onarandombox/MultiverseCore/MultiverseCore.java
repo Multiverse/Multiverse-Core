@@ -88,14 +88,14 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         // Load our configs first as we need them for everything else.
         this.loadConfigs();
-        if (configProvider.getConfig().isEmpty()) {
+        if (!configProvider.isConfigLoaded()) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        configProvider.getConfig().peek(config -> Logging.setShowingConfig(!config.getSilentStart()));
+        Logging.setShowingConfig(shouldShowConfig());
 
         var worldManager = worldManagerProvider.get();
 
@@ -104,13 +104,11 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         worldManager.loadWorlds(true);
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        configProvider.getConfig().peek(config -> {
-            worldManager.setFirstSpawnWorld(config.getFirstSpawnWorld());
-            MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
-            if (firstSpawnWorld != null) {
-                config.setFirstSpawnWorld(firstSpawnWorld.getName());
-            }
-        });
+        worldManager.setFirstSpawnWorld(configProvider.getConfig().getFirstSpawnWorld());
+        MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
+        if (firstSpawnWorld != null) {
+            configProvider.getConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
+        }
 
         //Setup economy here so vault is loaded
         // TODO we may need to change MVEconomist to have an enable method or something
@@ -155,6 +153,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             PluginInjection.disable(this, serviceLocator);
             serviceLocator = null;
         }
+    }
+
+    private boolean shouldShowConfig() {
+        return !configProvider.getConfig().getSilentStart();
     }
 
     /**
@@ -211,12 +213,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
 
-        configProvider.getConfig().peek(config -> {
-            if (config.isShowingDonateMessage()) {
-                getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
-                getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
-            }
-        });
+        if (configProvider.getConfig().isShowingDonateMessage()) {
+            getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+            getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+        }
     }
 
     /**

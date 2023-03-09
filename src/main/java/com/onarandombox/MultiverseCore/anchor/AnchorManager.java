@@ -160,8 +160,8 @@ public class AnchorManager {
             // Add to the list if we're not enforcing access
             // OR
             // We are enforcing access and the user has the permission.
-            if (!this.configProvider.getConfigUnsafe().getEnforceAccess() ||
-                    (this.configProvider.getConfigUnsafe().getEnforceAccess() && p.hasPermission(worldPerm))) {
+            if (!this.configProvider.getConfig().getEnforceAccess() ||
+                    (this.configProvider.getConfig().getEnforceAccess() && p.hasPermission(worldPerm))) {
                 myAnchors.add(anchor);
             } else {
                 Logging.finer(String.format("Not adding anchor %s to the list, user %s doesn't have the %s " +
