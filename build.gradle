@@ -180,7 +180,6 @@ task prepareSource(type: Sync) {
 
 compileJava {
     source = prepareSource.outputs
-    options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/multiverse-core'
 }
 
 compileKotlin {

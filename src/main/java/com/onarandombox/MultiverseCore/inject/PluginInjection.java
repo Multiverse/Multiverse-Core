@@ -117,14 +117,10 @@ public final class PluginInjection {
     ) {
         return Try.of(() -> serviceLocator.getService(DynamicConfigurationService.class))
                 .mapTry(dynamicConfigurationService -> {
-                    var descriptors = dynamicConfigurationService
+                    dynamicConfigurationService
                             .getPopulator()
-                            .populate(new ClasspathDescriptorFileFinder(
-                                    plugin.getClass().getClassLoader(),
-                                    plugin.getName()
-                            ));
-                    throw new IllegalStateException(descriptors.toString());
-                    //return serviceLocator;
+                            .populate(new ClasspathDescriptorFileFinder(plugin.getClass().getClassLoader()));
+                    return serviceLocator;
                 });
     }
 }
