@@ -262,4 +262,8 @@ jar.enabled = false
 
 test {
     useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
 }
