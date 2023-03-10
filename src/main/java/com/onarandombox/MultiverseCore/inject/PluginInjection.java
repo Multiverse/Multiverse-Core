@@ -3,16 +3,18 @@ package com.onarandombox.MultiverseCore.inject;
 import com.onarandombox.MultiverseCore.inject.binder.JavaPluginBinder;
 import com.onarandombox.MultiverseCore.inject.binder.PluginBinder;
 import com.onarandombox.MultiverseCore.inject.binder.ServerBinder;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.plugin.Plugin;
 import org.glassfish.hk2.api.DynamicConfigurationService;
+import org.glassfish.hk2.api.MultiException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.internal.ServiceLocatorFactoryImpl;
 import org.glassfish.hk2.utilities.ClasspathDescriptorFileFinder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Provides methods to set up dependency injection for plugins.
@@ -36,9 +38,16 @@ public final class PluginInjection {
     @NotNull
     public static Try<ServiceLocator> createServiceLocator(@NotNull PluginBinder<?> pluginBinder) {
         var factory = new ServiceLocatorFactoryImpl();
-        return createServerServiceLocator(factory)
-                .map(locator -> new PluginInjection(factory, locator))
-                .flatMap(pluginInjection -> pluginInjection.load(pluginBinder));
+
+        var systemServiceLocator = createSystemServiceLocator(factory);
+
+        var features = systemServiceLocator
+                .mapTry(locator -> locator.getAllServices(InjectionFeature.class));
+
+        return systemServiceLocator
+                .flatMap(systemLocator -> createServerServiceLocator(factory, systemLocator))
+                .map(serverLocator -> new PluginInjection(pluginBinder, factory, serverLocator))
+                .flatMap(pluginInjection -> features.flatMap(pluginInjection::load));
     }
 
     /**
@@ -67,34 +76,39 @@ public final class PluginInjection {
         pluginServiceLocator.shutdown();
     }
 
-    private final ServiceLocatorFactory serviceLocatorFactory;
-    private final ServiceLocator serverServiceLocator;
+    private final PluginBinder<?> pluginBinder;
+    private final Plugin plugin;
+    private final ServiceLocator pluginServiceLocator;
 
     private PluginInjection(
+            @NotNull PluginBinder<?> pluginBinder,
             @NotNull ServiceLocatorFactory serviceLocatorFactory,
             @NotNull ServiceLocator serverServiceLocator
     ) {
-        this.serviceLocatorFactory = serviceLocatorFactory;
-        this.serverServiceLocator = serverServiceLocator;
+        this.pluginBinder = pluginBinder;
+        plugin = pluginBinder.getPlugin();
+        pluginServiceLocator = serviceLocatorFactory.create(plugin.getName(), serverServiceLocator);
     }
 
-    private Try<ServiceLocator> load(@NotNull PluginBinder<?> pluginBinder) {
-        var plugin = pluginBinder.getPlugin();
+    private Try<ServiceLocator> load(List<InjectionFeature> features) {
+        return Try.runRunnable(() -> ServiceLocatorUtilities.bind(pluginServiceLocator, pluginBinder))
+                .flatMap(ignored -> populatePluginServiceLocator(pluginServiceLocator, plugin))
+                .andThenTry(() -> loadAncillaryServices(features));
+    }
 
-        return Option.of(serviceLocatorFactory.create(plugin.getName(), serverServiceLocator))
-                .toTry()
-                .andThenTry(pluginServiceLocator -> ServiceLocatorUtilities.bind(pluginServiceLocator, pluginBinder))
-                .flatMap(pluginServiceLocator -> populatePluginServiceLocator(pluginServiceLocator, plugin));
+    private void loadAncillaryServices(List<InjectionFeature> features) throws MultiException {
+        features.forEach(feature -> feature.preServicesCreation(pluginServiceLocator));
+        pluginServiceLocator.getAllServices(PluginService.class);
+        features.forEach(feature -> feature.postServicesCreation(pluginServiceLocator));
     }
 
     @NotNull
     private static Try<ServiceLocator> createServerServiceLocator(
-            @NotNull ServiceLocatorFactory serviceLocatorFactory
+            @NotNull ServiceLocatorFactory serviceLocatorFactory,
+            @NotNull ServiceLocator systemServiceLocator
     ) {
-        return createSystemServiceLocator(serviceLocatorFactory)
-                .map(systemServiceLocator -> serviceLocatorFactory.create("server", systemServiceLocator))
-                .andThenTry(serverServiceLocator ->
-                        ServiceLocatorUtilities.bind(serverServiceLocator, new ServerBinder()));
+        return Try.of(() -> serviceLocatorFactory.create("server", systemServiceLocator))
+                .andThenTry(locator -> ServiceLocatorUtilities.bind(locator, new ServerBinder()));
     }
 
     @NotNull
