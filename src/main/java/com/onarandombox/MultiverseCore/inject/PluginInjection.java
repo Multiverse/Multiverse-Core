@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.inject;
 import com.onarandombox.MultiverseCore.inject.binder.JavaPluginBinder;
 import com.onarandombox.MultiverseCore.inject.binder.PluginBinder;
 import com.onarandombox.MultiverseCore.inject.binder.ServerBinder;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.plugin.Plugin;
 import org.glassfish.hk2.api.DynamicConfigurationService;
@@ -39,7 +40,7 @@ public final class PluginInjection {
     public static Try<ServiceLocator> createServiceLocator(@NotNull PluginBinder<?> pluginBinder) {
         var factory = new ServiceLocatorFactoryImpl();
 
-        var systemServiceLocator = createSystemServiceLocator(factory);
+        var systemServiceLocator = Option.of(factory.create("system")).toTry();
 
         var features = systemServiceLocator
                 .mapTry(locator -> locator.getAllServices(InjectionFeature.class));
@@ -109,19 +110,6 @@ public final class PluginInjection {
     ) {
         return Try.of(() -> serviceLocatorFactory.create("server", systemServiceLocator))
                 .andThenTry(locator -> ServiceLocatorUtilities.bind(locator, new ServerBinder()));
-    }
-
-    @NotNull
-    private static Try<ServiceLocator> createSystemServiceLocator(
-            @NotNull ServiceLocatorFactory serviceLocatorFactory
-    ) {
-        ServiceLocator serviceLocator = serviceLocatorFactory.create("system");
-
-        return Try.of(() -> serviceLocator.getService(DynamicConfigurationService.class))
-                .mapTry(dynamicConfigurationService -> {
-                    dynamicConfigurationService.getPopulator().populate();
-                    return serviceLocator;
-                });
     }
 
     @NotNull
