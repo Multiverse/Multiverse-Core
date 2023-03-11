@@ -7,14 +7,11 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import org.jvnet.hk2.annotations.Contract;
-
 /**
  * Multiverse 2 Core API
  * <p>
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
-@Contract
 public interface MVCore extends MVPlugin {
 
     /**

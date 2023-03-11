@@ -116,7 +116,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         // Init all the other stuff
         // TODO consider moving this into the AnchorManager constructor
-        getService(AnchorManager.class).loadAnchors();
+        serviceLocator.getService(AnchorManager.class).loadAnchors();
         this.registerEvents();
         this.registerCommands();
         this.setUpLocales();
@@ -173,7 +173,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerCommands() {
         // TODO add automatic command registration through hk2
-        var commandManager = getService(MVCommandManager.class);
+        var commandManager = serviceLocator.getService(MVCommandManager.class);
         getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
     }
 
@@ -181,7 +181,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Register locales
      */
     private void setUpLocales() {
-        var commandManager = getService(MVCommandManager.class);
+        var commandManager = serviceLocator.getService(MVCommandManager.class);
         
         commandManager.usePerIssuerLocale(true, true);
         commandManager.getLocales().addFileResClassLoader(this);
@@ -193,7 +193,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerDestinations() {
         // TODO add automatic destination registration through hk2
-        var destinationsProvider = getService(DestinationsProvider.class);
+        var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
         getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
     }
 
@@ -203,7 +203,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
             // Load metrics
-            getService(MetricsConfigurator.class);
+            serviceLocator.getService(MetricsConfigurator.class);
         }
     }
 
@@ -389,13 +389,16 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      *
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
      * @param qualifiers The set of qualifiers that must match this service definition
-     * @return An instance of the contract or impl. May return null if there is no provider that provides the given
-     * implementation or contract
-     * @throws MultiException if there was an error during service creation
+     * @return An instance of the contract or impl if it is a service and is already instantiated, null otherwise
+     * @throws MultiException if there was an error during lookup
      */
     @Nullable
     public <T> T getService(@NotNull Class<T> contractOrImpl, Annotation... qualifiers) throws MultiException {
-        return serviceLocator.getService(contractOrImpl, qualifiers);
+        var handle = serviceLocator.getServiceHandle(contractOrImpl, qualifiers);
+        if (handle != null && handle.isActive()) {
+            return handle.getService();
+        }
+        return null;
     }
 
     /**

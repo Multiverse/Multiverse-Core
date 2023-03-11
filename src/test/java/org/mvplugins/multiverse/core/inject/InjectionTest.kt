@@ -1,12 +1,10 @@
 package org.mvplugins.multiverse.core.inject
 
-import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseCore.anchor.AnchorManager
 import com.onarandombox.MultiverseCore.api.BlockSafety
 import com.onarandombox.MultiverseCore.api.Destination
 import com.onarandombox.MultiverseCore.api.LocationManipulation
-import com.onarandombox.MultiverseCore.api.MVCore
-import com.onarandombox.MultiverseCore.api.MVPlugin
+import com.onarandombox.MultiverseCore.api.MVConfig
 import com.onarandombox.MultiverseCore.api.MVWorldManager
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
@@ -26,43 +24,13 @@ import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
 import com.onarandombox.MultiverseCore.utils.MVPermissions
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
-import org.bukkit.Server
-import org.bukkit.plugin.PluginManager
-import org.junit.jupiter.api.Test
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import java.util.logging.Logger
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertSame
+import kotlin.test.Test
+import kotlin.test.assertNull
 
 class InjectionTest : TestWithMockBukkit() {
-
-    @Test
-    fun `Server is available as a service`() {
-        assertNotNull(multiverseCore.getService(Server::class.java))
-    }
-
-    @Test
-    fun `PluginManager is available as a service`() {
-        assertNotNull(multiverseCore.getService(PluginManager::class.java))
-    }
-
-    @Test
-    fun `MultiverseCore is available as a service`() {
-        assertNotNull(multiverseCore.getService(MultiverseCore::class.java))
-        assertNotNull(multiverseCore.getService(MVCore::class.java))
-        assertNotNull(multiverseCore.getService(MVPlugin::class.java))
-    }
-
-    @Test
-    fun `MultiverseCore service is the same instance of MultiverseCore that the MockBukkit server creates`() {
-        assertSame(multiverseCore, multiverseCore.getService(MultiverseCore::class.java));
-    }
-
-    @Test
-    fun `Logger is available as a service`() {
-        assertNotNull(multiverseCore.getService(Logger::class.java));
-    }
 
     @Test
     fun `AnchorManager is available as a service`() {
@@ -165,5 +133,12 @@ class InjectionTest : TestWithMockBukkit() {
         val destinations = multiverseCore.getAllServices(Destination::class.java)
         // TODO come up with a better way to test this like via actually testing the effect of using each destination
         assertEquals(6, destinations.size)
+    }
+
+    @Test
+    fun `MVConfig is not available as a service`() {
+        // We need one test case for asking for non-services to make sure we don't accidentally make them available
+        // and that the getService method doesn't throw an exception
+        assertNull(multiverseCore.getService(MVConfig::class.java))
     }
 }
