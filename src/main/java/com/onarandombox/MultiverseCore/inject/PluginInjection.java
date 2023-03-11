@@ -99,7 +99,7 @@ public final class PluginInjection {
 
     private void loadAncillaryServices(List<InjectionFeature> features) throws MultiException {
         features.forEach(feature -> feature.preServicesCreation(pluginServiceLocator));
-        pluginServiceLocator.getAllServices(PluginService.class);
+        pluginServiceLocator.getAllServices(AutoLoadedService.class);
         features.forEach(feature -> feature.postServicesCreation(pluginServiceLocator));
     }
 

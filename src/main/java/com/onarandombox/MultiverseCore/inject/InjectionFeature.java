@@ -13,9 +13,9 @@ import org.jvnet.hk2.annotations.Contract;
 public interface InjectionFeature {
 
     /**
-     * Called prior to the eager loading of {@link PluginService}s.
+     * Called prior to the eager loading of {@link AutoLoadedService}s.
      * <br/>
-     * It's possible that performing injection in feature related services will cause {@link PluginService} instances to
+     * It's possible that performing injection in feature related services will cause {@link AutoLoadedService} instances to
      * be created.
      *
      * @param pluginServiceLocator The service locator for the plugin.
@@ -23,9 +23,9 @@ public interface InjectionFeature {
     default void preServicesCreation(ServiceLocator pluginServiceLocator) {}
 
     /**
-     * Called after the eager loading of {@link PluginService}s.
+     * Called after the eager loading of {@link AutoLoadedService}s.
      * <br/>
-     * All {@link PluginService} instances should be created by this point.
+     * All {@link AutoLoadedService} instances should be created by this point.
      *
      * @param pluginServiceLocator The service locator for the plugin.
      */
