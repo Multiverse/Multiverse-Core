@@ -30,9 +30,7 @@ import com.onarandombox.MultiverseCore.world.WorldProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.glassfish.hk2.api.MultiException;
@@ -117,7 +115,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // Init all the other stuff
         // TODO consider moving this into the AnchorManager constructor
         serviceLocator.getService(AnchorManager.class).loadAnchors();
-        this.registerEvents();
         this.registerCommands();
         this.setUpLocales();
         this.registerDestinations();
@@ -157,15 +154,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private boolean shouldShowConfig() {
         return !getConfigProvider().getConfig().getSilentStart();
-    }
-
-    /**
-     * Function to Register all the Events needed.
-     */
-    private void registerEvents() {
-        // TODO add automatic listener registration through hk2
-        PluginManager pluginManager = getServer().getPluginManager();
-        getAllServices(Listener.class).forEach(listener -> pluginManager.registerEvents(listener, this));
     }
 
     /**

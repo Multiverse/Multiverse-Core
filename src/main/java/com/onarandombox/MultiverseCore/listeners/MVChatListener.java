@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -15,7 +16,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's {@link org.bukkit.event.Listener} for players.
  */
 @Service
-public class MVChatListener implements Listener {
+public class MVChatListener implements AutoLoadedService, Listener {
     private final MVCoreConfigProvider configProvider;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;

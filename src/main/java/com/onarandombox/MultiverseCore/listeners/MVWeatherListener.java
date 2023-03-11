@@ -9,6 +9,7 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import jakarta.inject.Inject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's Weather {@link Listener}.
  */
 @Service
-public class MVWeatherListener implements Listener {
+public class MVWeatherListener implements AutoLoadedService, Listener {
 
     private MVWorldManager worldManager;
 

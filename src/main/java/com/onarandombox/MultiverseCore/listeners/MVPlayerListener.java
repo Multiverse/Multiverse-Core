@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import jakarta.inject.Inject;
@@ -43,7 +44,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's {@link Listener} for players.
  */
 @Service
-public class MVPlayerListener implements Listener {
+public class MVPlayerListener implements AutoLoadedService, Listener {
     private final Plugin plugin;
     private final MVCoreConfigProvider configProvider;
     private final Provider<MVWorldManager> worldManagerProvider;
