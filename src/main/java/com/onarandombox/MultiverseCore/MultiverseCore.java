@@ -41,7 +41,6 @@ import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.RootCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
@@ -171,6 +170,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.setupMetrics();
         this.saveMVConfig();
         this.logEnableMessage();
+        this.setupPlaceholderAPI();
     }
 
     /**
@@ -259,6 +259,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (getMVConfig().isShowingDonateMessage()) {
             getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+        }
+    }
+
+    private void setupPlaceholderAPI() {
+        if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new MultiverseCorePlaceholders(this).register();
         }
     }
 
