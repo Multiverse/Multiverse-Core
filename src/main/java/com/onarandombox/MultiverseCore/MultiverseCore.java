@@ -12,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
@@ -34,6 +35,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.glassfish.hk2.api.MultiException;
+import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -162,7 +164,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void registerCommands() {
         // TODO add automatic command registration through hk2
         var commandManager = serviceLocator.getService(MVCommandManager.class);
-        getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
+        serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
     }
 
     /**
@@ -182,7 +184,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void registerDestinations() {
         // TODO add automatic destination registration through hk2
         var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
-        getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
+        serviceLocator.getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
     }
 
     /**
@@ -378,7 +380,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
      * @param qualifiers The set of qualifiers that must match this service definition
      * @return An instance of the contract or impl if it is a service and is already instantiated, null otherwise
-     * @throws MultiException if there was an error during lookup
+     * @throws MultiException if there was an error during service lookup
      */
     @Nullable
     public <T> T getService(@NotNull Class<T> contractOrImpl, Annotation... qualifiers) throws MultiException {
@@ -390,20 +392,24 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     /**
-     * Gets all services from this locator that implement this contract or have this implementation and have the
-     * provided qualifiers.
+     * Gets all services from this plugin that implement the given contract or have the given implementation and have
+     * the provided qualifiers.
      *
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
      * @param qualifiers The set of qualifiers that must match this service definition
      * @return A list of services implementing this contract or concrete implementation. May not return null, but may
      * return an empty list
-     * @throws MultiException if there was an error during service creation
+     * @throws MultiException if there was an error during service lookup
      */
     @NotNull
     public <T> List<T> getAllServices(
             @NotNull Class<T> contractOrImpl,
             Annotation... qualifiers
     ) throws MultiException {
-        return serviceLocator.getAllServices(contractOrImpl, qualifiers);
+        var handles = serviceLocator.getAllServiceHandles(contractOrImpl, qualifiers);
+        return handles.stream()
+                .filter(ServiceHandle::isActive)
+                .map(ServiceHandle::getService)
+                .collect(Collectors.toList());
     }
 }
