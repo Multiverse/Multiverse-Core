@@ -119,6 +119,7 @@ dependencies {
 
     // Annotation Processors
     annotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
+    testAnnotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
 }
 
 
@@ -188,7 +189,11 @@ task prepareSource(type: Sync) {
 
 compileJava {
     source = prepareSource.outputs
-    options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
+}
+tasks.withType(JavaCompile) {
+    configure(options) {
+        options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
+    }
 }
 
 compileKotlin {
