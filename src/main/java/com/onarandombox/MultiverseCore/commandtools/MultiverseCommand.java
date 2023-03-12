@@ -4,11 +4,14 @@ import co.aikar.commands.BaseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
+import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Contract;
+import org.jvnet.hk2.annotations.ContractsProvided;
 
 @Contract
-public abstract class MultiverseCommand extends BaseCommand {
+@ContractsProvided({BaseCommand.class})
+public abstract class MultiverseCommand extends BaseCommand implements AutoLoadedService {
 
     protected final MVCommandManager commandManager;
     private String flagGroupName;

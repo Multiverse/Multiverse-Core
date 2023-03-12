@@ -21,7 +21,6 @@ import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
-import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
@@ -117,7 +116,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // Init all the other stuff
         // TODO consider moving this into the AnchorManager constructor
         serviceLocator.getService(AnchorManager.class).loadAnchors();
-        this.registerCommands();
         this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
@@ -156,15 +154,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private boolean shouldShowConfig() {
         return !getConfigProvider().getConfig().getSilentStart();
-    }
-
-    /**
-     * Register Multiverse-Core commands to Command Manager.
-     */
-    private void registerCommands() {
-        // TODO add automatic command registration through hk2
-        var commandManager = serviceLocator.getService(MVCommandManager.class);
-        serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
     }
 
     /**
