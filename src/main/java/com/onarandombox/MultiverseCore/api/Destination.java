@@ -3,12 +3,13 @@ package com.onarandombox.MultiverseCore.api;
 import java.util.Collection;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
 
 @Contract
-public interface Destination<T extends DestinationInstance> {
+public interface Destination<T extends DestinationInstance> extends AutoLoadedService {
     /**
      * Returns the identifier or prefix that is required for this destination.
      *

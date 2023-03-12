@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
-import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
-import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
@@ -117,7 +115,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // TODO consider moving this into the AnchorManager constructor
         serviceLocator.getService(AnchorManager.class).loadAnchors();
         this.setUpLocales();
-        this.registerDestinations();
         this.setupMetrics();
         this.saveMVConfig();
         this.logEnableMessage();
@@ -165,15 +162,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         commandManager.usePerIssuerLocale(true, true);
         commandManager.getLocales().addFileResClassLoader(this);
         commandManager.getLocales().addMessageBundles("multiverse-core");
-    }
-
-    /**
-     * Register all the destinations.
-     */
-    private void registerDestinations() {
-        // TODO add automatic destination registration through hk2
-        var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
-        serviceLocator.getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
     }
 
     /**
