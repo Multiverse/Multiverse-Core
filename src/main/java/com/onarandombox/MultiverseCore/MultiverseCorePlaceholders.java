@@ -20,7 +20,7 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "multiverse";
+        return "multiverse-core";
     }
 
     @Override
@@ -51,6 +51,11 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
 
         final MVWorldManager worldManager = plugin.getMVWorldManager();
         final MVWorld world = worldManager.getMVWorld(player.getWorld().getName());
+
+        // Null check as not all worlds are from multiverse D;
+        if (world == null) {
+            return null;
+        }
 
 
         switch (params) {
