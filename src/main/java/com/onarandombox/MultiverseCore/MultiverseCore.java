@@ -41,7 +41,6 @@ import com.onarandombox.MultiverseCore.commands.RemoveCommand;
 import com.onarandombox.MultiverseCore.commands.RootCommand;
 import com.onarandombox.MultiverseCore.commands.TeleportCommand;
 import com.onarandombox.MultiverseCore.commands.UnloadCommand;
-import com.onarandombox.MultiverseCore.commands.UsageCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
@@ -59,6 +58,7 @@ import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
+import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
@@ -169,6 +169,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
+        this.setupPlaceholderAPI();
         this.saveMVConfig();
         this.logEnableMessage();
     }
@@ -259,6 +260,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (getMVConfig().isShowingDonateMessage()) {
             getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+        }
+    }
+
+    private void setupPlaceholderAPI() {
+        if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new MultiverseCorePlaceholders(this).register();
         }
     }
 
