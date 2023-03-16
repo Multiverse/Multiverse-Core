@@ -1,27 +1,29 @@
 package com.onarandombox.MultiverseCore.placeholders;
 
+import java.util.Optional;
+
+import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 public class MultiverseCorePlaceholders extends PlaceholderExpansion {
 
     private final MultiverseCore plugin;
-
+    private final MVWorldManager worldManager;
+    private final MVEconomist economist;
 
     public MultiverseCorePlaceholders(MultiverseCore plugin) {
         this.plugin = plugin;
+        this.worldManager = plugin.getMVWorldManager();
+        this.economist = plugin.getEconomist();
     }
 
     @Override
@@ -44,75 +46,55 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
         return true;
     }
 
-    /*
-    Placeholder implementation, format: %multiverse-core_{world}_<placeholder>%
-    world is optional
+    /**
+     * Placeholder implementation, format: %multiverse-core_&lt;placeholder&gt;_[world]% world is optional.
+     *
+     * @param offlinePlayer Player to get the placeholder for
+     * @param params        Placeholder to get
+     * @return Placeholder value
      */
     @Override
     public @Nullable String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
-        final MVWorldManager worldManager = plugin.getMVWorldManager();
-
-        // Fail with offline players
-        Player player;
-        if (Bukkit.getOnlinePlayers().contains(offlinePlayer)) {
-            player = (Player) offlinePlayer;
-        } else {
-            return null;
-        }
-
-
         // Split string in to an Array wt the underscores
-        String[] paramsArray = params.split("_");
+        String[] paramsArray = params.split("_", 2);
 
-        // Initialise "world" with players current world by default...
-        MVWorld world = worldManager.getMVWorld(player.getWorld().getName());
-
-        // ...But if the world has been defined, define it as that
-        if (paramsArray.length > 1) {
-
-            // Loop through all but the last item in the list and add that to an array then turn that array as world names can contain underscores
-            ArrayList<String> userDefinedWorldNameList = new ArrayList<>();
-            // Might not be the neatest code, but it's more readable
-            for (int i = 0; i < paramsArray.length-1; i++) {
-                userDefinedWorldNameList.add(paramsArray[i]);
-            }
-
-            // Concatenate the ArrayList to a string
-            String userDefinedWorldName = String.join("_", userDefinedWorldNameList);
-
-            world = worldManager.getMVWorld(userDefinedWorldName);
-        }
-
-
-        // Null check as not all worlds are from multiverse D:
-        if (world == null) {
-            // Advise user that the world defined does not exist
-            if (paramsArray.length > 1) {
-                warning("MVCorei18n.PLACEHOLDER_WARN_NON_EXISTENT"); //TODO i18n
-            }
-            // Tell user that the world they are in is not a Multiverse world
-            else {
-                warning("MVCorei18n.PLACEHOLDER_WARN_NON_MV"); //TODO i18n
-            }
+        // No placeholder defined
+        if (paramsArray.length < 1) {
             return null;
         }
 
+        final var placeholder = paramsArray[0];
+        Optional<MVWorld> targetWorld;
+
+        // If no world is defined, use the player's world
+        if (paramsArray.length == 1) {
+            if (!offlinePlayer.isOnline()) {
+                return null;
+            }
+            targetWorld = Optional.ofNullable(worldManager.getMVWorld(((Player)offlinePlayer).getWorld()));
+        } else {
+            targetWorld = Optional.ofNullable(worldManager.getMVWorld(paramsArray[1]));
+        }
+
+        // Fail if world is null
+        return targetWorld.map(world -> getWorldPlaceHolderValue(placeholder, world))
+                .orElse(null);
+    }
+
+    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder, @NotNull MVWorld world) {
         // Switch to find what specific placeholder we want
-        switch (paramsArray[paramsArray.length-1]) {
+        switch (placeholder.toLowerCase()) {
             case "alias" -> {
                 return world.getColoredWorldString();
             }
-            case "name" -> {
-                return world.getName();
+            case "animalspawn" -> {
+                return String.valueOf(world.canAnimalsSpawn());
             }
-            case "generator" -> {
-                return world.getGenerator();
+            case "autoheal" -> {
+                return String.valueOf(world.getAutoHeal());
             }
-            case "type" -> {
-                return world.getEnvironment().toString().toLowerCase();
-            }
-            case "price" -> {
-                return String.valueOf(world.getPrice());
+            case "blacklist" -> {
+                return String.join(", ", world.getWorldBlacklist());
             }
             case "currency" -> {
                 return String.valueOf(world.getCurrency());
@@ -120,40 +102,51 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
             case "difficulty" -> {
                 return world.getDifficulty().toString();
             }
+            case "entryfee" -> {
+                return economist.formatPrice(world.getPrice(), world.getCurrency());
+            }
+            case "environment" -> {
+                return world.getEnvironment().toString().toLowerCase();
+            }
+            case "flight" -> {
+                return String.valueOf(world.getAllowFlight());
+            }
+            case "gamemode" -> {
+                return world.getGameMode().toString().toLowerCase();
+            }
+            case "generator" -> {
+                return world.getGenerator();
+            }
+            case "hunger" -> {
+                return String.valueOf(world.getHunger());
+            }
+            case "monstersspawn" -> {
+                return String.valueOf(world.canMonstersSpawn());
+            }
+            case "name" -> {
+                return world.getName();
+            }
+            case "playerlimit" -> {
+                return String.valueOf(world.getPlayerLimit());
+            }
+            case "price" -> {
+                return String.valueOf(world.getPrice());
+            }
+            case "pvp" -> {
+                return String.valueOf(world.isPVPEnabled());
+            }
             case "seed" -> {
                 return String.valueOf(world.getSeed());
             }
             case "time" -> {
                 return world.getTime();
             }
-            case "gamemode" -> {
-                return world.getGameMode().toString().toLowerCase();
-            }
-            case "flight" -> {
-                return String.valueOf(world.getAllowFlight());
-            }
-            case "playerLimit" -> {
-                return String.valueOf(world.getPlayerLimit());
-            }
-            case "animalSpawn" -> {
-                return String.valueOf(world.canAnimalsSpawn());
-            }
-            case "monstersSpawn" -> {
-                return String.valueOf(world.canMonstersSpawn());
-            }
-            case "pvp" -> {
-                return String.valueOf(world.isPVPEnabled());
+            case "type" -> {
+                return world.getWorldType().toString().toLowerCase();
             }
             case "weather" -> {
                 return String.valueOf(world.isWeatherEnabled());
             }
-            case "hunger" -> {
-                return String.valueOf(world.getHunger());
-            }
-            case "autoHeal" -> {
-                return String.valueOf(world.getAutoHeal());
-            }
-
             default -> {
                 return null;
             }
