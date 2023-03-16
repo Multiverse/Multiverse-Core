@@ -2,8 +2,6 @@ package com.onarandombox.MultiverseCore.placeholders;
 
 import java.util.Optional;
 
-import com.dumptruckman.minecraft.util.Logging;
-import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
