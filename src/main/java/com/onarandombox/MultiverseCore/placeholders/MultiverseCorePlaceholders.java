@@ -55,7 +55,7 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
      */
     @Override
     public @Nullable String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
-        // Split string in to an Array wt the underscores
+        // Split string in to an Array with underscores
         String[] paramsArray = params.split("_", 2);
 
         // No placeholder defined

@@ -76,11 +76,7 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // debug command
     DEBUG_INFO_OFF,
-    DEBUG_INFO_ON,
-
-    // placeholders
-    PLACEHOLDER_WARN_NON_MV,
-    PLACEHOLDER_WARN_NON_EXISTENT;
+    DEBUG_INFO_ON;
 
     private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.').toLowerCase());
 
