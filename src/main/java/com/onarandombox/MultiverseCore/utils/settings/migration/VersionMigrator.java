@@ -5,17 +5,21 @@ import java.util.List;
 
 import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
 
-public class MigrateVersion {
+public class VersionMigrator {
     private final double version;
     private final List<MigratorAction> actions;
 
-    protected MigrateVersion(double version, List<MigratorAction> actions) {
+    protected VersionMigrator(double version, List<MigratorAction> actions) {
         this.version = version;
         this.actions = actions;
     }
 
     public void migrate(MVSettings settings) {
         actions.forEach(action -> action.migrate(settings));
+    }
+
+    public double getVersion() {
+        return version;
     }
 
     public static class Builder {
@@ -31,8 +35,8 @@ public class MigrateVersion {
             return this;
         }
 
-        public MigrateVersion build() {
-            return new MigrateVersion(version, actions);
+        public VersionMigrator build() {
+            return new VersionMigrator(version, actions);
         }
     }
 }
