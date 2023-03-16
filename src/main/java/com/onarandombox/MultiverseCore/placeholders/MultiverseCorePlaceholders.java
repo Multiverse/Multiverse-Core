@@ -60,6 +60,7 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
 
         // No placeholder defined
         if (paramsArray.length < 1) {
+            warning("No placeholder defined");
             return null;
         }
 
@@ -148,6 +149,7 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
                 return String.valueOf(world.isWeatherEnabled());
             }
             default -> {
+                warning("Unknown placeholder: " + placeholder);
                 return null;
             }
         }
