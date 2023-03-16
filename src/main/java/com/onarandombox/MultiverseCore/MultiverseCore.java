@@ -169,9 +169,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
+        this.setupPlaceholderAPI();
         this.saveMVConfig();
         this.logEnableMessage();
-        this.setupPlaceholderAPI();
     }
 
     /**
