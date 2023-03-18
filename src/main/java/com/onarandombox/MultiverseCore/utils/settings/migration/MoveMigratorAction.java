@@ -1,8 +1,15 @@
 package com.onarandombox.MultiverseCore.utils.settings.migration;
 
+import java.util.Optional;
+
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
 
 public class MoveMigratorAction implements MigratorAction {
+    public static MoveMigratorAction of(String fromPath, String toPath) {
+        return new MoveMigratorAction(fromPath, toPath);
+    }
+
     private final String fromPath;
     private final String toPath;
 
@@ -13,9 +20,12 @@ public class MoveMigratorAction implements MigratorAction {
 
     @Override
     public void migrate(MVSettings settings) {
-        Object value = settings.getConfig().get(fromPath);
-        if (value != null) {
-            settings.getConfig().set(toPath, value);
-        }
+        Logging.info(String.valueOf(settings.getConfig().get(fromPath)));
+        Optional.ofNullable(settings.getConfig().get(fromPath))
+                .ifPresent(value -> {
+                    Logging.info("Moving " + fromPath + " to " + toPath);
+                    settings.getConfig().set(toPath, value);
+                    settings.getConfig().set(fromPath, null);
+                });
     }
 }

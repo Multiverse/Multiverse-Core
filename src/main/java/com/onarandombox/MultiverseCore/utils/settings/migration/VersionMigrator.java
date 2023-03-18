@@ -6,6 +6,10 @@ import java.util.List;
 import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
 
 public class VersionMigrator {
+    public static Builder builder(double version) {
+        return new Builder(version);
+    }
+
     private final double version;
     private final List<MigratorAction> actions;
 

@@ -6,10 +6,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.onarandombox.MultiverseCore.utils.settings.migration.ConfigMigrator;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import io.github.townyadvanced.commentedconfiguration.setting.ValueNode;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +29,8 @@ public class MVSettings {
     protected final Logger logger;
     protected final List<CommentedNode> defaultNodes;
 
+    protected final ConfigMigrator migrator;
+
     protected CommentedConfiguration config;
 
     /**
@@ -35,11 +39,13 @@ public class MVSettings {
      * @param configPath   The path to the configuration file.
      * @param logger       The Logger to use for error messages.
      * @param defaultNodes The default node values to add to the configuration.
+     * @param migrator
      */
-    protected MVSettings(@NotNull Path configPath, @Nullable Logger logger, @Nullable List<CommentedNode> defaultNodes) {
+    protected MVSettings(@NotNull Path configPath, @Nullable Logger logger, @Nullable List<CommentedNode> defaultNodes, ConfigMigrator migrator) {
         this.configPath = configPath;
         this.defaultNodes = defaultNodes;
         this.logger = logger;
+        this.migrator = migrator;
     }
 
     /**
@@ -55,6 +61,7 @@ public class MVSettings {
         if (!config.load()) {
             return false;
         }
+        migrateConfig();
         addDefaultNodes();
         return true;
     }
@@ -77,6 +84,10 @@ public class MVSettings {
             return false;
         }
         return true;
+    }
+
+    protected void migrateConfig() {
+        migrator.migrate(this);
     }
 
     /**
@@ -106,6 +117,10 @@ public class MVSettings {
      */
     public void save() {
         config.save();
+    }
+
+    public boolean isLoaded() {
+        return config != null;
     }
 
     /**
@@ -177,12 +192,18 @@ public class MVSettings {
         private Logger logger;
         private List<CommentedNode> defaultNodes;
 
+        private ConfigMigrator migrator;
+
         public Builder(String configPath) {
             this.configPath = Path.of(configPath);
         }
 
         public Builder(Path configPath) {
             this.configPath = configPath;
+        }
+
+        public Builder logger(@NotNull Plugin plugin) {
+            return logger(plugin.getLogger());
         }
 
         public Builder logger(@Nullable Logger logger) {
@@ -195,8 +216,13 @@ public class MVSettings {
             return this;
         }
 
+        public Builder migrator(@Nullable ConfigMigrator migrator) {
+            this.migrator = migrator;
+            return this;
+        }
+
         public MVSettings build() {
-            return new MVSettings(configPath, logger, defaultNodes);
+            return new MVSettings(configPath, logger, defaultNodes, migrator);
         }
     }
 }

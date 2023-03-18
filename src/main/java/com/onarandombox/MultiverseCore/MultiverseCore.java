@@ -359,7 +359,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void loadConfigs() {
-        new DefaultMVConfig(this);
+        DefaultMVConfig defaultMVConfig = new DefaultMVConfig(this);
+        defaultMVConfig.load();
+        defaultMVConfig.save();
 
         // Now grab the Configuration Files.
         this.multiverseConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
