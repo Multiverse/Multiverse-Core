@@ -148,7 +148,7 @@ public class MVConfigNodes {
             .defaultValue(0)
             .build());
 
-    public static final MVValueNode<Boolean> SLIENT_START = node(MVValueNode.builder("misc.silent-start", Boolean.class)
+    public static final MVValueNode<Boolean> SILENT_START = node(MVValueNode.builder("misc.silent-start", Boolean.class)
             .comment("")
             .comment("If true, the startup console messages will no longer show.")
             .defaultValue(false)

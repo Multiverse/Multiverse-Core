@@ -81,4 +81,114 @@ public class DefaultMVConfig implements NewMVConfig {
     public boolean getEnforceAccess() {
         return settings.get(MVConfigNodes.ENFORCE_ACCESS);
     }
+
+    @Override
+    public void setAutoPurgeEnabled(boolean autopurge) {
+        settings.set(MVConfigNodes.AUTO_PURGE_ENTITIES, autopurge);
+    }
+
+    @Override
+    public boolean isAutoPurgeEnabled() {
+        return settings.get(MVConfigNodes.AUTO_PURGE_ENTITIES);
+    }
+
+    @Override
+    public void setTeleportIntercept(boolean teleportIntercept) {
+        settings.set(MVConfigNodes.TELEPORT_INTERCEPT, teleportIntercept);
+    }
+
+    @Override
+    public boolean getTeleportIntercept() {
+        return settings.get(MVConfigNodes.TELEPORT_INTERCEPT);
+    }
+
+    @Override
+    public void setFirstSpawnOverride(boolean firstSpawnOverride) {
+        settings.set(MVConfigNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
+    }
+
+    @Override
+    public boolean getFirstSpawnOverride() {
+        return settings.get(MVConfigNodes.FIRST_SPAWN_OVERRIDE);
+    }
+
+    @Override
+    public void setFirstSpawnWorld(String firstSpawnWorld) {
+        settings.set(MVConfigNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
+    }
+
+    @Override
+    public String getFirstSpawnWorld() {
+        return settings.get(MVConfigNodes.FIRST_SPAWN_LOCATION);
+    }
+
+    @Override
+    public void setUseDefaultPortalSearch(boolean useDefaultPortalSearch) {
+        settings.set(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH, !useDefaultPortalSearch);
+    }
+
+    @Override
+    public boolean isUsingDefaultPortalSearch() {
+        return !settings.get(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH);
+    }
+
+    @Override
+    public void setPortalSearchRadius(int searchRadius) {
+        settings.set(MVConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
+    }
+
+    @Override
+    public int getPortalSearchRadius() {
+        return settings.get(MVConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS);
+    }
+
+    @Override
+    public void setPrefixChat(boolean prefixChat) {
+        settings.set(MVConfigNodes.ENABLE_CHAT_PREFIX, prefixChat);
+    }
+
+    @Override
+    public boolean getPrefixChat() {
+        return settings.get(MVConfigNodes.ENABLE_CHAT_PREFIX);
+    }
+
+    @Override
+    public void setPrefixChatFormat(String prefixChatFormat) {
+        settings.set(MVConfigNodes.CHAT_PREFIX_FORMAT, prefixChatFormat);
+    }
+
+    @Override
+    public String getPrefixChatFormat() {
+        return settings.get(MVConfigNodes.CHAT_PREFIX_FORMAT);
+    }
+
+    @Override
+    public void setGlobalDebug(int globalDebug) {
+        settings.set(MVConfigNodes.GLOBAL_DEBUG, globalDebug);
+    }
+
+    @Override
+    public int getGlobalDebug() {
+        return settings.get(MVConfigNodes.GLOBAL_DEBUG);
+    }
+
+    @Override
+    public void setSilentStart(boolean silentStart) {
+        settings.set(MVConfigNodes.SILENT_START, silentStart);
+    }
+
+    @Override
+    public boolean getSilentStart() {
+        return settings.get(MVConfigNodes.SILENT_START);
+    }
+
+    @Override
+    public void setShowDonateMessage(boolean idonotwanttodonate) {
+        settings.set(MVConfigNodes.I_DONT_WANT_TO_DONATE, idonotwanttodonate);
+    }
+
+    @Override
+    public boolean isShowingDonateMessage() {
+        return settings.get(MVConfigNodes.I_DONT_WANT_TO_DONATE);
+    }
 }
