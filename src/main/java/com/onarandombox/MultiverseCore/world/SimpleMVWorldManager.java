@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
@@ -482,7 +481,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             return false;
         }
         SimpleMVWorld world = new SimpleMVWorld(plugin, cbworld, mvworld);
-        if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+        if (plugin.getMVConfig().isAutoPurgeEnabled()) {
             this.worldPurger.purgeWorld(world);
         }
         this.worlds.put(worldName, world);

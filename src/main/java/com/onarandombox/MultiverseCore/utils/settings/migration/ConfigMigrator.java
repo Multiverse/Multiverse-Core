@@ -29,12 +29,20 @@ public class ConfigMigrator {
                 versionMigrator.migrate(settings);
             }
         }
+
+        settings.setDefault(versionNode);
     }
 
     public static class Builder {
         private final TypedValueNode<Double> versionNode;
         private final List<VersionMigrator> versionMigrators;
 
+        /**
+         * Creates a new builder for a ConfigMigrator.
+         *
+         * @param versionNode   The node that stores the version number of the config.
+         *                      Default value should be the current latest version number.
+         */
         public Builder(TypedValueNode<Double> versionNode) {
             this.versionNode = versionNode;
             this.versionMigrators = new ArrayList<>();

@@ -36,10 +36,10 @@ public class MVSettings {
     /**
      * Creates a new MVSettings instance that makes use of CommentedConfiguration.
      *
-     * @param configPath   The path to the configuration file.
-     * @param logger       The Logger to use for error messages.
-     * @param defaultNodes The default node values to add to the configuration.
-     * @param migrator
+     * @param configPath    The path to the configuration file.
+     * @param logger        The Logger to use for error messages.
+     * @param defaultNodes  The default node values to add to the configuration.
+     * @param migrator      The migrator to use for migrating the configuration.
      */
     protected MVSettings(@NotNull Path configPath, @Nullable Logger logger, @Nullable List<CommentedNode> defaultNodes, ConfigMigrator migrator) {
         this.configPath = configPath;
@@ -175,6 +175,10 @@ public class MVSettings {
      */
     public <T> void set(@NotNull TypedValueNode<T> node, T value) {
         config.set(node.getPath(), value);
+    }
+
+    public <T> void setDefault(@NotNull TypedValueNode<T> node) {
+        config.set(node.getPath(), node.getDefaultValue());
     }
 
     /**

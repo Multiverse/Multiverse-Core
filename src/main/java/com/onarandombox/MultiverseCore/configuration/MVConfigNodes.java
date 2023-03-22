@@ -165,6 +165,6 @@ public class MVConfigNodes {
             .comment("")
             .comment("This just signifies the version number so we can see what version of config you have.")
             .comment("NEVER TOUCH THIS VALUE")
-            .defaultValue(5.0D)
+            .defaultValue(DefaultMVConfig.CONFIG_VERSION)
             .build());
 }

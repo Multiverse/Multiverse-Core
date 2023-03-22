@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
@@ -282,7 +281,7 @@ public class SimpleMVWorld implements MVWorld {
                 }
                 world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+            if (plugin.getMVConfig().isAutoPurgeEnabled()) {
                 plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);

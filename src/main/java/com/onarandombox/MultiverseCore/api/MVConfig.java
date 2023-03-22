@@ -1,78 +1,31 @@
 package com.onarandombox.MultiverseCore.api;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-
-/**
- * The configuration of MultiverseCore.
- */
-public interface MVConfig extends ConfigurationSerializable {
+public interface MVConfig {
     /**
-     * Sets a property using a {@link String}.
-     * @param property The name of the property.
-     * @param value The value.
-     * @return True on success, false if the operation failed.
+     * Sets enforceAccess.
+     * @param enforceAccess The new value.
      */
-    boolean setConfigProperty(String property, String value);
+    void setEnforceAccess(boolean enforceAccess);
 
     /**
-     * Sets firstSpawnWorld.
-     * @param firstSpawnWorld The new value.
+     * Gets enforceAccess.
+     * @return enforceAccess.
      */
-    void setFirstSpawnWorld(String firstSpawnWorld);
+    boolean getEnforceAccess();
 
     /**
-     * Gets firstSpawnWorld.
-     * @return firstSpawnWorld.
+     * Sets whether or not the automatic purge of entities is enabled.
+     *
+     * @param autopurge True if automatic purge should be enabled.
      */
-    String getFirstSpawnWorld();
+    void setAutoPurgeEnabled(boolean autopurge);
 
     /**
-     * Sets version.
-     * @param version The new value.
+     * Gets whether or not the automatic purge of entities is enabled.
+     *
+     * @return True if automatic purge is enabled.
      */
-    void setVersion(int version);
-
-    /**
-     * Gets version.
-     * @return version.
-     */
-    double getVersion();
-
-    /**
-     * Sets globalDebug.
-     * @param globalDebug The new value.
-     */
-    void setGlobalDebug(int globalDebug);
-
-    /**
-     * Gets globalDebug.
-     * @return globalDebug.
-     */
-    int getGlobalDebug();
-
-    /**
-     * Sets displayPermErrors.
-     * @param displayPermErrors The new value.
-     */
-    void setDisplayPermErrors(boolean displayPermErrors);
-
-    /**
-     * Gets displayPermErrors.
-     * @return displayPermErrors.
-     */
-    boolean getDisplayPermErrors();
-
-    /**
-     * Sets firstSpawnOverride.
-     * @param firstSpawnOverride The new value.
-     */
-    void setFirstSpawnOverride(boolean firstSpawnOverride);
-
-    /**
-     * Gets firstSpawnOverride.
-     * @return firstSpawnOverride.
-     */
-    boolean getFirstSpawnOverride();
+    boolean isAutoPurgeEnabled();
 
     /**
      * Sets teleportIntercept.
@@ -87,54 +40,28 @@ public interface MVConfig extends ConfigurationSerializable {
     boolean getTeleportIntercept();
 
     /**
-     * Sets prefixChat.
-     * @param prefixChat The new value.
+     * Sets firstSpawnOverride.
+     * @param firstSpawnOverride The new value.
      */
-    void setPrefixChat(boolean prefixChat);
+    void setFirstSpawnOverride(boolean firstSpawnOverride);
 
     /**
-     * Gets prefixChat.
-     * @return prefixChat.
+     * Gets firstSpawnOverride.
+     * @return firstSpawnOverride.
      */
-    boolean getPrefixChat();
-    
-    /**
-     * Sets prefixChatFormat.
-     * @param prefixChatFormat The new value.
-     */
-    void setPrefixChatFormat(String prefixChatFormat);
+    boolean getFirstSpawnOverride();
 
     /**
-     * Gets prefixChatFormat.
-     * @return prefixChatFormat.
+     * Sets firstSpawnWorld.
+     * @param firstSpawnWorld The new value.
      */
-    String getPrefixChatFormat();
+    void setFirstSpawnWorld(String firstSpawnWorld);
 
     /**
-     * Sets enforceAccess.
-     * @param enforceAccess The new value.
+     * Gets firstSpawnWorld.
+     * @return firstSpawnWorld.
      */
-    void setEnforceAccess(boolean enforceAccess);
-
-    /**
-     * Gets enforceAccess.
-     * @return enforceAccess.
-     */
-    boolean getEnforceAccess();
-
-    /**
-     * Sets whether to suppress startup messages.
-     *
-     * @param silentStart true to suppress messages.
-     */
-    void setSilentStart(boolean silentStart);
-
-    /**
-     * Whether we are suppressing startup messages.
-     *
-     * @return true if we are suppressing startup messages.
-     */
-    boolean getSilentStart();
+    String getFirstSpawnWorld();
 
     /**
      * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.
@@ -165,25 +92,54 @@ public interface MVConfig extends ConfigurationSerializable {
     int getPortalSearchRadius();
 
     /**
-     * Gets whether or not the automatic purge of entities is enabled.
-     *
-     * @return True if automatic purge is enabled.
+     * Sets prefixChat.
+     * @param prefixChat The new value.
      */
-    boolean isAutoPurgeEnabled();
+    void setPrefixChat(boolean prefixChat);
 
     /**
-     * Sets whether or not the automatic purge of entities is enabled.
-     *
-     * @param autopurge True if automatic purge should be enabled.
+     * Gets prefixChat.
+     * @return prefixChat.
      */
-    void setAutoPurgeEnabled(boolean autopurge);
+    boolean getPrefixChat();
 
     /**
-     * Gets whether or not the donation/patreon messages are shown.
-     *
-     * @return True if donation/patreon messages should be shown.
+     * Sets prefixChatFormat.
+     * @param prefixChatFormat The new value.
      */
-    boolean isShowingDonateMessage();
+    void setPrefixChatFormat(String prefixChatFormat);
+
+    /**
+     * Gets prefixChatFormat.
+     * @return prefixChatFormat.
+     */
+    String getPrefixChatFormat();
+
+    /**
+     * Sets globalDebug.
+     * @param globalDebug The new value.
+     */
+    void setGlobalDebug(int globalDebug);
+
+    /**
+     * Gets globalDebug.
+     * @return globalDebug.
+     */
+    int getGlobalDebug();
+
+    /**
+     * Sets whether to suppress startup messages.
+     *
+     * @param silentStart true to suppress messages.
+     */
+    void setSilentStart(boolean silentStart);
+
+    /**
+     * Whether we are suppressing startup messages.
+     *
+     * @return true if we are suppressing startup messages.
+     */
+    boolean getSilentStart();
 
     /**
      * Sets whether or not the donation/patreon messages are shown.
@@ -191,4 +147,11 @@ public interface MVConfig extends ConfigurationSerializable {
      * @param idonotwanttodonate True if donation/patreon messages should be shown.
      */
     void setShowDonateMessage(boolean idonotwanttodonate);
+
+    /**
+     * Gets whether or not the donation/patreon messages are shown.
+     *
+     * @return True if donation/patreon messages should be shown.
+     */
+    boolean isShowingDonateMessage();
 }

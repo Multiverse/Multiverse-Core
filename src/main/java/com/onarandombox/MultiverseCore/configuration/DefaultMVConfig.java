@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.NewMVConfig;
+import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
 import com.onarandombox.MultiverseCore.utils.settings.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.utils.settings.migration.InvertBoolMigratorAction;
 import com.onarandombox.MultiverseCore.utils.settings.migration.MoveMigratorAction;
 import com.onarandombox.MultiverseCore.utils.settings.migration.VersionMigrator;
 
-public class DefaultMVConfig implements NewMVConfig {
-    public static final String CONFIG_FILENAME = "config2.yml";
+public class DefaultMVConfig implements MVConfig {
+    public static final String CONFIG_FILENAME = "config.yml";
+    public static final double CONFIG_VERSION = 5.0;
 
     private final Path configPath;
     private final MVSettings settings;
@@ -21,10 +23,10 @@ public class DefaultMVConfig implements NewMVConfig {
     public DefaultMVConfig(MultiverseCore core) {
         configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
 
-        migrateFromOldConfig();
+        migrateFromOldConfigFile();
 
         settings = MVSettings.builder(configPath)
-                .logger(core.getLogger())
+                .logger(Logging.getLogger())
                 .defaultNodes(MVConfigNodes.getNodes())
                 .migrator(ConfigMigrator.builder(MVConfigNodes.VERSION)
                         .addVersionMigrator(VersionMigrator.builder(5.0)
@@ -47,13 +49,14 @@ public class DefaultMVConfig implements NewMVConfig {
                 .build();
     }
 
-    private void migrateFromOldConfig() {
+    private void migrateFromOldConfigFile() {
         String content;
         try {
             content = Files.readString(configPath);
         } catch (IOException e) {
             return;
         }
+        // Remove the old config section if it is still in the old ConfigurationSerializable.
         if (content.contains("version: 2.5")) {
             content = content.replace("==: com.onarandombox.MultiverseCore.MultiverseCoreConfiguration", "");
         }
