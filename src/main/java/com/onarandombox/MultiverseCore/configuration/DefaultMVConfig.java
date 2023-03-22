@@ -126,13 +126,13 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
-    public void setUseDefaultPortalSearch(boolean useDefaultPortalSearch) {
-        settings.set(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH, !useDefaultPortalSearch);
+    public void setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
+        settings.set(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
     }
 
     @Override
-    public boolean isUsingDefaultPortalSearch() {
-        return !settings.get(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH);
+    public boolean isUsingCustomPortalSearch() {
+        return settings.get(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH);
     }
 
     @Override

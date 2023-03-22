@@ -115,7 +115,7 @@ public class MVEntityListener implements Listener {
         if (event.isCancelled() || event.getTo() == null) {
             return;
         }
-        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
+        if (this.plugin.getMVConfig().isUsingCustomPortalSearch()) {
             event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
         }
     }
