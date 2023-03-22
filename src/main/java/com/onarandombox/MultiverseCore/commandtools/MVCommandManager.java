@@ -1,11 +1,13 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.Locale;
+import java.util.List;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
+import co.aikar.commands.CommandHelp;
+import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
@@ -20,6 +22,7 @@ public class MVCommandManager extends PaperCommandManager {
     private final MultiverseCore plugin;
     private CommandFlagsManager flagsManager;
     private CommandQueueManager commandQueueManager;
+    private PluginLocales pluginLocales;
 
     public MVCommandManager(@NotNull MultiverseCore plugin) {
         super(plugin);
@@ -27,11 +30,6 @@ public class MVCommandManager extends PaperCommandManager {
 
         // Setup conditions
         MVCommandConditions.load(this, plugin);
-
-        // Setup locale
-        this.addSupportedLanguage(Locale.ENGLISH);
-        this.locales.addMessageBundles("multiverse-core");
-        this.locales.loadLanguages();
     }
 
     /**
@@ -44,6 +42,21 @@ public class MVCommandManager extends PaperCommandManager {
             this.flagsManager = new CommandFlagsManager();
         }
         return flagsManager;
+    }
+
+    /**
+     * Gets class responsible for locale handling.
+     *
+     * @return A not-null {@link PluginLocales}.
+     */
+    @Override
+    public PluginLocales getLocales() {
+        if (this.pluginLocales == null) {
+            this.pluginLocales = new PluginLocales(this);
+            this.locales = pluginLocales; // For parent class
+            this.pluginLocales.loadLanguages();
+        }
+        return this.pluginLocales;
     }
 
     /**
@@ -82,5 +95,19 @@ public class MVCommandManager extends PaperCommandManager {
             this.completions = new MVCommandCompletions(this, plugin);
         }
         return this.completions;
+    }
+
+    /**
+     * Standardise usage command formatting for all mv modules.
+     *
+     * @param help The target {@link CommandHelp}.
+     */
+    public void showUsage(@NotNull CommandHelp help) {
+        List<HelpEntry> entries = help.getHelpEntries();
+        if (entries.size() == 1) {
+            this.plugin.getMVCommandManager().getHelpFormatter().showDetailedHelp(help, entries.get(0));
+            return;
+        }
+        help.showHelp();
     }
 }

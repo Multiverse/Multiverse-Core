@@ -5,12 +5,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
+import co.aikar.commands.RegisteredCommand;
+import co.aikar.commands.RootCommand;
 import com.google.common.collect.Sets;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
@@ -30,6 +34,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.plugin = plugin;
         this.worldManager = plugin.getMVWorldManager();
 
+        registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamerules", this::suggestGamerules);
@@ -39,6 +44,33 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("flags", String[].class);
         setDefaultCompletion("gamerules", GameRule.class);
         setDefaultCompletion("mvworlds", MVWorld.class);
+    }
+
+    private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {
+        String rootCmdName = context.getConfig();
+        if (rootCmdName == null) {
+            return Collections.emptyList();
+        }
+
+        RootCommand rootCommand = this.plugin.getMVCommandManager().getRegisteredRootCommands().stream()
+                .unordered()
+                .filter(c -> c.getCommandName().equals(rootCmdName))
+                .findFirst()
+                .orElse(null);
+
+        if (rootCommand == null) {
+            return Collections.emptyList();
+        }
+
+        return rootCommand.getSubCommands().entries().stream()
+                .filter(entry -> checkPerms(context.getIssuer(), entry.getValue()))
+                .map(Map.Entry::getKey)
+                .filter(cmdName -> !cmdName.startsWith("__"))
+                .collect(Collectors.toList());
+    }
+
+    private boolean checkPerms(CommandIssuer issuer, RegisteredCommand<?> command) {
+        return this.plugin.getMVCommandManager().hasPermission(issuer, command.getRequiredPermissions());
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {

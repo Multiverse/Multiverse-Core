@@ -10,6 +10,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,9 @@ public class ReloadCommand extends MultiverseCoreCommand {
 
     @Subcommand("reload")
     @CommandPermission("multiverse.core.reload")
-    @Description("Reloads config files for all multiverse modules.")
+    @Description("{@@mv-core.reload.description}")
     public void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
-        issuer.sendMessage(ChatColor.GOLD + "Reloading all Multiverse Plugin configs...");
+        issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
         this.plugin.loadConfigs();
         this.plugin.getAnchorManager().loadAnchors();
         this.plugin.getMVWorldManager().loadWorlds(true);
@@ -36,7 +37,8 @@ public class ReloadCommand extends MultiverseCoreCommand {
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
         this.plugin.getServer().getPluginManager().callEvent(configReload);
 
+        // @TODO: replace this sendMessage and format the configsLoaded above, maybe?
         configReload.getAllConfigsLoaded().forEach(issuer::sendMessage);
-        issuer.sendMessage(String.format("%sReload Complete!", ChatColor.GREEN));
+        issuer.sendInfo(MVCorei18n.RELOAD_SUCCESS);
     }
 }

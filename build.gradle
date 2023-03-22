@@ -5,16 +5,23 @@ plugins {
     id 'maven-publish'
     id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "org.jetbrains.kotlin.jvm" version "1.8.10"
 }
 
 version = System.getenv('GITHUB_VERSION') ?: 'local'
 group = 'com.onarandombox.multiversecore'
 description = 'Multiverse-Core'
 
-java.sourceCompatibility = JavaVersion.VERSION_11
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 repositories {
     mavenLocal()
+    mavenCentral()
+
     maven {
         url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
     }
@@ -48,18 +55,27 @@ repositories {
         name = 'glaremasters repo'
         url = 'https://repo.glaremasters.me/repository/towny/'
     }
+    maven {
+        name = 'PlaceholderAPI'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+}
+
+configurations {
+    oldTestImplementation.extendsFrom implementation
+    oldTestRuntime.extendsFrom runtime
 }
 
 dependencies {
-    // Spigot
-    implementation('org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT') {
-        exclude group: 'junit', module: 'junit'
-    }
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 
     // Economy
     implementation('com.github.MilkBowl:VaultAPI:1.7.1') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
+
+    // PlaceholderAPI
+    compileOnly 'me.clip:placeholderapi:2.11.2'
 
     // Command Framework
     api 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
@@ -82,9 +98,21 @@ dependencies {
     api 'org.jetbrains:annotations:22.0.0'
 
     // Tests
-    testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.mockito:mockito-core:3.11.2'
-    testImplementation 'commons-io:commons-io:2.7'
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.19:2.141.0'
+    testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+
+    // Old Tests
+    oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
+    oldTestImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    oldTestImplementation 'junit:junit:4.13.1'
+    oldTestImplementation 'org.mockito:mockito-core:3.11.2'
+    oldTestImplementation 'commons-io:commons-io:2.7'
 }
 
 
@@ -108,6 +136,19 @@ configurations {
         it.outgoing.artifact(shadowJar)
     }
 }
+
+
+sourceSets {
+    oldTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+            srcDir file('src/old-test/java')
+        }
+        resources.srcDir file('src/old-test/resources')
+    }
+}
+
 
 publishing {
     publications {
@@ -141,6 +182,19 @@ task prepareSource(type: Sync) {
 
 compileJava {
     source = prepareSource.outputs
+}
+
+compileKotlin {
+    // We're not using Kotlin in the plugin itself, just tests!
+    enabled = false
+}
+configurations {
+    compileOnly {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
+    runtimeOnly {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
 }
 
 processResources {
@@ -184,14 +238,17 @@ shadowJar {
     configurations = [project.configurations.api]
 
     archiveFileName = "$baseName-$version.$extension"
+
+    dependencies {
+        exclude(dependency {
+            it.moduleGroup == 'org.jetbrains.kotlin'
+        })
+    }
 }
 
 build.dependsOn shadowJar
 jar.enabled = false
 
-
-// Excludes all test
-// TODO: Remove this when we have tests for MV5
 test {
-    exclude '**/*'
+    useJUnitPlatform()
 }
