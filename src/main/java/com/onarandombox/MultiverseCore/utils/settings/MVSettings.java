@@ -3,10 +3,11 @@ package com.onarandombox.MultiverseCore.utils.settings;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import com.onarandombox.MultiverseCore.utils.settings.migration.ConfigMigrator;
+import com.onarandombox.MultiverseCore.utils.settings.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
@@ -27,7 +28,7 @@ public class MVSettings {
 
     protected final Path configPath;
     protected final Logger logger;
-    protected final List<CommentedNode> defaultNodes;
+    protected final NodeGroup nodes;
 
     protected final ConfigMigrator migrator;
 
@@ -38,12 +39,12 @@ public class MVSettings {
      *
      * @param configPath    The path to the configuration file.
      * @param logger        The Logger to use for error messages.
-     * @param defaultNodes  The default node values to add to the configuration.
+     * @param nodes         All the node path and values for the configuration.
      * @param migrator      The migrator to use for migrating the configuration.
      */
-    protected MVSettings(@NotNull Path configPath, @Nullable Logger logger, @Nullable List<CommentedNode> defaultNodes, ConfigMigrator migrator) {
+    protected MVSettings(@NotNull Path configPath, @Nullable Logger logger, @NotNull NodeGroup nodes, ConfigMigrator migrator) {
         this.configPath = configPath;
-        this.defaultNodes = defaultNodes;
+        this.nodes = nodes;
         this.logger = logger;
         this.migrator = migrator;
     }
@@ -86,6 +87,9 @@ public class MVSettings {
         return true;
     }
 
+    /**
+     * Migration of the configuration based on {@link ConfigMigrator}.
+     */
     protected void migrateConfig() {
         migrator.migrate(this);
     }
@@ -94,17 +98,16 @@ public class MVSettings {
      * Adds default node values to the configuration if they are not already present.
      */
     protected void addDefaultNodes() {
-        if (defaultNodes == null || defaultNodes.isEmpty()) {
+        if (nodes.isEmpty()) {
             return;
         }
 
         CommentedConfiguration tempConfig = new CommentedConfiguration(configPath, logger);
-        for (CommentedNode node : defaultNodes) {
+        for (CommentedNode node : nodes) {
             if (node.getComments().length > 0) {
                 tempConfig.addComment(node.getPath(), node.getComments());
             }
-            if (node instanceof ValueNode) {
-                ValueNode valueNode = (ValueNode) node;
+            if (node instanceof ValueNode valueNode) {
                 tempConfig.set(node.getPath(), get(valueNode));
             }
         }
@@ -131,6 +134,18 @@ public class MVSettings {
      */
     public Object get(@NotNull ValueNode node) {
         return config.get(node.getPath(), node.getDefaultValue());
+    }
+
+    /**
+     * Get the value of the node by name.
+     *
+     * @param name  The name of the node to get the value of.
+     * @return The value of the node.
+     */
+    public Object get(@NotNull String name) {
+        return nodes.findNode(name)
+                .map(node -> (node instanceof ValueNode valueNode) ? get(valueNode) : null)
+                .orElse(null);
     }
 
     /**
@@ -167,6 +182,20 @@ public class MVSettings {
     }
 
     /**
+     * Set the value of the node by name.
+     *
+     * @param name  The name of the node to set the value of.
+     * @param value The value to set.
+     */
+    public void set(@NotNull String name, Object value) {
+        nodes.findNode(name).ifPresent(node -> {
+            if (node instanceof ValueNode valueNode) {
+                set(valueNode, value);
+            }
+        });
+    }
+
+    /**
      * Sets the value of a node, if the validator is not null, it will be tested first.
      *
      * @param node  The node to set the value of.
@@ -177,12 +206,18 @@ public class MVSettings {
         config.set(node.getPath(), value);
     }
 
+    /**
+     * Sets the default value of a node.
+     *
+     * @param node  The node to set the default value of.
+     * @param <T>   The type of the node value.
+     */
     public <T> void setDefault(@NotNull TypedValueNode<T> node) {
         config.set(node.getPath(), node.getDefaultValue());
     }
 
     /**
-     * Gets the configuration object.
+     * Gets the inner configuration object.
      *
      * @return The configuration object.
      */
@@ -194,7 +229,7 @@ public class MVSettings {
 
         private final Path configPath;
         private Logger logger;
-        private List<CommentedNode> defaultNodes;
+        private NodeGroup nodes;
 
         private ConfigMigrator migrator;
 
@@ -215,8 +250,8 @@ public class MVSettings {
             return this;
         }
 
-        public Builder defaultNodes(@Nullable List<CommentedNode> defaultNodes) {
-            this.defaultNodes = defaultNodes;
+        public Builder nodes(@Nullable NodeGroup nodes) {
+            this.nodes = nodes;
             return this;
         }
 
@@ -226,7 +261,7 @@ public class MVSettings {
         }
 
         public MVSettings build() {
-            return new MVSettings(configPath, logger, defaultNodes, migrator);
+            return new MVSettings(configPath, logger, nodes, migrator);
         }
     }
 }

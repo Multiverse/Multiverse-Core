@@ -1,6 +1,14 @@
 package com.onarandombox.MultiverseCore.api;
 
 public interface MVConfig {
+    boolean load();
+
+    void save();
+
+    Object getProperty(String name);
+
+    void setProperty(String name, Object value);
+
     /**
      * Sets enforceAccess.
      * @param enforceAccess The new value.

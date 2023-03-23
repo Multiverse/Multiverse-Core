@@ -1,23 +1,23 @@
 package com.onarandombox.MultiverseCore.utils.settings.node;
 
-import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MVValueNode<T> extends MVCommentedNode implements TypedValueNode<T> {
+public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T> {
 
     public static <T> Builder<T, ? extends Builder> builder(String path, Class<T> type) {
         return new Builder<>(path, type);
     }
 
     protected final Class<T> type;
+    protected final T defaultValue;
+    protected final String name;
 
-    private final T defaultValue;
-
-    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue) {
+    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue, String name) {
         super(path, comments);
         this.type = type;
         this.defaultValue = defaultValue;
+        this.name = name;
     }
 
     @Override
@@ -30,14 +30,21 @@ public class MVValueNode<T> extends MVCommentedNode implements TypedValueNode<T>
         return defaultValue;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public static class Builder<T, B extends Builder<T, B>> extends MVCommentedNode.Builder<B> {
 
         protected final Class<T> type;
         protected T defaultValue;
+        private String name;
 
         public Builder(String path, Class<T> type) {
             super(path);
             this.type = type;
+            this.name = path;
         }
 
         public B defaultValue(T defaultValue) {
@@ -45,9 +52,14 @@ public class MVValueNode<T> extends MVCommentedNode implements TypedValueNode<T>
             return (B) this;
         }
 
+        public B name(String name) {
+            this.name = name;
+            return (B) this;
+        }
+
         @Override
         public MVValueNode<T> build() {
-            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue);
+            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue, name);
         }
     }
 }

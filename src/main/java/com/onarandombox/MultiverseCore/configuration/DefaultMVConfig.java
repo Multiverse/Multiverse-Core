@@ -17,6 +17,19 @@ public class DefaultMVConfig implements MVConfig {
     public static final String CONFIG_FILENAME = "config.yml";
     public static final double CONFIG_VERSION = 5.0;
 
+    /**
+     * Creates a new DefaultMVConfig instance and loads the configuration automatically.
+     *
+     * @param core The MultiverseCore instance.
+     * @return The new DefaultMVConfig instance.
+     */
+    public static DefaultMVConfig init(MultiverseCore core) {
+        var config = new DefaultMVConfig(core);
+        config.load();
+        config.save();
+        return config;
+    }
+
     private final Path configPath;
     private final MVSettings settings;
 
@@ -27,7 +40,7 @@ public class DefaultMVConfig implements MVConfig {
 
         settings = MVSettings.builder(configPath)
                 .logger(Logging.getLogger())
-                .defaultNodes(MVConfigNodes.getNodes())
+                .nodes(MVConfigNodes.getNodes())
                 .migrator(ConfigMigrator.builder(MVConfigNodes.VERSION)
                         .addVersionMigrator(VersionMigrator.builder(5.0)
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.enforceaccess", "world.enforce-access"))
@@ -67,12 +80,24 @@ public class DefaultMVConfig implements MVConfig {
         }
     }
 
+    @Override
     public boolean load() {
         return settings.load();
     }
 
+    @Override
     public void save() {
         settings.save();
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        return settings.get(name);
+    }
+
+    @Override
+    public void setProperty(String name, Object value) {
+        settings.set(name, value);
     }
 
     @Override

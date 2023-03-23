@@ -23,6 +23,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commands.CheckCommand;
 import com.onarandombox.MultiverseCore.commands.CloneCommand;
+import com.onarandombox.MultiverseCore.commands.ConfigCommand;
 import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
 import com.onarandombox.MultiverseCore.commands.CreateCommand;
 import com.onarandombox.MultiverseCore.commands.DebugCommand;
@@ -89,7 +90,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private final MVWorldManager worldManager = new SimpleMVWorldManager(this);
 
     // Configurations
-    private DefaultMVConfig config;
+    private MVConfig config;
 
     // Listeners
     private MVChatListener chatListener;
@@ -196,6 +197,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.commandManager = new MVCommandManager(this);
         this.commandManager.registerCommand(new CheckCommand(this));
         this.commandManager.registerCommand(new CloneCommand(this));
+        this.commandManager.registerCommand(new ConfigCommand(this));
         this.commandManager.registerCommand(new ConfirmCommand(this));
         this.commandManager.registerCommand(new CreateCommand(this));
         this.commandManager.registerCommand(new DebugCommand(this));
@@ -369,9 +371,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void loadConfigs() {
-        config = new DefaultMVConfig(this);
-        config.load();
-        config.save();
+        config = DefaultMVConfig.init(this);
 
         this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
 

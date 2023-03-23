@@ -1,16 +1,18 @@
 package com.onarandombox.MultiverseCore.configuration;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.onarandombox.MultiverseCore.utils.settings.node.MVCommentedNode;
 import com.onarandombox.MultiverseCore.utils.settings.node.MVValueNode;
+import com.onarandombox.MultiverseCore.utils.settings.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 
 public class MVConfigNodes {
-    private static final List<CommentedNode> nodes = new ArrayList<>();
+    private static final NodeGroup nodes = new NodeGroup();
 
-    public static List<CommentedNode> getNodes() {
+    public static NodeGroup getNodes() {
         return nodes;
     }
 
@@ -54,6 +56,7 @@ public class MVConfigNodes {
             .comment("If this is set to true, players will only be able to enter worlds they have")
             .comment("the `mv.access.<worldname>` permission.")
             .defaultValue(false)
+            .name("enforce-access")
             .build());
 
     public static final MVValueNode<Boolean> ENFORCE_GAMEMODE = node(MVValueNode.builder("world.enforce-gamemode", Boolean.class)
@@ -166,5 +169,6 @@ public class MVConfigNodes {
             .comment("This just signifies the version number so we can see what version of config you have.")
             .comment("NEVER TOUCH THIS VALUE")
             .defaultValue(DefaultMVConfig.CONFIG_VERSION)
+            .name(null)
             .build());
 }
