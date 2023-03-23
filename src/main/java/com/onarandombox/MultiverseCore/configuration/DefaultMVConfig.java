@@ -51,12 +51,13 @@ public class DefaultMVConfig implements MVConfig {
                                 //.addAction(MoveMigratorAction.of("multiverse-configuration.displaypermerrors", ""))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.globaldebug", "misc.global-debug"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.silentstart", "misc.silent-start"))
-                                .addAction(MoveMigratorAction.of("multiverse-configuration.firstspawnworld", "worlds.first-spawn-location"))
-                                .addAction(MoveMigratorAction.of("multiverse-configuration.defaultportalsearch", "portals.use-custom-portal-search"))
-                                .addAction(InvertBoolMigratorAction.of("portals.use-custom-portal-search"))
-                                .addAction(MoveMigratorAction.of("multiverse-configuration.portalsearchradius", "portals.custom-portal-search-radius"))
+                                .addAction(MoveMigratorAction.of("multiverse-configuration.firstspawnworld", "spawn.first-spawn-location"))
+                                .addAction(MoveMigratorAction.of("multiverse-configuration.defaultportalsearch", "portal.use-custom-portal-search"))
+                                .addAction(InvertBoolMigratorAction.of("portal.use-custom-portal-search"))
+                                .addAction(MoveMigratorAction.of("multiverse-configuration.portalsearchradius", "portal.custom-portal-search-radius"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.autopurge", "world.auto-purge-entities"))
-                                .addAction(MoveMigratorAction.of("multiverse-configuration.idonotwanttodonate", "misc.i-dont-want-to-donate"))
+                                .addAction(MoveMigratorAction.of("multiverse-configuration.idonotwanttodonate", "misc.show-donation-message"))
+                                .addAction(InvertBoolMigratorAction.of("misc.show-donation-message"))
                                 .build())
                         .build())
                 .build();
@@ -211,12 +212,12 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
-    public void setShowDonateMessage(boolean idonotwanttodonate) {
-        settings.set(MVConfigNodes.I_DONT_WANT_TO_DONATE, idonotwanttodonate);
+    public void setShowDonateMessage(boolean showDonateMessage) {
+        settings.set(MVConfigNodes.SHOW_DONATION_MESSAGE, showDonateMessage);
     }
 
     @Override
     public boolean isShowingDonateMessage() {
-        return settings.get(MVConfigNodes.I_DONT_WANT_TO_DONATE);
+        return settings.get(MVConfigNodes.SHOW_DONATION_MESSAGE);
     }
 }

@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
@@ -66,10 +67,12 @@ import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
@@ -249,10 +252,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
-
         if (getMVConfig().isShowingDonateMessage()) {
-            getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
-            getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+            Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+            Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
     }
 
@@ -331,6 +333,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public int getPluginCount() {
         return this.pluginCount;
+    }
+
+    @NotNull
+    @Override
+    public Logger getLogger() {
+        return Logging.getLogger();
     }
 
     /**

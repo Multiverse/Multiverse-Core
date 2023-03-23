@@ -1,9 +1,5 @@
 package com.onarandombox.MultiverseCore.configuration;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.onarandombox.MultiverseCore.utils.settings.node.MVCommentedNode;
 import com.onarandombox.MultiverseCore.utils.settings.node.MVValueNode;
 import com.onarandombox.MultiverseCore.utils.settings.node.NodeGroup;
@@ -157,10 +153,10 @@ public class MVConfigNodes {
             .defaultValue(false)
             .build());
 
-    public static final MVValueNode<Boolean> I_DONT_WANT_TO_DONATE = node(MVValueNode.builder("misc.i-dont-want-to-donate", Boolean.class)
+    public static final MVValueNode<Boolean> SHOW_DONATION_MESSAGE = node(MVValueNode.builder("misc.show-donation-message", Boolean.class)
             .comment("")
-            .comment("If you don't want to donate, you can set this to true and Multiverse will stop nagging you.")
-            .defaultValue(false)
+            .comment("If you don't want to donate, you can set this to false and Multiverse will stop nagging you.")
+            .defaultValue(true)
             .build());
 
     public static final MVValueNode<Double> VERSION = node(MVValueNode.builder("version", Double.class)
