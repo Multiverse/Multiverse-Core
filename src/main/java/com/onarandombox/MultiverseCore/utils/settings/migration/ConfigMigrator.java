@@ -23,9 +23,8 @@ public class ConfigMigrator {
     public void migrate(MVSettings settings) {
         double versionNumber = settings.get(versionNode);
         for (VersionMigrator versionMigrator : versionMigrators) {
-            Logging.info("Checking if config needs to be migrated from version " + versionNumber + " to " + versionMigrator.getVersion());
             if (versionNumber < versionMigrator.getVersion()) {
-                Logging.info("Migrating config from version " + versionNumber + " to " + versionMigrator.getVersion());
+                Logging.config("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
                 versionMigrator.migrate(settings);
             }
         }

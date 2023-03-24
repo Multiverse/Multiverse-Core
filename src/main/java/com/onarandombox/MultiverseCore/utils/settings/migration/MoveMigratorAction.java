@@ -20,12 +20,11 @@ public class MoveMigratorAction implements MigratorAction {
 
     @Override
     public void migrate(MVSettings settings) {
-        Logging.info(String.valueOf(settings.getConfig().get(fromPath)));
         Optional.ofNullable(settings.getConfig().get(fromPath))
                 .ifPresent(value -> {
-                    Logging.info("Moving " + fromPath + " to " + toPath);
                     settings.getConfig().set(toPath, value);
                     settings.getConfig().set(fromPath, null);
+                    Logging.config("Moved path %s to %s", fromPath, toPath);
                 });
     }
 }
