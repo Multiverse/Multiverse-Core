@@ -29,14 +29,14 @@ public class NodeGroup implements Collection<CommentedNode> {
     }
 
     private void addNodeIndex(CommentedNode node) {
-        if (node instanceof NamedValueNode namedValueNode && namedValueNode.getName() != null) {
-            nodesMap.put(namedValueNode.getName(), node);
+        if (node instanceof NamedValueNode) {
+            ((NamedValueNode<?>) node).getName().ifPresent(name -> nodesMap.put(name, node));
         }
     }
 
     private void removeNodeIndex(CommentedNode node) {
-        if (node instanceof NamedValueNode namedValueNode) {
-            nodesMap.remove(namedValueNode.getName());
+        if (node instanceof NamedValueNode) {
+            ((NamedValueNode<?>) node).getName().ifPresent(nodesMap::remove);
         }
     }
 
@@ -86,7 +86,7 @@ public class NodeGroup implements Collection<CommentedNode> {
     }
 
     @Override
-    public <T> T @NotNull [] toArray(@NotNull T[] ts) {
+    public <T> T @NotNull [] toArray(T @NotNull [] ts) {
         return nodes.toArray(ts);
     }
 

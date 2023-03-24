@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.settings.node;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +27,7 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public @NotNull Class<T> getType() {
@@ -33,7 +35,7 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public @Nullable T getDefaultValue() {
@@ -41,11 +43,11 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public @Nullable String getName() {
-        return name;
+    public Optional<String> getName() {
+        return Optional.ofNullable(name);
     }
 
     public static class Builder<T, B extends Builder<T, B>> extends MVCommentedNode.Builder<B> {
@@ -54,18 +56,18 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
         protected T defaultValue;
         private String name;
 
-        public Builder(String path, Class<T> type) {
+        public Builder(@NotNull String path, @NotNull Class<T> type) {
             super(path);
             this.type = type;
             this.name = path;
         }
 
-        public B defaultValue(T defaultValue) {
+        public B defaultValue(@NotNull T defaultValue) {
             this.defaultValue = defaultValue;
             return (B) this;
         }
 
-        public B name(String name) {
+        public B name(@Nullable String name) {
             this.name = name;
             return (B) this;
         }

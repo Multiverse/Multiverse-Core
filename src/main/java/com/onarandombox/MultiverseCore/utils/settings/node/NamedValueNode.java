@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.settings.node;
 
+import java.util.Optional;
+
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,5 +11,5 @@ public interface NamedValueNode<T> extends TypedValueNode<T> {
      *
      * @return The name of this node.
      */
-    @Nullable String getName();
+    Optional<String> getName();
 }
