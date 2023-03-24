@@ -177,8 +177,9 @@ public class MVSettings {
      * @param node  The node to set the value of.
      * @param value The value to set.
      */
-    public void set(@NotNull ValueNode node, Object value) {
+    public boolean set(@NotNull ValueNode node, Object value) {
         config.set(node.getPath(), value);
+        return true;
     }
 
     /**
@@ -187,12 +188,10 @@ public class MVSettings {
      * @param name  The name of the node to set the value of.
      * @param value The value to set.
      */
-    public void set(@NotNull String name, Object value) {
-        nodes.findNode(name).ifPresent(node -> {
-            if (node instanceof ValueNode valueNode) {
-                set(valueNode, value);
-            }
-        });
+    public boolean set(@NotNull String name, Object value) {
+        return nodes.findNode(name)
+                .map(node -> node instanceof ValueNode valueNode && set(valueNode, value))
+                .orElse(false);
     }
 
     /**

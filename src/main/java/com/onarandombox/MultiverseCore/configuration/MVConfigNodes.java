@@ -61,12 +61,14 @@ public class MVConfigNodes {
             .comment("If enabled, players will be forced into the gamemode of the world they are entering, unless they have")
             .comment("the `mv.bypass.gamemode.<worldname>` permission.")
             .defaultValue(true)
+            .name("enforce-gamemode")
             .build());
 
     public static final MVValueNode<Boolean> AUTO_PURGE_ENTITIES = node(MVValueNode.builder("world.auto-purge-entities", Boolean.class)
             .comment("")
             .comment("Sets whether Multiverse will purge mobs and entities with be automatically.")
             .defaultValue(false)
+            .name("auto-purge-entities")
             .build());
 
     public static final MVValueNode<Boolean> TELEPORT_INTERCEPT = node(MVValueNode.builder("world.teleport-intercept", Boolean.class)
@@ -74,6 +76,7 @@ public class MVConfigNodes {
             .comment("If this is set to true, Multiverse will enforce access permissions for all teleportation,")
             .comment("including teleportation from other plugins.")
             .defaultValue(true)
+            .name("teleport-intercept")
             .build());
 
     private static final MVCommentedNode SPAWN_HEADER = node(MVCommentedNode.builder("spawn")
@@ -86,6 +89,7 @@ public class MVConfigNodes {
             .comment("If enabled, Multiverse will set the first spawn location of a world to the spawn location of the world.")
             .comment("If disabled, it will default to server.properties settings.")
             .defaultValue(true)
+            .name("first-spawn-override")
             .build());
 
     public static final MVValueNode<String> FIRST_SPAWN_LOCATION = node(MVValueNode.builder("spawn.first-spawn-location", String.class)
@@ -93,6 +97,7 @@ public class MVConfigNodes {
             .comment("Sets the world that Multiverse will use as the location for players that first join the server.")
             .comment("This only applies if first-spawn-override is set to true.")
             .defaultValue("")
+            .name("first-spawn-location")
             .build());
 
     private static final MVCommentedNode PORTAL_HEADER = node(MVCommentedNode.builder("portal")
@@ -104,6 +109,7 @@ public class MVConfigNodes {
             .comment("This config option defines whether or not Multiverse should interfere with's Bukkit's default portal search radius.")
             .comment("Setting it to false would mean you want to simply let Bukkit decides the search radius itself.")
             .defaultValue(false)
+            .name("use-custom-portal-search")
             .build());
 
     public static final MVValueNode<Integer> CUSTOM_PORTAL_SEARCH_RADIUS = node(MVValueNode.builder("portal.custom-portal-search-radius", Integer.class)
@@ -111,6 +117,7 @@ public class MVConfigNodes {
             .comment("This config option defines the search radius Multiverse should use when searching for a portal.")
             .comment("This only applies if use-custom-portal-search is set to true.")
             .defaultValue(128)
+            .name("custom-portal-search-radius")
             .build());
 
     private static final MVCommentedNode MESSAGING_HEADER = node(MVCommentedNode.builder("messaging")
@@ -122,6 +129,7 @@ public class MVConfigNodes {
             .comment("This config option defines whether or not Multiverse should prefix the chat with the world name.")
             .comment("This only applies if use-custom-portal-search is set to true.")
             .defaultValue(false)
+            .name("enable-chat-prefix")
             .build());
 
     public static final MVValueNode<String> CHAT_PREFIX_FORMAT = node(MVValueNode.builder("messaging.chat-prefix-format", String.class)
@@ -129,6 +137,7 @@ public class MVConfigNodes {
             .comment("This config option defines the format Multiverse should use when prefixing the chat with the world name.")
             .comment("This only applies if enable-chat-prefix is set to true.")
             .defaultValue("[%world%]%chat%")
+            .name("chat-prefix-format")
             .build());
 
     private static final MVCommentedNode MISC_HEADER = node(MVCommentedNode.builder("misc")
@@ -145,18 +154,21 @@ public class MVConfigNodes {
             .comment("  2 = finer")
             .comment("  3 = finest")
             .defaultValue(0)
+            .name("global-debug")
             .build());
 
     public static final MVValueNode<Boolean> SILENT_START = node(MVValueNode.builder("misc.silent-start", Boolean.class)
             .comment("")
             .comment("If true, the startup console messages will no longer show.")
             .defaultValue(false)
+            .name("silent-start")
             .build());
 
     public static final MVValueNode<Boolean> SHOW_DONATION_MESSAGE = node(MVValueNode.builder("misc.show-donation-message", Boolean.class)
             .comment("")
             .comment("If you don't want to donate, you can set this to false and Multiverse will stop nagging you.")
             .defaultValue(true)
+            .name("show-donation-message")
             .build());
 
     public static final MVValueNode<Double> VERSION = node(MVValueNode.builder("version", Double.class)

@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVConfig;
+import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mv")
@@ -24,7 +25,7 @@ public class ConfigCommand extends MultiverseCoreCommand {
 
     @Subcommand("config")
     @CommandPermission("multiverse.core.config")
-    @CommandCompletion("@mvconfig") //TODO
+    @CommandCompletion("@mvconfigs")
     @Syntax("<name> [new-value]")
     @Description("") //TODO
     public void onConfigCommand(BukkitCommandIssuer issuer,
@@ -37,14 +38,30 @@ public class ConfigCommand extends MultiverseCoreCommand {
                                 @Single
                                 @Syntax("[new-value]")
                                 @Description("") //TODO
-                                String value
+                                MVConfigValue value
     ) {
         if (value == null) {
-            issuer.sendMessage(name + "is currently set to " + config.getProperty(name));
+            showConfigValue(issuer, name);
             return;
         }
-        config.setProperty(name, value);
+        updateConfigValue(issuer, name, value.getValue());
+    }
+
+    private void showConfigValue(BukkitCommandIssuer issuer, String name) {
+        Object currentValue = config.getProperty(name);
+        if (currentValue == null) {
+            issuer.sendMessage("No such config option: " + name);
+            return;
+        }
+        issuer.sendMessage(name + "is currently set to " + config.getProperty(name));
+    }
+
+    private void updateConfigValue(BukkitCommandIssuer issuer, String name, Object value) {
+        if (!config.setProperty(name, value)) {
+            issuer.sendMessage("Unable to set " + name + " to " + value);
+            return;
+        }
         config.save();
-        issuer.sendMessage("Set " + name + " to " + value);
+        issuer.sendMessage("Successfully set " + name + " to " + value);
     }
 }

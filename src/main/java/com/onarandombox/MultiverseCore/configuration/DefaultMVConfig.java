@@ -97,8 +97,8 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
-    public void setProperty(String name, Object value) {
-        settings.set(name, value);
+    public boolean setProperty(String name, Object value) {
+        return settings.set(name, value);
     }
 
     @Override

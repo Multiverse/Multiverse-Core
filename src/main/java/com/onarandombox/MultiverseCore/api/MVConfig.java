@@ -7,7 +7,7 @@ public interface MVConfig {
 
     Object getProperty(String name);
 
-    void setProperty(String name, Object value);
+    boolean setProperty(String name, Object value);
 
     /**
      * Sets enforceAccess.
