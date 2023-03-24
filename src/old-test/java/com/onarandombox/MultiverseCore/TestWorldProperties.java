@@ -177,10 +177,10 @@ public class TestWorldProperties {
         assertFalse(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        core.getMVConfig().setPrefixChat(true);
+        core.getMVConfig().setEnablePrefixChat(true);
         core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
-        core.getMVConfig().setPrefixChat(false);
+        core.getMVConfig().setEnablePrefixChat(false);
         core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
 
@@ -271,7 +271,7 @@ public class TestWorldProperties {
         assertTrue(thunderChangeOnEvent.isCancelled());
 
         // call player chat event
-        core.getMVConfig().setPrefixChat(true);
+        core.getMVConfig().setEnablePrefixChat(true);
         core.getChatListener().playerChat(playerChatEvent);
         // never because it's hidden!
         verify(playerChatEvent, never()).setFormat(
@@ -279,7 +279,7 @@ public class TestWorldProperties {
         mvWorld.setHidden(false);
         core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent).setFormat("[" + mvWorld.getColoredWorldString() + "]" + "format");
-        core.getMVConfig().setPrefixChat(false);
+        core.getMVConfig().setEnablePrefixChat(false);
         core.getChatListener().playerChat(playerChatEvent);
         verify(playerChatEvent, times(1)).setFormat(anyString()); // only ONE TIME (not the 2nd time!)
         mvWorld.setHidden(true); // reset hidden-state

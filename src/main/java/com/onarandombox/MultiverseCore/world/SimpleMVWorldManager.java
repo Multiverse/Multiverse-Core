@@ -481,7 +481,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             return false;
         }
         SimpleMVWorld world = new SimpleMVWorld(plugin, cbworld, mvworld);
-        if (plugin.getMVConfig().isAutoPurgeEnabled()) {
+        if (plugin.getMVConfig().isAutoPurgeEntities()) {
             this.worldPurger.purgeWorld(world);
         }
         this.worlds.put(worldName, world);

@@ -281,7 +281,7 @@ public class SimpleMVWorld implements MVWorld {
                 }
                 world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            if (plugin.getMVConfig().isAutoPurgeEnabled()) {
+            if (plugin.getMVConfig().isAutoPurgeEntities()) {
                 plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);

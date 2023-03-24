@@ -112,12 +112,22 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
-    public void setAutoPurgeEnabled(boolean autopurge) {
+    public void setEnforceGameMode(boolean enforceGameMode) {
+        settings.set(MVConfigNodes.ENFORCE_GAMEMODE, enforceGameMode);
+    }
+
+    @Override
+    public boolean getEnforceGameMode() {
+        return settings.get(MVConfigNodes.ENFORCE_GAMEMODE);
+    }
+
+    @Override
+    public void setAutoPurgeEntities(boolean autopurge) {
         settings.set(MVConfigNodes.AUTO_PURGE_ENTITIES, autopurge);
     }
 
     @Override
-    public boolean isAutoPurgeEnabled() {
+    public boolean isAutoPurgeEntities() {
         return settings.get(MVConfigNodes.AUTO_PURGE_ENTITIES);
     }
 
@@ -142,12 +152,12 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
-    public void setFirstSpawnWorld(String firstSpawnWorld) {
+    public void setFirstSpawnLocation(String firstSpawnWorld) {
         settings.set(MVConfigNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
     }
 
     @Override
-    public String getFirstSpawnWorld() {
+    public String getFirstSpawnLocation() {
         return settings.get(MVConfigNodes.FIRST_SPAWN_LOCATION);
     }
 
@@ -162,22 +172,22 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
-    public void setPortalSearchRadius(int searchRadius) {
+    public void setCustomPortalSearchRadius(int searchRadius) {
         settings.set(MVConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
     }
 
     @Override
-    public int getPortalSearchRadius() {
+    public int getCustomPortalSearchRadius() {
         return settings.get(MVConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS);
     }
 
     @Override
-    public void setPrefixChat(boolean prefixChat) {
+    public void setEnablePrefixChat(boolean prefixChat) {
         settings.set(MVConfigNodes.ENABLE_CHAT_PREFIX, prefixChat);
     }
 
     @Override
-    public boolean getPrefixChat() {
+    public boolean isEnablePrefixChat() {
         return settings.get(MVConfigNodes.ENABLE_CHAT_PREFIX);
     }
 

@@ -293,7 +293,7 @@ public class MVPlayerListener implements Listener {
                     + "' because enforceaccess is off.");
         }
         if (this.plugin.getMVConfig().isUsingCustomPortalSearch()) {
-            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
+            event.setSearchRadius(this.plugin.getMVConfig().getCustomPortalSearchRadius());
         }
     }
 

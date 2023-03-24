@@ -34,7 +34,7 @@ public class MVChatListener implements Listener {
         }
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
-        if (plugin.getMVConfig().getPrefixChat()) {
+        if (plugin.getMVConfig().isEnablePrefixChat()) {
             String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
             if (world == null) {
                 world = event.getPlayer().getWorld().getName();

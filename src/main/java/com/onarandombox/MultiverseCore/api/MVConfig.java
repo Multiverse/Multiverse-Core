@@ -1,16 +1,37 @@
 package com.onarandombox.MultiverseCore.api;
 
 public interface MVConfig {
+
+    /**
+     * Loads the config from disk.
+     * @return True if the config was loaded successfully.
+     */
     boolean load();
 
+    /**
+     * Saves the config to disk.
+     */
     void save();
 
+    /**
+     * Gets a property from the config.
+     *
+     * @param name  The name of the property.
+     * @return The value of the property.
+     */
     Object getProperty(String name);
 
+    /**
+     * Sets a property in the config.
+     *
+     * @param name  The name of the property.
+     * @param value The value of the property.
+     * @return True if the property was set successfully.
+     */
     boolean setProperty(String name, Object value);
 
     /**
-     * Sets enforceAccess.
+     * Sets world access permissions should be enforced.
      * @param enforceAccess The new value.
      */
     void setEnforceAccess(boolean enforceAccess);
@@ -22,18 +43,30 @@ public interface MVConfig {
     boolean getEnforceAccess();
 
     /**
+     * Sets whether the game mode should be enforced.
+     * @param enforceGameMode The new value.
+     */
+    void setEnforceGameMode(boolean enforceGameMode);
+
+    /**
+     * Gets enforceGameMode value.
+     * @return True if game mode should be enforced.
+     */
+    boolean getEnforceGameMode();
+
+    /**
      * Sets whether or not the automatic purge of entities is enabled.
      *
      * @param autopurge True if automatic purge should be enabled.
      */
-    void setAutoPurgeEnabled(boolean autopurge);
+    void setAutoPurgeEntities(boolean autopurge);
 
     /**
      * Gets whether or not the automatic purge of entities is enabled.
      *
      * @return True if automatic purge is enabled.
      */
-    boolean isAutoPurgeEnabled();
+    boolean isAutoPurgeEntities();
 
     /**
      * Sets teleportIntercept.
@@ -63,13 +96,13 @@ public interface MVConfig {
      * Sets firstSpawnWorld.
      * @param firstSpawnWorld The new value.
      */
-    void setFirstSpawnWorld(String firstSpawnWorld);
+    void setFirstSpawnLocation(String firstSpawnWorld);
 
     /**
      * Gets firstSpawnWorld.
      * @return firstSpawnWorld.
      */
-    String getFirstSpawnWorld();
+    String getFirstSpawnLocation();
 
     /**
      * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.
@@ -90,26 +123,26 @@ public interface MVConfig {
      *
      * @param searchRadius The portal search radius.
      */
-    void setPortalSearchRadius(int searchRadius);
+    void setCustomPortalSearchRadius(int searchRadius);
 
     /**
      * Gets the radius at which vanilla style portals will be searched for to connect to worlds together.
      *
      * @return The portal search radius.
      */
-    int getPortalSearchRadius();
+    int getCustomPortalSearchRadius();
 
     /**
      * Sets prefixChat.
      * @param prefixChat The new value.
      */
-    void setPrefixChat(boolean prefixChat);
+    void setEnablePrefixChat(boolean prefixChat);
 
     /**
      * Gets prefixChat.
      * @return prefixChat.
      */
-    boolean getPrefixChat();
+    boolean isEnablePrefixChat();
 
     /**
      * Sets prefixChatFormat.

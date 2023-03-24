@@ -67,7 +67,6 @@ import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -148,10 +147,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.worldManager.loadWorlds(true);
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        this.worldManager.setFirstSpawnWorld(getMVConfig().getFirstSpawnWorld());
+        this.worldManager.setFirstSpawnWorld(getMVConfig().getFirstSpawnLocation());
         MVWorld firstSpawnWorld = this.worldManager.getFirstSpawnWorld();
         if (firstSpawnWorld != null) {
-            getMVConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
+            getMVConfig().setFirstSpawnLocation(firstSpawnWorld.getName());
         }
 
         //Setup economy here so vault is loaded
