@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.configuration;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.node.MVCommentedNode;
 import com.onarandombox.MultiverseCore.configuration.node.MVValueNode;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
@@ -163,6 +164,7 @@ public class MVConfigNodes {
             .comment("  3 = finest")
             .defaultValue(0)
             .name("global-debug")
+            .onSetValue((oldValue, newValue) -> Logging.setDebugLevel(newValue))
             .build());
 
     public static final MVValueNode<Boolean> SILENT_START = node(MVValueNode.builder("misc.silent-start", Boolean.class)
@@ -170,6 +172,7 @@ public class MVConfigNodes {
             .comment("If true, the startup console messages will no longer show.")
             .defaultValue(false)
             .name("silent-start")
+            .onSetValue((oldValue, newValue) -> Logging.setShowingConfig(!newValue))
             .build());
 
     public static final MVValueNode<Boolean> SHOW_DONATION_MESSAGE = node(MVValueNode.builder("misc.show-donation-message", Boolean.class)

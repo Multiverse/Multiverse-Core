@@ -1,15 +1,16 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Implementation of {@link NamedValueNode}.
+ * Implementation of {@link EnchancedValueNode}.
  * @param <T> The type of the value.
  */
-public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T> {
+public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNode<T> {
 
     /**
      * Creates a new builder for a {@link MVValueNode}.
@@ -26,12 +27,14 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
     protected final Class<T> type;
     protected final T defaultValue;
     protected final String name;
+    protected final BiConsumer<T, T> onSetValue;
 
-    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue, String name) {
+    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue, String name, BiConsumer<T, T> onSetValue) {
         super(path, comments);
         this.type = type;
         this.defaultValue = defaultValue;
         this.name = name;
+        this.onSetValue = onSetValue;
     }
 
     /**
@@ -58,6 +61,11 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
         return Optional.ofNullable(name);
     }
 
+    @Override
+    public void onSetValue(T oldValue, T newValue) {
+        onSetValue.accept(oldValue, newValue);
+    }
+
     /**
      * Builder for {@link MVValueNode}.
      *
@@ -68,7 +76,8 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
 
         protected final Class<T> type;
         protected T defaultValue;
-        private String name;
+        protected String name;
+        protected BiConsumer<T, T> onSetValue;
 
         /**
          * Creates a new builder.
@@ -104,12 +113,17 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
             return (B) this;
         }
 
+        public B onSetValue(@Nullable BiConsumer<T, T> onSetValue) {
+            this.onSetValue = onSetValue;
+            return (B) this;
+        }
+
         /**
          * {@inheritDoc}
          */
         @Override
         public MVValueNode<T> build() {
-            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue, name);
+            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue, name, onSetValue);
         }
     }
 }

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.node.EnchancedValueNode;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
@@ -20,10 +21,22 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ConfigHandle {
 
+    /**
+     * A builder class for creating a ConfigHandle.
+     *
+     * @param configPath    The path to the configuration file in string.
+     * @return A new Builder instance.
+     */
     public static Builder builder(String configPath) {
         return new Builder(configPath);
     }
 
+    /**
+     * A builder class for creating a ConfigHandle.
+     *
+     * @param configPath    The path to the configuration file.
+     * @return A new Builder instance.
+     */
     public static Builder builder(Path configPath) {
         return new Builder(configPath);
     }
@@ -179,17 +192,6 @@ public class ConfigHandle {
     }
 
     /**
-     * Sets the value of a node, if the validator is not null, it will be tested first.
-     *
-     * @param node  The node to set the value of.
-     * @param value The value to set.
-     */
-    public boolean set(@NotNull ValueNode node, Object value) {
-        config.set(node.getPath(), value);
-        return true;
-    }
-
-    /**
      * Set the value of the node by name.
      *
      * @param name  The name of the node to set the value of.
@@ -206,10 +208,43 @@ public class ConfigHandle {
      *
      * @param node  The node to set the value of.
      * @param value The value to set.
+     */
+    public boolean set(@NotNull ValueNode node, Object value) {
+        if (node instanceof TypedValueNode) {
+            return set(node, value);
+        }
+        config.set(node.getPath(), value);
+        return true;
+    }
+
+    /**
+     * Sets the value of a node, if the validator is not null, it will be tested first.
+     *
+     * @param node  The node to set the value of.
+     * @param value The value to set.
      * @param <T>   The type of the node value.
      */
-    public <T> void set(@NotNull TypedValueNode<T> node, T value) {
+    public <T> boolean set(@NotNull TypedValueNode<T> node, T value) {
+        if (node instanceof EnchancedValueNode) {
+            return set((EnchancedValueNode<T>) node, value);
+        }
         config.set(node.getPath(), value);
+        return true;
+    }
+
+    /**
+     * Sets the value of a node, if the validator is not null, it will be tested first.
+     *
+     * @param node  The node to set the value of.
+     * @param value The value to set.
+     * @return True if the value was set, false otherwise.
+     * @param <T>   The type of the node value.
+     */
+    public <T> boolean set(@NotNull EnchancedValueNode<T> node, T value) {
+        T oldValue = get(node);
+        config.set(node.getPath(), value);
+        node.onSetValue(oldValue, get(node));
+        return true;
     }
 
     /**

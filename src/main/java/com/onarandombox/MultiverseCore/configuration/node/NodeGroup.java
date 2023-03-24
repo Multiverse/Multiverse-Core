@@ -29,14 +29,14 @@ public class NodeGroup implements Collection<CommentedNode> {
     }
 
     private void addNodeIndex(CommentedNode node) {
-        if (node instanceof NamedValueNode) {
-            ((NamedValueNode<?>) node).getName().ifPresent(name -> nodesMap.put(name, node));
+        if (node instanceof EnchancedValueNode) {
+            ((EnchancedValueNode<?>) node).getName().ifPresent(name -> nodesMap.put(name, node));
         }
     }
 
     private void removeNodeIndex(CommentedNode node) {
-        if (node instanceof NamedValueNode) {
-            ((NamedValueNode<?>) node).getName().ifPresent(nodesMap::remove);
+        if (node instanceof EnchancedValueNode) {
+            ((EnchancedValueNode<?>) node).getName().ifPresent(nodesMap::remove);
         }
     }
 

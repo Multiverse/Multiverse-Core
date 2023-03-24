@@ -9,11 +9,13 @@ import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
  *
  * @param <T> The type of the node's value.
  */
-public interface NamedValueNode<T> extends TypedValueNode<T> {
+public interface EnchancedValueNode<T> extends TypedValueNode<T> {
     /**
      * Gets the name of this node. Used for identifying the node from user input.
      *
      * @return The name of this node.
      */
     Optional<String> getName();
+
+    void onSetValue(T oldValue, T newValue);
 }
