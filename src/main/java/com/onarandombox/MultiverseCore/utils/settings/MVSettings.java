@@ -107,8 +107,8 @@ public class MVSettings {
             if (node.getComments().length > 0) {
                 tempConfig.addComment(node.getPath(), node.getComments());
             }
-            if (node instanceof ValueNode valueNode) {
-                tempConfig.set(node.getPath(), get(valueNode));
+            if (node instanceof ValueNode) {
+                tempConfig.set(node.getPath(), get((ValueNode) node));
             }
         }
 
@@ -144,7 +144,7 @@ public class MVSettings {
      */
     public Object get(@NotNull String name) {
         return nodes.findNode(name)
-                .map(node -> (node instanceof ValueNode valueNode) ? get(valueNode) : null)
+                .map(node -> (node instanceof ValueNode) ? get((ValueNode) node) : null)
                 .orElse(null);
     }
 
@@ -190,7 +190,7 @@ public class MVSettings {
      */
     public boolean set(@NotNull String name, Object value) {
         return nodes.findNode(name)
-                .map(node -> node instanceof ValueNode valueNode && set(valueNode, value))
+                .map(node -> node instanceof ValueNode && set((ValueNode) node, value))
                 .orElse(false);
     }
 
