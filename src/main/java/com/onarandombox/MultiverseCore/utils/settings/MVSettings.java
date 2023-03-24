@@ -3,7 +3,6 @@ package com.onarandombox.MultiverseCore.utils.settings;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import com.onarandombox.MultiverseCore.utils.settings.migration.ConfigMigrator;
@@ -16,6 +15,9 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A class that makes use of CommentedConfiguration to provide a simple way to load and save with node objects.
+ */
 public class MVSettings {
 
     public static Builder builder(String configPath) {
@@ -122,6 +124,11 @@ public class MVSettings {
         config.save();
     }
 
+    /**
+     * Checks if the configuration is loaded.
+     *
+     * @return True if the configuration is loaded, false otherwise.
+     */
     public boolean isLoaded() {
         return config != null;
     }
@@ -224,6 +231,9 @@ public class MVSettings {
         return config;
     }
 
+    /**
+     * Gets the path of the configuration file.
+     */
     public static class Builder {
 
         private final Path configPath;
@@ -232,33 +242,72 @@ public class MVSettings {
 
         private ConfigMigrator migrator;
 
+        /**
+         * Creates a new builder.
+         *
+         * @param configPath The path of the configuration file.
+         */
         public Builder(String configPath) {
             this.configPath = Path.of(configPath);
         }
 
+        /**
+         * Creates a new builder.
+         *
+         * @param configPath The path of the configuration file.
+         */
         public Builder(Path configPath) {
             this.configPath = configPath;
         }
 
+        /**
+         * Sets the logger to use.
+         *
+         * @param plugin    The plugin to get the logger from.
+         * @return The builder.
+         */
         public Builder logger(@NotNull Plugin plugin) {
             return logger(plugin.getLogger());
         }
 
+        /**
+         * Sets the logger to use.
+         *
+         * @param logger    The logger to use.
+         * @return The builder.
+         */
         public Builder logger(@Nullable Logger logger) {
             this.logger = logger;
             return this;
         }
 
+        /**
+         * Sets the nodes to use.
+         *
+         * @param nodes The nodes to use.
+         * @return The builder.
+         */
         public Builder nodes(@Nullable NodeGroup nodes) {
             this.nodes = nodes;
             return this;
         }
 
+        /**
+         * Sets the migrator to use.
+         *
+         * @param migrator  The migrator to use.
+         * @return The builder.
+         */
         public Builder migrator(@Nullable ConfigMigrator migrator) {
             this.migrator = migrator;
             return this;
         }
 
+        /**
+         * Builds the settings.
+         *
+         * @return The built settings.
+         */
         public MVSettings build() {
             return new MVSettings(configPath, logger, nodes, migrator);
         }

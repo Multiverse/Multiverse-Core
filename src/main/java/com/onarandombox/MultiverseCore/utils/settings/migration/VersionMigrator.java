@@ -5,7 +5,17 @@ import java.util.List;
 
 import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
 
+/**
+ * A version migrator is a collection of migrator actions that are performed when migrating a config to a specific version.
+ */
 public class VersionMigrator {
+
+    /**
+     * Creates a new builder for a VersionMigrator.
+     *
+     * @param version The version number of the config that this migrator migrates to.
+     * @return The builder instance.
+     */
     public static Builder builder(double version) {
         return new Builder(version);
     }
@@ -18,27 +28,56 @@ public class VersionMigrator {
         this.actions = actions;
     }
 
+    /**
+     * Performs all the migrator actions.
+     *
+     * @param settings The target settings instance to migrate.
+     */
     public void migrate(MVSettings settings) {
         actions.forEach(action -> action.migrate(settings));
     }
 
+    /**
+     * Gets the version number of the config that this migrator migrates to.
+     *
+     * @return The version number.
+     */
     public double getVersion() {
         return version;
     }
 
+    /**
+     * A builder for a VersionMigrator.
+     */
     public static class Builder {
         private final double version;
         private final List<MigratorAction> actions = new ArrayList<>();
 
+        /**
+         * Creates a new builder for a VersionMigrator.
+         *
+         * @param version The version number of the config that this migrator migrates to.
+         */
         public Builder(double version) {
             this.version = version;
         }
 
+        /**
+         * Adds a migrator action to the list of actions.
+         *
+         * @param action The action to add.
+         * @return The builder instance.
+         */
         public Builder addAction(MigratorAction action) {
             actions.add(action);
             return this;
         }
 
+        /**
+         * Builds the VersionMigrator.
+         *
+         * @return The built VersionMigrator.
+         */
         public VersionMigrator build() {
             return new VersionMigrator(version, actions);
         }

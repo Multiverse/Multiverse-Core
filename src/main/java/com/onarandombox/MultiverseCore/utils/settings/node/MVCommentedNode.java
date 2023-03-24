@@ -6,6 +6,9 @@ import java.util.List;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Implementation of {@link CommentedNode} that allows for comments to be added to the node.
+ */
 public class MVCommentedNode implements CommentedNode {
 
     public static <T> Builder<Builder> builder(String path) {
@@ -20,11 +23,17 @@ public class MVCommentedNode implements CommentedNode {
         this.comments = comments;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     public @NotNull String getPath() {
         return path;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     public @NotNull String[] getComments() {
         return comments;

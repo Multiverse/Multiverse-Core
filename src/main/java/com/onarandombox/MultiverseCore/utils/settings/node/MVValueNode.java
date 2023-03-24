@@ -3,6 +3,10 @@ package com.onarandombox.MultiverseCore.utils.settings.node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Implementation of {@link NamedValueNode}.
+ * @param <T> The type of the value.
+ */
 public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T> {
 
     public static <T> Builder<T, ? extends Builder> builder(String path, Class<T> type) {
@@ -20,18 +24,27 @@ public class MVValueNode<T> extends MVCommentedNode implements NamedValueNode<T>
         this.name = name;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     public @NotNull Class<T> getType() {
         return type;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     public @Nullable T getDefaultValue() {
         return defaultValue;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 

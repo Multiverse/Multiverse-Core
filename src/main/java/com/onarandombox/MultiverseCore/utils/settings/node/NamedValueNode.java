@@ -1,7 +1,13 @@
 package com.onarandombox.MultiverseCore.utils.settings.node;
 
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
+import org.jetbrains.annotations.Nullable;
 
 public interface NamedValueNode<T> extends TypedValueNode<T> {
-    String getName();
+    /**
+     * Gets the name of this node. Used for identifying the node from user input.
+     *
+     * @return The name of this node.
+     */
+    @Nullable String getName();
 }

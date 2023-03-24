@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-import com.dumptruckman.minecraft.util.Logging;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A collection of {@link CommentedNode}s, with mappings to nodes by name.
+ */
 public class NodeGroup implements Collection<CommentedNode> {
     private final Collection<CommentedNode> nodes;
     private final Map<String, CommentedNode> nodesMap;
@@ -39,10 +40,21 @@ public class NodeGroup implements Collection<CommentedNode> {
         }
     }
 
+    /**
+     * Gets the names of all nodes in this group.
+     *
+     * @return The names of all nodes in this group.
+     */
     public Collection<String> getNames() {
         return nodesMap.keySet();
     }
 
+    /**
+     * Gets the node with the given name.
+     *
+     * @param name The name of the node to get.
+     * @return The node with the given name, or {@link Optional#empty()} if no node with the given name exists.
+     */
     public Optional<CommentedNode> findNode(String name) {
         return Optional.ofNullable(nodesMap.get(name));
     }
@@ -68,15 +80,13 @@ public class NodeGroup implements Collection<CommentedNode> {
         return nodes.iterator();
     }
 
-    @NotNull
     @Override
-    public Object[] toArray() {
+    public Object @NotNull [] toArray() {
         return nodes.toArray();
     }
 
-    @NotNull
     @Override
-    public <T> T[] toArray(@NotNull T[] ts) {
+    public <T> T @NotNull [] toArray(@NotNull T[] ts) {
         return nodes.toArray(ts);
     }
 
