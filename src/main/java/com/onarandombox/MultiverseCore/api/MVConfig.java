@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.api;
 
+import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
+
 public interface MVConfig {
 
     /**
@@ -155,6 +157,18 @@ public interface MVConfig {
      * @return prefixChatFormat.
      */
     String getPrefixChatFormat();
+
+    /**
+     * Sets whether to register the {@link MultiverseCorePlaceholders} class with PlaceholderAPI plugin.
+     * @param registerPapiHook The new value.
+     */
+    void setRegisterPapiHook(boolean registerPapiHook);
+
+    /**
+     * Gets whether to register the {@link MultiverseCorePlaceholders} class with PlaceholderAPI plugin.
+     * @return registerPapiHook.
+     */
+    boolean isRegisterPapiHook();
 
     /**
      * Sets globalDebug.

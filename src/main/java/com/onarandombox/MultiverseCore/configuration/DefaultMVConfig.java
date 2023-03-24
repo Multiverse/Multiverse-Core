@@ -202,6 +202,16 @@ public class DefaultMVConfig implements MVConfig {
     }
 
     @Override
+    public void setRegisterPapiHook(boolean registerPapiHook) {
+        settings.set(MVConfigNodes.REGISTER_PAPI_HOOK, registerPapiHook);
+    }
+
+    @Override
+    public boolean isRegisterPapiHook() {
+        return settings.get(MVConfigNodes.REGISTER_PAPI_HOOK);
+    }
+
+    @Override
     public void setGlobalDebug(int globalDebug) {
         settings.set(MVConfigNodes.GLOBAL_DEBUG, globalDebug);
     }

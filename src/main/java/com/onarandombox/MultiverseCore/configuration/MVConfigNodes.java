@@ -140,6 +140,14 @@ public class MVConfigNodes {
             .name("chat-prefix-format")
             .build());
 
+    public static final MVValueNode<Boolean> REGISTER_PAPI_HOOK = node(MVValueNode.builder("messaging.register-papi-hook", Boolean.class)
+            .comment("")
+            .comment("This config option defines whether or not Multiverse should register the PlaceholderAPI hook.")
+            .comment("This only applies if PlaceholderAPI is installed.")
+            .defaultValue(true)
+            .name("register-papi-hook")
+            .build());
+
     private static final MVCommentedNode MISC_HEADER = node(MVCommentedNode.builder("misc")
             .comment("")
             .comment("")
