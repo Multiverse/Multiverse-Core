@@ -24,7 +24,7 @@ public class InvertBoolMigratorAction implements MigratorAction {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void migrate(MVSettings settings) {

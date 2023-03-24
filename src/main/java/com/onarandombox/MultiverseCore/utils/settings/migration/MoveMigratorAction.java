@@ -30,7 +30,7 @@ public class MoveMigratorAction implements MigratorAction {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void migrate(MVSettings settings) {

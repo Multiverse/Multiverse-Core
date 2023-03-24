@@ -24,7 +24,7 @@ public class MVCommentedNode implements CommentedNode {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public @NotNull String getPath() {
@@ -32,7 +32,7 @@ public class MVCommentedNode implements CommentedNode {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public @NotNull String[] getComments() {
