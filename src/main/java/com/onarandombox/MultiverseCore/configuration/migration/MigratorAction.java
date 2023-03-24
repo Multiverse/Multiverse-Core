@@ -1,6 +1,6 @@
-package com.onarandombox.MultiverseCore.utils.settings.migration;
+package com.onarandombox.MultiverseCore.configuration.migration;
 
-import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
+import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 
 /**
  * A migrator action is a single action that is performed when migrating a config.
@@ -12,5 +12,5 @@ public interface MigratorAction {
      *
      * @param settings The target settings instance to migrate.
      */
-    void migrate(MVSettings settings);
+    void migrate(ConfigHandle settings);
 }

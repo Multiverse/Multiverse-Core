@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.configuration;
 
-import com.onarandombox.MultiverseCore.utils.settings.node.MVCommentedNode;
-import com.onarandombox.MultiverseCore.utils.settings.node.MVValueNode;
-import com.onarandombox.MultiverseCore.utils.settings.node.NodeGroup;
+import com.onarandombox.MultiverseCore.configuration.node.MVCommentedNode;
+import com.onarandombox.MultiverseCore.configuration.node.MVValueNode;
+import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 
 public class MVConfigNodes {

@@ -1,9 +1,9 @@
-package com.onarandombox.MultiverseCore.utils.settings.migration;
+package com.onarandombox.MultiverseCore.configuration.migration;
 
 import java.util.Optional;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
+import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 
 /**
  * Single migrator action that moves a value from one path to another.
@@ -33,7 +33,7 @@ public class MoveMigratorAction implements MigratorAction {
      * {@inheritDoc}
      */
     @Override
-    public void migrate(MVSettings settings) {
+    public void migrate(ConfigHandle settings) {
         Optional.ofNullable(settings.getConfig().get(fromPath))
                 .ifPresent(value -> {
                     settings.getConfig().set(toPath, value);

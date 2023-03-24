@@ -1,9 +1,9 @@
-package com.onarandombox.MultiverseCore.utils.settings.migration;
+package com.onarandombox.MultiverseCore.configuration.migration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
+import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 
 /**
  * A version migrator is a collection of migrator actions that are performed when migrating a config to a specific version.
@@ -33,7 +33,7 @@ public class VersionMigrator {
      *
      * @param settings The target settings instance to migrate.
      */
-    public void migrate(MVSettings settings) {
+    public void migrate(ConfigHandle settings) {
         actions.forEach(action -> action.migrate(settings));
     }
 

@@ -1,12 +1,12 @@
-package com.onarandombox.MultiverseCore.utils.settings;
+package com.onarandombox.MultiverseCore.configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import com.onarandombox.MultiverseCore.utils.settings.migration.ConfigMigrator;
-import com.onarandombox.MultiverseCore.utils.settings.node.NodeGroup;
+import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A class that makes use of CommentedConfiguration to provide a simple way to load and save with node objects.
  */
-public class MVSettings {
+public class ConfigHandle {
 
     public static Builder builder(String configPath) {
         return new Builder(configPath);
@@ -44,7 +44,7 @@ public class MVSettings {
      * @param nodes         All the node path and values for the configuration.
      * @param migrator      The migrator to use for migrating the configuration.
      */
-    protected MVSettings(@NotNull Path configPath, @Nullable Logger logger, @NotNull NodeGroup nodes, ConfigMigrator migrator) {
+    protected ConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @NotNull NodeGroup nodes, ConfigMigrator migrator) {
         this.configPath = configPath;
         this.nodes = nodes;
         this.logger = logger;
@@ -308,8 +308,8 @@ public class MVSettings {
          *
          * @return The built settings.
          */
-        public MVSettings build() {
-            return new MVSettings(configPath, logger, nodes, migrator);
+        public ConfigHandle build() {
+            return new ConfigHandle(configPath, logger, nodes, migrator);
         }
     }
 }

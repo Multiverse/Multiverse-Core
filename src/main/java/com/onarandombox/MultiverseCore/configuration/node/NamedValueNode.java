@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.utils.settings.node;
+package com.onarandombox.MultiverseCore.configuration.node;
 
 import java.util.Optional;
 

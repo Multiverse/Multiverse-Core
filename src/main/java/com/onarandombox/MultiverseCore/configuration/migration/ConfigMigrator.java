@@ -1,10 +1,10 @@
-package com.onarandombox.MultiverseCore.utils.settings.migration;
+package com.onarandombox.MultiverseCore.configuration.migration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
+import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 
 /**
@@ -36,7 +36,7 @@ public class ConfigMigrator {
      *
      * @param settings The target settings instance to migrate.
      */
-    public void migrate(MVSettings settings) {
+    public void migrate(ConfigHandle settings) {
         double versionNumber = settings.get(versionNode);
         for (VersionMigrator versionMigrator : versionMigrators) {
             if (versionNumber < versionMigrator.getVersion()) {

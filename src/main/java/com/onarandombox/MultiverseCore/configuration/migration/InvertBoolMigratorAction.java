@@ -1,6 +1,6 @@
-package com.onarandombox.MultiverseCore.utils.settings.migration;
+package com.onarandombox.MultiverseCore.configuration.migration;
 
-import com.onarandombox.MultiverseCore.utils.settings.MVSettings;
+import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 
 /**
  * Single migrator action that inverts a boolean value for a given path.
@@ -27,7 +27,7 @@ public class InvertBoolMigratorAction implements MigratorAction {
      * {@inheritDoc}
      */
     @Override
-    public void migrate(MVSettings settings) {
+    public void migrate(ConfigHandle settings) {
         settings.getConfig().set(path, !settings.getConfig().getBoolean(path));
     }
 }
