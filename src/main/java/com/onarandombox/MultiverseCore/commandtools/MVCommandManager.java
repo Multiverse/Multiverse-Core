@@ -4,7 +4,6 @@ import java.util.List;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
-import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
@@ -17,14 +16,12 @@ import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.jetbrains.annotations.NotNull;
-import org.jvnet.hk2.annotations.ContractsProvided;
 import org.jvnet.hk2.annotations.Service;
 
 /**
  * Main class to manage permissions.
  */
 @Service
-@ContractsProvided({MVCommandManager.class, BukkitCommandManager.class})
 public class MVCommandManager extends PaperCommandManager {
 
     private final CommandFlagsManager flagsManager;
