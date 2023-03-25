@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVConfig;
+import com.onarandombox.MultiverseCore.configuration.migration.BooleanMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.migration.IntegerMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.InvertBoolMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.MoveMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.VersionMigrator;
@@ -43,19 +45,29 @@ public class DefaultMVConfig implements MVConfig {
                 .migrator(ConfigMigrator.builder(MVConfigNodes.VERSION)
                         .addVersionMigrator(VersionMigrator.builder(5.0)
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.enforceaccess", "world.enforce-access"))
+                                .addAction(BooleanMigratorAction.of("world.enforce-access"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.prefixchat", "messaging.enable-chat-prefix"))
+                                .addAction(BooleanMigratorAction.of("messaging.enable-chat-prefix"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.prefixchatformat", "messaging.chat-prefix-format"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.teleportintercept", "world.teleport-intercept"))
+                                .addAction(BooleanMigratorAction.of("world.teleport-intercept"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.firstspawnoverride", "spawn.first-spawn-override"))
+                                .addAction(BooleanMigratorAction.of("spawn.first-spawn-override"))
                                 //.addAction(MoveMigratorAction.of("multiverse-configuration.displaypermerrors", ""))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.globaldebug", "misc.global-debug"))
+                                .addAction(IntegerMigratorAction.of("misc.global-debug"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.silentstart", "misc.silent-start"))
+                                .addAction(BooleanMigratorAction.of("misc.silent-start"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.firstspawnworld", "spawn.first-spawn-location"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.defaultportalsearch", "portal.use-custom-portal-search"))
+                                .addAction(BooleanMigratorAction.of("portal.use-custom-portal-search"))
                                 .addAction(InvertBoolMigratorAction.of("portal.use-custom-portal-search"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.portalsearchradius", "portal.custom-portal-search-radius"))
+                                .addAction(IntegerMigratorAction.of("portal.custom-portal-search-radius"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.autopurge", "world.auto-purge-entities"))
+                                .addAction(BooleanMigratorAction.of("world.auto-purge-entities"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.idonotwanttodonate", "misc.show-donation-message"))
+                                .addAction(BooleanMigratorAction.of("misc.show-donation-message"))
                                 .addAction(InvertBoolMigratorAction.of("misc.show-donation-message"))
                                 .build())
                         .build())

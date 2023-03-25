@@ -40,7 +40,7 @@ public class ConfigMigrator {
         double versionNumber = settings.get(versionNode);
         for (VersionMigrator versionMigrator : versionMigrators) {
             if (versionNumber < versionMigrator.getVersion()) {
-                Logging.config("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
+                Logging.info("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
                 versionMigrator.migrate(settings);
             }
         }

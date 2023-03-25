@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
-import com.onarandombox.MultiverseCore.configuration.node.EnchancedValueNode;
+import com.onarandombox.MultiverseCore.configuration.node.EnhancedValueNode;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
@@ -78,7 +79,7 @@ public class ConfigHandle {
             return false;
         }
         migrateConfig();
-        addDefaultNodes();
+        parseAllNodes();
         return true;
     }
 
@@ -112,22 +113,26 @@ public class ConfigHandle {
     /**
      * Adds default node values to the configuration if they are not already present.
      */
-    protected void addDefaultNodes() {
-        if (nodes.isEmpty()) {
-            return;
-        }
-
-        CommentedConfiguration tempConfig = new CommentedConfiguration(configPath, logger);
+    protected void parseAllNodes() {
+        CommentedConfiguration oldConfig = config;
+        this.config = new CommentedConfiguration(configPath, logger);
         for (CommentedNode node : nodes) {
+            Logging.config("Parsing node: %s", node.getPath());
             if (node.getComments().length > 0) {
-                tempConfig.addComment(node.getPath(), node.getComments());
+                config.addComment(node.getPath(), node.getComments());
             }
-            if (node instanceof ValueNode) {
-                tempConfig.set(node.getPath(), get((ValueNode) node));
+            if (node instanceof TypedValueNode typedNode) {
+                if (!set(typedNode, oldConfig.getObject(node.getPath(), typedNode.getType(), typedNode.getDefaultValue()))) {
+                    Logging.warning("Invalid value for node: %s, resetting to default...", node.getPath());
+                    setDefault(typedNode);
+                }
+            } else if (node instanceof ValueNode valueNode) {
+                if (!set(valueNode, oldConfig.get(node.getPath(), valueNode.getDefaultValue()))) {
+                    Logging.warning("Invalid value for node: %s, resetting to default...", node.getPath());
+                    setDefault(valueNode);
+                }
             }
         }
-
-        this.config = tempConfig;
     }
 
     /**
@@ -210,8 +215,8 @@ public class ConfigHandle {
      * @param value The value to set.
      */
     public boolean set(@NotNull ValueNode node, Object value) {
-        if (node instanceof TypedValueNode) {
-            return set(node, value);
+        if (node instanceof TypedValueNode typedValueNode) {
+            return set(typedValueNode, value);
         }
         config.set(node.getPath(), value);
         return true;
@@ -225,8 +230,8 @@ public class ConfigHandle {
      * @param <T>   The type of the node value.
      */
     public <T> boolean set(@NotNull TypedValueNode<T> node, T value) {
-        if (node instanceof EnchancedValueNode) {
-            return set((EnchancedValueNode<T>) node, value);
+        if (node instanceof EnhancedValueNode<T> enhancedValueNode) {
+            return set(enhancedValueNode, value);
         }
         config.set(node.getPath(), value);
         return true;
@@ -240,7 +245,10 @@ public class ConfigHandle {
      * @return True if the value was set, false otherwise.
      * @param <T>   The type of the node value.
      */
-    public <T> boolean set(@NotNull EnchancedValueNode<T> node, T value) {
+    public <T> boolean set(@NotNull EnhancedValueNode<T> node, T value) {
+        if (!node.isValid(value)) {
+            return false;
+        }
         T oldValue = get(node);
         config.set(node.getPath(), value);
         node.onSetValue(oldValue, get(node));
@@ -251,9 +259,8 @@ public class ConfigHandle {
      * Sets the default value of a node.
      *
      * @param node  The node to set the default value of.
-     * @param <T>   The type of the node value.
      */
-    public <T> void setDefault(@NotNull TypedValueNode<T> node) {
+    public void setDefault(@NotNull ValueNode node) {
         config.set(node.getPath(), node.getDefaultValue());
     }
 

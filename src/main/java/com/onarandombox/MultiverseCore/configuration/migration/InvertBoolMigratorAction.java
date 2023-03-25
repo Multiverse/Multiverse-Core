@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.configuration.migration;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 
 /**
@@ -28,6 +29,8 @@ public class InvertBoolMigratorAction implements MigratorAction {
      */
     @Override
     public void migrate(ConfigHandle settings) {
-        settings.getConfig().set(path, !settings.getConfig().getBoolean(path));
+        boolean boolValue = !settings.getConfig().getBoolean(path);
+        settings.getConfig().set(path, boolValue);
+        Logging.info("Inverted %s to boolean %s", path, boolValue);
     }
 }

@@ -119,6 +119,7 @@ public class MVConfigNodes {
             .comment("This only applies if use-custom-portal-search is set to true.")
             .defaultValue(128)
             .name("custom-portal-search-radius")
+            .validator(value -> value >= 0)
             .build());
 
     private static final MVCommentedNode MESSAGING_HEADER = node(MVCommentedNode.builder("messaging")
@@ -164,6 +165,7 @@ public class MVConfigNodes {
             .comment("  3 = finest")
             .defaultValue(0)
             .name("global-debug")
+            .validator(value -> value >= 0 && value <= 3)
             .onSetValue((oldValue, newValue) -> Logging.setDebugLevel(newValue))
             .build());
 

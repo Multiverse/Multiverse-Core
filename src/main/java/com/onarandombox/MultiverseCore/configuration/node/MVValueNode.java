@@ -2,15 +2,16 @@ package com.onarandombox.MultiverseCore.configuration.node;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Implementation of {@link EnchancedValueNode}.
+ * Implementation of {@link EnhancedValueNode}.
  * @param <T> The type of the value.
  */
-public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNode<T> {
+public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode<T> {
 
     /**
      * Creates a new builder for a {@link MVValueNode}.
@@ -27,13 +28,15 @@ public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNod
     protected final Class<T> type;
     protected final T defaultValue;
     protected final String name;
+    protected final Function<T, Boolean> validator;
     protected final BiConsumer<T, T> onSetValue;
 
-    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue, String name, BiConsumer<T, T> onSetValue) {
+    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue, String name, Function<T, Boolean> validator, BiConsumer<T, T> onSetValue) {
         super(path, comments);
         this.type = type;
         this.defaultValue = defaultValue;
         this.name = name;
+        this.validator = validator;
         this.onSetValue = onSetValue;
     }
 
@@ -61,9 +64,25 @@ public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNod
         return Optional.ofNullable(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isValid(T value) {
+        if (validator != null) {
+            return validator.apply(value);
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSetValue(T oldValue, T newValue) {
-        onSetValue.accept(oldValue, newValue);
+        if (onSetValue != null) {
+            onSetValue.accept(oldValue, newValue);
+        }
     }
 
     /**
@@ -77,6 +96,7 @@ public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNod
         protected final Class<T> type;
         protected T defaultValue;
         protected String name;
+        protected Function<T, Boolean> validator;
         protected BiConsumer<T, T> onSetValue;
 
         /**
@@ -113,6 +133,17 @@ public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNod
             return (B) this;
         }
 
+        public B validator(@Nullable Function<T, Boolean> validator) {
+            this.validator = validator;
+            return (B) this;
+        }
+
+        /**
+         * Sets the action to be performed when the value is set.
+         *
+         * @param onSetValue    The action to be performed.
+         * @return This builder.
+         */
         public B onSetValue(@Nullable BiConsumer<T, T> onSetValue) {
             this.onSetValue = onSetValue;
             return (B) this;
@@ -123,7 +154,7 @@ public class MVValueNode<T> extends MVCommentedNode implements EnchancedValueNod
          */
         @Override
         public MVValueNode<T> build() {
-            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue, name, onSetValue);
+            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue, name, validator, onSetValue);
         }
     }
 }
