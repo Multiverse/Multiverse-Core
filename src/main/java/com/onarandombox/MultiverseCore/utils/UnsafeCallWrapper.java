@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import org.jvnet.hk2.annotations.Service;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.Callable;
  * Wraps calls that could result in exceptions that are not Multiverse's fault.
  */
 @Service
-public class UnsafeCallWrapper {
+public class UnsafeCallWrapper implements EagerlyLoaded {
     private final MVCoreConfigProvider configProvider;
 
     @Inject

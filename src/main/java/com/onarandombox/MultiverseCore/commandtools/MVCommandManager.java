@@ -13,6 +13,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ import org.jvnet.hk2.annotations.Service;
  * Main class to manage permissions.
  */
 @Service
-public class MVCommandManager extends PaperCommandManager {
+public class MVCommandManager extends PaperCommandManager implements EagerlyLoaded {
 
     private final CommandFlagsManager flagsManager;
     private final CommandQueueManager commandQueueManager;

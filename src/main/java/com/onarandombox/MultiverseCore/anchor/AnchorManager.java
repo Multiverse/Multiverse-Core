@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,7 +33,7 @@ import java.util.Set;
  * Manages anchors.
  */
 @Service
-public class AnchorManager {
+public class AnchorManager implements EagerlyLoaded {
     private Map<String, Location> anchors;
     private FileConfiguration anchorConfig;
 

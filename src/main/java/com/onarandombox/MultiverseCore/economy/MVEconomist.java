@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.economy;
 
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,7 +13,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's Friendly Economist. This is used to deal with external economies and also item costs for stuff in MV.
  */
 @Service
-public class MVEconomist {
+public class MVEconomist implements EagerlyLoaded {
 
     private final VaultHandler vaultHandler;
 
