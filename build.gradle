@@ -55,6 +55,10 @@ repositories {
         name = 'glaremasters repo'
         url = 'https://repo.glaremasters.me/repository/towny/'
     }
+    maven {
+        name = 'PlaceholderAPI'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
 }
 
 configurations {
@@ -76,6 +80,9 @@ dependencies {
     implementation('com.github.MilkBowl:VaultAPI:1.7.1') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
+
+    // PlaceholderAPI
+    compileOnly 'me.clip:placeholderapi:2.11.2'
 
     // Command Framework
     relocatedApi 'co.aikar:acf-paper:0.5.1-SNAPSHOT'

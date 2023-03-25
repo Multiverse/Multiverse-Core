@@ -26,6 +26,7 @@ import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
+import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
@@ -124,6 +125,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
+        this.setupPlaceholderAPI();
         this.saveMVConfig();
         this.logEnableMessage();
     }
@@ -183,7 +185,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void setUpLocales() {
         var commandManager = serviceLocator.getService(MVCommandManager.class);
-        
+
         commandManager.usePerIssuerLocale(true, true);
         commandManager.getLocales().addFileResClassLoader(this);
         commandManager.getLocales().addMessageBundles("multiverse-core");
@@ -216,6 +218,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (getConfigProvider().getConfig().isShowingDonateMessage()) {
             getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+        }
+    }
+
+    private void setupPlaceholderAPI() {
+        if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new MultiverseCorePlaceholders(this).register();
         }
     }
 
