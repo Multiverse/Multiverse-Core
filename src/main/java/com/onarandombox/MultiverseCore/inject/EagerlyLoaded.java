@@ -7,4 +7,4 @@ import org.jvnet.hk2.annotations.Contract;
  * set up for the owning plugin.
  */
 @Contract
-public interface AutoLoadedService { }
+public interface EagerlyLoaded { }

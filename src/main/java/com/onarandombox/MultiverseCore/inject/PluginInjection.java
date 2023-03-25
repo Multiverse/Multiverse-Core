@@ -84,7 +84,7 @@ public final class PluginInjection {
     private Try<ServiceLocator> load() {
         return Try.runRunnable(() -> ServiceLocatorUtilities.bind(pluginServiceLocator, pluginBinder))
                 .flatMap(ignored -> populatePluginServiceLocator(pluginServiceLocator, plugin))
-                .andThenTry(locator -> locator.getAllServices(AutoLoadedService.class));
+                .andThenTry(locator -> locator.getAllServices(EagerlyLoaded.class));
     }
 
     @NotNull
