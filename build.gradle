@@ -82,7 +82,7 @@ dependencies {
     }
 
     // PlaceholderAPI
-    compileOnly 'me.clip:placeholderapi:2.11.2'
+    implementation 'me.clip:placeholderapi:2.11.2'
 
     // Command Framework
     relocatedApi 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
