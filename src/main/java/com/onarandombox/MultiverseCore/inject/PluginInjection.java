@@ -6,15 +6,12 @@ import com.onarandombox.MultiverseCore.inject.binder.ServerBinder;
 import io.vavr.control.Try;
 import org.bukkit.plugin.Plugin;
 import org.glassfish.hk2.api.DynamicConfigurationService;
-import org.glassfish.hk2.api.MultiException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.internal.ServiceLocatorFactoryImpl;
 import org.glassfish.hk2.utilities.ClasspathDescriptorFileFinder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Provides methods to set up dependency injection for plugins.
@@ -39,15 +36,9 @@ public final class PluginInjection {
     public static Try<ServiceLocator> createServiceLocator(@NotNull PluginBinder<?> pluginBinder) {
         var factory = new ServiceLocatorFactoryImpl();
 
-        var systemServiceLocator = createSystemServiceLocator(factory);
-
-        var features = systemServiceLocator
-                .mapTry(locator -> locator.getAllServices(InjectionFeature.class));
-
-        return systemServiceLocator
+        return createSystemServiceLocator(factory)
                 .flatMap(systemLocator -> createServerServiceLocator(factory, systemLocator))
-                .map(serverLocator -> new PluginInjection(pluginBinder, factory, serverLocator))
-                .flatMap(pluginInjection -> features.flatMap(pluginInjection::load));
+                .flatMap(serverLocator -> new PluginInjection(pluginBinder, factory, serverLocator).load());
     }
 
     /**
@@ -90,16 +81,10 @@ public final class PluginInjection {
         pluginServiceLocator = serviceLocatorFactory.create(plugin.getName(), serverServiceLocator);
     }
 
-    private Try<ServiceLocator> load(List<InjectionFeature> features) {
+    private Try<ServiceLocator> load() {
         return Try.runRunnable(() -> ServiceLocatorUtilities.bind(pluginServiceLocator, pluginBinder))
                 .flatMap(ignored -> populatePluginServiceLocator(pluginServiceLocator, plugin))
-                .andThenTry(() -> loadAncillaryServices(features));
-    }
-
-    private void loadAncillaryServices(List<InjectionFeature> features) throws MultiException {
-        features.forEach(feature -> feature.preServicesCreation(pluginServiceLocator));
-        pluginServiceLocator.getAllServices(AutoLoadedService.class);
-        features.forEach(feature -> feature.postServicesCreation(pluginServiceLocator));
+                .andThenTry(locator -> locator.getAllServices(AutoLoadedService.class));
     }
 
     @NotNull

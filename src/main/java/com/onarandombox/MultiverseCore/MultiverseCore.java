@@ -165,7 +165,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Function to Register all the Events needed.
      */
     private void registerEvents() {
-        // TODO add automatic listener registration through hk2
         PluginManager pluginManager = getServer().getPluginManager();
         getAllServices(Listener.class).forEach(listener -> pluginManager.registerEvents(listener, this));
     }
@@ -174,7 +173,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        // TODO add automatic command registration through hk2
         var commandManager = serviceLocator.getService(MVCommandManager.class);
         serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
     }
@@ -194,7 +192,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Register all the destinations.
      */
     private void registerDestinations() {
-        // TODO add automatic destination registration through hk2
         var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
         serviceLocator.getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
     }
