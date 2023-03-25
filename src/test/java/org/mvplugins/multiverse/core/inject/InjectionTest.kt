@@ -83,11 +83,6 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `MultiverseCorePlaceholders is available as a service`() {
-        assertNotNull(multiverseCore.getService(MultiverseCorePlaceholders::class.java))
-    }
-
-    @Test
     fun `MVEntityListener is available as a service`() {
         assertNotNull(multiverseCore.getService(MVEntityListener::class.java))
     }

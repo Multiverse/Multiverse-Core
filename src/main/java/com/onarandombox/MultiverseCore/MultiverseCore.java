@@ -223,7 +223,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private void setupPlaceholderAPI() {
         if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            var placeholders = getService(MultiverseCorePlaceholders.class);
+            var placeholders = serviceLocator.getService(MultiverseCorePlaceholders.class);
             if (placeholders != null) {
                 placeholders.register();
             }
