@@ -9,19 +9,19 @@ package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jvnet.hk2.annotations.Service;
 
 /**
- * Multiverse's World {@link Listener}.
+ * Multiverse's World Listener.
  */
 @Service
-public class MVWorldListener implements Listener {
+public class MVWorldListener implements InjectableListener {
 
     private MVWorldManager worldManager;
 

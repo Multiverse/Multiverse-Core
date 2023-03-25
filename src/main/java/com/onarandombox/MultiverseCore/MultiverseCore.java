@@ -24,6 +24,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
@@ -31,7 +32,6 @@ import com.onarandombox.MultiverseCore.world.WorldProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -166,7 +166,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerEvents() {
         PluginManager pluginManager = getServer().getPluginManager();
-        getAllServices(Listener.class).forEach(listener -> pluginManager.registerEvents(listener, this));
+        serviceLocator.getAllServices(InjectableListener.class)
+                .forEach(listener -> pluginManager.registerEvents(listener, this));
     }
 
     /**

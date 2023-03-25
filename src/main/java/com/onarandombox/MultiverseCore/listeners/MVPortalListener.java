@@ -10,12 +10,12 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
@@ -25,7 +25,7 @@ import org.jvnet.hk2.annotations.Service;
  * A custom listener for portal related events.
  */
 @Service
-public class MVPortalListener implements Listener {
+public class MVPortalListener implements InjectableListener {
 
     private MVWorldManager worldManager;
 

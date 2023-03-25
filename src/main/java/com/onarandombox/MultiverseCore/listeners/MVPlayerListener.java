@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import jakarta.inject.Inject;
@@ -30,7 +31,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -40,10 +40,10 @@ import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
 /**
- * Multiverse's {@link Listener} for players.
+ * Multiverse's Listener for players.
  */
 @Service
-public class MVPlayerListener implements Listener {
+public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfigProvider configProvider;
     private final Provider<MVWorldManager> worldManagerProvider;
