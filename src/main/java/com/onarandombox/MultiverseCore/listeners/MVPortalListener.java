@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
@@ -26,7 +25,7 @@ import org.jvnet.hk2.annotations.Service;
  * A custom listener for portal related events.
  */
 @Service
-public class MVPortalListener implements AutoLoadedService, Listener {
+public class MVPortalListener implements Listener {
 
     private MVWorldManager worldManager;
 

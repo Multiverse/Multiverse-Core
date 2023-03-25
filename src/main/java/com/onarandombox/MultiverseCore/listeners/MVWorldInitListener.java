@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import jakarta.inject.Inject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +15,7 @@ import org.bukkit.event.world.WorldInitEvent;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
-public class MVWorldInitListener implements AutoLoadedService, Listener {
+public class MVWorldInitListener implements Listener {
 
     private final MVWorldManager worldManager;
 

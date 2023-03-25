@@ -12,7 +12,6 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
-import com.onarandombox.MultiverseCore.inject.AutoLoadedService;
 import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -32,7 +31,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's Entity {@link Listener}.
  */
 @Service
-public class MVEntityListener implements AutoLoadedService, Listener {
+public class MVEntityListener implements Listener {
     private final MVCoreConfigProvider configProvider;
     private final MVWorldManager worldManager;
     private final WorldPurger worldPurger;
