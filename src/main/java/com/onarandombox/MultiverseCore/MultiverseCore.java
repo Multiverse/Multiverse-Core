@@ -30,6 +30,7 @@ import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
@@ -205,7 +206,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
             // Load metrics
-            serviceLocator.getService(MetricsConfigurator.class);
+            serviceLocator.createAndInitialize(MetricsConfigurator.class);
+        } else {
+            Logging.info("Metrics are disabled in testing mode.");
         }
     }
 

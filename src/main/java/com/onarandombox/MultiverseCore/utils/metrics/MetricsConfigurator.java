@@ -8,13 +8,12 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
-import org.jvnet.hk2.annotations.Service;
 
-@Service
 public class MetricsConfigurator {
 
     private static final int PLUGIN_ID = 7765;
@@ -37,6 +36,7 @@ public class MetricsConfigurator {
         return getWorldManager().getMVWorlds();
     }
 
+    @PostConstruct
     private void initMetrics() {
         try {
             addCustomGeneratorsMetric();
