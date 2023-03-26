@@ -24,6 +24,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
@@ -66,6 +67,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<MetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MultiverseCorePlaceholders> placeholdersProvider;
+    @Inject
+    private Provider<MVEconomist> economistProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -123,8 +126,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
 
         //Setup economy here so vault is loaded
-        // TODO we may need to change MVEconomist to have an enable method or something
-        // this.economist = new MVEconomist(this);
+        this.loadEconomist();
 
         // Init all the other stuff
         this.loadAnchors();
@@ -169,6 +171,11 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private boolean shouldShowConfig() {
         return !getConfigProvider().getConfig().getSilentStart();
+    }
+
+    private void loadEconomist() {
+        Try.run(() -> economistProvider.get())
+                .onFailure(e -> Logging.severe("Failed to load economy integration", e));
     }
 
     private void loadAnchors() {
