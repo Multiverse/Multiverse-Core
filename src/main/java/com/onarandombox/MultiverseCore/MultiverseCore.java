@@ -197,11 +197,13 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Register locales
      */
     private void setUpLocales() {
-        var commandManager = serviceLocator.getService(MVCommandManager.class);
-
-        commandManager.usePerIssuerLocale(true, true);
-        commandManager.getLocales().addFileResClassLoader(this);
-        commandManager.getLocales().addMessageBundles("multiverse-core");
+        Try.of(() -> commandManagerProvider.get())
+                .andThenTry(commandManager -> {
+                    commandManager.usePerIssuerLocale(true, true);
+                    commandManager.getLocales().addFileResClassLoader(this);
+                    commandManager.getLocales().addMessageBundles("multiverse-core");
+                })
+                .onFailure(throwable -> Logging.severe("Failed to register locales", throwable));
     }
 
     /**
