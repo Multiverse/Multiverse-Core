@@ -52,12 +52,13 @@ import org.jvnet.hk2.annotations.Service;
 public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 50;
 
-    // Setup various managers
     private ServiceLocator serviceLocator;
+    @Inject
+    private MVCoreConfigProvider configProvider;
     @Inject
     private Provider<MVWorldManager> worldManagerProvider;
     @Inject
-    private MVCoreConfigProvider configProvider;
+    private Provider<AnchorManager> anchorManagerProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -119,8 +120,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // this.economist = new MVEconomist(this);
 
         // Init all the other stuff
-        // TODO consider moving this into the AnchorManager constructor
-        serviceLocator.getService(AnchorManager.class).loadAnchors();
+        this.loadAnchors();
         this.registerEvents();
         this.registerCommands();
         this.setUpLocales();
@@ -162,6 +162,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private boolean shouldShowConfig() {
         return !getConfigProvider().getConfig().getSilentStart();
+    }
+
+    private void loadAnchors() {
+        Try.of(() -> anchorManagerProvider.get())
+                .onSuccess(AnchorManager::loadAnchors)
+                .onFailure(throwable -> Logging.severe("Failed to load anchors", throwable));
     }
 
     /**

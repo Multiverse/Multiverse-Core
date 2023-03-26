@@ -18,7 +18,6 @@ import com.onarandombox.MultiverseCore.listeners.MVPortalListener
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener
-import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
