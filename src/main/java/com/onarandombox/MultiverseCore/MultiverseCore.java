@@ -35,7 +35,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.glassfish.hk2.api.MultiException;
@@ -180,9 +179,13 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Function to Register all the Events needed.
      */
     private void registerEvents() {
-        PluginManager pluginManager = getServer().getPluginManager();
-        serviceLocator.getAllServices(InjectableListener.class)
-                .forEach(listener -> pluginManager.registerEvents(listener, this));
+        var pluginManager = getServer().getPluginManager();
+
+        Try.run(() -> serviceLocator.getAllServices(InjectableListener.class)
+                        .forEach(listener -> pluginManager.registerEvents(listener, this)))
+                .onFailure(e -> {
+                    throw new RuntimeException("Failed to register listeners. Terminating...", e);
+                });
     }
 
     /**
@@ -229,7 +232,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (TestingMode.isDisabled()) {
             // Load metrics
             Try.of(() -> metricsConfiguratorProvider.get())
-                    .onFailure(throwable -> Logging.severe("Failed to setup metrics", throwable));
+                    .onFailure(e -> Logging.severe("Failed to setup metrics", e));
         } else {
             Logging.info("Metrics are disabled in testing mode.");
         }
