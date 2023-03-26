@@ -9,18 +9,29 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVConfig;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class ConfigCommand extends MultiverseCoreCommand {
-    private final MVConfig config;
+public class ConfigCommand extends MultiverseCommand {
 
-    public ConfigCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
-        this.config = plugin.getMVConfig();
+    private final MVCoreConfigProvider configProvider;
+
+    @Inject
+    public ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfigProvider configProvider) {
+        super(commandManager);
+        this.configProvider = configProvider;
+    }
+
+    private MVConfig getConfig() {
+        return configProvider.getConfig();
     }
 
     @Subcommand("config")
@@ -48,20 +59,20 @@ public class ConfigCommand extends MultiverseCoreCommand {
     }
 
     private void showConfigValue(BukkitCommandIssuer issuer, String name) {
-        Object currentValue = config.getProperty(name);
+        Object currentValue = getConfig().getProperty(name);
         if (currentValue == null) {
             issuer.sendMessage("No such config option: " + name);
             return;
         }
-        issuer.sendMessage(name + "is currently set to " + config.getProperty(name));
+        issuer.sendMessage(name + "is currently set to " + getConfig().getProperty(name));
     }
 
     private void updateConfigValue(BukkitCommandIssuer issuer, String name, Object value) {
-        if (!config.setProperty(name, value)) {
+        if (!getConfig().setProperty(name, value)) {
             issuer.sendMessage("Unable to set " + name + " to " + value);
             return;
         }
-        config.save();
+        getConfig().save();
         issuer.sendMessage("Successfully set " + name + " to " + value);
     }
 }

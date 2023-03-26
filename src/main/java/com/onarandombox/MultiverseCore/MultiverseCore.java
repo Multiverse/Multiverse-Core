@@ -21,11 +21,9 @@ import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
-import com.onarandombox.MultiverseCore.configuration.DefaultMVConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
@@ -347,16 +345,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void loadConfigs() {
         getConfigProvider().loadConfigs();
-        // TODO move to config provider
-//        config = DefaultMVConfig.init(this);
-//
-//        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
-//
-//        int level = Logging.getDebugLevel();
-//        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
-//        if (level != Logging.getDebugLevel()) {
-//            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
-//        }
     }
 
     /**

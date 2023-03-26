@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
@@ -55,6 +55,7 @@ public class SimpleMVWorld implements MVWorld {
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
     private final MVWorldManager worldManager;
+    private final MVCoreConfigProvider configProvider;
     private final WorldPurger worldPurger;
     private final MVPlayerListener playerListener;
     private final BlockSafety blockSafety;
@@ -67,6 +68,7 @@ public class SimpleMVWorld implements MVWorld {
 
     public SimpleMVWorld(
             MVWorldManager worldManager,
+            MVCoreConfigProvider configProvider,
             WorldPurger worldPurger,
             MVPlayerListener playerListener,
             BlockSafety blockSafety,
@@ -76,7 +78,7 @@ public class SimpleMVWorld implements MVWorld {
             World world,
             WorldProperties properties
     ) {
-        this(worldManager, worldPurger, playerListener, blockSafety, safeTTeleporter,
+        this(worldManager, configProvider, worldPurger, playerListener, blockSafety, safeTTeleporter,
                 locationManipulation, server, world, properties, true);
     }
 
@@ -85,6 +87,7 @@ public class SimpleMVWorld implements MVWorld {
      */
     public SimpleMVWorld(
             MVWorldManager worldManager,
+            MVCoreConfigProvider configProvider,
             WorldPurger worldPurger,
             MVPlayerListener playerListener,
             BlockSafety blockSafety,
@@ -96,6 +99,7 @@ public class SimpleMVWorld implements MVWorld {
             boolean fixSpawn
     ) {
         this.worldManager = worldManager;
+        this.configProvider = configProvider;
         this.worldPurger = worldPurger;
         this.playerListener = playerListener;
         this.blockSafety = blockSafety;
@@ -321,7 +325,7 @@ public class SimpleMVWorld implements MVWorld {
                 }
                 world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEntities()) {
+            if (configProvider.getConfig().isAutoPurgeEntities()) {
                 worldPurger.purgeWorld(SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);

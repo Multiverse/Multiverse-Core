@@ -32,6 +32,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
@@ -61,6 +62,7 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class SimpleMVWorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
+    private final MVCoreConfigProvider configProvider;
     private final MVPlayerListener playerListener;
     private final BlockSafety blockSafety;
     private final SafeTTeleporter safeTTeleporter;
@@ -77,6 +79,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
     @Inject
     public SimpleMVWorldManager(
             MultiverseCore plugin,
+            MVCoreConfigProvider configProvider,
             MVPlayerListener playerListener,
             BlockSafety blockSafety,
             SafeTTeleporter safeTTeleporter,
@@ -86,6 +89,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             Server server
     ) {
         this.plugin = plugin;
+        this.configProvider = configProvider;
         this.playerListener = playerListener;
         this.blockSafety = blockSafety;
         this.safeTTeleporter = safeTTeleporter;
@@ -511,9 +515,9 @@ public class SimpleMVWorldManager implements MVWorldManager {
             nullWorld(worldName);
             return false;
         }
-        SimpleMVWorld world = new SimpleMVWorld(this, worldPurger, playerListener, blockSafety, safeTTeleporter,
-                locationManipulation, server, cbworld, mvworld);
-        if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEntities()) {
+        SimpleMVWorld world = new SimpleMVWorld(this, configProvider, worldPurger, playerListener, blockSafety,
+                safeTTeleporter, locationManipulation, server, cbworld, mvworld);
+        if (configProvider.getConfig().isAutoPurgeEntities()) {
             this.worldPurger.purgeWorld(world);
         }
         this.worlds.put(worldName, world);
