@@ -23,6 +23,7 @@ import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
 import com.onarandombox.MultiverseCore.utils.MVPermissions
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.assertEquals
@@ -140,5 +141,11 @@ class InjectionTest : TestWithMockBukkit() {
         // We need one test case for asking for non-services to make sure we don't accidentally make them available
         // and that the getService method doesn't throw an exception
         assertNull(multiverseCore.getService(MVConfig::class.java))
+    }
+
+    @Test
+    fun `MetricsConfigurator is not available as a service`() {
+        // Also making sure this is not loaded automatically since it's supposed to be disabled during tests
+        assertNull(multiverseCore.getService(MetricsConfigurator::class.java))
     }
 }

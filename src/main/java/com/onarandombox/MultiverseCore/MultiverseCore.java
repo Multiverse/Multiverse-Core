@@ -62,7 +62,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Inject
     private Provider<MVCommandManager> commandManagerProvider;
     @Inject
-    private Provider<DestinationsProvider>destinationsProviderProvider;
+    private Provider<DestinationsProvider> destinationsProviderProvider;
+    @Inject
+    private Provider<MetricsConfigurator> metricsConfiguratorProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -226,7 +228,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
             // Load metrics
-            serviceLocator.createAndInitialize(MetricsConfigurator.class);
+            Try.of(() -> metricsConfiguratorProvider.get())
+                    .onFailure(throwable -> Logging.severe("Failed to setup metrics", throwable));
         } else {
             Logging.info("Metrics are disabled in testing mode.");
         }
