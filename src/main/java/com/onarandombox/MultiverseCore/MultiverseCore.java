@@ -64,6 +64,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<DestinationsProvider> destinationsProviderProvider;
     @Inject
     private Provider<MetricsConfigurator> metricsConfiguratorProvider;
+    @Inject
+    private Provider<MultiverseCorePlaceholders> placeholdersProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -252,10 +254,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private void setupPlaceholderAPI() {
         if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            var placeholders = serviceLocator.getService(MultiverseCorePlaceholders.class);
-            if (placeholders != null) {
-                placeholders.register();
-            }
+            Try.of(() -> placeholdersProvider.get())
+                    .onSuccess(MultiverseCorePlaceholders::register)
+                    .onFailure(e -> Logging.severe("Failed to load PlaceholderAPI integration.", e));
         }
     }
 
