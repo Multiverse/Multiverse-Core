@@ -6,7 +6,6 @@ import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
-import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
@@ -24,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Service
-public final class MVCoreConfigProvider implements EagerlyLoaded {
+public final class MVCoreConfigProvider {
 
     private static final String CONFIG_FILE = "config.yml";
     private static final String DEFAULTS_CONFIG_FILE = "/defaults/config.yml";
