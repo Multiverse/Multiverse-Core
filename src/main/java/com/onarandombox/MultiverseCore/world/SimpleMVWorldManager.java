@@ -34,7 +34,6 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
-import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
@@ -61,7 +60,7 @@ import org.jvnet.hk2.annotations.Service;
  * Public facing API to add/remove Multiverse worlds.
  */
 @Service
-public class SimpleMVWorldManager implements MVWorldManager, EagerlyLoaded {
+public class SimpleMVWorldManager implements MVWorldManager {
     private final MultiverseCore plugin;
     private final MVPlayerListener playerListener;
     private final BlockSafety blockSafety;
