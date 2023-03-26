@@ -6,22 +6,26 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
+import jakarta.inject.Inject;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class MultiverseCorePlaceholders extends PlaceholderExpansion {
 
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
     private final MVEconomist economist;
 
-    public MultiverseCorePlaceholders(MultiverseCore plugin) {
+    @Inject
+    public MultiverseCorePlaceholders(MultiverseCore plugin, MVWorldManager worldManager, MVEconomist economist) {
         this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
-        this.economist = plugin.getEconomist();
+        this.worldManager = worldManager;
+        this.economist = economist;
     }
 
     @Override

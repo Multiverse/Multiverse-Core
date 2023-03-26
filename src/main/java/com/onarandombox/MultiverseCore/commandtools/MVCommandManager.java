@@ -10,26 +10,43 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Main class to manage permissions.
  */
-public class MVCommandManager extends PaperCommandManager {
+@Service
+public class MVCommandManager extends PaperCommandManager implements EagerlyLoaded {
 
-    private final MultiverseCore plugin;
-    private CommandFlagsManager flagsManager;
-    private CommandQueueManager commandQueueManager;
+    private final CommandFlagsManager flagsManager;
+    private final CommandQueueManager commandQueueManager;
+    private final Provider<MVCommandContexts> commandContextsProvider;
+    private final Provider<MVCommandCompletions> commandCompletionsProvider;
     private PluginLocales pluginLocales;
 
-    public MVCommandManager(@NotNull MultiverseCore plugin) {
+    @Inject
+    public MVCommandManager(
+            @NotNull MultiverseCore plugin,
+            @NotNull CommandFlagsManager flagsManager,
+            @NotNull CommandQueueManager commandQueueManager,
+            @NotNull Provider<MVCommandContexts> commandContextsProvider,
+            @NotNull Provider<MVCommandCompletions> commandCompletionsProvider,
+            @NotNull MVWorldManager worldManager
+    ) {
         super(plugin);
-        this.plugin = plugin;
+        this.flagsManager = flagsManager;
+        this.commandQueueManager = commandQueueManager;
+        this.commandContextsProvider = commandContextsProvider;
+        this.commandCompletionsProvider = commandCompletionsProvider;
 
-        // Setup conditions
-        MVCommandConditions.load(this, plugin);
+        MVCommandConditions.load(this, worldManager);
     }
 
     /**
@@ -38,9 +55,6 @@ public class MVCommandManager extends PaperCommandManager {
      * @return A not-null {@link CommandFlagsManager}.
      */
     public synchronized @NotNull CommandFlagsManager getFlagsManager() {
-        if (this.flagsManager == null) {
-            this.flagsManager = new CommandFlagsManager();
-        }
         return flagsManager;
     }
 
@@ -65,9 +79,6 @@ public class MVCommandManager extends PaperCommandManager {
      * @return A non-null {@link CommandQueueManager}.
      */
     public synchronized @NotNull CommandQueueManager getCommandQueueManager() {
-        if (this.commandQueueManager == null) {
-            this.commandQueueManager = new CommandQueueManager(this.plugin);
-        }
         return commandQueueManager;
     }
 
@@ -79,7 +90,7 @@ public class MVCommandManager extends PaperCommandManager {
     @Override
     public synchronized @NotNull CommandContexts<BukkitCommandExecutionContext> getCommandContexts() {
         if (this.contexts == null) {
-            this.contexts = new MVCommandContexts(this, plugin);
+            this.contexts = commandContextsProvider.get();
         }
         return this.contexts;
     }
@@ -92,7 +103,7 @@ public class MVCommandManager extends PaperCommandManager {
     @Override
     public synchronized @NotNull CommandCompletions<BukkitCommandCompletionContext> getCommandCompletions() {
         if (this.completions == null) {
-            this.completions = new MVCommandCompletions(this, plugin);
+            this.completions = commandCompletionsProvider.get();
         }
         return this.completions;
     }
@@ -105,7 +116,7 @@ public class MVCommandManager extends PaperCommandManager {
     public void showUsage(@NotNull CommandHelp help) {
         List<HelpEntry> entries = help.getHelpEntries();
         if (entries.size() == 1) {
-            this.plugin.getMVCommandManager().getHelpFormatter().showDetailedHelp(help, entries.get(0));
+            getHelpFormatter().showDetailedHelp(help, entries.get(0));
             return;
         }
         help.showHelp();

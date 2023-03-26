@@ -1,18 +1,23 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.api.MVCore;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
+import jakarta.inject.Inject;
+import org.jvnet.hk2.annotations.Service;
 
 import java.util.concurrent.Callable;
 
 /**
  * Wraps calls that could result in exceptions that are not Multiverse's fault.
  */
-public class UnsafeCallWrapper {
-    private final MVCore core;
+@Service
+public class UnsafeCallWrapper implements EagerlyLoaded {
+    private final MVCoreConfigProvider configProvider;
 
-    public UnsafeCallWrapper(MVCore core) {
-        this.core = core;
+    @Inject
+    public UnsafeCallWrapper(MVCoreConfigProvider configProvider) {
+        this.configProvider = configProvider;
     }
 
     /**
@@ -36,7 +41,7 @@ public class UnsafeCallWrapper {
             actualFormatArgs[formatArgs.length] = t;
                 Logging.warning(action, actualFormatArgs);
             Logging.warning("This is a bug in %s, NOT a bug in Multiverse!", plugin);
-            if (core.getMVConfig().getGlobalDebug() >= 1)
+            if (configProvider.getConfig().getGlobalDebug() >= 1)
                 t.printStackTrace();
             return null;
         }

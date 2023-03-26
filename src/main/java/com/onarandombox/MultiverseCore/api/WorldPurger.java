@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Used to remove animals from worlds that don't belong there.
  */
+@Contract
 public interface WorldPurger {
     /**
      * Synchronizes the given worlds with their settings.

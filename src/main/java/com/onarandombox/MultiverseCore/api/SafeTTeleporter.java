@@ -6,10 +6,12 @@ import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Used to safely teleport people.
  */
+@Contract
 public interface SafeTTeleporter extends Teleporter {
 
     /**

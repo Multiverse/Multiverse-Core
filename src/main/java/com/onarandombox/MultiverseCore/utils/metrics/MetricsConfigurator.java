@@ -8,6 +8,8 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
@@ -17,27 +19,24 @@ public class MetricsConfigurator {
     private static final int PLUGIN_ID = 7765;
     private static final String NO_GENERATOR_NAME = "N/A";
 
-    public static void configureMetrics(MultiverseCore plugin) {
-        MetricsConfigurator configurator = new MetricsConfigurator(plugin);
-        configurator.initMetrics();
-    }
-
-    private final MultiverseCore plugin;
+    private final MVWorldManager worldManager;
     private final Metrics metrics;
 
-    private MetricsConfigurator(MultiverseCore plugin) {
-        this.plugin = plugin;
+    @Inject
+    private MetricsConfigurator(MultiverseCore plugin, MVWorldManager worldManager) {
+        this.worldManager = worldManager;
         this.metrics = new Metrics(plugin, PLUGIN_ID);
     }
 
     private MVWorldManager getWorldManager() {
-        return plugin.getMVWorldManager();
+        return worldManager;
     }
 
     private Collection<MVWorld> getMVWorlds() {
         return getWorldManager().getMVWorlds();
     }
 
+    @PostConstruct
     private void initMetrics() {
         try {
             addCustomGeneratorsMetric();

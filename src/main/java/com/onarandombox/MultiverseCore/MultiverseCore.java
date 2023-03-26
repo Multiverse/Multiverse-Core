@@ -8,100 +8,58 @@
 package com.onarandombox.MultiverseCore;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
-import com.onarandombox.MultiverseCore.api.BlockSafety;
-import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.api.MVConfig;
+import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.commands.CheckCommand;
-import com.onarandombox.MultiverseCore.commands.CloneCommand;
-import com.onarandombox.MultiverseCore.commands.ConfigCommand;
-import com.onarandombox.MultiverseCore.commands.ConfirmCommand;
-import com.onarandombox.MultiverseCore.commands.CreateCommand;
-import com.onarandombox.MultiverseCore.commands.DebugCommand;
-import com.onarandombox.MultiverseCore.commands.DeleteCommand;
-import com.onarandombox.MultiverseCore.commands.GameruleCommand;
-import com.onarandombox.MultiverseCore.commands.ImportCommand;
-import com.onarandombox.MultiverseCore.commands.LoadCommand;
-import com.onarandombox.MultiverseCore.commands.RegenCommand;
-import com.onarandombox.MultiverseCore.commands.ReloadCommand;
-import com.onarandombox.MultiverseCore.commands.RemoveCommand;
-import com.onarandombox.MultiverseCore.commands.RootCommand;
-import com.onarandombox.MultiverseCore.commands.TeleportCommand;
-import com.onarandombox.MultiverseCore.commands.UnloadCommand;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.configuration.DefaultMVConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
-import com.onarandombox.MultiverseCore.destination.core.AnchorDestination;
-import com.onarandombox.MultiverseCore.destination.core.BedDestination;
-import com.onarandombox.MultiverseCore.destination.core.CannonDestination;
-import com.onarandombox.MultiverseCore.destination.core.ExactDestination;
-import com.onarandombox.MultiverseCore.destination.core.PlayerDestination;
-import com.onarandombox.MultiverseCore.destination.core.WorldDestination;
-import com.onarandombox.MultiverseCore.economy.MVEconomist;
-import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
-import com.onarandombox.MultiverseCore.listeners.MVChatListener;
-import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
-import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
-import com.onarandombox.MultiverseCore.listeners.MVPortalListener;
-import com.onarandombox.MultiverseCore.listeners.MVWeatherListener;
-import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener;
-import com.onarandombox.MultiverseCore.listeners.MVWorldListener;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
-import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety;
-import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation;
-import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
-import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
-import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
+import io.vavr.control.Try;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.glassfish.hk2.api.MultiException;
+import org.glassfish.hk2.api.ServiceHandle;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
  */
+@Service
 public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 50;
 
     // Setup various managers
-    private final AnchorManager anchorManager = new AnchorManager(this);
-    private BlockSafety blockSafety = new SimpleBlockSafety(this);
-    private MVCommandManager commandManager;
-    private DestinationsProvider destinationsProvider;
-    private MVEconomist economist;
-    private LocationManipulation locationManipulation = new SimpleLocationManipulation();
-    private final MVPermissions mvPermissions = new MVPermissions(this);
-    private SafeTTeleporter safeTTeleporter = new SimpleSafeTTeleporter(this);
-    private final UnsafeCallWrapper unsafeCallWrapper = new UnsafeCallWrapper(this);
-    private final MVWorldManager worldManager = new SimpleMVWorldManager(this);
-
-    // Configurations
-    private MVConfig config;
-
-    // Listeners
-    private MVChatListener chatListener;
-    private final MVEntityListener entityListener = new MVEntityListener(this);
-    private final MVPlayerListener playerListener = new MVPlayerListener(this);
-    private final MVPortalListener portalListener = new MVPortalListener(this);
-    private final MVWeatherListener weatherListener = new MVWeatherListener(this);
-    private final MVWorldListener worldListener = new MVWorldListener(this);
-    private final MVWorldInitListener worldInitListener = new MVWorldInitListener(this);
+    private ServiceLocator serviceLocator;
+    @Inject
+    private Provider<MVWorldManager> worldManagerProvider;
+    @Inject
+    private MVCoreConfigProvider configProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -131,33 +89,39 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onEnable() {
+        initializeDependencyInjection();
+
         // Load our configs first as we need them for everything else.
         this.loadConfigs();
-        if (this.config == null) {
+        if (!getConfigProvider().isConfigLoaded()) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        Logging.setShowingConfig(!getMVConfig().getSilentStart());
+        Logging.setShowingConfig(shouldShowConfig());
 
-        this.worldManager.getDefaultWorldGenerators();
-        this.worldManager.loadDefaultWorlds();
-        this.worldManager.loadWorlds(true);
+        var worldManager = worldManagerProvider.get();
+
+        worldManager.getDefaultWorldGenerators();
+        worldManager.loadDefaultWorlds();
+        worldManager.loadWorlds(true);
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        this.worldManager.setFirstSpawnWorld(getMVConfig().getFirstSpawnLocation());
-        MVWorld firstSpawnWorld = this.worldManager.getFirstSpawnWorld();
+        worldManager.setFirstSpawnWorld(getConfigProvider().getConfig().getFirstSpawnLocation());
+        MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
         if (firstSpawnWorld != null) {
-            getMVConfig().setFirstSpawnLocation(firstSpawnWorld.getName());
+            getConfigProvider().getConfig().setFirstSpawnLocation(firstSpawnWorld.getName());
         }
 
         //Setup economy here so vault is loaded
-        this.economist = new MVEconomist(this);
+        // TODO we may need to change MVEconomist to have an enable method or something
+        // this.economist = new MVEconomist(this);
 
         // Init all the other stuff
-        this.anchorManager.loadAnchors();
+        // TODO consider moving this into the AnchorManager constructor
+        serviceLocator.getService(AnchorManager.class).loadAnchors();
         this.registerEvents();
         this.registerCommands();
         this.setUpLocales();
@@ -174,7 +138,31 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void onDisable() {
         this.saveAllConfigs();
+        shutdownDependencyInjection();
         Logging.shutdown();
+    }
+
+    private void initializeDependencyInjection() {
+        serviceLocator = PluginInjection.createServiceLocator(new MultiverseCorePluginBinder(this))
+                .andThenTry(locator -> {
+                    PluginInjection.enable(this, locator);
+                })
+                .getOrElseThrow(exception -> {
+                    Logging.severe("Failed to initialize dependency injection");
+                    getServer().getPluginManager().disablePlugin(this);
+                    return new RuntimeException(exception);
+                });
+    }
+
+    private void shutdownDependencyInjection() {
+        if (serviceLocator != null) {
+            PluginInjection.disable(this, serviceLocator);
+            serviceLocator = null;
+        }
+    }
+
+    private boolean shouldShowConfig() {
+        return !getConfigProvider().getConfig().getSilentStart();
     }
 
     /**
@@ -182,59 +170,35 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerEvents() {
         PluginManager pluginManager = getServer().getPluginManager();
-        this.chatListener = new MVChatListener(this, this.playerListener);
-        pluginManager.registerEvents(this.chatListener, this);
-        pluginManager.registerEvents(this.entityListener, this);
-        pluginManager.registerEvents(this.playerListener, this);
-        pluginManager.registerEvents(this.portalListener, this);
-        pluginManager.registerEvents(this.weatherListener, this);
-        pluginManager.registerEvents(this.worldListener, this);
-        pluginManager.registerEvents(this.worldInitListener, this);
+        serviceLocator.getAllServices(InjectableListener.class)
+                .forEach(listener -> pluginManager.registerEvents(listener, this));
     }
 
     /**
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        this.commandManager = new MVCommandManager(this);
-        this.commandManager.registerCommand(new CheckCommand(this));
-        this.commandManager.registerCommand(new CloneCommand(this));
-        this.commandManager.registerCommand(new ConfigCommand(this));
-        this.commandManager.registerCommand(new ConfirmCommand(this));
-        this.commandManager.registerCommand(new CreateCommand(this));
-        this.commandManager.registerCommand(new DebugCommand(this));
-        this.commandManager.registerCommand(new DeleteCommand(this));
-        this.commandManager.registerCommand(new ImportCommand(this));
-        this.commandManager.registerCommand(new GameruleCommand(this));
-        this.commandManager.registerCommand(new LoadCommand(this));
-        this.commandManager.registerCommand(new RegenCommand(this));
-        this.commandManager.registerCommand(new ReloadCommand(this));
-        this.commandManager.registerCommand(new RemoveCommand(this));
-        this.commandManager.registerCommand(new RootCommand(this));
-        this.commandManager.registerCommand(new TeleportCommand(this));
-        this.commandManager.registerCommand(new UnloadCommand(this));
+        var commandManager = serviceLocator.getService(MVCommandManager.class);
+        serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
     }
 
     /**
      * Register locales
      */
     private void setUpLocales() {
-        this.commandManager.usePerIssuerLocale(true, true);
-        this.commandManager.getLocales().addFileResClassLoader(this);
-        this.commandManager.getLocales().addMessageBundles("multiverse-core");
+        var commandManager = serviceLocator.getService(MVCommandManager.class);
+
+        commandManager.usePerIssuerLocale(true, true);
+        commandManager.getLocales().addFileResClassLoader(this);
+        commandManager.getLocales().addMessageBundles("multiverse-core");
     }
 
     /**
      * Register all the destinations.
      */
     private void registerDestinations() {
-        this.destinationsProvider = new DestinationsProvider(this);
-        this.destinationsProvider.registerDestination(new AnchorDestination(this));
-        this.destinationsProvider.registerDestination(new BedDestination());
-        this.destinationsProvider.registerDestination(new CannonDestination(this));
-        this.destinationsProvider.registerDestination(new ExactDestination(this));
-        this.destinationsProvider.registerDestination(new PlayerDestination());
-        this.destinationsProvider.registerDestination(new WorldDestination(this));
+        var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
+        serviceLocator.getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
     }
 
     /**
@@ -242,7 +206,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
-            MetricsConfigurator.configureMetrics(this);
+            // Load metrics
+            serviceLocator.createAndInitialize(MetricsConfigurator.class);
+        } else {
+            Logging.info("Metrics are disabled in testing mode.");
         }
     }
 
@@ -251,17 +218,26 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
-        if (getMVConfig().isShowingDonateMessage()) {
+
+        if (getConfigProvider().getConfig().isShowingDonateMessage()) {
             Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
     }
 
     private void setupPlaceholderAPI() {
-        if(config.isRegisterPapiHook() && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new MultiverseCorePlaceholders(this).register();
-            Logging.config("Registered PlaceholderAPI hook.");
+        if(getConfigProvider().getConfig().isRegisterPapiHook()
+                && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            var placeholders = serviceLocator.getService(MultiverseCorePlaceholders.class);
+            if (placeholders != null) {
+                placeholders.register();
+                Logging.config("Registered PlaceholderAPI hook.");
+            }
         }
+    }
+
+    private MVCoreConfigProvider getConfigProvider() {
+        return configProvider;
     }
 
     /**
@@ -278,21 +254,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public int getProtocolVersion() {
         return PROTOCOL;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public MVEconomist getEconomist() {
-        return economist;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MVPermissions getMVPerms() {
-        return this.mvPermissions;
     }
 
     /**
@@ -317,14 +278,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
 
         return authors.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MVCommandManager getMVCommandManager() {
-        return this.commandManager;
     }
 
     /**
@@ -361,33 +314,18 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
-    public DestinationsProvider getDestinationsProvider() {
-        return this.destinationsProvider;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MVWorldManager getMVWorldManager() {
-        return this.worldManager;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void loadConfigs() {
-        config = DefaultMVConfig.init(this);
-
-        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
-
-        int level = Logging.getDebugLevel();
-        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
-        if (level != Logging.getDebugLevel()) {
-            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
-        }
+        getConfigProvider().loadConfigs();
+        // TODO move this to ConfigProvider.
+//        config = DefaultMVConfig.init(this);
+//
+//        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
+//
+//        int level = Logging.getDebugLevel();
+//        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+//        if (level != Logging.getDebugLevel()) {
+//            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
+//        }
     }
 
     /**
@@ -395,8 +333,13 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public boolean saveMVConfig() {
-        this.config.save();
-        return true;
+        return getConfigProvider().saveConfig()
+                .map(v -> true)
+                .recover(e -> {
+                    Logging.severe(e.getMessage(), e);
+                    return false;
+                })
+                .get();
     }
 
     /**
@@ -404,90 +347,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public boolean saveAllConfigs() {
-        return this.saveMVConfig() && this.worldManager.saveWorldsConfig();
+        return this.saveMVConfig() && worldManagerProvider.get().saveWorldsConfig();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public AnchorManager getAnchorManager() {
-        return this.anchorManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public BlockSafety getBlockSafety() {
-        return blockSafety;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setBlockSafety(BlockSafety blockSafety) {
-        if (blockSafety == null) {
-            throw new NullPointerException("block safety may not be null.");
-        }
-        this.blockSafety = blockSafety;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public LocationManipulation getLocationManipulation() {
-        return locationManipulation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLocationManipulation(LocationManipulation locationManipulation) {
-        if (locationManipulation == null) {
-            throw new NullPointerException("location manipulation may not be null.");
-        }
-        this.locationManipulation = locationManipulation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SafeTTeleporter getSafeTTeleporter() {
-        return safeTTeleporter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSafeTTeleporter(SafeTTeleporter safeTTeleporter) {
-        if (safeTTeleporter == null) {
-            throw new NullPointerException("safeTTeleporter may not be null.");
-        }
-        this.safeTTeleporter = safeTTeleporter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MVConfig getMVConfig() {
-        return config;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UnsafeCallWrapper getUnsafeCallWrapper() {
-        return this.unsafeCallWrapper;
-    }
-
 
     //TODO: REMOVE THIS STATIC CRAP - START
     private static final Map<String, String> teleportQueue = new HashMap<String, String>();
@@ -536,42 +397,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     /**
-     * Gets the {@link MVPlayerListener}.
-     *
-     * @return The {@link MVPlayerListener}.
-     */
-    public MVPlayerListener getPlayerListener() {
-        return this.playerListener;
-    }
-
-    /**
-     * Gets the {@link MVChatListener}.
-     *
-     * @return The {@link MVChatListener}.
-     */
-    public MVChatListener getChatListener() {
-        return this.chatListener;
-    }
-
-    /**
-     * Gets the {@link MVEntityListener}.
-     *
-     * @return The {@link MVEntityListener}.
-     */
-    public MVEntityListener getEntityListener() {
-        return this.entityListener;
-    }
-
-    /**
-     * Gets the {@link MVWeatherListener}.
-     *
-     * @return The {@link MVWeatherListener}.
-     */
-    public MVWeatherListener getWeatherListener() {
-        return this.weatherListener;
-    }
-
-    /**
      * Gets the server's root-folder as {@link File}.
      *
      * @return The server's root-folder
@@ -590,5 +415,44 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             throw new IllegalArgumentException("That's not a folder!");
 
         this.serverFolder = newServerFolder;
+    }
+
+    /**
+     * Gets the best service from this plugin that implements the given contract or has the given implementation.
+     *
+     * @param contractOrImpl The contract or concrete implementation to get the best instance of
+     * @param qualifiers The set of qualifiers that must match this service definition
+     * @return An instance of the contract or impl if it is a service and is already instantiated, null otherwise
+     * @throws MultiException if there was an error during service lookup
+     */
+    @Nullable
+    public <T> T getService(@NotNull Class<T> contractOrImpl, Annotation... qualifiers) throws MultiException {
+        var handle = serviceLocator.getServiceHandle(contractOrImpl, qualifiers);
+        if (handle != null && handle.isActive()) {
+            return handle.getService();
+        }
+        return null;
+    }
+
+    /**
+     * Gets all services from this plugin that implement the given contract or have the given implementation and have
+     * the provided qualifiers.
+     *
+     * @param contractOrImpl The contract or concrete implementation to get the best instance of
+     * @param qualifiers The set of qualifiers that must match this service definition
+     * @return A list of services implementing this contract or concrete implementation. May not return null, but may
+     * return an empty list
+     * @throws MultiException if there was an error during service lookup
+     */
+    @NotNull
+    public <T> List<T> getAllServices(
+            @NotNull Class<T> contractOrImpl,
+            Annotation... qualifiers
+    ) throws MultiException {
+        var handles = serviceLocator.getAllServiceHandles(contractOrImpl, qualifiers);
+        return handles.stream()
+                .filter(ServiceHandle::isActive)
+                .map(ServiceHandle::getService)
+                .collect(Collectors.toList());
     }
 }

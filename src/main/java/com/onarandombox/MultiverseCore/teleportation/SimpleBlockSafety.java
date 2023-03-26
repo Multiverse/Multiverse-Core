@@ -9,7 +9,9 @@ package com.onarandombox.MultiverseCore.teleportation;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
-import com.onarandombox.MultiverseCore.api.MVCore;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
+import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -18,6 +20,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
+import org.jvnet.hk2.annotations.Service;
 
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -26,8 +29,9 @@ import java.util.Set;
 /**
  * The default-implementation of {@link BlockSafety}.
  */
-public class SimpleBlockSafety implements BlockSafety {
-    private final MVCore plugin;
+@Service
+public class SimpleBlockSafety implements BlockSafety, EagerlyLoaded {
+    private final LocationManipulation locationManipulation;
     private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
 
     static {
@@ -41,8 +45,9 @@ public class SimpleBlockSafety implements BlockSafety {
         AROUND_BLOCK.add(BlockFace.NORTH_WEST);
     }
 
-    public SimpleBlockSafety(MVCore plugin) {
-        this.plugin = plugin;
+    @Inject
+    public SimpleBlockSafety(LocationManipulation locationManipulation) {
+        this.locationManipulation = locationManipulation;
     }
 
     /**
@@ -248,7 +253,7 @@ public class SimpleBlockSafety implements BlockSafety {
         if (this.isBlockAboveAir(cart.getLocation())) {
             return true;
         }
-        if (this.isEntitiyOnTrack(plugin.getLocationManipulation().getNextBlock(cart))) {
+        if (this.isEntitiyOnTrack(locationManipulation.getNextBlock(cart))) {
             return true;
         }
         return false;

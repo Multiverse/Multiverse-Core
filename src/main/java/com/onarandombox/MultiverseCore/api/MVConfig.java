@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
+import org.jvnet.hk2.annotations.Contract;
 
 public interface MVConfig {
 

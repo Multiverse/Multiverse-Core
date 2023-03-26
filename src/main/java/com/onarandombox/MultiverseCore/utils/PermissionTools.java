@@ -8,23 +8,45 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginManager;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Utility-class for permissions.
  */
+@Service
 public class PermissionTools {
-    private MultiverseCore plugin;
 
-    public PermissionTools(MultiverseCore plugin) {
-        this.plugin = plugin;
+    private final MVCoreConfigProvider configProvider;
+    private final PluginManager pluginManager;
+    private final Provider<MVPermissions> mvPermsProvider;
+    private final MVEconomist economist;
+
+    @Inject
+    public PermissionTools(
+            MVCoreConfigProvider configProvider,
+            PluginManager pluginManager,
+            Provider<MVPermissions> mvPermsProvider,
+            MVEconomist economist)
+    {
+        this.configProvider = configProvider;
+        this.pluginManager = pluginManager;
+        this.mvPermsProvider = mvPermsProvider;
+        this.economist = economist;
+    }
+
+    private MVPermissions getMVPerms() {
+        return this.mvPermsProvider.get();
     }
 
     /**
@@ -41,36 +63,36 @@ public class PermissionTools {
             addToRootPermission("*.*", permStringChopped);
             return;
         }
-        Permission parentPermission = this.plugin.getServer().getPluginManager().getPermission(parentPermString);
+        Permission parentPermission = this.pluginManager.getPermission(parentPermString);
         // Creat parent and grandparents
         if (parentPermission == null) {
             parentPermission = new Permission(parentPermString);
-            this.plugin.getServer().getPluginManager().addPermission(parentPermission);
+            this.pluginManager.addPermission(parentPermission);
 
             this.addToParentPerms(parentPermString);
         }
         // Create actual perm.
-        Permission actualPermission = this.plugin.getServer().getPluginManager().getPermission(permString);
+        Permission actualPermission = this.pluginManager.getPermission(permString);
         // Extra check just to make sure the actual one is added
         if (actualPermission == null) {
 
             actualPermission = new Permission(permString);
-            this.plugin.getServer().getPluginManager().addPermission(actualPermission);
+            this.pluginManager.addPermission(actualPermission);
         }
         if (!parentPermission.getChildren().containsKey(permString)) {
             parentPermission.getChildren().put(actualPermission.getName(), true);
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(parentPermission);
+            this.pluginManager.recalculatePermissionDefaults(parentPermission);
         }
     }
 
     private void addToRootPermission(String rootPerm, String permStringChopped) {
-        Permission rootPermission = this.plugin.getServer().getPluginManager().getPermission(rootPerm);
+        Permission rootPermission = this.pluginManager.getPermission(rootPerm);
         if (rootPermission == null) {
             rootPermission = new Permission(rootPerm);
-            this.plugin.getServer().getPluginManager().addPermission(rootPermission);
+            this.pluginManager.addPermission(rootPermission);
         }
         rootPermission.getChildren().put(permStringChopped + ".*", true);
-        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(rootPermission);
+        this.pluginManager.recalculatePermissionDefaults(rootPermission);
     }
 
     /**
@@ -101,7 +123,7 @@ public class PermissionTools {
      */
     public boolean playerHasMoneyToEnter(MVWorld fromWorld, MVWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
         Player teleporterPlayer;
-        if (plugin.getMVConfig().getTeleportIntercept()) {
+        if (configProvider.getConfig().getTeleportIntercept()) {
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;
             }
@@ -141,11 +163,10 @@ public class PermissionTools {
                 return true;
             }
             // If the player does not have to pay, return now.
-            if (this.plugin.getMVPerms().hasPermission(teleporter, toWorld.getExemptPermission().getName(), true)) {
+            if (this.getMVPerms().hasPermission(teleporter, toWorld.getExemptPermission().getName(), true)) {
                 return true;
             }
 
-            final MVEconomist economist = plugin.getEconomist();
             final Material currency = toWorld.getCurrency();
             final String formattedAmount = economist.formatPrice(price, currency);
 
@@ -198,7 +219,7 @@ public class PermissionTools {
         Logging.finest("Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
-        if (plugin.getMVConfig().getTeleportIntercept()) {
+        if (configProvider.getConfig().getTeleportIntercept()) {
             // The console can send anyone anywhere
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;
@@ -229,7 +250,7 @@ public class PermissionTools {
 
         // Actual checks
         if (toWorld != null) {
-            if (!this.plugin.getMVPerms().canEnterWorld(teleporterPlayer, toWorld)) {
+            if (!this.getMVPerms().canEnterWorld(teleporterPlayer, toWorld)) {
                 if (teleportee.equals(teleporter)) {
                     teleporter.sendMessage("You don't have access to go here...");
                 } else {
@@ -274,8 +295,7 @@ public class PermissionTools {
             return true;
         }
 
-        MVPermissions perms = plugin.getMVPerms();
-        if (perms.hasPermission(teleportee, "mv.bypass.playerlimit." + toWorld.getName(), false)) {
+        if (getMVPerms().hasPermission(teleportee, "mv.bypass.playerlimit." + toWorld.getName(), false)) {
             return true;
         } else {
             teleporter.sendMessage("The world " + toWorld.getColoredWorldString() + " is full");
@@ -292,7 +312,7 @@ public class PermissionTools {
      */
     public boolean playerCanIgnoreGameModeRestriction(MVWorld toWorld, Player teleportee) {
         if (toWorld != null) {
-            return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
+            return this.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
         } else {
             // TODO: Determine if this value is false because a world didn't exist
             // or if it was because a world wasn't imported.

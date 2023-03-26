@@ -10,29 +10,40 @@ package com.onarandombox.MultiverseCore.utils;
 import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginManager;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's permission checker
  */
-public class MVPermissions {
+@Service
+public class MVPermissions implements EagerlyLoaded {
 
-    private MultiverseCore plugin;
-    private MVWorldManager worldMgr;
+    private final PluginManager pluginManager;
+    private final MVCoreConfigProvider configProvider;
+    private final MVWorldManager worldMgr;
 
-    public MVPermissions(MultiverseCore plugin) {
-        this.plugin = plugin;
-        this.worldMgr = plugin.getMVWorldManager();
-
+    @Inject
+    public MVPermissions(
+            PluginManager pluginManager,
+            MVCoreConfigProvider configProvider,
+            MVWorldManager worldManager
+    ) {
+        this.pluginManager = pluginManager;
+        this.configProvider = configProvider;
+        this.worldMgr = worldManager;
     }
 
     /**
@@ -98,7 +109,7 @@ public class MVPermissions {
      */
     public boolean canEnterWorld(Player p, MVWorld w) {
         // If we're not enforcing access, anyone can enter.
-        if (!plugin.getMVConfig().getEnforceAccess()) {
+        if (!configProvider.getConfig().getEnforceAccess()) {
             Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }
@@ -110,7 +121,7 @@ public class MVPermissions {
             return false;
         }
         String worldName = l.getWorld().getName();
-        if (!this.plugin.getMVWorldManager().isMVWorld(worldName)) {
+        if (!this.worldMgr.isMVWorld(worldName)) {
             return false;
         }
         return this.hasPermission(p, "multiverse.access." + worldName, false);
@@ -339,12 +350,12 @@ public class MVPermissions {
      * @return The permission as {@link Permission}.
      */
     public Permission addPermission(String string, PermissionDefault defaultValue) {
-        if (this.plugin.getServer().getPluginManager().getPermission(string) == null) {
+        if (this.pluginManager.getPermission(string) == null) {
             Permission permission = new Permission(string, defaultValue);
-            this.plugin.getServer().getPluginManager().addPermission(permission);
+            this.pluginManager.addPermission(permission);
             this.addToParentPerms(string);
         }
-        return this.plugin.getServer().getPluginManager().getPermission(string);
+        return this.pluginManager.getPermission(string);
     }
 
     private void addToParentPerms(String permString) {
@@ -357,36 +368,36 @@ public class MVPermissions {
             addToRootPermission("*.*", permStringChopped);
             return;
         }
-        Permission parentPermission = this.plugin.getServer().getPluginManager().getPermission(parentPermString);
+        Permission parentPermission = this.pluginManager.getPermission(parentPermString);
         // Creat parent and grandparents
         if (parentPermission == null) {
             parentPermission = new Permission(parentPermString);
-            this.plugin.getServer().getPluginManager().addPermission(parentPermission);
+            this.pluginManager.addPermission(parentPermission);
 
             this.addToParentPerms(parentPermString);
         }
         // Create actual perm.
-        Permission actualPermission = this.plugin.getServer().getPluginManager().getPermission(permString);
+        Permission actualPermission = this.pluginManager.getPermission(permString);
         // Extra check just to make sure the actual one is added
         if (actualPermission == null) {
 
             actualPermission = new Permission(permString);
-            this.plugin.getServer().getPluginManager().addPermission(actualPermission);
+            this.pluginManager.addPermission(actualPermission);
         }
         if (!parentPermission.getChildren().containsKey(permString)) {
             parentPermission.getChildren().put(actualPermission.getName(), true);
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(parentPermission);
+            this.pluginManager.recalculatePermissionDefaults(parentPermission);
         }
     }
 
     private void addToRootPermission(String rootPerm, String permStringChopped) {
-        Permission rootPermission = this.plugin.getServer().getPluginManager().getPermission(rootPerm);
+        Permission rootPermission = this.pluginManager.getPermission(rootPerm);
         if (rootPermission == null) {
             rootPermission = new Permission(rootPerm);
-            this.plugin.getServer().getPluginManager().addPermission(rootPermission);
+            this.pluginManager.addPermission(rootPermission);
         }
         rootPermission.getChildren().put(permStringChopped + ".*", true);
-        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(rootPermission);
+        this.pluginManager.recalculatePermissionDefaults(rootPermission);
     }
 
     /**

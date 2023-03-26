@@ -9,15 +9,24 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import org.bukkit.ChatColor;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class CloneCommand extends MultiverseCoreCommand {
-    public CloneCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class CloneCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("clone")
@@ -42,7 +51,7 @@ public class CloneCommand extends MultiverseCoreCommand {
                 "{world}", worldName,
                 "{newWorld}", newWorldName);
 
-        if (!this.plugin.getMVWorldManager().cloneWorld(worldName, newWorldName)) {
+        if (!this.worldManager.cloneWorld(worldName, newWorldName)) {
             issuer.sendError(MVCorei18n.CLONE_FAILED);
             return;
         }
