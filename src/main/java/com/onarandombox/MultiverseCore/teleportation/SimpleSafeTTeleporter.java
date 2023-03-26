@@ -15,7 +15,6 @@ import com.onarandombox.MultiverseCore.api.DestinationInstance;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
-import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,7 +33,7 @@ import org.jvnet.hk2.annotations.Service;
  * The default-implementation of {@link SafeTTeleporter}.
  */
 @Service
-public class SimpleSafeTTeleporter implements SafeTTeleporter, EagerlyLoaded {
+public class SimpleSafeTTeleporter implements SafeTTeleporter {
     private final MultiverseCore plugin;
     private final LocationManipulation locationManipulation;
     private final BlockSafety blockSafety;
