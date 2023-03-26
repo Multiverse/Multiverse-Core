@@ -7,7 +7,6 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
-import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,7 +27,7 @@ import java.util.Map;
  * The default-implementation of {@link LocationManipulation}.
  */
 @Service
-public class SimpleLocationManipulation implements LocationManipulation, EagerlyLoaded {
+public class SimpleLocationManipulation implements LocationManipulation {
     private static final Map<String, Integer> ORIENTATION_INTS;
 
     static {

@@ -13,7 +13,9 @@ import jakarta.inject.Inject;
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class MetricsConfigurator {
 
     private static final int PLUGIN_ID = 7765;

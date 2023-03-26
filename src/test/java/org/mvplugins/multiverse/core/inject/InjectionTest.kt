@@ -18,12 +18,11 @@ import com.onarandombox.MultiverseCore.listeners.MVPortalListener
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener
-import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
-import com.onarandombox.MultiverseCore.utils.MVPermissions
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
+import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.assertEquals
@@ -58,11 +57,6 @@ class InjectionTest : TestWithMockBukkit() {
     fun `LocationManipulation is available as a service`() {
         assertNotNull(multiverseCore.getService(LocationManipulation::class.java))
         assertNotNull(multiverseCore.getService(SimpleLocationManipulation::class.java))
-    }
-
-    @Test
-    fun `MVPermissions is available as a service`() {
-        assertNotNull(multiverseCore.getService(MVPermissions::class.java))
     }
 
     @Test
@@ -141,5 +135,11 @@ class InjectionTest : TestWithMockBukkit() {
         // We need one test case for asking for non-services to make sure we don't accidentally make them available
         // and that the getService method doesn't throw an exception
         assertNull(multiverseCore.getService(MVConfig::class.java))
+    }
+
+    @Test
+    fun `MetricsConfigurator is not available as a service`() {
+        // Also making sure this is not loaded automatically since it's supposed to be disabled during tests
+        assertNull(multiverseCore.getService(MetricsConfigurator::class.java))
     }
 }

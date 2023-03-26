@@ -10,7 +10,6 @@ package com.onarandombox.MultiverseCore.teleportation;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,7 +29,7 @@ import java.util.Set;
  * The default-implementation of {@link BlockSafety}.
  */
 @Service
-public class SimpleBlockSafety implements BlockSafety, EagerlyLoaded {
+public class SimpleBlockSafety implements BlockSafety {
     private final LocationManipulation locationManipulation;
     private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
 

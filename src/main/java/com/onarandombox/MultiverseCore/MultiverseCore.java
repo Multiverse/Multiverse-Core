@@ -26,6 +26,7 @@ import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.configuration.DefaultMVConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.inject.PluginInjection;
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
@@ -37,7 +38,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.glassfish.hk2.api.MultiException;
@@ -54,12 +54,21 @@ import org.jvnet.hk2.annotations.Service;
 public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 50;
 
-    // Setup various managers
     private ServiceLocator serviceLocator;
+    @Inject
+    private MVCoreConfigProvider configProvider;
     @Inject
     private Provider<MVWorldManager> worldManagerProvider;
     @Inject
-    private MVCoreConfigProvider configProvider;
+    private Provider<AnchorManager> anchorManagerProvider;
+    @Inject
+    private Provider<MVCommandManager> commandManagerProvider;
+    @Inject
+    private Provider<DestinationsProvider> destinationsProviderProvider;
+    @Inject
+    private Provider<MetricsConfigurator> metricsConfiguratorProvider;
+    @Inject
+    private Provider<MVEconomist> economistProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -116,18 +125,16 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
 
         //Setup economy here so vault is loaded
-        // TODO we may need to change MVEconomist to have an enable method or something
-        // this.economist = new MVEconomist(this);
+        this.loadEconomist();
 
         // Init all the other stuff
-        // TODO consider moving this into the AnchorManager constructor
-        serviceLocator.getService(AnchorManager.class).loadAnchors();
+        this.loadAnchors();
         this.registerEvents();
         this.registerCommands();
         this.setUpLocales();
         this.registerDestinations();
         this.setupMetrics();
-        this.setupPlaceholderAPI();
+        this.loadPlaceholderAPIIntegration();
         this.saveMVConfig();
         this.logEnableMessage();
     }
@@ -165,40 +172,65 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return !getConfigProvider().getConfig().getSilentStart();
     }
 
+    private void loadEconomist() {
+        Try.run(() -> economistProvider.get())
+                .onFailure(e -> Logging.severe("Failed to load economy integration", e));
+    }
+
+    private void loadAnchors() {
+        Try.of(() -> anchorManagerProvider.get())
+                .onSuccess(AnchorManager::loadAnchors)
+                .onFailure(e -> Logging.severe("Failed to load anchors", e));
+    }
+
     /**
      * Function to Register all the Events needed.
      */
     private void registerEvents() {
-        PluginManager pluginManager = getServer().getPluginManager();
-        serviceLocator.getAllServices(InjectableListener.class)
-                .forEach(listener -> pluginManager.registerEvents(listener, this));
+        var pluginManager = getServer().getPluginManager();
+
+        Try.run(() -> serviceLocator.getAllServices(InjectableListener.class)
+                        .forEach(listener -> pluginManager.registerEvents(listener, this)))
+                .onFailure(e -> {
+                    throw new RuntimeException("Failed to register listeners. Terminating...", e);
+                });
     }
 
     /**
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        var commandManager = serviceLocator.getService(MVCommandManager.class);
-        serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
+        Try.of(() -> commandManagerProvider.get())
+                .andThenTry(commandManager -> {
+                    serviceLocator.getAllServices(MultiverseCommand.class)
+                            .forEach(commandManager::registerCommand);
+                })
+                .onFailure(e -> Logging.severe("Failed to register commands", e));
     }
 
     /**
      * Register locales
      */
     private void setUpLocales() {
-        var commandManager = serviceLocator.getService(MVCommandManager.class);
-
-        commandManager.usePerIssuerLocale(true, true);
-        commandManager.getLocales().addFileResClassLoader(this);
-        commandManager.getLocales().addMessageBundles("multiverse-core");
+        Try.of(() -> commandManagerProvider.get())
+                .andThenTry(commandManager -> {
+                    commandManager.usePerIssuerLocale(true, true);
+                    commandManager.getLocales().addFileResClassLoader(this);
+                    commandManager.getLocales().addMessageBundles("multiverse-core");
+                })
+                .onFailure(e -> Logging.severe("Failed to register locales", e));
     }
 
     /**
      * Register all the destinations.
      */
     private void registerDestinations() {
-        var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
-        serviceLocator.getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
+        Try.of(() -> destinationsProviderProvider.get())
+                .andThenTry(destinationsProvider -> {
+                    serviceLocator.getAllServices(Destination.class)
+                            .forEach(destinationsProvider::registerDestination);
+                })
+                .onFailure(e -> Logging.severe("Failed to register destinations", e));
     }
 
     /**
@@ -207,7 +239,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
             // Load metrics
-            serviceLocator.createAndInitialize(MetricsConfigurator.class);
+            Try.of(() -> metricsConfiguratorProvider.get())
+                    .onFailure(e -> Logging.severe("Failed to setup metrics", e));
         } else {
             Logging.info("Metrics are disabled in testing mode.");
         }
@@ -225,14 +258,11 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
     }
 
-    private void setupPlaceholderAPI() {
+    private void loadPlaceholderAPIIntegration() {
         if(getConfigProvider().getConfig().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            var placeholders = serviceLocator.getService(MultiverseCorePlaceholders.class);
-            if (placeholders != null) {
-                placeholders.register();
-                Logging.config("Registered PlaceholderAPI hook.");
-            }
+            Try.run(() -> serviceLocator.createAndInitialize(MultiverseCorePlaceholders.class))
+                    .onFailure(e -> Logging.severe("Failed to load PlaceholderAPI integration.", e));
         }
     }
 

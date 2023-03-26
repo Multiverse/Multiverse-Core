@@ -6,6 +6,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -26,6 +27,12 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
         this.plugin = plugin;
         this.worldManager = worldManager;
         this.economist = economist;
+    }
+
+    @PostConstruct
+    @Override
+    public boolean register() {
+        return super.register();
     }
 
     @Override
