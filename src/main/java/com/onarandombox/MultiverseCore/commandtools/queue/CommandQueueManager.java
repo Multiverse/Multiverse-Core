@@ -12,13 +12,16 @@ import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.data.type.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>
@@ -26,14 +29,16 @@ import org.jetbrains.annotations.NotNull;
  * <p>Each sender can only have one command in queue at any given time. When a queued command is added
  * for a sender that already has a command in queue, it will replace the old queued command.</p>
  */
+@Service
 public class CommandQueueManager {
 
     private static final long TICKS_PER_SECOND = 20;
     private static final DummyCommandBlockSender COMMAND_BLOCK = new DummyCommandBlockSender();
 
-    private final MultiverseCore plugin;
+    private final Plugin plugin;
     private final Map<CommandSender, QueuedCommand> queuedCommandMap;
 
+    @Inject
     public CommandQueueManager(@NotNull MultiverseCore plugin) {
         this.plugin = plugin;
         this.queuedCommandMap = new WeakHashMap<>();

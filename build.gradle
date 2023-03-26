@@ -64,6 +64,13 @@ repositories {
 configurations {
     oldTestImplementation.extendsFrom implementation
     oldTestRuntime.extendsFrom runtime
+    relocatedApi
+    compileClasspath.extendsFrom relocatedApi
+    runtimeClasspath.extendsFrom relocatedApi
+    testCompileClasspath.extendsFrom relocatedApi
+    testRuntimeClasspath.extendsFrom relocatedApi
+    oldTestCompileClasspath.extendsFrom relocatedApi
+    oldTestRuntimeClasspath.extendsFrom relocatedApi
 }
 
 dependencies {
@@ -75,27 +82,29 @@ dependencies {
     }
 
     // PlaceholderAPI
-    compileOnly 'me.clip:placeholderapi:2.11.2'
+    implementation 'me.clip:placeholderapi:2.11.2'
 
     // Command Framework
-    api 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+    relocatedApi 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
 
     // Config
-    api('me.main__.util:SerializationConfig:1.7') {
+    relocatedApi('me.main__.util:SerializationConfig:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    api('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
+    relocatedApi('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
     // Utils
-    api('com.dumptruckman.minecraft:Logging:1.1.1') {
+    relocatedApi 'io.vavr:vavr:0.10.4'
+    relocatedApi 'org.glassfish.hk2:hk2-locator:3.0.3'
+    relocatedApi('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    api 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    api 'org.bstats:bstats-bukkit:2.2.1'
-    api 'net.minidev:json-smart:2.4.8'
-    api 'org.jetbrains:annotations:22.0.0'
+    relocatedApi 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    relocatedApi 'org.bstats:bstats-bukkit:2.2.1'
+    relocatedApi 'net.minidev:json-smart:2.4.8'
+    relocatedApi 'org.jetbrains:annotations:22.0.0'
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
@@ -104,6 +113,7 @@ dependencies {
         exclude group: 'junit', module: 'junit'
     }
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'com.natpryce:hamkrest:1.8.0.1'
 
     // Old Tests
     oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
@@ -113,6 +123,10 @@ dependencies {
     oldTestImplementation 'junit:junit:4.13.1'
     oldTestImplementation 'org.mockito:mockito-core:3.11.2'
     oldTestImplementation 'commons-io:commons-io:2.7'
+
+    // Annotation Processors
+    annotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
+    testAnnotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
 }
 
 
@@ -183,18 +197,18 @@ task prepareSource(type: Sync) {
 compileJava {
     source = prepareSource.outputs
 }
+tasks.withType(JavaCompile) {
+    configure(options) {
+        options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
+    }
+}
 
 compileKotlin {
     // We're not using Kotlin in the plugin itself, just tests!
     enabled = false
 }
-configurations {
-    compileOnly {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
-    runtimeOnly {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-    }
+configurations.findAll { !it.name.startsWith('test') }.each {
+    it.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
 }
 
 processResources {
@@ -227,15 +241,26 @@ javadoc {
 project.configurations.api.canBeResolved = true
 
 shadowJar {
-    relocate 'co.alkar.commands', 'com.onarandombox.acf'
+    relocate 'co.aikar', 'com.onarandombox.acf'
     relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
     relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
     relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
     relocate 'io.github.townyadvanced.commentedconfiguration', 'com.onarandombox.commentedconfiguration'
     relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
     relocate 'org.bstats', 'com.onarandombox.bstats'
+    relocate 'com.sun', 'com.onarandombox.sun'
+    relocate 'net.minidev', 'com.onarandombox.minidev'
+    relocate 'org.objectweb', 'com.onarandombox.objectweb'
+    relocate 'io.vavr', 'com.onarandombox.vavr'
+    relocate 'jakarta', 'com.onarandombox.jakarta'
+    relocate 'javassist', 'com.onarandombox.javassist'
+    relocate 'org.aopalliance', 'com.onarandombox.aopalliance'
+    relocate 'org.glassfish', 'com.onarandombox.glassfish'
+    relocate 'org.jvnet', 'com.onarandombox.jvnet'
+    relocate 'org.intellij', 'com.onarandombox.intellij'
+    relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
 
-    configurations = [project.configurations.api]
+    configurations = [project.configurations.api, project.configurations.relocatedApi]
 
     archiveFileName = "$baseName-$version.$extension"
 
@@ -251,4 +276,8 @@ jar.enabled = false
 
 test {
     useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
 }

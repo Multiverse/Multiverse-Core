@@ -8,13 +8,19 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class UsageCommand extends MultiverseCoreCommand {
-    public UsageCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class UsageCommand extends MultiverseCommand {
+
+    @Inject
+    public UsageCommand(@NotNull MVCommandManager commandManager) {
+        super(commandManager);
     }
 
     @HelpCommand
@@ -28,6 +34,6 @@ public class UsageCommand extends MultiverseCoreCommand {
             // Prevent flooding the chat
             help.setPerPage(4);
         }
-        this.plugin.getMVCommandManager().showUsage(help);
+        this.commandManager.showUsage(help);
     }
 }

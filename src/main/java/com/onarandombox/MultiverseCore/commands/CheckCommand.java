@@ -7,16 +7,26 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class CheckCommand extends MultiverseCoreCommand {
-    public CheckCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class CheckCommand extends MultiverseCommand {
+
+    private final DestinationsProvider destinationsProvider;
+
+    @Inject
+    public CheckCommand(@NotNull MVCommandManager commandManager, @NotNull DestinationsProvider destinationsProvider) {
+        super(commandManager);
+        this.destinationsProvider = destinationsProvider;
     }
 
     @Subcommand("check")
@@ -38,6 +48,6 @@ public class CheckCommand extends MultiverseCoreCommand {
                 "{player}", player.getName(),
                 "{destination}", destination.toString());
         //TODO More detailed output on permissions required.
-        this.plugin.getDestinationsProvider().checkTeleportPermissions(issuer, player, destination);
+        this.destinationsProvider.checkTeleportPermissions(issuer, player, destination);
     }
 }

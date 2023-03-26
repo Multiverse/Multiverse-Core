@@ -17,6 +17,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Multiverse 2 World Manager API
@@ -24,6 +25,7 @@ import org.bukkit.generator.ChunkGenerator;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
+@Contract
 public interface MVWorldManager {
     /**
      * Add a new World to the Multiverse Setup.
@@ -220,15 +222,6 @@ public interface MVWorldManager {
      * This way people will _always_ have some worlds in the list.
      */
     void loadDefaultWorlds();
-
-    /**
-     * Gets the {@link WorldPurger}.
-     * <p>
-     * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
-     * @see WorldPurger
-     * @see SimpleWorldPurger
-     */
-    WorldPurger getTheWorldPurger();
 
     /**
      * Gets the world players will spawn in on first join.

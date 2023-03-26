@@ -3,23 +3,23 @@ package com.onarandombox.MultiverseCore.destination.core;
 import java.util.Collection;
 
 import co.aikar.commands.BukkitCommandIssuer;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class AnchorDestination implements Destination<AnchorDestinationInstance> {
-    private final MultiverseCore plugin;
 
-    /**
-     * Constructor.
-     *
-     * @param plugin The MultiverseCore plugin.
-     */
-    public AnchorDestination(MultiverseCore plugin) {
-        this.plugin = plugin;
+    private final AnchorManager anchorManager;
+
+    @Inject
+    public AnchorDestination(AnchorManager anchorManager) {
+        this.anchorManager = anchorManager;
     }
 
     /**
@@ -35,7 +35,7 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
      */
     @Override
     public @Nullable AnchorDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
-        Location anchorLocation = this.plugin.getAnchorManager().getAnchorLocation(destinationParams);
+        Location anchorLocation = this.anchorManager.getAnchorLocation(destinationParams);
         if (anchorLocation == null) {
             return null;
         }
@@ -47,7 +47,7 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
      */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return this.plugin.getAnchorManager().getAnchors(issuer.getPlayer());
+        return this.anchorManager.getAnchors(issuer.getPlayer());
     }
 
     /**

@@ -203,6 +203,7 @@ public class TestInstanceCreator {
             serverfield.setAccessible(true);
             serverfield.set(core, mockServer);
 
+            /* This block is preserved for the transition to MV5, just in case
             // Set worldManager
             SimpleMVWorldManager wm = spy(new SimpleMVWorldManager(core));
             Field worldmanagerfield = MultiverseCore.class.getDeclaredField("worldManager");
@@ -226,6 +227,7 @@ public class TestInstanceCreator {
             Field weatherlistenerfield = MultiverseCore.class.getDeclaredField("weatherListener");
             weatherlistenerfield.setAccessible(true);
             weatherlistenerfield.set(core, wl);
+            */
 
             // Init our command sender
             final Logger commandSenderLogger = Logger.getLogger("CommandSender");
@@ -263,11 +265,13 @@ public class TestInstanceCreator {
     }
 
     public boolean tearDown() {
+        /* This block is preserved for the transition to MV5, just in case
         List<MVWorld> worlds = new ArrayList<MVWorld>(core.getMVWorldManager()
                 .getMVWorlds());
         for (MVWorld world : worlds) {
             core.getMVWorldManager().deleteWorld(world.getName());
         }
+         */
 
         try {
             Field serverField = Bukkit.class.getDeclaredField("server");

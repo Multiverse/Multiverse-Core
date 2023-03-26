@@ -12,9 +12,11 @@ import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
 import com.onarandombox.MultiverseCore.configuration.MVConfigNodes;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
@@ -23,15 +25,26 @@ import com.onarandombox.MultiverseCore.utils.PlayerFinder;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import io.github.townyadvanced.commentedconfiguration.setting.ValueNode;
+import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class MVCommandContexts extends PaperCommandContexts {
-    private final MultiverseCore plugin;
 
-    public MVCommandContexts(MVCommandManager mvCommandManager, MultiverseCore plugin) {
+    private final DestinationsProvider destinationsProvider;
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public MVCommandContexts(
+            MVCommandManager mvCommandManager,
+            DestinationsProvider destinationsProvider,
+            MVWorldManager worldManager
+    ) {
         super(mvCommandManager);
-        this.plugin = plugin;
+        this.destinationsProvider = destinationsProvider;
+        this.worldManager = worldManager;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
@@ -59,7 +72,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("No destination specified.");
         }
 
-        ParsedDestination<?> parsedDestination = plugin.getDestinationsProvider().parseDestination(destination);
+        ParsedDestination<?> parsedDestination = destinationsProvider.parseDestination(destination);
         if (parsedDestination == null) {
             throw new InvalidCommandArgument("The destination " + destination + " is not valid.");
         }
@@ -143,7 +156,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         // Get world based on sender only
         if (resolve.equals("issuerOnly")) {
             if (context.getIssuer().isPlayer()) {
-                return plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+                return worldManager.getMVWorld(context.getIssuer().getPlayer().getWorld());
             }
             if (context.isOptional()) {
                 return null;
@@ -152,7 +165,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldName = context.getFirstArg();
-        MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+        MVWorld world = worldManager.getMVWorld(worldName);
 
         // Get world based on input, fallback to sender if input is not a world
         if (resolve.equals("issuerAware")) {
@@ -161,7 +174,7 @@ public class MVCommandContexts extends PaperCommandContexts {
                 return world;
             }
             if (context.getIssuer().isPlayer()) {
-                return plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+                return worldManager.getMVWorld(context.getIssuer().getPlayer().getWorld());
             }
             if (context.isOptional()) {
                 return null;
@@ -185,7 +198,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         MVWorld playerWorld = null;
         if (context.getIssuer().isPlayer()) {
-            playerWorld = plugin.getMVWorldManager().getMVWorld(context.getIssuer().getPlayer().getWorld());
+            playerWorld = worldManager.getMVWorld(context.getIssuer().getPlayer().getWorld());
         }
 
         // Get world based on sender only
@@ -204,10 +217,10 @@ public class MVCommandContexts extends PaperCommandContexts {
         Set<MVWorld> worlds = new HashSet<>(worldNames.length);
         for (String worldName : worldNames) {
             if ("*".equals(worldName)) {
-                worlds.addAll(plugin.getMVWorldManager().getMVWorlds());
+                worlds.addAll(worldManager.getMVWorlds());
                 break;
             }
-            MVWorld world = plugin.getMVWorldManager().getMVWorld(worldName);
+            MVWorld world = worldManager.getMVWorld(worldName);
             if (world == null) {
                 throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
             }

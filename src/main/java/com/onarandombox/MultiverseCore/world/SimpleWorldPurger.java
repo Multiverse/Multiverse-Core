@@ -24,6 +24,7 @@ import org.bukkit.entity.Phantom;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
+import org.jvnet.hk2.annotations.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,14 +33,12 @@ import java.util.List;
 /**
  * Utility class that removes animals from worlds that don't belong there.
  */
+@Service
 public class SimpleWorldPurger implements WorldPurger {
-
-    private MultiverseCore plugin;
 
     private Class<Entity> ambientClass = null;
 
-    public SimpleWorldPurger(MultiverseCore plugin) {
-        this.plugin = plugin;
+    public SimpleWorldPurger() {
         try {
             Class entityClass = Class.forName("org.bukkit.entity.Ambient");
             if (Entity.class.isAssignableFrom(entityClass)) {

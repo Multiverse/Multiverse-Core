@@ -13,20 +13,29 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import org.bukkit.ChatColor;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class RegenCommand extends MultiverseCoreCommand {
-    public RegenCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class RegenCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public RegenCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvregen")
                 .add(CommandValueFlag.builder("--seed", String.class)
@@ -59,12 +68,12 @@ public class RegenCommand extends MultiverseCoreCommand {
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendInfo(MVCorei18n.REGEN_REGENERATING,
                             "{world}", worldName);
-                    if (!this.plugin.getMVWorldManager().regenWorld(
+                    if (!this.worldManager.regenWorld(
                             worldName,
                             parsedFlags.hasFlag("--seed"),
                             !parsedFlags.hasFlagValue("--seed"),
@@ -78,7 +87,7 @@ public class RegenCommand extends MultiverseCoreCommand {
                     issuer.sendInfo(MVCorei18n.REGEN_SUCCESS,
                             "{world}", worldName);
                 },
-                this.plugin.getMVCommandManager().formatMessage(
+                this.commandManager.formatMessage(
                         issuer,
                         MessageType.INFO,
                         MVCorei18n.REGEN_PROMPT,
