@@ -24,7 +24,6 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
-import com.onarandombox.MultiverseCore.configuration.DefaultMVConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
@@ -346,16 +345,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void loadConfigs() {
         getConfigProvider().loadConfigs();
-        // TODO move this to ConfigProvider.
-//        config = DefaultMVConfig.init(this);
-//
-//        this.worldManager.loadWorldConfig(new File(getDataFolder(), "worlds.yml"));
-//
-//        int level = Logging.getDebugLevel();
-//        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
-//        if (level != Logging.getDebugLevel()) {
-//            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
-//        }
     }
 
     /**
@@ -485,4 +474,13 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                 .map(ServiceHandle::getService)
                 .collect(Collectors.toList());
     }
+
+//    @NotNull
+//    @Override
+//    public FileConfiguration getConfig() {
+//        if (!getConfigProvider().isConfigLoaded()) {
+//            getConfigProvider().loadConfigs();
+//        }
+//        return super.getConfig();
+//    }
 }

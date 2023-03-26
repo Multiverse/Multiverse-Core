@@ -120,7 +120,7 @@ class InjectionTest : TestWithMockBukkit() {
     fun `Commands are available as services`() {
         val commands = multiverseCore.getAllServices(MultiverseCommand::class.java)
         // TODO come up with a better way to test this like via actually testing the effect of calling each command
-        assertEquals(16, commands.size)
+        assertEquals(17, commands.size)
     }
 
     @Test
