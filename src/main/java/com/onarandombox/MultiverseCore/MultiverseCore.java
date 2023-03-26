@@ -181,7 +181,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void loadAnchors() {
         Try.of(() -> anchorManagerProvider.get())
                 .onSuccess(AnchorManager::loadAnchors)
-                .onFailure(throwable -> Logging.severe("Failed to load anchors", throwable));
+                .onFailure(e -> Logging.severe("Failed to load anchors", e));
     }
 
     /**
@@ -206,7 +206,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                     serviceLocator.getAllServices(MultiverseCommand.class)
                             .forEach(commandManager::registerCommand);
                 })
-                .onFailure(throwable -> Logging.severe("Failed to register commands", throwable));
+                .onFailure(e -> Logging.severe("Failed to register commands", e));
     }
 
     /**
@@ -219,7 +219,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                     commandManager.getLocales().addFileResClassLoader(this);
                     commandManager.getLocales().addMessageBundles("multiverse-core");
                 })
-                .onFailure(throwable -> Logging.severe("Failed to register locales", throwable));
+                .onFailure(e -> Logging.severe("Failed to register locales", e));
     }
 
     /**
@@ -231,7 +231,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                     serviceLocator.getAllServices(Destination.class)
                             .forEach(destinationsProvider::registerDestination);
                 })
-                .onFailure(throwable -> Logging.severe("Failed to register destinations", throwable));
+                .onFailure(e -> Logging.severe("Failed to register destinations", e));
     }
 
     /**
