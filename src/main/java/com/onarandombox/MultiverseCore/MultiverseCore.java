@@ -61,6 +61,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<AnchorManager> anchorManagerProvider;
     @Inject
     private Provider<MVCommandManager> commandManagerProvider;
+    @Inject
+    private Provider<DestinationsProvider>destinationsProviderProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -210,8 +212,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Register all the destinations.
      */
     private void registerDestinations() {
-        var destinationsProvider = serviceLocator.getService(DestinationsProvider.class);
-        serviceLocator.getAllServices(Destination.class).forEach(destinationsProvider::registerDestination);
+        Try.of(() -> destinationsProviderProvider.get())
+                .andThenTry(destinationsProvider -> {
+                    serviceLocator.getAllServices(Destination.class)
+                            .forEach(destinationsProvider::registerDestination);
+                })
+                .onFailure(throwable -> Logging.severe("Failed to register destinations", throwable));
     }
 
     /**
