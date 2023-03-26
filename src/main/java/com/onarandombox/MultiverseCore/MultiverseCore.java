@@ -59,6 +59,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<MVWorldManager> worldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
+    @Inject
+    private Provider<MVCommandManager> commandManagerProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -183,8 +185,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Register Multiverse-Core commands to Command Manager.
      */
     private void registerCommands() {
-        var commandManager = serviceLocator.getService(MVCommandManager.class);
-        serviceLocator.getAllServices(MultiverseCommand.class).forEach(commandManager::registerCommand);
+        Try.of(() -> commandManagerProvider.get())
+                .andThenTry(commandManager -> {
+                    serviceLocator.getAllServices(MultiverseCommand.class)
+                            .forEach(commandManager::registerCommand);
+                })
+                .onFailure(throwable -> Logging.severe("Failed to register commands", throwable));
     }
 
     /**
