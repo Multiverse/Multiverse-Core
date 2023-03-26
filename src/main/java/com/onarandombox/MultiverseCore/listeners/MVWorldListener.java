@@ -7,25 +7,27 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
- * Multiverse's World {@link Listener}.
+ * Multiverse's World Listener.
  */
-public class MVWorldListener implements Listener {
-    private MultiverseCore plugin;
+@Service
+public class MVWorldListener implements InjectableListener {
+
     private MVWorldManager worldManager;
 
-    public MVWorldListener(MultiverseCore plugin) {
-        this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
+    @Inject
+    public MVWorldListener(MVWorldManager worldManager) {
+        this.worldManager = worldManager;
     }
 
     /**
@@ -40,7 +42,7 @@ public class MVWorldListener implements Listener {
         if (event.getWorld() instanceof World) {
             World world = (World) event.getWorld();
             if (world != null) {
-                this.plugin.getMVWorldManager().unloadWorld(world.getName(), false);
+                this.worldManager.unloadWorld(world.getName(), false);
             }
         }
     }
@@ -53,10 +55,10 @@ public class MVWorldListener implements Listener {
     public void loadWorld(WorldLoadEvent event) {
         World world = event.getWorld();
         if (world != null) {
-            if (this.plugin.getMVWorldManager().getUnloadedWorlds().contains(world.getName())) {
-                this.plugin.getMVWorldManager().loadWorld(world.getName());
+            if (this.worldManager.getUnloadedWorlds().contains(world.getName())) {
+                this.worldManager.loadWorld(world.getName());
             }
-            MVWorld mvWorld = plugin.getMVWorldManager().getMVWorld(world);
+            MVWorld mvWorld = worldManager.getMVWorld(world);
             if (mvWorld != null) {
                 // This is where we can temporarily fix those pesky property issues!
                 world.setPVP(mvWorld.isPVPEnabled());

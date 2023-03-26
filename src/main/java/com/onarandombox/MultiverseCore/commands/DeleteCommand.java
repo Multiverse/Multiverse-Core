@@ -10,17 +10,25 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import org.bukkit.ChatColor;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class DeleteCommand extends MultiverseCoreCommand {
-    public DeleteCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class DeleteCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public DeleteCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("delete")
@@ -36,12 +44,12 @@ public class DeleteCommand extends MultiverseCoreCommand {
                                 @Description("The world you want to delete.")
                                 String worldName
     ) {
-        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendInfo(MVCorei18n.DELETE_DELETING,
                             "{world}", worldName);
-                    if (!this.plugin.getMVWorldManager().deleteWorld(worldName)) {
+                    if (!this.worldManager.deleteWorld(worldName)) {
                         issuer.sendError(MVCorei18n.DELETE_FAILED,
                                 "{world}", worldName);
                         return;
@@ -49,7 +57,7 @@ public class DeleteCommand extends MultiverseCoreCommand {
                     issuer.sendInfo(MVCorei18n.DELETE_SUCCESS,
                             "{world}", worldName);
                 },
-                this.plugin.getMVCommandManager().formatMessage(
+                this.commandManager.formatMessage(
                         issuer,
                         MessageType.INFO,
                         MVCorei18n.DELETE_PROMPT,

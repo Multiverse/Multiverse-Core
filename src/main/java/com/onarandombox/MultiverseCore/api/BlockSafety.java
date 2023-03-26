@@ -4,10 +4,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Used to get block/location-related information.
  */
+@Contract
 public interface BlockSafety {
     /**
      * This function checks whether the block at the given coordinates are above air or not.

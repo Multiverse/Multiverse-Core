@@ -1,18 +1,22 @@
 package com.onarandombox.MultiverseCore.economy;
 
+import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's Friendly Economist. This is used to deal with external economies and also item costs for stuff in MV.
  */
+@Service
 public class MVEconomist {
 
     private final VaultHandler vaultHandler;
 
+    @Inject
     public MVEconomist(Plugin plugin) {
         vaultHandler = new VaultHandler(plugin);
     }

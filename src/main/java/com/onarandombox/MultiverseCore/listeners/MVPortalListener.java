@@ -8,26 +8,30 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * A custom listener for portal related events.
  */
-public class MVPortalListener implements Listener {
+@Service
+public class MVPortalListener implements InjectableListener {
 
-    private MultiverseCore plugin;
+    private MVWorldManager worldManager;
 
-    public MVPortalListener(MultiverseCore core) {
-        this.plugin = core;
+    @Inject
+    public MVPortalListener(MVWorldManager worldManager) {
+        this.worldManager = worldManager;
     }
 
     /**
@@ -38,7 +42,7 @@ public class MVPortalListener implements Listener {
     public void portalForm(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s", event.getWorld().getName(), event.getReason());
 
-        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getWorld());
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.", event.getWorld().getName());
             return;
@@ -94,7 +98,7 @@ public class MVPortalListener implements Listener {
             return;
         }
 
-        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(event.getPlayer().getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getPlayer().getWorld());
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
                     event.getPlayer().getWorld().getName());

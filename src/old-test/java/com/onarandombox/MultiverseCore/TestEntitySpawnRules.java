@@ -33,7 +33,9 @@ import static org.mockito.Mockito.when;
 public class TestEntitySpawnRules {
     TestInstanceCreator creator;
     MultiverseCore core;
+    /* This block is preserved for the transition to MV5, just in case
     MVEntityListener listener;
+     */
 
     MVWorld mvWorld;
     World cbworld;
@@ -49,7 +51,9 @@ public class TestEntitySpawnRules {
         creator = new TestInstanceCreator();
         assertTrue(creator.setUp());
         core = creator.getCore();
+        /* This block is preserved for the transition to MV5, just in case
         listener = core.getEntityListener();
+         */
 
         mvWorld = mock(MVWorld.class);
         cbworld = MockWorldFactory.makeNewMockWorld("world", World.Environment.NORMAL, WorldType.NORMAL);
@@ -60,9 +64,11 @@ public class TestEntitySpawnRules {
         when(worldman.getMVWorld(anyString())).thenReturn(mvWorld);
         Field worldmanfield = MVEntityListener.class.getDeclaredField("worldManager");
         worldmanfield.setAccessible(true);
+        /* This block is preserved for the transition to MV5, just in case
         worldmanfield.set(listener, worldman);
 
         core.getMVConfig().setGlobalDebug(3);
+         */
     }
 
     @After
@@ -82,8 +88,10 @@ public class TestEntitySpawnRules {
     private void spawnAll(SpawnReason reason) {
         sheepEvent = mockSpawnEvent(sheep, reason);
         zombieEvent = mockSpawnEvent(zombie, reason);
+        /* This block is preserved for the transition to MV5, just in case
         listener.creatureSpawn(sheepEvent);
         listener.creatureSpawn(zombieEvent);
+         */
     }
 
     private void spawnAllNatural() {

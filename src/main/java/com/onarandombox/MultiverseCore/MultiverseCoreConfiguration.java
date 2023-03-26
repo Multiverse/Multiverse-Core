@@ -9,6 +9,7 @@ import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.Bukkit;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Our configuration.

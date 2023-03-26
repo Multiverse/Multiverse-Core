@@ -7,15 +7,25 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class UnloadCommand extends MultiverseCoreCommand {
-    public UnloadCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class UnloadCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @Subcommand("unload")
@@ -33,7 +43,7 @@ public class UnloadCommand extends MultiverseCoreCommand {
                 "{world}", world.getColoredWorldString());
 
         //TODO API: Should be able to use MVWorld object directly
-        if (!this.plugin.getMVWorldManager().unloadWorld(world.getName())) {
+        if (!this.worldManager.unloadWorld(world.getName())) {
             issuer.sendError(MVCorei18n.UNLOAD_FAILURE,
                     "{world}", world.getColoredWorldString());
             return;

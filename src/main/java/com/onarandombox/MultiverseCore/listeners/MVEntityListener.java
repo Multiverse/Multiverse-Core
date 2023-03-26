@@ -8,9 +8,12 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,17 +25,27 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's Entity {@link Listener}.
  */
-public class MVEntityListener implements Listener {
-    private MultiverseCore plugin;
-    private MVWorldManager worldManager;
+@Service
+public class MVEntityListener implements InjectableListener {
+    private final MVCoreConfigProvider configProvider;
+    private final MVWorldManager worldManager;
+    private final WorldPurger worldPurger;
 
-    public MVEntityListener(MultiverseCore plugin) {
-        this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
+    @Inject
+    public MVEntityListener(
+            @NotNull MVCoreConfigProvider configProvider,
+            @NotNull MVWorldManager worldManager,
+            @NotNull WorldPurger worldPurger
+    ) {
+        this.configProvider = configProvider;
+        this.worldManager = worldManager;
+        this.worldPurger = worldPurger;
     }
 
     /**
@@ -46,7 +59,7 @@ public class MVEntityListener implements Listener {
         }
         if (event.getEntity() instanceof Player) {
             Player p = (Player) event.getEntity();
-            MVWorld w = this.plugin.getMVWorldManager().getMVWorld(p.getWorld().getName());
+            MVWorld w = this.worldManager.getMVWorld(p.getWorld().getName());
             if (w != null && !w.getHunger()) {
                 // If the world has hunger set to false, do not let the level go down
                 if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
@@ -103,7 +116,7 @@ public class MVEntityListener implements Listener {
         }
 
         MVWorld mvworld = this.worldManager.getMVWorld(world.getName());
-        event.setCancelled(this.plugin.getMVWorldManager().getTheWorldPurger().shouldWeKillThisCreature(mvworld, event.getEntity()));
+        event.setCancelled(this.worldPurger.shouldWeKillThisCreature(mvworld, event.getEntity()));
     }
 
     /**
@@ -115,8 +128,8 @@ public class MVEntityListener implements Listener {
         if (event.isCancelled() || event.getTo() == null) {
             return;
         }
-        if (!this.plugin.getMVConfig().isUsingDefaultPortalSearch()) {
-            event.setSearchRadius(this.plugin.getMVConfig().getPortalSearchRadius());
+        if (!this.configProvider.getConfig().isUsingDefaultPortalSearch()) {
+            event.setSearchRadius(this.configProvider.getConfig().getPortalSearchRadius());
         }
     }
 }

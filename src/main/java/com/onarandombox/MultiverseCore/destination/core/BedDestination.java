@@ -12,7 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class BedDestination implements Destination<BedDestinationInstance> {
     public static final String OWN_BED_STRING = "playerbed";
 

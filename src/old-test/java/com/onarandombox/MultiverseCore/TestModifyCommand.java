@@ -30,8 +30,10 @@ public class TestModifyCommand {
         mockCommandSender = creator.getCommandSender();
         core = creator.getCore();
 
+        /* This block is preserved for the transition to MV5, just in case
         // create world
         assertTrue(core.getMVWorldManager().addWorld("world", Environment.NORMAL, null, null, null, null));
+         */
     }
 
     @After
@@ -44,6 +46,7 @@ public class TestModifyCommand {
         Command cmd = mock(Command.class);
         when(cmd.getName()).thenReturn("mv");
 
+        /* This block is preserved for the transition to MV5, just in case
         MVWorld world = core.getMVWorldManager().getMVWorld("world");
         assertNotNull(world);
 
@@ -51,5 +54,6 @@ public class TestModifyCommand {
         assertTrue(core.onCommand(mockCommandSender, cmd, "", // run the command
                 new String[] { "modify", "set", "hidden", "true", "world" }));
         assertTrue(world.isHidden()); // test if it worked
+         */
     }
 }
