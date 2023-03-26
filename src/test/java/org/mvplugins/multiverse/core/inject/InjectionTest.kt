@@ -21,7 +21,6 @@ import com.onarandombox.MultiverseCore.listeners.MVWorldListener
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
-import com.onarandombox.MultiverseCore.utils.MVPermissions
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
@@ -58,11 +57,6 @@ class InjectionTest : TestWithMockBukkit() {
     fun `LocationManipulation is available as a service`() {
         assertNotNull(multiverseCore.getService(LocationManipulation::class.java))
         assertNotNull(multiverseCore.getService(SimpleLocationManipulation::class.java))
-    }
-
-    @Test
-    fun `MVPermissions is available as a service`() {
-        assertNotNull(multiverseCore.getService(MVPermissions::class.java))
     }
 
     @Test

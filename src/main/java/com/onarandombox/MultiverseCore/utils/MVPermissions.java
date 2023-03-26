@@ -14,7 +14,6 @@ import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
-import com.onarandombox.MultiverseCore.inject.EagerlyLoaded;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -29,7 +28,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's permission checker
  */
 @Service
-public class MVPermissions implements EagerlyLoaded {
+public class MVPermissions {
 
     private final PluginManager pluginManager;
     private final MVCoreConfigProvider configProvider;
