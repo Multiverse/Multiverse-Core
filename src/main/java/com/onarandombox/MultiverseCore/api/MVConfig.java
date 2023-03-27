@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.api;
 
+import java.util.Collection;
+
+import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 
 public interface MVConfig {
@@ -14,6 +17,13 @@ public interface MVConfig {
      * Saves the config to disk.
      */
     void save();
+
+    /**
+     * Gets the nodes for the config.
+     *
+     * @return The nodes for the config.
+     */
+    NodeGroup getNodes();
 
     /**
      * Gets a property from the config.

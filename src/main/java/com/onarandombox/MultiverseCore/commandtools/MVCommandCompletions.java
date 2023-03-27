@@ -18,7 +18,7 @@ import co.aikar.commands.RootCommand;
 import com.google.common.collect.Sets;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigNodes;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import jakarta.inject.Inject;
@@ -37,8 +37,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     public MVCommandCompletions(
             @NotNull MVCommandManager mvCommandManager,
             @NotNull MVWorldManager worldManager,
-            @NotNull DestinationsProvider destinationsProvider
-    ) {
+            @NotNull DestinationsProvider destinationsProvider,
+            @NotNull MVCoreConfigProvider configProvider
+            ) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
@@ -48,7 +49,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamerules", this::suggestGamerules);
-        registerStaticCompletion("mvconfigs", MVCoreConfigNodes.getNodes().getNames());
+        registerStaticCompletion("mvconfigs", configProvider.getConfig().getNodes().getNames());
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
 
         setDefaultCompletion("destinations", ParsedDestination.class);
