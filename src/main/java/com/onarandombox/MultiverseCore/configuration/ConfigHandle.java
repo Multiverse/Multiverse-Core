@@ -100,6 +100,7 @@ public class ConfigHandle {
             if (!configFile.createNewFile()) {
                 return false;
             }
+            Logging.info("Created new config file: %s", configFile.getName());
         } catch (IOException e) {
             return false;
         }
@@ -120,7 +121,6 @@ public class ConfigHandle {
         CommentedConfiguration oldConfig = config;
         this.config = new CommentedConfiguration(configPath, logger);
         for (CommentedNode node : nodes) {
-            Logging.config("Parsing node: %s", node.getPath());
             if (node.getComments().length > 0) {
                 config.addComment(node.getPath(), node.getComments());
             }
