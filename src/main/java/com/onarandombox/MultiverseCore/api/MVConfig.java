@@ -1,10 +1,10 @@
 package com.onarandombox.MultiverseCore.api;
 
-import java.util.Collection;
-
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
+import org.jvnet.hk2.annotations.Contract;
 
+@Contract
 public interface MVConfig {
 
     /**
@@ -14,9 +14,15 @@ public interface MVConfig {
     boolean load();
 
     /**
+     * Whether the config has been loaded.
+     * @return True if the config has been loaded.
+     */
+    boolean isLoaded();
+
+    /**
      * Saves the config to disk.
      */
-    void save();
+    boolean save();
 
     /**
      * Gets the nodes for the config.

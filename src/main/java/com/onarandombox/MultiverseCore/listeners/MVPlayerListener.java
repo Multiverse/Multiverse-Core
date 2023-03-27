@@ -15,7 +15,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
@@ -45,7 +45,7 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final Provider<MVWorldManager> worldManagerProvider;
     private final PermissionTools pt;
     private final Provider<MVPermissions> mvPermsProvider;
@@ -57,7 +57,7 @@ public class MVPlayerListener implements InjectableListener {
     @Inject
     public MVPlayerListener(
             MultiverseCore plugin,
-            MVCoreConfigProvider configProvider,
+            MVCoreConfig config,
             Provider<MVWorldManager> worldManagerProvider,
             PermissionTools permissionTools,
             Provider<MVPermissions> mvPermsProvider,
@@ -65,7 +65,7 @@ public class MVPlayerListener implements InjectableListener {
             Server server
     ) {
         this.plugin = plugin;
-        this.configProvider = configProvider;
+        this.config = config;
         this.worldManagerProvider = worldManagerProvider;
         this.pt = permissionTools;
         this.mvPermsProvider = mvPermsProvider;
@@ -142,7 +142,7 @@ public class MVPlayerListener implements InjectableListener {
         Player p = event.getPlayer();
         if (!p.hasPlayedBefore()) {
             Logging.finer("Player joined for the FIRST time!");
-            if (configProvider.getConfig().getFirstSpawnOverride()) {
+            if (config.getFirstSpawnOverride()) {
                 Logging.fine("Moving NEW player to(firstspawnoverride): "
                         + getWorldManager().getFirstSpawnWorld().getSpawnLocation());
                 this.sendPlayerToDefaultWorld(p);
@@ -150,7 +150,7 @@ public class MVPlayerListener implements InjectableListener {
             return;
         } else {
             Logging.finer("Player joined AGAIN!");
-            if (this.configProvider.getConfig().getEnforceAccess() // check this only if we're enforcing access!
+            if (config.getEnforceAccess() // check this only if we're enforcing access!
                     && !this.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
@@ -222,7 +222,7 @@ public class MVPlayerListener implements InjectableListener {
         }
 
         // Check if player is allowed to enter the world if we're enforcing permissions
-        if (configProvider.getConfig().getEnforceAccess()) {
+        if (config.getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
             if (event.isCancelled() && teleporter != null) {
                 Logging.fine("Player '" + teleportee.getName()
@@ -314,7 +314,7 @@ public class MVPlayerListener implements InjectableListener {
                     + "' because they don't have the FUNDS required to enter.");
             return;
         }
-        if (configProvider.getConfig().getEnforceAccess()) {
+        if (config.getEnforceAccess()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
                 Logging.fine("Player '" + event.getPlayer().getName()
@@ -326,8 +326,8 @@ public class MVPlayerListener implements InjectableListener {
                     + "' was allowed to go to '" + event.getTo().getWorld().getName()
                     + "' because enforceaccess is off.");
         }
-        if (!this.configProvider.getConfig().isUsingCustomPortalSearch()) {
-            event.setSearchRadius(this.configProvider.getConfig().getCustomPortalSearchRadius());
+        if (!config.isUsingCustomPortalSearch()) {
+            event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
     }
 

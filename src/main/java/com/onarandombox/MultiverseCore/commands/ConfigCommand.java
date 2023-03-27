@@ -13,7 +13,7 @@ import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -22,16 +22,12 @@ import org.jvnet.hk2.annotations.Service;
 @CommandAlias("mv")
 public class ConfigCommand extends MultiverseCommand {
 
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
 
     @Inject
-    public ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfigProvider configProvider) {
+    public ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
         super(commandManager);
-        this.configProvider = configProvider;
-    }
-
-    private MVConfig getConfig() {
-        return configProvider.getConfig();
+        this.config = config;
     }
 
     @Subcommand("config")
@@ -59,20 +55,20 @@ public class ConfigCommand extends MultiverseCommand {
     }
 
     private void showConfigValue(BukkitCommandIssuer issuer, String name) {
-        Object currentValue = getConfig().getProperty(name);
+        Object currentValue = config.getProperty(name);
         if (currentValue == null) {
             issuer.sendMessage("No such config option: " + name);
             return;
         }
-        issuer.sendMessage(name + "is currently set to " + getConfig().getProperty(name));
+        issuer.sendMessage(name + "is currently set to " + config.getProperty(name));
     }
 
     private void updateConfigValue(BukkitCommandIssuer issuer, String name, Object value) {
-        if (!getConfig().setProperty(name, value)) {
+        if (!config.setProperty(name, value)) {
             issuer.sendMessage("Unable to set " + name + " to " + value);
             return;
         }
-        getConfig().save();
+        config.save();
         issuer.sendMessage("Successfully set " + name + " to " + value);
     }
 }

@@ -11,7 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -21,17 +21,17 @@ import org.jvnet.hk2.annotations.Service;
 @CommandAlias("mv")
 public class DebugCommand extends MultiverseCommand {
 
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final MultiverseCore plugin;
 
     @Inject
     public DebugCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull MVCoreConfigProvider configProvider,
+            @NotNull MVCoreConfig config,
             @NotNull MultiverseCore plugin
     ) {
         super(commandManager);
-        this.configProvider = configProvider;
+        this.config = config;
         this.plugin = plugin;
     }
 
@@ -53,13 +53,13 @@ public class DebugCommand extends MultiverseCommand {
                                      @Description("{@@mv-core.debug.change.level.description}")
                                      int level) {
 
-        this.configProvider.getConfig().setGlobalDebug(level);
-        this.plugin.saveAllConfigs();
+        config.setGlobalDebug(level);
+        config.save();
         this.displayDebugMode(issuer);
     }
 
     private void displayDebugMode(BukkitCommandIssuer issuer) {
-        final int debugLevel = this.configProvider.getConfig().getGlobalDebug();
+        final int debugLevel = config.getGlobalDebug();
         if (debugLevel == 0) {
             issuer.sendInfo(MVCorei18n.DEBUG_INFO_OFF);
             return;

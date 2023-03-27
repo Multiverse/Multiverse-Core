@@ -15,33 +15,28 @@ import com.onarandombox.MultiverseCore.configuration.migration.InvertBoolMigrato
 import com.onarandombox.MultiverseCore.configuration.migration.MoveMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.VersionMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class MVCoreConfig implements MVConfig {
     public static final String CONFIG_FILENAME = "config.yml";
     public static final double CONFIG_VERSION = 5.0;
-
-    /**
-     * Creates a new DefaultMVConfig instance and loads the configuration automatically.
-     *
-     * @param core The MultiverseCore instance.
-     * @return The new DefaultMVConfig instance.
-     */
-    public static MVCoreConfig init(MultiverseCore core) {
-        var config = new MVCoreConfig(core);
-        config.load();
-        config.save();
-        return config;
-    }
 
     private final Path configPath;
     private final MVCoreConfigNodes configNodes;
     private final ConfigHandle configHandle;
 
-    public MVCoreConfig(MultiverseCore core) {
-        configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
-        configNodes = new MVCoreConfigNodes(core.getService(PluginManager.class));
-        configHandle = ConfigHandle.builder(configPath)
+    @Inject
+    MVCoreConfig(
+            @NotNull MultiverseCore core,
+            @NotNull PluginManager pluginManager
+            ) {
+        this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
+        this.configNodes = new MVCoreConfigNodes(pluginManager);
+        this.configHandle = ConfigHandle.builder(configPath)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
@@ -76,6 +71,8 @@ public class MVCoreConfig implements MVConfig {
                 .build();
 
         migrateFromOldConfigFile();
+        load();
+        save();
     }
 
     private void migrateFromOldConfigFile() {
@@ -100,8 +97,14 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public void save() {
+    public boolean isLoaded() {
+        return configHandle.isLoaded();
+    }
+
+    @Override
+    public boolean save() {
         configHandle.save();
+        return true;
     }
 
     @Override

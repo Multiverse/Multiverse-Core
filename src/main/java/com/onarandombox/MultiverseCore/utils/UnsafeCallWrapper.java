@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import jakarta.inject.Inject;
 import org.jvnet.hk2.annotations.Service;
 
@@ -12,11 +12,11 @@ import java.util.concurrent.Callable;
  */
 @Service
 public class UnsafeCallWrapper {
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
 
     @Inject
-    public UnsafeCallWrapper(MVCoreConfigProvider configProvider) {
-        this.configProvider = configProvider;
+    public UnsafeCallWrapper(MVCoreConfig configProvider) {
+        this.config = configProvider;
     }
 
     /**
@@ -40,7 +40,7 @@ public class UnsafeCallWrapper {
             actualFormatArgs[formatArgs.length] = t;
                 Logging.warning(action, actualFormatArgs);
             Logging.warning("This is a bug in %s, NOT a bug in Multiverse!", plugin);
-            if (configProvider.getConfig().getGlobalDebug() >= 1)
+            if (config.getGlobalDebug() >= 1)
                 t.printStackTrace();
             return null;
         }

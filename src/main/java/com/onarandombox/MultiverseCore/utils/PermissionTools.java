@@ -9,7 +9,7 @@ package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -27,19 +27,19 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class PermissionTools {
 
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final PluginManager pluginManager;
     private final Provider<MVPermissions> mvPermsProvider;
     private final MVEconomist economist;
 
     @Inject
     public PermissionTools(
-            MVCoreConfigProvider configProvider,
+            MVCoreConfig config,
             PluginManager pluginManager,
             Provider<MVPermissions> mvPermsProvider,
             MVEconomist economist)
     {
-        this.configProvider = configProvider;
+        this.config = config;
         this.pluginManager = pluginManager;
         this.mvPermsProvider = mvPermsProvider;
         this.economist = economist;
@@ -123,7 +123,7 @@ public class PermissionTools {
      */
     public boolean playerHasMoneyToEnter(MVWorld fromWorld, MVWorld toWorld, CommandSender teleporter, Player teleportee, boolean pay) {
         Player teleporterPlayer;
-        if (configProvider.getConfig().getTeleportIntercept()) {
+        if (config.getTeleportIntercept()) {
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;
             }
@@ -219,7 +219,7 @@ public class PermissionTools {
         Logging.finest("Checking '" + teleporter + "' can send '" + teleportee + "' somewhere");
 
         Player teleporterPlayer;
-        if (configProvider.getConfig().getTeleportIntercept()) {
+        if (config.getTeleportIntercept()) {
             // The console can send anyone anywhere
             if (teleporter instanceof ConsoleCommandSender) {
                 return true;

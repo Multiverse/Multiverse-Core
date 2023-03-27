@@ -13,7 +13,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,17 +31,17 @@ import org.jvnet.hk2.annotations.Service;
 public class MVPermissions {
 
     private final PluginManager pluginManager;
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final MVWorldManager worldMgr;
 
     @Inject
     public MVPermissions(
             PluginManager pluginManager,
-            MVCoreConfigProvider configProvider,
+            MVCoreConfig config,
             MVWorldManager worldManager
     ) {
         this.pluginManager = pluginManager;
-        this.configProvider = configProvider;
+        this.config = config;
         this.worldMgr = worldManager;
     }
 
@@ -108,7 +108,7 @@ public class MVPermissions {
      */
     public boolean canEnterWorld(Player p, MVWorld w) {
         // If we're not enforcing access, anyone can enter.
-        if (!configProvider.getConfig().getEnforceAccess()) {
+        if (!config.getEnforceAccess()) {
             Logging.finest("EnforceAccess is OFF. Player was allowed in " + w.getAlias());
             return true;
         }

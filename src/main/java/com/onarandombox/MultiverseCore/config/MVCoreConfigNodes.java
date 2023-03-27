@@ -4,13 +4,16 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.node.MVCommentedNode;
 import com.onarandombox.MultiverseCore.configuration.node.MVValueNode;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
+import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
+import org.jvnet.hk2.annotations.Service;
 
 class MVCoreConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
-    private final PluginManager pluginManager;
+    private PluginManager pluginManager;
 
     MVCoreConfigNodes(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
@@ -173,7 +176,13 @@ class MVCoreConfigNodes {
             .defaultValue(0)
             .name("global-debug")
             .validator(value -> value >= 0 && value <= 3)
-            .onSetValue((oldValue, newValue) -> Logging.setDebugLevel(newValue)) //TODO Debug event
+            .onSetValue((oldValue, newValue) -> {
+                int level = Logging.getDebugLevel();
+                Logging.setDebugLevel(newValue);
+                if (level != Logging.getDebugLevel()) {
+                    pluginManager.callEvent(new MVDebugModeEvent(level));
+                }
+            })
             .build());
 
     public final MVValueNode<Boolean> SILENT_START = node(MVValueNode.builder("misc.silent-start", Boolean.class)

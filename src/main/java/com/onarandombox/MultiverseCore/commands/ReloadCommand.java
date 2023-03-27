@@ -8,11 +8,13 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
+import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
@@ -24,7 +26,7 @@ import org.jvnet.hk2.annotations.Service;
 @CommandAlias("mv")
 public class ReloadCommand extends MultiverseCommand {
 
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final AnchorManager anchorManager;
     private final MVWorldManager worldManager;
     private final PluginManager pluginManager;
@@ -32,13 +34,13 @@ public class ReloadCommand extends MultiverseCommand {
     @Inject
     public ReloadCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull MVCoreConfigProvider configProvider,
+            @NotNull MVCoreConfig config,
             @NotNull AnchorManager anchorManager,
             @NotNull MVWorldManager worldManager,
             @NotNull PluginManager pluginManager
     ) {
         super(commandManager);
-        this.configProvider = configProvider;
+        this.config = config;
         this.anchorManager = anchorManager;
         this.worldManager = worldManager;
         this.pluginManager = pluginManager;
@@ -49,9 +51,10 @@ public class ReloadCommand extends MultiverseCommand {
     @Description("{@@mv-core.reload.description}")
     public void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
-        this.configProvider.loadConfigs();
-        this.anchorManager.loadAnchors();
+        this.config.load();
+        this.worldManager.loadWorldsConfig();
         this.worldManager.loadWorlds(true);
+        this.anchorManager.loadAnchors();
 
         List<String> configsLoaded = new ArrayList<>();
         configsLoaded.add("Multiverse-Core - config.yml");

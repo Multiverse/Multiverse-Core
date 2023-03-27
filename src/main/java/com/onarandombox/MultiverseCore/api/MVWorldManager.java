@@ -7,11 +7,9 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import com.onarandombox.MultiverseCore.world.SimpleWorldPurger;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -246,10 +244,9 @@ public interface MVWorldManager {
     /**
      * Load the config from a file.
      *
-     * @param file The file to load.
      * @return A loaded configuration.
      */
-    FileConfiguration loadWorldConfig(File file);
+    FileConfiguration loadWorldsConfig();
 
     /**
      * Saves the world config to disk.
