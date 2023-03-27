@@ -82,9 +82,7 @@ public class DefaultMVConfig implements MVConfig {
             return;
         }
         // Remove the old config section if it is still in the old ConfigurationSerializable.
-        if (content.contains("version: 2.5")) {
-            content = content.replace("==: com.onarandombox.MultiverseCore.MultiverseCoreConfiguration", "");
-        }
+        content = content.replace("==: com.onarandombox.MultiverseCore.MultiverseCoreConfiguration", "");
         try {
             Files.writeString(configPath, content);
         } catch (IOException e) {
