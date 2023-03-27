@@ -67,7 +67,6 @@ public class MVCoreConfig implements MVConfig {
                         .build())
                 .build();
 
-        migrateFromOldConfigFile();
         load();
         save();
     }
@@ -90,6 +89,7 @@ public class MVCoreConfig implements MVConfig {
 
     @Override
     public boolean load() {
+        migrateFromOldConfigFile();
         return configHandle.load();
     }
 
