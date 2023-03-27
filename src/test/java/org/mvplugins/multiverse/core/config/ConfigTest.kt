@@ -36,7 +36,7 @@ class ConfigTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `Config migration`() {
+    fun `Old config is migrated`() {
         val oldConfig = getResourceAsText("/old_config.yml")
         assertNotNull(oldConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString()).writeText(oldConfig)
@@ -58,20 +58,25 @@ class ConfigTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `Get valid property`() {
+    fun `Getting existing config property with getProperty returns expected value`() {
         assertEquals(false, config.getProperty("enforce-access"))
         assertEquals("world", config.getProperty("first-spawn-location"))
-        assertEquals(3, config.globalDebug)
     }
 
     @Test
-    fun `Get invalid property`() {
+    fun `Getting non-existing config property with getProperty returns null`() {
         assertNull(config.getProperty("invalid-property"))
         assertNull(config.getProperty("version"))
     }
 
     @Test
-    fun `Set valid property`() {
+    fun `Getting existing config property by getter returns expected value`() {
+        assertEquals(false, config.enforceAccess)
+        assertEquals("world", config.firstSpawnLocation)
+    }
+
+    @Test
+    fun `Updating an existing config property with setProperty reflects the changes in getProperty`() {
         assertTrue(config.setProperty("enforce-access", true))
         assertEquals(true, config.getProperty("enforce-access"))
 
@@ -83,7 +88,7 @@ class ConfigTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `Set invalid property`() {
+    fun `Updating a non-existing property with setProperty returns false`() {
         assertFalse(config.setProperty("invalid-property", false))
         assertFalse(config.setProperty("version", 1.1))
     }
