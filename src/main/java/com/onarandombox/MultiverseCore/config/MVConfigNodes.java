@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.configuration;
+package com.onarandombox.MultiverseCore.config;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.node.MVCommentedNode;

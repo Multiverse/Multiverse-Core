@@ -4,7 +4,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.configuration.DefaultMVConfig;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;

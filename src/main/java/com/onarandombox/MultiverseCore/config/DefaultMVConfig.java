@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.configuration;
+package com.onarandombox.MultiverseCore.config;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVConfig;
+import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
 import com.onarandombox.MultiverseCore.configuration.migration.BooleanMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.migration.IntegerMigratorAction;

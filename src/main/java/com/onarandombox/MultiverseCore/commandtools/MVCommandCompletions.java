@@ -18,7 +18,7 @@ import co.aikar.commands.RootCommand;
 import com.google.common.collect.Sets;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.configuration.MVConfigNodes;
+import com.onarandombox.MultiverseCore.config.MVConfigNodes;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import jakarta.inject.Inject;
