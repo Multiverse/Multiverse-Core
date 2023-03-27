@@ -14,7 +14,7 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
-import com.onarandombox.MultiverseCore.config.MVConfigNodes;
+import com.onarandombox.MultiverseCore.config.MVCoreConfigNodes;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
@@ -120,7 +120,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (Strings.isNullOrEmpty(configName)) {
             throw new InvalidCommandArgument("No config name specified.");
         }
-        Optional<CommentedNode> node = MVConfigNodes.getNodes().findNode(configName);
+        Optional<CommentedNode> node = MVCoreConfigNodes.getNodes().findNode(configName);
         if (node.isEmpty()) {
             throw new InvalidCommandArgument("The config " + configName + " is not valid.");
         }

@@ -19,7 +19,7 @@ public final class MVCoreConfigProvider {
 
     private static final String WORLDS_CONFIG_FILE = "worlds.yml";
 
-    private volatile DefaultMVConfig config;
+    private volatile MVCoreConfig config;
 
     private final MultiverseCore plugin;
     private final PluginManager pluginManager;
@@ -60,7 +60,7 @@ public final class MVCoreConfigProvider {
     }
 
     public void loadConfigs() {
-        config = DefaultMVConfig.init(plugin);
+        config = MVCoreConfig.init(plugin);
 
         loadWorldConfigs();
 

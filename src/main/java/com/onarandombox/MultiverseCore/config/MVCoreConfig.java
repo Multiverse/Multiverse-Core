@@ -15,7 +15,7 @@ import com.onarandombox.MultiverseCore.configuration.migration.InvertBoolMigrato
 import com.onarandombox.MultiverseCore.configuration.migration.MoveMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.VersionMigrator;
 
-public class DefaultMVConfig implements MVConfig {
+public class MVCoreConfig implements MVConfig {
     public static final String CONFIG_FILENAME = "config.yml";
     public static final double CONFIG_VERSION = 5.0;
 
@@ -25,8 +25,8 @@ public class DefaultMVConfig implements MVConfig {
      * @param core The MultiverseCore instance.
      * @return The new DefaultMVConfig instance.
      */
-    public static DefaultMVConfig init(MultiverseCore core) {
-        var config = new DefaultMVConfig(core);
+    public static MVCoreConfig init(MultiverseCore core) {
+        var config = new MVCoreConfig(core);
         config.load();
         config.save();
         return config;
@@ -35,15 +35,15 @@ public class DefaultMVConfig implements MVConfig {
     private final Path configPath;
     private final ConfigHandle configHandle;
 
-    public DefaultMVConfig(MultiverseCore core) {
+    public MVCoreConfig(MultiverseCore core) {
         configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
 
         migrateFromOldConfigFile();
 
         configHandle = ConfigHandle.builder(configPath)
                 .logger(Logging.getLogger())
-                .nodes(MVConfigNodes.getNodes())
-                .migrator(ConfigMigrator.builder(MVConfigNodes.VERSION)
+                .nodes(MVCoreConfigNodes.getNodes())
+                .migrator(ConfigMigrator.builder(MVCoreConfigNodes.VERSION)
                         .addVersionMigrator(VersionMigrator.builder(5.0)
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.enforceaccess", "world.enforce-access"))
                                 .addAction(BooleanMigratorAction.of("world.enforce-access"))
@@ -113,141 +113,141 @@ public class DefaultMVConfig implements MVConfig {
 
     @Override
     public void setEnforceAccess(boolean enforceAccess) {
-        configHandle.set(MVConfigNodes.ENFORCE_ACCESS, enforceAccess);
+        configHandle.set(MVCoreConfigNodes.ENFORCE_ACCESS, enforceAccess);
     }
 
     @Override
     public boolean getEnforceAccess() {
-        return configHandle.get(MVConfigNodes.ENFORCE_ACCESS);
+        return configHandle.get(MVCoreConfigNodes.ENFORCE_ACCESS);
     }
 
     @Override
     public void setEnforceGameMode(boolean enforceGameMode) {
-        configHandle.set(MVConfigNodes.ENFORCE_GAMEMODE, enforceGameMode);
+        configHandle.set(MVCoreConfigNodes.ENFORCE_GAMEMODE, enforceGameMode);
     }
 
     @Override
     public boolean getEnforceGameMode() {
-        return configHandle.get(MVConfigNodes.ENFORCE_GAMEMODE);
+        return configHandle.get(MVCoreConfigNodes.ENFORCE_GAMEMODE);
     }
 
     @Override
     public void setAutoPurgeEntities(boolean autopurge) {
-        configHandle.set(MVConfigNodes.AUTO_PURGE_ENTITIES, autopurge);
+        configHandle.set(MVCoreConfigNodes.AUTO_PURGE_ENTITIES, autopurge);
     }
 
     @Override
     public boolean isAutoPurgeEntities() {
-        return configHandle.get(MVConfigNodes.AUTO_PURGE_ENTITIES);
+        return configHandle.get(MVCoreConfigNodes.AUTO_PURGE_ENTITIES);
     }
 
     @Override
     public void setTeleportIntercept(boolean teleportIntercept) {
-        configHandle.set(MVConfigNodes.TELEPORT_INTERCEPT, teleportIntercept);
+        configHandle.set(MVCoreConfigNodes.TELEPORT_INTERCEPT, teleportIntercept);
     }
 
     @Override
     public boolean getTeleportIntercept() {
-        return configHandle.get(MVConfigNodes.TELEPORT_INTERCEPT);
+        return configHandle.get(MVCoreConfigNodes.TELEPORT_INTERCEPT);
     }
 
     @Override
     public void setFirstSpawnOverride(boolean firstSpawnOverride) {
-        configHandle.set(MVConfigNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
+        configHandle.set(MVCoreConfigNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
     }
 
     @Override
     public boolean getFirstSpawnOverride() {
-        return configHandle.get(MVConfigNodes.FIRST_SPAWN_OVERRIDE);
+        return configHandle.get(MVCoreConfigNodes.FIRST_SPAWN_OVERRIDE);
     }
 
     @Override
     public void setFirstSpawnLocation(String firstSpawnWorld) {
-        configHandle.set(MVConfigNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
+        configHandle.set(MVCoreConfigNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
     }
 
     @Override
     public String getFirstSpawnLocation() {
-        return configHandle.get(MVConfigNodes.FIRST_SPAWN_LOCATION);
+        return configHandle.get(MVCoreConfigNodes.FIRST_SPAWN_LOCATION);
     }
 
     @Override
     public void setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
-        configHandle.set(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
+        configHandle.set(MVCoreConfigNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
     }
 
     @Override
     public boolean isUsingCustomPortalSearch() {
-        return configHandle.get(MVConfigNodes.USE_CUSTOM_PORTAL_SEARCH);
+        return configHandle.get(MVCoreConfigNodes.USE_CUSTOM_PORTAL_SEARCH);
     }
 
     @Override
     public void setCustomPortalSearchRadius(int searchRadius) {
-        configHandle.set(MVConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
+        configHandle.set(MVCoreConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
     }
 
     @Override
     public int getCustomPortalSearchRadius() {
-        return configHandle.get(MVConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS);
+        return configHandle.get(MVCoreConfigNodes.CUSTOM_PORTAL_SEARCH_RADIUS);
     }
 
     @Override
     public void setEnablePrefixChat(boolean prefixChat) {
-        configHandle.set(MVConfigNodes.ENABLE_CHAT_PREFIX, prefixChat);
+        configHandle.set(MVCoreConfigNodes.ENABLE_CHAT_PREFIX, prefixChat);
     }
 
     @Override
     public boolean isEnablePrefixChat() {
-        return configHandle.get(MVConfigNodes.ENABLE_CHAT_PREFIX);
+        return configHandle.get(MVCoreConfigNodes.ENABLE_CHAT_PREFIX);
     }
 
     @Override
     public void setPrefixChatFormat(String prefixChatFormat) {
-        configHandle.set(MVConfigNodes.CHAT_PREFIX_FORMAT, prefixChatFormat);
+        configHandle.set(MVCoreConfigNodes.CHAT_PREFIX_FORMAT, prefixChatFormat);
     }
 
     @Override
     public String getPrefixChatFormat() {
-        return configHandle.get(MVConfigNodes.CHAT_PREFIX_FORMAT);
+        return configHandle.get(MVCoreConfigNodes.CHAT_PREFIX_FORMAT);
     }
 
     @Override
     public void setRegisterPapiHook(boolean registerPapiHook) {
-        configHandle.set(MVConfigNodes.REGISTER_PAPI_HOOK, registerPapiHook);
+        configHandle.set(MVCoreConfigNodes.REGISTER_PAPI_HOOK, registerPapiHook);
     }
 
     @Override
     public boolean isRegisterPapiHook() {
-        return configHandle.get(MVConfigNodes.REGISTER_PAPI_HOOK);
+        return configHandle.get(MVCoreConfigNodes.REGISTER_PAPI_HOOK);
     }
 
     @Override
     public void setGlobalDebug(int globalDebug) {
-        configHandle.set(MVConfigNodes.GLOBAL_DEBUG, globalDebug);
+        configHandle.set(MVCoreConfigNodes.GLOBAL_DEBUG, globalDebug);
     }
 
     @Override
     public int getGlobalDebug() {
-        return configHandle.get(MVConfigNodes.GLOBAL_DEBUG);
+        return configHandle.get(MVCoreConfigNodes.GLOBAL_DEBUG);
     }
 
     @Override
     public void setSilentStart(boolean silentStart) {
-        configHandle.set(MVConfigNodes.SILENT_START, silentStart);
+        configHandle.set(MVCoreConfigNodes.SILENT_START, silentStart);
     }
 
     @Override
     public boolean getSilentStart() {
-        return configHandle.get(MVConfigNodes.SILENT_START);
+        return configHandle.get(MVCoreConfigNodes.SILENT_START);
     }
 
     @Override
     public void setShowDonateMessage(boolean showDonateMessage) {
-        configHandle.set(MVConfigNodes.SHOW_DONATION_MESSAGE, showDonateMessage);
+        configHandle.set(MVCoreConfigNodes.SHOW_DONATION_MESSAGE, showDonateMessage);
     }
 
     @Override
     public boolean isShowingDonateMessage() {
-        return configHandle.get(MVConfigNodes.SHOW_DONATION_MESSAGE);
+        return configHandle.get(MVCoreConfigNodes.SHOW_DONATION_MESSAGE);
     }
 }

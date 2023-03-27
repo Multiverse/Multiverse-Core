@@ -6,7 +6,7 @@ import com.onarandombox.MultiverseCore.configuration.node.MVValueNode;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 
-public class MVConfigNodes {
+public class MVCoreConfigNodes {
     private static final NodeGroup nodes = new NodeGroup();
 
     public static NodeGroup getNodes() {
@@ -189,7 +189,7 @@ public class MVConfigNodes {
             .comment("")
             .comment("This just signifies the version number so we can see what version of config you have.")
             .comment("NEVER TOUCH THIS VALUE")
-            .defaultValue(DefaultMVConfig.CONFIG_VERSION)
+            .defaultValue(MVCoreConfig.CONFIG_VERSION)
             .name(null)
             .build());
 }
