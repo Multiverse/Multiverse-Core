@@ -37,7 +37,7 @@ public class ConfigMigrator {
      * @param settings The target settings instance to migrate.
      */
     public void migrate(ConfigHandle settings) {
-        double versionNumber = settings.get(versionNode);
+        double versionNumber = settings.getConfig().getDouble(versionNode.getPath());
         for (VersionMigrator versionMigrator : versionMigrators) {
             if (versionNumber < versionMigrator.getVersion()) {
                 Logging.info("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
