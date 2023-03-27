@@ -8,7 +8,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
@@ -22,17 +21,11 @@ import org.jvnet.hk2.annotations.Service;
 public class DebugCommand extends MultiverseCommand {
 
     private final MVCoreConfig config;
-    private final MultiverseCore plugin;
 
     @Inject
-    public DebugCommand(
-            @NotNull MVCommandManager commandManager,
-            @NotNull MVCoreConfig config,
-            @NotNull MultiverseCore plugin
-    ) {
+    public DebugCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
         super(commandManager);
         this.config = config;
-        this.plugin = plugin;
     }
 
     @Subcommand("debug")
