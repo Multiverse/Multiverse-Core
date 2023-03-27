@@ -241,7 +241,7 @@ javadoc {
 project.configurations.api.canBeResolved = true
 
 shadowJar {
-    relocate 'co.aikar', 'com.onarandombox.acf'
+    relocate 'co.aikar.commands', 'com.onarandombox.acf'
     relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
     relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
     relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
