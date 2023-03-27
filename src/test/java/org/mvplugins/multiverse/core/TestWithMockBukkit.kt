@@ -16,7 +16,7 @@ abstract class TestWithMockBukkit {
     protected lateinit var multiverseCore: MultiverseCore
 
     @BeforeTest
-    fun setUp() {
+    open fun setUp() {
         TestingMode.enable()
         server = MockBukkit.mock()
         multiverseCore = MockBukkit.load(MultiverseCore::class.java)
@@ -26,4 +26,6 @@ abstract class TestWithMockBukkit {
     fun tearDown() {
         MockBukkit.unmock()
     }
+
+    protected fun getResourceAsText(path: String): String? = object {}.javaClass.getResource(path)?.readText()
 }
