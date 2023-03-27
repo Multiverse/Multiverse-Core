@@ -30,10 +30,7 @@ public class MVCoreConfig implements MVConfig {
     private final ConfigHandle configHandle;
 
     @Inject
-    MVCoreConfig(
-            @NotNull MultiverseCore core,
-            @NotNull PluginManager pluginManager
-            ) {
+    MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
         this.configNodes = new MVCoreConfigNodes(pluginManager);
         this.configHandle = ConfigHandle.builder(configPath)

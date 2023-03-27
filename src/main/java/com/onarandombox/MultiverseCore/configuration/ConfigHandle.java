@@ -42,8 +42,11 @@ public class ConfigHandle {
         return new Builder(configPath);
     }
 
+    @NotNull
     protected final Path configPath;
+    @Nullable
     protected final Logger logger;
+    @NotNull
     protected final NodeGroup nodes;
 
     protected final ConfigMigrator migrator;
