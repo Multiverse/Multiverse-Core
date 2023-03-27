@@ -1,27 +1,27 @@
 package org.mvplugins.multiverse.core.config
 
 import com.onarandombox.MultiverseCore.config.MVCoreConfig
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ConfigTest : TestWithMockBukkit() {
 
     private lateinit var config : MVCoreConfig
 
     @BeforeTest
-    override fun setUp() {
-        super.setUp()
+    fun setUp() {
         config = multiverseCore.getService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
-    }
 
-    @BeforeEach
-    fun `Config load`() {
         val defaultConfig = getResourceAsText("/default_config.yml")
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString()).writeText(defaultConfig)
