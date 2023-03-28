@@ -35,8 +35,9 @@ public interface MVConfig {
     /**
      * Gets a property from the config.
      *
-     * @param name  The name of the property.
-     * @return The value of the property.
+     * @param name The name of the property.
+     * @return A {@link Try} with the value of the property, otherwise a {@link Try.Failure} if there is no property by
+     * that name.
      */
     Try<Object> getProperty(String name);
 
@@ -45,7 +46,8 @@ public interface MVConfig {
      *
      * @param name  The name of the property.
      * @param value The value of the property.
-     * @return True if the property was set successfully.
+     * @return An empty {@link Try} if the property was set successfully, otherwise a {@link Try.Failure} with the
+     * exception explaining why the property could not be set.
      */
     Try<Void> setProperty(String name, Object value);
 
