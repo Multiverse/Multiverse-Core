@@ -127,8 +127,8 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      */
     public Try<Object> get(@Nullable String name) {
         return nodes.findNode(name, ValueNode.class)
-                .map(node -> get((ValueNode<Object>) node))
-                .toTry(() -> new Exception("Node not found"));
+                .toTry(() -> new Exception("Node not found"))
+                .map(node -> get((ValueNode<Object>) node));
     }
 
     /**
