@@ -14,14 +14,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
 
-    public static @NotNull Builder<? extends Builder> builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
-        return new Builder<>(configPath, nodes);
+    public static @NotNull Builder<? extends Builder> builder(@NotNull Path configPath) {
+        return new Builder<>(configPath);
     }
 
-    protected YamlConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @NotNull NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected YamlConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         super(configPath, logger, nodes, migrator);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean loadConfigObject() {
         config = new YamlConfiguration();
@@ -33,8 +36,15 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setUpNodes() {
+        if (nodes == null || nodes.isEmpty()) {
+            return;
+        }
+
         YamlConfiguration oldConfig = config;
         config = new YamlConfiguration();
         nodes.forEach(node -> {
@@ -44,6 +54,9 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean save() {
         try {
@@ -56,10 +69,13 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
 
     public static class Builder<B extends Builder<B>> extends FileConfigHandle.Builder<YamlConfiguration, B> {
 
-        protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
-            super(configPath, nodes);
+        protected Builder(@NotNull Path configPath) {
+            super(configPath);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public @NotNull YamlConfigHandle build() {
             return new YamlConfigHandle(configPath, logger, nodes, migrator);

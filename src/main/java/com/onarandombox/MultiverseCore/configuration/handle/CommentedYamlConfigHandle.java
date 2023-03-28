@@ -14,11 +14,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfiguration> {
 
-    public static @NotNull Builder builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
-        return new Builder(configPath, nodes);
+    public static @NotNull Builder builder(@NotNull Path configPath) {
+        return new Builder(configPath);
     }
 
-    protected CommentedYamlConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @NotNull NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected CommentedYamlConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         super(configPath, logger, nodes, migrator);
     }
 
@@ -30,6 +30,10 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
 
     @Override
     protected void setUpNodes() {
+        if (nodes == null || nodes.isEmpty()) {
+            return;
+        }
+
         CommentedConfiguration oldConfig = config;
         this.config = new CommentedConfiguration(configPath, logger);
 
@@ -56,8 +60,8 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
 
     public static class Builder extends FileConfigHandle.Builder<CommentedConfiguration, Builder> {
 
-        protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
-            super(configPath, nodes);
+        protected Builder(@NotNull Path configPath) {
+            super(configPath);
         }
 
         @Override

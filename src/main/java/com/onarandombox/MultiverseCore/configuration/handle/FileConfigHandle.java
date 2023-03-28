@@ -20,12 +20,12 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
     protected final @NotNull Path configPath;
     protected final @NotNull File configFile;
     protected final @Nullable Logger logger;
-    protected final @NotNull NodeGroup nodes;
+    protected final @Nullable NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
 
     protected C config;
 
-    protected FileConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @NotNull NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected FileConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         this.configPath = configPath;
         this.configFile = configPath.toFile();
         this.logger = logger;
@@ -158,12 +158,11 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
 
         protected @NotNull Path configPath;
         protected @Nullable Logger logger;
-        protected @NotNull NodeGroup nodes;
+        protected @Nullable NodeGroup nodes;
         protected @Nullable ConfigMigrator migrator;
 
-        protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
+        protected Builder(@NotNull Path configPath) {
             this.configPath = configPath;
-            this.nodes = nodes;
         }
 
         /**
@@ -177,8 +176,19 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
             return self();
         }
 
+        /**
+         * Sets the logger.
+         *
+         * @param plugin    The plugin to get the logger from.
+         * @return The builder.
+         */
         public B logger(Plugin plugin) {
             this.logger = plugin.getLogger();
+            return self();
+        }
+
+        public B nodes(@Nullable NodeGroup nodes) {
+            this.nodes = nodes;
             return self();
         }
 

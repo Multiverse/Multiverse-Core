@@ -34,8 +34,9 @@ public class MVCoreConfig implements MVConfig {
     MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
         this.configNodes = new MVCoreConfigNodes(pluginManager);
-        this.configHandle = CommentedYamlConfigHandle.builder(configPath, configNodes.getNodes())
+        this.configHandle = CommentedYamlConfigHandle.builder(configPath)
                 .logger(Logging.getLogger())
+                .nodes(configNodes.getNodes())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
                         .addVersionMigrator(VersionMigrator.builder(5.0)
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.enforceaccess", "world.enforce-access"))
