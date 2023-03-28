@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,17 +21,28 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * @return The new builder.
      * @param <T>   The type of the value.
      */
-    public static <T> ConfigNode.Builder<T, ? extends ConfigNode.Builder> builder(String path, Class<T> type) {
+    public static @NotNull <T> ConfigNode.Builder<T, ? extends ConfigNode.Builder<T, ?>> builder(
+            @NotNull String path,
+            @NotNull Class<T> type
+    ) {
         return new ConfigNode.Builder<>(path, type);
     }
 
-    protected final String name;
-    protected final Class<T> type;
-    protected final T defaultValue;
-    protected final Function<T, Boolean> validator;
-    protected final BiConsumer<T, T> onSetValue;
+    protected final @Nullable String name;
+    protected final @NotNull Class<T> type;
+    protected final @Nullable T defaultValue;
+    protected final @Nullable Function<T, Boolean> validator;
+    protected final @Nullable BiConsumer<T, T> onSetValue;
 
-    protected ConfigNode(String path, String[] comments, String name, Class<T> type, T defaultValue, Function<T, Boolean> validator, BiConsumer<T, T> onSetValue) {
+    protected ConfigNode(
+            @NotNull String path,
+            @NotNull String[] comments,
+            @Nullable String name,
+            @NotNull Class<T> type,
+            @Nullable T defaultValue,
+            @Nullable Function<T, Boolean> validator,
+            @Nullable BiConsumer<T, T> onSetValue
+    ) {
         super(path, comments);
         this.name = name;
         this.type = type;
@@ -44,8 +55,8 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
-    public Optional<String> getName() {
-        return Optional.ofNullable(name);
+    public @NotNull Option<String> getName() {
+        return Option.of(name);
     }
 
     /**
@@ -68,7 +79,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
-    public boolean validate(T value) {
+    public boolean validate(@Nullable T value) {
         if (validator != null) {
             return validator.apply(value);
         }
@@ -79,7 +90,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
-    public void onSetValue(T oldValue, T newValue) {
+    public void onSetValue(@Nullable T oldValue, @Nullable T newValue) {
         if (onSetValue != null) {
             onSetValue.accept(oldValue, newValue);
         }
@@ -93,11 +104,11 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      */
     public static class Builder<T, B extends ConfigNode.Builder<T, B>> extends ConfigHeaderNode.Builder<B> {
 
-        protected String name;
-        protected final Class<T> type;
-        protected T defaultValue;
-        protected Function<T, Boolean> validator;
-        protected BiConsumer<T, T> onSetValue;
+        protected @Nullable String name;
+        protected @NotNull final Class<T> type;
+        protected @Nullable T defaultValue;
+        protected @Nullable Function<T, Boolean> validator;
+        protected @Nullable BiConsumer<T, T> onSetValue;
 
         /**
          * Creates a new builder.
@@ -117,7 +128,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @param defaultValue The default value.
          * @return This builder.
          */
-        public B defaultValue(@NotNull T defaultValue) {
+        public @NotNull B defaultValue(@NotNull T defaultValue) {
             this.defaultValue = defaultValue;
             return (B) this;
         }
@@ -128,12 +139,12 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @param name The name of this node.
          * @return This builder.
          */
-        public B name(@Nullable String name) {
+        public @NotNull B name(@Nullable String name) {
             this.name = name;
             return (B) this;
         }
 
-        public B validator(@Nullable Function<T, Boolean> validator) {
+        public @NotNull B validator(@NotNull Function<T, Boolean> validator) {
             this.validator = validator;
             return (B) this;
         }
@@ -144,7 +155,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @param onSetValue    The action to be performed.
          * @return This builder.
          */
-        public B onSetValue(@Nullable BiConsumer<T, T> onSetValue) {
+        public @NotNull B onSetValue(@NotNull BiConsumer<T, T> onSetValue) {
             this.onSetValue = onSetValue;
             return (B) this;
         }
@@ -153,7 +164,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * {@inheritDoc}
          */
         @Override
-        public ConfigNode<T> build() {
+        public @NotNull ConfigNode<T> build() {
             return new ConfigNode<>(path, comments.toArray(new String[0]), name, type, defaultValue, validator, onSetValue);
         }
     }

@@ -1,17 +1,17 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
-import java.util.Optional;
-
+import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface ValueNode<T> extends Node {
+
     /**
      * Gets the name of this node. Used for identifying the node from user input.
      *
-     * @return The name of this node.
+     * @return An {@link Option} containing the name of this node, or {@link Option.None} if the node has no name.
      */
-    Optional<String> getName();
+    @NotNull Option<String> getName();
 
     /**
      * Gets the class type {@link T} of the node value.
@@ -33,7 +33,7 @@ public interface ValueNode<T> extends Node {
      * @param value The value to validate.
      * @return True if the value is valid, false otherwise.
      */
-    boolean validate(T value);
+    boolean validate(@Nullable T value);
 
     /**
      * Called when the value of this node is set.
@@ -41,5 +41,5 @@ public interface ValueNode<T> extends Node {
      * @param oldValue The old value.
      * @param newValue The new value.
      */
-    void onSetValue(T oldValue, T newValue);
+    void onSetValue(@Nullable T oldValue, @Nullable T newValue);
 }

@@ -30,13 +30,13 @@ public class NodeGroup implements Collection<Node> {
 
     private void addNodeIndex(Node node) {
         if (node instanceof ValueNode) {
-            ((ValueNode<?>) node).getName().ifPresent(name -> nodesMap.put(name, node));
+            ((ValueNode<?>) node).getName().peek(name -> nodesMap.put(name, node));
         }
     }
 
     private void removeNodeIndex(Node node) {
         if (node instanceof ValueNode) {
-            ((ValueNode<?>) node).getName().ifPresent(nodesMap::remove);
+            ((ValueNode<?>) node).getName().peek(nodesMap::remove);
         }
     }
 

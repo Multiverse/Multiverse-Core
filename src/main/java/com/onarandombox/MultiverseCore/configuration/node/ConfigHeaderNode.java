@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -16,14 +17,14 @@ public class ConfigHeaderNode implements CommentedNode {
      * @param path  The path of the node.
      * @return The new builder.
      */
-    public static Builder<? extends Builder> builder(String path) {
+    public static @NotNull Builder<? extends Builder<?>> builder(String path) {
         return new Builder<>(path);
     }
 
-    private final String path;
-    private final String[] comments;
+    private final @NotNull String path;
+    private final @NotNull String[] comments;
 
-    protected ConfigHeaderNode(String path, String[] comments) {
+    protected ConfigHeaderNode(@NotNull String path, @NotNull String[] comments) {
         this.path = path;
         this.comments = comments;
     }
@@ -40,16 +41,16 @@ public class ConfigHeaderNode implements CommentedNode {
      * {@inheritDoc}
      */
     @Override
-    public String[] getComments() {
+    public @NotNull String[] getComments() {
         return comments;
     }
 
     public static class Builder<B extends Builder<B>> {
 
-        protected final String path;
-        protected final ArrayList<String> comments;
+        protected final @NotNull String path;
+        protected final @NotNull List<String> comments;
 
-        public Builder(String path) {
+        public Builder(@NotNull String path) {
             this.path = path;
             this.comments = new ArrayList<>();
         }
@@ -60,7 +61,7 @@ public class ConfigHeaderNode implements CommentedNode {
          * @param comment The comment to add.
          * @return This builder.
          */
-        public B comment(String comment) {
+        public @NotNull B comment(@NotNull String comment) {
             if (!Strings.isNullOrEmpty(comment) && !comment.startsWith("#")) {
                 comment = "# " + comment;
             }
@@ -73,7 +74,7 @@ public class ConfigHeaderNode implements CommentedNode {
          *
          * @return The built node.
          */
-        public ConfigHeaderNode build() {
+        public @NotNull ConfigHeaderNode build() {
             return new ConfigHeaderNode(path, comments.toArray(new String[0]));
         }
     }
