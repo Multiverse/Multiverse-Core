@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
@@ -45,12 +48,18 @@ public class TeleportCommand extends MultiverseCommand {
                                   ParsedDestination<?> destination
     ) {
         // TODO Add warning if teleporting too many players at once.
-        for (Player player : players) {
-            issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                    "{player}", issuer.getPlayer() == player ? "you" : player.getName(),
-                    "{destination}", destination.toString());
-            this.destinationsProvider.playerTeleport(issuer, player, destination);
-        }
+
+        CompletableFuture.allOf(Arrays.stream(players)
+                        .map(player -> this.destinationsProvider.playerTeleportAsync(issuer, player, destination))
+                        .toArray(CompletableFuture[]::new))
+                .thenRun(() -> {
+                    String playerName = players.length == 1
+                            ? issuer.getPlayer() == players[0] ? "you" : players[0].getName()
+                            : players.length + " players";
+
+                    issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                            "{player}", playerName, "{destination}", destination.toString());
+                });
     }
 
     @Override

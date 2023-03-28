@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -15,6 +17,7 @@ import com.onarandombox.MultiverseCore.api.DestinationInstance;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import io.papermc.lib.PaperLib;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -204,9 +207,14 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
      */
     @Override
     public TeleportResult safelyTeleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
+        return safelyTeleportAsync(teleporter, teleportee, destination).join();
+    }
+
+    @Override
+    public CompletableFuture<TeleportResult> safelyTeleportAsync(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
         if (destination == null) {
             Logging.finer("Entity tried to teleport to an invalid destination");
-            return TeleportResult.FAIL_INVALID;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_INVALID);
         }
 
         Player teleporteePlayer = null;
@@ -217,7 +225,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         }
 
         if (teleporteePlayer == null) {
-            return TeleportResult.FAIL_INVALID;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_INVALID);
         }
 
         MultiverseCore.addPlayerToTeleportQueue(teleporter.getIssuer().getName(), teleporteePlayer.getName());
@@ -228,20 +236,26 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         }
 
         if (safeLoc == null) {
-            return TeleportResult.FAIL_UNSAFE;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_UNSAFE);
         }
 
-        if (!teleportee.teleport(safeLoc)) {
-            return TeleportResult.FAIL_OTHER;
-        }
+        CompletableFuture<TeleportResult> future = new CompletableFuture<>();
 
-        Vector v = destination.getDestinationInstance().getVelocity(teleportee);
-        if (v != null && !DEFAULT_VECTOR.equals(v)) {
-            Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-                teleportee.setVelocity(v);
-            }, 1);
-        }
-        return TeleportResult.SUCCESS;
+        PaperLib.teleportAsync(teleportee, safeLoc).thenAccept(result -> {
+            if (!result) {
+                future.complete(TeleportResult.FAIL_OTHER);
+                return;
+            }
+            Vector v = destination.getDestinationInstance().getVelocity(teleportee);
+            if (v != null && !DEFAULT_VECTOR.equals(v)) {
+                Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                    teleportee.setVelocity(v);
+                }, 1);
+            }
+            future.complete(TeleportResult.SUCCESS);
+        });
+
+        return future;
     }
 
     /**
@@ -350,6 +364,11 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
 
     @Override
     public TeleportResult teleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
-        return this.safelyTeleport(teleporter, teleportee, destination);
+        return safelyTeleport(teleporter, teleportee, destination);
+    }
+
+    @Override
+    public CompletableFuture<TeleportResult> teleportAsync(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
+        return safelyTeleportAsync(teleporter, teleportee, destination);
     }
 }

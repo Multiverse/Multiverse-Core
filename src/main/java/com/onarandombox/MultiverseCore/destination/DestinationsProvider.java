@@ -3,17 +3,17 @@ package com.onarandombox.MultiverseCore.destination;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
 import jakarta.inject.Inject;
-import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -130,14 +130,14 @@ public class DestinationsProvider {
      * @param teleportee    The teleportee.
      * @param destination   The destination.
      */
-    public void playerTeleport(@NotNull BukkitCommandIssuer teleporter,
+    public CompletableFuture<TeleportResult> playerTeleportAsync(@NotNull BukkitCommandIssuer teleporter,
                                @NotNull Player teleportee,
                                @NotNull ParsedDestination<?> destination
     ) {
         if (!checkTeleportPermissions(teleporter, teleportee, destination)) {
-            return;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_PERMISSION);
         }
-        teleport(teleporter, teleportee, destination);
+        return teleportAsync(teleporter, teleportee, destination);
     }
 
     /**
@@ -147,15 +147,15 @@ public class DestinationsProvider {
      * @param teleportee    The teleportee.
      * @param destination   The destination.
      */
-    public void teleport(@NotNull BukkitCommandIssuer teleporter,
-                         @NotNull Entity teleportee,
-                         @NotNull ParsedDestination<?> destination
+    public CompletableFuture<TeleportResult> teleportAsync(@NotNull BukkitCommandIssuer teleporter,
+                                                           @NotNull Entity teleportee,
+                                                           @NotNull ParsedDestination<?> destination
     ) {
         Teleporter teleportHandler = destination.getDestination().getTeleporter();
         if (teleportHandler == null) {
             teleportHandler = safeTTeleporter;
         }
-        teleportHandler.teleport(teleporter, teleportee, destination);
+        return teleportHandler.teleportAsync(teleporter, teleportee, destination);
     }
 
     /**
