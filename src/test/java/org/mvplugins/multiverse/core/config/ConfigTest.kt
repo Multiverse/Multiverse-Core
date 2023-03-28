@@ -77,13 +77,13 @@ class ConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Updating an existing config property with setProperty reflects the changes in getProperty`() {
-        assertTrue(config.setProperty("enforce-access", true).get())
+        assertTrue(config.setProperty("enforce-access", true).isSuccess)
         assertEquals(true, config.getProperty("enforce-access").get())
 
-        assertTrue(config.setProperty("first-spawn-location", "world2").get())
+        assertTrue(config.setProperty("first-spawn-location", "world2").isSuccess)
         assertEquals("world2", config.getProperty("first-spawn-location").get())
 
-        assertTrue(config.setProperty("global-debug", 1).get())
+        assertTrue(config.setProperty("global-debug", 1).isSuccess)
         assertEquals(1, config.getProperty("global-debug").get())
     }
 

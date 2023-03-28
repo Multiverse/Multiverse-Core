@@ -47,7 +47,7 @@ public interface MVConfig {
      * @param value The value of the property.
      * @return True if the property was set successfully.
      */
-    Try<Boolean> setProperty(String name, Object value);
+    Try<Void> setProperty(String name, Object value);
 
     /**
      * Sets world access permissions should be enforced.

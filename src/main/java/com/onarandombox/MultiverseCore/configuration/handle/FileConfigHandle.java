@@ -148,7 +148,7 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      * @param value The value to set.
      * @return True if the value was set, false otherwise.
      */
-    public Try<Boolean> set(@Nullable String name, Object value) {
+    public Try<Void> set(@Nullable String name, Object value) {
         return nodes.findNode(name, ValueNode.class)
                 .toTry(() -> new Exception("Node not found"))
                 .flatMap(node -> set(node, value));
@@ -162,14 +162,14 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      * @return True if the value was set, false otherwise.
      * @param <T>   The type of the node value.
      */
-    public <T> Try<Boolean> set(@NotNull ValueNode<T> node, T value) {
+    public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         if (!node.validate(value)) {
             return Try.failure(new Exception("Validation failed"));
         }
         T oldValue = get(node);
         config.set(node.getPath(), value);
         node.onSetValue(oldValue, get(node));
-        return Try.success(true);
+        return Try.success(null);
     }
 
     /**

@@ -9,12 +9,10 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.api.MVConfig;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
-import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -58,19 +56,15 @@ public class ConfigCommand extends MultiverseCommand {
     private void showConfigValue(BukkitCommandIssuer issuer, String name) {
         config.getProperty(name)
                 .onSuccess(value -> issuer.sendMessage(name + "is currently set to " + value))
-                .onFailure(throwable -> issuer.sendMessage("Unable to get " + name + ": " + throwable.getMessage()));
+                .onFailure(e -> issuer.sendMessage("Unable to get " + name + ": " + e.getMessage()));
     }
 
     private void updateConfigValue(BukkitCommandIssuer issuer, String name, Object value) {
         config.setProperty(name, value)
-                .onSuccess(success -> {
-                    if (success) {
-                        config.save();
-                        issuer.sendMessage("Successfully set " + name + " to " + value);
-                    } else {
-                        issuer.sendMessage("Unable to set " + name + " to " + value);
-                    }
+                .onSuccess(ignore -> {
+                    config.save();
+                    issuer.sendMessage("Successfully set " + name + " to " + value);
                 })
-                .onFailure(throwable -> issuer.sendMessage("Unable to set " + name + " to " + value + ": " + throwable.getMessage()));
+                .onFailure(e -> issuer.sendMessage("Unable to set " + name + " to " + value + ": " + e.getMessage()));
     }
 }

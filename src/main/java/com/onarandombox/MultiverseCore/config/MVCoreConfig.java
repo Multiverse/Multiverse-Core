@@ -116,7 +116,7 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public Try<Boolean> setProperty(String name, Object value) {
+    public Try<Void> setProperty(String name, Object value) {
         return configHandle.set(name, value);
     }
 
