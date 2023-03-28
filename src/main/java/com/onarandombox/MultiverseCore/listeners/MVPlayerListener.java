@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -18,6 +19,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import jakarta.inject.Inject;
@@ -51,6 +53,7 @@ public class MVPlayerListener implements InjectableListener {
     private final Provider<MVPermissions> mvPermsProvider;
     private final SafeTTeleporter safeTTeleporter;
     private final Server server;
+    private final TeleportQueue teleportQueue;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
@@ -62,7 +65,8 @@ public class MVPlayerListener implements InjectableListener {
             PermissionTools permissionTools,
             Provider<MVPermissions> mvPermsProvider,
             SafeTTeleporter safeTTeleporter,
-            Server server
+            Server server,
+            TeleportQueue teleportQueue
     ) {
         this.plugin = plugin;
         this.configProvider = configProvider;
@@ -71,6 +75,7 @@ public class MVPlayerListener implements InjectableListener {
         this.mvPermsProvider = mvPermsProvider;
         this.safeTTeleporter = safeTTeleporter;
         this.server = server;
+        this.teleportQueue = teleportQueue;
     }
 
     private MVWorldManager getWorldManager() {
@@ -185,13 +190,13 @@ public class MVPlayerListener implements InjectableListener {
         }
         Player teleportee = event.getPlayer();
         CommandSender teleporter = null;
-        String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
-        if (teleporterName != null) {
+        Optional<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
+        if (teleporterName.isPresent()) {
             if (teleporterName.equals("CONSOLE")) {
                 Logging.finer("We know the teleporter is the console! Magical!");
                 teleporter = this.server.getConsoleSender();
             } else {
-                teleporter = this.server.getPlayerExact(teleporterName);
+                teleporter = this.server.getPlayerExact(teleporterName.get());
             }
         }
         Logging.finer("Inferred sender '" + teleporter + "' from name '"

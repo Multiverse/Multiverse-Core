@@ -21,6 +21,7 @@ import com.onarandombox.MultiverseCore.listeners.MVWorldListener
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
+import com.onarandombox.MultiverseCore.teleportation.TeleportQueue
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
@@ -63,6 +64,11 @@ class InjectionTest : TestWithMockBukkit() {
     fun `SafeTTeleporter is available as a service`() {
         assertNotNull(multiverseCore.getService(SafeTTeleporter::class.java))
         assertNotNull(multiverseCore.getService(SimpleSafeTTeleporter::class.java))
+    }
+
+    @Test
+    fun `TeleportQueue is available as a service`() {
+        assertNotNull(multiverseCore.getService(TeleportQueue::class.java))
     }
 
     @Test
