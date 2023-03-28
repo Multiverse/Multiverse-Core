@@ -23,6 +23,7 @@ import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
@@ -123,7 +124,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (Strings.isNullOrEmpty(configName)) {
             throw new InvalidCommandArgument("No config name specified.");
         }
-        Optional<Node> node = config.getNodes().findNode(configName);
+        Option<Node> node = config.getNodes().findNode(configName);
         if (node.isEmpty()) {
             throw new InvalidCommandArgument("The config " + configName + " is not valid.");
         }

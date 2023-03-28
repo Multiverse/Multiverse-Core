@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
+import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -53,10 +53,10 @@ public class NodeGroup implements Collection<Node> {
      * Gets the node with the given name.
      *
      * @param name  The name of the node to get.
-     * @return The node with the given name, or {@link Optional#empty()} if no node with the given name exists.
+     * @return The node with the given name, or {@link Option.None} if no node with the given name exists.
      */
-    public Optional<Node> findNode(String name) {
-        return Optional.ofNullable(nodesMap.get(name));
+    public Option<Node> findNode(String name) {
+        return Option.of(nodesMap.get(name));
     }
 
     /**
@@ -64,11 +64,10 @@ public class NodeGroup implements Collection<Node> {
      *
      * @param name The name of the node to get.
      * @param type The type of the node to get.
-     * @return The node with the given name, or {@link Optional#empty()} if no node with the given name exists.
+     * @return The node with the given name, or {@link Option.None} if no node with the given name exists.
      */
-    public <T extends Node> Optional<T> findNode(String name, Class<T> type) {
-        return Optional.ofNullable(nodesMap.get(name))
-                .map(node -> type.isAssignableFrom(node.getClass()) ? (T) node : null);
+    public <T extends Node> Option<T> findNode(String name, Class<T> type) {
+        return Option.of(nodesMap.get(name)).map(node -> type.isAssignableFrom(node.getClass()) ? (T) node : null);
     }
 
     @Override
