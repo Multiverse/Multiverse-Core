@@ -56,7 +56,7 @@ public class TestDebugMode {
         assertTrue(plugin.isEnabled());
 
         // Make a fake server folder to fool MV into thinking a world folder exists.
-        File serverDirectory = new File(creator.getCore().getServerFolder(), "world");
+        File serverDirectory = new File(mockServer.getWorldContainer(), "world");
         serverDirectory.mkdirs();
 
         // Initialize a fake command

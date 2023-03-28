@@ -104,13 +104,8 @@ public class SimpleMVWorldManager implements MVWorldManager {
      */
     @Override
     public void getDefaultWorldGenerators() {
-        this.defaultGens = new HashMap<String, String>();
-        File[] files = this.plugin.getServerFolder().listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String s) {
-                return s.equalsIgnoreCase("bukkit.yml");
-            }
-        });
+        this.defaultGens = new HashMap<>();
+        File[] files = server.getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase("bukkit.yml"));
         if (files != null && files.length == 1) {
             FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(files[0]);
             if (bukkitConfig.isConfigurationSection("worlds")) {

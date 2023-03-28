@@ -87,7 +87,6 @@ public class TestInstanceCreator {
 
             doReturn(true).when(core).isEnabled();
             doReturn(Util.logger).when(core).getLogger();
-            core.setServerFolder(serverDirectory);
 
             // Add Core to the list of loaded plugins
             JavaPlugin[] plugins = new JavaPlugin[] { core };
@@ -101,13 +100,13 @@ public class TestInstanceCreator {
             when(mockPluginManager.getPermission("Vault")).thenReturn(null);
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
-            File worldNormalFile = new File(core.getServerFolder(), "world");
+            File worldNormalFile = new File(mockServer.getWorldContainer(), "world");
             Util.log("Creating world-folder: " + worldNormalFile.getAbsolutePath());
             worldNormalFile.mkdirs();
-            File worldNetherFile = new File(core.getServerFolder(), "world_nether");
+            File worldNetherFile = new File(mockServer.getWorldContainer(), "world_nether");
             Util.log("Creating world-folder: " + worldNetherFile.getAbsolutePath());
             worldNetherFile.mkdirs();
-            File worldSkylandsFile = new File(core.getServerFolder(), "world_the_end");
+            File worldSkylandsFile = new File(mockServer.getWorldContainer(), "world_the_end");
             Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
             worldSkylandsFile.mkdirs();
 
