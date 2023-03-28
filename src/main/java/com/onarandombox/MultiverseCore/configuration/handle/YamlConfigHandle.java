@@ -12,8 +12,17 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Configuration handle for YAML files.
+ */
 public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
 
+    /**
+     * Creates a new builder for {@link YamlConfigHandle}.
+     *
+     * @param configPath    The path to the config file.
+     * @return The builder.
+     */
     public static @NotNull Builder<? extends Builder> builder(@NotNull Path configPath) {
         return new Builder<>(configPath);
     }
@@ -67,6 +76,10 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
         return true;
     }
 
+    /**
+     * Builder for {@link YamlConfigHandle}.
+     * @param <B>   The type of the builder.
+     */
     public static class Builder<B extends Builder<B>> extends FileConfigHandle.Builder<YamlConfiguration, B> {
 
         protected Builder(@NotNull Path configPath) {

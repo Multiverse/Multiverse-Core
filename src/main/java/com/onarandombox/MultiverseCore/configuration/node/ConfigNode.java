@@ -7,6 +7,10 @@ import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A node that contains a value.
+ * @param <T>   The type of the value.
+ */
 public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
     /**

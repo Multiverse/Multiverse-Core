@@ -49,6 +49,12 @@ public class NodeGroup implements Collection<Node> {
         return nodesMap.keySet();
     }
 
+    /**
+     * Gets the node with the given name.
+     *
+     * @param name  The name of the node to get.
+     * @return The node with the given name, or {@link Optional#empty()} if no node with the given name exists.
+     */
     public Optional<Node> findNode(String name) {
         return Optional.ofNullable(nodesMap.get(name));
     }
@@ -57,6 +63,7 @@ public class NodeGroup implements Collection<Node> {
      * Gets the node with the given name.
      *
      * @param name The name of the node to get.
+     * @param type The type of the node to get.
      * @return The node with the given name, or {@link Optional#empty()} if no node with the given name exists.
      */
     public <T extends Node> Optional<T> findNode(String name, Class<T> type) {

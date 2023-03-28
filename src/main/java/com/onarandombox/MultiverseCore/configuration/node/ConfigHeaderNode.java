@@ -1,11 +1,13 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import com.google.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A node that represents a header without any value.
+ */
 public class ConfigHeaderNode implements CommentedNode {
 
     /**
@@ -66,16 +68,11 @@ public class ConfigHeaderNode implements CommentedNode {
             return (B) this;
         }
 
-        public B comment(String... comments) {
-            Collections.addAll(this.comments, comments);
-            return (B) this;
-        }
-
-        public B comment(Iterable<String> comments) {
-            comments.forEach(this.comments::add);
-            return (B) this;
-        }
-
+        /**
+         * Builds the node.
+         *
+         * @return The built node.
+         */
         public ConfigHeaderNode build() {
             return new ConfigHeaderNode(path, comments.toArray(new String[0]));
         }

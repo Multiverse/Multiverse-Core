@@ -15,6 +15,10 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Generic configuration handle for file based configurations.
+ * @param <C>   The configuration type.
+ */
 abstract class FileConfigHandle<C extends FileConfiguration> {
 
     protected final @NotNull Path configPath;
@@ -72,14 +76,25 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
         return true;
     }
 
+    /**
+     * Loads the configuration object.
+     *
+     * @return True if the configuration was loaded successfully, false otherwise.
+     */
     protected abstract boolean loadConfigObject();
 
+    /**
+     * Migrates the configuration.
+     */
     protected void migrateConfig() {
         if (migrator != null) {
             migrator.migrate(config);
         }
     }
 
+    /**
+     * Sets up the nodes.
+     */
     protected abstract void setUpNodes();
 
     /**
@@ -105,6 +120,11 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
         return config;
     }
 
+    /**
+     * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
+     * @param name  The name of the node.
+     * @return The value of the node.
+     */
     public Try<Object> get(@Nullable String name) {
         return nodes.findNode(name, ValueNode.class)
                 .map(node -> Try.of(() -> get(node)))
@@ -121,6 +141,13 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
         return config.getObject(node.getPath(), node.getType(), node.getDefaultValue());
     }
 
+    /**
+     * Sets the value of a node, if the validator is not null, it will be tested first.
+     *
+     * @param name  The name of the node.
+     * @param value The value to set.
+     * @return True if the value was set, false otherwise.
+     */
     public Try<Boolean> set(@Nullable String name, Object value) {
         return nodes.findNode(name, ValueNode.class)
                 .map(node -> (Try<Boolean>) set(node, value))
@@ -154,6 +181,12 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
         config.set(node.getPath(), node.getDefaultValue());
     }
 
+    /**
+     * Builder for {@link FileConfigHandle}.
+     *
+     * @param <C>   The configuration type.
+     * @param <B>   The builder type.
+     */
     public static abstract class Builder<C extends FileConfiguration, B extends Builder<C, B>> {
 
         protected @NotNull Path configPath;
@@ -187,6 +220,12 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
             return self();
         }
 
+        /**
+         * Sets the nodes.
+         *
+         * @param nodes The nodes.
+         * @return The builder.
+         */
         public B nodes(@Nullable NodeGroup nodes) {
             this.nodes = nodes;
             return self();

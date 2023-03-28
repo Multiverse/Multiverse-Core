@@ -12,8 +12,17 @@ import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Configuration handle for commented YAML files.
+ */
 public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfiguration> {
 
+    /**
+     * Creates a new builder for a {@link CommentedYamlConfigHandle}.
+     *
+     * @param configPath    The path to the config file.
+     * @return The builder.
+     */
     public static @NotNull Builder builder(@NotNull Path configPath) {
         return new Builder(configPath);
     }
@@ -22,12 +31,18 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
         super(configPath, logger, nodes, migrator);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean loadConfigObject() {
         config = new CommentedConfiguration(configPath, logger);
         return config.load();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setUpNodes() {
         if (nodes == null || nodes.isEmpty()) {
@@ -52,6 +67,9 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean save() {
         config.save();
@@ -64,6 +82,9 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
             super(configPath);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public @NotNull CommentedYamlConfigHandle build() {
             return new CommentedYamlConfigHandle(configPath, logger, nodes, migrator);
