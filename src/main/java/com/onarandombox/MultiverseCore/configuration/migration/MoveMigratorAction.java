@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 import java.util.Optional;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Single migrator action that moves a value from one path to another.
@@ -33,11 +33,11 @@ public class MoveMigratorAction implements MigratorAction {
      * {@inheritDoc}
      */
     @Override
-    public void migrate(ConfigHandle settings) {
-        Optional.ofNullable(settings.getConfig().get(fromPath))
+    public void migrate(FileConfiguration config) {
+        Optional.ofNullable(config.get(fromPath))
                 .ifPresent(value -> {
-                    settings.getConfig().set(toPath, value);
-                    settings.getConfig().set(fromPath, null);
+                    config.set(toPath, value);
+                    config.set(fromPath, null);
                     Logging.config("Moved path %s to %s", fromPath, toPath);
                 });
     }

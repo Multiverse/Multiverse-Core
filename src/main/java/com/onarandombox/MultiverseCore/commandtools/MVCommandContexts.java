@@ -15,14 +15,14 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.configuration.node.Node;
+import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
-import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
-import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
@@ -123,7 +123,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         if (Strings.isNullOrEmpty(configName)) {
             throw new InvalidCommandArgument("No config name specified.");
         }
-        Optional<CommentedNode> node = config.getNodes().findNode(configName);
+        Optional<Node> node = config.getNodes().findNode(configName);
         if (node.isEmpty()) {
             throw new InvalidCommandArgument("The config " + configName + " is not valid.");
         }
@@ -133,12 +133,12 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("No config value specified.");
         }
 
-        if (!(node.get() instanceof TypedValueNode)) {
+        if (!(node.get() instanceof ValueNode)) {
             context.popFirstArg();
             return new MVConfigValue(valueString);
         }
 
-        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(((TypedValueNode<?>) node.get()).getType());
+        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(((ValueNode<?>) node.get()).getType());
         if (resolver == null) {
             context.popFirstArg();
             return new MVConfigValue(valueString);

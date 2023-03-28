@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -55,20 +56,21 @@ public class ConfigCommand extends MultiverseCommand {
     }
 
     private void showConfigValue(BukkitCommandIssuer issuer, String name) {
-        Object currentValue = config.getProperty(name);
-        if (currentValue == null) {
-            issuer.sendMessage("No such config option: " + name);
-            return;
-        }
-        issuer.sendMessage(name + "is currently set to " + config.getProperty(name));
+        config.getProperty(name)
+                .onSuccess(value -> issuer.sendMessage(name + "is currently set to " + value))
+                .onFailure(throwable -> issuer.sendMessage("Unable to get " + name + ": " + throwable.getMessage()));
     }
 
     private void updateConfigValue(BukkitCommandIssuer issuer, String name, Object value) {
-        if (!config.setProperty(name, value)) {
-            issuer.sendMessage("Unable to set " + name + " to " + value);
-            return;
-        }
-        config.save();
-        issuer.sendMessage("Successfully set " + name + " to " + value);
+        config.setProperty(name, value)
+                .onSuccess(success -> {
+                    if (success) {
+                        config.save();
+                        issuer.sendMessage("Successfully set " + name + " to " + value);
+                    } else {
+                        issuer.sendMessage("Unable to set " + name + " to " + value);
+                    }
+                })
+                .onFailure(throwable -> issuer.sendMessage("Unable to set " + name + " to " + value + ": " + throwable.getMessage()));
     }
 }
