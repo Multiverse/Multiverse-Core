@@ -114,6 +114,7 @@ dependencies {
     }
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'com.natpryce:hamkrest:1.8.0.1'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
 
     // Old Tests
     oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
