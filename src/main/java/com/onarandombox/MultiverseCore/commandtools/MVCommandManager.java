@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -116,5 +117,14 @@ public class MVCommandManager extends PaperCommandManager {
 
     public @NotNull CommandIssuer getConsoleCommandIssuer() {
         return getCommandIssuer(Bukkit.getConsoleSender());
+    }
+
+    @Override
+    public @NotNull MVCommandIssuer getCommandIssuer(Object issuer) {
+        if (!(issuer instanceof CommandSender)) {
+            throw new IllegalArgumentException(issuer.getClass().getName() + " is not a Command Issuer.");
+        } else {
+            return new MVCommandIssuer(this, (CommandSender)issuer);
+        }
     }
 }
