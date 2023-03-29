@@ -28,7 +28,6 @@ public class MVCommandManager extends PaperCommandManager {
     private final CommandQueueManager commandQueueManager;
     private final Provider<MVCommandContexts> commandContextsProvider;
     private final Provider<MVCommandCompletions> commandCompletionsProvider;
-    private PluginLocales pluginLocales;
 
     @Inject
     public MVCommandManager(
@@ -48,6 +47,13 @@ public class MVCommandManager extends PaperCommandManager {
         MVCommandConditions.load(this, worldManager);
     }
 
+    void loadLanguages(PluginLocales locales) {
+        if (this.locales == null) {
+            this.locales = locales;
+            this.locales.loadLanguages();
+        }
+    }
+
     /**
      * Gets class responsible for flag handling.
      *
@@ -55,21 +61,6 @@ public class MVCommandManager extends PaperCommandManager {
      */
     public synchronized @NotNull CommandFlagsManager getFlagsManager() {
         return flagsManager;
-    }
-
-    /**
-     * Gets class responsible for locale handling.
-     *
-     * @return A not-null {@link PluginLocales}.
-     */
-    @Override
-    public PluginLocales getLocales() {
-        if (this.pluginLocales == null) {
-            this.pluginLocales = new PluginLocales(this);
-            this.locales = pluginLocales; // For parent class
-            this.pluginLocales.loadLanguages();
-        }
-        return this.pluginLocales;
     }
 
     /**
