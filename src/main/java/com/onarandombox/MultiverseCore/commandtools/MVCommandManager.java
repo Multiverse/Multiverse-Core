@@ -7,6 +7,7 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -15,6 +16,7 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -110,5 +112,9 @@ public class MVCommandManager extends PaperCommandManager {
             return;
         }
         help.showHelp();
+    }
+
+    public @NotNull CommandIssuer getConsoleCommandIssuer() {
+        return getCommandIssuer(Bukkit.getConsoleSender());
     }
 }
