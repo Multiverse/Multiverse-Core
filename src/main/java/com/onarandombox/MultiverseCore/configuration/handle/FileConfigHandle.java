@@ -7,8 +7,10 @@ import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.node.ConfigNodeNotFoundException;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
+import com.onarandombox.MultiverseCore.exceptions.MultiverseException;
 import io.vavr.control.Try;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -127,7 +129,7 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      */
     public Try<Object> get(@Nullable String name) {
         return nodes.findNode(name, ValueNode.class)
-                .toTry(() -> new Exception("Node not found"))
+                .toTry(() -> new ConfigNodeNotFoundException(name))
                 .map(node -> get((ValueNode<Object>) node));
     }
 
@@ -150,7 +152,7 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      */
     public Try<Void> set(@Nullable String name, Object value) {
         return nodes.findNode(name, ValueNode.class)
-                .toTry(() -> new Exception("Node not found"))
+                .toTry(() -> new ConfigNodeNotFoundException(name))
                 .flatMap(node -> set(node, value));
     }
 
@@ -164,7 +166,7 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      */
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         if (!node.validate(value)) {
-            return Try.failure(new Exception("Validation failed"));
+            return Try.failure(new MultiverseException("Validation failed", null)); // TODO replace validation
         }
         T oldValue = get(node);
         config.set(node.getPath(), value);

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public enum MVCorei18n implements MessageKeyProvider {
     // config status
     CONFIG_SAVE_FAILED,
+    CONFIG_NODE_NOTFOUND,
 
     // check command
     CHECK_CHECKING,
