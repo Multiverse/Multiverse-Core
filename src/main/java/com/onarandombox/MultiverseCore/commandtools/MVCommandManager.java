@@ -48,6 +48,7 @@ public class MVCommandManager extends PaperCommandManager {
         this.commandCompletionsProvider = commandCompletionsProvider;
 
         MVCommandConditions.load(this, worldManager);
+        this.enableUnstableAPI("help");
     }
 
     void loadLanguages(PluginLocales locales) {
