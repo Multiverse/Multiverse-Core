@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * A version migrator is a collection of migrator actions that are performed when migrating a config to a specific version.
@@ -31,10 +31,10 @@ public class VersionMigrator {
     /**
      * Performs all the migrator actions.
      *
-     * @param settings The target settings instance to migrate.
+     * @param config The target settings instance to migrate.
      */
-    public void migrate(ConfigHandle settings) {
-        actions.forEach(action -> action.migrate(settings));
+    public void migrate(FileConfiguration config) {
+        actions.forEach(action -> action.migrate(config));
     }
 
     /**

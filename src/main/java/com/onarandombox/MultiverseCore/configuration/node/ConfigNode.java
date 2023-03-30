@@ -1,43 +1,62 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Implementation of {@link EnhancedValueNode}.
- * @param <T> The type of the value.
+ * A node that contains a value.
+ * @param <T>   The type of the value.
  */
-public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode<T> {
+public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
     /**
-     * Creates a new builder for a {@link MVValueNode}.
+     * Creates a new builder for a {@link ConfigNode}.
      *
      * @param path  The path of the node.
      * @param type  The type of the value.
      * @return The new builder.
      * @param <T>   The type of the value.
      */
-    public static <T> Builder<T, ? extends Builder> builder(String path, Class<T> type) {
-        return new Builder<>(path, type);
+    public static @NotNull <T> ConfigNode.Builder<T, ? extends ConfigNode.Builder<T, ?>> builder(
+            @NotNull String path,
+            @NotNull Class<T> type
+    ) {
+        return new ConfigNode.Builder<>(path, type);
     }
 
-    protected final Class<T> type;
-    protected final T defaultValue;
-    protected final String name;
-    protected final Function<T, Boolean> validator;
-    protected final BiConsumer<T, T> onSetValue;
+    protected final @Nullable String name;
+    protected final @NotNull Class<T> type;
+    protected final @Nullable T defaultValue;
+    protected final @Nullable Function<T, Boolean> validator;
+    protected final @Nullable BiConsumer<T, T> onSetValue;
 
-    protected MVValueNode(String path, String[] comments, Class<T> type, T defaultValue, String name, Function<T, Boolean> validator, BiConsumer<T, T> onSetValue) {
+    protected ConfigNode(
+            @NotNull String path,
+            @NotNull String[] comments,
+            @Nullable String name,
+            @NotNull Class<T> type,
+            @Nullable T defaultValue,
+            @Nullable Function<T, Boolean> validator,
+            @Nullable BiConsumer<T, T> onSetValue
+    ) {
         super(path, comments);
+        this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
-        this.name = name;
         this.validator = validator;
         this.onSetValue = onSetValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Option<String> getName() {
+        return Option.of(name);
     }
 
     /**
@@ -60,15 +79,7 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
      * {@inheritDoc}
      */
     @Override
-    public Optional<String> getName() {
-        return Optional.ofNullable(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isValid(T value) {
+    public boolean validate(@Nullable T value) {
         if (validator != null) {
             return validator.apply(value);
         }
@@ -79,25 +90,25 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
      * {@inheritDoc}
      */
     @Override
-    public void onSetValue(T oldValue, T newValue) {
+    public void onSetValue(@Nullable T oldValue, @Nullable T newValue) {
         if (onSetValue != null) {
             onSetValue.accept(oldValue, newValue);
         }
     }
 
     /**
-     * Builder for {@link MVValueNode}.
+     * Builder for {@link ConfigNode}.
      *
      * @param <T>   The type of the value.
      * @param <B>   The type of the builder.
      */
-    public static class Builder<T, B extends Builder<T, B>> extends MVCommentedNode.Builder<B> {
+    public static class Builder<T, B extends ConfigNode.Builder<T, B>> extends ConfigHeaderNode.Builder<B> {
 
-        protected final Class<T> type;
-        protected T defaultValue;
-        protected String name;
-        protected Function<T, Boolean> validator;
-        protected BiConsumer<T, T> onSetValue;
+        protected @Nullable String name;
+        protected @NotNull final Class<T> type;
+        protected @Nullable T defaultValue;
+        protected @Nullable Function<T, Boolean> validator;
+        protected @Nullable BiConsumer<T, T> onSetValue;
 
         /**
          * Creates a new builder.
@@ -107,8 +118,8 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
          */
         protected Builder(@NotNull String path, @NotNull Class<T> type) {
             super(path);
-            this.type = type;
             this.name = path;
+            this.type = type;
         }
 
         /**
@@ -117,7 +128,7 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
          * @param defaultValue The default value.
          * @return This builder.
          */
-        public B defaultValue(@NotNull T defaultValue) {
+        public @NotNull B defaultValue(@NotNull T defaultValue) {
             this.defaultValue = defaultValue;
             return (B) this;
         }
@@ -128,12 +139,12 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
          * @param name The name of this node.
          * @return This builder.
          */
-        public B name(@Nullable String name) {
+        public @NotNull B name(@Nullable String name) {
             this.name = name;
             return (B) this;
         }
 
-        public B validator(@Nullable Function<T, Boolean> validator) {
+        public @NotNull B validator(@NotNull Function<T, Boolean> validator) {
             this.validator = validator;
             return (B) this;
         }
@@ -144,7 +155,7 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
          * @param onSetValue    The action to be performed.
          * @return This builder.
          */
-        public B onSetValue(@Nullable BiConsumer<T, T> onSetValue) {
+        public @NotNull B onSetValue(@NotNull BiConsumer<T, T> onSetValue) {
             this.onSetValue = onSetValue;
             return (B) this;
         }
@@ -153,8 +164,8 @@ public class MVValueNode<T> extends MVCommentedNode implements EnhancedValueNode
          * {@inheritDoc}
          */
         @Override
-        public MVValueNode<T> build() {
-            return new MVValueNode<>(path, comments.toArray(new String[0]), type, defaultValue, name, validator, onSetValue);
+        public @NotNull ConfigNode<T> build() {
+            return new ConfigNode<>(path, comments.toArray(new String[0]), name, type, defaultValue, validator, onSetValue);
         }
     }
 }

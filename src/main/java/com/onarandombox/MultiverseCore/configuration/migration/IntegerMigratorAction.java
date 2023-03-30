@@ -2,8 +2,7 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 
 import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
-import org.bukkit.util.NumberConversions;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Single migrator action that converts a string value to an integer.
@@ -21,8 +20,8 @@ public class IntegerMigratorAction implements MigratorAction {
     }
 
     @Override
-    public void migrate(ConfigHandle settings) {
-        settings.getConfig().set(path, ACFUtil.parseInt(settings.getConfig().getString(path)));
-        Logging.info("Converted %s to integer %s", path, settings.getConfig().getInt(path));
+    public void migrate(FileConfiguration config) {
+        config.set(path, ACFUtil.parseInt(config.getString(path)));
+        Logging.info("Converted %s to integer %s", path, config.getInt(path));
     }
 }

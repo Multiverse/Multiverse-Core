@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVConfig;
-import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
+import com.onarandombox.MultiverseCore.configuration.handle.CommentedYamlConfigHandle;
 import com.onarandombox.MultiverseCore.configuration.migration.BooleanMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.migration.IntegerMigratorAction;
@@ -15,6 +15,7 @@ import com.onarandombox.MultiverseCore.configuration.migration.InvertBoolMigrato
 import com.onarandombox.MultiverseCore.configuration.migration.MoveMigratorAction;
 import com.onarandombox.MultiverseCore.configuration.migration.VersionMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
@@ -27,13 +28,13 @@ public class MVCoreConfig implements MVConfig {
 
     private final Path configPath;
     private final MVCoreConfigNodes configNodes;
-    private final ConfigHandle configHandle;
+    private final CommentedYamlConfigHandle configHandle;
 
     @Inject
     MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
         this.configNodes = new MVCoreConfigNodes(pluginManager);
-        this.configHandle = ConfigHandle.builder(configPath)
+        this.configHandle = CommentedYamlConfigHandle.builder(configPath)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
@@ -110,12 +111,12 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public Object getProperty(String name) {
+    public Try<Object> getProperty(String name) {
         return configHandle.get(name);
     }
 
     @Override
-    public boolean setProperty(String name, Object value) {
+    public Try<Void> setProperty(String name, Object value) {
         return configHandle.set(name, value);
     }
 

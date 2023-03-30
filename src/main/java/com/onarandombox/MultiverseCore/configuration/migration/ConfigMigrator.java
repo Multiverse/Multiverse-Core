@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.configuration.ConfigHandle;
+import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Helper class for migrating configs to the latest config version.
@@ -19,14 +20,14 @@ public class ConfigMigrator {
      *                      Default value should be the current latest version number.
      * @return The builder instance.
      */
-    public static Builder builder(TypedValueNode<Double> versionNode) {
+    public static Builder builder(ValueNode<Double> versionNode) {
         return new Builder(versionNode);
     }
 
-    private final TypedValueNode<Double> versionNode;
+    private final ValueNode<Double> versionNode;
     private final List<VersionMigrator> versionMigrators;
 
-    protected ConfigMigrator(TypedValueNode<Double> versionNode, List<VersionMigrator> versionMigrators) {
+    protected ConfigMigrator(ValueNode<Double> versionNode, List<VersionMigrator> versionMigrators) {
         this.versionNode = versionNode;
         this.versionMigrators = versionMigrators;
     }
@@ -34,25 +35,25 @@ public class ConfigMigrator {
     /**
      * Migrates the config to the latest version if necessary.
      *
-     * @param settings The target settings instance to migrate.
+     * @param config The target settings instance to migrate.
      */
-    public void migrate(ConfigHandle settings) {
-        double versionNumber = settings.getConfig().getDouble(versionNode.getPath());
+    public void migrate(FileConfiguration config) {
+        double versionNumber = config.getDouble(versionNode.getPath());
         for (VersionMigrator versionMigrator : versionMigrators) {
             if (versionNumber < versionMigrator.getVersion()) {
                 Logging.info("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
-                versionMigrator.migrate(settings);
+                versionMigrator.migrate(config);
             }
         }
         // Set the version number to the latest version number
-        settings.setDefault(versionNode);
+        config.set(versionNode.getPath(), versionNode.getDefaultValue());
     }
 
     /**
      * A builder for a ConfigMigrator.
      */
     public static class Builder {
-        private final TypedValueNode<Double> versionNode;
+        private final ValueNode<Double> versionNode;
         private final List<VersionMigrator> versionMigrators;
 
         /**
@@ -61,7 +62,7 @@ public class ConfigMigrator {
          * @param versionNode   The node that stores the version number of the config.
          *                      Default value should be the current latest version number.
          */
-        public Builder(TypedValueNode<Double> versionNode) {
+        public Builder(ValueNode<Double> versionNode) {
             this.versionNode = versionNode;
             this.versionMigrators = new ArrayList<>();
         }

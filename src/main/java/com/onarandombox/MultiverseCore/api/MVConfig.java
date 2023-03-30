@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.api;
 
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
+import io.vavr.control.Try;
 import org.jvnet.hk2.annotations.Contract;
 
 @Contract
@@ -34,19 +35,21 @@ public interface MVConfig {
     /**
      * Gets a property from the config.
      *
-     * @param name  The name of the property.
-     * @return The value of the property.
+     * @param name The name of the property.
+     * @return A {@link Try} with the value of the property, otherwise a {@link Try.Failure} if there is no property by
+     * that name.
      */
-    Object getProperty(String name);
+    Try<Object> getProperty(String name);
 
     /**
      * Sets a property in the config.
      *
      * @param name  The name of the property.
      * @param value The value of the property.
-     * @return True if the property was set successfully.
+     * @return An empty {@link Try} if the property was set successfully, otherwise a {@link Try.Failure} with the
+     * exception explaining why the property could not be set.
      */
-    boolean setProperty(String name, Object value);
+    Try<Void> setProperty(String name, Object value);
 
     /**
      * Sets world access permissions should be enforced.
