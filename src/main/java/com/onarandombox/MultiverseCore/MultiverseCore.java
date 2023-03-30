@@ -22,6 +22,7 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.commandtools.PluginLocales;
 import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
@@ -67,6 +68,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<MetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MVEconomist> economistProvider;
+    @Inject
+    private Provider<PluginLocales> pluginLocalesProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -129,8 +132,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // Init all the other stuff
         this.loadAnchors();
         this.registerEvents();
-        this.registerCommands();
         this.setUpLocales();
+        this.registerCommands();
         this.registerDestinations();
         this.setupMetrics();
         this.loadPlaceholderAPIIntegration();
@@ -173,13 +176,19 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private void loadEconomist() {
         Try.run(() -> economistProvider.get())
-                .onFailure(e -> Logging.severe("Failed to load economy integration", e));
+                .onFailure(e -> {
+                    Logging.severe("Failed to load economy integration");
+                    e.printStackTrace();
+                });
     }
 
     private void loadAnchors() {
         Try.of(() -> anchorManagerProvider.get())
                 .onSuccess(AnchorManager::loadAnchors)
-                .onFailure(e -> Logging.severe("Failed to load anchors", e));
+                .onFailure(e -> {
+                    Logging.severe("Failed to load anchors");
+                    e.printStackTrace();
+                });
     }
 
     /**
@@ -204,7 +213,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                     serviceLocator.getAllServices(MultiverseCommand.class)
                             .forEach(commandManager::registerCommand);
                 })
-                .onFailure(e -> Logging.severe("Failed to register commands", e));
+                .onFailure(e -> {
+                    Logging.severe("Failed to register commands");
+                    e.printStackTrace();
+                });
     }
 
     /**
@@ -212,12 +224,18 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void setUpLocales() {
         Try.of(() -> commandManagerProvider.get())
-                .andThenTry(commandManager -> {
+                .andThen(commandManager -> {
                     commandManager.usePerIssuerLocale(true, true);
-                    commandManager.getLocales().addFileResClassLoader(this);
-                    commandManager.getLocales().addMessageBundles("multiverse-core");
                 })
-                .onFailure(e -> Logging.severe("Failed to register locales", e));
+                .mapTry(commandManager -> pluginLocalesProvider.get())
+                .andThen(pluginLocales -> {
+                    pluginLocales.addFileResClassLoader(this);
+                    pluginLocales.addMessageBundles("multiverse-core");
+                })
+                .onFailure(e -> {
+                    Logging.severe("Failed to register locales");
+                    e.printStackTrace();
+                });
     }
 
     /**
@@ -229,7 +247,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                     serviceLocator.getAllServices(Destination.class)
                             .forEach(destinationsProvider::registerDestination);
                 })
-                .onFailure(e -> Logging.severe("Failed to register destinations", e));
+                .onFailure(e -> {
+                    Logging.severe("Failed to register destinations");
+                    e.printStackTrace();
+                });
     }
 
     /**
@@ -239,7 +260,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (TestingMode.isDisabled()) {
             // Load metrics
             Try.of(() -> metricsConfiguratorProvider.get())
-                    .onFailure(e -> Logging.severe("Failed to setup metrics", e));
+                    .onFailure(e -> {
+                        Logging.severe("Failed to setup metrics");
+                        e.printStackTrace();
+                    });
         } else {
             Logging.info("Metrics are disabled in testing mode.");
         }
@@ -260,7 +284,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void loadPlaceholderAPIIntegration() {
         if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Try.run(() -> serviceLocator.createAndInitialize(MultiverseCorePlaceholders.class))
-                    .onFailure(e -> Logging.severe("Failed to load PlaceholderAPI integration.", e));
+                    .onFailure(e -> {
+                        Logging.severe("Failed to load PlaceholderAPI integration.");
+                        e.printStackTrace();
+                    });
         }
     }
 
@@ -348,7 +375,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return getConfigProvider().saveConfig()
                 .map(v -> true)
                 .recover(e -> {
-                    Logging.severe(e.getMessage(), e);
+                    Logging.severe(e.getMessage());
+                    e.printStackTrace();
                     return false;
                 })
                 .get();

@@ -2,6 +2,9 @@ package com.onarandombox.MultiverseCore.utils;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import com.onarandombox.MultiverseCore.utils.message.Message;
+import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
+import org.jetbrains.annotations.NotNull;
 
 public enum MVCorei18n implements MessageKeyProvider {
     // config status
@@ -83,5 +86,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     @Override
     public MessageKey getMessageKey() {
         return this.key;
+    }
+
+    @NotNull
+    public Message bundle(@NotNull String nonLocalizedMessage, @NotNull MessageReplacement... replacements) {
+        return Message.of(this, nonLocalizedMessage, replacements);
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.BukkitLocales;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
@@ -15,6 +16,8 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -28,7 +31,6 @@ public class MVCommandManager extends PaperCommandManager {
     private final CommandQueueManager commandQueueManager;
     private final Provider<MVCommandContexts> commandContextsProvider;
     private final Provider<MVCommandCompletions> commandCompletionsProvider;
-    private PluginLocales pluginLocales;
 
     @Inject
     public MVCommandManager(
@@ -48,6 +50,18 @@ public class MVCommandManager extends PaperCommandManager {
         MVCommandConditions.load(this, worldManager);
     }
 
+    void loadLanguages(PluginLocales locales) {
+        if (this.locales == null) {
+            this.locales = locales;
+            this.locales.loadLanguages();
+        }
+    }
+
+    @Override
+    public BukkitLocales getLocales() {
+        return this.locales;
+    }
+
     /**
      * Gets class responsible for flag handling.
      *
@@ -55,21 +69,6 @@ public class MVCommandManager extends PaperCommandManager {
      */
     public synchronized @NotNull CommandFlagsManager getFlagsManager() {
         return flagsManager;
-    }
-
-    /**
-     * Gets class responsible for locale handling.
-     *
-     * @return A not-null {@link PluginLocales}.
-     */
-    @Override
-    public PluginLocales getLocales() {
-        if (this.pluginLocales == null) {
-            this.pluginLocales = new PluginLocales(this);
-            this.locales = pluginLocales; // For parent class
-            this.pluginLocales.loadLanguages();
-        }
-        return this.pluginLocales;
     }
 
     /**
@@ -119,5 +118,18 @@ public class MVCommandManager extends PaperCommandManager {
             return;
         }
         help.showHelp();
+    }
+
+    public @NotNull MVCommandIssuer getConsoleCommandIssuer() {
+        return getCommandIssuer(Bukkit.getConsoleSender());
+    }
+
+    @Override
+    public @NotNull MVCommandIssuer getCommandIssuer(Object issuer) {
+        if (!(issuer instanceof CommandSender)) {
+            throw new IllegalArgumentException(issuer.getClass().getName() + " is not a Command Issuer.");
+        } else {
+            return new MVCommandIssuer(this, (CommandSender)issuer);
+        }
     }
 }
