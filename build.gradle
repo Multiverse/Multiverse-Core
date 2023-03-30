@@ -105,6 +105,7 @@ dependencies {
     relocatedApi 'org.bstats:bstats-bukkit:2.2.1'
     relocatedApi 'net.minidev:json-smart:2.4.8'
     relocatedApi 'org.jetbrains:annotations:22.0.0'
+    relocatedApi 'io.papermc:paperlib:1.0.8'
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
@@ -260,6 +261,7 @@ shadowJar {
     relocate 'org.jvnet', 'com.onarandombox.jvnet'
     relocate 'org.intellij', 'com.onarandombox.intellij'
     relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
+    relocate 'io.papermc.lib', 'com.onarandombox.paperlib'
 
     configurations = [project.configurations.api, project.configurations.relocatedApi]
 
