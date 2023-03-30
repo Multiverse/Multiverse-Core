@@ -15,19 +15,6 @@ package com.onarandombox.MultiverseCore.api;
 public interface MVCore extends MVPlugin {
 
     /**
-     * Reloads the Multiverse Configuration files:
-     * worlds.yml and config.yml.
-     */
-    void loadConfigs();
-
-    /**
-     * Saves the Multiverse-Config.
-     *
-     * @return Whether the Multiverse-Config was successfully saved
-     */
-    boolean saveMVConfig();
-
-    /**
      * Saves all configs.
      *
      * @return Whether the config was successfully saved

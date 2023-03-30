@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
@@ -9,16 +10,19 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
+import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.utils.PlayerFinder;
+import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
+import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
@@ -29,22 +33,26 @@ public class MVCommandContexts extends PaperCommandContexts {
 
     private final DestinationsProvider destinationsProvider;
     private final MVWorldManager worldManager;
+    private final MVCoreConfig config;
 
     @Inject
     public MVCommandContexts(
             MVCommandManager mvCommandManager,
             DestinationsProvider destinationsProvider,
-            MVWorldManager worldManager
+            MVWorldManager worldManager,
+            MVCoreConfig config
     ) {
         super(mvCommandManager);
         this.destinationsProvider = destinationsProvider;
         this.worldManager = worldManager;
+        this.config = config;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
         registerContext(GameRuleValue.class, this::parseGameRuleValue);
+        registerContext(MVConfigValue.class, this::parseMVConfigValue);
         registerIssuerAwareContext(MVWorld.class, this::parseMVWorld);
         registerIssuerAwareContext(MVWorld[].class, this::parseMVWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
@@ -108,6 +116,39 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return new GameRuleValue(resolvedValue);
+    }
+
+    private MVConfigValue parseMVConfigValue(BukkitCommandExecutionContext context) {
+        String configName = (String) context.getResolvedArg(String.class);
+        if (Strings.isNullOrEmpty(configName)) {
+            throw new InvalidCommandArgument("No config name specified.");
+        }
+        Optional<CommentedNode> node = config.getNodes().findNode(configName);
+        if (node.isEmpty()) {
+            throw new InvalidCommandArgument("The config " + configName + " is not valid.");
+        }
+
+        String valueString = context.getFirstArg();
+        if (Strings.isNullOrEmpty(valueString)) {
+            throw new InvalidCommandArgument("No config value specified.");
+        }
+
+        if (!(node.get() instanceof TypedValueNode)) {
+            context.popFirstArg();
+            return new MVConfigValue(valueString);
+        }
+
+        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(((TypedValueNode<?>) node.get()).getType());
+        if (resolver == null) {
+            context.popFirstArg();
+            return new MVConfigValue(valueString);
+        }
+
+        Object resolvedValue = resolver.getContext(context);
+        if (resolvedValue == null) {
+            throw new InvalidCommandArgument("The config value " + valueString + " is not valid for config " + configName + ".");
+        }
+        return new MVConfigValue(resolvedValue);
     }
 
     private MVWorld parseMVWorld(BukkitCommandExecutionContext context) {

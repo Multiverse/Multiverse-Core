@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
@@ -16,17 +16,17 @@ import org.jvnet.hk2.annotations.Service;
  */
 @Service
 public class MVChatListener implements InjectableListener {
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
 
     @Inject
     public MVChatListener(
-            MVCoreConfigProvider configProvider,
+            MVCoreConfig config,
             MVWorldManager worldManager,
             MVPlayerListener playerListener
     ) {
-        this.configProvider = configProvider;
+        this.config = config;
         this.worldManager = worldManager;
         this.playerListener = playerListener;
     }
@@ -42,7 +42,7 @@ public class MVChatListener implements InjectableListener {
         }
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
-        if (configProvider.getConfig().getPrefixChat()) {
+        if (config.isEnablePrefixChat()) {
             String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
             if (world == null) {
                 world = event.getPlayer().getWorld().getName();
@@ -60,7 +60,7 @@ public class MVChatListener implements InjectableListener {
             prefix = mvworld.getColoredWorldString();
             String chat = event.getFormat();
             
-            String prefixChatFormat = configProvider.getConfig().getPrefixChatFormat();
+            String prefixChatFormat = config.getPrefixChatFormat();
             prefixChatFormat = prefixChatFormat.replace("%world%", prefix).replace("%chat%", chat);
             prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
             

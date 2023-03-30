@@ -12,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -23,7 +24,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
@@ -55,7 +56,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private ServiceLocator serviceLocator;
     @Inject
-    private MVCoreConfigProvider configProvider;
+    private MVCoreConfig config;
     @Inject
     private Provider<MVWorldManager> worldManagerProvider;
     @Inject
@@ -90,7 +91,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         Logging.init(this);
 
         // Register our config classes
-        SerializationConfig.registerAll(MultiverseCoreConfiguration.class);
         SerializationConfig.registerAll(WorldProperties.class);
         SerializationConfig.initLogging(Logging.getLogger());
     }
@@ -103,8 +103,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         initializeDependencyInjection();
 
         // Load our configs first as we need them for everything else.
-        this.loadConfigs();
-        if (!getConfigProvider().isConfigLoaded()) {
+        if (config == null || !config.isLoaded()) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -115,15 +114,16 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         var worldManager = worldManagerProvider.get();
 
+        worldManager.loadWorldsConfig();
         worldManager.getDefaultWorldGenerators();
         worldManager.loadDefaultWorlds();
         worldManager.loadWorlds(true);
 
         // Now set the firstspawnworld (after the worlds are loaded):
-        worldManager.setFirstSpawnWorld(getConfigProvider().getConfig().getFirstSpawnWorld());
+        worldManager.setFirstSpawnWorld(config.getFirstSpawnLocation());
         MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
         if (firstSpawnWorld != null) {
-            getConfigProvider().getConfig().setFirstSpawnWorld(firstSpawnWorld.getName());
+            config.setFirstSpawnLocation(firstSpawnWorld.getName());
         }
 
         //Setup economy here so vault is loaded
@@ -137,7 +137,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         this.registerDestinations();
         this.setupMetrics();
         this.loadPlaceholderAPIIntegration();
-        this.saveMVConfig();
+        this.saveAllConfigs();
         this.logEnableMessage();
     }
 
@@ -171,7 +171,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private boolean shouldShowConfig() {
-        return !getConfigProvider().getConfig().getSilentStart();
+        return !config.getSilentStart();
     }
 
     private void loadEconomist() {
@@ -275,24 +275,21 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
 
-        if (getConfigProvider().getConfig().isShowingDonateMessage()) {
-            getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
-            getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+        if (config.isShowingDonateMessage()) {
+            Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+            Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
     }
 
     private void loadPlaceholderAPIIntegration() {
-        if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (config.isRegisterPapiHook()
+                && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Try.run(() -> serviceLocator.createAndInitialize(MultiverseCorePlaceholders.class))
                     .onFailure(e -> {
                         Logging.severe("Failed to load PlaceholderAPI integration.");
                         e.printStackTrace();
                     });
         }
-    }
-
-    private MVCoreConfigProvider getConfigProvider() {
-        return configProvider;
     }
 
     /**
@@ -343,6 +340,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return this.pluginCount;
     }
 
+    @NotNull
+    @Override
+    public Logger getLogger() {
+        return Logging.getLogger();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -363,31 +366,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
-    public void loadConfigs() {
-        getConfigProvider().loadConfigs();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean saveMVConfig() {
-        return getConfigProvider().saveConfig()
-                .map(v -> true)
-                .recover(e -> {
-                    Logging.severe(e.getMessage());
-                    e.printStackTrace();
-                    return false;
-                })
-                .get();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean saveAllConfigs() {
-        return this.saveMVConfig() && worldManagerProvider.get().saveWorldsConfig();
+        return config.save()
+                && worldManagerProvider.get().saveWorldsConfig()
+                && anchorManagerProvider.get().saveAnchors();
     }
 
     //TODO: REMOVE THIS STATIC CRAP - START

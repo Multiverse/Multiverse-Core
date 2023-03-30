@@ -11,7 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import jakarta.inject.Inject;
 import org.bukkit.World;
@@ -33,17 +33,17 @@ import org.jvnet.hk2.annotations.Service;
  */
 @Service
 public class MVEntityListener implements InjectableListener {
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
     private final MVWorldManager worldManager;
     private final WorldPurger worldPurger;
 
     @Inject
     public MVEntityListener(
-            @NotNull MVCoreConfigProvider configProvider,
+            @NotNull MVCoreConfig config,
             @NotNull MVWorldManager worldManager,
             @NotNull WorldPurger worldPurger
     ) {
-        this.configProvider = configProvider;
+        this.config = config;
         this.worldManager = worldManager;
         this.worldPurger = worldPurger;
     }
@@ -128,8 +128,8 @@ public class MVEntityListener implements InjectableListener {
         if (event.isCancelled() || event.getTo() == null) {
             return;
         }
-        if (!this.configProvider.getConfig().isUsingDefaultPortalSearch()) {
-            event.setSearchRadius(this.configProvider.getConfig().getPortalSearchRadius());
+        if (!config.isUsingCustomPortalSearch()) {
+            event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
     }
 }

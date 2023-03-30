@@ -26,13 +26,13 @@ import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
@@ -61,7 +61,10 @@ import org.jvnet.hk2.annotations.Service;
  */
 @Service
 public class SimpleMVWorldManager implements MVWorldManager {
+    public static final String WORLD_CONFIG_FILE = "worlds.yml";
+
     private final MultiverseCore plugin;
+    private final MVCoreConfig config;
     private final MVPlayerListener playerListener;
     private final BlockSafety blockSafety;
     private final SafeTTeleporter safeTTeleporter;
@@ -78,6 +81,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
     @Inject
     public SimpleMVWorldManager(
             MultiverseCore plugin,
+            MVCoreConfig config,
             MVPlayerListener playerListener,
             BlockSafety blockSafety,
             SafeTTeleporter safeTTeleporter,
@@ -87,6 +91,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             Server server
     ) {
         this.plugin = plugin;
+        this.config = config;
         this.playerListener = playerListener;
         this.blockSafety = blockSafety;
         this.safeTTeleporter = safeTTeleporter;
@@ -512,9 +517,9 @@ public class SimpleMVWorldManager implements MVWorldManager {
             nullWorld(worldName);
             return false;
         }
-        SimpleMVWorld world = new SimpleMVWorld(this, worldPurger, playerListener, blockSafety, safeTTeleporter,
-                locationManipulation, server, cbworld, mvworld);
-        if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+        SimpleMVWorld world = new SimpleMVWorld(this, config, worldPurger, playerListener, blockSafety,
+                safeTTeleporter, locationManipulation, server, cbworld, mvworld);
+        if (config.isAutoPurgeEntities()) {
             this.worldPurger.purgeWorld(world);
         }
         this.worlds.put(worldName, world);
@@ -814,11 +819,12 @@ public class SimpleMVWorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public FileConfiguration loadWorldConfig(File file) {
+    public FileConfiguration loadWorldsConfig() {
+        File file = new File(this.plugin.getDataFolder(), WORLD_CONFIG_FILE);
         this.configWorlds = YamlConfiguration.loadConfiguration(file);
         this.ensureConfigIsPrepared();
         try {
-            this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+            this.configWorlds.save(file);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

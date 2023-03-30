@@ -1,79 +1,90 @@
 package com.onarandombox.MultiverseCore.api;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 import org.jvnet.hk2.annotations.Contract;
 
-/**
- * The configuration of MultiverseCore.
- */
-public interface MVConfig extends ConfigurationSerializable {
-    /**
-     * Sets a property using a {@link String}.
-     * @param property The name of the property.
-     * @param value The value.
-     * @return True on success, false if the operation failed.
-     */
-    boolean setConfigProperty(String property, String value);
+@Contract
+public interface MVConfig {
 
     /**
-     * Sets firstSpawnWorld.
-     * @param firstSpawnWorld The new value.
+     * Loads the config from disk.
+     * @return True if the config was loaded successfully.
      */
-    void setFirstSpawnWorld(String firstSpawnWorld);
+    boolean load();
 
     /**
-     * Gets firstSpawnWorld.
-     * @return firstSpawnWorld.
+     * Whether the config has been loaded.
+     * @return True if the config has been loaded.
      */
-    String getFirstSpawnWorld();
+    boolean isLoaded();
 
     /**
-     * Sets version.
-     * @param version The new value.
+     * Saves the config to disk.
      */
-    void setVersion(int version);
+    boolean save();
 
     /**
-     * Gets version.
-     * @return version.
+     * Gets the nodes for the config.
+     *
+     * @return The nodes for the config.
      */
-    double getVersion();
+    NodeGroup getNodes();
 
     /**
-     * Sets globalDebug.
-     * @param globalDebug The new value.
+     * Gets a property from the config.
+     *
+     * @param name  The name of the property.
+     * @return The value of the property.
      */
-    void setGlobalDebug(int globalDebug);
+    Object getProperty(String name);
 
     /**
-     * Gets globalDebug.
-     * @return globalDebug.
+     * Sets a property in the config.
+     *
+     * @param name  The name of the property.
+     * @param value The value of the property.
+     * @return True if the property was set successfully.
      */
-    int getGlobalDebug();
+    boolean setProperty(String name, Object value);
 
     /**
-     * Sets displayPermErrors.
-     * @param displayPermErrors The new value.
+     * Sets world access permissions should be enforced.
+     * @param enforceAccess The new value.
      */
-    void setDisplayPermErrors(boolean displayPermErrors);
+    void setEnforceAccess(boolean enforceAccess);
 
     /**
-     * Gets displayPermErrors.
-     * @return displayPermErrors.
+     * Gets enforceAccess.
+     * @return enforceAccess.
      */
-    boolean getDisplayPermErrors();
+    boolean getEnforceAccess();
 
     /**
-     * Sets firstSpawnOverride.
-     * @param firstSpawnOverride The new value.
+     * Sets whether the game mode should be enforced.
+     * @param enforceGameMode The new value.
      */
-    void setFirstSpawnOverride(boolean firstSpawnOverride);
+    void setEnforceGameMode(boolean enforceGameMode);
 
     /**
-     * Gets firstSpawnOverride.
-     * @return firstSpawnOverride.
+     * Gets enforceGameMode value.
+     * @return True if game mode should be enforced.
      */
-    boolean getFirstSpawnOverride();
+    boolean getEnforceGameMode();
+
+    /**
+     * Sets whether or not the automatic purge of entities is enabled.
+     *
+     * @param autopurge True if automatic purge should be enabled.
+     */
+    void setAutoPurgeEntities(boolean autopurge);
+
+    /**
+     * Gets whether or not the automatic purge of entities is enabled.
+     *
+     * @return True if automatic purge is enabled.
+     */
+    boolean isAutoPurgeEntities();
 
     /**
      * Sets teleportIntercept.
@@ -88,17 +99,69 @@ public interface MVConfig extends ConfigurationSerializable {
     boolean getTeleportIntercept();
 
     /**
+     * Sets firstSpawnOverride.
+     * @param firstSpawnOverride The new value.
+     */
+    void setFirstSpawnOverride(boolean firstSpawnOverride);
+
+    /**
+     * Gets firstSpawnOverride.
+     * @return firstSpawnOverride.
+     */
+    boolean getFirstSpawnOverride();
+
+    /**
+     * Sets firstSpawnWorld.
+     * @param firstSpawnWorld The new value.
+     */
+    void setFirstSpawnLocation(String firstSpawnWorld);
+
+    /**
+     * Gets firstSpawnWorld.
+     * @return firstSpawnWorld.
+     */
+    String getFirstSpawnLocation();
+
+    /**
+     * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.
+     *
+     * @param useDefaultPortalSearch True to let Bukkit determine portal search radius on its own.
+     */
+    void setUseCustomPortalSearch(boolean useDefaultPortalSearch);
+
+    /**
+     * Gets whether or not Bukkit will be determining portal search radius on its own or if Multiverse should help.
+     *
+     * @return True means Bukkit will use its own default values.
+     */
+    boolean isUsingCustomPortalSearch();
+
+    /**
+     * Sets the radius at which vanilla style portals will be searched for to connect to worlds together.
+     *
+     * @param searchRadius The portal search radius.
+     */
+    void setCustomPortalSearchRadius(int searchRadius);
+
+    /**
+     * Gets the radius at which vanilla style portals will be searched for to connect to worlds together.
+     *
+     * @return The portal search radius.
+     */
+    int getCustomPortalSearchRadius();
+
+    /**
      * Sets prefixChat.
      * @param prefixChat The new value.
      */
-    void setPrefixChat(boolean prefixChat);
+    void setEnablePrefixChat(boolean prefixChat);
 
     /**
      * Gets prefixChat.
      * @return prefixChat.
      */
-    boolean getPrefixChat();
-    
+    boolean isEnablePrefixChat();
+
     /**
      * Sets prefixChatFormat.
      * @param prefixChatFormat The new value.
@@ -112,16 +175,28 @@ public interface MVConfig extends ConfigurationSerializable {
     String getPrefixChatFormat();
 
     /**
-     * Sets enforceAccess.
-     * @param enforceAccess The new value.
+     * Sets whether to register the {@link MultiverseCorePlaceholders} class with PlaceholderAPI plugin.
+     * @param registerPapiHook The new value.
      */
-    void setEnforceAccess(boolean enforceAccess);
+    void setRegisterPapiHook(boolean registerPapiHook);
 
     /**
-     * Gets enforceAccess.
-     * @return enforceAccess.
+     * Gets whether to register the {@link MultiverseCorePlaceholders} class with PlaceholderAPI plugin.
+     * @return registerPapiHook.
      */
-    boolean getEnforceAccess();
+    boolean isRegisterPapiHook();
+
+    /**
+     * Sets globalDebug.
+     * @param globalDebug The new value.
+     */
+    void setGlobalDebug(int globalDebug);
+
+    /**
+     * Gets globalDebug.
+     * @return globalDebug.
+     */
+    int getGlobalDebug();
 
     /**
      * Sets whether to suppress startup messages.
@@ -138,46 +213,11 @@ public interface MVConfig extends ConfigurationSerializable {
     boolean getSilentStart();
 
     /**
-     * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.
+     * Sets whether or not the donation/patreon messages are shown.
      *
-     * @param useDefaultPortalSearch True to let Bukkit determine portal search radius on its own.
+     * @param idonotwanttodonate True if donation/patreon messages should be shown.
      */
-    void setUseDefaultPortalSearch(boolean useDefaultPortalSearch);
-
-    /**
-     * Gets whether or not Bukkit will be determining portal search radius on its own or if Multiverse should help.
-     *
-     * @return True means Bukkit will use its own default values.
-     */
-    boolean isUsingDefaultPortalSearch();
-
-    /**
-     * Sets the radius at which vanilla style portals will be searched for to connect to worlds together.
-     *
-     * @param searchRadius The portal search radius.
-     */
-    void setPortalSearchRadius(int searchRadius);
-
-    /**
-     * Gets the radius at which vanilla style portals will be searched for to connect to worlds together.
-     *
-     * @return The portal search radius.
-     */
-    int getPortalSearchRadius();
-
-    /**
-     * Gets whether or not the automatic purge of entities is enabled.
-     *
-     * @return True if automatic purge is enabled.
-     */
-    boolean isAutoPurgeEnabled();
-
-    /**
-     * Sets whether or not the automatic purge of entities is enabled.
-     *
-     * @param autopurge True if automatic purge should be enabled.
-     */
-    void setAutoPurgeEnabled(boolean autopurge);
+    void setShowDonateMessage(boolean idonotwanttodonate);
 
     /**
      * Gets whether or not the donation/patreon messages are shown.
@@ -185,11 +225,4 @@ public interface MVConfig extends ConfigurationSerializable {
      * @return True if donation/patreon messages should be shown.
      */
     boolean isShowingDonateMessage();
-
-    /**
-     * Sets whether or not the donation/patreon messages are shown.
-     *
-     * @param idonotwanttodonate True if donation/patreon messages should be shown.
-     */
-    void setShowDonateMessage(boolean idonotwanttodonate);
 }

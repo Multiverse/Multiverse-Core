@@ -10,7 +10,7 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider
+import com.onarandombox.MultiverseCore.config.MVCoreConfig
 import com.onarandombox.MultiverseCore.economy.MVEconomist
 import com.onarandombox.MultiverseCore.listeners.MVChatListener
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener
@@ -113,15 +113,15 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `MVCoreConfigProvider is available as a service`() {
-        assertNotNull(multiverseCore.getService(MVCoreConfigProvider::class.java))
+    fun `MVCoreConfig is available as a service`() {
+        assertNotNull(multiverseCore.getService(MVCoreConfig::class.java))
     }
 
     @Test
     fun `Commands are available as services`() {
         val commands = multiverseCore.getAllServices(MultiverseCommand::class.java)
         // TODO come up with a better way to test this like via actually testing the effect of calling each command
-        assertEquals(16, commands.size)
+        assertEquals(17, commands.size)
     }
 
     @Test
@@ -129,13 +129,6 @@ class InjectionTest : TestWithMockBukkit() {
         val destinations = multiverseCore.getAllServices(Destination::class.java)
         // TODO come up with a better way to test this like via actually testing the effect of using each destination
         assertEquals(6, destinations.size)
-    }
-
-    @Test
-    fun `MVConfig is not available as a service`() {
-        // We need one test case for asking for non-services to make sure we don't accidentally make them available
-        // and that the getService method doesn't throw an exception
-        assertNull(multiverseCore.getService(MVConfig::class.java))
     }
 
     @Test

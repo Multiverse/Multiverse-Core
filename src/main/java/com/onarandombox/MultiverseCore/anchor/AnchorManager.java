@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore.anchor;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.config.MVCoreConfigProvider;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,17 +38,17 @@ public class AnchorManager {
 
     private final Plugin plugin;
     private final LocationManipulation locationManipulation;
-    private final MVCoreConfigProvider configProvider;
+    private final MVCoreConfig config;
 
     @Inject
     public AnchorManager(
             MultiverseCore plugin,
             LocationManipulation locationManipulation,
-            MVCoreConfigProvider configProvider
+            MVCoreConfig config
     ) {
         this.plugin = plugin;
         this.locationManipulation = locationManipulation;
-        this.configProvider = configProvider;
+        this.config = config;
 
         this.anchors = new HashMap<String, Location>();
     }
@@ -160,8 +160,8 @@ public class AnchorManager {
             // Add to the list if we're not enforcing access
             // OR
             // We are enforcing access and the user has the permission.
-            if (!this.configProvider.getConfig().getEnforceAccess() ||
-                    (this.configProvider.getConfig().getEnforceAccess() && p.hasPermission(worldPerm))) {
+            if (!config.getEnforceAccess() ||
+                    (config.getEnforceAccess() && p.hasPermission(worldPerm))) {
                 myAnchors.add(anchor);
             } else {
                 Logging.finer(String.format("Not adding anchor %s to the list, user %s doesn't have the %s " +
