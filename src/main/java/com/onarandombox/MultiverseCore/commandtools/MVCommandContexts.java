@@ -32,6 +32,7 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class MVCommandContexts extends PaperCommandContexts {
 
+    private final MVCommandManager mvCommandManager;
     private final DestinationsProvider destinationsProvider;
     private final MVWorldManager worldManager;
     private final MVCoreConfig config;
@@ -44,11 +45,13 @@ public class MVCommandContexts extends PaperCommandContexts {
             MVCoreConfig config
     ) {
         super(mvCommandManager);
+        this.mvCommandManager = mvCommandManager;
         this.destinationsProvider = destinationsProvider;
         this.worldManager = worldManager;
         this.config = config;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
+        registerIssuerOnlyContext(MVCommandIssuer.class, this::parseMVCommandIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
         registerContext(ParsedDestination.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
@@ -58,6 +61,13 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(MVWorld[].class, this::parseMVWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+    }
+
+    private MVCommandIssuer parseMVCommandIssuer(BukkitCommandExecutionContext context) {
+        if (context.getIssuer() instanceof MVCommandIssuer) {
+            return (MVCommandIssuer) context.getIssuer();
+        }
+        return mvCommandManager.getCommandIssuer(context.getSender());
     }
 
     private ContentFilter parseContentFilter(BukkitCommandExecutionContext context) {
