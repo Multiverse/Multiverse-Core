@@ -37,16 +37,19 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     private final MultiverseCore plugin;
     private final LocationManipulation locationManipulation;
     private final BlockSafety blockSafety;
+    private final TeleportQueue teleportQueue;
 
     @Inject
     public SimpleSafeTTeleporter(
             MultiverseCore plugin,
             LocationManipulation locationManipulation,
-            BlockSafety blockSafety
+            BlockSafety blockSafety,
+            TeleportQueue teleportQueue
     ) {
         this.plugin = plugin;
         this.locationManipulation = locationManipulation;
         this.blockSafety = blockSafety;
+        this.teleportQueue = teleportQueue;
     }
 
     private static final Vector DEFAULT_VECTOR = new Vector();
@@ -220,7 +223,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
             return TeleportResult.FAIL_INVALID;
         }
 
-        MultiverseCore.addPlayerToTeleportQueue(teleporter.getIssuer().getName(), teleporteePlayer.getName());
+        teleportQueue.addToQueue(teleporter.getIssuer().getName(), teleporteePlayer.getName());
 
         Location safeLoc = destination.getLocation(teleportee);
         if (destination.getDestination().checkTeleportSafety()) {

@@ -372,35 +372,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                 && anchorManagerProvider.get().saveAnchors();
     }
 
-    //TODO: REMOVE THIS STATIC CRAP - START
-    private static final Map<String, String> teleportQueue = new HashMap<String, String>();
-
-    /**
-     * This method is used to add a teleportation to the teleportQueue.
-     *
-     * @param teleporter The name of the player that initiated the teleportation.
-     * @param teleportee The name of the player that was teleported.
-     */
-    public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
-        Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
-        teleportQueue.put(teleportee, teleporter);
-    }
-
-    /**
-     * This method is used to find out who is teleporting a player.
-     * @param playerName The teleported player (the teleportee).
-     * @return The player that teleported the other one (the teleporter).
-     */
-    public static String getPlayerTeleporter(String playerName) {
-        if (teleportQueue.containsKey(playerName)) {
-            String teleportee = teleportQueue.get(playerName);
-            teleportQueue.remove(playerName);
-            return teleportee;
-        }
-        return null;
-    }
-    //TODO: REMOVE THIS STATIC CRAP - END
-
 
     /**
      * Gets the best service from this plugin that implements the given contract or has the given implementation.
