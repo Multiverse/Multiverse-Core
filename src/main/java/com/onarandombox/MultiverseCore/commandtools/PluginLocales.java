@@ -1,14 +1,16 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.BukkitLocales;
 import com.onarandombox.MultiverseCore.utils.file.FileResClassLoader;
+import jakarta.inject.Inject;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Locale manager with additional methods for loading locales from plugin's locales folder.
  */
+@Service
 public class PluginLocales extends BukkitLocales {
 
     private static final String DEFAULT_LOCALE_FOLDER_PATH = "locales";
@@ -18,8 +20,10 @@ public class PluginLocales extends BukkitLocales {
      *
      * @param manager   The command manager.
      */
-    public PluginLocales(BukkitCommandManager manager) {
+    @Inject
+    public PluginLocales(MVCommandManager manager) {
         super(manager);
+        manager.loadLanguages(this);
     }
 
     /**

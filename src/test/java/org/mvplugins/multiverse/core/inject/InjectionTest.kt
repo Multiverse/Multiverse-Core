@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand
+import com.onarandombox.MultiverseCore.commandtools.PluginLocales
 import com.onarandombox.MultiverseCore.config.MVCoreConfig
 import com.onarandombox.MultiverseCore.economy.MVEconomist
 import com.onarandombox.MultiverseCore.listeners.MVChatListener
@@ -134,5 +135,10 @@ class InjectionTest : TestWithMockBukkit() {
     fun `MetricsConfigurator is not available as a service`() {
         // Also making sure this is not loaded automatically since it's supposed to be disabled during tests
         assertNull(multiverseCore.getService(MetricsConfigurator::class.java))
+    }
+
+    @Test
+    fun `PluginLocales is available as a service`() {
+        assertNotNull(multiverseCore.getService(PluginLocales::class.java))
     }
 }
