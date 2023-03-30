@@ -4,10 +4,10 @@ import java.util.List;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.BukkitLocales;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -55,6 +55,11 @@ public class MVCommandManager extends PaperCommandManager {
             this.locales = locales;
             this.locales.loadLanguages();
         }
+    }
+
+    @Override
+    public BukkitLocales getLocales() {
+        return this.locales;
     }
 
     /**
@@ -115,7 +120,7 @@ public class MVCommandManager extends PaperCommandManager {
         help.showHelp();
     }
 
-    public @NotNull CommandIssuer getConsoleCommandIssuer() {
+    public @NotNull MVCommandIssuer getConsoleCommandIssuer() {
         return getCommandIssuer(Bukkit.getConsoleSender());
     }
 

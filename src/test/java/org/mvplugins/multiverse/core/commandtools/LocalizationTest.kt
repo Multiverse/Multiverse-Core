@@ -2,13 +2,19 @@ package org.mvplugins.multiverse.core.commandtools
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
+import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales
 import com.onarandombox.MultiverseCore.utils.MVCorei18n
 import com.onarandombox.MultiverseCore.utils.message.Message
 import com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace
+import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -53,6 +59,27 @@ class LocalizationTest : TestWithMockBukkit() {
         fun `The formatted message with PluginLocales for a CommandIssuer should be the same as the original`() {
             assertEquals(messageString, message.formatted(locales, commandManager.consoleCommandIssuer))
         }
+
+        @Nested
+        @DisplayName("And a command sender is provided")
+        inner class WithCommandSender {
+
+            private lateinit var sender: CommandSender
+            private lateinit var issuer: MVCommandIssuer
+
+            @BeforeTest
+            fun setUp() {
+                sender = spy(Bukkit.getConsoleSender())
+                issuer = commandManager.getCommandIssuer(sender)
+            }
+
+            @Test
+            fun `Sending the issuer the message should send the formatted message to the sender`() {
+                issuer.sendInfo(message);
+
+                verify(sender).sendMessage("§9§9$messageString")
+            }
+        }
     }
 
     @Nested
@@ -83,6 +110,27 @@ class LocalizationTest : TestWithMockBukkit() {
         @Test
         fun `The formatted message with PluginLocales for a CommandIssuer should be the replaced message string`() {
             assertEquals(replacedMessageString, message.formatted(locales, commandManager.consoleCommandIssuer))
+        }
+
+        @Nested
+        @DisplayName("And a command sender is provided")
+        inner class WithCommandSender {
+
+            private lateinit var sender: CommandSender
+            private lateinit var issuer: MVCommandIssuer
+
+            @BeforeTest
+            fun setUp() {
+                sender = spy(Bukkit.getConsoleSender())
+                issuer = commandManager.getCommandIssuer(sender)
+            }
+
+            @Test
+            fun `Sending the issuer the message should send the formatted message to the sender`() {
+                issuer.sendInfo(message);
+
+                verify(sender).sendMessage("§9§9$replacedMessageString")
+            }
         }
     }
 
@@ -122,6 +170,27 @@ class LocalizationTest : TestWithMockBukkit() {
         fun `The formatted message with PluginLocales for a CommandIssuer should be the replaced message string`() {
             assertEquals(replacedMessageString, message.formatted(locales, commandManager.consoleCommandIssuer))
         }
+
+        @Nested
+        @DisplayName("And a command sender is provided")
+        inner class WithCommandSender {
+
+            private lateinit var sender: CommandSender
+            private lateinit var issuer: MVCommandIssuer
+
+            @BeforeTest
+            fun setUp() {
+                sender = spy(Bukkit.getConsoleSender())
+                issuer = commandManager.getCommandIssuer(sender)
+            }
+
+            @Test
+            fun `Sending the issuer the message should send the formatted message to the sender`() {
+                issuer.sendInfo(message);
+
+                verify(sender).sendMessage("§9§9$replacedMessageString")
+            }
+        }
     }
 
     @Nested
@@ -155,6 +224,33 @@ class LocalizationTest : TestWithMockBukkit() {
         fun `The formatted message with PluginLocales should have performed replacement`() {
             assertThat(message.formatted(locales), !containsSubstring(replacementKey))
             assertThat(message.formatted(locales), containsSubstring(replacementValue))
+        }
+
+        @Nested
+        @DisplayName("And a command sender is provided")
+        inner class WithCommandSender {
+
+            private lateinit var sender: CommandSender
+            private lateinit var issuer: MVCommandIssuer
+
+            @BeforeTest
+            fun setUp() {
+                sender = spy(Bukkit.getConsoleSender())
+                issuer = commandManager.getCommandIssuer(sender)
+            }
+
+            @Test
+            fun `Sending the issuer the message should send the formatted message to the sender`() {
+                issuer.sendInfo(message);
+
+                val sentMessage = argumentCaptor<String> {
+                    verify(sender).sendMessage(capture())
+                }.firstValue
+
+                assertNotEquals(replacedMessageString, sentMessage)
+                assertThat(sentMessage, !containsSubstring(replacementKey))
+                assertThat(sentMessage, containsSubstring(replacementValue))
+            }
         }
     }
 }
