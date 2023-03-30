@@ -402,43 +402,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     //TODO: REMOVE THIS STATIC CRAP - END
 
 
-    // For testing purposes only //
-
-    private File serverFolder = new File(System.getProperty("user.dir"));
-
-    /**
-     * This is for unit testing.
-     *
-     * @param loader The PluginLoader to use.
-     * @param description The Description file to use.
-     * @param dataFolder The folder that other datafiles can be found in.
-     * @param file The location of the plugin.
-     */
-    public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
-    }
-
-    /**
-     * Gets the server's root-folder as {@link File}.
-     *
-     * @return The server's root-folder
-     */
-    public File getServerFolder() {
-        return serverFolder;
-    }
-
-    /**
-     * Sets this server's root-folder.
-     *
-     * @param newServerFolder The new server-root
-     */
-    public void setServerFolder(File newServerFolder) {
-        if (!newServerFolder.isDirectory())
-            throw new IllegalArgumentException("That's not a folder!");
-
-        this.serverFolder = newServerFolder;
-    }
-
     /**
      * Gets the best service from this plugin that implements the given contract or has the given implementation.
      *
@@ -476,5 +439,17 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
                 .filter(ServiceHandle::isActive)
                 .map(ServiceHandle::getService)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * This is for unit testing ONLY. Do not use this constructor.
+     *
+     * @param loader The PluginLoader to use.
+     * @param description The Description file to use.
+     * @param dataFolder The folder that other datafiles can be found in.
+     * @param file The location of the plugin.
+     */
+    public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
     }
 }
