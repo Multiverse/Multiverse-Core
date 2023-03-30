@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.MVConfigValue;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.exceptions.MultiverseException;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -66,14 +67,7 @@ public class ConfigCommand extends MultiverseCommand {
                     config.save();
                     issuer.sendMessage("Successfully set " + name + " to " + value);
                 })
-                .onFailure(e -> {
-                    issuer.sendMessage("Unable to set " + name + " to " + value + ".");
-                    if (e instanceof MultiverseException) {
-                        var message = ((MultiverseException) e).getMVMessage();
-                        if (message != null) {
-                            issuer.sendError(message);
-                        }
-                    }
-                });
+                .onFailure(ignore -> issuer.sendMessage("Unable to set " + name + " to " + value + "."))
+                .onFailure(MultiverseException.class, e -> Option.of(e.getMVMessage()).peek(issuer::sendError));
     }
 }
