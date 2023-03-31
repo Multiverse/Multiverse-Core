@@ -18,10 +18,8 @@ import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
@@ -39,7 +37,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,7 +51,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -1041,12 +1037,13 @@ public class WorldManager implements MVWorldManager {
      */
     @Override
     public void addOrRemoveWorldSafely(String worldName, String operationName, Runnable worldModification) {
+        Logging.finest("Checking if it is safe to perform world modification");
         if (safeToAddOrRemoveWorld()) {
             // Operation is fine to do now
+            Logging.finest("Clear to modify worlds");
             worldModification.run();
         } else {
             // Operation needs to be delayed until worlds are not being ticked
-
             Logging.fine("Worlds were being ticked while attempting to %s %s. Trying again in the next tick", operationName, worldName);
             new BukkitRunnable() {
                 public void run() {
@@ -1057,30 +1054,22 @@ public class WorldManager implements MVWorldManager {
     }
 
     private boolean safeToAddOrRemoveWorld(){
-        Server server = Bukkit.getServer();
-        Logging.finest("Using reflection to test for Paper build after PR #7653");
+        Logging.finest("Checking for Paper");
+        Method isTickingWorlds;
         try {
-            // basically doing ((CraftServer) Bukkit.getServer()).getServer().isIteratingOverLevels;
-            Method getConsole = server.getClass().getMethod("getServer");
-            Object console = getConsole.invoke(server);
-
-            Field isTickingWorlds = console.getClass().getField("isIteratingOverLevels");
-            boolean isTicking = isTickingWorlds.getBoolean(console);
-
-            Logging.finest("Paper fix active");
-            return !isTicking;
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            Logging.finest("%sUnexpected exception: %s", ChatColor.RED, e.getMessage());
-            Logging.finest("Assuming Paper fix is inactive");
-            // If the Paper fix actually is active it should become obvious when Paper complains
-            // about a world being loaded/unloaded while being ticked
-            // If that happens, this method needs to be fixed
+            isTickingWorlds = Bukkit.class.getMethod("isTickingWorlds");
+        } catch (NoSuchMethodException e) {
+            // Paper fixes aren't active, so it is always considered safe to proceed
+            Logging.finest("Paper fixes inactive");
             return true;
-        } catch (NoSuchFieldException ignored) {
-            // Expected to fail when field isIteratingOverLevels doesn't exist
-            // Therefore, Paper fixes aren't active, so it is always considered safe to proceed
-            Logging.finest("Paper fix inactive");
-            return true;
+        }
+        // Paper fixes are active, and Paper wants us to check Bukkit.isTickingWorlds()
+        Logging.finest("Paper fixes active");
+        try {
+            return !(boolean) isTickingWorlds.invoke(null);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            // Shouldn't happen, I know I'm using the method correctly
+            throw new RuntimeException(e);
         }
     }
 }
