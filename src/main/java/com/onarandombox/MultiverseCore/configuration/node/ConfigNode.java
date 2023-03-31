@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +32,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     protected final @Nullable String name;
     protected final @NotNull Class<T> type;
     protected final @Nullable T defaultValue;
-    protected final @Nullable Function<T, Boolean> validator;
+    protected final @Nullable Function<T, Try<Void>> validator;
     protected final @Nullable BiConsumer<T, T> onSetValue;
 
     protected ConfigNode(
@@ -40,7 +41,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             @Nullable String name,
             @NotNull Class<T> type,
             @Nullable T defaultValue,
-            @Nullable Function<T, Boolean> validator,
+            @Nullable Function<T, Try<Void>> validator,
             @Nullable BiConsumer<T, T> onSetValue
     ) {
         super(path, comments);
@@ -79,11 +80,11 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
-    public boolean validate(@Nullable T value) {
+    public Try<Void> validate(@Nullable T value) {
         if (validator != null) {
             return validator.apply(value);
         }
-        return true;
+        return Try.success(null);
     }
 
     /**
@@ -107,7 +108,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         protected @Nullable String name;
         protected @NotNull final Class<T> type;
         protected @Nullable T defaultValue;
-        protected @Nullable Function<T, Boolean> validator;
+        protected @Nullable Function<T, Try<Void>> validator;
         protected @Nullable BiConsumer<T, T> onSetValue;
 
         /**
@@ -144,7 +145,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             return (B) this;
         }
 
-        public @NotNull B validator(@NotNull Function<T, Boolean> validator) {
+        public @NotNull B validator(@NotNull Function<T, Try<Void>> validator) {
             this.validator = validator;
             return (B) this;
         }

@@ -6,7 +6,9 @@ import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
+import com.onarandombox.MultiverseCore.exceptions.MultiverseException;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
+import io.vavr.control.Try;
 import org.bukkit.plugin.PluginManager;
 
 class MVCoreConfigNodes {
@@ -128,7 +130,9 @@ class MVCoreConfigNodes {
             .comment("This only applies if use-custom-portal-search is set to true.")
             .defaultValue(128)
             .name("custom-portal-search-radius")
-            .validator(value -> value >= 0)
+            .validator(value -> value < 0
+                    ? Try.failure(new MultiverseException("The value must be greater than or equal to 0.", null))
+                    : Try.success(null))
             .build());
 
     private final ConfigHeaderNode MESSAGING_HEADER = node(ConfigHeaderNode.builder("messaging")
@@ -174,7 +178,9 @@ class MVCoreConfigNodes {
             .comment("  3 = finest")
             .defaultValue(0)
             .name("global-debug")
-            .validator(value -> value >= 0 && value <= 3)
+            .validator(value -> (value < 0 || value > 3)
+                    ? Try.failure(new MultiverseException("Debug level must be between 0 and 3.", null))
+                    : Try.success(null))
             .onSetValue((oldValue, newValue) -> {
                 int level = Logging.getDebugLevel();
                 Logging.setDebugLevel(newValue);

@@ -165,13 +165,12 @@ abstract class FileConfigHandle<C extends FileConfiguration> {
      * @param <T>   The type of the node value.
      */
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
-        if (!node.validate(value)) {
-            return Try.failure(new MultiverseException("Validation failed", null)); // TODO replace validation
-        }
-        T oldValue = get(node);
-        config.set(node.getPath(), value);
-        node.onSetValue(oldValue, get(node));
-        return Try.success(null);
+        return node.validate(value).map(ignore -> {
+            T oldValue = get(node);
+            config.set(node.getPath(), value);
+            node.onSetValue(oldValue, get(node));
+            return null;
+        });
     }
 
     /**
