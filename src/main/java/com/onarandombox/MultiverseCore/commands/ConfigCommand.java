@@ -58,7 +58,7 @@ public class ConfigCommand extends MultiverseCommand {
     private void showConfigValue(MVCommandIssuer issuer, String name) {
         config.getProperty(name)
                 .onSuccess(value -> issuer.sendMessage(name + "is currently set to " + value))
-                .onFailure(e -> issuer.sendMessage("Unable to get " + name + ": " + e.getMessage()));
+                .onFailure(e -> issuer.sendMessage(e.getMessage()));
     }
 
     private void updateConfigValue(MVCommandIssuer issuer, String name, Object value) {
