@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +34,7 @@ public interface ValueNode<T> extends Node {
      * @param value The value to validate.
      * @return True if the value is valid, false otherwise.
      */
-    boolean validate(@Nullable T value);
+    Try<Void> validate(@Nullable T value);
 
     /**
      * Called when the value of this node is set.
