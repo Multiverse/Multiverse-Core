@@ -171,6 +171,7 @@ shadowJar {
     configurations = [project.configurations.api]
 
     archiveFileName = "$baseName-$version.$extension"
+    classifier = ''
 }
 
 build.dependsOn shadowJar
