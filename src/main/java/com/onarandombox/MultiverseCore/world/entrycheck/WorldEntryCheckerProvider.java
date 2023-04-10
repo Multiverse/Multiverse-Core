@@ -5,6 +5,7 @@ import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.permissions.PermissionsChecker;
 import jakarta.inject.Inject;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,7 @@ public class WorldEntryCheckerProvider {
         this.permissionsChecker = permissionsChecker;
     }
 
-    public @NotNull WorldEntryChecker forWorld(@NotNull Player player, @Nullable MVWorld fromWorld, @NotNull MVWorld toWorld) {
-        return new WorldEntryChecker(player, fromWorld, toWorld, config, permissionsChecker, economist);
+    public @NotNull WorldEntryChecker forWorld(@NotNull CommandSender sender, @NotNull MVWorld toWorld) {
+        return new WorldEntryChecker(sender, toWorld, config, permissionsChecker, economist);
     }
 }

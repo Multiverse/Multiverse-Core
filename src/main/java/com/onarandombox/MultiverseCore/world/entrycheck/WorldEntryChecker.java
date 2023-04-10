@@ -20,7 +20,6 @@ import java.util.Objects;
 
 public class WorldEntryChecker {
     private final @NotNull CommandSender sender;
-    private final @Nullable MVWorld fromWorld;
     private final @NotNull MVWorld toWorld;
 
     private final @NotNull MVCoreConfig config;
@@ -29,29 +28,38 @@ public class WorldEntryChecker {
 
     public WorldEntryChecker(
             @NotNull CommandSender sender,
-            @Nullable MVWorld fromWorld,
             @NotNull MVWorld toWorld,
             @NotNull MVCoreConfig config,
             @NotNull PermissionsChecker permissionsChecker,
             @NotNull MVEconomist economist
     ) {
         this.sender = sender;
-        this.fromWorld = fromWorld;
         this.toWorld = toWorld;
         this.config = config;
         this.permissionsChecker = permissionsChecker;
         this.economist = economist;
     }
 
-    public ResultGroup canEnterWorld() {
-        return canEnterWorld(true);
+    public ResultGroup canStayInWorld() {
+        return canStayInWorld(true);
     }
 
-    public ResultGroup canEnterWorld(boolean stopOnFailure) {
+    public ResultGroup canStayInWorld(boolean stopOnFailure) {
         return ResultGroup.builder(stopOnFailure)
                 .then(this::canAccessWorld)
-                .then(this::isNotBlacklisted)
                 .then(this::isWithinPlayerLimit)
+                .build();
+    }
+
+    public ResultGroup canEnterWorld(@Nullable MVWorld fromWorld) {
+        return canEnterWorld(fromWorld, true);
+    }
+
+    public ResultGroup canEnterWorld(@Nullable MVWorld fromWorld, boolean stopOnFailure) {
+        return ResultGroup.builder(stopOnFailure)
+                .then(this::canAccessWorld)
+                .then(this::isWithinPlayerLimit)
+                .then(() -> isNotBlacklisted(fromWorld))
                 .then(this::canPayEntryFee)
                 .build();
     }
@@ -63,6 +71,28 @@ public class WorldEntryChecker {
         return permissionsChecker.hasWorldAccessPermission(this.sender, this.toWorld)
                 ? Result.success(WorldAccessResult.Success.HAS_WORLD_ACCESS)
                 : Result.failure(WorldAccessResult.Failure.NO_WORLD_ACCESS);
+    }
+
+    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit() {
+        final int playerLimit = toWorld.getPlayerLimit();
+        if (playerLimit <= -1) {
+            return Result.success(PlayerLimitResult.Success.NO_PLAYERLIMIT);
+        }
+        if (permissionsChecker.hasPlayerLimitBypassPermission(sender, toWorld)) {
+            return Result.success(PlayerLimitResult.Success.BYPASS_PLAYERLIMIT);
+        }
+        return playerLimit > toWorld.getCBWorld().getPlayers().size()
+                ? Result.success(PlayerLimitResult.Success.WITHIN_PLAYERLIMIT)
+                : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
+    }
+
+    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(@Nullable MVWorld fromWorld) {
+        if (fromWorld == null) {
+            return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
+        }
+        return toWorld.getWorldBlacklist().contains(fromWorld.getName())
+                ? Result.failure(BlacklistResult.Failure.BLACKLISTED)
+                : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
     public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee() {
@@ -83,27 +113,5 @@ public class WorldEntryChecker {
         return economist.isPlayerWealthyEnough(player, price, currency)
                 ? Result.success(EntryFeeResult.Success.ENOUGH_MONEY)
                 : Result.failure(EntryFeeResult.Failure.NOT_ENOUGH_MONEY);
-    }
-
-    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit() {
-        final int playerLimit = toWorld.getPlayerLimit();
-        if (playerLimit <= -1) {
-            return Result.success(PlayerLimitResult.Success.NO_PLAYERLIMIT);
-        }
-        if (permissionsChecker.hasPlayerLimitBypassPermission(sender, toWorld)) {
-            return Result.success(PlayerLimitResult.Success.BYPASS_PLAYERLIMIT);
-        }
-        return playerLimit > toWorld.getCBWorld().getPlayers().size()
-                ? Result.success(PlayerLimitResult.Success.WITHIN_PLAYERLIMIT)
-                : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
-    }
-
-    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted() {
-        if (fromWorld == null) {
-            return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
-        }
-        return toWorld.getWorldBlacklist().contains(fromWorld.getName())
-                ? Result.failure(BlacklistResult.Failure.BLACKLISTED)
-                : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 }

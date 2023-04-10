@@ -48,10 +48,10 @@ public class PermissionsChecker {
 
     private boolean hasPermission(CommandSender sender, Permission permission) {
         if (sender.hasPermission(permission)) {
-            Logging.finer("Checking to see if sender [" + sender.getName() + "] has permission [" + permission + "]... YES");
+            Logging.finer("Checking to see if sender [%s] has permission [%s]... YES", sender.getName(), permission.getName());
             return true;
         }
-        Logging.finer("Checking to see if sender [" + sender.getName() + "] has permission [" + permission + "]... NO");
+        Logging.finer("Checking to see if sender [%s] has permission [%s]... NO", sender.getName(), permission.getName());
         return false;
     }
 }
