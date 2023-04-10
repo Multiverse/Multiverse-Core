@@ -22,6 +22,7 @@ import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.GameMode;
@@ -33,6 +34,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -45,7 +47,7 @@ import org.jvnet.hk2.annotations.Service;
  * Multiverse's Listener for players.
  */
 @Service
-public class MVPlayerListener implements InjectableListener {
+public class MVPlayerListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<MVWorldManager> worldManagerProvider;
@@ -190,8 +192,8 @@ public class MVPlayerListener implements InjectableListener {
         }
         Player teleportee = event.getPlayer();
         CommandSender teleporter = null;
-        Optional<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
-        if (teleporterName.isPresent()) {
+        Option<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
+        if (teleporterName.isDefined()) {
             if (teleporterName.equals("CONSOLE")) {
                 Logging.finer("We know the teleporter is the console! Magical!");
                 teleporter = this.server.getConsoleSender();

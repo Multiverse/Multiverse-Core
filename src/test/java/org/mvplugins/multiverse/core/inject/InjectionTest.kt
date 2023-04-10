@@ -4,7 +4,6 @@ import com.onarandombox.MultiverseCore.anchor.AnchorManager
 import com.onarandombox.MultiverseCore.api.BlockSafety
 import com.onarandombox.MultiverseCore.api.Destination
 import com.onarandombox.MultiverseCore.api.LocationManipulation
-import com.onarandombox.MultiverseCore.api.MVConfig
 import com.onarandombox.MultiverseCore.api.MVWorldManager
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
@@ -14,11 +13,11 @@ import com.onarandombox.MultiverseCore.config.MVCoreConfig
 import com.onarandombox.MultiverseCore.economy.MVEconomist
 import com.onarandombox.MultiverseCore.listeners.MVChatListener
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener
-import com.onarandombox.MultiverseCore.listeners.MVPlayerListener
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener
+import com.onarandombox.MultiverseCore.listeners.NewMVPlayerListener
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
@@ -27,9 +26,9 @@ import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.Test
 import kotlin.test.assertNull
 
 class InjectionTest : TestWithMockBukkit() {
@@ -89,8 +88,8 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `MVPlayerListener is available as a service`() {
-        assertNotNull(multiverseCore.getService(MVPlayerListener::class.java))
+    fun `NewMVPlayerListener is available as a service`() {
+        assertNotNull(multiverseCore.getService(NewMVPlayerListener::class.java))
     }
 
     @Test
