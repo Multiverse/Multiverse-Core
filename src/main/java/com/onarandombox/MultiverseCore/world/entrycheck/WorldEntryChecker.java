@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.world.entrycheck;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
@@ -15,8 +14,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class WorldEntryChecker {
     private final @NotNull CommandSender sender;

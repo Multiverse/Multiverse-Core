@@ -69,7 +69,7 @@ public class ResultGroup {
             return Option.none();
         }
         return Option.ofOptional(results.stream()
-                .map(Result::getSuccessReason)
+                .map(Result::successReason)
                 .filter(successReasonClass::isInstance)
                 .map(successReasonClass::cast)
                 .findFirst());
@@ -80,7 +80,7 @@ public class ResultGroup {
             return Option.none();
         }
         return Option.ofOptional(results.stream()
-                .map(Result::getFailureReason)
+                .map(Result::failureReason)
                 .filter(failureReasonClass::isInstance)
                 .map(failureReasonClass::cast)
                 .findFirst());
