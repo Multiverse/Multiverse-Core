@@ -6,6 +6,7 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
+import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.permissions.PermissionsChecker;
@@ -17,12 +18,14 @@ import jakarta.inject.Inject;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -88,6 +91,32 @@ public class NewMVPlayerListener implements InjectableListener {
                     player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                     oneTickLater(() -> player.teleport(spawnLocation));
                 });
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void playerRespawn(PlayerRespawnEvent event) {
+        MVWorld playerWorld = worldManager.getMVWorld(event.getPlayer().getWorld());
+        if (playerWorld == null) {
+            // We don't want to do anything if the player is not in a world managed by MV.
+            Logging.fine("Player respawned in a world not managed by MV.");
+            return;
+        }
+
+        if (playerWorld.getBedRespawn() && (event.isBedSpawn() || event.isAnchorSpawn())) {
+            Logging.fine("Spawning %s at their %s.", event.getPlayer().getName(), event.isBedSpawn() ? "BED" : "ANCHOR");
+            return;
+        }
+
+        Location respawnLocation = getMostAccurateRespawnLocation(playerWorld.getRespawnToWorld());
+        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability"); //TODO: Update this event with proper respawn method
+        this.server.getPluginManager().callEvent(respawnEvent);
+        event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+    }
+
+    private Location getMostAccurateRespawnLocation(@NotNull World respawnWorld) {
+        return Option.of(worldManager.getMVWorld(respawnWorld))
+                .map(MVWorld::getSpawnLocation)
+                .getOrElse(respawnWorld.getSpawnLocation());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
