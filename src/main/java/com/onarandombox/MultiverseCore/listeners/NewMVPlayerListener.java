@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
@@ -17,6 +18,7 @@ import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -25,6 +27,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +43,7 @@ public class NewMVPlayerListener implements InjectableListener {
     private final @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider;
     private final @NotNull MVEconomist economist;
     private final @NotNull PermissionsChecker permissionsChecker;
+    private final @NotNull SafeTTeleporter safeTTeleporter;
 
     @Inject
     NewMVPlayerListener(
@@ -50,8 +54,9 @@ public class NewMVPlayerListener implements InjectableListener {
             @NotNull MVWorldManager worldManager,
             @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider,
             @NotNull MVEconomist economist,
-            @NotNull PermissionsChecker permissionsChecker
-    ) {
+            @NotNull PermissionsChecker permissionsChecker,
+            @NotNull SafeTTeleporter safeTTeleporter
+            ) {
         this.plugin = plugin;
         this.config = config;
         this.server = server;
@@ -60,6 +65,7 @@ public class NewMVPlayerListener implements InjectableListener {
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
         this.economist = economist;
         this.permissionsChecker = permissionsChecker;
+        this.safeTTeleporter = safeTTeleporter;
     }
 
     @EventHandler
@@ -117,6 +123,72 @@ public class NewMVPlayerListener implements InjectableListener {
         return Option.of(worldManager.getMVWorld(respawnWorld))
                 .map(MVWorld::getSpawnLocation)
                 .getOrElse(respawnWorld.getSpawnLocation());
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerPortalCheck(PlayerPortalEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        // REMEMBER! getTo MAY be NULL HERE!!!
+        // If the player was actually outside of the portal, adjust the from location
+        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.NETHER_PORTAL) {
+            Location newloc = safeTTeleporter.findPortalBlockNextTo(event.getFrom());
+            // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
+            // TODO: we want to do here.
+            if (newloc != null) {
+                event.setFrom(newloc);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerPortal(PlayerPortalEvent event) {
+        if (event.isCancelled()) {
+            // We don't want to do anything if the event is already cancelled.
+            return;
+        }
+
+        Location toLocation = event.getTo();
+        if (toLocation == null) {
+            // We don't want to do anything if the destination is null.
+            Logging.fine("Player '%s' entering a portal with null destination location.", event.getPlayer().getName());
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        MVWorld fromWorld = worldManager.getMVWorld(event.getFrom().getWorld());
+        MVWorld toWorld = worldManager.getMVWorld(toLocation.getWorld());
+
+        if (toWorld == null) {
+            // We don't want to do anything if the destination world is not managed by MV.
+            Logging.fine("Player '%s' is teleporting to world '%s' which is not managed by Multiverse-Core. No further actions will be taken by Multiverse-Core.",
+                    player.getName(), toLocation.getWorld());
+            return;
+        }
+        if (toWorld.equals(fromWorld)) {
+            // We don't want to do anything if the destination world is the same as the origin world.
+            Logging.fine("Player '%s' is teleporting to the same world.", player.getName());
+            return;
+        }
+
+        ResultGroup worldEntryResult = worldEntryCheckerProvider.forWorld(player, toWorld).canEnterWorld(fromWorld)
+                .success(() -> {
+                    Logging.fine("Player '%s' is allowed to use portals to enter world '%s'.", player.getName(), toWorld.getName());
+                    if (!config.isUsingCustomPortalSearch()) {
+                        event.setSearchRadius(config.getCustomPortalSearchRadius());
+                    }
+                })
+                .failure(() -> {
+                    event.setCancelled(true);
+                    Logging.fine("Player '%s' is not allowed to use portals to enter world '%s'.", player.getName(), toWorld.getName());
+                    //TODO send player reason for failure
+                });
+
+        Logging.finer("Portal entry result for player '%s', from '%s' to '%s': %s",
+                player.getName(), fromWorld == null ? "null" : fromWorld.getName(), toWorld.getName(), worldEntryResult);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
