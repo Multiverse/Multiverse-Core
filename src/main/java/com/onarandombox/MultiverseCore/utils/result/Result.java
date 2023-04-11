@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.utils.result;
 
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-public interface Result<S extends SuccessReason, F extends FailureReason> {
-
+public sealed interface Result<S extends SuccessReason, F extends FailureReason> permits Result.Success, Result.Failure {
     static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason) {
         return new Success<>(successReason);
     }
@@ -20,28 +20,28 @@ public interface Result<S extends SuccessReason, F extends FailureReason> {
 
     F failureReason();
 
-    default Result<S, F> success(Consumer<SuccessReason> consumer) {
+    default Result<S, F> success(Consumer<S> consumer) {
         if (this.isSuccess()) {
             consumer.accept(this.successReason());
         }
         return this;
     }
 
-    default Result<S, F> failure(Consumer<FailureReason> consumer) {
+    default Result<S, F> failure(Consumer<F> consumer) {
         if (this.isFailure()) {
             consumer.accept(this.failureReason());
         }
         return this;
     }
 
-    default Result<S, F> successWithReason(S successReason, Consumer<SuccessReason> consumer) {
+    default Result<S, F> successWithReason(S successReason, Consumer<S> consumer) {
         if (this.isSuccess() && this.successReason() == successReason) {
             consumer.accept(this.successReason());
         }
         return this;
     }
 
-    default Result<S, F> failureWithReason(F failureReason, Consumer<FailureReason> consumer) {
+    default Result<S, F> failureWithReason(F failureReason, Consumer<F> consumer) {
         if (this.isFailure() && this.failureReason() == failureReason) {
             consumer.accept(this.failureReason());
         }
@@ -61,7 +61,7 @@ public interface Result<S extends SuccessReason, F extends FailureReason> {
 
         @Override
         public F failureReason() {
-            return null;
+            throw new NoSuchElementException("No failure reason for success");
         }
     }
 
@@ -78,7 +78,7 @@ public interface Result<S extends SuccessReason, F extends FailureReason> {
 
         @Override
         public S successReason() {
-            return null;
+            throw new NoSuchElementException("No success reason for failure");
         }
     }
 }
