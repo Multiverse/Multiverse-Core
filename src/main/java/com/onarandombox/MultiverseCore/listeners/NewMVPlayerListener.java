@@ -92,8 +92,8 @@ public class NewMVPlayerListener implements InjectableListener {
 
         worldEntryCheckerProvider.forWorld(player, world)
                 .canStayInWorld()
-                .success(() -> oneTickLater(() -> handleGameModeAndFlight(player, world)))
-                .failure(() -> {
+                .onSuccess(() -> oneTickLater(() -> handleGameModeAndFlight(player, world)))
+                .onFailure(() -> {
                     player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                     oneTickLater(() -> player.teleport(spawnLocation));
                 });
@@ -175,13 +175,13 @@ public class NewMVPlayerListener implements InjectableListener {
         }
 
         ResultGroup worldEntryResult = worldEntryCheckerProvider.forWorld(player, toWorld).canEnterWorld(fromWorld)
-                .success(() -> {
+                .onSuccess(() -> {
                     Logging.fine("Player '%s' is allowed to use portals to enter world '%s'.", player.getName(), toWorld.getName());
                     if (!config.isUsingCustomPortalSearch()) {
                         event.setSearchRadius(config.getCustomPortalSearchRadius());
                     }
                 })
-                .failure(() -> {
+                .onFailure(() -> {
                     event.setCancelled(true);
                     Logging.fine("Player '%s' is not allowed to use portals to enter world '%s'.", player.getName(), toWorld.getName());
                     //TODO send player reason for failure
@@ -230,12 +230,12 @@ public class NewMVPlayerListener implements InjectableListener {
 
         ResultGroup worldEntryResult = worldEntryCheckerProvider.forWorld(teleportee, toWorld)
                 .canEnterWorld(fromWorld.getOrNull())
-                .success(() -> Logging.fine("MV-Core is allowing '%s' to go to '%s'.", teleportee.getName(), toWorld.getName()))
-                .successWithReason(EntryFeeResult.Success.ENOUGH_MONEY, () -> {
+                .onSuccess(() -> Logging.fine("MV-Core is allowing '%s' to go to '%s'.", teleportee.getName(), toWorld.getName()))
+                .onSuccessReason(EntryFeeResult.Success.ENOUGH_MONEY, () -> {
                     economist.payEntryFee((Player) teleporter, toWorld);
                     //TODO send payment message
                 })
-                .failure(() -> {
+                .onFailure(() -> {
                     event.setCancelled(true);
                     Logging.fine("MV-Core is denying '%s' from going to '%s'.", teleportee.getName(), toWorld.getName());
                     //TODO send player reason for failure

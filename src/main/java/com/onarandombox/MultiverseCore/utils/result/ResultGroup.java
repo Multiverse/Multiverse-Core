@@ -35,31 +35,31 @@ public class ResultGroup {
         return !isSuccess;
     }
 
-    public ResultGroup success(Runnable successRunnable) {
+    public ResultGroup onSuccess(Runnable successRunnable) {
         if (isSuccess) {
             successRunnable.run();
         }
         return this;
     }
 
-    public ResultGroup failure(Runnable failureRunnable) {
+    public ResultGroup onFailure(Runnable failureRunnable) {
         if (isFailure()) {
             failureRunnable.run();
         }
         return this;
     }
 
-    public <S extends SuccessReason> ResultGroup successWithReason(Class<S> successReasonClass, Consumer<S> successConsumer) {
+    public <S extends SuccessReason> ResultGroup onSuccessReason(Class<S> successReasonClass, Consumer<S> successConsumer) {
         getSuccessReason(successReasonClass).peek(successConsumer);
         return this;
     }
 
-    public <F extends FailureReason> ResultGroup failureWithReason(Class<F> failureReasonClass, Consumer<F> failureConsumer) {
+    public <F extends FailureReason> ResultGroup onFailureReason(Class<F> failureReasonClass, Consumer<F> failureConsumer) {
         getFailureReason(failureReasonClass).peek(failureConsumer);
         return this;
     }
 
-    public <S extends SuccessReason> ResultGroup successWithReason(S successReason, Runnable successRunnable) {
+    public <S extends SuccessReason> ResultGroup onSuccessReason(S successReason, Runnable successRunnable) {
         getSuccessReason(successReason.getClass()).filter(successReason::equals).peek(reason -> successRunnable.run());
         return this;
     }

@@ -20,28 +20,28 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
     F failureReason();
 
-    default Result<S, F> success(Consumer<S> consumer) {
+    default Result<S, F> onSuccess(Consumer<S> consumer) {
         if (this.isSuccess()) {
             consumer.accept(this.successReason());
         }
         return this;
     }
 
-    default Result<S, F> failure(Consumer<F> consumer) {
+    default Result<S, F> onFailure(Consumer<F> consumer) {
         if (this.isFailure()) {
             consumer.accept(this.failureReason());
         }
         return this;
     }
 
-    default Result<S, F> successWithReason(S successReason, Consumer<S> consumer) {
+    default Result<S, F> onSuccessReason(S successReason, Consumer<S> consumer) {
         if (this.isSuccess() && this.successReason() == successReason) {
             consumer.accept(this.successReason());
         }
         return this;
     }
 
-    default Result<S, F> failureWithReason(F failureReason, Consumer<F> consumer) {
+    default Result<S, F> onFailureReason(F failureReason, Consumer<F> consumer) {
         if (this.isFailure() && this.failureReason() == failureReason) {
             consumer.accept(this.failureReason());
         }
