@@ -12,7 +12,10 @@ import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.permissions.PermissionsChecker;
 import com.onarandombox.MultiverseCore.utils.result.ResultGroup;
+import com.onarandombox.MultiverseCore.world.entrycheck.BlacklistResult;
 import com.onarandombox.MultiverseCore.world.entrycheck.EntryFeeResult;
+import com.onarandombox.MultiverseCore.world.entrycheck.PlayerLimitResult;
+import com.onarandombox.MultiverseCore.world.entrycheck.WorldAccessResult;
 import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
@@ -184,11 +187,12 @@ public class NewMVPlayerListener implements InjectableListener {
                 .onFailure(() -> {
                     event.setCancelled(true);
                     Logging.fine("Player '%s' is not allowed to use portals to enter world '%s'.", player.getName(), toWorld.getName());
-                    //TODO send player reason for failure
                 });
 
         Logging.finer("Portal entry result for player '%s', from '%s' to '%s': %s",
                 player.getName(), fromWorld == null ? "null" : fromWorld.getName(), toWorld.getName(), worldEntryResult);
+
+        sendWorldEntryMessage(player, player, fromWorld, toWorld, worldEntryResult);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -238,11 +242,39 @@ public class NewMVPlayerListener implements InjectableListener {
                 .onFailure(() -> {
                     event.setCancelled(true);
                     Logging.fine("MV-Core is denying '%s' from going to '%s'.", teleportee.getName(), toWorld.getName());
-                    //TODO send player reason for failure
                 });
 
         Logging.fine("World entry result for player '%s', from '%s' to '%s': %s",
                 teleportee.getName(), fromWorld.map(MVWorld::getName).getOrNull(), toWorld.getName(), worldEntryResult);
+
+        sendWorldEntryMessage(teleporter, teleportee, fromWorld.getOrNull(), toWorld, worldEntryResult);
+    }
+
+    private void sendWorldEntryMessage(CommandSender teleporter, Player teleportee, MVWorld fromWorld, MVWorld toWorld, ResultGroup worldEntryResult) {
+        if (worldEntryResult.isSuccess()) {
+            return;
+        }
+
+        if (teleportee.equals(teleporter)) {
+            teleporter.sendMessage("You are unable to teleport to world '%s'".formatted(toWorld.getName()));
+        } else {
+            teleporter.sendMessage("You are unable to teleport '%s' to world '%s'".formatted(teleportee.getName(), toWorld.getName()));
+        }
+
+        worldEntryResult
+                .onFailureReason(WorldAccessResult.Failure.class, reason -> {
+                    teleporter.sendMessage("You do not have permission to access world '%s'".formatted(toWorld.getName()));
+                })
+                .onFailureReason(PlayerLimitResult.Failure.class, reason -> {
+                    teleporter.sendMessage("World '%s' is full".formatted(toWorld.getName()));
+                })
+                .onFailureReason(EntryFeeResult.Failure.class, reason -> {
+                    teleporter.sendMessage("You do not have enough money to pay world '%s' entry fee.".formatted(toWorld.getName()));
+                    //TODO Formatted entry fee amount
+                })
+                .onFailureReason(BlacklistResult.Failure.class, reason -> {
+                    teleporter.sendMessage("World '%s' is blacklisted by world '%s'".formatted(fromWorld.getName(), toWorld.getName()));
+                });
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

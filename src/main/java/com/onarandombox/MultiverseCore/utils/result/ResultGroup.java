@@ -90,7 +90,7 @@ public class ResultGroup {
     public String toString() {
         return "ResultGroup{" +
                 "isSuccess=" + isSuccess +
-                ", results=[" + results.stream().map(Objects::toString).collect(Collectors.joining(", ")) + "]" +
+                ", results={" + results.stream().map(Objects::toString).collect(Collectors.joining(", ")) + "}" +
                 '}';
     }
 
