@@ -16,39 +16,39 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
     boolean isFailure();
 
-    S successReason();
+    S getSuccessReason();
 
-    F failureReason();
+    F getFailureReason();
 
     default Result<S, F> onSuccess(Consumer<S> consumer) {
         if (this.isSuccess()) {
-            consumer.accept(this.successReason());
+            consumer.accept(this.getSuccessReason());
         }
         return this;
     }
 
     default Result<S, F> onFailure(Consumer<F> consumer) {
         if (this.isFailure()) {
-            consumer.accept(this.failureReason());
+            consumer.accept(this.getFailureReason());
         }
         return this;
     }
 
     default Result<S, F> onSuccessReason(S successReason, Consumer<S> consumer) {
-        if (this.isSuccess() && this.successReason() == successReason) {
-            consumer.accept(this.successReason());
+        if (this.isSuccess() && this.getSuccessReason() == successReason) {
+            consumer.accept(this.getSuccessReason());
         }
         return this;
     }
 
     default Result<S, F> onFailureReason(F failureReason, Consumer<F> consumer) {
-        if (this.isFailure() && this.failureReason() == failureReason) {
-            consumer.accept(this.failureReason());
+        if (this.isFailure() && this.getFailureReason() == failureReason) {
+            consumer.accept(this.getFailureReason());
         }
         return this;
     }
 
-    record Success<F extends FailureReason, S extends SuccessReason>(S successReason) implements Result<S, F> {
+    record Success<F extends FailureReason, S extends SuccessReason>(S getSuccessReason) implements Result<S, F> {
         @Override
         public boolean isSuccess() {
             return true;
@@ -60,12 +60,12 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
         }
 
         @Override
-        public F failureReason() {
+        public F getFailureReason() {
             throw new NoSuchElementException("No failure reason for success");
         }
     }
 
-    record Failure<S extends SuccessReason, F extends FailureReason>(F failureReason) implements Result<S, F> {
+    record Failure<S extends SuccessReason, F extends FailureReason>(F getFailureReason) implements Result<S, F> {
         @Override
         public boolean isSuccess() {
             return false;
@@ -77,7 +77,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
         }
 
         @Override
-        public S successReason() {
+        public S getSuccessReason() {
             throw new NoSuchElementException("No success reason for failure");
         }
     }
