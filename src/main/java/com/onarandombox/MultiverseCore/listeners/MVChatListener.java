@@ -43,11 +43,7 @@ public class MVChatListener implements InjectableListener {
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
         if (config.isEnablePrefixChat()) {
-            String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
-            if (world == null) {
-                world = event.getPlayer().getWorld().getName();
-                playerListener.getPlayerWorld().put(event.getPlayer().getName(), world);
-            }
+            String world = event.getPlayer().getWorld().getName();
             String prefix = "";
             // If we're not a MV world, don't do anything
             if (!this.worldManager.isMVWorld(world)) {
