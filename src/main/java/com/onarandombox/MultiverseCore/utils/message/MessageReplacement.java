@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Captures string replacements for {@link Message}s.
  */
-public final class MessageReplacement {
+    public final class MessageReplacement {
 
     /**
      * Creates a replacement key for the given key string.
