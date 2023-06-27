@@ -24,7 +24,7 @@ import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
-import com.onarandombox.MultiverseCore.utils.checkresult.CheckResultChain;
+import com.onarandombox.MultiverseCore.utils.result.ResultChain;
 import com.onarandombox.MultiverseCore.world.entrycheck.EntryFeeResult;
 import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
 import jakarta.inject.Inject;
@@ -235,7 +235,7 @@ public class MVPlayerListener implements InjectableListener {
             return;
         }
 
-        CheckResultChain entryResult = worldEntryCheckerProvider.forSender(teleporter).canEnterWorld(fromWorld, toWorld)
+        ResultChain entryResult = worldEntryCheckerProvider.forSender(teleporter).canEnterWorld(fromWorld, toWorld)
                 .onSuccessReason(EntryFeeResult.Success.class, reason -> {
                     if (reason == EntryFeeResult.Success.ENOUGH_MONEY) {
                         economist.payEntryFee((Player) teleporter, toWorld);
@@ -306,7 +306,7 @@ public class MVPlayerListener implements InjectableListener {
             return;
         }
 
-        CheckResultChain entryResult = worldEntryCheckerProvider.forSender(event.getPlayer()).canEnterWorld(fromWorld, toWorld)
+        ResultChain entryResult = worldEntryCheckerProvider.forSender(event.getPlayer()).canEnterWorld(fromWorld, toWorld)
                 .onFailure(results -> {
                     event.setCancelled(true);
                     getCommandManager().getCommandIssuer(event.getPlayer()).sendError(results.getLastResultMessage());

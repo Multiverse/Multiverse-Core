@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.utils.checkresult;
+package com.onarandombox.MultiverseCore.utils.result;
 
 import com.google.common.collect.Iterables;
 import com.onarandombox.MultiverseCore.utils.message.Message;
@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class CheckResultChain {
+public class ResultChain {
     public static Builder builder() {
         return new Builder(true);
     }
@@ -21,9 +21,9 @@ public class CheckResultChain {
     }
 
     private final boolean isSuccess;
-    private final List<CheckResult<?, ?>> results;
+    private final List<Result<?, ?>> results;
 
-    CheckResultChain(boolean isSuccess, List<CheckResult<?, ?>> results) {
+    ResultChain(boolean isSuccess, List<Result<?, ?>> results) {
         this.isSuccess = isSuccess;
         this.results = results;
     }
@@ -36,45 +36,45 @@ public class CheckResultChain {
         return !isSuccess;
     }
 
-    public CheckResultChain onSuccess(Runnable successRunnable) {
+    public ResultChain onSuccess(Runnable successRunnable) {
         if (isSuccess) {
             successRunnable.run();
         }
         return this;
     }
 
-    public CheckResultChain onFailure(Runnable failureRunnable) {
+    public ResultChain onFailure(Runnable failureRunnable) {
         if (isFailure()) {
             failureRunnable.run();
         }
         return this;
     }
 
-    public CheckResultChain onSuccess(Consumer<CheckResultChain> successRunnable) {
+    public ResultChain onSuccess(Consumer<ResultChain> successRunnable) {
         if (isSuccess) {
             successRunnable.accept(this);
         }
         return this;
     }
 
-    public CheckResultChain onFailure(Consumer<CheckResultChain> failureRunnable) {
+    public ResultChain onFailure(Consumer<ResultChain> failureRunnable) {
         if (isFailure()) {
             failureRunnable.accept(this);
         }
         return this;
     }
 
-    public <S extends SuccessReason> CheckResultChain onSuccessReason(Class<S> successReasonClass, Consumer<S> successConsumer) {
+    public <S extends SuccessReason> ResultChain onSuccessReason(Class<S> successReasonClass, Consumer<S> successConsumer) {
         getSuccessReason(successReasonClass).peek(successConsumer);
         return this;
     }
 
-    public <F extends FailureReason> CheckResultChain onFailureReason(Class<F> failureReasonClass, Consumer<F> failureConsumer) {
+    public <F extends FailureReason> ResultChain onFailureReason(Class<F> failureReasonClass, Consumer<F> failureConsumer) {
         getFailureReason(failureReasonClass).peek(failureConsumer);
         return this;
     }
 
-    public <S extends SuccessReason> CheckResultChain onSuccessReason(S successReason, Runnable successRunnable) {
+    public <S extends SuccessReason> ResultChain onSuccessReason(S successReason, Runnable successRunnable) {
         getSuccessReason(successReason.getClass()).filter(successReason::equals).peek(reason -> successRunnable.run());
         return this;
     }
@@ -84,7 +84,7 @@ public class CheckResultChain {
             return Option.none();
         }
         return Option.ofOptional(results.stream()
-                .map(CheckResult::getSuccessReason)
+                .map(Result::getSuccessReason)
                 .filter(successReasonClass::isInstance)
                 .map(successReasonClass::cast)
                 .findFirst());
@@ -95,7 +95,7 @@ public class CheckResultChain {
             return Option.none();
         }
         return Option.ofOptional(results.stream()
-                .map(CheckResult::getFailureReason)
+                .map(Result::getFailureReason)
                 .filter(failureReasonClass::isInstance)
                 .map(failureReasonClass::cast)
                 .findFirst());
@@ -115,7 +115,7 @@ public class CheckResultChain {
 
     public static class Builder {
         private final boolean stopOnFailure;
-        private final List<CheckResult<?, ?>> results;
+        private final List<Result<?, ?>> results;
 
         private boolean isSuccess = true;
 
@@ -124,11 +124,11 @@ public class CheckResultChain {
             this.results = new ArrayList<>();
         }
 
-        public Builder then(Supplier<CheckResult<?, ?>> resultSupplier) {
+        public Builder then(Supplier<Result<?, ?>> resultSupplier) {
             if (!isSuccess && stopOnFailure) {
                 return this;
             }
-            CheckResult<?, ?> result = resultSupplier.get();
+            Result<?, ?> result = resultSupplier.get();
             if (result.isFailure()) {
                 isSuccess = false;
             }
@@ -136,8 +136,8 @@ public class CheckResultChain {
             return this;
         }
 
-        public CheckResultChain build() {
-            return new CheckResultChain(isSuccess, results);
+        public ResultChain build() {
+            return new ResultChain(isSuccess, results);
         }
     }
 }

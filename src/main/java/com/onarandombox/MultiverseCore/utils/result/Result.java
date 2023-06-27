@@ -1,21 +1,18 @@
-package com.onarandombox.MultiverseCore.utils.checkresult;
+package com.onarandombox.MultiverseCore.utils.result;
 
-import co.aikar.commands.CommandIssuer;
-import com.onarandombox.MultiverseCore.commandtools.PluginLocales;
 import com.onarandombox.MultiverseCore.utils.message.Message;
 import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.function.Consumer;
 
-public sealed interface CheckResult<S extends SuccessReason, F extends FailureReason> permits CheckResult.Success, CheckResult.Failure {
-    static <F extends FailureReason, S extends SuccessReason> CheckResult<S, F> success(S successReason, MessageReplacement...replacements) {
+public sealed interface Result<S extends SuccessReason, F extends FailureReason> permits Result.Success, Result.Failure {
+    static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason, MessageReplacement...replacements) {
         return new Success<>(successReason, replacements);
     }
 
-    static <F extends FailureReason, S extends SuccessReason> CheckResult<S, F> failure(F failureReason, MessageReplacement...replacements) {
+    static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure(F failureReason, MessageReplacement...replacements) {
         return new Failure<>(failureReason, replacements);
     }
 
@@ -29,35 +26,35 @@ public sealed interface CheckResult<S extends SuccessReason, F extends FailureRe
 
     @NotNull Message getReasonMessage();
 
-    default CheckResult<S, F> onSuccess(Consumer<S> consumer) {
+    default Result<S, F> onSuccess(Consumer<S> consumer) {
         if (this.isSuccess()) {
             consumer.accept(this.getSuccessReason());
         }
         return this;
     }
 
-    default CheckResult<S, F> onFailure(Consumer<F> consumer) {
+    default Result<S, F> onFailure(Consumer<F> consumer) {
         if (this.isFailure()) {
             consumer.accept(this.getFailureReason());
         }
         return this;
     }
 
-    default CheckResult<S, F> onSuccessReason(S successReason, Consumer<S> consumer) {
+    default Result<S, F> onSuccessReason(S successReason, Consumer<S> consumer) {
         if (this.isSuccess() && this.getSuccessReason() == successReason) {
             consumer.accept(this.getSuccessReason());
         }
         return this;
     }
 
-    default CheckResult<S, F> onFailureReason(F failureReason, Consumer<F> consumer) {
+    default Result<S, F> onFailureReason(F failureReason, Consumer<F> consumer) {
         if (this.isFailure() && this.getFailureReason() == failureReason) {
             consumer.accept(this.getFailureReason());
         }
         return this;
     }
 
-    final class Success<F extends FailureReason, S extends SuccessReason> implements CheckResult<S, F> {
+    final class Success<F extends FailureReason, S extends SuccessReason> implements Result<S, F> {
         private final S successReason;
         private final MessageReplacement[] replacements;
 
@@ -99,7 +96,7 @@ public sealed interface CheckResult<S extends SuccessReason, F extends FailureRe
         }
     }
 
-    final class Failure<S extends SuccessReason, F extends FailureReason> implements CheckResult<S, F> {
+    final class Failure<S extends SuccessReason, F extends FailureReason> implements Result<S, F> {
         private final F failureReason;
         private final MessageReplacement[] replacements;
 
