@@ -12,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
+/**
+ * Generic configuration handle for all ConfigurationSection types.
+ */
 public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     protected final @Nullable Logger logger;
     protected final @Nullable NodeGroup nodes;
@@ -121,7 +124,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     }
 
     /**
-     * Builder for {@link FileConfigHandle}.
+     * Abstract builder for {@link GenericConfigHandle}.
      *
      * @param <C>   The configuration type.
      * @param <B>   The builder type.

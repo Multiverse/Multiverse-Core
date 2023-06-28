@@ -99,7 +99,7 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
     }
 
     /**
-     * Builder for {@link FileConfigHandle}.
+     * Abstract builder for {@link FileConfigHandle}.
      *
      * @param <C>   The configuration type.
      * @param <B>   The builder type.
