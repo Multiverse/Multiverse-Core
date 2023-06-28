@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 
 import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -20,7 +21,7 @@ public class IntegerMigratorAction implements MigratorAction {
     }
 
     @Override
-    public void migrate(FileConfiguration config) {
+    public void migrate(ConfigurationSection config) {
         config.set(path, ACFUtil.parseInt(config.getString(path)));
         Logging.info("Converted %s to integer %s", path, config.getInt(path));
     }

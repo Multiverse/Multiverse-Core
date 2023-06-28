@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.configuration.migration;
 
 import com.dumptruckman.minecraft.util.Logging;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -28,7 +29,7 @@ public class InvertBoolMigratorAction implements MigratorAction {
      * {@inheritDoc}
      */
     @Override
-    public void migrate(FileConfiguration config) {
+    public void migrate(ConfigurationSection config) {
         boolean boolValue = !config.getBoolean(path);
         config.set(path, boolValue);
         Logging.info("Inverted %s to boolean %s", path, boolValue);

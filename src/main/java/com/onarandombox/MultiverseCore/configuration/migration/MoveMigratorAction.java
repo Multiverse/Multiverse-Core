@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 import java.util.Optional;
 
 import com.dumptruckman.minecraft.util.Logging;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -33,7 +34,7 @@ public class MoveMigratorAction implements MigratorAction {
      * {@inheritDoc}
      */
     @Override
-    public void migrate(FileConfiguration config) {
+    public void migrate(ConfigurationSection config) {
         Optional.ofNullable(config.get(fromPath))
                 .ifPresent(value -> {
                     config.set(toPath, value);

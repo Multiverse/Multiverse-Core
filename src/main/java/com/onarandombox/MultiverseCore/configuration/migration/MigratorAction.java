@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.configuration.migration;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -12,5 +13,5 @@ public interface MigratorAction {
      *
      * @param config The target settings instance to migrate.
      */
-    void migrate(FileConfiguration config);
+    void migrate(ConfigurationSection config);
 }

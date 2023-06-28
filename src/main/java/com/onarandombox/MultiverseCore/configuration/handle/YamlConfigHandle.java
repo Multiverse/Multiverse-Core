@@ -49,24 +49,6 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
      * {@inheritDoc}
      */
     @Override
-    protected void setUpNodes() {
-        if (nodes == null || nodes.isEmpty()) {
-            return;
-        }
-
-        YamlConfiguration oldConfig = config;
-        config = new YamlConfiguration();
-        nodes.forEach(node -> {
-            if (node instanceof ValueNode valueNode) {
-                set(valueNode, oldConfig.getObject(valueNode.getPath(), valueNode.getType(), valueNode.getDefaultValue()));
-            }
-        });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean save() {
         try {
             config.save(configFile);
