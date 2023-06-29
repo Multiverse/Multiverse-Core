@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -33,7 +34,7 @@ public class VersionMigrator {
      *
      * @param config The target settings instance to migrate.
      */
-    public void migrate(FileConfiguration config) {
+    public void migrate(ConfigurationSection config) {
         actions.forEach(action -> action.migrate(config));
     }
 

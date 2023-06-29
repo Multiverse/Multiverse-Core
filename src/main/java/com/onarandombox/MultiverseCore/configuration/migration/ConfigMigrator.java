@@ -6,6 +6,7 @@ import java.util.List;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
 import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -37,7 +38,7 @@ public class ConfigMigrator {
      *
      * @param config The target settings instance to migrate.
      */
-    public void migrate(FileConfiguration config) {
+    public void migrate(ConfigurationSection config) {
         double versionNumber = config.getDouble(versionNode.getPath());
         for (VersionMigrator versionMigrator : versionMigrators) {
             if (versionNumber < versionMigrator.getVersion()) {
