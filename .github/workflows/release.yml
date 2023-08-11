@@ -76,7 +76,6 @@ jobs:
         with:
           arguments: modrinth
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.body }}
           PRERELEASE: ${{ steps.changelog.outputs.prerelease }}
