@@ -62,3 +62,20 @@ jobs:
           file: build/libs/multiverse-core-${{ env.VERSION }}.jar
           asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
           tag: ${{ steps.release.outputs.tag_name }}
+
+      - name: Get Changelog
+        id: changelog
+        uses: cardinalby/git-get-release-action@1.2.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.release.outputs.tag_name }}
+
+      - name: Modrinth Upload
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGELOG: ${{ steps.changelog.outputs.body }}
+          PRERELEASE: ${{ steps.changelog.outputs.prerelease }}

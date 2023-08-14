@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
     id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 version = System.getenv('GITHUB_VERSION') ?: 'local'
@@ -176,3 +177,20 @@ shadowJar {
 
 build.dependsOn shadowJar
 jar.enabled = false
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "multiverse-core"
+    versionNumber = version
+
+    if(System.getenv("PRERELEASE")) {
+        versionType = "beta"
+    } else {
+        versionType = "release"
+    }
+
+    uploadFile = jar
+    gameVersions = ["1.20.1", "1.20", "1.19.2", "1.19.1", "1.19", "1.18.2", "1.18.1", "1.18", "1.17.1", "1.17", "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.16", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14", "1.13.2", "1.13.1", "1.13"]
+    loaders = ["bukkit", "spigot", "paper"]
+    changelog = System.getenv("CHANGELOG")
+}
