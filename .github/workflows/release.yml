@@ -74,8 +74,9 @@ jobs:
       - name: Modrinth Upload
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: modrinth
+          arguments: build modrinth
         env:
+          GITHUB_VERSION: ${{ env.VERSION }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.body }}
           PRERELEASE: ${{ steps.changelog.outputs.prerelease }}
