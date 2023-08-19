@@ -40,10 +40,13 @@ public class RegenCommand extends MultiverseCommand {
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         String worldName = args.get(0);
-        boolean useseed = (!(args.size() == 1));
-        boolean randomseed = (args.size() == 2 && args.get(1).equalsIgnoreCase("-s"));
-        String seed = (args.size() == 3) ? args.get(2) : "";
+        boolean useseed = CommandHandler.hasFlag("-s", args);
+        String seedflag = CommandHandler.getFlag("-s", args);
         boolean keepGamerules = CommandHandler.hasFlag("--keep-gamerules", args);
+
+        boolean randomseed = seedflag == null || seedflag.isEmpty() || seedflag.equalsIgnoreCase("--keep-gamerules");
+        String seed = randomseed ? "" : seedflag;
+
         this.plugin.getCommandQueueManager().addToQueue(new QueuedCommand(
                 sender,
                 doWorldRegen(sender, worldName, useseed, randomseed, seed, keepGamerules),
