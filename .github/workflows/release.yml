@@ -63,20 +63,58 @@ jobs:
           asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
           tag: ${{ steps.release.outputs.tag_name }}
 
-      - name: Get Changelog
-        id: changelog
+      - name: Get release info
+        id: release-info
         uses: cardinalby/git-get-release-action@1.2.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag: ${{ steps.release.outputs.tag_name }}
 
-      - name: Modrinth Upload
+      - name: Download release artifact
+        id: release-artifact
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: tags/${{ steps.release.outputs.tag_name }}
+          file: multiverse-core-${{ github.event.inputs.version }}.jar
+
+      - name: Parse release type
+        run: |
+          if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
+              echo "Replacing prerelease version scheme with SNAPSHOT"
+              echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
+          else
+              echo "Using release version scheme"
+              echo "RELEASE_TYPE=release" >> $GITHUB_ENV
+          fi
+
+      - name: Upload to modrinth.com
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build modrinth
         env:
           GITHUB_VERSION: ${{ env.VERSION }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          CHANGELOG: ${{ steps.changelog.outputs.body }}
-          PRERELEASE: ${{ steps.changelog.outputs.prerelease }}
+          CHANGELOG: ${{ steps.release-artifact.outputs.body }}
+          VERSION_NUMBER: ${{ steps.release.outputs.tag_name }}
+          VERSION_TYPE: ${{ env.RELEASE_TYPE }}
+
+      - name: Upload to dev.bukkit.org
+        uses: benwoo1110/dbo-upload-action@v0.1.0
+        with:
+          api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
+          project_id: 30765
+          changelog: ${{ steps.release-artifact.outputs.body }}
+          changelog_type: markdown
+          display_name: ${{ steps.release-artifact.outputs.version }}
+          game_versions: 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.18.1, 1.18.2, 1.19, 1.19.1, 1.19.2, 1.19.3, 1.19.4, 1.20, 1.20.1
+          release_type: ${{ env.RELEASE_TYPE }}
+          project_relations: >
+            [
+              {"slug": "multiverse-portals", "type": "optionalDependency"},
+              {"slug": "multiverse-netherportals", "type": "optionalDependency"},
+              {"slug": "multiverse-signportals", "type": "optionalDependency"},
+              {"slug": "multiverse-inventories", "type": "optionalDependency"}
+            ]
+          file_path: ${{ github.workspace }}/subdir/multiverse-core-${{ steps.release-artifact.outputs.version }}.jar

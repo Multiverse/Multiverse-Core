@@ -1,0 +1,41 @@
+name: Manually upload specific release to modrinth.com
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release to upload'
+        required: true
+
+jobs:
+  manually_upload_modrinth_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release info
+        id: release-info
+        uses: cardinalby/git-get-release-action@1.2.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.release.outputs.tag_name }}
+
+      - name: Parse release type
+        run: |
+          if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
+              echo "Replacing prerelease version scheme with SNAPSHOT"
+              echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
+          else
+              echo "Using release version scheme"
+              echo "RELEASE_TYPE=release" >> $GITHUB_ENV
+          fi
+
+      - name: Upload to modrinth.com
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build modrinth
+        env:
+          GITHUB_VERSION: ${{ env.VERSION }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGELOG: ${{ steps.release-info.outputs.body }}
+          VERSION_NUMBER: ${{ steps.release-info.outputs.tag_name }}
+          VERSION_TYPE: ${{ env.RELEASE_TYPE }}
