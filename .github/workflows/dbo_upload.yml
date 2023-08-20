@@ -1,0 +1,58 @@
+name: Manually upload release to dev.bukkit.org
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release to upload'
+        required: true
+
+jobs:
+  manually_upload_dbo_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release artifact
+        id: release-artifact
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: tags/${{ github.event.inputs.version }}
+          file: multiverse-core-${{ github.event.inputs.version }}.jar
+
+      - name: Build DBO metadata
+        id: metadata
+        uses: nickofthyme/object-remap@v1
+        with:
+          changelog: ${{ toJson(steps.release-artifact.outputs.body) }}
+          changelog_type: markdown
+          release_type: release
+          display_name: ${{ github.event.inputs.version }}
+          game_versions: '[9994, 9974, 9973, 9561, 9560, 9261, 9190, 9016, 8897, 8849, 8503, 7915, 7667, 7330, 7105]'
+          relations.projects: '[{"slug": "multiverse-netherportals", "type": "optionalDependency"}, {"slug": "multiverse-portals", "type": "optionalDependency"}, {"slug": "multiverse-inventories", "type": "optionalDependency"}, {"slug": "multiverse-signportals", "type": "optionalDependency"}]'
+
+      - name: Upload to dev.bukkit.org
+        uses: Multiverse/http-request-action@debug
+        with:
+          url: https://dev.bukkit.org/api/projects/30765/upload-file
+          method: POST
+          contentType: multipart/form-data
+          customHeaders: '{ "X-Api-Token": "${{ secrets.DBO_UPLOAD_API_TOKEN }}" }'
+          files: '{ "file": "${{ github.workspace }}/multiverse-core-${{ github.event.inputs.version }}.jar" }'
+          data: '{ "metadata": ${{ toJson(steps.metadata.outputs.json) }} }'
+
+# Bukkit Version IDs
+# 9994: 1.20.1
+# 9974: 1.20
+# 9973: 1.19.4
+# 9561: 1.19.3
+# 9560: 1.19.2
+# 9261: 1.19.1
+# 9190: 1.19
+# 9016: 1.18.2
+# 8897: 1.18.1
+# 8849: 1.18
+# 8503: 1.17
+# 7915: 1.16
+# 7667: 1.15
+# 7330: 1.14
+# 7105: 1.13
