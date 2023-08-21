@@ -170,7 +170,7 @@ public class MVPlayerListener implements Listener {
             return;
         }
         Player teleportee = event.getPlayer();
-        CommandSender teleporter = null;
+        CommandSender teleporter = teleportee;
         String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
         if (teleporterName != null) {
             if (teleporterName.equals("CONSOLE")) {
