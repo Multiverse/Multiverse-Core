@@ -1,4 +1,4 @@
-name: Run unit tests against all PRs
+name: 'PR: Test'
 
 on:
   pull_request:
