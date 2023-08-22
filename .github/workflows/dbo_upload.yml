@@ -21,7 +21,7 @@ jobs:
 
       - name: Download release artifact
         id: release-artifact
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: dsaltares/fetch-gh-release-asset@1.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: tags/${{ github.event.inputs.version }}
