@@ -1,0 +1,84 @@
+name: 'Call: GitHub Release'
+
+on:
+  workflow_call:
+    inputs:
+      release_mode:
+        description: 'Release mode'
+        required: true
+        type: string
+      version_bump:
+        description: 'Version bump'
+        required: false
+        type: string
+      promote_from:
+        description: 'Promote from'
+        required: false
+        type: string
+    outputs:
+      release_created:
+        description: 'Release created'
+        value: ${{ jobs.github_release.outputs.release_created }}
+      tag_name:
+        description: 'Tag name'
+        value: ${{ jobs.github_release.outputs.tag_name }}
+
+jobs:
+  github_release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Echo inputs
+        run: |
+          echo "release_mode: ${{ inputs.release_mode }}"
+          echo "version_bump: ${{ inputs.version_bump }}"
+          echo "promote_from: ${{ inputs.promote_from }}"
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.promote_from }}
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      # - name: Build and test
+      #   uses: gradle/gradle-build-action@v2
+      #   with:
+      #     arguments: clean build -x assemble -x shadowJar
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release
+        id: release
+        uses: benwoo1110/semantic-release-action@v1.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_mode: ${{ inputs.release_mode }}
+          version_bump: ${{ inputs.version_bump }}
+          promote_from: ${{ inputs.promote_from }}
+
+      - name: Build package  # change to publish
+        if: steps.release.outputs.release_created == 'true'
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build -x checkStyleMain -x checkStyleTest -x test
+        env:
+          GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifact
+        if: steps.release.outputs.release_created == 'true'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/libs/multiverse-core-${{ steps.release.outputs.publish_version }}.jar
+          asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
+          tag: ${{ steps.release.outputs.tag_name }}
