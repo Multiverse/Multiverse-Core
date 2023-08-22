@@ -83,11 +83,11 @@ jobs:
         with:
           arguments: build modrinth
         env:
-          GITHUB_VERSION: ${{ env.VERSION }}
+          GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.release.outputs.body }}
           VERSION_NUMBER: ${{ steps.release.outputs.tag_name }}
-          VERSION_TYPE: ${{ env.RELEASE_TYPE }}
+          VERSION_TYPE: ${{ steps.release.outputs.release_type }}
 
       - name: Upload to dev.bukkit.org
         uses: benwoo1110/dbo-upload-action@v0.2.0
@@ -98,7 +98,7 @@ jobs:
           changelog_type: markdown
           display_name: ${{ steps.release.outputs.tag_name }}
           game_versions: 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.18.1, 1.18.2, 1.19, 1.19.1, 1.19.2, 1.19.3, 1.19.4, 1.20, 1.20.1
-          release_type: ${{ env.RELEASE_TYPE }}
+          release_type: ${{ steps.release.outputs.release_type }}
           project_relations: >
             [
               {"slug": "multiverse-portals", "type": "optionalDependency"},
