@@ -83,11 +83,11 @@ jobs:
         with:
           arguments: build modrinth
         env:
-          GITHUB_VERSION: ${{ env.VERSION }}
+          GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.release.outputs.body }}
           VERSION_NUMBER: ${{ steps.release.outputs.tag_name }}
-          VERSION_TYPE: ${{ env.RELEASE_TYPE }}
+          VERSION_TYPE: ${{ steps.release.outputs.release_type }}
 
       - name: Upload to dev.bukkit.org
         uses: benwoo1110/dbo-upload-action@v0.2.0
