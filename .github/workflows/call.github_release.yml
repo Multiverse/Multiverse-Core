@@ -58,7 +58,7 @@ jobs:
 
       - name: Create release
         id: release
-        uses: benwoo1110/semantic-release-action@v1.0.0
+        uses: benwoo1110/semantic-release-action@v1.0.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_mode: ${{ inputs.release_mode }}
