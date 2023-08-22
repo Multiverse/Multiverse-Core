@@ -30,10 +30,8 @@ jobs:
       - name: Parse release type
         run: |
           if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
-              echo "Replacing prerelease version scheme with SNAPSHOT"
               echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
           else
-              echo "Using release version scheme"
               echo "RELEASE_TYPE=release" >> $GITHUB_ENV
           fi
 
