@@ -52,4 +52,4 @@ jobs:
               {"slug": "multiverse-signportals", "type": "optionalDependency"},
               {"slug": "multiverse-inventories", "type": "optionalDependency"}
             ]
-          file_path: ${{ github.workspace }}/subdir/multiverse-core-${{ steps.release-artifact.outputs.version }}.jar
+          file_path: ${{ github.workspace }}/multiverse-core-${{ steps.release-artifact.outputs.version }}.jar
