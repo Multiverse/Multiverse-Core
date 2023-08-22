@@ -49,12 +49,12 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      # - name: Build and test
-      #   uses: gradle/gradle-build-action@v2
-      #   with:
-      #     arguments: clean build -x assemble -x shadowJar
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean build -x assemble -x shadowJar -x checkStyleMain -x checkStyleTest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release
         id: release
@@ -65,11 +65,11 @@ jobs:
           version_bump: ${{ inputs.version_bump }}
           promote_from: ${{ inputs.promote_from }}
 
-      - name: Build package  # change to publish
+      - name: Publish package
         if: steps.release.outputs.release_created == 'true'
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build -x checkStyleMain -x checkStyleTest -x test
+          arguments: publish -x checkStyleMain -x checkStyleTest -x test
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
