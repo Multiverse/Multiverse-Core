@@ -17,16 +17,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ steps.release.outputs.tag_name }}
+          tag: ${{ github.event.inputs.version }}
 
       - name: Modify version scheme
         run: |
-          if [[ "${{ steps.release.outputs.tag_name }}" == *"pre"* ]]; then
+          if [[ "${{ steps.release-info.outputs.tag_name }}" == *"pre"* ]]; then
               echo "Replacing prerelease version scheme with SNAPSHOT"
-              echo "VERSION=$(echo ${{ steps.release.outputs.tag_name }} | sed -E 's/-pre.*/-SNAPSHOT/')" >> $GITHUB_ENV
+              echo "VERSION=$(echo ${{ steps.release-info.outputs.tag_name }} | sed -E 's/-pre.*/-SNAPSHOT/')" >> $GITHUB_ENV
           else
               echo "Using release version scheme"
-              echo "VERSION=${{ steps.release.outputs.tag_name }}" >> $GITHUB_ENV
+              echo "VERSION=${{ steps.release-info.outputs.tag_name }}" >> $GITHUB_ENV
           fi
 
       - name: Parse release type

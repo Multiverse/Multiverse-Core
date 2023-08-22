@@ -17,15 +17,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ steps.release.outputs.tag_name }}
+          tag: ${{ github.event.inputs.version }}
 
       - name: Download release artifact
         id: release-artifact
         uses: dsaltares/fetch-gh-release-asset@1.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: tags/${{ github.event.inputs.version }}
-          file: multiverse-core-${{ github.event.inputs.version }}.jar
+          version: tags/${{ steps.release-info.outputs.tag_name }}
+          file: multiverse-core-${{ steps.release-info.outputs.tag_name }}.jar
 
       - name: Parse release type
         run: |
@@ -40,7 +40,7 @@ jobs:
         with:
           api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
           project_id: 30765
-          changelog: ${{ steps.release-artifact.outputs.body }}
+          changelog: ${{ steps.release-info.outputs.body }}
           changelog_type: markdown
           display_name: ${{ steps.release-artifact.outputs.version }}
           game_versions: 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.18.1, 1.18.2, 1.19, 1.19.1, 1.19.2, 1.19.3, 1.19.4, 1.20, 1.20.1
