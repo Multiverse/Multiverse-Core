@@ -51,7 +51,7 @@ jobs:
         uses: benwoo1110/semantic-release-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          version_bump: promote
+          release_mode: promote
           promote_from: ${{ github.event.inputs.version }}
 
       - name: Publish package
