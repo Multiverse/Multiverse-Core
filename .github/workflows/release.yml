@@ -58,7 +58,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: tags/${{ steps.release.outputs.tag_name }}
-          file: multiverse-core-${{ github.event.inputs.version }}.jar
+          file: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
 
       - name: Upload to modrinth.com
         if: steps.release.outputs.release_created == 'true'
