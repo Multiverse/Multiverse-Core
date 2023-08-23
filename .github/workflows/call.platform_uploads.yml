@@ -59,7 +59,7 @@ jobs:
         echo "release_type: ${{ steps.parse-release-type.outputs.release_type }}"
 
     - name: Upload to Modrinth
-      if: inputs.upload_modrinth == 'true'
+      if: ${{ !cancelled() || inputs.upload_modrinth == 'true' }}
       uses: benwoo1110/modrinth-upload-action@v1
       with:
         api_token: ${{ secrets.MODRINTH_TOKEN }}
@@ -73,7 +73,7 @@ jobs:
         loaders: bukkit, spigot, paper
 
     - name: Upload to DBO
-      if: inputs.upload_dbo == 'true'
+      if: ${{ !cancelled() || inputs.upload_dbo == 'true' }}
       uses: benwoo1110/dbo-upload-action@v1
       with:
         api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
