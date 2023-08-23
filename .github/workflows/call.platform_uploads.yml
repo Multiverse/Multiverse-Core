@@ -59,7 +59,7 @@ jobs:
 
     - name: Upload to Modrinth
       if: inputs.upload_modrinth == 'true'
-      uses: benwoo1110/modrinth-upload-action@v1.0.0
+      uses: benwoo1110/modrinth-upload-action@v1
       with:
         api_token: ${{ secrets.MODRINTH_TOKEN }}
         project_id: 3wmN97b8
@@ -73,7 +73,7 @@ jobs:
 
     - name: Upload to DBO
       if: inputs.upload_dbo == 'true'
-      uses: benwoo1110/dbo-upload-action@v1.0.1
+      uses: benwoo1110/dbo-upload-action@v1
       with:
         api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
         project_id: 30765
