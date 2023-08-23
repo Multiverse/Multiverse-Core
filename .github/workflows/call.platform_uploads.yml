@@ -42,20 +42,21 @@ jobs:
         file: multiverse-core-${{ steps.release-info.outputs.tag_name }}.jar
 
     - name: Parse release type
+      id: parse-release-type
       run: |
         if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
-            echo Setting RELEASE_TYPE to Beta
-            echo "RELEASE_TYPE=Beta" >> $GITHUB_ENV
+            echo Setting release_type to Beta
+            echo "release_type=Beta" >> $GITHUB_OUTPUT
         else
-          echo Setting RELEASE_TYPE to Release
-            echo "RELEASE_TYPE=Release" >> $GITHUB_ENV
+          echo Setting release_type to Release
+            echo "release_type=Release" >> $GITHUB_OUTPUT
         fi
 
-    - name: echo inputs
+    - name: echo params
       run: |
         echo "upload_modrinth: ${{ inputs.upload_modrinth }}"
         echo "upload_dbo: ${{ inputs.upload_dbo }}"
-        echo "RELEASE_TYPE: ${{ env.RELEASE_TYPE }}"
+        echo "release_type: ${{ steps.parse-release-type.outputs.release_type }}"
 
     - name: Upload to Modrinth
       if: inputs.upload_modrinth == 'true'
@@ -68,7 +69,7 @@ jobs:
         name: ${{ steps.release-info.outputs.tag_name }}
         changelog: ${{ steps.release-artifact.outputs.body }}
         game_versions: 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2, 1.18.1, 1.18, 1.17.1, 1.17, 1.16.5, 1.16.4, 1.16.3, 1.16.2, 1.16.1, 1.16, 1.15.2, 1.15.1, 1.15, 1.14.4, 1.14.3, 1.14.2, 1.14.1, 1.14, 1.13.2, 1.13.1, 1.13
-        version_type: ${{ env.RELEASE_TYPE }}
+        version_type: ${{ steps.parse-release-type.outputs.release_type }}
         loaders: bukkit, spigot, paper
 
     - name: Upload to DBO
@@ -81,7 +82,7 @@ jobs:
         changelog_type: markdown
         display_name: ${{ steps.release-info.outputs.tag_name }}
         game_versions: 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2, 1.18.1, 1.18, 1.17, 1.16, 1.15, 1.14, 1.13
-        release_type: ${{ env.RELEASE_TYPE }}
+        release_type: ${{ steps.parse-release-type.outputs.release_type }}
         project_relations: >
           [
             {"slug": "multiverse-portals", "type": "optionalDependency"},
