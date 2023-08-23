@@ -52,12 +52,6 @@ jobs:
             echo "release_type=Release" >> $GITHUB_OUTPUT
         fi
 
-    - name: echo params
-      run: |
-        echo "upload_modrinth: ${{ inputs.upload_modrinth }}"
-        echo "upload_dbo: ${{ inputs.upload_dbo }}"
-        echo "release_type: ${{ steps.parse-release-type.outputs.release_type }}"
-
     - name: Upload to Modrinth
       if: ${{ !cancelled() || inputs.upload_modrinth == 'true' }}
       uses: benwoo1110/modrinth-upload-action@v1

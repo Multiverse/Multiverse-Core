@@ -30,12 +30,6 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - name: Echo inputs
-        run: |
-          echo "release_mode: ${{ inputs.release_mode }}"
-          echo "version_bump: ${{ inputs.version_bump }}"
-          echo "promote_from: ${{ inputs.promote_from }}"
-
       - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.promote_from }}
