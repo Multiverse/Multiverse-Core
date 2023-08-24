@@ -95,6 +95,9 @@ configurations {
         it.outgoing.artifact(shadowJar)
     }
 
+    testCompileOnly.extendsFrom compileOnly
+    testRuntimeOnly.extendsFrom testCompileOnly
+
     shadowed.extendsFrom compileOnly {
         canBeResolved = true
     }
