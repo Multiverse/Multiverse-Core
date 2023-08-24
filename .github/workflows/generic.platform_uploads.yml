@@ -92,9 +92,11 @@ jobs:
         if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
             echo Setting release_type to Beta
             echo "release_type=Beta" >> $GITHUB_OUTPUT
+            echo "hangar_release_type=Prerelease" >> $GITHUB_OUTPUT
         else
           echo Setting release_type to Release
             echo "release_type=Release" >> $GITHUB_OUTPUT
+            echo "hangar_release_type=Release" >> $GITHUB_OUTPUT
         fi
 
     - name: Upload to Modrinth
@@ -134,7 +136,7 @@ jobs:
         author: Multiverse
         slug: ${{ inputs.hangar_slug }}
         version: ${{ steps.release-info.outputs.tag_name }}
-        channel: ${{ steps.parse-release-type.outputs.release_type }}
+        channel: ${{ steps.parse-release-type.outputs.hangar_release_type }}
         files: '[{"path": "${{ github.workspace }}/${{ inputs.plugin_name }}-${{ steps.release-info.outputs.tag_name }}.jar", "platforms": ["PAPER"]}]'
         description: ${{ steps.release-artifact.outputs.body }}
         platform_dependencies: '{"PAPER": ["1.13-1.20.1"]}'
