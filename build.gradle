@@ -44,26 +44,26 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
+    implementation 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
 
     implementation('com.github.MilkBowl:VaultAPI:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
 
-    api('me.main__.util:SerializationConfig:1.7') {
+    compileOnly('me.main__.util:SerializationConfig:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    api('com.pneumaticraft.commandhandler:CommandHandler:11') {
+    compileOnly('com.pneumaticraft.commandhandler:CommandHandler:11') {
         exclude group: 'org.bukkit', module: 'bukkit'
         exclude group: 'junit', module: 'junit'
     }
-    api 'com.dumptruckman.minecraft:buscript:2.0-SNAPSHOT'
-    api 'org.bstats:bstats-bukkit:2.2.1'
-    api('com.dumptruckman.minecraft:Logging:1.1.1') {
+    compileOnly 'com.dumptruckman.minecraft:buscript:2.0-SNAPSHOT'
+    compileOnly 'org.bstats:bstats-bukkit:2.2.1'
+    compileOnly('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    api 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    api 'org.jetbrains:annotations:16.0.2'
+    compileOnly 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    compileOnly 'org.jetbrains:annotations:16.0.2'
 
     testImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
@@ -93,6 +93,10 @@ configurations {
     [apiElements, runtimeElements].each {
         it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
         it.outgoing.artifact(shadowJar)
+    }
+
+    shadowed.extendsFrom compileOnly {
+        canBeResolved = true
     }
 }
 
@@ -169,7 +173,7 @@ shadowJar {
     relocate 'org.codehaus.jettison', 'com.onarandombox.jettison'
     relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
 
-    configurations = [project.configurations.api]
+    configurations = [project.configurations.shadowed]
 
     archiveFileName = "$baseName-$version.$extension"
     classifier = ''
