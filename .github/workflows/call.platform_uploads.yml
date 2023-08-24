@@ -34,17 +34,60 @@ jobs:
     with:
       plugin_name: multiverse-core
       modrinth_project_id: 3wmN97b8
-      modrinth_dependencies: '[]'
+      modrinth_dependencies: >
+        [
+          {"project_id": "qvdtDX3s", "dependency_type": "optional"},
+          {"project_id": "8VMk6P0I", "dependency_type": "optional"},
+          {"project_id": "vtawPsTo", "dependency_type": "optional"},
+          {"project_id": "WuErDeI1", "dependency_type": "optional"}
+        ]
+
       dbo_project_id: 30765
       dbo_project_relations: >
         [
+          {"slug": "multiverse-inventories", "type": "optionalDependency"},
           {"slug": "multiverse-portals", "type": "optionalDependency"},
           {"slug": "multiverse-netherportals", "type": "optionalDependency"},
           {"slug": "multiverse-signportals", "type": "optionalDependency"},
-          {"slug": "multiverse-inventories", "type": "optionalDependency"}
+          {"slug": "vault", "type": "optionalDependency"}
         ]
+
       hangar_slug: Multiverse-Core
-      hangar_plugin_dependencies: '{}'
+      hangar_plugin_dependencies: >
+        { "PAPER": [
+          {
+            "name": "Multiverse-Inventories",
+            "required": false,
+            "namespace": {
+              "owner": "Multiverse",
+              "slug": "Multiverse-Inventories"
+            }
+          },
+          {
+            "name": "Multiverse-Portals",
+            "required": false,
+            "namespace": {
+              "owner": "Multiverse",
+              "slug": "Multiverse-Portals"
+            }
+          },
+          {
+            "name": "Multiverse-NetherPortals",
+            "required": false,
+            "namespace": {
+              "owner": "Multiverse",
+              "slug": "Multiverse-NetherPortals"
+            }
+          },
+          {
+            "name": "Multiverse-SignPortals",
+            "required": false,
+            "namespace": {
+              "owner": "Multiverse",
+              "slug": "Multiverse-SignPortals"
+            }
+          }
+        ]}
 
       target_tag: ${{ inputs.target_tag }}
       upload_modrinth: ${{ inputs.upload_modrinth }}
