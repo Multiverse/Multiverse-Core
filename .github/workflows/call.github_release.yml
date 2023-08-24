@@ -25,54 +25,10 @@ on:
 
 jobs:
   github_release:
-    runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.promote_from }}
-
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-          cache: gradle
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Build and test
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: clean build -x assemble -x shadowJar -x checkStyleMain -x checkStyleTest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create release
-        id: release
-        uses: benwoo1110/semantic-release-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_mode: ${{ inputs.release_mode }}
-          version_bump: ${{ inputs.version_bump }}
-          promote_from: ${{ inputs.promote_from }}
-
-      - name: Publish package
-        if: steps.release.outputs.release_created == 'true'
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish -x checkStyleMain -x checkStyleTest -x test
-        env:
-          GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload release artifact
-        if: steps.release.outputs.release_created == 'true'
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/libs/multiverse-core-${{ steps.release.outputs.publish_version }}.jar
-          asset_name: multiverse-core-${{ steps.release.outputs.tag_name }}.jar
-          tag: ${{ steps.release.outputs.tag_name }}
+    uses: ./.github/workflows/generic.github_release.yml
+    secrets: inherit
+    with:
+      plugin_name: multiverse-core
+      release_mode: ${{ inputs.release_mode }}
+      version_bump: ${{ inputs.version_bump }}
+      promote_from: ${{ inputs.promote_from }}

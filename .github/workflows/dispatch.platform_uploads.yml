@@ -15,6 +15,10 @@ on:
         description: 'Upload to dev.bukkit.org'
         required: true
         type: boolean
+      upload_hangar:
+        description: 'Upload to hangar.papermc.io'
+        required: true
+        type: boolean
 
 jobs:
   dispatch_platform_uploads:
@@ -24,3 +28,4 @@ jobs:
       target_tag: ${{ github.event.inputs.target_tag }}
       upload_modrinth: ${{ github.event.inputs.upload_modrinth }}
       upload_dbo: ${{ github.event.inputs.upload_dbo }}
+      upload_hangar: ${{ github.event.inputs.upload_hangar }}
