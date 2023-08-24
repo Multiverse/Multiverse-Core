@@ -35,3 +35,4 @@ jobs:
       target_tag: ${{ needs.github_release.outputs.tag_name }}
       upload_modrinth: 'true'
       upload_dbo: 'true'
+      upload_hangar: 'true'

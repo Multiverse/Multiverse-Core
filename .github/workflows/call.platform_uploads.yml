@@ -15,73 +15,38 @@ on:
         description: 'Upload to dev.bukkit.org'
         required: true
         type: string
+      upload_hangar:
+        description: 'Upload to hangar.papermc.io'
+        required: true
+        type: string
     secrets:
       MODRINTH_TOKEN:
         required: true
       DBO_UPLOAD_API_TOKEN:
         required: true
+      HANGAR_UPLOAD_TOKEN:
+        required: true
 
 jobs:
   platform_uploads:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Get release info
-      id: release-info
-      uses: cardinalby/git-get-release-action@1.2.4
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag: ${{ inputs.target_tag }}
+    uses: ./.github/workflows/generic.platform_uploads.yml
+    secrets: inherit
+    with:
+      plugin_name: multiverse-core
+      modrinth_project_id: 3wmN97b8
+      modrinth_dependencies: '[]'
+      dbo_project_id: 30765
+      dbo_project_relations: >
+        [
+          {"slug": "multiverse-portals", "type": "optionalDependency"},
+          {"slug": "multiverse-netherportals", "type": "optionalDependency"},
+          {"slug": "multiverse-signportals", "type": "optionalDependency"},
+          {"slug": "multiverse-inventories", "type": "optionalDependency"}
+        ]
+      hangar_slug: Multiverse-Core
+      hangar_plugin_dependencies: '{}'
 
-    - name: Download release artifact
-      id: release-artifact
-      uses: dsaltares/fetch-gh-release-asset@1.1.1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        version: tags/${{ steps.release-info.outputs.tag_name }}
-        file: multiverse-core-${{ steps.release-info.outputs.tag_name }}.jar
-
-    - name: Parse release type
-      id: parse-release-type
-      run: |
-        if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
-            echo Setting release_type to Beta
-            echo "release_type=Beta" >> $GITHUB_OUTPUT
-        else
-          echo Setting release_type to Release
-            echo "release_type=Release" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Upload to Modrinth
-      if: ${{ !cancelled() && inputs.upload_modrinth == 'true' }}
-      uses: benwoo1110/modrinth-upload-action@v1
-      with:
-        api_token: ${{ secrets.MODRINTH_TOKEN }}
-        project_id: 3wmN97b8
-        version_number: ${{ steps.release-info.outputs.tag_name }}
-        files: '["${{ github.workspace }}/multiverse-core-${{ steps.release-info.outputs.tag_name }}.jar"]'
-        name: ${{ steps.release-info.outputs.tag_name }}
-        changelog: ${{ steps.release-artifact.outputs.body }}
-        game_versions: 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2, 1.18.1, 1.18, 1.17.1, 1.17, 1.16.5, 1.16.4, 1.16.3, 1.16.2, 1.16.1, 1.16, 1.15.2, 1.15.1, 1.15, 1.14.4, 1.14.3, 1.14.2, 1.14.1, 1.14, 1.13.2, 1.13.1, 1.13
-        version_type: ${{ steps.parse-release-type.outputs.release_type }}
-        loaders: bukkit, spigot, paper
-
-    - name: Upload to DBO
-      if: ${{ !cancelled() && inputs.upload_dbo == 'true' }}
-      uses: benwoo1110/dbo-upload-action@v1
-      with:
-        api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
-        project_id: 30765
-        changelog: ${{ steps.release-artifact.outputs.body }}
-        changelog_type: markdown
-        display_name: ${{ steps.release-info.outputs.tag_name }}
-        game_versions: 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2, 1.18.1, 1.18, 1.17, 1.16, 1.15, 1.14, 1.13
-        release_type: ${{ steps.parse-release-type.outputs.release_type }}
-        project_relations: >
-          [
-            {"slug": "multiverse-portals", "type": "optionalDependency"},
-            {"slug": "multiverse-netherportals", "type": "optionalDependency"},
-            {"slug": "multiverse-signportals", "type": "optionalDependency"},
-            {"slug": "multiverse-inventories", "type": "optionalDependency"}
-          ]
-        file_path: ${{ github.workspace }}/multiverse-core-${{ steps.release-info.outputs.tag_name }}.jar
+      target_tag: ${{ inputs.target_tag }}
+      upload_modrinth: ${{ inputs.upload_modrinth }}
+      upload_dbo: ${{ inputs.upload_dbo }}
+      upload_hangar: ${{ inputs.upload_hangar }}
