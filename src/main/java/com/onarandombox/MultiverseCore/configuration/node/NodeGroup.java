@@ -1,14 +1,10 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 /**
  * A collection of {@link CommentedNode}s, with mappings to nodes by name.
@@ -49,10 +45,14 @@ public class NodeGroup implements Collection<Node> {
         return nodesMap.keySet();
     }
 
+    public Map<String, Node> getNodesMap() {
+        return nodesMap;
+    }
+
     /**
      * Gets the node with the given name.
      *
-     * @param name  The name of the node to get.
+     * @param name The name of the node to get.
      * @return The node with the given name, or {@link Option.None} if no node with the given name exists.
      */
     public Option<Node> findNode(String name) {

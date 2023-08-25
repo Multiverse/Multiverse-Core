@@ -22,5 +22,9 @@ public enum PasteServiceType {
     /**
      * @see GitHubPasteService
      */
-    GITHUB
+    GITHUB,
+    /**
+     * @see McloGsPasteService
+     */
+    MCLOGS
 }

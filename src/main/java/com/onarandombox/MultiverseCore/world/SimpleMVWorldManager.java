@@ -7,45 +7,17 @@
 
 package com.onarandombox.MultiverseCore.world;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.BlockSafety;
-import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.api.*;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import jakarta.inject.Inject;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,6 +27,13 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Public facing API to add/remove Multiverse worlds.
@@ -104,23 +83,27 @@ public class SimpleMVWorldManager implements MVWorldManager {
         this.worlds = new ConcurrentHashMap<String, MVWorld>();
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void getDefaultWorldGenerators() {
         this.defaultGens = new HashMap<>();
-        File[] files = server.getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase("bukkit.yml"));
-        if (files != null && files.length == 1) {
-            FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(files[0]);
-            if (bukkitConfig.isConfigurationSection("worlds")) {
-                Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
-                for (String key : keys) {
-                    defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
-                }
+
+        if (plugin.getBukkitConfig() == null) {
+            Logging.warning("Any Default worldgenerators will not be loaded!");
+            return;
+        }
+
+        FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(plugin.getBukkitConfig());
+
+
+        if (bukkitConfig.isConfigurationSection("worlds")) {
+            Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
+            for (String key : keys) {
+                defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
             }
-        } else {
-            Logging.warning("Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
     }
 
@@ -179,7 +162,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             }
             this.server.getWorld(oldName).setAutoSave(false);
         }
-        
+
         // Grab a bit of metadata from the old world.
         MVWorld oldWorld = getMVWorld(oldName);
 
@@ -207,7 +190,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
         if (oldWorld != null && wasAutoSave) {
             oldWorld.getCBWorld().setAutoSave(true);
         }
-        
+
         if (newWorldFile.exists()) {
             Logging.fine("Succeeded at copying files");
 
@@ -227,8 +210,8 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
             // actually load the world
             if (doLoad(newName)) {
-               Logging.fine("Succeeded at loading cloned world '" + newName + "'");
-               return true;
+                Logging.fine("Succeeded at loading cloned world '" + newName + "'");
+                return true;
             }
             Logging.severe("Failed to load the cloned world '" + newName + "'");
             return false;
@@ -408,7 +391,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from Bukkit.", name);
                 return true;
-            } else if (!unloadBukkit){
+            } else if (!unloadBukkit) {
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from Multiverse.", name);
                 return true;
@@ -992,6 +975,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
     /**
      * Gets the {@link FileConfiguration} that this {@link SimpleMVWorldManager} is using.
+     *
      * @return The {@link FileConfiguration} that this {@link SimpleMVWorldManager} is using.
      */
     public FileConfiguration getConfigWorlds() {
@@ -1001,24 +985,24 @@ public class SimpleMVWorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
-	@Override
-	public boolean hasUnloadedWorld(String name, boolean includeLoaded) {
-		if (getMVWorld(name) != null) {
-			return includeLoaded;
-		}
-		for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
-			if (name.equals(entry.getKey()) || name.equals(entry.getValue().getAlias())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean hasUnloadedWorld(String name, boolean includeLoaded) {
+        if (getMVWorld(name) != null) {
+            return includeLoaded;
+        }
+        for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
+            if (name.equals(entry.getKey()) || name.equals(entry.getValue().getAlias())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-	public Collection<String> getPotentialWorlds() {
+    public Collection<String> getPotentialWorlds() {
         File worldContainer = this.server.getWorldContainer();
         if (worldContainer == null) {
             return Collections.emptyList();
