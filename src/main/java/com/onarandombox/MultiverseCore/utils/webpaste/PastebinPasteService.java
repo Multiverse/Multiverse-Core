@@ -22,7 +22,7 @@ class PastebinPasteService extends PasteService {
      */
     @Override
     String encodeData(String data) {
-        return URLEncoder.encode("api_dev_key", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("d61d68d31e8e0392b59b50b277411c71", StandardCharsets.UTF_8) +
+        return URLEncoder.encode("api_dev_key", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("144d820f540e79a1242b32cb9ab274c6", StandardCharsets.UTF_8) +
                 "&" + URLEncoder.encode("api_option", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("paste", StandardCharsets.UTF_8) +
                 "&" + URLEncoder.encode("api_paste_code", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(data, StandardCharsets.UTF_8) +
                 "&" + URLEncoder.encode("api_paste_private", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(this.isPrivate ? "1" : "0", StandardCharsets.UTF_8) +
