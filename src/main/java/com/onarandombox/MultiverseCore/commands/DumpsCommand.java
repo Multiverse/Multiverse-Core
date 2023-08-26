@@ -71,7 +71,7 @@ public class DumpsCommand extends MultiverseCommand {
                 .add(CommandFlag.builder("--logs")
                         .addAlias("-l")
                         .build())
-                .add(CommandFlag.builder("--include-plugin-list")
+                .add(CommandFlag.builder("--exclude-plugin-list")
                         .addAlias("-l")
                         .build())
                 .build());
@@ -80,12 +80,12 @@ public class DumpsCommand extends MultiverseCommand {
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=mvdumps")
-    @Syntax("--pastebincom --hastebin --pastegg --logs --include-plugin-list")
+    @Syntax("--pastebincom --hastebin --pastegg --logs --exclude-plugin-list")
     @Description("{@@mv-core.dumps.description}")
     public void onDumpsCommand(CommandIssuer issuer,
 
                                @Optional
-                               @Syntax("--pastebincom --hastebin --pastegg --logs --include-plugin-list")
+                               @Syntax("--pastebincom --hastebin --pastegg --logs --exclude-plugin-list")
                                @Description("{@@mv-core.dumps.flags.description}")
                                String[] flags
     ) {
@@ -98,7 +98,7 @@ public class DumpsCommand extends MultiverseCommand {
 
         final String versionInfo = versionEvent.getVersionInfo();
 
-        if (parsedFlags.hasFlag("--include-plugin-list")) {
+        if (!parsedFlags.hasFlag("--exclude-plugin-list")) {
             versionEvent.putDetailedVersionInfo("plugins.md", "# Plugins\n\n" + getPluginList());
         }
 
