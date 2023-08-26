@@ -1,6 +1,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.CommandManager;
+import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -8,6 +10,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import co.aikar.locales.MessageKeyProvider;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -18,6 +21,7 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
@@ -44,6 +48,7 @@ public class DumpsCommand extends MultiverseCommand {
     private final MVCoreConfig config;
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
+    private final CommandManager commandManager;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
@@ -54,6 +59,7 @@ public class DumpsCommand extends MultiverseCommand {
         this.config = config;
         this.plugin = plugin;
         this.worldManager = worldManager;
+        this.commandManager = commandManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvdumps")
                 .add(CommandFlag.builder("--pastebincom")
@@ -113,20 +119,20 @@ public class DumpsCommand extends MultiverseCommand {
 
                 if (parsedFlags.hasFlag("--pastebincom")) {
                     hasArgs = true;
-                    sendMessage(issuer, "Uploading debug info to https://pastebin.com");
+                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "https://pastebin.com"});
                     pasteURLs.put("pastebin.com", postToService(PasteServiceType.PASTEBIN, true, versionInfo, files));
                 }
 
                 if (parsedFlags.hasFlag("--hastebin")) {
                     hasArgs = true;
-                    sendMessage(issuer, "Uploading debug info to https://hastebin.com"); //TODO yeet it
+                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "need to yeet"}); //TODO yeet it
                     pasteURLs.put("hastebin.com", postToService(PasteServiceType.HASTEBIN, true, versionInfo, files));
                 }
 
 
                 if (parsedFlags.hasFlag("--logs")) {
                     hasArgs = true;
-                    sendMessage(issuer, "Uploading logs to https://mclo.gs");
+                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING_LOGS, new String[]{"{link}", "https://mclo.gs"});
 
                     // Get the Path of latest.log
                     Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
@@ -146,13 +152,14 @@ public class DumpsCommand extends MultiverseCommand {
 
                 // Fallback to paste.gg if no other sites where specified
                 if (parsedFlags.hasFlag("--pastegg") || !hasArgs) {
-                    sendMessage(issuer, "Uploading debug info to https://paste.gg");
+                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "https://paste.gg"});
                     pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, versionInfo, files));
                 }
 
                 // Finally, loop through and print all URLs
                 for (String service : pasteURLs.keySet()) {
-                    sendMessage(issuer, service + " : " + pasteURLs.get(service));
+                    String link = pasteURLs.get(service);
+                    sendMessage(issuer, MVCorei18n.DUMPS_URL_LIST, new String[]{"{service}", service, "{link}", link});
                 }
 
             }
@@ -205,13 +212,19 @@ public class DumpsCommand extends MultiverseCommand {
 
     /**
      * Sends a message to the console and player or just player if it is a console sender
-     *
-     * @param sender  The commandSender to send the message to
-     * @param message The message to be sent
+     * @param issuer The CommandIssuer to send a message to
+     * @param key the i18n key to be used
+     * @param replacements an array of replacements for the i18n key
      */
-    private static void sendMessage(CommandIssuer sender, String message) {
-        sender.sendMessage(message);
-        if (sender instanceof Player) {
+    private void sendMessage(CommandIssuer issuer, MessageKeyProvider key, String[] replacements) {
+        String message = this.commandManager.formatMessage(
+                issuer,
+                MessageType.INFO,
+                key,
+                replacements);
+
+        issuer.sendMessage(message);
+        if (issuer instanceof Player) {
             Logging.info(message);
         }
     }

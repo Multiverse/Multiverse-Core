@@ -37,6 +37,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     DELETE_SUCCESS,
     DELETE_PROMPT,
 
+    // Dumps command
+    DUMPS_DESCRIPTION,
+    DUMPS_UPLOADING,
+    DUMPS_UPLOADING_LOGS,
+    DUMPS_URL_LIST,
     // gamerule command
     GAMERULE_FAILED,
     GAMERULE_SUCCESS_SINGLE,
