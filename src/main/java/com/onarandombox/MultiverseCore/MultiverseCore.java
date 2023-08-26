@@ -7,14 +7,6 @@
 
 package com.onarandombox.MultiverseCore;
 
-import java.io.File;
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.Destination;
@@ -46,6 +38,12 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
@@ -377,7 +375,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * Gets the best service from this plugin that implements the given contract or has the given implementation.
      *
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
-     * @param qualifiers The set of qualifiers that must match this service definition
+     * @param qualifiers     The set of qualifiers that must match this service definition
      * @return An instance of the contract or impl if it is a service and is already instantiated, null otherwise
      * @throws MultiException if there was an error during service lookup
      */
@@ -395,7 +393,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * the provided qualifiers.
      *
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
-     * @param qualifiers The set of qualifiers that must match this service definition
+     * @param qualifiers     The set of qualifiers that must match this service definition
      * @return A list of services implementing this contract or concrete implementation. May not return null, but may
      * return an empty list
      * @throws MultiException if there was an error during service lookup
@@ -415,10 +413,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     /**
      * This is for unit testing ONLY. Do not use this constructor.
      *
-     * @param loader The PluginLoader to use.
+     * @param loader      The PluginLoader to use.
      * @param description The Description file to use.
-     * @param dataFolder The folder that other datafiles can be found in.
-     * @param file The location of the plugin.
+     * @param dataFolder  The folder that other datafiles can be found in.
+     * @param file        The location of the plugin.
      */
     public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
