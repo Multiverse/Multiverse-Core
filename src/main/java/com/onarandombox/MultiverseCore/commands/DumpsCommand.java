@@ -48,7 +48,6 @@ public class DumpsCommand extends MultiverseCommand {
     private final MVCoreConfig config;
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
-    private final MVCommandManager commandManager;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
@@ -59,7 +58,6 @@ public class DumpsCommand extends MultiverseCommand {
         this.config = config;
         this.plugin = plugin;
         this.worldManager = worldManager;
-        this.commandManager = commandManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvdumps")
                 .add(CommandFlag.builder("--pastebincom")
