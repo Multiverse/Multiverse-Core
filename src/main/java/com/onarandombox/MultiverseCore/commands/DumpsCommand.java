@@ -118,19 +118,19 @@ public class DumpsCommand extends MultiverseCommand {
 
                 if (parsedFlags.hasFlag("--pastebincom")) {
                     hasArgs = true;
-                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "https://pastebin.com"});
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastebin.com");
                     pasteURLs.put("pastebin.com", postToService(PasteServiceType.PASTEBIN, true, versionInfo, files));
                 }
 
                 if (parsedFlags.hasFlag("--hastebin")) {
                     hasArgs = true;
-                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "need to yeet"}); //TODO yeet it
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "need to yeet"); //TODO yeet it
                     pasteURLs.put("hastebin.com", postToService(PasteServiceType.HASTEBIN, true, versionInfo, files));
                 }
 
                 if (parsedFlags.hasFlag("--logs")) {
                     hasArgs = true;
-                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING_LOGS, new String[]{"{link}", "https://mclo.gs"});
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
 
                     // Get the Path of latest.log
                     Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
@@ -150,14 +150,14 @@ public class DumpsCommand extends MultiverseCommand {
 
                 // Fallback to paste.gg if no other sites where specified
                 if (parsedFlags.hasFlag("--pastegg") || !hasArgs) {
-                    sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "https://paste.gg"});
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
                     pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, versionInfo, files));
                 }
 
                 // Finally, loop through and print all URLs
                 for (String service : pasteURLs.keySet()) {
                     String link = pasteURLs.get(service);
-                    sendMessage(issuer, MVCorei18n.DUMPS_URL_LIST, new String[]{"{service}", service, "{link}", link});
+                    issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST, "{service}", service, "{link}", link);
                 }
 
             }
@@ -206,25 +206,6 @@ public class DumpsCommand extends MultiverseCommand {
 
     private String getPluginList() {
         return " - " + StringUtils.join(plugin.getServer().getPluginManager().getPlugins(), "\n - ");
-    }
-
-    /**
-     * Sends a message to the console and player or just player if it is a console sender
-     * @param issuer The CommandIssuer to send a message to
-     * @param key the i18n key to be used
-     * @param replacements an array of replacements for the i18n key
-     */
-    private void sendMessage(CommandIssuer issuer, MessageKeyProvider key, String[] replacements) {
-        String message = this.commandManager.formatMessage(
-                issuer,
-                MessageType.INFO,
-                key,
-                replacements);
-
-        issuer.sendMessage(message);
-        if (issuer instanceof Player) {
-            Logging.info(message);
-        }
     }
 
     /**
