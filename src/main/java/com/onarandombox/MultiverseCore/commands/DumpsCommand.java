@@ -48,7 +48,7 @@ public class DumpsCommand extends MultiverseCommand {
     private final MVCoreConfig config;
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
-    private final CommandManager commandManager;
+    private final MVCommandManager commandManager;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
@@ -110,7 +110,6 @@ public class DumpsCommand extends MultiverseCommand {
 
         final Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
-
         BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
@@ -128,7 +127,6 @@ public class DumpsCommand extends MultiverseCommand {
                     sendMessage(issuer, MVCorei18n.DUMPS_UPLOADING, new String[]{"{link}", "need to yeet"}); //TODO yeet it
                     pasteURLs.put("hastebin.com", postToService(PasteServiceType.HASTEBIN, true, versionInfo, files));
                 }
-
 
                 if (parsedFlags.hasFlag("--logs")) {
                     hasArgs = true;

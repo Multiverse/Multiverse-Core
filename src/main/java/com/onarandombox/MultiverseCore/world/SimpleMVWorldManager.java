@@ -111,13 +111,13 @@ public class SimpleMVWorldManager implements MVWorldManager {
     public void getDefaultWorldGenerators() {
         this.defaultGens = new HashMap<>();
 
-        if (plugin.getBukkitConfig() == null) {
+        File bukkitConfigFile = plugin.getBukkitConfig();
+        if (bukkitConfigFile == null) {
             Logging.warning("Any Default worldgenerators will not be loaded!");
             return;
         }
 
-        FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(plugin.getBukkitConfig());
-
+        FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(bukkitConfigFile);
 
         if (bukkitConfig.isConfigurationSection("worlds")) {
             Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
