@@ -58,34 +58,22 @@ jobs:
           {
             "name": "Multiverse-Inventories",
             "required": false,
-            "namespace": {
-              "owner": "Multiverse",
-              "slug": "Multiverse-Inventories"
-            }
+            "platforms": ["PAPER"]
           },
           {
             "name": "Multiverse-Portals",
             "required": false,
-            "namespace": {
-              "owner": "Multiverse",
-              "slug": "Multiverse-Portals"
-            }
+            "platforms": ["PAPER"]
           },
           {
             "name": "Multiverse-NetherPortals",
             "required": false,
-            "namespace": {
-              "owner": "Multiverse",
-              "slug": "Multiverse-NetherPortals"
-            }
+            "platforms": ["PAPER"]
           },
           {
             "name": "Multiverse-SignPortals",
             "required": false,
-            "namespace": {
-              "owner": "Multiverse",
-              "slug": "Multiverse-SignPortals"
-            }
+            "platforms": ["PAPER"]
           }
         ]}
 
