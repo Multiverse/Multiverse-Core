@@ -131,7 +131,6 @@ jobs:
       uses: benwoo1110/hangar-upload-action@v1
       with:
         api_token: ${{ secrets.HANGAR_UPLOAD_TOKEN }}
-        author: Multiverse
         slug: ${{ inputs.hangar_slug }}
         version: ${{ steps.release-info.outputs.tag_name }}
         channel: ${{ steps.parse-release-type.outputs.release_type }}
