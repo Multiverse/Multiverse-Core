@@ -151,6 +151,13 @@ configurations {
         it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
         it.outgoing.artifact(shadowJar)
     }
+
+    testCompileOnly.extendsFrom compileOnly
+    testRuntimeOnly.extendsFrom testCompileOnly
+
+    shadowed.extendsFrom compileOnly {
+        canBeResolved = true
+    }
 }
 
 
@@ -170,6 +177,16 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+
+            pom.withXml {
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime'  && project.configurations.implementation.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each() {
+                    it.scope*.value = 'provided'
+                }
+            }
         }
     }
     repositories {
@@ -263,7 +280,7 @@ shadowJar {
     relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
     relocate 'io.papermc.lib', 'com.onarandombox.paperlib'
 
-    configurations = [project.configurations.api, project.configurations.relocatedApi]
+    configurations = [project.configurations.shadowed]
 
     archiveFileName = "$baseName-$version.$extension"
 

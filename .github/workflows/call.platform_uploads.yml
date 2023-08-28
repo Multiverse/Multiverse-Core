@@ -1,0 +1,83 @@
+name: 'Call: Platform Uploads'
+
+on:
+  workflow_call:
+    inputs:
+      target_tag:
+        description: 'Version to upload'
+        required: true
+        type: string
+      upload_modrinth:
+        description: 'Upload to modrinth.com'
+        required: true
+        type: string
+      upload_dbo:
+        description: 'Upload to dev.bukkit.org'
+        required: true
+        type: string
+      upload_hangar:
+        description: 'Upload to hangar.papermc.io'
+        required: true
+        type: string
+    secrets:
+      MODRINTH_TOKEN:
+        required: true
+      DBO_UPLOAD_API_TOKEN:
+        required: true
+      HANGAR_UPLOAD_TOKEN:
+        required: true
+
+jobs:
+  platform_uploads:
+    uses: ./.github/workflows/generic.platform_uploads.yml
+    secrets: inherit
+    with:
+      plugin_name: multiverse-core
+      modrinth_project_id: 3wmN97b8
+      modrinth_dependencies: >
+        [
+          {"project_id": "qvdtDX3s", "dependency_type": "optional"},
+          {"project_id": "8VMk6P0I", "dependency_type": "optional"},
+          {"project_id": "vtawPsTo", "dependency_type": "optional"},
+          {"project_id": "WuErDeI1", "dependency_type": "optional"}
+        ]
+
+      dbo_project_id: 30765
+      dbo_project_relations: >
+        [
+          {"slug": "multiverse-inventories", "type": "optionalDependency"},
+          {"slug": "multiverse-portals", "type": "optionalDependency"},
+          {"slug": "multiverse-netherportals", "type": "optionalDependency"},
+          {"slug": "multiverse-signportals", "type": "optionalDependency"},
+          {"slug": "vault", "type": "optionalDependency"}
+        ]
+
+      hangar_slug: Multiverse-Core
+      hangar_plugin_dependencies: >
+        { "PAPER": [
+          {
+            "name": "Multiverse-Inventories",
+            "required": false,
+            "platforms": ["PAPER"]
+          },
+          {
+            "name": "Multiverse-Portals",
+            "required": false,
+            "platforms": ["PAPER"]
+          },
+          {
+            "name": "Multiverse-NetherPortals",
+            "required": false,
+            "platforms": ["PAPER"]
+          },
+          {
+            "name": "Multiverse-SignPortals",
+            "required": false,
+            "platforms": ["PAPER"]
+          }
+        ]}
+
+      target_tag: ${{ inputs.target_tag }}
+      upload_modrinth: ${{ inputs.upload_modrinth }}
+      upload_dbo: ${{ inputs.upload_dbo }}
+      upload_hangar: ${{ inputs.upload_hangar }}

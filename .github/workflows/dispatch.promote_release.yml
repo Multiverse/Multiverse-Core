@@ -1,0 +1,38 @@
+name: 'Dispatch: Promote Release'
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Version to promote'
+        required: true
+
+jobs:
+  check_version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify input version is prerelease
+        run: |
+          if [[ "${{ github.event.inputs.target_tag }}" != *"pre"* ]]; then
+              echo "Version must be a prerelease"
+              exit 1
+          fi
+
+  github_release:
+    needs: check_version
+    uses: ./.github/workflows/call.github_release.yml
+    secrets: inherit
+    with:
+      release_mode: promote
+      promote_from: ${{ github.event.inputs.target_tag }}
+
+  platform_uploads:
+    needs: github_release
+    if: needs.github_release.outputs.release_created == 'true'
+    uses: ./.github/workflows/call.platform_uploads.yml
+    secrets: inherit
+    with:
+      target_tag: ${{ needs.github_release.outputs.tag_name }}
+      upload_modrinth: 'true'
+      upload_dbo: 'true'
+      upload_hangar: 'true'

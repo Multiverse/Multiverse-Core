@@ -1,4 +1,4 @@
-name: Require PR Labels
+name: 'PR: Require Label'
 
 on:
   pull_request:
@@ -15,4 +15,4 @@ jobs:
         with:
           mode: exactly
           count: 1
-          labels: "release:major, release:minor, release:patch, no version bump"
+          labels: "release:major, release:minor, release:patch, no release"

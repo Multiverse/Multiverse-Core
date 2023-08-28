@@ -189,7 +189,7 @@ public class MVPlayerListener implements InjectableListener {
             return;
         }
         Player teleportee = event.getPlayer();
-        CommandSender teleporter = null;
+        CommandSender teleporter = teleportee;
         Optional<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
         if (teleporterName.isPresent()) {
             if (teleporterName.equals("CONSOLE")) {
