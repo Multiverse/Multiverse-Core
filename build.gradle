@@ -90,7 +90,7 @@ dependencies {
     }
 
     // PlaceholderAPI
-    externalPlugin 'me.clip:placeholderapi:2.11.2'
+    externalPlugin 'me.clip:placeholderapi:2.11.3'
 
     // Command Framework
     shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
@@ -99,7 +99,7 @@ dependencies {
     shadowed('me.main__.util:SerializationConfig:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.0') {
+    shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
@@ -113,6 +113,7 @@ dependencies {
     shadowed 'org.bstats:bstats-bukkit:2.2.1'
     shadowed 'net.minidev:json-smart:2.4.8'
     shadowed 'org.jetbrains:annotations:22.0.0'
+    shadowed 'io.papermc:paperlib:1.0.8'
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
@@ -122,6 +123,7 @@ dependencies {
     }
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'com.natpryce:hamkrest:1.8.0.1'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
 
     // Old Tests
     oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
@@ -295,6 +297,7 @@ shadowJar {
     relocate 'org.jvnet', 'com.onarandombox.jvnet'
     relocate 'org.intellij', 'com.onarandombox.intellij'
     relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
+    relocate 'io.papermc.lib', 'com.onarandombox.paperlib'
 
     configurations = [project.configurations.shadowed]
 
