@@ -44,6 +44,7 @@ public class DumpsCommand extends MultiverseCommand {
     private final MVCoreConfig config;
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
+    private boolean hasArgs = false;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
@@ -103,7 +104,6 @@ public class DumpsCommand extends MultiverseCommand {
             @Override
             public void run() {
                 HashMap<String, String> pasteURLs = new HashMap<>();
-                boolean hasArgs = false;
 
                 if (parsedFlags.hasFlag("--pastebincom")) {
                     hasArgs = true;
@@ -120,26 +120,21 @@ public class DumpsCommand extends MultiverseCommand {
                 if (parsedFlags.hasFlag("--logs")) {
                     hasArgs = true;
                     issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
-
-                    // Get the Path of latest.log
-                    Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
-
-                    String logs;
-                    // Try to read file
-                    try {
-                        logs = Files.readString(logsPath);
-                    } catch (IOException e) {
-                        Logging.warning("Could not read logs/latest.log");
-                        throw new RuntimeException(e);
-                    }
-
-                    pasteURLs.put("Logs", postToService(PasteServiceType.MCLOGS, false, logs, null));
+                    pasteURLs.putAll(uploadLogs());
                 }
 
-                // Fallback to paste.gg if no other sites where specified
-                if (parsedFlags.hasFlag("--pastegg") || !hasArgs) {
+                if (parsedFlags.hasFlag("--pastegg")) {
                     issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
                     pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
+                }
+
+                // Fallback to paste.gg and logs if no other sites where specified
+                if (!hasArgs) {
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
+                    pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
+
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
+                    pasteURLs.putAll(uploadLogs());
                 }
 
                 // Finally, loop through and print all URLs
@@ -153,6 +148,27 @@ public class DumpsCommand extends MultiverseCommand {
 
         // Run async as it could take some time to upload the debug info
         logPoster.runTaskAsynchronously(plugin);
+    }
+
+    private HashMap<String, String> uploadLogs() {
+        HashMap<String, String> outMap = new HashMap<>();
+
+
+
+        // Get the Path of latest.log
+        Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
+
+        String logs;
+        // Try to read file
+        try {
+            logs = Files.readString(logsPath);
+        } catch (IOException e) {
+            Logging.warning("Could not read logs/latest.log");
+            throw new RuntimeException(e);
+        }
+
+        outMap.put("Logs", postToService(PasteServiceType.MCLOGS, false, logs, null));
+        return outMap;
     }
 
     private String getVersionString() {
