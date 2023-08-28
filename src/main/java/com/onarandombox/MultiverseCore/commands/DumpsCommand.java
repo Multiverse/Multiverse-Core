@@ -1,8 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.CommandManager;
-import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -10,7 +8,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import co.aikar.locales.MessageKeyProvider;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -28,7 +25,6 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,11 +59,8 @@ public class DumpsCommand extends MultiverseCommand {
                 .add(CommandFlag.builder("--pastebincom")
                         .addAlias("-b")
                         .build())
-                .add(CommandFlag.builder("--github")
-                        .addAlias("-g")
-                        .build())
-                .add(CommandFlag.builder("--hastebin")
-                        .addAlias("-h")
+                .add(CommandFlag.builder("--pastesdev")
+                        .addAlias("-d")
                         .build())
                 .add(CommandFlag.builder("--pastegg")
                         .addAlias("-p")
@@ -84,12 +77,12 @@ public class DumpsCommand extends MultiverseCommand {
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=mvdumps")
-    @Syntax("--pastebincom --hastebin --pastegg --logs --exclude-plugin-list")
+    @Syntax("--pastebincom --pastesdev --pastegg --logs --exclude-plugin-list")
     @Description("{@@mv-core.dumps.description}")
     public void onDumpsCommand(CommandIssuer issuer,
 
                                @Optional
-                               @Syntax("--pastebincom --hastebin --pastegg --logs --exclude-plugin-list")
+                               @Syntax("--pastebincom --pastesdev --pastegg --logs --exclude-plugin-list")
                                @Description("{@@mv-core.dumps.flags.description}")
                                String[] flags
     ) {
@@ -99,8 +92,6 @@ public class DumpsCommand extends MultiverseCommand {
 
         this.addDebugInfoToEvent(versionEvent);
         plugin.getServer().getPluginManager().callEvent(versionEvent);
-
-        final String versionInfo = versionEvent.getVersionInfo();
 
         if (!parsedFlags.hasFlag("--exclude-plugin-list")) {
             versionEvent.putDetailedVersionInfo("plugins.md", "# Plugins\n\n" + getPluginList());
@@ -117,13 +108,13 @@ public class DumpsCommand extends MultiverseCommand {
                 if (parsedFlags.hasFlag("--pastebincom")) {
                     hasArgs = true;
                     issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastebin.com");
-                    pasteURLs.put("pastebin.com", postToService(PasteServiceType.PASTEBIN, true, versionInfo, files));
+                    pasteURLs.put("pastebin.com", postToService(PasteServiceType.PASTEBIN, true, null, files));
                 }
 
-                if (parsedFlags.hasFlag("--hastebin")) {
+                if (parsedFlags.hasFlag("--pastesdev")) {
                     hasArgs = true;
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "need to yeet"); //TODO yeet it
-                    pasteURLs.put("hastebin.com", postToService(PasteServiceType.HASTEBIN, true, versionInfo, files));
+                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastes.dev");
+                    pasteURLs.put("pastes.dev", postToService(PasteServiceType.PASTESDEV, true, null, files));
                 }
 
                 if (parsedFlags.hasFlag("--logs")) {
@@ -138,7 +129,6 @@ public class DumpsCommand extends MultiverseCommand {
                     try {
                         logs = Files.readString(logsPath);
                     } catch (IOException e) {
-                        logs = "Could not read logs/latest.log";
                         Logging.warning("Could not read logs/latest.log");
                         throw new RuntimeException(e);
                     }
@@ -149,7 +139,7 @@ public class DumpsCommand extends MultiverseCommand {
                 // Fallback to paste.gg if no other sites where specified
                 if (parsedFlags.hasFlag("--pastegg") || !hasArgs) {
                     issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
-                    pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, versionInfo, files));
+                    pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
                 }
 
                 // Finally, loop through and print all URLs
@@ -207,26 +197,55 @@ public class DumpsCommand extends MultiverseCommand {
     }
 
     /**
+     * Turns a list of files in to a string containing askii art
+     * @param files Map of filenames/contents
+     * @return The askii art
+     */
+    private String encodeAsString(Map<String, String> files) {
+        StringBuilder uploadData = new StringBuilder();
+        for (String file : files.keySet()) {
+            String data = files.get(file);
+            uploadData.append("# ---------- ")
+                    .append(file)
+                    .append(" ----------\n\n")
+                    .append(data)
+                    .append("\n\n");
+        }
+
+        return uploadData.toString();
+    }
+
+    /**
      * Send the current contents of this.pasteBinBuffer to a web service.
      *
-     * @param type       Service type to send paste data to.
-     * @param isPrivate  Should the paste be marked as private.
-     * @param pasteData  Legacy string only data to post to a service.
+     * @param type Service type to send paste data to.
+     * @param isPrivate Should the paste be marked as private.
+     * @param rawPasteData Legacy string containing only data to post to a service.
      * @param pasteFiles Map of filenames/contents of debug info.
      * @return URL of visible paste
      */
-    private static String postToService(PasteServiceType type, boolean isPrivate, @Nullable String pasteData, @Nullable Map<String, String> pasteFiles) {
+    private String postToService(@NotNull PasteServiceType type, boolean isPrivate, @Nullable String rawPasteData, @Nullable Map<String, String> pasteFiles) {
         PasteService pasteService = PasteServiceFactory.getService(type, isPrivate);
 
         try {
-            String result;
+            // Upload normally when multi file is supported
             if (pasteService.supportsMultiFile()) {
-                result = pasteService.postData(pasteFiles);
-            } else {
-                result = pasteService.postData(pasteData);
+                return pasteService.postData(pasteFiles);
             }
 
-            return result;
+            // When there is raw paste data, use that
+            if (rawPasteData != null) { // For the logs
+                return pasteService.postData(rawPasteData);
+            }
+
+            // If all we have are files and the paste service does not support multi file then encode them
+            if (pasteFiles != null) {
+                return pasteService.postData(this.encodeAsString(pasteFiles));
+            }
+
+            // Should never get here
+            return "No data specified in code";
+
         } catch (PasteFailedException e) {
             e.printStackTrace();
             return "Error posting to service.";

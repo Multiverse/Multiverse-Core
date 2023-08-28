@@ -16,9 +16,9 @@ public enum PasteServiceType {
      */
     PASTEBIN,
     /**
-     * @see HastebinPasteService
+     * @see PastesDevPasteService
      */
-    HASTEBIN,
+    PASTESDEV,
     /**
      * @see GitHubPasteService
      */

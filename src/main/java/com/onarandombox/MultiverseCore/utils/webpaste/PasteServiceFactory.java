@@ -16,7 +16,7 @@ public class PasteServiceFactory {
         return switch (type) {
             case PASTEGG -> new PasteGGPasteService(isPrivate);
             case PASTEBIN -> new PastebinPasteService(isPrivate);
-            case HASTEBIN -> new HastebinPasteService();
+            case PASTESDEV -> new PastesDevPasteService();
             case GITHUB -> new GitHubPasteService(isPrivate);
             case MCLOGS -> new McloGsPasteService();
         };

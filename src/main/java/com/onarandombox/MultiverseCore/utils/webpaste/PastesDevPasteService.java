@@ -10,11 +10,11 @@ import net.minidev.json.parser.ParseException;
 /**
  * Pastes to {@code hastebin.com}.
  */
-class HastebinPasteService extends PasteService {
-    private static final String HASTEBIN_POST_REQUEST = "https://hastebin.com/documents";
+class PastesDevPasteService extends PasteService {
+    private static final String PASTESDEV_POST_REQUEST = "https://api.pastes.dev/post";
 
-    HastebinPasteService() {
-        super(HASTEBIN_POST_REQUEST);
+    PastesDevPasteService() {
+        super(PASTESDEV_POST_REQUEST);
     }
 
     /**
@@ -39,8 +39,8 @@ class HastebinPasteService extends PasteService {
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
-            String stringJSON = this.exec(encodeData(data), ContentType.PLAINTEXT);
-            return "https://hastebin.com/" + ((JSONObject) new JSONParser().parse(stringJSON)).get("key");
+            String stringJSON = this.exec(encodeData(data), ContentType.PLAINTEXT_YAML);
+            return "https://pastes.dev/" + ((JSONObject) new JSONParser().parse(stringJSON)).get("key");
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }
@@ -50,13 +50,8 @@ class HastebinPasteService extends PasteService {
      * {@inheritDoc}
      */
     @Override
-    public String postData(Map<String, String> data) throws PasteFailedException {
-        try {
-            String stringJSON = this.exec(encodeData(data), ContentType.PLAINTEXT);
-            return "https://hastebin.com/" + ((JSONObject) new JSONParser().parse(stringJSON)).get("key");
-        } catch (IOException | ParseException e) {
-            throw new PasteFailedException(e);
-        }
+    public String postData(Map<String, String> data) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 
     /**
