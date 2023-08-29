@@ -26,6 +26,7 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -39,16 +40,19 @@ import org.jvnet.hk2.annotations.Service;
 public class CreateCommand extends MultiverseCommand {
 
     private final MVWorldManager worldManager;
+    private final WorldManager newWorldManager;
 
     @Inject
     public CreateCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull MVWorldManager worldManager,
-            @NotNull UnsafeCallWrapper unsafeCallWrapper
+            @NotNull UnsafeCallWrapper unsafeCallWrapper,
+            @NotNull WorldManager newWorldManager
     ) {
         super(commandManager);
 
         this.worldManager = worldManager;
+        this.newWorldManager = newWorldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvcreate")
                 .add(CommandValueFlag.builder("--seed", String.class)
@@ -111,6 +115,8 @@ public class CreateCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES, "{structures}", String.valueOf(!parsedFlags.hasFlag("--no-structures")));
 
         issuer.sendInfo(MVCorei18n.CREATE_LOADING);
+
+        newWorldManager.addWorld(worldName);
 
         if (!worldManager.addWorld(
                 worldName,

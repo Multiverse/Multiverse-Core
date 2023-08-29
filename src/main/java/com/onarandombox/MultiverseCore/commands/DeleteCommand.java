@@ -15,6 +15,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -24,11 +25,13 @@ import org.jvnet.hk2.annotations.Service;
 public class DeleteCommand extends MultiverseCommand {
 
     private final MVWorldManager worldManager;
+    private final WorldManager newWorldManager;
 
     @Inject
-    public DeleteCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+    public DeleteCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager, @NotNull WorldManager newWorldManager) {
         super(commandManager);
         this.worldManager = worldManager;
+        this.newWorldManager = newWorldManager;
     }
 
     @Subcommand("delete")
@@ -47,15 +50,13 @@ public class DeleteCommand extends MultiverseCommand {
         this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
-                    issuer.sendInfo(MVCorei18n.DELETE_DELETING,
-                            "{world}", worldName);
+                    issuer.sendInfo(MVCorei18n.DELETE_DELETING, "{world}", worldName);
+                    this.newWorldManager.deleteWorld(worldName);
                     if (!this.worldManager.deleteWorld(worldName)) {
-                        issuer.sendError(MVCorei18n.DELETE_FAILED,
-                                "{world}", worldName);
+                        issuer.sendError(MVCorei18n.DELETE_FAILED, "{world}", worldName);
                         return;
                     }
-                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS,
-                            "{world}", worldName);
+                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, "{world}", worldName);
                 },
                 this.commandManager.formatMessage(
                         issuer,
