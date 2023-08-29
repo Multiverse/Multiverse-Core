@@ -1,11 +1,15 @@
 package com.onarandombox.MultiverseCore.commandtools.flags;
 
-import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+import co.aikar.commands.InvalidCommandArgument;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Represents a flag with a value.
@@ -16,12 +20,23 @@ public class CommandValueFlag<T> extends CommandFlag {
     /**
      * A builder for a flag.
      *
-     * @param key  The key for the new flag.
-     * @param type The type of the value.
+     * @param key   The key for the new flag.
+     * @param type  The type of the value.
      * @return The builder.
      */
     public static @NotNull <T> Builder<T, ?> builder(@NotNull String key, @NotNull Class<T> type) {
         return new Builder<>(key, type);
+    }
+
+    /**
+     * A builder for a flag with enum value.
+     *
+     * @param key   The key for the new flag.
+     * @param type  The type of the value, must be enum.
+     * @return The builder.
+     */
+    public static @NotNull <T extends Enum<T>> EnumBuilder<T, ?> enumBuilder(@NotNull String key, @NotNull Class<T> type) {
+        return new EnumBuilder<>(key, type);
     }
 
     private final Class<T> type;
@@ -33,15 +48,29 @@ public class CommandValueFlag<T> extends CommandFlag {
     /**
      * Creates a new flag.
      *
-     * @param builder The builder.
+     * @param key               The key for the new flag.
+     * @param aliases           The aliases that also refer to this flag.
+     * @param type              The type of the value.
+     * @param optional          Allow for flag without value.
+     * @param defaultValue      The default value if optional is true and user does not specify a value.
+     * @param context           Function to parse string into value type.
+     * @param completion        Function to get completion for this flag.
      */
-    protected CommandValueFlag(@NotNull Builder<T, ?> builder) {
-        super(builder);
-        type = builder.type;
-        optional = builder.optional;
-        defaultValue = builder.defaultValue;
-        context = builder.context;
-        completion = builder.completion;
+    protected CommandValueFlag(
+            @NotNull String key,
+            @NotNull List<String> aliases,
+            @NotNull Class<T> type,
+            boolean optional,
+            @Nullable T defaultValue,
+            @Nullable Function<String, T> context,
+            @Nullable Supplier<Collection<String>> completion
+    ) {
+        super(key, aliases);
+        this.type = type;
+        this.optional = optional;
+        this.defaultValue = defaultValue;
+        this.context = context;
+        this.completion = completion;
     }
 
     /**
@@ -96,11 +125,11 @@ public class CommandValueFlag<T> extends CommandFlag {
      * @param <S> The type of the builder.
      */
     public static class Builder<T, S extends Builder<T, S>> extends CommandFlag.Builder<S> {
-        private final Class<T> type;
-        private boolean optional = false;
-        private T defaultValue = null;
-        private Function<String, T> context = null;
-        private Supplier<Collection<String>> completion = null;
+        protected final Class<T> type;
+        protected boolean optional = false;
+        protected T defaultValue = null;
+        protected Function<String, T> context = null;
+        protected Supplier<Collection<String>> completion = null;
 
         /**
          * Create a new builder.
@@ -166,7 +195,77 @@ public class CommandValueFlag<T> extends CommandFlag {
             if (context == null && !String.class.equals(type)) {
                 throw new IllegalStateException("Context is required for none-string value flags");
             }
-            return new CommandValueFlag<>(this);
+            return new CommandValueFlag<>(key, aliases, type, optional, defaultValue, context, completion);
+        }
+    }
+
+    /**
+     * Specific builder for a flag with enum value.
+     *
+     * @param <T> The type of the value.
+     * @param <S> The type of the builder.
+     */
+    public static class EnumBuilder<T extends Enum<T>, S extends EnumBuilder<T, S>> extends CommandFlag.Builder<S> {
+        protected final Class<T> type;
+        protected boolean optional = false;
+        protected T defaultValue = null;
+        protected Function<String, T> context = null;
+        protected Supplier<Collection<String>> completion = null;
+
+        public EnumBuilder(@NotNull String key, @NotNull Class<T> type) {
+            super(key);
+            this.type = type;
+            setEnumContext();
+            setEnumCompletion();
+        }
+
+        private void setEnumContext() {
+            this.context = (String value) -> {
+                try {
+                    return Enum.valueOf(type, value.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidCommandArgument("Invalid value for argument " + key + ": " + value);
+                }
+            };
+        }
+
+        private void setEnumCompletion() {
+            List<String> types = Arrays.stream(type.getEnumConstants())
+                    .map(type -> type.name().toLowerCase())
+                    .collect(Collectors.toList());
+
+            this.completion = () -> types;
+        }
+
+        /**
+         * Set the flag as optional for users to specify a value.
+         *
+         * @return The builder.
+         */
+        public @NotNull S optional() {
+            this.optional = true;
+            return (S) this;
+        }
+
+        /**
+         * Set the default value. Used if optional is true and user does not specify a value.
+         *
+         * @param defaultValue The default value.
+         * @return The builder.
+         */
+        public @NotNull S defaultValue(@NotNull T defaultValue) {
+            this.defaultValue = defaultValue;
+            return (S) this;
+        }
+
+        /**
+         * Build the flag.
+         *
+         * @return The flag.
+         */
+        @Override
+        public @NotNull CommandFlag build() {
+            return new CommandValueFlag<>(key, aliases, type, optional, defaultValue, context, completion);
         }
     }
 }
