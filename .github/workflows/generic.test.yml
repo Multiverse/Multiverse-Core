@@ -1,8 +1,12 @@
-name: Run unit tests against all PRs
+name: 'Generic: Test'
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_call:
+    inputs:
+      plugin_name:
+        description: 'Plugin name'
+        required: true
+        type: string
 
 jobs:
   test:
@@ -32,5 +36,5 @@ jobs:
       - name: Artifact output
         uses: actions/upload-artifact@v3
         with:
-          name: multiverse-core-pr${{ github.event.pull_request.number }}
-          path: build/libs/multiverse-core-pr${{ github.event.pull_request.number }}.jar
+          name: ${{ inputs.plugin_name }}-pr${{ github.event.pull_request.number }}
+          path: build/libs/${{ inputs.plugin_name }}-pr${{ github.event.pull_request.number }}.jar

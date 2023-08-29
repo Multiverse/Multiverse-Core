@@ -1,0 +1,34 @@
+name: 'Call: GitHub Release'
+
+on:
+  workflow_call:
+    inputs:
+      release_mode:
+        description: 'Release mode'
+        required: true
+        type: string
+      version_bump:
+        description: 'Version bump'
+        required: false
+        type: string
+      promote_from:
+        description: 'Promote from'
+        required: false
+        type: string
+    outputs:
+      release_created:
+        description: 'Release created'
+        value: ${{ jobs.github_release.outputs.release_created }}
+      tag_name:
+        description: 'Tag name'
+        value: ${{ jobs.github_release.outputs.tag_name }}
+
+jobs:
+  github_release:
+    uses: ./.github/workflows/generic.github_release.yml
+    secrets: inherit
+    with:
+      plugin_name: multiverse-core
+      release_mode: ${{ inputs.release_mode }}
+      version_bump: ${{ inputs.version_bump }}
+      promote_from: ${{ inputs.promote_from }}

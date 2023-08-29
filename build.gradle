@@ -62,50 +62,58 @@ repositories {
 }
 
 configurations {
+    // Add configuration for server API
+    compileOnly.extendsFrom serverApi
+    runtimeClasspath.extendsFrom serverApi
+
+    // Add configuration for external plugins
+    implementation.extendsFrom externalPlugin
+
+    // Add configuration for dependencies that will be included in fat jar
+    compileClasspath.extendsFrom shadowed
+    testCompileClasspath.extendsFrom shadowed
+    testRuntimeClasspath.extendsFrom shadowed
+    oldTestCompileClasspath.extendsFrom shadowed
+    oldTestRuntimeClasspath.extendsFrom shadowed
+
+    // Add configuration for old tests
     oldTestImplementation.extendsFrom implementation
     oldTestRuntime.extendsFrom runtime
-    relocatedApi
-    compileClasspath.extendsFrom relocatedApi
-    runtimeClasspath.extendsFrom relocatedApi
-    testCompileClasspath.extendsFrom relocatedApi
-    testRuntimeClasspath.extendsFrom relocatedApi
-    oldTestCompileClasspath.extendsFrom relocatedApi
-    oldTestRuntimeClasspath.extendsFrom relocatedApi
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    serverApi 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 
     // Economy
-    implementation('com.github.MilkBowl:VaultAPI:1.7.1') {
+    externalPlugin('com.github.MilkBowl:VaultAPI:1.7.1') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
 
     // PlaceholderAPI
-    implementation 'me.clip:placeholderapi:2.11.3'
+    externalPlugin 'me.clip:placeholderapi:2.11.3'
 
     // Command Framework
-    relocatedApi 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+    shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
 
     // Config
-    relocatedApi('me.main__.util:SerializationConfig:1.7') {
+    shadowed('me.main__.util:SerializationConfig:1.7') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    relocatedApi('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
+    shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
     // Utils
-    relocatedApi 'io.vavr:vavr:0.10.4'
-    relocatedApi 'org.glassfish.hk2:hk2-locator:3.0.3'
-    relocatedApi('com.dumptruckman.minecraft:Logging:1.1.1') {
+    shadowed 'io.vavr:vavr:0.10.4'
+    shadowed 'org.glassfish.hk2:hk2-locator:3.0.3'
+    shadowed('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    relocatedApi 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    relocatedApi 'org.bstats:bstats-bukkit:2.2.1'
-    relocatedApi 'net.minidev:json-smart:2.4.8'
-    relocatedApi 'org.jetbrains:annotations:22.0.0'
-    relocatedApi 'io.papermc:paperlib:1.0.8'
+    shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    shadowed 'org.bstats:bstats-bukkit:2.2.1'
+    shadowed 'net.minidev:json-smart:2.4.8'
+    shadowed 'org.jetbrains:annotations:22.0.0'
+    shadowed 'io.papermc:paperlib:1.0.8'
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
@@ -170,6 +178,34 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+
+            pom.withXml {
+                Node pomNode = asNode()
+
+                // Remove Kotlin dependency
+                pomNode.dependencies.'*'.findAll() {
+                    it.groupId.text() == 'org.jetbrains.kotlin'
+                }.each() {
+                    it.parent().remove(it)
+                }
+
+                // Switch runtime deps to provided
+                pomNode.dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime'
+                }.each() {
+                    it.scope*.value = 'provided'
+                }
+
+                // Add spigot api to pom
+                project.configurations.serverApi.allDependencies.each { dependency ->
+                    pomNode.dependencies[0].appendNode("dependency").with {
+                        it.appendNode("groupId", dependency.group)
+                        it.appendNode("artifactId", dependency.name)
+                        it.appendNode("version", dependency.version)
+                        it.appendNode("scope", "provided")
+                    }
+                }
+            }
         }
     }
     repositories {
@@ -243,7 +279,7 @@ javadoc {
 project.configurations.api.canBeResolved = true
 
 shadowJar {
-    relocate 'co.aikar.commands', 'com.onarandombox.acf'
+    relocate 'co.aikar', 'com.onarandombox.acf'
     relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
     relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
     relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
@@ -263,7 +299,7 @@ shadowJar {
     relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
     relocate 'io.papermc.lib', 'com.onarandombox.paperlib'
 
-    configurations = [project.configurations.api, project.configurations.relocatedApi]
+    configurations = [project.configurations.shadowed]
 
     archiveFileName = "$baseName-$version.$extension"
 
@@ -272,6 +308,7 @@ shadowJar {
             it.moduleGroup == 'org.jetbrains.kotlin'
         })
     }
+    //classifier = ''
 }
 
 build.dependsOn shadowJar
