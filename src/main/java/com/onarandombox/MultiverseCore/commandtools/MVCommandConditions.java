@@ -8,7 +8,6 @@ import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldNameChecker;
-import jakarta.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
 
 public class MVCommandConditions {
@@ -22,19 +21,19 @@ public class MVCommandConditions {
     private MVCommandConditions(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
         this.worldManager = worldManager;
         this.commandManager = commandManager;
+        registerConditions();
     }
 
-    @PostConstruct
     private void registerConditions() {
         CommandConditions<BukkitCommandIssuer, BukkitCommandExecutionContext, BukkitConditionContext> conditions
                 = commandManager.getCommandConditions();
 
-        conditions.addCondition(String.class, "validWorldName", this::checkValidWorldName);
+        conditions.addCondition(String.class, "worldname", this::checkWorldname);
     }
 
-    private void checkValidWorldName(ConditionContext<BukkitCommandIssuer> context,
-                                     BukkitCommandExecutionContext executionContext,
-                                     String worldName
+    private void checkWorldname(ConditionContext<BukkitCommandIssuer> context,
+                                BukkitCommandExecutionContext executionContext,
+                                String worldName
     ) {
         String scope = context.getConfigValue("scope", "loaded");
 
