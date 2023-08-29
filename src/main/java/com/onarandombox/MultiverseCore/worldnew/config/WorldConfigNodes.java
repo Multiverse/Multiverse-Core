@@ -1,14 +1,18 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
+import com.onarandombox.MultiverseCore.configuration.node.EnumNodeSerializer;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import com.onarandombox.MultiverseCore.configuration.node.NodeSerializer;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 
 public class WorldConfigNodes {
+    private static final NodeSerializer<?> ENUM_NODE_SERIALIZER = new EnumNodeSerializer<>();
+
     private final NodeGroup nodes = new NodeGroup();
 
     WorldConfigNodes() {
@@ -56,16 +60,19 @@ public class WorldConfigNodes {
     public final ConfigNode<Difficulty> DIFFICULTY = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)
             .name("difficulty")
+            .serializer((NodeSerializer<Difficulty>) ENUM_NODE_SERIALIZER)
             .build());
 
     public final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode.builder("environment", World.Environment.class)
             .defaultValue(World.Environment.NORMAL)
             .name("environment")
+            .serializer((NodeSerializer<World.Environment>) ENUM_NODE_SERIALIZER)
             .build());
 
     public final ConfigNode<GameMode> GAMEMODE = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
             .name("gamemode")
+            .serializer((NodeSerializer<GameMode>) ENUM_NODE_SERIALIZER)
             .build());
 
     public final ConfigNode<String> GENERATOR = node(ConfigNode.builder("generator", String.class)
@@ -96,6 +103,7 @@ public class WorldConfigNodes {
     public final ConfigNode<AllowedPortalType> PORTAL_FORM = node(ConfigNode.builder("portal-form", AllowedPortalType.class)
             .defaultValue(AllowedPortalType.ALL)
             .name("portal-form")
+            .serializer((NodeSerializer<AllowedPortalType>) ENUM_NODE_SERIALIZER)
             .build());
 
     public final ConfigNode<Boolean> PVP = node(ConfigNode.builder("pvp", Boolean.class)

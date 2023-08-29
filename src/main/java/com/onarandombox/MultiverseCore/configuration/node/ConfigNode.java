@@ -32,6 +32,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     protected final @Nullable String name;
     protected final @NotNull Class<T> type;
     protected final @Nullable T defaultValue;
+    protected final @Nullable NodeSerializer<T> serializer;
     protected final @Nullable Function<T, Try<Void>> validator;
     protected final @Nullable BiConsumer<T, T> onSetValue;
 
@@ -41,6 +42,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             @Nullable String name,
             @NotNull Class<T> type,
             @Nullable T defaultValue,
+            @Nullable NodeSerializer<T> serializer,
             @Nullable Function<T, Try<Void>> validator,
             @Nullable BiConsumer<T, T> onSetValue
     ) {
@@ -48,6 +50,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
+        this.serializer = serializer;
         this.validator = validator;
         this.onSetValue = onSetValue;
     }
@@ -74,6 +77,10 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     @Override
     public @Nullable T getDefaultValue() {
         return defaultValue;
+    }
+
+    public @Nullable NodeSerializer<T> getSerializer() {
+        return serializer;
     }
 
     /**
@@ -108,6 +115,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         protected @Nullable String name;
         protected @NotNull final Class<T> type;
         protected @Nullable T defaultValue;
+        protected @Nullable NodeSerializer<T> serializer;
         protected @Nullable Function<T, Try<Void>> validator;
         protected @Nullable BiConsumer<T, T> onSetValue;
 
@@ -145,6 +153,11 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             return (B) this;
         }
 
+        public @NotNull B serializer(@NotNull NodeSerializer<T> serializer) {
+            this.serializer = serializer;
+            return (B) this;
+        }
+
         public @NotNull B validator(@NotNull Function<T, Try<Void>> validator) {
             this.validator = validator;
             return (B) this;
@@ -166,7 +179,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          */
         @Override
         public @NotNull ConfigNode<T> build() {
-            return new ConfigNode<>(path, comments.toArray(new String[0]), name, type, defaultValue, validator, onSetValue);
+            return new ConfigNode<>(path, comments.toArray(new String[0]), name, type, defaultValue, serializer, validator, onSetValue);
         }
     }
 }

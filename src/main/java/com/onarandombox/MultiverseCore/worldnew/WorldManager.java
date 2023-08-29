@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigFile;
 import jakarta.inject.Inject;
@@ -19,6 +20,7 @@ public class WorldManager {
 
     public void loadAllWorlds() {
         for (String worldName : worldsConfigFile.getAllWorldsInConfig()) {
+            Logging.fine("Loading world: " + worldName);
             loadWorld(worldName);
         }
         saveWorldsConfig();

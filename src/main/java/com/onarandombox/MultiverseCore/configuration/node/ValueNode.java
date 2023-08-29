@@ -29,6 +29,13 @@ public interface ValueNode<T> extends Node {
     @Nullable T getDefaultValue();
 
     /**
+     * Gets the serializer for this node.
+     *
+     * @return  The serializer for this node.
+     */
+    @Nullable NodeSerializer<T> getSerializer();
+
+    /**
      * Validates the value of this node.
      *
      * @param value The value to validate.
