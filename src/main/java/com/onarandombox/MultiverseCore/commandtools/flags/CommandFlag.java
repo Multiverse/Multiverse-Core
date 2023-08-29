@@ -26,11 +26,12 @@ public class CommandFlag {
     /**
      * Creates a new flag.
      *
-     * @param builder The builder.
+     * @param key     The key for the new flag.
+     * @param aliases The aliases that also refer to this flag.
      */
-    protected CommandFlag(@NotNull Builder<?> builder) {
-        key = builder.key;
-        aliases = builder.aliases;
+    protected CommandFlag(@NotNull String key, @NotNull List<String> aliases) {
+        this.key = key;
+        this.aliases = aliases;
     }
 
     /**
@@ -57,8 +58,8 @@ public class CommandFlag {
      * @param <S> The type of the builder.
      */
     public static class Builder<S extends Builder<?>> {
-        private final String key;
-        private final List<String> aliases;
+        protected final String key;
+        protected final List<String> aliases;
 
         /**
          * Create a new builder.
@@ -87,7 +88,7 @@ public class CommandFlag {
          * @return The flag.
          */
         public @NotNull CommandFlag build(){
-            return new CommandFlag(this);
+            return new CommandFlag(key, aliases);
         }
     }
 }

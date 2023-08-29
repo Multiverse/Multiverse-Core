@@ -67,22 +67,8 @@ public class CreateCommand extends MultiverseCommand {
                                 .map(genplugin -> genplugin.getDescription().getName())
                                 .collect(Collectors.toList()))
                         .build())
-                .add(CommandValueFlag.builder("--world-type", WorldType.class)
+                .add(CommandValueFlag.enumBuilder("--world-type", WorldType.class)
                         .addAlias("-t")
-                        .context((value) -> {
-                            try {
-                                return WorldType.valueOf(value.toUpperCase());
-                            } catch (IllegalArgumentException e) {
-                                throw new InvalidCommandArgument("Invalid world type: " + value);
-                            }
-                        })
-                        .completion(() -> {
-                            List<String> types = new ArrayList<>();
-                            for (WorldType type : WorldType.values()) {
-                                types.add(type.name().toLowerCase());
-                            }
-                            return types;
-                        })
                         .build())
                 .add(CommandFlag.builder("--adjust-spawn")
                         .addAlias("-n")
