@@ -69,7 +69,7 @@ public class ImportCommand extends MultiverseCommand {
     @Description("{@@mv-core.import.description")
     public void onImportCommand(BukkitCommandIssuer issuer,
 
-                                @Conditions("validWorldName:scope=new")
+                                @Conditions("worldname:scope=new")
                                 @Syntax("<name>")
                                 @Description("{@@mv-core.import.name.description}")
                                 String worldName,
