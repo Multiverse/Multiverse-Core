@@ -135,7 +135,7 @@ public class DumpsCommand extends MultiverseCommand {
         LogsType logsType = parsedFlags.flagValue("--logs", LogsType.class);
         if (logsType == null) {
             logsType = LogsType.MCLOGS;
-            Logging.info("logs was null so set to mclogs");
+            Logging.finer("Logs was null so set to mclogs");
         }
 
 
@@ -145,7 +145,7 @@ public class DumpsCommand extends MultiverseCommand {
         Services services = parsedFlags.flagValue("--upload", Services.class);
         if (services == null) {
             services = Services.PASTEGG;
-            Logging.info("upload was null so set to pastegg");
+            Logging.finer("Upload was null so set to pastegg");
         }
 
 
@@ -156,8 +156,8 @@ public class DumpsCommand extends MultiverseCommand {
             @Override
             public void run() {
                 HashMap<String, String> pasteURLs = new HashMap<>();
-                Logging.info("Logs type is: " + finalLogsType);
-                Logging.info("Services is: " + finalServices);
+                Logging.finer("Logs type is: " + finalLogsType);
+                Logging.finer("Services is: " + finalServices);
 
                 // Deal with logs flag
                 if (!parsedFlags.hasFlag("--paranoid")) {
