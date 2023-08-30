@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
@@ -49,17 +50,17 @@ public class TeleportCommand extends MultiverseCommand {
     ) {
         // TODO Add warning if teleporting too many players at once.
 
+        String playerName = players.length == 1
+                ? issuer.getPlayer() == players[0] ? "you" : players[0].getName()
+                : players.length + " players";
+
+        issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                "{player}", playerName, "{destination}", destination.toString());
+
         CompletableFuture.allOf(Arrays.stream(players)
                         .map(player -> this.destinationsProvider.playerTeleportAsync(issuer, player, destination))
                         .toArray(CompletableFuture[]::new))
-                .thenRun(() -> {
-                    String playerName = players.length == 1
-                            ? issuer.getPlayer() == players[0] ? "you" : players[0].getName()
-                            : players.length + " players";
-
-                    issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                            "{player}", playerName, "{destination}", destination.toString());
-                });
+                .thenRun(() -> Logging.finer("Async teleport completed."));
     }
 
     @Override

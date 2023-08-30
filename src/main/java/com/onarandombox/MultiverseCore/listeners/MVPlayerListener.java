@@ -16,12 +16,17 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
+import com.onarandombox.MultiverseCore.utils.result.ResultChain;
+import com.onarandombox.MultiverseCore.world.entrycheck.EntryFeeResult;
+import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.GameMode;
@@ -54,6 +59,9 @@ public class MVPlayerListener implements InjectableListener {
     private final SafeTTeleporter safeTTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
+    private final MVEconomist economist;
+    private final WorldEntryCheckerProvider worldEntryCheckerProvider;
+    private final Provider<MVCommandManager> commandManagerProvider;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
@@ -66,8 +74,10 @@ public class MVPlayerListener implements InjectableListener {
             Provider<MVPermissions> mvPermsProvider,
             SafeTTeleporter safeTTeleporter,
             Server server,
-            TeleportQueue teleportQueue
-    ) {
+            TeleportQueue teleportQueue,
+            MVEconomist economist,
+            WorldEntryCheckerProvider worldEntryCheckerProvider,
+            Provider<MVCommandManager> commandManagerProvider) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -76,10 +86,17 @@ public class MVPlayerListener implements InjectableListener {
         this.safeTTeleporter = safeTTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
+        this.economist = economist;
+        this.worldEntryCheckerProvider = worldEntryCheckerProvider;
+        this.commandManagerProvider = commandManagerProvider;
     }
 
     private MVWorldManager getWorldManager() {
         return worldManagerProvider.get();
+    }
+
+    private MVCommandManager getCommandManager() {
+        return commandManagerProvider.get();
     }
 
     private MVPermissions getMVPerms() {
@@ -189,7 +206,7 @@ public class MVPlayerListener implements InjectableListener {
             return;
         }
         Player teleportee = event.getPlayer();
-        CommandSender teleporter = teleportee;
+        CommandSender teleporter;
         Optional<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
         if (teleporterName.isPresent()) {
             if (teleporterName.equals("CONSOLE")) {
@@ -198,6 +215,8 @@ public class MVPlayerListener implements InjectableListener {
             } else {
                 teleporter = this.server.getPlayerExact(teleporterName.get());
             }
+        } else {
+            teleporter = teleportee;
         }
         Logging.finer("Inferred sender '" + teleporter + "' from name '"
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
@@ -215,50 +234,20 @@ public class MVPlayerListener implements InjectableListener {
             this.stateSuccess(teleportee.getName(), toWorld.getAlias());
             return;
         }
-        // TODO: Refactor these lines.
-        // Charge the teleporter
-        event.setCancelled(!pt.playerHasMoneyToEnter(fromWorld, toWorld, teleporter, teleportee, true));
-        if (event.isCancelled() && teleporter != null) {
-            Logging.fine("Player '" + teleportee.getName()
-                    + "' was DENIED ACCESS to '" + toWorld.getAlias()
-                    + "' because '" + teleporter.getName()
-                    + "' don't have the FUNDS required to enter it.");
-            return;
-        }
 
-        // Check if player is allowed to enter the world if we're enforcing permissions
-        if (config.getEnforceAccess()) {
-            event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, teleporter, teleportee));
-            if (event.isCancelled() && teleporter != null) {
-                Logging.fine("Player '" + teleportee.getName()
-                        + "' was DENIED ACCESS to '" + toWorld.getAlias()
-                        + "' because '" + teleporter.getName()
-                        + "' don't have: multiverse.access." + event.getTo().getWorld().getName());
-                return;
-            }
-        } else {
-            Logging.fine("Player '" + teleportee.getName()
-                    + "' was allowed to go to '" + toWorld.getAlias() + "' because enforceaccess is off.");
-        }
-
-        // Does a limit actually exist?
-        if (toWorld.getPlayerLimit() > -1) {
-            // Are there equal or more people on the world than the limit?
-            if (toWorld.getCBWorld().getPlayers().size() >= toWorld.getPlayerLimit()) {
-                // Ouch the world is full, lets see if the player can bypass that limitation
-                if (!pt.playerCanBypassPlayerLimit(toWorld, teleporter, teleportee)) {
-                    Logging.fine("Player '" + teleportee.getName()
-                            + "' was DENIED ACCESS to '" + toWorld.getAlias()
-                            + "' because the world is full and '" + teleporter.getName()
-                            + "' doesn't have: mv.bypass.playerlimit." + event.getTo().getWorld().getName());
+        ResultChain entryResult = worldEntryCheckerProvider.forSender(teleporter).canEnterWorld(fromWorld, toWorld)
+                .onSuccessReason(EntryFeeResult.Success.class, reason -> {
+                    if (reason == EntryFeeResult.Success.ENOUGH_MONEY) {
+                        economist.payEntryFee((Player) teleporter, toWorld);
+                        // Send payment receipt
+                    }
+                })
+                .onFailure(results -> {
                     event.setCancelled(true);
-                    return;
-                }
-            }
-        }
+                    getCommandManager().getCommandIssuer(teleporter).sendError(results.getLastResultMessage());
+                });
 
-        // By this point anything cancelling the event has returned on the method, meaning the teleport is a success \o/
-        this.stateSuccess(teleportee.getName(), toWorld.getAlias());
+        Logging.fine("Teleport result: %s", entryResult);
     }
 
     private void stateSuccess(String playerName, String worldName) {
@@ -305,6 +294,10 @@ public class MVPlayerListener implements InjectableListener {
         if (event.getTo() == null) {
             return;
         }
+        if (config.isUsingCustomPortalSearch()) {
+            event.setSearchRadius(config.getCustomPortalSearchRadius());
+        }
+
         MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName());
         MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName());
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
@@ -312,28 +305,14 @@ public class MVPlayerListener implements InjectableListener {
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
             return;
         }
-        event.setCancelled(!pt.playerHasMoneyToEnter(fromWorld, toWorld, event.getPlayer(), event.getPlayer(), true));
-        if (event.isCancelled()) {
-            Logging.fine("Player '" + event.getPlayer().getName()
-                    + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName()
-                    + "' because they don't have the FUNDS required to enter.");
-            return;
-        }
-        if (config.getEnforceAccess()) {
-            event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
-            if (event.isCancelled()) {
-                Logging.fine("Player '" + event.getPlayer().getName()
-                        + "' was DENIED ACCESS to '" + event.getTo().getWorld().getName()
-                        + "' because they don't have: multiverse.access." + event.getTo().getWorld().getName());
-            }
-        } else {
-            Logging.fine("Player '" + event.getPlayer().getName()
-                    + "' was allowed to go to '" + event.getTo().getWorld().getName()
-                    + "' because enforceaccess is off.");
-        }
-        if (!config.isUsingCustomPortalSearch()) {
-            event.setSearchRadius(config.getCustomPortalSearchRadius());
-        }
+
+        ResultChain entryResult = worldEntryCheckerProvider.forSender(event.getPlayer()).canEnterWorld(fromWorld, toWorld)
+                .onFailure(results -> {
+                    event.setCancelled(true);
+                    getCommandManager().getCommandIssuer(event.getPlayer()).sendError(results.getLastResultMessage());
+                });
+
+        Logging.fine("Teleport result: %s", entryResult);
     }
 
     private void sendPlayerToDefaultWorld(final Player player) {
