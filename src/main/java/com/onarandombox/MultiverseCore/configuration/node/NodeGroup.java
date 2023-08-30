@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 /**
  * A collection of {@link CommentedNode}s, with mappings to nodes by name.
  */
