@@ -330,33 +330,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return authors.toString();
     }
 
-    @Nullable
-    public File getBukkitConfig() {
-        // Look in the default position
-        File[] files = this.getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase("bukkit.yml"));
 
-        if (files != null && files.length == 1) {
-            return files[0];
-        }
-
-        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
-        Logging.warning("Could not read bukkit.yml");
-        return null;
-    }
-
-    @Nullable
-    public File getServerProperties() {
-        // Look in the default position
-        File[] files = this.getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase("server.properties"));
-
-        if (files != null && files.length == 1) {
-            return files[0];
-        }
-
-        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
-        Logging.warning("Could not read 'server.properties");
-        return null;
-    }
 
     /**
      * {@inheritDoc}

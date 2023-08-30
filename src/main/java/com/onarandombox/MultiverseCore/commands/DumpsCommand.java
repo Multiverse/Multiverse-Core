@@ -40,13 +40,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
+import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getServerProperties;
+
 @Service
 @CommandAlias("mv")
 public class DumpsCommand extends MultiverseCommand {
 
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
-    private boolean hasArgs = false;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
@@ -110,12 +112,12 @@ public class DumpsCommand extends MultiverseCommand {
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=mvdumps")
-    @Syntax("[--logs <mclogs|append>] [--upload <pastesdev|pastegg>] [--paranoid]")
+    @Syntax("--logs <mclogs|append> --upload <pastesdev|pastegg> --paranoid")
     @Description("{@@mv-core.dumps.description}")
     public void onDumpsCommand(CommandIssuer issuer,
 
                                @Optional
-                               @Syntax("[--logs <mclogs|append>] [--upload <pastesdev|pastegg>] [--paranoid]")
+                               @Syntax("--logs <mclogs|append> --upload <pastesdev|pastegg> --paranoid")
                                String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
@@ -240,15 +242,15 @@ public class DumpsCommand extends MultiverseCommand {
         event.putDetailedVersionInfo("multiverse-core/worlds.yml", worldsFile);
 
         // Add bukkit.yml if we found it
-        if (plugin.getBukkitConfig() != null) {
-            event.putDetailedVersionInfo(plugin.getBukkitConfig().getPath(), plugin.getBukkitConfig());
+        if (getBukkitConfig() != null) {
+            event.putDetailedVersionInfo(getBukkitConfig().getPath(), getBukkitConfig());
         } else {
             Logging.warning("/mv version could not find bukkit.yml. Not including file");
         }
 
         // Add server.properties if we found it
-        if (plugin.getServerProperties() != null) {
-            event.putDetailedVersionInfo(plugin.getServerProperties().getPath(), plugin.getServerProperties());
+        if (getServerProperties() != null) {
+            event.putDetailedVersionInfo(getServerProperties().getPath(), getServerProperties());
         } else {
             Logging.warning("/mv version could not find server.properties. Not including file");
         }

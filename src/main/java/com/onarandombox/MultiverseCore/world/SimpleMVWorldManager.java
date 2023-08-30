@@ -55,6 +55,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
+
 /**
  * Public facing API to add/remove Multiverse worlds.
  */
@@ -111,7 +113,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
     public void getDefaultWorldGenerators() {
         this.defaultGens = new HashMap<>();
 
-        File bukkitConfigFile = plugin.getBukkitConfig();
+        File bukkitConfigFile = getBukkitConfig();
         if (bukkitConfigFile == null) {
             Logging.warning("Any Default worldgenerators will not be loaded!");
             return;
