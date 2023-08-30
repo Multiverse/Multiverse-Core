@@ -75,6 +75,7 @@ public class DumpsCommand extends MultiverseCommand {
                             }
                             return types;
                         })
+                        .defaultValue(LogsTypeOption.MCLOGS)
                         .build())
                 .add(CommandValueFlag.builder("--upload", ServiceTypeOption.class)
                         .addAlias("-u")
@@ -92,6 +93,7 @@ public class DumpsCommand extends MultiverseCommand {
                             }
                             return types;
                         })
+                        .defaultValue(ServiceTypeOption.PASTEGG)
                         .build())
                 .add(CommandFlag.builder("--paranoid")// Does not upload logs or plugin list (except if --logs mclogs is there)
                         .addAlias("-p")
@@ -120,45 +122,33 @@ public class DumpsCommand extends MultiverseCommand {
                                @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
                                String[] flags
     ) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+        final ParsedCommandFlags parsedFlags = parseFlags(flags);
 
+        // Grab all our flags
+        final boolean paranoid = parsedFlags.hasFlag("--paranoid");
+        final LogsTypeOption logsType = parsedFlags.flagValue("--logs", LogsTypeOption.class);
+        final ServiceTypeOption servicesType = parsedFlags.flagValue("--upload", ServiceTypeOption.class);
+
+        // Initialise and add info to the debug event
         MVVersionEvent versionEvent = new MVVersionEvent();
-
         this.addDebugInfoToEvent(versionEvent);
         plugin.getServer().getPluginManager().callEvent(versionEvent);
 
         // Add plugin list if user isn't paranoid
-        if (!parsedFlags.hasFlag("--paranoid")) {
+        if (!paranoid) {
             versionEvent.putDetailedVersionInfo("plugins.md", "# Plugins\n\n" + getPluginList());
         }
 
-        // Deal with default case of logs
-        LogsTypeOption logsTypeOption = parsedFlags.flagValue("--logs", LogsTypeOption.class);
-        if (logsTypeOption == null) {
-            logsTypeOption = LogsTypeOption.MCLOGS;
-            Logging.finer("Logs was null so set to mclogs");
-        }
-
-        // Deal with default case of upload
-        ServiceTypeOption serviceTypeOption = parsedFlags.flagValue("--upload", ServiceTypeOption.class);
-        if (serviceTypeOption == null) {
-            serviceTypeOption = ServiceTypeOption.PASTEGG;
-            Logging.finer("Upload was null so set to pastegg");
-        }
-
-        // Need to be final for some reason...
-        final LogsTypeOption finalLogsTypeOption = logsTypeOption;
-        final ServiceTypeOption finalServiceTypeOption = serviceTypeOption;
         BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
                 HashMap<String, String> pasteURLs = new HashMap<>();
-                Logging.finer("Logs type is: " + finalLogsTypeOption);
-                Logging.finer("Services is: " + finalServiceTypeOption);
+                Logging.finer("Logs type is: " + logsType);
+                Logging.finer("Services is: " + servicesType);
 
                 // Deal with logs flag
                 if (!parsedFlags.hasFlag("--paranoid")) {
-                    switch (finalLogsTypeOption) {
+                    switch (logsType) {
                         case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                                 "{service}", "Logs",
                                 "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null)
@@ -171,7 +161,7 @@ public class DumpsCommand extends MultiverseCommand {
                 final Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
                 // Deal with uploading debug info
-                switch (finalServiceTypeOption) {
+                switch (servicesType) {
                     case PASTEGG -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                             "{service}", "paste.gg",
                             "{link}", postToService(PasteServiceType.PASTEGG, true, null, files)
