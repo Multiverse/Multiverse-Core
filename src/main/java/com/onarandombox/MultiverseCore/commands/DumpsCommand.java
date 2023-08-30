@@ -110,12 +110,12 @@ public class DumpsCommand extends MultiverseCommand {
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=mvdumps")
-    @Syntax("--logs [mclogs|append] --upload [pastesdev|pastegg --paranoid")
+    @Syntax("[--logs <mclogs|append>] [--upload <pastesdev|pastegg>] [--paranoid]")
     @Description("{@@mv-core.dumps.description}")
     public void onDumpsCommand(CommandIssuer issuer,
 
                                @Optional
-                               @Syntax("--logs [mclogs|append] --upload [pastesdev|pastegg] --paranoid")
+                               @Syntax("[--logs <mclogs|append>] [--upload <pastesdev|pastegg>] [--paranoid]")
                                String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
