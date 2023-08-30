@@ -159,13 +159,11 @@ public class DumpsCommand extends MultiverseCommand {
                 // Deal with logs flag
                 if (!parsedFlags.hasFlag("--paranoid")) {
                     switch (finalLogsType) {
-                        case MCLOGS -> {
-                            issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
-                            pasteURLs.put("Logs", postToService(PasteServiceType.MCLOGS, false, getLogs(), null));
-                        }
-                        case APPEND -> {
-                            versionEvent.putDetailedVersionInfo("latest.log", getLogs());
-                        }
+                        case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
+                                "{service}", "Logs",
+                                "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null)
+                        );
+                        case APPEND -> versionEvent.putDetailedVersionInfo("latest.log", getLogs());
                     }
                 }
 
@@ -174,20 +172,15 @@ public class DumpsCommand extends MultiverseCommand {
 
                 // Deal with uploading debug info
                 switch (finalServices) {
-                    case PASTEGG -> {
-                        issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
-                        pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
-                    }
-                    case PASTESDEV -> {
-                        issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastes.dev");
-                        pasteURLs.put("pastes.dev", postToService(PasteServiceType.PASTESDEV, true, null, files));
-                    }
-                }
+                    case PASTEGG -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
+                            "{service}", "paste.gg",
+                            "{link}", postToService(PasteServiceType.PASTEGG, true, null, files)
+                    );
 
-                // Finally, loop through and print all URLs
-                for (String service : pasteURLs.keySet()) {
-                    String link = pasteURLs.get(service);
-                    issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST, "{service}", service, "{link}", link);
+                    case PASTESDEV -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
+                            "{service}", "pastes.dev",
+                            "{link}", postToService(PasteServiceType.PASTESDEV, true, null, files)
+                    );
                 }
 
             }
