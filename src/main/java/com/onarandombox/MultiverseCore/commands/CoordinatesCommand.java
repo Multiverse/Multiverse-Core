@@ -34,7 +34,7 @@ public class CoordinatesCommand extends MultiverseCommand {
     }
 
     @Subcommand("coordinates|coord|coords|co")
-    @CommandPermission("multiverse.core.coord")
+    @CommandPermission("multiverse.core.coordinates")
     @Description("{@@mv-core.coordinates.description}")
     public void onCoordinatesCommand(BukkitCommandIssuer issuer) {
         if (!issuer.isPlayer()) { // Players only
