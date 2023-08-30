@@ -132,7 +132,6 @@ public class DumpsCommand extends MultiverseCommand {
             versionEvent.putDetailedVersionInfo("plugins.md", "# Plugins\n\n" + getPluginList());
         }
 
-
         // Deal with default case of logs
         LogsType logsType = parsedFlags.flagValue("--logs", LogsType.class);
         if (logsType == null) {
@@ -140,16 +139,12 @@ public class DumpsCommand extends MultiverseCommand {
             Logging.finer("Logs was null so set to mclogs");
         }
 
-
-
-
         // Deal with default case of upload
         Services services = parsedFlags.flagValue("--upload", Services.class);
         if (services == null) {
             services = Services.PASTEGG;
             Logging.finer("Upload was null so set to pastegg");
         }
-
 
         // Need to be final for some reason...
         final LogsType finalLogsType = logsType;
@@ -207,7 +202,6 @@ public class DumpsCommand extends MultiverseCommand {
      * @return A string containing the latest.log file
      */
     private String getLogs() {
-
         // Get the Path of latest.log
         Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
 
@@ -229,7 +223,6 @@ public class DumpsCommand extends MultiverseCommand {
     }
 
     private void addDebugInfoToEvent(MVVersionEvent event) {
-
         // Add the legacy file, but as markdown, so it's readable
         event.putDetailedVersionInfo("version.md", this.getVersionString());
 
