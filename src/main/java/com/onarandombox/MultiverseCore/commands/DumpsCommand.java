@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -15,8 +16,8 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
-import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
@@ -34,14 +35,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 @CommandAlias("mv")
 public class DumpsCommand extends MultiverseCommand {
 
-    private final MVCoreConfig config;
     private final MultiverseCore plugin;
     private final MVWorldManager worldManager;
     private boolean hasArgs = false;
@@ -49,42 +51,71 @@ public class DumpsCommand extends MultiverseCommand {
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
                         @NotNull MultiverseCore plugin,
-                        @NotNull MVCoreConfig config,
                         @NotNull MVWorldManager worldManager) {
         super(commandManager);
-        this.config = config;
         this.plugin = plugin;
         this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvdumps")
-                .add(CommandFlag.builder("--pastebincom")
-                        .addAlias("-b")
+                .add(CommandValueFlag.builder("--logs", LogsType.class)
+                        .addAlias("-l")
+                        .context((value) -> {
+                            try {
+                                return LogsType.valueOf(value.toUpperCase());
+                            } catch (IllegalArgumentException e) {
+                                throw new InvalidCommandArgument("Invalid logs type " + value + " in --logs");
+                            }
+                        })
+                        .completion(() -> {
+                            List<String> types = new ArrayList<>();
+                            for (LogsType type : LogsType.values()) {
+                                types.add(type.name().toLowerCase());
+                            }
+                            return types;
+                        })
                         .build())
-                .add(CommandFlag.builder("--pastesdev")
-                        .addAlias("-d")
+                .add(CommandValueFlag.builder("--upload", Services.class)
+                        .addAlias("-u")
+                        .context((value) -> {
+                            try {
+                                return Services.valueOf(value.toUpperCase());
+                            } catch (IllegalArgumentException e) {
+                                throw new InvalidCommandArgument("Invalid service " + value + " in --upload");
+                            }
+                        })
+                        .completion(() -> {
+                            List<String> types = new ArrayList<>();
+                            for (Services type : Services.values()) {
+                                types.add(type.name().toLowerCase());
+                            }
+                            return types;
+                        })
                         .build())
-                .add(CommandFlag.builder("--pastegg")
+                .add(CommandFlag.builder("--paranoid")// Does not upload logs or plugin list (except if --logs mclogs is there)
                         .addAlias("-p")
                         .build())
-                .add(CommandFlag.builder("--logs")
-                        .addAlias("-l")
-                        .build())
-                .add(CommandFlag.builder("--exclude-plugin-list")
-                        .addAlias("-l")
-                        .build())
                 .build());
+    }
+
+    private enum Services {
+        PASTEGG,
+        PASTESDEV
+    }
+
+    private enum LogsType {
+        APPEND,
+        MCLOGS
     }
 
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=mvdumps")
-    @Syntax("--pastebincom --pastesdev --pastegg --logs --exclude-plugin-list")
+    @Syntax("--logs [mclogs|append] --upload [pastesdev|pastegg --paranoid")
     @Description("{@@mv-core.dumps.description}")
     public void onDumpsCommand(CommandIssuer issuer,
 
                                @Optional
-                               @Syntax("--pastebincom --pastesdev --pastegg --logs --exclude-plugin-list")
-                               @Description("{@@mv-core.dumps.flags.description}")
+                               @Syntax("--logs [mclogs|append] --upload [pastesdev|pastegg] --paranoid")
                                String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
@@ -94,47 +125,66 @@ public class DumpsCommand extends MultiverseCommand {
         this.addDebugInfoToEvent(versionEvent);
         plugin.getServer().getPluginManager().callEvent(versionEvent);
 
-        if (!parsedFlags.hasFlag("--exclude-plugin-list")) {
+        // Add plugin list if user isn't paranoid
+        if (!parsedFlags.hasFlag("--paranoid")) {
             versionEvent.putDetailedVersionInfo("plugins.md", "# Plugins\n\n" + getPluginList());
         }
 
-        final Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
+        // Deal with default case of logs
+        LogsType logsType = parsedFlags.flagValue("--logs", LogsType.class);
+        if (logsType == null) {
+            logsType = LogsType.MCLOGS;
+            Logging.info("logs was null so set to mclogs");
+        }
+
+
+
+
+        // Deal with default case of upload
+        Services services = parsedFlags.flagValue("--upload", Services.class);
+        if (services == null) {
+            services = Services.PASTEGG;
+            Logging.info("upload was null so set to pastegg");
+        }
+
+
+        // Need to be final for some reason...
+        final LogsType finalLogsType = logsType;
+        final Services finalServices = services;
         BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
                 HashMap<String, String> pasteURLs = new HashMap<>();
+                Logging.info("Logs type is: " + finalLogsType);
+                Logging.info("Services is: " + finalServices);
 
-                if (parsedFlags.hasFlag("--pastebincom")) {
-                    hasArgs = true;
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastebin.com");
-                    pasteURLs.put("pastebin.com", postToService(PasteServiceType.PASTEBIN, true, null, files));
+                // Deal with logs flag
+                if (!parsedFlags.hasFlag("--paranoid")) {
+                    switch (finalLogsType) {
+                        case MCLOGS -> {
+                            issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
+                            pasteURLs.put("Logs", postToService(PasteServiceType.MCLOGS, false, getLogs(), null));
+                        }
+                        case APPEND -> {
+                            versionEvent.putDetailedVersionInfo("latest.log", getLogs());
+                        }
+                    }
                 }
 
-                if (parsedFlags.hasFlag("--pastesdev")) {
-                    hasArgs = true;
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastes.dev");
-                    pasteURLs.put("pastes.dev", postToService(PasteServiceType.PASTESDEV, true, null, files));
-                }
+                // Get the files from the event
+                final Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
-                if (parsedFlags.hasFlag("--logs")) {
-                    hasArgs = true;
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
-                    pasteURLs.putAll(uploadLogs());
-                }
-
-                if (parsedFlags.hasFlag("--pastegg")) {
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
-                    pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
-                }
-
-                // Fallback to paste.gg and logs if no other sites where specified
-                if (!hasArgs) {
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
-                    pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
-
-                    issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING_LOGS, "{link}", "https://mclo.gs");
-                    pasteURLs.putAll(uploadLogs());
+                // Deal with uploading debug info
+                switch (finalServices) {
+                    case PASTEGG -> {
+                        issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://paste.gg");
+                        pasteURLs.put("paste.gg", postToService(PasteServiceType.PASTEGG, true, null, files));
+                    }
+                    case PASTESDEV -> {
+                        issuer.sendInfo(MVCorei18n.DUMPS_UPLOADING, "{link}", "https://pastes.dev");
+                        pasteURLs.put("pastes.dev", postToService(PasteServiceType.PASTESDEV, true, null, files));
+                    }
                 }
 
                 // Finally, loop through and print all URLs
@@ -146,29 +196,26 @@ public class DumpsCommand extends MultiverseCommand {
             }
         };
 
-        // Run async as it could take some time to upload the debug info
+        // Run the uploader async as it could take some time to upload the debug info
         logPoster.runTaskAsynchronously(plugin);
     }
 
-    private HashMap<String, String> uploadLogs() {
-        HashMap<String, String> outMap = new HashMap<>();
-
-
+    /**
+     *
+     * @return A string containing the latest.log file
+     */
+    private String getLogs() {
 
         // Get the Path of latest.log
         Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
 
-        String logs;
         // Try to read file
         try {
-            logs = Files.readString(logsPath);
+            return Files.readString(logsPath);
         } catch (IOException e) {
             Logging.warning("Could not read logs/latest.log");
             throw new RuntimeException(e);
         }
-
-        outMap.put("Logs", postToService(PasteServiceType.MCLOGS, false, logs, null));
-        return outMap;
     }
 
     private String getVersionString() {
