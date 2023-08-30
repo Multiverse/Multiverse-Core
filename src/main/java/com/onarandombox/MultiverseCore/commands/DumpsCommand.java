@@ -59,35 +59,35 @@ public class DumpsCommand extends MultiverseCommand {
         this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvdumps")
-                .add(CommandValueFlag.builder("--logs", LogsType.class)
+                .add(CommandValueFlag.builder("--logs", LogsTypeOption.class)
                         .addAlias("-l")
                         .context((value) -> {
                             try {
-                                return LogsType.valueOf(value.toUpperCase());
+                                return LogsTypeOption.valueOf(value.toUpperCase());
                             } catch (IllegalArgumentException e) {
                                 throw new InvalidCommandArgument("Invalid logs type " + value + " in --logs");
                             }
                         })
                         .completion(() -> {
                             List<String> types = new ArrayList<>();
-                            for (LogsType type : LogsType.values()) {
+                            for (LogsTypeOption type : LogsTypeOption.values()) {
                                 types.add(type.name().toLowerCase());
                             }
                             return types;
                         })
                         .build())
-                .add(CommandValueFlag.builder("--upload", Services.class)
+                .add(CommandValueFlag.builder("--upload", ServiceTypeOption.class)
                         .addAlias("-u")
                         .context((value) -> {
                             try {
-                                return Services.valueOf(value.toUpperCase());
+                                return ServiceTypeOption.valueOf(value.toUpperCase());
                             } catch (IllegalArgumentException e) {
                                 throw new InvalidCommandArgument("Invalid service " + value + " in --upload");
                             }
                         })
                         .completion(() -> {
                             List<String> types = new ArrayList<>();
-                            for (Services type : Services.values()) {
+                            for (ServiceTypeOption type : ServiceTypeOption.values()) {
                                 types.add(type.name().toLowerCase());
                             }
                             return types;
@@ -99,12 +99,12 @@ public class DumpsCommand extends MultiverseCommand {
                 .build());
     }
 
-    private enum Services {
+    private enum ServiceTypeOption {
         PASTEGG,
         PASTESDEV
     }
 
-    private enum LogsType {
+    private enum LogsTypeOption {
         APPEND,
         MCLOGS
     }
@@ -133,32 +133,32 @@ public class DumpsCommand extends MultiverseCommand {
         }
 
         // Deal with default case of logs
-        LogsType logsType = parsedFlags.flagValue("--logs", LogsType.class);
-        if (logsType == null) {
-            logsType = LogsType.MCLOGS;
+        LogsTypeOption logsTypeOption = parsedFlags.flagValue("--logs", LogsTypeOption.class);
+        if (logsTypeOption == null) {
+            logsTypeOption = LogsTypeOption.MCLOGS;
             Logging.finer("Logs was null so set to mclogs");
         }
 
         // Deal with default case of upload
-        Services services = parsedFlags.flagValue("--upload", Services.class);
-        if (services == null) {
-            services = Services.PASTEGG;
+        ServiceTypeOption serviceTypeOption = parsedFlags.flagValue("--upload", ServiceTypeOption.class);
+        if (serviceTypeOption == null) {
+            serviceTypeOption = ServiceTypeOption.PASTEGG;
             Logging.finer("Upload was null so set to pastegg");
         }
 
         // Need to be final for some reason...
-        final LogsType finalLogsType = logsType;
-        final Services finalServices = services;
+        final LogsTypeOption finalLogsTypeOption = logsTypeOption;
+        final ServiceTypeOption finalServiceTypeOption = serviceTypeOption;
         BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
                 HashMap<String, String> pasteURLs = new HashMap<>();
-                Logging.finer("Logs type is: " + finalLogsType);
-                Logging.finer("Services is: " + finalServices);
+                Logging.finer("Logs type is: " + finalLogsTypeOption);
+                Logging.finer("Services is: " + finalServiceTypeOption);
 
                 // Deal with logs flag
                 if (!parsedFlags.hasFlag("--paranoid")) {
-                    switch (finalLogsType) {
+                    switch (finalLogsTypeOption) {
                         case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                                 "{service}", "Logs",
                                 "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null)
@@ -171,7 +171,7 @@ public class DumpsCommand extends MultiverseCommand {
                 final Map<String, String> files = versionEvent.getDetailedVersionInfo();
 
                 // Deal with uploading debug info
-                switch (finalServices) {
+                switch (finalServiceTypeOption) {
                     case PASTEGG -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                             "{service}", "paste.gg",
                             "{link}", postToService(PasteServiceType.PASTEGG, true, null, files)
