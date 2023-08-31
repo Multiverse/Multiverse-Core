@@ -15,6 +15,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
+import org.jvnet.hk2.annotations.Service;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.Map;
 /**
  * The default-implementation of {@link LocationManipulation}.
  */
+@Service
 public class SimpleLocationManipulation implements LocationManipulation {
     private static final Map<String, Integer> ORIENTATION_INTS;
 

@@ -1,0 +1,11 @@
+name: 'PR: Test'
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  test:
+    uses: ./.github/workflows/generic.test.yml
+    with:
+      plugin_name: multiverse-core

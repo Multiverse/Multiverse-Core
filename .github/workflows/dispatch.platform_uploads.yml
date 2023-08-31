@@ -1,0 +1,31 @@
+name: 'Dispatch: Platform Uploads'
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Version to upload'
+        required: true
+        type: string
+      upload_modrinth:
+        description: 'Upload to modrinth.com'
+        required: true
+        type: boolean
+      upload_dbo:
+        description: 'Upload to dev.bukkit.org'
+        required: true
+        type: boolean
+      upload_hangar:
+        description: 'Upload to hangar.papermc.io'
+        required: true
+        type: boolean
+
+jobs:
+  dispatch_platform_uploads:
+    uses: ./.github/workflows/call.platform_uploads.yml
+    secrets: inherit
+    with:
+      target_tag: ${{ github.event.inputs.target_tag }}
+      upload_modrinth: ${{ github.event.inputs.upload_modrinth }}
+      upload_dbo: ${{ github.event.inputs.upload_dbo }}
+      upload_hangar: ${{ github.event.inputs.upload_hangar }}

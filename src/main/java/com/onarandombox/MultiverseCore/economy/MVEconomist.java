@@ -1,18 +1,23 @@
 package com.onarandombox.MultiverseCore.economy;
 
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Multiverse's Friendly Economist. This is used to deal with external economies and also item costs for stuff in MV.
  */
+@Service
 public class MVEconomist {
 
     private final VaultHandler vaultHandler;
 
+    @Inject
     public MVEconomist(Plugin plugin) {
         vaultHandler = new VaultHandler(plugin);
     }
@@ -85,6 +90,35 @@ public class MVEconomist {
      */
     public String getNSFMessage(Material currency, String message) {
         return "Sorry, you don't have enough " + (isItemCurrency(currency) ? "items" : "funds") + ". " + message;
+    }
+
+    /**
+     * Pays for a given amount of currency either from the player's economy account or inventory if the currency.
+     *
+     * @param player    the player to deposit currency into.
+     * @param world     the world to take entry fee from.
+     */
+    public void payEntryFee(Player player, MVWorld world) {
+        payEntryFee(player, world.getPrice(), world.getCurrency());
+    }
+
+    /**
+     * Pays for a given amount of currency either from the player's economy account or inventory if the currency
+     *
+     * @param player    the player to take currency from.
+     * @param price     the amount to take.
+     * @param currency  the type of currency.
+     */
+    public void payEntryFee(Player player, double price, Material currency) {
+        if (price == 0D) {
+            return;
+        }
+
+        if (price < 0) {
+            this.deposit(player, -price, currency);
+        } else {
+            this.withdraw(player, price, currency);
+        }
     }
 
     /**

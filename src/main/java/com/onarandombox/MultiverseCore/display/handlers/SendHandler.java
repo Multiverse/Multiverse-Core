@@ -13,7 +13,7 @@ public interface SendHandler {
     /**
      * Sends all the content to the given command sender.
      *
-     * @param sender    The target which the content will be displayed to.
+     * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
     void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);

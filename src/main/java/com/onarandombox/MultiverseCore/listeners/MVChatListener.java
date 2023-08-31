@@ -1,25 +1,33 @@
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jvnet.hk2.annotations.Service;
 
 /**
- * Multiverse's {@link org.bukkit.event.Listener} for players.
+ * Multiverse's Listener for players.
  */
-public class MVChatListener implements Listener {
-    private final MultiverseCore plugin;
+@Service
+public class MVChatListener implements InjectableListener {
+    private final MVCoreConfig config;
     private final MVWorldManager worldManager;
     private final MVPlayerListener playerListener;
 
-    public MVChatListener(MultiverseCore plugin, MVPlayerListener playerListener) {
-        this.plugin = plugin;
-        this.worldManager = plugin.getMVWorldManager();
+    @Inject
+    public MVChatListener(
+            MVCoreConfig config,
+            MVWorldManager worldManager,
+            MVPlayerListener playerListener
+    ) {
+        this.config = config;
+        this.worldManager = worldManager;
         this.playerListener = playerListener;
     }
 
@@ -34,7 +42,7 @@ public class MVChatListener implements Listener {
         }
         // Check whether the Server is set to prefix the chat with the World name.
         // If not we do nothing, if so we need to check if the World has an Alias.
-        if (plugin.getMVConfig().getPrefixChat()) {
+        if (config.isEnablePrefixChat()) {
             String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
             if (world == null) {
                 world = event.getPlayer().getWorld().getName();
@@ -52,7 +60,7 @@ public class MVChatListener implements Listener {
             prefix = mvworld.getColoredWorldString();
             String chat = event.getFormat();
             
-            String prefixChatFormat = plugin.getMVConfig().getPrefixChatFormat();
+            String prefixChatFormat = config.getPrefixChatFormat();
             prefixChatFormat = prefixChatFormat.replace("%world%", prefix).replace("%chat%", chat);
             prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
             

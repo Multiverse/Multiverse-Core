@@ -7,12 +7,18 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import io.papermc.lib.PaperLib;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,15 +30,29 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * The default-implementation of {@link SafeTTeleporter}.
  */
+@Service
 public class SimpleSafeTTeleporter implements SafeTTeleporter {
-    private MultiverseCore plugin;
+    private final MultiverseCore plugin;
+    private final LocationManipulation locationManipulation;
+    private final BlockSafety blockSafety;
+    private final TeleportQueue teleportQueue;
 
-    public SimpleSafeTTeleporter(MultiverseCore plugin) {
+    @Inject
+    public SimpleSafeTTeleporter(
+            MultiverseCore plugin,
+            LocationManipulation locationManipulation,
+            BlockSafety blockSafety,
+            TeleportQueue teleportQueue
+    ) {
         this.plugin = plugin;
+        this.locationManipulation = locationManipulation;
+        this.blockSafety = blockSafety;
+        this.teleportQueue = teleportQueue;
     }
 
     private static final Vector DEFAULT_VECTOR = new Vector();
@@ -58,7 +78,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         if (safe != null) {
             safe.setX(safe.getBlockX() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
             safe.setZ(safe.getBlockZ() + .5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-            Logging.fine("Hey! I found one: " + plugin.getLocationManipulation().strCoordsRaw(safe));
+            Logging.fine("Hey! I found one: " + locationManipulation.strCoordsRaw(safe));
         } else {
             Logging.fine("Uh oh! No safe place found!");
         }
@@ -72,7 +92,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         }
         // We want half of it, so we can go up and down
         tolerance /= 2;
-        Logging.finer("Given Location of: " + plugin.getLocationManipulation().strCoordsRaw(l));
+        Logging.finer("Given Location of: " + locationManipulation.strCoordsRaw(l));
         Logging.finer("Checking +-" + tolerance + " with a radius of " + radius);
 
         // For now this will just do a straight up block.
@@ -140,13 +160,13 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // ...
         int adjustedCircle = ((circle - 1) / 2);
         checkLoc.add(adjustedCircle, 0, 0);
-        if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
+        if (blockSafety.playerCanSpawnHereSafely(checkLoc)) {
             return true;
         }
         // Now we go to the right that adjustedCircle many
         for (int i = 0; i < adjustedCircle; i++) {
             checkLoc.add(0, 0, 1);
-            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
+            if (blockSafety.playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -154,7 +174,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then down adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(-1, 0, 0);
-            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
+            if (blockSafety.playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -162,7 +182,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then left adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(0, 0, -1);
-            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
+            if (blockSafety.playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -170,7 +190,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then up Then left adjustedCircle *2
         for (int i = 0; i < adjustedCircle * 2; i++) {
             checkLoc.add(1, 0, 0);
-            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
+            if (blockSafety.playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -178,7 +198,7 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         // Then finish up by doing adjustedCircle - 1
         for (int i = 0; i < adjustedCircle - 1; i++) {
             checkLoc.add(0, 0, 1);
-            if (plugin.getBlockSafety().playerCanSpawnHereSafely(checkLoc)) {
+            if (blockSafety.playerCanSpawnHereSafely(checkLoc)) {
                 return true;
             }
         }
@@ -190,9 +210,14 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
      */
     @Override
     public TeleportResult safelyTeleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
+        return safelyTeleportAsync(teleporter, teleportee, destination).join();
+    }
+
+    @Override
+    public CompletableFuture<TeleportResult> safelyTeleportAsync(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
         if (destination == null) {
             Logging.finer("Entity tried to teleport to an invalid destination");
-            return TeleportResult.FAIL_INVALID;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_INVALID);
         }
 
         Player teleporteePlayer = null;
@@ -203,31 +228,37 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
         }
 
         if (teleporteePlayer == null) {
-            return TeleportResult.FAIL_INVALID;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_INVALID);
         }
 
-        MultiverseCore.addPlayerToTeleportQueue(teleporter.getIssuer().getName(), teleporteePlayer.getName());
+        teleportQueue.addToQueue(teleporter.getIssuer().getName(), teleporteePlayer.getName());
 
-        Location safeLoc = destination.getDestinationInstance().getLocation(teleportee);
+        Location safeLoc = destination.getLocation(teleportee);
         if (destination.getDestination().checkTeleportSafety()) {
             safeLoc = this.getSafeLocation(teleportee, destination.getDestinationInstance());
         }
 
         if (safeLoc == null) {
-            return TeleportResult.FAIL_UNSAFE;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_UNSAFE);
         }
 
-        if (!teleportee.teleport(safeLoc)) {
-            return TeleportResult.FAIL_OTHER;
-        }
+        CompletableFuture<TeleportResult> future = new CompletableFuture<>();
 
-        Vector v = destination.getDestinationInstance().getVelocity(teleportee);
-        if (v != null && !DEFAULT_VECTOR.equals(v)) {
-            Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-                teleportee.setVelocity(v);
-            }, 1);
-        }
-        return TeleportResult.SUCCESS;
+        PaperLib.teleportAsync(teleportee, safeLoc).thenAccept(result -> {
+            if (!result) {
+                future.complete(TeleportResult.FAIL_OTHER);
+                return;
+            }
+            Vector v = destination.getDestinationInstance().getVelocity(teleportee);
+            if (v != null && !DEFAULT_VECTOR.equals(v)) {
+                Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                    teleportee.setVelocity(v);
+                }, 1);
+            }
+            future.complete(TeleportResult.SUCCESS);
+        });
+
+        return future;
     }
 
     /**
@@ -251,25 +282,25 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
     @Override
     public Location getSafeLocation(Entity entity, DestinationInstance destination) {
         Location l = destination.getLocation(entity);
-        if (plugin.getBlockSafety().playerCanSpawnHereSafely(l)) {
+        if (blockSafety.playerCanSpawnHereSafely(l)) {
             Logging.fine("The first location you gave me was safe.");
             return l;
         }
         if (entity instanceof Minecart) {
             Minecart m = (Minecart) entity;
-            if (!plugin.getBlockSafety().canSpawnCartSafely(m)) {
+            if (!blockSafety.canSpawnCartSafely(m)) {
                 return null;
             }
         } else if (entity instanceof Vehicle) {
             Vehicle v = (Vehicle) entity;
-            if (!plugin.getBlockSafety().canSpawnVehicleSafely(v)) {
+            if (!blockSafety.canSpawnVehicleSafely(v)) {
                 return null;
             }
         }
         Location safeLocation = this.getSafeLocation(l);
         if (safeLocation != null) {
             // Add offset to account for a vehicle on dry land!
-            if (entity instanceof Minecart && !plugin.getBlockSafety().isEntitiyOnTrack(safeLocation)) {
+            if (entity instanceof Minecart && !blockSafety.isEntitiyOnTrack(safeLocation)) {
                 safeLocation.setY(safeLocation.getBlockY() + .5);
                 Logging.finer("Player was inside a minecart. Offsetting Y location.");
             }
@@ -336,6 +367,11 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
 
     @Override
     public TeleportResult teleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
-        return this.safelyTeleport(teleporter, teleportee, destination);
+        return safelyTeleport(teleporter, teleportee, destination);
+    }
+
+    @Override
+    public CompletableFuture<TeleportResult> teleportAsync(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
+        return safelyTeleportAsync(teleporter, teleportee, destination);
     }
 }

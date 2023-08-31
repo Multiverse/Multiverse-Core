@@ -7,16 +7,15 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import com.onarandombox.MultiverseCore.world.SimpleWorldPurger;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Multiverse 2 World Manager API
@@ -24,6 +23,7 @@ import org.bukkit.generator.ChunkGenerator;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
+@Contract
 public interface MVWorldManager {
     /**
      * Add a new World to the Multiverse Setup.
@@ -222,15 +222,6 @@ public interface MVWorldManager {
     void loadDefaultWorlds();
 
     /**
-     * Gets the {@link WorldPurger}.
-     * <p>
-     * @return The {@link WorldPurger} this {@link MVWorldManager} is using.
-     * @see WorldPurger
-     * @see SimpleWorldPurger
-     */
-    WorldPurger getTheWorldPurger();
-
-    /**
      * Gets the world players will spawn in on first join.
      * Currently this always returns worlds.get(0) from Bukkit.
      *
@@ -253,10 +244,9 @@ public interface MVWorldManager {
     /**
      * Load the config from a file.
      *
-     * @param file The file to load.
      * @return A loaded configuration.
      */
-    FileConfiguration loadWorldConfig(File file);
+    FileConfiguration loadWorldsConfig();
 
     /**
      * Saves the world config to disk.

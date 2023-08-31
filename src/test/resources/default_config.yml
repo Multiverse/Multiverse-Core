@@ -1,0 +1,96 @@
+####################################################################################################
+#                                                                                                  #
+#                    █▀▄▀█ █░█ █░░ ▀█▀ █ █░█ █▀▀ █▀█ █▀ █▀▀   █▀▀ █▀█ █▀█ █▀▀                      #
+#                    █░▀░█ █▄█ █▄▄ ░█░ █ ▀▄▀ ██▄ █▀▄ ▄█ ██▄   █▄▄ █▄█ █▀▄ ██▄                      #
+#                                                                                                  #
+#                                                                                                  #
+#    WIKI:        https://github.com/Multiverse/Multiverse-Core/wiki                               #
+#    DISCORD:     https://discord.gg/NZtfKky                                                       #
+#    BUG REPORTS: https://github.com/Multiverse/Multiverse-Core/issues                             #
+#                                                                                                  #
+#                                                                                                  #
+#    Each option in this file is documented and explained here:                                    #
+#     ==>  https://github.com/Multiverse/Multiverse-Core/wiki/config.yml                           #
+#                                                                                                  #
+#                                                                                                  #
+#    New options are added to this file automatically. If you manually made changes                #
+#    to this file while your server is running, please run `/mv reload` command.                   #
+#                                                                                                  #
+####################################################################################################
+
+
+world:
+  # This setting will prevent players from entering worlds they don't have access to.
+  # If this is set to false, players will be able to enter any world they want.
+  # If this is set to true, players will only be able to enter worlds they have
+  # the `mv.access.<worldname>` permission.
+  enforce-access: false
+
+  # Sets whether Multiverse will should enforce gamemode on world change.
+  # If enabled, players will be forced into the gamemode of the world they are entering, unless they have
+  # the `mv.bypass.gamemode.<worldname>` permission.
+  enforce-gamemode: true
+
+  # Sets whether Multiverse will purge mobs and entities with be automatically.
+  auto-purge-entities: true
+
+  # If this is set to true, Multiverse will enforce access permissions for all teleportation,
+  # including teleportation from other plugins.
+  teleport-intercept: true
+
+
+spawn:
+  # Sets whether Multiverse will override the first spawn location of a world.
+  # If enabled, Multiverse will set the first spawn location of a world to the spawn location of the world.
+  # If disabled, it will default to server.properties settings.
+  first-spawn-override: true
+
+  # Sets the world that Multiverse will use as the location for players that first join the server.
+  # This only applies if first-spawn-override is set to true.
+  first-spawn-location: world
+
+
+portal:
+  # This config option defines whether or not Multiverse should interfere with's Bukkit's default portal search radius.
+  # Setting it to false would mean you want to simply let Bukkit decides the search radius itself.
+  use-custom-portal-search: false
+
+  # This config option defines the search radius Multiverse should use when searching for a portal.
+  # This only applies if use-custom-portal-search is set to true.
+  custom-portal-search-radius: 128
+
+
+messaging:
+  # This config option defines whether or not Multiverse should prefix the chat with the world name.
+  # This only applies if use-custom-portal-search is set to true.
+  enable-chat-prefix: false
+
+  # This config option defines the format Multiverse should use when prefixing the chat with the world name.
+  # This only applies if enable-chat-prefix is set to true.
+  chat-prefix-format: '[%world%]%chat%'
+
+  # This config option defines whether or not Multiverse should register the PlaceholderAPI hook.
+  # This only applies if PlaceholderAPI is installed.
+  register-papi-hook: true
+
+
+misc:
+  # This is our debug flag to help identify issues with Multiverse.
+  # If you are having issues with Multiverse, please set this to 3 and then post your log to pastebin.com
+  # Otherwise, there's no need to touch this. If not instructed by a wiki page or developer.
+  #   0 = Off, No debug messages
+  #   1 = fine
+  #   2 = finer
+  #   3 = finest
+  global-debug: 3
+
+  # If true, the startup console messages will no longer show.
+  silent-start: false
+
+  # If you don't want to donate, you can set this to false and Multiverse will stop nagging you.
+  show-donation-message: true
+
+
+# This just signifies the version number so we can see what version of config you have.
+# NEVER TOUCH THIS VALUE
+version: 5.0

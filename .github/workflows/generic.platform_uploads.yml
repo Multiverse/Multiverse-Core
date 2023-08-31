@@ -1,0 +1,140 @@
+name: 'Generic: Platform Uploads'
+
+on:
+  workflow_call:
+    inputs:
+      # Plugin specific params
+      plugin_name:
+        description: 'Plugin name'
+        required: true
+        type: string
+
+      modrinth_project_id:
+        description: 'modrinth.com project ID'
+        required: true
+        type: string
+      modrinth_dependencies:
+        description: 'modrinth.com project dependencies'
+        required: false
+        type: string
+        default: '[]'
+
+      dbo_project_id:
+        description: 'dev.bukkit.org project ID'
+        required: true
+        type: string
+      dbo_project_relations:
+        description: 'dev.bukkit.org project relations'
+        required: false
+        type: string
+        default: '[]'
+
+      hangar_slug:
+        description: 'hangar.papermc.io project slug'
+        required: true
+        type: string
+      hangar_plugin_dependencies:
+        description: 'hangar.papermc.io project dependencies'
+        required: false
+        type: string
+        default: '{}'
+
+      # Common params
+      target_tag:
+        description: 'Version to upload'
+        required: true
+        type: string
+
+      upload_modrinth:
+        description: 'Upload to modrinth.com'
+        required: true
+        type: string
+      upload_dbo:
+        description: 'Upload to dev.bukkit.org'
+        required: true
+        type: string
+      upload_hangar:
+        description: 'Upload to hangar.papermc.io'
+        required: true
+        type: string
+
+    secrets:
+      MODRINTH_TOKEN:
+        required: true
+      DBO_UPLOAD_API_TOKEN:
+        required: true
+      HANGAR_UPLOAD_TOKEN:
+        required: true
+
+jobs:
+  platform_uploads:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get release info
+      id: release-info
+      uses: cardinalby/git-get-release-action@1.2.4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag: ${{ inputs.target_tag }}
+
+    - name: Download release artifact
+      id: release-artifact
+      uses: dsaltares/fetch-gh-release-asset@1.1.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        version: tags/${{ steps.release-info.outputs.tag_name }}
+        file: ${{ inputs.plugin_name }}-${{ steps.release-info.outputs.tag_name }}.jar
+
+    - name: Parse release type
+      id: parse-release-type
+      run: |
+        if [[ "${{ steps.release-info.outputs.prerelease }}" == "true" ]]; then
+            echo Setting release_type to Beta
+            echo "release_type=Beta" >> $GITHUB_OUTPUT
+        else
+          echo Setting release_type to Release
+            echo "release_type=Release" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Upload to Modrinth
+      if: ${{ !cancelled() && inputs.upload_modrinth == 'true' }}
+      uses: benwoo1110/modrinth-upload-action@v1
+      with:
+        api_token: ${{ secrets.MODRINTH_TOKEN }}
+        project_id: ${{ inputs.modrinth_project_id }}
+        version_number: ${{ steps.release-info.outputs.tag_name }}
+        files: '["${{ github.workspace }}/${{ inputs.plugin_name }}-${{ steps.release-info.outputs.tag_name }}.jar"]'
+        name: ${{ steps.release-info.outputs.tag_name }}
+        changelog: ${{ steps.release-artifact.outputs.body }}
+        game_versions: 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2, 1.18.1, 1.18, 1.17.1, 1.17, 1.16.5, 1.16.4, 1.16.3, 1.16.2, 1.16.1, 1.16, 1.15.2, 1.15.1, 1.15, 1.14.4, 1.14.3, 1.14.2, 1.14.1, 1.14, 1.13.2, 1.13.1, 1.13
+        version_type: ${{ steps.parse-release-type.outputs.release_type }}
+        loaders: bukkit, spigot, paper
+        dependencies: ${{ inputs.modrinth_dependencies }}
+
+    - name: Upload to DBO
+      if: ${{ !cancelled() && inputs.upload_dbo == 'true' }}
+      uses: benwoo1110/dbo-upload-action@v1
+      with:
+        api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
+        project_id: ${{ inputs.dbo_project_id }}
+        changelog: ${{ steps.release-artifact.outputs.body }}
+        changelog_type: markdown
+        display_name: ${{ steps.release-info.outputs.tag_name }}
+        game_versions: 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2, 1.18.1, 1.18, 1.17, 1.16, 1.15, 1.14, 1.13
+        release_type: ${{ steps.parse-release-type.outputs.release_type }}
+        project_relations: ${{ inputs.dbo_project_relations }}
+        file_path: ${{ github.workspace }}/${{ inputs.plugin_name }}-${{ steps.release-info.outputs.tag_name }}.jar
+
+    - name: Upload to Hangar
+      if: ${{ !cancelled() && inputs.upload_hangar == 'true' }}
+      uses: benwoo1110/hangar-upload-action@v1
+      with:
+        api_token: ${{ secrets.HANGAR_UPLOAD_TOKEN }}
+        slug: ${{ inputs.hangar_slug }}
+        version: ${{ steps.release-info.outputs.tag_name }}
+        channel: ${{ steps.parse-release-type.outputs.release_type }}
+        files: '[{"path": "${{ github.workspace }}/${{ inputs.plugin_name }}-${{ steps.release-info.outputs.tag_name }}.jar", "platforms": ["PAPER"]}]'
+        description: ${{ steps.release-artifact.outputs.body }}
+        platform_dependencies: '{"PAPER": ["1.13-1.20.1"]}'
+        plugin_dependencies: ${{ inputs.hangar_plugin_dependencies }}

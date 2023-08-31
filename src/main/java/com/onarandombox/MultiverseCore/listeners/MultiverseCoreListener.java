@@ -14,13 +14,13 @@ import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
 import com.onarandombox.MultiverseCore.event.MVWorldPropertyChangeEvent;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 /**
  * Subclasses of this listener can be used to conveniently listen to MultiverseCore-events.
  */
-public abstract class MultiverseCoreListener implements Listener {
+public abstract class MultiverseCoreListener implements InjectableListener {
     /**
      * Called when a {@link MVWorldPropertyChangeEvent} is fired.
      * @param event The event.

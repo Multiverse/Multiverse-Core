@@ -6,44 +6,48 @@ import co.aikar.commands.BukkitConditionContext;
 import co.aikar.commands.CommandConditions;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldNameChecker;
+import org.jetbrains.annotations.NotNull;
 
 public class MVCommandConditions {
-    static void load(MVCommandManager commandManager, MultiverseCore plugin) {
-        new MVCommandConditions(commandManager, plugin);
+    static void load(MVCommandManager commandManager, MVWorldManager worldManager) {
+        new MVCommandConditions(commandManager, worldManager);
     }
 
+    private final MVWorldManager worldManager;
     private final MVCommandManager commandManager;
-    private final MultiverseCore plugin;
 
-    public MVCommandConditions(MVCommandManager commandManager, MultiverseCore plugin) {
+    private MVCommandConditions(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        this.worldManager = worldManager;
         this.commandManager = commandManager;
-        this.plugin = plugin;
+        registerConditions();
+    }
 
+    private void registerConditions() {
         CommandConditions<BukkitCommandIssuer, BukkitCommandExecutionContext, BukkitConditionContext> conditions
                 = commandManager.getCommandConditions();
 
-        conditions.addCondition(String.class, "validWorldName", this::checkValidWorldName);
+        conditions.addCondition(String.class, "worldname", this::checkWorldname);
     }
 
-    private void checkValidWorldName(ConditionContext<BukkitCommandIssuer> context,
-                                     BukkitCommandExecutionContext executionContext,
-                                     String worldName
+    private void checkWorldname(ConditionContext<BukkitCommandIssuer> context,
+                                BukkitCommandExecutionContext executionContext,
+                                String worldName
     ) {
         String scope = context.getConfigValue("scope", "loaded");
 
         switch (scope) {
             // Worlds that are loaded
             case "loaded":
-                if (!this.plugin.getMVWorldManager().isMVWorld(worldName)) {
+                if (!this.worldManager.isMVWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist or is not loaded!");
                 }
                 break;
             // Worlds that are unloaded
             case "unloaded":
-                if (!this.plugin.getMVWorldManager().hasUnloadedWorld(worldName, false)) {
-                    if (this.plugin.getMVWorldManager().isMVWorld(worldName)) {
+                if (!this.worldManager.hasUnloadedWorld(worldName, false)) {
+                    if (this.worldManager.isMVWorld(worldName)) {
                         throw new ConditionFailedException("World with name '" + worldName + "' is loaded already!");
                     }
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
@@ -51,13 +55,13 @@ public class MVCommandConditions {
                 break;
             // World that are loaded or unloaded
             case "both":
-                if (!this.plugin.getMVWorldManager().hasUnloadedWorld(worldName, true)) {
+                if (!this.worldManager.hasUnloadedWorld(worldName, true)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
                 }
                 break;
             // World that are does not exist
             case "new":
-                if (this.plugin.getMVWorldManager().hasUnloadedWorld(worldName, true)) {
+                if (this.worldManager.hasUnloadedWorld(worldName, true)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' already exists!");
                 }
                 switch (WorldNameChecker.checkName(worldName)) {

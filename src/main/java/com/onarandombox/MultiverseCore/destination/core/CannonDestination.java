@@ -4,24 +4,24 @@ import java.util.Collection;
 import java.util.Collections;
 
 import co.aikar.commands.BukkitCommandIssuer;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 public class CannonDestination implements Destination<CannonDestinationInstance> {
-    private final MultiverseCore plugin;
 
-    /**
-     * Constructor.
-     *
-     * @param plugin The MultiverseCore plugin.
-     */
-    public CannonDestination(MultiverseCore plugin) {
-        this.plugin = plugin;
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public CannonDestination(MVWorldManager worldManager) {
+        this.worldManager = worldManager;
     }
 
     /**
@@ -53,7 +53,7 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
             return null;
         }
 
-        MVWorld world = this.plugin.getMVWorldManager().getMVWorld(worldName);
+        MVWorld world = this.worldManager.getMVWorld(worldName);
         if (world == null) {
             return null;
         }

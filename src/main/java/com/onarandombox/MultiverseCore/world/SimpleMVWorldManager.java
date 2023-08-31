@@ -7,8 +7,39 @@
 
 package com.onarandombox.MultiverseCore.world;
 
+import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
+import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
+import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
+import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
+import com.onarandombox.MultiverseCore.utils.file.FileUtils;
+import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
+import org.jvnet.hk2.annotations.Service;
+
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,36 +55,21 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.api.WorldPurger;
-import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
-import com.onarandombox.MultiverseCore.utils.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.Plugin;
-
 /**
  * Public facing API to add/remove Multiverse worlds.
  */
+@Service
 public class SimpleMVWorldManager implements MVWorldManager {
+    public static final String WORLD_CONFIG_FILE = "worlds.yml";
+
     private final MultiverseCore plugin;
+    private final MVCoreConfig config;
+    private final MVPlayerListener playerListener;
+    private final BlockSafety blockSafety;
+    private final SafeTTeleporter safeTTeleporter;
+    private final LocationManipulation locationManipulation;
+    private final UnsafeCallWrapper unsafeCallWrapper;
+    private final Server server;
     private final WorldPurger worldPurger;
     private final Map<String, MVWorld> worlds;
     private Map<String, WorldProperties> worldsFromTheConfig;
@@ -61,11 +77,30 @@ public class SimpleMVWorldManager implements MVWorldManager {
     private Map<String, String> defaultGens;
     private String firstSpawn;
 
-    public SimpleMVWorldManager(MultiverseCore core) {
-        this.plugin = core;
+    @Inject
+    public SimpleMVWorldManager(
+            MultiverseCore plugin,
+            MVCoreConfig config,
+            MVPlayerListener playerListener,
+            BlockSafety blockSafety,
+            SafeTTeleporter safeTTeleporter,
+            LocationManipulation locationManipulation,
+            UnsafeCallWrapper unsafeCallWrapper,
+            WorldPurger worldPurger,
+            Server server
+    ) {
+        this.plugin = plugin;
+        this.config = config;
+        this.playerListener = playerListener;
+        this.blockSafety = blockSafety;
+        this.safeTTeleporter = safeTTeleporter;
+        this.locationManipulation = locationManipulation;
+        this.unsafeCallWrapper = unsafeCallWrapper;
+        this.worldPurger = worldPurger;
+        this.server = server;
+
         this.worldsFromTheConfig = new HashMap<String, WorldProperties>();
         this.worlds = new ConcurrentHashMap<String, MVWorld>();
-        this.worldPurger = new SimpleWorldPurger(plugin);
     }
 
     /**
@@ -73,15 +108,10 @@ public class SimpleMVWorldManager implements MVWorldManager {
      */
     @Override
     public void getDefaultWorldGenerators() {
-        this.defaultGens = new HashMap<String, String>();
-        File[] files = this.plugin.getServerFolder().listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String s) {
-                return s.equalsIgnoreCase("bukkit.yml");
-            }
-        });
-        if (files != null && files.length == 1) {
-            FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(files[0]);
+        this.defaultGens = new HashMap<>();
+        File file = new File("bukkit.yml");
+        if (file.isFile()) {
+            FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(file);
             if (bukkitConfig.isConfigurationSection("worlds")) {
                 Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
                 for (String key : keys) {
@@ -122,8 +152,8 @@ public class SimpleMVWorldManager implements MVWorldManager {
             return false;
         }
 
-        final File oldWorldFile = new File(this.plugin.getServer().getWorldContainer(), oldName);
-        final File newWorldFile = new File(this.plugin.getServer().getWorldContainer(), newName);
+        final File oldWorldFile = new File(this.server.getWorldContainer(), oldName);
+        final File newWorldFile = new File(this.server.getWorldContainer(), newName);
         final List<String> ignoreFiles = new ArrayList<>(Arrays.asList("session.lock", "uid.dat"));
 
         // Make sure the new world doesn't exist outside of multiverse.
@@ -135,7 +165,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
         // Load the old world... but just the metadata.
         boolean wasJustLoaded = false;
         boolean wasLoadSpawn = false;
-        if (this.plugin.getServer().getWorld(oldName) == null) {
+        if (this.server.getWorld(oldName) == null) {
             wasJustLoaded = true;
             WorldProperties props = this.worldsFromTheConfig.get(oldName);
             wasLoadSpawn = props.isKeepingSpawnInMemory();
@@ -146,9 +176,9 @@ public class SimpleMVWorldManager implements MVWorldManager {
             if (!this.loadWorld(oldName)) {
                 return false;
             }
-            this.plugin.getServer().getWorld(oldName).setAutoSave(false);
+            this.server.getWorld(oldName).setAutoSave(false);
         }
-        
+
         // Grab a bit of metadata from the old world.
         MVWorld oldWorld = getMVWorld(oldName);
 
@@ -176,7 +206,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
         if (oldWorld != null && wasAutoSave) {
             oldWorld.getCBWorld().setAutoSave(true);
         }
-        
+
         if (newWorldFile.exists()) {
             Logging.fine("Succeeded at copying files");
 
@@ -196,8 +226,8 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
             // actually load the world
             if (doLoad(newName)) {
-               Logging.fine("Succeeded at loading cloned world '" + newName + "'");
-               return true;
+                Logging.fine("Succeeded at loading cloned world '" + newName + "'");
+                return true;
             }
             Logging.severe("Failed to load the cloned world '" + newName + "'");
             return false;
@@ -294,11 +324,11 @@ public class SimpleMVWorldManager implements MVWorldManager {
             return null;
         }
 
-        final Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
+        final Plugin myPlugin = this.server.getPluginManager().getPlugin(generator);
         if (myPlugin == null) {
             return null;
         } else {
-            return plugin.getUnsafeCallWrapper().wrap(new Callable<ChunkGenerator>() {
+            return unsafeCallWrapper.wrap(new Callable<ChunkGenerator>() {
                 @Override
                 public ChunkGenerator call() throws Exception {
                     return myPlugin.getDefaultWorldGenerator(worldName, generatorID);
@@ -332,8 +362,8 @@ public class SimpleMVWorldManager implements MVWorldManager {
      */
     @Override
     public void setFirstSpawnWorld(String world) {
-        if ((world == null) && (this.plugin.getServer().getWorlds().size() > 0)) {
-            this.firstSpawn = this.plugin.getServer().getWorlds().get(0).getName();
+        if ((world == null) && (this.server.getWorlds().size() > 0)) {
+            this.firstSpawn = this.server.getWorlds().get(0).getName();
         } else {
             this.firstSpawn = world;
         }
@@ -349,7 +379,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             // If the spawn world was unloaded, get the default world
             Logging.warning("The world specified as the spawn world (" + this.firstSpawn + ") did not exist!!");
             try {
-                return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+                return this.getMVWorld(this.server.getWorlds().get(0));
             } catch (IndexOutOfBoundsException e) {
                 // This should only happen in tests.
                 return null;
@@ -377,17 +407,17 @@ public class SimpleMVWorldManager implements MVWorldManager {
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from Bukkit.", name);
                 return true;
-            } else if (!unloadBukkit){
+            } else if (!unloadBukkit) {
                 this.worlds.remove(name);
                 Logging.info("World '%s' was unloaded from Multiverse.", name);
                 return true;
             } else {
                 Logging.warning("World '%s' could not be unloaded from Bukkit. Is it a default world?", name);
             }
-        } else if (this.plugin.getServer().getWorld(name) != null) {
+        } else if (this.server.getWorld(name) != null) {
             Logging.warning("Hmm Multiverse does not know about this world but it's loaded in memory.");
             Logging.warning("To let Multiverse know about it, use:");
-            Logging.warning("/mv import %s %s", name, this.plugin.getServer().getWorld(name).getEnvironment().toString());
+            Logging.warning("/mv import %s %s", name, this.server.getWorld(name).getEnvironment().toString());
         } else if (this.worldsFromTheConfig.containsKey(name)) {
             return true; // it's already unloaded
         } else {
@@ -444,7 +474,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
         boolean generatorSuccess = true;
         if ((world.getGenerator() != null) && (!world.getGenerator().equals("null")))
-            generatorSuccess = null != plugin.getUnsafeCallWrapper().wrap(new Callable<Object>() {
+            generatorSuccess = null != unsafeCallWrapper.wrap(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     creator.generator(world.getGenerator());
@@ -462,7 +492,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
         if (worlds.containsKey(worldName))
             throw new IllegalArgumentException("That world is already loaded!");
 
-        if (!ignoreExists && !new File(this.plugin.getServer().getWorldContainer(), worldName).exists() && !new File(this.plugin.getServer().getWorldContainer().getParent(), worldName).exists()) {
+        if (!ignoreExists && !new File(this.server.getWorldContainer(), worldName).exists() && !new File(this.server.getWorldContainer().getParent(), worldName).exists()) {
             Logging.warning("WorldManager: Can't load this world because the folder was deleted/moved: " + worldName);
             Logging.warning("Use '/mv remove' to remove it from the config!");
             return false;
@@ -481,8 +511,9 @@ public class SimpleMVWorldManager implements MVWorldManager {
             nullWorld(worldName);
             return false;
         }
-        SimpleMVWorld world = new SimpleMVWorld(plugin, cbworld, mvworld);
-        if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+        SimpleMVWorld world = new SimpleMVWorld(this, config, worldPurger, playerListener, blockSafety,
+                safeTTeleporter, locationManipulation, server, cbworld, mvworld);
+        if (config.isAutoPurgeEntities()) {
             this.worldPurger.purgeWorld(world);
         }
         this.worlds.put(worldName, world);
@@ -501,7 +532,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
             }
         }
 
-        World world = this.plugin.getServer().getWorld(name);
+        World world = this.server.getWorld(name);
         if (world == null) {
             // We can only delete loaded worlds
             return false;
@@ -509,7 +540,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
         // call the event!
         MVWorldDeleteEvent mvwde = new MVWorldDeleteEvent(getMVWorld(name), removeFromConfig);
-        this.plugin.getServer().getPluginManager().callEvent(mvwde);
+        this.server.getPluginManager().callEvent(mvwde);
         if (mvwde.isCancelled()) {
             Logging.fine("Tried to delete a world, but the event was cancelled!");
             return false;
@@ -572,7 +603,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
      */
     private boolean unloadWorldFromBukkit(String name, boolean safely) {
         this.removePlayersFromWorld(name);
-        return this.plugin.getServer().unloadWorld(name, safely);
+        return this.server.unloadWorld(name, safely);
     }
 
     /**
@@ -580,14 +611,13 @@ public class SimpleMVWorldManager implements MVWorldManager {
      */
     @Override
     public void removePlayersFromWorld(String name) {
-        World w = this.plugin.getServer().getWorld(name);
+        World w = this.server.getWorld(name);
         if (w != null) {
-            World safeWorld = this.plugin.getServer().getWorlds().get(0);
+            World safeWorld = this.server.getWorlds().get(0);
             List<Player> ps = w.getPlayers();
-            SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             for (Player p : ps) {
                 // We're removing players forcefully from a world, they'd BETTER spawn safely.
-                teleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);
+                this.safeTTeleporter.safelyTeleport(null, p, safeWorld.getSpawnLocation(), true);
             }
         }
     }
@@ -694,7 +724,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
     @Override
     public void loadDefaultWorlds() {
         this.ensureConfigIsPrepared();
-        List<World> myWorlds = this.plugin.getServer().getWorlds();
+        List<World> myWorlds = this.server.getWorlds();
         for (World w : myWorlds) {
             String name = w.getName();
             if (!worldsFromTheConfig.containsKey(name)) {
@@ -727,8 +757,8 @@ public class SimpleMVWorldManager implements MVWorldManager {
         // Force the worlds to be loaded, ie don't just load new worlds.
         if (forceLoad) {
             // Remove all world permissions.
-            Permission allAccess = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
-            Permission allExempt = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
+            Permission allAccess = this.server.getPluginManager().getPermission("multiverse.access.*");
+            Permission allExempt = this.server.getPluginManager().getPermission("multiverse.exempt.*");
             for (MVWorld w : this.worlds.values()) {
                 // Remove this world from the master list
                 if (allAccess != null) {
@@ -737,14 +767,14 @@ public class SimpleMVWorldManager implements MVWorldManager {
                 if (allExempt != null) {
                     allExempt.getChildren().remove(w.getAccessPermission().getName());
                 }
-                this.plugin.getServer().getPluginManager().removePermission(w.getAccessPermission().getName());
-                this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
+                this.server.getPluginManager().removePermission(w.getAccessPermission().getName());
+                this.server.getPluginManager().removePermission(w.getExemptPermission().getName());
                 // Special namespace for gamemodes
-                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
+                this.server.getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
             }
             // Recalc the all permission
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allExempt);
+            this.server.getPluginManager().recalculatePermissionDefaults(allAccess);
+            this.server.getPluginManager().recalculatePermissionDefaults(allExempt);
             this.worlds.clear();
         }
 
@@ -765,19 +795,11 @@ public class SimpleMVWorldManager implements MVWorldManager {
     }
 
     private void ensureSecondNamespaceIsPrepared() {
-        Permission special = this.plugin.getServer().getPluginManager().getPermission("mv.bypass.gamemode.*");
+        Permission special = this.server.getPluginManager().getPermission("mv.bypass.gamemode.*");
         if (special == null) {
             special = new Permission("mv.bypass.gamemode.*", PermissionDefault.FALSE);
-            this.plugin.getServer().getPluginManager().addPermission(special);
+            this.server.getPluginManager().addPermission(special);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public WorldPurger getTheWorldPurger() {
-        return worldPurger;
     }
 
     private static final char SEPARATOR = '\uF8FF';
@@ -791,11 +813,12 @@ public class SimpleMVWorldManager implements MVWorldManager {
      * {@inheritDoc}
      */
     @Override
-    public FileConfiguration loadWorldConfig(File file) {
+    public FileConfiguration loadWorldsConfig() {
+        File file = new File(this.plugin.getDataFolder(), WORLD_CONFIG_FILE);
         this.configWorlds = YamlConfiguration.loadConfiguration(file);
         this.ensureConfigIsPrepared();
         try {
-            this.configWorlds.save(new File(this.plugin.getDataFolder(), "worlds.yml"));
+            this.configWorlds.save(file);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -857,7 +880,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
      */
     @Override
     public MVWorld getSpawnWorld() {
-        return this.getMVWorld(this.plugin.getServer().getWorlds().get(0));
+        return this.getMVWorld(this.server.getWorlds().get(0));
     }
 
     /**
@@ -950,10 +973,9 @@ public class SimpleMVWorldManager implements MVWorldManager {
         }
 
         // Send all players that were in the old world, BACK to it!
-        SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
         Location newSpawn = world.getSpawnLocation();
         for (Player p : ps) {
-            teleporter.safelyTeleport(null, p, newSpawn, true);
+            this.safeTTeleporter.safelyTeleport(null, p, newSpawn, true);
         }
 
         return true;
@@ -969,6 +991,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
 
     /**
      * Gets the {@link FileConfiguration} that this {@link SimpleMVWorldManager} is using.
+     *
      * @return The {@link FileConfiguration} that this {@link SimpleMVWorldManager} is using.
      */
     public FileConfiguration getConfigWorlds() {
@@ -978,25 +1001,25 @@ public class SimpleMVWorldManager implements MVWorldManager {
     /**
      * {@inheritDoc}
      */
-	@Override
-	public boolean hasUnloadedWorld(String name, boolean includeLoaded) {
-		if (getMVWorld(name) != null) {
-			return includeLoaded;
-		}
-		for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
-			if (name.equals(entry.getKey()) || name.equals(entry.getValue().getAlias())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean hasUnloadedWorld(String name, boolean includeLoaded) {
+        if (getMVWorld(name) != null) {
+            return includeLoaded;
+        }
+        for (Map.Entry<String, WorldProperties> entry : this.worldsFromTheConfig.entrySet()) {
+            if (name.equals(entry.getKey()) || name.equals(entry.getValue().getAlias())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-	public Collection<String> getPotentialWorlds() {
-        File worldContainer = this.plugin.getServer().getWorldContainer();
+    public Collection<String> getPotentialWorlds() {
+        File worldContainer = this.server.getWorldContainer();
         if (worldContainer == null) {
             return Collections.emptyList();
         }

@@ -17,22 +17,38 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
-import com.onarandombox.MultiverseCore.locale.MVCorei18n;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
+import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class CreateCommand extends MultiverseCoreCommand {
-    public CreateCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class CreateCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public CreateCommand(
+            @NotNull MVCommandManager commandManager,
+            @NotNull MVWorldManager worldManager,
+            @NotNull UnsafeCallWrapper unsafeCallWrapper
+    ) {
+        super(commandManager);
+
+        this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvcreate")
                 .add(CommandValueFlag.builder("--seed", String.class)
@@ -43,7 +59,7 @@ public class CreateCommand extends MultiverseCoreCommand {
                         .addAlias("-g")
                         .completion(() -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
                                 .filter(Plugin::isEnabled)
-                                .filter(genplugin -> this.plugin.getUnsafeCallWrapper().wrap(
+                                .filter(genplugin -> unsafeCallWrapper.wrap(
                                         () -> genplugin.getDefaultWorldGenerator("world", ""),
                                         genplugin.getName(),
                                         "Get generator"
@@ -51,22 +67,8 @@ public class CreateCommand extends MultiverseCoreCommand {
                                 .map(genplugin -> genplugin.getDescription().getName())
                                 .collect(Collectors.toList()))
                         .build())
-                .add(CommandValueFlag.builder("--world-type", WorldType.class)
+                .add(CommandValueFlag.enumBuilder("--world-type", WorldType.class)
                         .addAlias("-t")
-                        .context((value) -> {
-                            try {
-                                return WorldType.valueOf(value.toUpperCase());
-                            } catch (IllegalArgumentException e) {
-                                throw new InvalidCommandArgument("Invalid world type: " + value);
-                            }
-                        })
-                        .completion(() -> {
-                            List<String> types = new ArrayList<>();
-                            for (WorldType type : WorldType.values()) {
-                                types.add(type.name().toLowerCase());
-                            }
-                            return types;
-                        })
                         .build())
                 .add(CommandFlag.builder("--adjust-spawn")
                         .addAlias("-n")
@@ -84,7 +86,7 @@ public class CreateCommand extends MultiverseCoreCommand {
     @Description("{@@mv-core.create.description}")
     public void onCreateCommand(BukkitCommandIssuer issuer,
 
-                                @Conditions("validWorldName:scope=new")
+                                @Conditions("worldname:scope=new")
                                 @Syntax("<name>")
                                 @Description("{@@mv-core.create.name.description}")
                                 String worldName,

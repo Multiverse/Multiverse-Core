@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -12,19 +13,29 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
-import org.bukkit.ChatColor;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class RegenCommand extends MultiverseCoreCommand {
-    public RegenCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class RegenCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+
+    @Inject
+    public RegenCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+        super(commandManager);
+        this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvregen")
                 .add(CommandValueFlag.builder("--seed", String.class)
@@ -42,38 +53,45 @@ public class RegenCommand extends MultiverseCoreCommand {
     @CommandPermission("multiverse.core.regen")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvregen")
     @Syntax("<world> --seed [seed] --keep-gamerules")
-    @Description("Regenerates a world on your server. The previous state will be lost PERMANENTLY.")
+    @Description("{@@mv-core.regen.description}")
     public void onRegenCommand(BukkitCommandIssuer issuer,
 
-                               @Conditions("validWorldName:scope=both")
+                               @Conditions("worldname:scope=both")
                                @Syntax("<world>")
-                               @Description("World that you want to regen.")
+                               @Description("{@@mv-core.regen.world.description}")
                                String worldName,
 
                                @Optional
                                @Syntax("--seed [seed] --keep-gamerules")
-                               @Description("Other world settings. See: http://gg.gg/nn8lk")
+                               @Description("{@@mv-core.regen.other.description}")
                                String[] flags
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        this.plugin.getMVCommandManager().getCommandQueueManager().addToQueue(new QueuedCommand(
+        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
-                    issuer.sendMessage(String.format("Regenerating world '%s'...", worldName));
-                    if (!this.plugin.getMVWorldManager().regenWorld(
+                    issuer.sendInfo(MVCorei18n.REGEN_REGENERATING,
+                            "{world}", worldName);
+                    if (!this.worldManager.regenWorld(
                             worldName,
                             parsedFlags.hasFlag("--seed"),
                             !parsedFlags.hasFlagValue("--seed"),
                             parsedFlags.flagValue("--seed", String.class),
                             parsedFlags.hasFlag("--keep-gamerules")
                     )) {
-                        issuer.sendMessage(String.format("%sThere was an issue regenerating '%s'! Please check console for errors.", ChatColor.RED, worldName));
+                        issuer.sendError(MVCorei18n.REGEN_FAILED,
+                                "{world}", worldName);
                         return;
                     }
-                    issuer.sendMessage(String.format("%sWorld %s was regenerated!", ChatColor.GREEN, worldName));
+                    issuer.sendInfo(MVCorei18n.REGEN_SUCCESS,
+                            "{world}", worldName);
                 },
-                "Are you sure you want to regenerate world '" + worldName + "'?"
+                this.commandManager.formatMessage(
+                        issuer,
+                        MessageType.INFO,
+                        MVCorei18n.REGEN_PROMPT,
+                        "{world}", worldName)
         ));
     }
 }

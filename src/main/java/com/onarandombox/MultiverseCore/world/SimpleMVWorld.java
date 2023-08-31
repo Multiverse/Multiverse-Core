@@ -13,12 +13,15 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.MultiverseCoreConfiguration;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
+import com.onarandombox.MultiverseCore.api.WorldPurger;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.world.configuration.EnglishChatColor;
 import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
@@ -33,6 +36,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -50,20 +54,59 @@ public class SimpleMVWorld implements MVWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
-    private final MultiverseCore plugin; // Hold the Plugin Instance.
+    private final MVWorldManager worldManager;
+    private final MVCoreConfig config;
+    private final WorldPurger worldPurger;
+    private final MVPlayerListener playerListener;
+    private final BlockSafety blockSafety;
+    private final SafeTTeleporter safeTTeleporter;
+    private final LocationManipulation locationManipulation;
+    private final Server server;
     private final String name; // The Worlds Name, EG its folder name.
     private final UUID worldUID;
     private final WorldProperties props;
 
-    public SimpleMVWorld(MultiverseCore plugin, World world, WorldProperties properties) {
-        this(plugin, world, properties, true);
+    public SimpleMVWorld(
+            MVWorldManager worldManager,
+            MVCoreConfig config,
+            WorldPurger worldPurger,
+            MVPlayerListener playerListener,
+            BlockSafety blockSafety,
+            SafeTTeleporter safeTTeleporter,
+            LocationManipulation locationManipulation,
+            Server server,
+            World world,
+            WorldProperties properties
+    ) {
+        this(worldManager, config, worldPurger, playerListener, blockSafety, safeTTeleporter,
+                locationManipulation, server, world, properties, true);
     }
 
     /*
      * We have to use setCBWorld(), setPlugin() and initPerms() to prepare this object for use.
      */
-    public SimpleMVWorld(MultiverseCore plugin, World world, WorldProperties properties, boolean fixSpawn) {
-        this.plugin = plugin;
+    public SimpleMVWorld(
+            MVWorldManager worldManager,
+            MVCoreConfig config,
+            WorldPurger worldPurger,
+            MVPlayerListener playerListener,
+            BlockSafety blockSafety,
+            SafeTTeleporter safeTTeleporter,
+            LocationManipulation locationManipulation,
+            Server server,
+            World world,
+            WorldProperties properties,
+            boolean fixSpawn
+    ) {
+        this.worldManager = worldManager;
+        this.config = config;
+        this.worldPurger = worldPurger;
+        this.playerListener = playerListener;
+        this.blockSafety = blockSafety;
+        this.safeTTeleporter = safeTTeleporter;
+        this.locationManipulation = locationManipulation;
+        this.server = server;
+
         this.name = world.getName();
         this.worldUID = world.getUID();
         this.props = properties;
@@ -228,7 +271,7 @@ public class SimpleMVWorld implements MVWorld {
         @Override
         public String validateChange(String property, String newValue, String oldValue,
                 SimpleMVWorld object) throws ChangeDeniedException {
-            if (!newValue.isEmpty() && !plugin.getMVWorldManager().isMVWorld(newValue))
+            if (!newValue.isEmpty() && !worldManager.isMVWorld(newValue))
                 throw new ChangeDeniedException();
             return super.validateChange(property, newValue, oldValue, object);
         }
@@ -282,8 +325,8 @@ public class SimpleMVWorld implements MVWorld {
                 }
                 world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
-                plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(SimpleMVWorld.this);
+            if (config.isAutoPurgeEntities()) {
+                worldPurger.purgeWorld(SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);
         }
@@ -296,10 +339,10 @@ public class SimpleMVWorld implements MVWorld {
         @Override
         public GameMode validateChange(String property, GameMode newValue, GameMode oldValue,
                 SimpleMVWorld object) throws ChangeDeniedException {
-            for (Player p : plugin.getServer().getWorld(getName()).getPlayers()) {
+            for (Player p : server.getWorld(getName()).getPlayers()) {
                 Logging.finer(String.format("Setting %s's GameMode to %s",
                         p.getName(), newValue.toString()));
-                plugin.getPlayerListener().handleGameModeAndFlight(p, SimpleMVWorld.this);
+                playerListener.handleGameModeAndFlight(p, SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);
         }
@@ -315,20 +358,18 @@ public class SimpleMVWorld implements MVWorld {
             if (newValue == null)
                 throw new ChangeDeniedException();
             if (props.getAdjustSpawn()) {
-                BlockSafety bs = plugin.getBlockSafety();
                 // verify that the location is safe
-                if (!bs.playerCanSpawnHereSafely(newValue)) {
+                if (!blockSafety.playerCanSpawnHereSafely(newValue)) {
                     // it's not ==> find a better one!
                     Logging.warning(String.format("Somebody tried to set the spawn location for '%s' to an unsafe value! Adjusting...", getAlias()));
-                    Logging.warning("Old Location: " + plugin.getLocationManipulation().strCoordsRaw(oldValue));
-                    Logging.warning("New (unsafe) Location: " + plugin.getLocationManipulation().strCoordsRaw(newValue));
-                    SafeTTeleporter teleporter = plugin.getSafeTTeleporter();
-                    newValue = teleporter.getSafeLocation(newValue, SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
+                    Logging.warning("Old Location: " + locationManipulation.strCoordsRaw(oldValue));
+                    Logging.warning("New (unsafe) Location: " + locationManipulation.strCoordsRaw(newValue));
+                    newValue = safeTTeleporter.getSafeLocation(newValue, SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
                     if (newValue == null) {
                         Logging.warning("Couldn't fix the location. I have to abort the spawn location-change :/");
                         throw new ChangeDeniedException();
                     }
-                    Logging.warning("New (safe) Location: " + plugin.getLocationManipulation().strCoordsRaw(newValue));
+                    Logging.warning("New (safe) Location: " + locationManipulation.strCoordsRaw(newValue));
                 }
             }
             return super.validateChange(property, newValue, oldValue, object);
@@ -380,7 +421,7 @@ public class SimpleMVWorld implements MVWorld {
 
         @Override
         public String toString() {
-            return "NULL LOCATION";
+            return "Location{null}";
         };
     }
 
@@ -399,10 +440,10 @@ public class SimpleMVWorld implements MVWorld {
         this.limitbypassperm = new Permission("mv.bypass.playerlimit." + this.getName(),
                 "A player who can enter this world regardless of wether its full", PermissionDefault.OP);
         try {
-            this.plugin.getServer().getPluginManager().addPermission(this.permission);
-            this.plugin.getServer().getPluginManager().addPermission(this.exempt);
-            this.plugin.getServer().getPluginManager().addPermission(this.ignoreperm);
-            this.plugin.getServer().getPluginManager().addPermission(this.limitbypassperm);
+            this.server.getPluginManager().addPermission(this.permission);
+            this.server.getPluginManager().addPermission(this.exempt);
+            this.server.getPluginManager().addPermission(this.ignoreperm);
+            this.server.getPluginManager().addPermission(this.limitbypassperm);
             // Add the permission and exempt to parents.
             this.addToUpperLists(this.permission);
 
@@ -418,9 +459,8 @@ public class SimpleMVWorld implements MVWorld {
     private Location readSpawnFromWorld(World w) {
         Location location = w.getSpawnLocation();
         // Set the worldspawn to our configspawn
-        BlockSafety bs = this.plugin.getBlockSafety();
         // Verify that location was safe
-        if (!bs.playerCanSpawnHereSafely(location)) {
+        if (!blockSafety.playerCanSpawnHereSafely(location)) {
             if (!this.getAdjustSpawn()) {
                 Logging.fine("Spawn location from world.dat file was unsafe!!");
                 Logging.fine("NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
@@ -429,25 +469,24 @@ public class SimpleMVWorld implements MVWorld {
                 return location;
             }
             // If it's not, find a better one.
-            SafeTTeleporter teleporter = this.plugin.getSafeTTeleporter();
             Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
-            Logging.warning("Original Location: " + plugin.getLocationManipulation().strCoordsRaw(location));
-            Location newSpawn = teleporter.getSafeLocation(location,
+            Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
+            Location newSpawn = safeTTeleporter.getSafeLocation(location,
                     SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
             // I think we could also do this, as I think this is what Notch does.
             // Not sure how it will work in the nether...
             //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
             if (newSpawn != null) {
                 Logging.info("New Spawn for '%s' is located at: %s",
-                        this.getName(), plugin.getLocationManipulation().locationToString(newSpawn));
+                        this.getName(), locationManipulation.locationToString(newSpawn));
                 return newSpawn;
             } else {
                 // If it's a standard end world, let's check in a better place:
                 Location newerSpawn;
-                newerSpawn = bs.getTopBlock(new Location(w, 0, 0, 0));
+                newerSpawn = blockSafety.getTopBlock(new Location(w, 0, 0, 0));
                 if (newerSpawn != null) {
                     Logging.info("New Spawn for '%s' is located at: %s",
-                            this.getName(), plugin.getLocationManipulation().locationToString(newerSpawn));
+                            this.getName(), locationManipulation.locationToString(newerSpawn));
                     return newerSpawn;
                 } else {
                     Logging.severe("Safe spawn NOT found!!!");
@@ -458,29 +497,29 @@ public class SimpleMVWorld implements MVWorld {
     }
 
     private void addToUpperLists(Permission perm) {
-        Permission all = this.plugin.getServer().getPluginManager().getPermission("multiverse.*");
-        Permission allWorlds = this.plugin.getServer().getPluginManager().getPermission("multiverse.access.*");
-        Permission allExemption = this.plugin.getServer().getPluginManager().getPermission("multiverse.exempt.*");
+        Permission all = this.server.getPluginManager().getPermission("multiverse.*");
+        Permission allWorlds = this.server.getPluginManager().getPermission("multiverse.access.*");
+        Permission allExemption = this.server.getPluginManager().getPermission("multiverse.exempt.*");
 
         if (allWorlds == null) {
             allWorlds = new Permission("multiverse.access.*");
-            this.plugin.getServer().getPluginManager().addPermission(allWorlds);
+            this.server.getPluginManager().addPermission(allWorlds);
         }
         allWorlds.getChildren().put(perm.getName(), true);
         if (allExemption == null) {
             allExemption = new Permission("multiverse.exempt.*");
-            this.plugin.getServer().getPluginManager().addPermission(allExemption);
+            this.server.getPluginManager().addPermission(allExemption);
         }
         allExemption.getChildren().put(this.exempt.getName(), true);
         if (all == null) {
             all = new Permission("multiverse.*");
-            this.plugin.getServer().getPluginManager().addPermission(all);
+            this.server.getPluginManager().addPermission(all);
         }
         all.getChildren().put("multiverse.access.*", true);
         all.getChildren().put("multiverse.exempt.*", true);
 
-        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(all);
-        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allWorlds);
+        this.server.getPluginManager().recalculatePermissionDefaults(all);
+        this.server.getPluginManager().recalculatePermissionDefaults(allWorlds);
     }
 
     /**
@@ -504,7 +543,7 @@ public class SimpleMVWorld implements MVWorld {
      */
     @Override
     public World getCBWorld() {
-        final World world = plugin.getServer().getWorld(worldUID);
+        final World world = server.getWorld(worldUID);
         if (world == null) {
             throw new IllegalStateException("Lost reference to bukkit world '" + name + "'");
         }
@@ -900,7 +939,7 @@ public class SimpleMVWorld implements MVWorld {
      */
     @Override
     public World getRespawnToWorld() {
-        return this.plugin.getServer().getWorld(props.getRespawnToWorld());
+        return this.server.getWorld(props.getRespawnToWorld());
     }
 
     /**
@@ -908,7 +947,7 @@ public class SimpleMVWorld implements MVWorld {
      */
     @Override
     public boolean setRespawnToWorld(String respawnToWorld) {
-        if (!this.plugin.getMVWorldManager().isMVWorld(respawnToWorld)) return false;
+        if (!this.worldManager.isMVWorld(respawnToWorld)) return false;
         return this.props.setRespawnToWorld(respawnToWorld);
     }
 

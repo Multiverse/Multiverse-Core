@@ -3,38 +3,44 @@ package com.onarandombox.MultiverseCore.destination;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
+import jakarta.inject.Inject;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Provides destinations for teleportation.
  */
+@Service
 public class DestinationsProvider {
     private static final String SEPARATOR = ":";
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
 
-    private final MultiverseCore plugin;
+    private final PluginManager pluginManager;
+    private final SafeTTeleporter safeTTeleporter;
     private final Map<String, Destination<?>> destinationMap;
 
     /**
      * Creates a new destinations provider.
-     *
-     * @param plugin The plugin.
      */
-    public DestinationsProvider(@NotNull MultiverseCore plugin) {
-        this.plugin = plugin;
+    @Inject
+    public DestinationsProvider(@NotNull PluginManager pluginManager, @NotNull SafeTTeleporter safeTTeleporter) {
+        this.pluginManager = pluginManager;
+        this.safeTTeleporter = safeTTeleporter;
         this.destinationMap = new HashMap<>();
     }
 
@@ -49,7 +55,6 @@ public class DestinationsProvider {
     }
 
     private void registerDestinationPerms(@NotNull Destination<?> destination) {
-        PluginManager pluginManager = this.plugin.getServer().getPluginManager();
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "self." + destination.getIdentifier()));
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "other." + destination.getIdentifier()));
     }
@@ -125,14 +130,14 @@ public class DestinationsProvider {
      * @param teleportee    The teleportee.
      * @param destination   The destination.
      */
-    public void playerTeleport(@NotNull BukkitCommandIssuer teleporter,
+    public CompletableFuture<TeleportResult> playerTeleportAsync(@NotNull BukkitCommandIssuer teleporter,
                                @NotNull Player teleportee,
                                @NotNull ParsedDestination<?> destination
     ) {
         if (!checkTeleportPermissions(teleporter, teleportee, destination)) {
-            return;
+            return CompletableFuture.completedFuture(TeleportResult.FAIL_PERMISSION);
         }
-        teleport(teleporter, teleportee, destination);
+        return teleportAsync(teleporter, teleportee, destination);
     }
 
     /**
@@ -142,15 +147,15 @@ public class DestinationsProvider {
      * @param teleportee    The teleportee.
      * @param destination   The destination.
      */
-    public void teleport(@NotNull BukkitCommandIssuer teleporter,
-                         @NotNull Entity teleportee,
-                         @NotNull ParsedDestination<?> destination
+    public CompletableFuture<TeleportResult> teleportAsync(@NotNull BukkitCommandIssuer teleporter,
+                                                           @NotNull Entity teleportee,
+                                                           @NotNull ParsedDestination<?> destination
     ) {
         Teleporter teleportHandler = destination.getDestination().getTeleporter();
         if (teleportHandler == null) {
-            teleportHandler = this.plugin.getSafeTTeleporter();
+            teleportHandler = safeTTeleporter;
         }
-        teleportHandler.teleport(teleporter, teleportee, destination);
+        return teleportHandler.teleportAsync(teleporter, teleportee, destination);
     }
 
     /**

@@ -7,22 +7,26 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import jakarta.inject.Inject;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
+import org.jvnet.hk2.annotations.Service;
 
-public class MVWorldInitListener implements Listener {
+@Service
+public class MVWorldInitListener implements InjectableListener {
 
-    MultiverseCore plugin;
+    private final MVWorldManager worldManager;
 
-    public MVWorldInitListener(MultiverseCore plugin) {
-        this.plugin = plugin;
+    @Inject
+    public MVWorldInitListener(MVWorldManager worldManager) {
+        this.worldManager = worldManager;
     }
 
     @EventHandler
     public void initWorld(WorldInitEvent event) {
-        if (!plugin.getMVWorldManager().isKeepingSpawnInMemory(event.getWorld())) {
+        if (!worldManager.isKeepingSpawnInMemory(event.getWorld())) {
             event.getWorld().setKeepSpawnInMemory(false);
         }
     }

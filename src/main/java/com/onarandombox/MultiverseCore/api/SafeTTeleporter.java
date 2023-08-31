@@ -1,15 +1,19 @@
 package com.onarandombox.MultiverseCore.api;
 
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Used to safely teleport people.
  */
+@Contract
 public interface SafeTTeleporter extends Teleporter {
 
     /**
@@ -37,7 +41,19 @@ public interface SafeTTeleporter extends Teleporter {
      * @param destination   Destination to teleport them to
      * @return true for success, false for failure
      */
+    @Deprecated
     TeleportResult safelyTeleport(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination);
+
+    /**
+     * Safely teleport the entity to the MVDestination. This will perform checks to see if the place is safe, and if
+     * it's not, will adjust the final destination accordingly.
+     *
+     * @param teleporter    Person who performed the teleport command.
+     * @param teleportee    Entity to teleport
+     * @param destination   Destination to teleport them to
+     * @return true for success, false for failure
+     */
+    CompletableFuture<TeleportResult> safelyTeleportAsync(BukkitCommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination);
 
     /**
      * Safely teleport the entity to the Location. This may perform checks to
@@ -68,5 +84,4 @@ public interface SafeTTeleporter extends Teleporter {
      * @return The next portal-block's {@link Location}.
      */
     Location findPortalBlockNextTo(Location l);
-
 }

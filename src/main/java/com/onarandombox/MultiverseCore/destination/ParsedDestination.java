@@ -2,6 +2,10 @@ package com.onarandombox.MultiverseCore.destination;
 
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parsed destination.
@@ -21,6 +25,34 @@ public class ParsedDestination<S extends DestinationInstance> {
     public ParsedDestination(Destination<S> destination, DestinationInstance destinationInstance) {
         this.destination = destination;
         this.destinationInstance = destinationInstance;
+    }
+
+    /**
+     * Shortcut for {@link Destination#getIdentifier()}.
+     *
+     * @return The destination identifier.
+     */
+    public @NotNull String getIdentifier() {
+        return destination.getIdentifier();
+    }
+
+    /**
+     * Shortcut for {@link DestinationInstance#getLocation(Entity)}.
+     *
+     * @param teleportee    The entity to teleport.
+     * @return The location to teleport to.
+     */
+    public @Nullable Location getLocation(@NotNull Entity teleportee) {
+        return destinationInstance.getLocation(teleportee);
+    }
+
+    /**
+     * Shortcut for {@link DestinationInstance#getFinerPermissionSuffix()}.
+     *
+     * @return The finer permission suffix.
+     */
+    public @Nullable String getFinerPermissionSuffix() {
+        return destinationInstance.getFinerPermissionSuffix();
     }
 
     /**
@@ -48,6 +80,6 @@ public class ParsedDestination<S extends DestinationInstance> {
      */
     @Override
     public String toString() {
-        return destination.getIdentifier() + ":" + destinationInstance.serialise();
+        return getIdentifier() + ":" + destinationInstance.serialise();
     }
 }

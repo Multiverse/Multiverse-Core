@@ -3,10 +3,12 @@ package com.onarandombox.MultiverseCore.api;
 import org.bukkit.Location;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
  * Used to manipulate locations.
  */
+@Contract
 public interface LocationManipulation {
     /**
      * Convert a Location into a Colon separated string to allow us to store it in text.

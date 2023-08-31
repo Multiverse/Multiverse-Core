@@ -1,0 +1,323 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'checkstyle'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "org.jetbrains.kotlin.jvm" version "1.8.10"
+}
+
+version = System.getenv('GITHUB_VERSION') ?: 'local'
+group = 'com.onarandombox.multiversecore'
+description = 'Multiverse-Core'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+    }
+
+    maven {
+        url = uri('https://repo.onarandombox.com/content/groups/public')
+    }
+
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/groups/public/')
+    }
+
+    maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
+        url = uri('https://repo.minebench.de/')
+    }
+
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+
+    maven {
+        name = 'aikar repo'
+        url = uri('https://repo.aikar.co/content/groups/aikar/')
+    }
+
+    maven {
+        name = 'glaremasters repo'
+        url = 'https://repo.glaremasters.me/repository/towny/'
+    }
+    maven {
+        name = 'PlaceholderAPI'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+}
+
+configurations {
+    // Add configuration for server API
+    compileOnly.extendsFrom serverApi
+    runtimeClasspath.extendsFrom serverApi
+
+    // Add configuration for external plugins
+    implementation.extendsFrom externalPlugin
+
+    // Add configuration for dependencies that will be included in fat jar
+    compileClasspath.extendsFrom shadowed
+    testCompileClasspath.extendsFrom shadowed
+    testRuntimeClasspath.extendsFrom shadowed
+    oldTestCompileClasspath.extendsFrom shadowed
+    oldTestRuntimeClasspath.extendsFrom shadowed
+
+    // Add configuration for old tests
+    oldTestImplementation.extendsFrom implementation
+    oldTestRuntime.extendsFrom runtime
+}
+
+dependencies {
+    serverApi 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+
+    // Economy
+    externalPlugin('com.github.MilkBowl:VaultAPI:1.7.1') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+
+    // PlaceholderAPI
+    externalPlugin 'me.clip:placeholderapi:2.11.3'
+
+    // Command Framework
+    shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+
+    // Config
+    shadowed('me.main__.util:SerializationConfig:1.7') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+    shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
+        exclude group: 'org.spigotmc', module: 'spigot-api'
+    }
+
+    // Utils
+    shadowed 'io.vavr:vavr:0.10.4'
+    shadowed 'org.glassfish.hk2:hk2-locator:3.0.3'
+    shadowed('com.dumptruckman.minecraft:Logging:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    shadowed 'org.bstats:bstats-bukkit:2.2.1'
+    shadowed 'net.minidev:json-smart:2.4.8'
+    shadowed 'org.jetbrains:annotations:22.0.0'
+    shadowed 'io.papermc:paperlib:1.0.8'
+
+    // Tests
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.19:2.141.0'
+    testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'com.natpryce:hamkrest:1.8.0.1'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
+
+    // Old Tests
+    oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
+    oldTestImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude group: 'junit', module: 'junit'
+    }
+    oldTestImplementation 'junit:junit:4.13.1'
+    oldTestImplementation 'org.mockito:mockito-core:3.11.2'
+    oldTestImplementation 'commons-io:commons-io:2.7'
+
+    // Annotation Processors
+    annotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
+    testAnnotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
+}
+
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+
+configurations {
+    [apiElements, runtimeElements].each {
+        it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+        it.outgoing.artifact(shadowJar)
+    }
+}
+
+
+sourceSets {
+    oldTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+            srcDir file('src/old-test/java')
+        }
+        resources.srcDir file('src/old-test/resources')
+    }
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom.withXml {
+                Node pomNode = asNode()
+
+                // Remove Kotlin dependency
+                pomNode.dependencies.'*'.findAll() {
+                    it.groupId.text() == 'org.jetbrains.kotlin'
+                }.each() {
+                    it.parent().remove(it)
+                }
+
+                // Switch runtime deps to provided
+                pomNode.dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime'
+                }.each() {
+                    it.scope*.value = 'provided'
+                }
+
+                // Add spigot api to pom
+                project.configurations.serverApi.allDependencies.each { dependency ->
+                    pomNode.dependencies[0].appendNode("dependency").with {
+                        it.appendNode("groupId", dependency.group)
+                        it.appendNode("artifactId", dependency.name)
+                        it.appendNode("version", dependency.version)
+                        it.appendNode("scope", "provided")
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Multiverse/Multiverse-Core"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+
+ext.bitlyAccessToken = System.getenv('BITLY_ACCESS_TOKEN') ?: 'bitly-access-token'
+
+task prepareSource(type: Sync) {
+    inputs.property 'bitlyAccessToken', bitlyAccessToken
+    from sourceSets.main.java
+    into "$buildDir/src"
+    filter(ReplaceTokens, tokens: [
+            'bitly-access-token': bitlyAccessToken,
+    ])
+}
+
+compileJava {
+    source = prepareSource.outputs
+}
+tasks.withType(JavaCompile) {
+    configure(options) {
+        options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
+    }
+}
+
+compileKotlin {
+    // We're not using Kotlin in the plugin itself, just tests!
+    enabled = false
+}
+configurations.findAll { !it.name.startsWith('test') }.each {
+    it.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+}
+
+processResources {
+    def props = [version: "${project.version}"]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+
+    // This task should never be skipped. The tests depend on this having been run but we want the new version number
+    // that is created after tests are run and before we run again to publish.
+    outputs.upToDateWhen { false }
+}
+
+
+checkstyle {
+    toolVersion = '6.1.1'
+    configFile file('config/mv_checks.xml')
+    ignoreFailures = true
+}
+
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+}
+
+
+project.configurations.api.canBeResolved = true
+
+shadowJar {
+    relocate 'co.aikar', 'com.onarandombox.acf'
+    relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
+    relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
+    relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
+    relocate 'io.github.townyadvanced.commentedconfiguration', 'com.onarandombox.commentedconfiguration'
+    relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
+    relocate 'org.bstats', 'com.onarandombox.bstats'
+    relocate 'com.sun', 'com.onarandombox.sun'
+    relocate 'net.minidev', 'com.onarandombox.minidev'
+    relocate 'org.objectweb', 'com.onarandombox.objectweb'
+    relocate 'io.vavr', 'com.onarandombox.vavr'
+    relocate 'jakarta', 'com.onarandombox.jakarta'
+    relocate 'javassist', 'com.onarandombox.javassist'
+    relocate 'org.aopalliance', 'com.onarandombox.aopalliance'
+    relocate 'org.glassfish', 'com.onarandombox.glassfish'
+    relocate 'org.jvnet', 'com.onarandombox.jvnet'
+    relocate 'org.intellij', 'com.onarandombox.intellij'
+    relocate 'org.jetbrains', 'com.onarandombox.jetbrains'
+    relocate 'io.papermc.lib', 'com.onarandombox.paperlib'
+
+    configurations = [project.configurations.shadowed]
+
+    archiveFileName = "$baseName-$version.$extension"
+
+    dependencies {
+        exclude(dependency {
+            it.moduleGroup == 'org.jetbrains.kotlin'
+        })
+    }
+    //classifier = ''
+}
+
+build.dependsOn shadowJar
+jar.enabled = false
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}

@@ -22,7 +22,7 @@ public class EntryFee extends SerializationConfig {
     @Nullable
     private Material currency;
 
-    private final Material DISABLED_MATERIAL = Material.AIR;
+    public static final Material DISABLED_MATERIAL = Material.AIR;
 
     public EntryFee() {
         super();
