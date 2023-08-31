@@ -26,7 +26,6 @@ class WorldConfigFileTest : TestWithMockBukkit() {
         worldConfigFile.load()
     }
 
-
     @Test
     fun `World config is loaded`() {
         assertTrue(worldConfigFile.isLoaded)
