@@ -107,9 +107,6 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
     public static abstract class Builder<C extends FileConfiguration, B extends Builder<C, B>> extends GenericConfigHandle.Builder<C, B> {
 
         protected @NotNull Path configPath;
-        protected @Nullable Logger logger;
-        protected @Nullable NodeGroup nodes;
-        protected @Nullable ConfigMigrator migrator;
 
         protected Builder(@NotNull Path configPath) {
             this.configPath = configPath;
