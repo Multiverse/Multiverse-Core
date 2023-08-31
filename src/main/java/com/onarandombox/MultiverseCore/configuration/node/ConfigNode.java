@@ -111,6 +111,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * @param <B>   The type of the builder.
      */
     public static class Builder<T, B extends ConfigNode.Builder<T, B>> extends ConfigHeaderNode.Builder<B> {
+        private static final NodeSerializer<?> ENUM_NODE_SERIALIZER = new EnumNodeSerializer<>();
 
         protected @Nullable String name;
         protected @NotNull final Class<T> type;
@@ -129,6 +130,9 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             super(path);
             this.name = path;
             this.type = type;
+            if (type.isEnum()) {
+                this.serializer = (NodeSerializer<T>) ENUM_NODE_SERIALIZER;
+            }
         }
 
         /**
