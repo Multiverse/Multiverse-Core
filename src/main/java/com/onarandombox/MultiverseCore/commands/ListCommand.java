@@ -13,6 +13,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
+import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
@@ -22,15 +25,31 @@ import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ListContentProvider;
+import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
+import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
+@Service
 @CommandAlias("mv")
-public class ListCommand extends MultiverseCoreCommand {
-    public ListCommand(@NotNull MultiverseCore plugin) {
-        super(plugin);
+public class ListCommand extends MultiverseCommand {
+
+    private final MVWorldManager worldManager;
+    private final WorldEntryCheckerProvider worldEntryCheckerProvider;
+
+    @Inject
+    public ListCommand(
+            @NotNull MVCommandManager commandManager,
+            @NotNull MVWorldManager worldManager,
+            @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider
+    ) {
+        super(commandManager);
+        this.worldManager = worldManager;
+        this.worldEntryCheckerProvider = worldEntryCheckerProvider;
 
         registerFlagGroup(CommandFlagGroup.builder("mvlist")
                 .add(CommandValueFlag.builder("--filter", ContentFilter.class)
@@ -82,15 +101,15 @@ public class ListCommand extends MultiverseCoreCommand {
         Player player = issuer.isPlayer() ? issuer.getPlayer() : null;
         List<String> worldList =  new ArrayList<>();
 
-        this.plugin.getMVWorldManager().getMVWorlds().stream()
-                .filter(world -> player == null || plugin.getMVPerms().canEnterWorld(player, world))
+        worldManager.getMVWorlds().stream()
+                .filter(world -> player == null || worldEntryCheckerProvider.forSender(player).canAccessWorld(world).isSuccess())
                 .filter(world -> canSeeWorld(player, world))
                 .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
                 .sorted()
                 .forEach(worldList::add);
 
-        this.plugin.getMVWorldManager().getUnloadedWorlds().stream()
-                .filter(world -> plugin.getMVPerms().hasPermission(issuer.getIssuer(), "multiverse.access." + world, true))
+        worldManager.getUnloadedWorlds().stream()
+                .filter(world -> issuer.hasPermission("multiverse.access." + world)) // TODO: Refactor stray permission check
                 .map(world -> ChatColor.GRAY + world + " - UNLOADED")
                 .sorted()
                 .forEach(worldList::add);
@@ -101,7 +120,7 @@ public class ListCommand extends MultiverseCoreCommand {
     private boolean canSeeWorld(Player player, MVWorld world) {
         return !world.isHidden()
                 || player == null
-                || this.plugin.getMVPerms().hasPermission(player, "multiverse.core.modify", true);
+                || player.hasPermission("multiverse.core.modify"); // TODO: Refactor stray permission check
     }
 
     private String hiddenText(MVWorld world) {
