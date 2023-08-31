@@ -5,7 +5,8 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class WorldManagerTest  : TestWithMockBukkit() {
+class WorldManagerTest : TestWithMockBukkit() {
+
     private lateinit var worldManager: WorldManager
 
     @BeforeTest

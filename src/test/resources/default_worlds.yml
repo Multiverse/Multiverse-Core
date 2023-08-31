@@ -1,6 +1,6 @@
 world:
   adjust-spawn: false
-  alias: ''
+  alias: my world
   allow-flight: false
   allow-weather: true
   auto-heal: true

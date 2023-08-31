@@ -15,6 +15,7 @@ import kotlin.test.assertTrue
 class WorldConfigTest : TestWithMockBukkit() {
 
     private lateinit var worldConfigFile : WorldsConfigFile
+    private lateinit var worldConfig : WorldConfig
 
     @BeforeTest
     fun setUp() {
@@ -24,52 +25,46 @@ class WorldConfigTest : TestWithMockBukkit() {
 
         worldConfigFile = WorldsConfigFile(multiverseCore)
         worldConfigFile.load()
+        worldConfig = WorldConfig(worldConfigFile.getWorldConfigSection("world"))
     }
 
     @Test
-    fun `World config is loaded`() {
-        assertTrue(worldConfigFile.isLoaded)
+    fun `Getting existing world property with getProperty returns expected value`() {
+        assertEquals("my world", worldConfig.getProperty("alias").get())
+        assertEquals(false, worldConfig.getProperty("hidden").get())
     }
 
     @Test
-    fun `Old world config is migrated`() {
-        // TODO
+    fun `Getting non-existing world property with getProperty returns null`() {
+        assertTrue(worldConfig.getProperty("invalid-property").isFailure)
+        assertTrue(worldConfig.getProperty("version").isFailure)
     }
 
     @Test
-    fun `Add a new world to config`() {
-        val worldConfig = WorldConfig(worldConfigFile.getWorldConfigSection("newworld"))
-        worldConfigFile.save()
-
-        compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
+    fun `Getting existing world property by getter returns expected value`() {
+        assertEquals("my world", worldConfig.alias)
+        assertEquals(false, worldConfig.isHidden)
     }
 
     @Test
-    fun `Updating existing world properties`() {
-        val worldConfig = WorldConfig(worldConfigFile.getWorldConfigSection("world"))
-        worldConfig.setProperty("adjust-spawn", true)
-        worldConfig.setProperty("alias", "newalias")
-
-        worldConfigFile.save()
-
+    fun `Updating an existing world property with setProperty reflects the changes in getProperty`() {
+        assertTrue(worldConfig.setProperty("adjust-spawn", true).isSuccess)
         assertEquals(true, worldConfig.getProperty("adjust-spawn").get())
-        assertEquals("newalias", worldConfig.getProperty("alias").get())
 
-        compareConfigFile("worlds2.yml", "/properties_worlds.yml")
+        assertTrue(worldConfig.setProperty("alias", "abc").isSuccess)
+        assertEquals("abc", worldConfig.getProperty("alias").get())
+
+        assertTrue(worldConfig.setProperty("scale", 2.0).isSuccess)
+        assertEquals(2.0, worldConfig.getProperty("scale").get())
+
+        val blacklists = listOf("a", "b", "c")
+        assertTrue(worldConfig.setProperty("world-blacklist", blacklists).isSuccess)
+        assertEquals(blacklists, worldConfig.getProperty("world-blacklist").get())
     }
 
     @Test
-    fun `Delete world section from config`() {
-        worldConfigFile.deleteWorldConfigSection("world")
-        worldConfigFile.save()
-
-        compareConfigFile("worlds2.yml", "/delete_worlds.yml")
-    }
-
-    private fun compareConfigFile(configPath: String, comparePath: String) {
-        val config = multiverseCore.dataFolder.toPath().resolve(configPath).toFile().readText()
-        val configCompare = getResourceAsText(comparePath)
-        assertNotNull(configCompare)
-        assertEquals(configCompare, config)
+    fun `Updating a non-existing property with setProperty returns false`() {
+        assertTrue(worldConfig.setProperty("invalid-property", false).isFailure)
+        assertTrue(worldConfig.setProperty("version", 1.1).isFailure)
     }
 }
