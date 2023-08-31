@@ -7,6 +7,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class WorldConfig {
     private final WorldConfigNodes configNodes;
     private final ConfigurationSectionHandle configHandle;
@@ -43,5 +45,13 @@ public class WorldConfig {
 
     public boolean isHidden() {
         return configHandle.get(configNodes.HIDDEN);
+    }
+
+    public List<String> getWorldBlacklist() {
+        return (List<String>) configHandle.get(configNodes.WORLD_BLACKLIST);
+    }
+
+    public void setWorldBlacklist(List<String> worldBlacklist) {
+        configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
     }
 }

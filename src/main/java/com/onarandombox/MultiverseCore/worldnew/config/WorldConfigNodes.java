@@ -10,6 +10,9 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WorldConfigNodes {
     private static final NodeSerializer<?> ENUM_NODE_SERIALIZER = new EnumNodeSerializer<>();
 
@@ -124,6 +127,11 @@ public class WorldConfigNodes {
     public final ConfigNode<String> SEED = node(ConfigNode.builder("seed", String.class)
             .defaultValue("")
             .name("seed")
+            .build());
+
+    public final ConfigNode<List> WORLD_BLACKLIST = node(ConfigNode.builder("world-blacklist", List.class)
+            .defaultValue(new ArrayList<>())
+            .name("world-blacklist")
             .build());
 
     //todo: color and style
