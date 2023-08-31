@@ -47,12 +47,15 @@ public class DeleteCommand extends MultiverseCommand {
         this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
-                    issuer.sendInfo(MVCorei18n.DELETE_DELETING, "{world}", worldName);
+                    issuer.sendInfo(MVCorei18n.DELETE_DELETING,
+                            "{world}", worldName);
                     if (!this.worldManager.deleteWorld(worldName)) {
-                        issuer.sendError(MVCorei18n.DELETE_FAILED, "{world}", worldName);
+                        issuer.sendError(MVCorei18n.DELETE_FAILED,
+                                "{world}", worldName);
                         return;
                     }
-                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, "{world}", worldName);
+                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS,
+                            "{world}", worldName);
                 },
                 this.commandManager.formatMessage(
                         issuer,
