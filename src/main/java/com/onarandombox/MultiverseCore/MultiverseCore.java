@@ -25,6 +25,7 @@ import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -57,6 +58,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<MVCoreConfig> configProvider;
     @Inject
     private Provider<MVWorldManager> worldManagerProvider;
+    @Inject
+    private Provider<WorldManager> newWorldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
     @Inject
@@ -124,6 +127,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (firstSpawnWorld != null) {
             config.setFirstSpawnLocation(firstSpawnWorld.getName());
         }
+
+        var newWorldManager = newWorldManagerProvider.get();
+        newWorldManager.loadAllWorlds(); // TODO: Possibly move this to constructor of WorldManager
 
         //Setup economy here so vault is loaded
         this.loadEconomist();

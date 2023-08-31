@@ -23,7 +23,6 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
     protected final @NotNull Path configPath;
     protected final @NotNull File configFile;
 
-
     protected FileConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         super(logger, nodes, migrator);
         this.configPath = configPath;

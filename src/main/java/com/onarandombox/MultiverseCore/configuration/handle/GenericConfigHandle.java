@@ -3,7 +3,9 @@ package com.onarandombox.MultiverseCore.configuration.handle;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNodeNotFoundException;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import com.onarandombox.MultiverseCore.configuration.node.NodeSerializer;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -58,7 +60,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
 
         nodes.forEach(node -> {
             if (node instanceof ValueNode valueNode) {
-                set(valueNode, config.getObject(valueNode.getPath(), valueNode.getType(), valueNode.getDefaultValue()));
+                set(valueNode, get(valueNode));
             }
         });
     }
@@ -81,7 +83,10 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      * @return The value of the node.
      */
     public <T> T get(@NotNull ValueNode<T> node) {
-        return config.getObject(node.getPath(), node.getType(), node.getDefaultValue());
+        if (node.getSerializer() == null) {
+            return config.getObject(node.getPath(), node.getType(), node.getDefaultValue());
+        }
+        return node.getSerializer().deserialize(config.get(node.getPath(), node.getDefaultValue()), node.getType());
     }
 
     /**
@@ -108,7 +113,12 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         return node.validate(value).map(ignore -> {
             T oldValue = get(node);
-            config.set(node.getPath(), value);
+            if (node.getSerializer() != null) {
+                var serialized = node.getSerializer().serialize(value, node.getType());
+                config.set(node.getPath(), serialized);
+            } else {
+                config.set(node.getPath(), value);
+            }
             node.onSetValue(oldValue, get(node));
             return null;
         });
