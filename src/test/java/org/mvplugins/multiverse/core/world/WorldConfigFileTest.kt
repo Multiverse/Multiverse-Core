@@ -60,6 +60,7 @@ class WorldConfigFileTest : TestWithMockBukkit() {
     }
 
     private fun compareConfigFile(configPath: String, comparePath: String) {
+        // TODO: Map keys may not guaranteed order. Potentially look at Hamkrest and assertThat.
         val config = multiverseCore.dataFolder.toPath().resolve(configPath).toFile().readText()
         val configCompare = getResourceAsText(comparePath)
         assertNotNull(configCompare)
