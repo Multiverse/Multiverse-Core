@@ -9,10 +9,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class WorldsConfigFile {
@@ -31,6 +28,10 @@ public class WorldsConfigFile {
         worldConfig = YamlConfiguration.loadConfiguration(worldConfigFile);
     }
 
+    public boolean isLoaded() {
+        return worldConfig != null;
+    }
+
     public void save() {
         try {
             worldConfig.save(worldConfigFile);
@@ -43,7 +44,7 @@ public class WorldsConfigFile {
         return worldConfig.getKeys(false);
     }
 
-    public ConfigurationSection addWorldConfigSection(String worldName) {
+    public ConfigurationSection getWorldConfigSection(String worldName) {
         return worldConfig.isConfigurationSection(worldName)
                 ? worldConfig.getConfigurationSection(worldName) : worldConfig.createSection(worldName);
     }

@@ -8,6 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import java.util.List;
+
 @Service
 public class WorldManager {
     private final WorldsConfigFile worldsConfigFile;
@@ -27,14 +29,14 @@ public class WorldManager {
     }
 
     public void addWorld(String worldName) {
-        ConfigurationSection worldConfigSection = worldsConfigFile.addWorldConfigSection(worldName);
+        ConfigurationSection worldConfigSection = worldsConfigFile.getWorldConfigSection(worldName);
         WorldConfig worldConfig = new WorldConfig(worldConfigSection);
         //todo
         saveWorldsConfig();
     }
 
     public void loadWorld(String worldName) {
-        ConfigurationSection worldConfigSection = worldsConfigFile.addWorldConfigSection(worldName);
+        ConfigurationSection worldConfigSection = worldsConfigFile.getWorldConfigSection(worldName);
         WorldConfig worldConfig = new WorldConfig(worldConfigSection);
         //todo
     }
@@ -46,11 +48,13 @@ public class WorldManager {
     public void removeWorld(String worldName) {
         //todo
         worldsConfigFile.deleteWorldConfigSection(worldName);
+        saveWorldsConfig();
     }
 
     public void deleteWorld(String worldName) {
         //todo
         worldsConfigFile.deleteWorldConfigSection(worldName);
+        saveWorldsConfig();
     }
 
     public void getMVWorld(String worldName) {
