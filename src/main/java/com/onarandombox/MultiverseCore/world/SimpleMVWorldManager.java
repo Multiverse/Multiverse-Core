@@ -55,6 +55,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
+
 /**
  * Public facing API to add/remove Multiverse worlds.
  */
@@ -103,23 +105,27 @@ public class SimpleMVWorldManager implements MVWorldManager {
         this.worlds = new ConcurrentHashMap<String, MVWorld>();
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void getDefaultWorldGenerators() {
         this.defaultGens = new HashMap<>();
-        File file = new File("bukkit.yml");
-        if (file.isFile()) {
-            FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(file);
-            if (bukkitConfig.isConfigurationSection("worlds")) {
-                Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
-                for (String key : keys) {
-                    defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
-                }
+
+        File bukkitConfigFile = getBukkitConfig();
+        if (bukkitConfigFile == null) {
+            Logging.warning("Any Default worldgenerators will not be loaded!");
+            return;
+        }
+
+        FileConfiguration bukkitConfig = YamlConfiguration.loadConfiguration(bukkitConfigFile);
+
+        if (bukkitConfig.isConfigurationSection("worlds")) {
+            Set<String> keys = bukkitConfig.getConfigurationSection("worlds").getKeys(false);
+            for (String key : keys) {
+                defaultGens.put(key, bukkitConfig.getString("worlds." + key + ".generator", ""));
             }
-        } else {
-            Logging.warning("Could not read 'bukkit.yml'. Any Default worldgenerators will not be loaded!");
         }
     }
 

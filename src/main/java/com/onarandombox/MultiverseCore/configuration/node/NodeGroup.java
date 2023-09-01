@@ -49,6 +49,10 @@ public class NodeGroup implements Collection<Node> {
         return nodesMap.keySet();
     }
 
+    public Map<String, Node> getNodesMap() {
+        return nodesMap;
+    }
+
     /**
      * Gets the node with the given name.
      *

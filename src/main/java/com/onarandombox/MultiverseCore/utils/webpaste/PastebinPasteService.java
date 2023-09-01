@@ -1,8 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -22,16 +22,12 @@ class PastebinPasteService extends PasteService {
      */
     @Override
     String encodeData(String data) {
-        try {
-            return URLEncoder.encode("api_dev_key", "UTF-8") + "=" + URLEncoder.encode("d61d68d31e8e0392b59b50b277411c71", "UTF-8") +
-                    "&" + URLEncoder.encode("api_option", "UTF-8") + "=" + URLEncoder.encode("paste", "UTF-8") +
-                    "&" + URLEncoder.encode("api_paste_code", "UTF-8") + "=" + URLEncoder.encode(data, "UTF-8") +
-                    "&" + URLEncoder.encode("api_paste_private", "UTF-8") + "=" + URLEncoder.encode(this.isPrivate ? "1" : "0", "UTF-8") +
-                    "&" + URLEncoder.encode("api_paste_format", "UTF-8") + "=" + URLEncoder.encode("yaml", "UTF-8") +
-                    "&" + URLEncoder.encode("api_paste_name", "UTF-8") + "=" + URLEncoder.encode("Multiverse-Core Debug Info", "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return ""; // should never hit here
-        }
+        return URLEncoder.encode("api_dev_key", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("144d820f540e79a1242b32cb9ab274c6", StandardCharsets.UTF_8) +
+                "&" + URLEncoder.encode("api_option", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("paste", StandardCharsets.UTF_8) +
+                "&" + URLEncoder.encode("api_paste_code", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(data, StandardCharsets.UTF_8) +
+                "&" + URLEncoder.encode("api_paste_private", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(this.isPrivate ? "1" : "0", StandardCharsets.UTF_8) +
+                "&" + URLEncoder.encode("api_paste_format", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("yaml", StandardCharsets.UTF_8) +
+                "&" + URLEncoder.encode("api_paste_name", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("Multiverse-Core Debug Info", StandardCharsets.UTF_8);
     }
 
     /**

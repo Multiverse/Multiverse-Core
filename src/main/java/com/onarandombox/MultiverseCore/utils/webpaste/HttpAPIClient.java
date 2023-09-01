@@ -26,6 +26,7 @@ abstract class HttpAPIClient {
     enum ContentType {
         JSON,
         PLAINTEXT,
+        PLAINTEXT_YAML,
         URLENCODED
     }
 
@@ -44,16 +45,13 @@ abstract class HttpAPIClient {
      * @return The HTTP Content-Type header that corresponds with the type of data.
      */
     private String getContentHeader(ContentType type) {
-        switch (type) {
-            case JSON:
-                return "application/json; charset=utf-8";
-            case PLAINTEXT:
-                return "text/plain; charset=utf-8";
-            case URLENCODED:
-                return "application/x-www-form-urlencoded; charset=utf-8";
-            default:
-                throw new IllegalArgumentException("Unexpected value: " + type);
-        }
+        return switch (type) {
+            case JSON -> "application/json; charset=utf-8";
+            case PLAINTEXT -> "text/plain; charset=utf-8";
+            case PLAINTEXT_YAML -> "text/yaml";
+            case URLENCODED -> "application/x-www-form-urlencoded; charset=utf-8";
+            default -> throw new IllegalArgumentException("Unexpected value: " + type);
+        };
     }
 
     /**
@@ -80,48 +78,48 @@ abstract class HttpAPIClient {
      * @throws IOException When the I/O-operation failed.
      */
     final String exec(String payload, ContentType type) throws IOException {
-        BufferedReader rd = null;
-        OutputStreamWriter wr = null;
+        BufferedReader bufferedReader = null;
+        OutputStreamWriter streamWriter = null;
 
         try {
-            HttpsURLConnection conn = (HttpsURLConnection) new URL(this.url).openConnection();
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
+            HttpsURLConnection connection = (HttpsURLConnection) new URL(this.url).openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
 
             // we can receive anything!
-            conn.addRequestProperty("Accept", "*/*");
+            connection.addRequestProperty("Accept", "*/*");
             // set a dummy User-Agent
-            conn.addRequestProperty("User-Agent", "placeholder");
+            connection.addRequestProperty("User-Agent", "multiverse/dumps");
             // this isn't required, but is technically correct
-            conn.addRequestProperty("Content-Type", getContentHeader(type));
+            connection.addRequestProperty("Content-Type", getContentHeader(type));
             // only some API requests require an access token
             if (this.accessToken != null) {
-                conn.addRequestProperty("Authorization", this.accessToken);
+                connection.addRequestProperty("Authorization", this.accessToken);
             }
 
-            wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8.newEncoder());
-            wr.write(payload);
-            wr.flush();
+            streamWriter = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.newEncoder());
+            streamWriter.write(payload);
+            streamWriter.flush();
 
             String line;
             StringBuilder responseString = new StringBuilder();
             // this has to be initialized AFTER the data has been flushed!
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 
-            while ((line = rd.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 responseString.append(line);
             }
 
             return responseString.toString();
         } finally {
-            if (wr != null) {
+            if (streamWriter != null) {
                 try {
-                    wr.close();
+                    streamWriter.close();
                 } catch (IOException ignore) { }
             }
-            if (rd != null) {
+            if (bufferedReader != null) {
                 try {
-                    rd.close();
+                    bufferedReader.close();
                 } catch (IOException ignore) { }
             }
         }

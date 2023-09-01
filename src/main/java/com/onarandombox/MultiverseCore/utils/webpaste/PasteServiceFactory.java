@@ -13,17 +13,12 @@ public class PasteServiceFactory {
      * @return The newly created {@link PasteService}.
      */
     public static PasteService getService(PasteServiceType type, boolean isPrivate) {
-        switch(type) {
-            case PASTEGG:
-                return new PasteGGPasteService(isPrivate);
-            case PASTEBIN:
-                return new PastebinPasteService(isPrivate);
-            case HASTEBIN:
-                return new HastebinPasteService();
-            case GITHUB:
-                return new GitHubPasteService(isPrivate);
-            default:
-                return null;
-        }
+        return switch (type) {
+            case PASTEGG -> new PasteGGPasteService(isPrivate);
+            case PASTEBIN -> new PastebinPasteService(isPrivate);
+            case PASTESDEV -> new PastesDevPasteService();
+            case GITHUB -> new GitHubPasteService(isPrivate);
+            case MCLOGS -> new McloGsPasteService();
+        };
     }
 }

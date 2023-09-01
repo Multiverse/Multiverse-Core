@@ -8,6 +8,7 @@
 package com.onarandombox.MultiverseCore.utils.file;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static org.bukkit.Bukkit.getServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,8 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * File-utilities.
@@ -98,6 +101,36 @@ public class FileUtils {
             Logging.warning("Unable to copy directory", e);
             return false;
         }
+    }
+
+    @Nullable
+    public static File getBukkitConfig() {
+        return findFileFromServerDirectory("bukkit.yml");
+    }
+
+    @Nullable
+    public static File getServerProperties() {
+        return findFileFromServerDirectory("server.properties");
+    }
+
+    @Nullable
+    private static File findFileFromServerDirectory(String fileName) {
+        File[] files;
+        try {
+            // TODO: getWorldContainer may throw error for MockBukkit during test
+            files = getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase(fileName));
+        } catch (Exception e) {
+            Logging.severe("Could not read from server directory. Unable to locate file: %s", fileName);
+            Logging.severe(e.getMessage());
+            return null;
+        }
+
+        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
+        if (files != null && files.length == 1) {
+            return files[0];
+        }
+        Logging.warning("Unable to locate file from server directory: %s", fileName);
+        return null;
     }
 
     private static class CopyDirFileVisitor extends SimpleFileVisitor<Path> {
