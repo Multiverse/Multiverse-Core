@@ -20,8 +20,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     CLONE_SUCCESS,
 
     // Coordinates command
-    COORDINATES_ERRORPLAYERSONLY,
-    COORDINATES_ERROR_MULTIVERSEWORLDONLY,
     COORDINATES_INFO_TITLE,
     COORDINATES_INFO_WORLD,
     COORDINATES_INFO_ALIAS,
@@ -91,6 +89,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     // debug command
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON,
+
+    // commands error
+    COMMANDS_ERROR_PLAYERSONLY,
+    COMMANDS_ERROR_MULTIVERSEWORLDONLY,
 
     // entry check
     ENTRYCHECK_BLACKLISTED,
