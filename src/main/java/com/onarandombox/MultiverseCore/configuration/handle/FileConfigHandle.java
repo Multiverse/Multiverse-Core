@@ -34,15 +34,21 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
      */
     @Override
     public boolean load() {
-        if (!createConfigFile()) {
+        boolean newFileCreated;
+        try {
+            newFileCreated = createConfigFile();
+        } catch (IOException e) {
             Logging.severe("Failed to create config file: %s", configFile.getName());
+            Logging.severe(e.getMessage());
             return false;
         }
         if (!loadConfigObject()) {
             Logging.severe("Failed to load config file: %s", configFile.getName());
             return false;
         }
-        migrateConfig();
+        if (!newFileCreated) {
+            migrateConfig();
+        }
         setUpNodes();
         return true;
     }
@@ -52,19 +58,11 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
      *
      * @return True if file exist or created successfully, otherwise false.
      */
-    protected boolean createConfigFile() {
+    protected boolean createConfigFile() throws IOException {
         if (configFile.exists()) {
-            return true;
-        }
-        try {
-            if (!configFile.createNewFile()) {
-                return false;
-            }
-            Logging.info("Created new config file: %s", configFile.getName());
-        } catch (IOException e) {
             return false;
         }
-        return true;
+        return configFile.createNewFile();
     }
 
     /**
