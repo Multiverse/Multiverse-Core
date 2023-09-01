@@ -49,6 +49,10 @@ public class WorldsConfigFile {
                 ? worldConfig.getConfigurationSection(worldName) : worldConfig.createSection(worldName);
     }
 
+    public WorldConfig getWorldConfig(String worldName) {
+        return new WorldConfig(getWorldConfigSection(worldName));
+    }
+
     public void deleteWorldConfigSection(String worldName) {
         worldConfig.set(worldName, null);
     }
