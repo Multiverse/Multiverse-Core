@@ -25,7 +25,7 @@ class WorldConfigTest : TestWithMockBukkit() {
 
         worldConfigFile = WorldsConfigFile(multiverseCore)
         worldConfigFile.load()
-        worldConfig = WorldConfig(worldConfigFile.getWorldConfigSection("world"))
+        worldConfig = worldConfigFile.getWorldConfig("world")
     }
 
     @Test
