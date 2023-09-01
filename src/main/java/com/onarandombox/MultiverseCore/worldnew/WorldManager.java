@@ -29,15 +29,13 @@ public class WorldManager {
     }
 
     public void addWorld(String worldName) {
-        ConfigurationSection worldConfigSection = worldsConfigFile.getWorldConfigSection(worldName);
-        WorldConfig worldConfig = new WorldConfig(worldConfigSection);
+        WorldConfig worldConfig = worldsConfigFile.getWorldConfig(worldName);
         //todo
         saveWorldsConfig();
     }
 
     public void loadWorld(String worldName) {
-        ConfigurationSection worldConfigSection = worldsConfigFile.getWorldConfigSection(worldName);
-        WorldConfig worldConfig = new WorldConfig(worldConfigSection);
+        WorldConfig worldConfig = worldsConfigFile.getWorldConfig(worldName);
         //todo
     }
 

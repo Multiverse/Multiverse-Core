@@ -38,14 +38,14 @@ class WorldConfigFileTest : TestWithMockBukkit() {
 
     @Test
     fun `Add a new world to config`() {
-        val worldConfig = WorldConfig(worldConfigFile.getWorldConfigSection("newworld"))
+        val worldConfig = worldConfigFile.getWorldConfig("newworld")
         worldConfigFile.save()
         compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
     }
 
     @Test
     fun `Updating existing world properties`() {
-        val worldConfig = WorldConfig(worldConfigFile.getWorldConfigSection("world"))
+        val worldConfig = worldConfigFile.getWorldConfig("world")
         worldConfig.setProperty("adjust-spawn", true)
         worldConfig.setProperty("alias", "newalias")
         worldConfigFile.save()
