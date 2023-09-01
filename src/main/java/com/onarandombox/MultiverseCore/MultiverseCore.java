@@ -337,8 +337,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return authors.toString();
     }
 
-
-
     /**
      * {@inheritDoc}
      */

@@ -59,41 +59,11 @@ public class DumpsCommand extends MultiverseCommand {
         this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvdumps")
-                .add(CommandValueFlag.builder("--logs", LogsTypeOption.class)
+                .add(CommandValueFlag.enumBuilder("--logs", LogsTypeOption.class)
                         .addAlias("-l")
-                        .context((value) -> {
-                            try {
-                                return LogsTypeOption.valueOf(value.toUpperCase());
-                            } catch (IllegalArgumentException e) {
-                                throw new InvalidCommandArgument("Invalid logs type " + value + " in --logs");
-                            }
-                        })
-                        .completion(() -> {
-                            List<String> types = new ArrayList<>();
-                            for (LogsTypeOption type : LogsTypeOption.values()) {
-                                types.add(type.name().toLowerCase());
-                            }
-                            return types;
-                        })
-                        .defaultValue(LogsTypeOption.MCLOGS)
                         .build())
-                .add(CommandValueFlag.builder("--upload", ServiceTypeOption.class)
+                .add(CommandValueFlag.enumBuilder("--upload", ServiceTypeOption.class)
                         .addAlias("-u")
-                        .context((value) -> {
-                            try {
-                                return ServiceTypeOption.valueOf(value.toUpperCase());
-                            } catch (IllegalArgumentException e) {
-                                throw new InvalidCommandArgument("Invalid service " + value + " in --upload");
-                            }
-                        })
-                        .completion(() -> {
-                            List<String> types = new ArrayList<>();
-                            for (ServiceTypeOption type : ServiceTypeOption.values()) {
-                                types.add(type.name().toLowerCase());
-                            }
-                            return types;
-                        })
-                        .defaultValue(ServiceTypeOption.PASTEGG)
                         .build())
                 .add(CommandFlag.builder("--paranoid")// Does not upload logs or plugin list (except if --logs mclogs is there)
                         .addAlias("-p")
@@ -126,8 +96,8 @@ public class DumpsCommand extends MultiverseCommand {
 
         // Grab all our flags
         final boolean paranoid = parsedFlags.hasFlag("--paranoid");
-        final LogsTypeOption logsType = parsedFlags.flagValue("--logs", LogsTypeOption.class);
-        final ServiceTypeOption servicesType = parsedFlags.flagValue("--upload", ServiceTypeOption.class);
+        final LogsTypeOption logsType = parsedFlags.flagValue("--logs", LogsTypeOption.MCLOGS, LogsTypeOption.class);
+        final ServiceTypeOption servicesType = parsedFlags.flagValue("--upload", ServiceTypeOption.PASTEGG, ServiceTypeOption.class);
 
         // Initialise and add info to the debug event
         MVVersionEvent versionEvent = new MVVersionEvent();
@@ -142,12 +112,12 @@ public class DumpsCommand extends MultiverseCommand {
         BukkitRunnable logPoster = new BukkitRunnable() {
             @Override
             public void run() {
-                HashMap<String, String> pasteURLs = new HashMap<>();
+                // TODO: Refactor into smaller methods
                 Logging.finer("Logs type is: " + logsType);
                 Logging.finer("Services is: " + servicesType);
 
                 // Deal with logs flag
-                if (!parsedFlags.hasFlag("--paranoid")) {
+                if (!paranoid) {
                     switch (logsType) {
                         case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                                 "{service}", "Logs",
