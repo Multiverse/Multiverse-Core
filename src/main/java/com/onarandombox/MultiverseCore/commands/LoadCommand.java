@@ -37,7 +37,7 @@ public class LoadCommand extends MultiverseCommand {
     public void onLoadCommand(BukkitCommandIssuer issuer,
 
                               @Single
-                              @Conditions("validWorldName:scope=unloaded")
+                              @Conditions("worldname:scope=unloaded")
                               @Syntax("<world>")
                               @Description("{@@mv-core.load.world.description}")
                               String worldName

@@ -56,7 +56,7 @@ public class RegenCommand extends MultiverseCommand {
     @Description("{@@mv-core.regen.description}")
     public void onRegenCommand(BukkitCommandIssuer issuer,
 
-                               @Conditions("validWorldName:scope=both")
+                               @Conditions("worldname:scope=both")
                                @Syntax("<world>")
                                @Description("{@@mv-core.regen.world.description}")
                                String worldName,

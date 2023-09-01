@@ -23,7 +23,6 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
     protected final @NotNull Path configPath;
     protected final @NotNull File configFile;
 
-
     protected FileConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         super(logger, nodes, migrator);
         this.configPath = configPath;
@@ -107,9 +106,6 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
     public static abstract class Builder<C extends FileConfiguration, B extends Builder<C, B>> extends GenericConfigHandle.Builder<C, B> {
 
         protected @NotNull Path configPath;
-        protected @Nullable Logger logger;
-        protected @Nullable NodeGroup nodes;
-        protected @Nullable ConfigMigrator migrator;
 
         protected Builder(@NotNull Path configPath) {
             this.configPath = configPath;

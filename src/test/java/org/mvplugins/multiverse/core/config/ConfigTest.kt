@@ -39,7 +39,7 @@ class ConfigTest : TestWithMockBukkit() {
     fun `Old config is migrated`() {
         val oldConfig = getResourceAsText("/old_config.yml")
         assertNotNull(oldConfig)
-        File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString()).writeText(oldConfig)
+        multiverseCore.dataFolder.toPath().resolve("config.yml").toFile().writeText(oldConfig)
         assertTrue(config.load())
         assertTrue(config.save())
 

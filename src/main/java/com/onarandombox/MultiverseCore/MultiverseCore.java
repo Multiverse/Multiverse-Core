@@ -25,6 +25,7 @@ import com.onarandombox.MultiverseCore.placeholders.MultiverseCorePlaceholders;
 import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -54,9 +55,11 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private ServiceLocator serviceLocator;
     @Inject
-    private MVCoreConfig config;
+    private Provider<MVCoreConfig> configProvider;
     @Inject
     private Provider<MVWorldManager> worldManagerProvider;
+    @Inject
+    private Provider<WorldManager> newWorldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
     @Inject
@@ -101,7 +104,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         initializeDependencyInjection();
 
         // Load our configs first as we need them for everything else.
-        if (config == null || !config.isLoaded()) {
+        var config = configProvider.get();
+        if (!config.isLoaded()) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -123,6 +127,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         if (firstSpawnWorld != null) {
             config.setFirstSpawnLocation(firstSpawnWorld.getName());
         }
+
+        var newWorldManager = newWorldManagerProvider.get();
+        newWorldManager.loadAllWorlds(); // TODO: Possibly move this to constructor of WorldManager
 
         //Setup economy here so vault is loaded
         this.loadEconomist();
@@ -169,7 +176,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private boolean shouldShowConfig() {
-        return !config.getSilentStart();
+        return !configProvider.get().getSilentStart();
     }
 
     private void loadEconomist() {
@@ -273,14 +280,14 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
 
-        if (config.isShowingDonateMessage()) {
+        if (configProvider.get().isShowingDonateMessage()) {
             Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
     }
 
     private void loadPlaceholderAPIIntegration() {
-        if (config.isRegisterPapiHook()
+        if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Try.run(() -> serviceLocator.createAndInitialize(MultiverseCorePlaceholders.class))
                     .onFailure(e -> {
@@ -367,7 +374,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public boolean saveAllConfigs() {
-        return config.save()
+        return configProvider.get().save()
                 && worldManagerProvider.get().saveWorldsConfig()
                 && anchorManagerProvider.get().saveAnchors();
     }

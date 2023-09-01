@@ -1,0 +1,21 @@
+world_nether:
+  adjust-spawn: false
+  alias: ''
+  allow-flight: false
+  allow-weather: true
+  auto-heal: true
+  auto-load: true
+  difficulty: NORMAL
+  environment: NETHER
+  gamemode: SURVIVAL
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: ALL
+  pvp: true
+  respawn-world: ''
+  scale: 1.0
+  seed: ''
+  world-blacklist: []
