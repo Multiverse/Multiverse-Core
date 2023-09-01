@@ -105,30 +105,31 @@ public class FileUtils {
 
     @Nullable
     public static File getBukkitConfig() {
-
-        // Look in the default position
-        File[] files = getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase("bukkit.yml"));
-
-        if (files != null && files.length == 1) {
-            return files[0];
-        }
-
-        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
-        Logging.warning("Could not read bukkit.yml");
-        return null;
+        return findFileFromServerDirectory("bukkit.yml");
     }
 
     @Nullable
     public static File getServerProperties() {
-        // Look in the default position
-        File[] files = getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase("server.properties"));
+        return findFileFromServerDirectory("server.properties");
+    }
 
-        if (files != null && files.length == 1) {
-            return files[0];
+    @Nullable
+    private static File findFileFromServerDirectory(String fileName) {
+        File[] files;
+        try {
+            // TODO: getWorldContainer may throw error for MockBukkit during test
+            files = getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase(fileName));
+        } catch (Exception e) {
+            Logging.severe("Could not read from server directory. Unable to locate file: %s", fileName);
+            Logging.severe(e.getMessage());
+            return null;
         }
 
         // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
-        Logging.warning("Could not read 'server.properties");
+        if (files != null && files.length == 1) {
+            return files[0];
+        }
+        Logging.warning("Unable to locate file from server directory: %s", fileName);
         return null;
     }
 
