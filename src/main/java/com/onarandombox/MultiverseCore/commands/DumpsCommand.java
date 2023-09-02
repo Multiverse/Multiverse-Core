@@ -1,7 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -33,11 +32,9 @@ import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
@@ -157,14 +154,27 @@ public class DumpsCommand extends MultiverseCommand {
     private String getLogs() {
         // Get the Path of latest.log
         Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
+        File logsFile = logsPath.toFile();
 
-        // Try to read file
-        try {
-            return Files.readString(logsPath);
-        } catch (IOException e) {
+        if (!logsFile.exists()) {
             Logging.warning("Could not read logs/latest.log");
-            throw new RuntimeException(e);
+            return "Could not read ./logs/latest.log";
         }
+
+
+
+        try {
+            return Files.readString(logsPath, StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            // UTF-8 encoded log
+            try {
+                return Files.readString(logsPath, StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                // It is some other strange encoding
+                throw new RuntimeException(ex);
+            }
+        }
+
     }
 
     private String getVersionString() {
