@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.worldnew;
 
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import io.vavr.control.Try;
+import org.bukkit.World;
 
 public class OfflineWorld {
 
@@ -23,5 +24,17 @@ public class OfflineWorld {
 
     public Try<Object> getProperty(String name) {
         return worldConfig.getProperty(name);
+    }
+
+    public World.Environment getEnvironment() {
+        return worldConfig.getEnvironment();
+    }
+
+    public String getGenerator() {
+        return worldConfig.getGenerator();
+    }
+
+    public long getSeed() {
+        return worldConfig.getSeed();
     }
 }

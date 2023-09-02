@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,10 +34,7 @@ public class WorldManager {
 
     public void initAllWorlds() {
         populateOfflineWorlds();
-        worldsConfigManager.getAllWorldsInConfig().forEach(worldName -> {
-            Logging.fine("Loading world: " + worldName);
-            loadWorld(worldName);
-        });
+        getOfflineWorlds().forEach(this::loadWorld);
         saveWorldsConfig();
     }
 
@@ -54,9 +52,9 @@ public class WorldManager {
      * @param options   The options for customizing the creation of a new world.
      */
     public void createWorld(CreateWorldOptions options) {
-        // Check valid worldname
+        // TODO: Check valid worldname
 
-        // Check if world already exists
+        // TODO: Check if world already exists
 
         // Create bukkit world
         World world = WorldCreator.name(options.worldName())
@@ -79,33 +77,37 @@ public class WorldManager {
         worldConfig.setSeed(world.getSeed());
 
         OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
-        offlineWorldsMap.put(options.worldName(), offlineWorld);
+        offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
 
         MVWorld mvWorld = new MVWorld(world.getName(), worldConfig, world.getUID());
-        worldsMap.put(options.worldName(), mvWorld);
+        worldsMap.put(mvWorld.getName(), mvWorld);
 
         saveWorldsConfig();
     }
 
-    public void loadWorld(@NotNull String worldName) {
-        // TODO: Implement logic
+    public void loadWorld(@NotNull OfflineWorld offlineWorld) {
+        // TODO: Reduce copy paste from createWorld method
+        World world = WorldCreator.name(offlineWorld.getName())
+                .environment(offlineWorld.getEnvironment())
+                .generator(offlineWorld.getGenerator())
+                .seed(offlineWorld.getSeed())
+                .createWorld();
+        if (world == null) {
+            // TODO: Better result handling
+            Logging.severe("Failed to create world: " + offlineWorld.getName());
+            return;
+        }
+
+        // Our multiverse world
+        WorldConfig worldConfig = worldsConfigManager.getWorldConfig(offlineWorld.getName());
+        MVWorld mvWorld = new MVWorld(world.getName(), worldConfig, world.getUID());
+        worldsMap.put(mvWorld.getName(), mvWorld);
+
+        saveWorldsConfig();
     }
 
     public void unloadWorld(@NotNull MVWorld world) {
-        // TODO: Implement logic
-    }
-
-    public void removeWorld(@NotNull MVWorld world) {
-        // TODO: Implement logic
-        worldsConfigManager.deleteWorldConfig(world.getName());
-        saveWorldsConfig();
-    }
-
-    public void deleteWorld(@NotNull MVWorld world) {
         World bukkitWorld = world.getBukkitWorld();
-        File worldFolder = bukkitWorld.getWorldFolder();
-
-        // Unload world
         // TODO: removePlayersFromWorld?
         if (!Bukkit.unloadWorld(bukkitWorld, true)) {
             Logging.severe("Failed to unload world: " + world.getName());
@@ -116,11 +118,24 @@ public class WorldManager {
             return;
         }
         worldsMap.remove(world.getName());
+    }
+
+    public void removeWorld(@NotNull OfflineWorld world) {
+        if (world instanceof MVWorld mvWorld) {
+            unloadWorld(mvWorld);
+        }
 
         // Remove world from config
         offlineWorldsMap.remove(world.getName());
         worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
+    }
+
+    public void deleteWorld(@NotNull MVWorld world) {
+        // TODO: Attempt to load if unloaded so we can actually delete the world
+
+        File worldFolder = world.getBukkitWorld().getWorldFolder();
+        removeWorld(world);
 
         // Erase world files from disk
         // TODO: Config options to keep certain files
@@ -129,6 +144,10 @@ public class WorldManager {
 
     public Option<OfflineWorld> getOfflineWorld(@NotNull String worldName) {
         return Option.of(offlineWorldsMap.get(worldName));
+    }
+
+    public Collection<OfflineWorld> getOfflineWorlds() {
+        return offlineWorldsMap.values();
     }
 
     public Option<MVWorld> getMVWorld(@NotNull String worldName) {
