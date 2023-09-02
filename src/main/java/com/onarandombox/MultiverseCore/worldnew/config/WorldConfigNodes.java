@@ -116,8 +116,8 @@ public class WorldConfigNodes {
             .name("scale")
             .build());
 
-    public final ConfigNode<String> SEED = node(ConfigNode.builder("seed", String.class)
-            .defaultValue("")
+    public final ConfigNode<Long> SEED = node(ConfigNode.builder("seed", Long.class)
+            .defaultValue(Long.MIN_VALUE)
             .name("seed")
             .build());
 

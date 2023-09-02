@@ -8,16 +8,16 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Options for customizing the creation of a new world.
  */
-public class AddWorldOptions {
+public class CreateWorldOptions {
 
     /**
-     * Creates a new {@link AddWorldOptions} instance with the given world name.
+     * Creates a new {@link CreateWorldOptions} instance with the given world name.
      *
      * @param worldName The name of the world to create.
-     * @return A new {@link AddWorldOptions} instance.
+     * @return A new {@link CreateWorldOptions} instance.
      */
-    public static @NotNull AddWorldOptions worldName(@NotNull String worldName) {
-        return new AddWorldOptions(worldName);
+    public static @NotNull CreateWorldOptions worldName(@NotNull String worldName) {
+        return new CreateWorldOptions(worldName);
     }
 
     private final String worldName;
@@ -29,11 +29,11 @@ public class AddWorldOptions {
     private WorldType worldType = WorldType.NORMAL;
 
     /**
-     * Creates a new {@link AddWorldOptions} instance with the given world name.
+     * Creates a new {@link CreateWorldOptions} instance with the given world name.
      *
      * @param worldName The name of the world to create.
      */
-    AddWorldOptions(@NotNull String worldName) {
+    CreateWorldOptions(@NotNull String worldName) {
         this.worldName = worldName;
     }
 
@@ -50,9 +50,9 @@ public class AddWorldOptions {
      * Sets the environment of the world to create.
      *
      * @param environment   The environment of the world to create.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions environment(@NotNull World.Environment environment) {
+    public @NotNull CreateWorldOptions environment(@NotNull World.Environment environment) {
         this.environment = environment;
         return this;
     }
@@ -70,9 +70,9 @@ public class AddWorldOptions {
      * Sets whether structures such as NPC villages should be generated.
      *
      * @param generateStructures    Whether structures such as NPC villages should be generated.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions generateStructures(boolean generateStructures) {
+    public @NotNull CreateWorldOptions generateStructures(boolean generateStructures) {
         this.generateStructures = generateStructures;
         return this;
     }
@@ -90,9 +90,9 @@ public class AddWorldOptions {
      * Sets the custom generator plugin and its parameters.
      *
      * @param generator The custom generator plugin and its parameters.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions generator(@Nullable String generator) {
+    public @NotNull CreateWorldOptions generator(@Nullable String generator) {
         this.generator = generator;
         return this;
     }
@@ -111,9 +111,9 @@ public class AddWorldOptions {
      * hashed.
      *
      * @param seed  The seed of the world to create.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions seed(@NotNull String seed) {
+    public @NotNull CreateWorldOptions seed(@NotNull String seed) {
         try {
             this.seed = Long.parseLong(seed);
         } catch (NumberFormatException numberformatexception) {
@@ -126,9 +126,9 @@ public class AddWorldOptions {
      * Sets the seed of the world to create.
      *
      * @param seed  The seed of the world to create.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions seed(long seed) {
+    public @NotNull CreateWorldOptions seed(long seed) {
         this.seed = seed;
         return this;
     }
@@ -146,9 +146,9 @@ public class AddWorldOptions {
      * Sets whether multiverse will search for a safe spawn location.
      *
      * @param useSpawnAdjust    Whether multiverse will search for a safe spawn location.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions useSpawnAdjust(boolean useSpawnAdjust) {
+    public @NotNull CreateWorldOptions useSpawnAdjust(boolean useSpawnAdjust) {
         this.useSpawnAdjust = useSpawnAdjust;
         return this;
     }
@@ -166,9 +166,9 @@ public class AddWorldOptions {
      * Sets the world type.
      *
      * @param worldType The world type.
-     * @return This {@link AddWorldOptions} instance.
+     * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull AddWorldOptions worldType(@NotNull WorldType worldType) {
+    public @NotNull CreateWorldOptions worldType(@NotNull WorldType worldType) {
         this.worldType = worldType;
         return this;
     }

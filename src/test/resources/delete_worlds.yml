@@ -17,5 +17,5 @@ world_nether:
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: ''
+  seed: -9223372036854775808
   world-blacklist: []

@@ -179,11 +179,11 @@ public class WorldConfig {
         return configHandle.set(configNodes.SCALE, scale);
     }
 
-    public @Nullable String getSeed() {
+    public long getSeed() {
         return configHandle.get(configNodes.SEED);
     }
 
-    public Try<Void> setSeed(String seed) {
+    public Try<Void> setSeed(long seed) {
         return configHandle.set(configNodes.SEED, seed);
     }
 

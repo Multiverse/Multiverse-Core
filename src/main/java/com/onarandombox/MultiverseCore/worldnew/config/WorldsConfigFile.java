@@ -21,6 +21,7 @@ public class WorldsConfigFile {
     @Inject
     public WorldsConfigFile(@NotNull MultiverseCore core) {
         worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
+        load();
     }
 
     public void load() {
