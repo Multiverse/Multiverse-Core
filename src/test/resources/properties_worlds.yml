@@ -6,6 +6,9 @@ world:
   auto-heal: true
   auto-load: true
   difficulty: NORMAL
+  entry-fee:
+    amount: 0.0
+    currency: AIR
   environment: NORMAL
   gamemode: SURVIVAL
   generator: ''
@@ -18,6 +21,15 @@ world:
   respawn-world: ''
   scale: 1.0
   seed: -9223372036854775808
+  spawning:
+    animals:
+      spawn: true
+      amount: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      amount: -1
+      exceptions: []
   world-blacklist: []
 world_nether:
   adjust-spawn: false
@@ -27,6 +39,9 @@ world_nether:
   auto-heal: true
   auto-load: true
   difficulty: NORMAL
+  entry-fee:
+    amount: 0.0
+    currency: AIR
   environment: NETHER
   gamemode: SURVIVAL
   generator: ''
@@ -39,4 +54,13 @@ world_nether:
   respawn-world: ''
   scale: 1.0
   seed: -9223372036854775808
+  spawning:
+    animals:
+      spawn: true
+      amount: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      amount: -1
+      exceptions: []
   world-blacklist: []

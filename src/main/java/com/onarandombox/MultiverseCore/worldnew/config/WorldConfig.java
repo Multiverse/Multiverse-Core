@@ -7,6 +7,8 @@ import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import io.vavr.control.Try;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -101,6 +103,22 @@ public class WorldConfig {
 
     public Try<Void> setDifficulty(Difficulty difficulty) {
         return configHandle.set(configNodes.DIFFICULTY, difficulty);
+    }
+
+    public double getEntryFeeAmount() {
+        return configHandle.get(configNodes.ENTRY_FEE_AMOUNT);
+    }
+
+    public Try<Void> setEntryFeeAmount(double entryFeeAmount) {
+        return configHandle.set(configNodes.ENTRY_FEE_AMOUNT, entryFeeAmount);
+    }
+
+    public Material getEntryFeeCurrency() {
+        return configHandle.get(configNodes.ENTRY_FEE_CURRENCY);
+    }
+
+    public Try<Void> setEntryFeeCurrency(Material entryFeeCurrency) {
+        return configHandle.set(configNodes.ENTRY_FEE_CURRENCY, entryFeeCurrency);
     }
 
     public World.Environment getEnvironment() {
@@ -199,8 +217,64 @@ public class WorldConfig {
         return configHandle.set(configNodes.SEED, seed);
     }
 
+    public Location getSpawnLocation() {
+        return configHandle.get(configNodes.SPAWN_LOCATION);
+    }
+
+    public Try<Void> setSpawnLocation(Location spawnLocation) {
+        return configHandle.set(configNodes.SPAWN_LOCATION, spawnLocation);
+    }
+
+    public boolean getSpawningAnimals() {
+        return configHandle.get(configNodes.SPAWNING_ANIMALS);
+    }
+
+    public Try<Void> setSpawningAnimals(boolean spawningAnimals) {
+        return configHandle.set(configNodes.SPAWNING_ANIMALS, spawningAnimals);
+    }
+
+    public int getSpawningAnimalsAmount() {
+        return configHandle.get(configNodes.SPAWNING_ANIMALS_AMOUNT);
+    }
+
+    public Try<Void> setSpawningAnimalsAmount(int spawningAnimalsAmount) {
+        return configHandle.set(configNodes.SPAWNING_ANIMALS_AMOUNT, spawningAnimalsAmount);
+    }
+
+    public List<String> getSpawningAnimalsExceptions() {
+        return configHandle.get(configNodes.SPAWNING_ANIMALS_EXCEPTIONS);
+    }
+
+    public Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
+        return configHandle.set(configNodes.SPAWNING_ANIMALS_EXCEPTIONS, spawningAnimalsExceptions);
+    }
+
+    public boolean getSpawningMonsters() {
+        return configHandle.get(configNodes.SPAWNING_MONSTERS);
+    }
+
+    public Try<Void> setSpawningMonsters(boolean spawningMonsters) {
+        return configHandle.set(configNodes.SPAWNING_MONSTERS, spawningMonsters);
+    }
+
+    public int getSpawningMonstersAmount() {
+        return configHandle.get(configNodes.SPAWNING_MONSTERS_AMOUNT);
+    }
+
+    public Try<Void> setSpawningMonstersAmount(int spawningMonstersAmount) {
+        return configHandle.set(configNodes.SPAWNING_MONSTERS_AMOUNT, spawningMonstersAmount);
+    }
+
+    public List<String> getSpawningMonstersExceptions() {
+        return configHandle.get(configNodes.SPAWNING_MONSTERS_EXCEPTIONS);
+    }
+
+    public Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
+        return configHandle.set(configNodes.SPAWNING_MONSTERS_EXCEPTIONS, spawningMonstersExceptions);
+    }
+
     public List<String> getWorldBlacklist() {
-        return (List<String>) configHandle.get(configNodes.WORLD_BLACKLIST);
+        return configHandle.get(configNodes.WORLD_BLACKLIST);
     }
 
     public Try<Void> setWorldBlacklist(List<String> worldBlacklist) {

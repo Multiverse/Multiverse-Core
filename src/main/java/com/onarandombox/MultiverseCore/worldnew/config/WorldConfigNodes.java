@@ -7,6 +7,8 @@ import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,6 +68,16 @@ public class WorldConfigNodes {
                 if (world == null) { return; }
                 world.getBukkitWorld().setDifficulty(newValue);
             })
+            .build());
+
+    public final ConfigNode<Double> ENTRY_FEE_AMOUNT = node(ConfigNode.builder("entry-fee.amount", Double.class)
+            .defaultValue(0.0)
+            .name("entryfee-amount")
+            .build());
+
+    public final ConfigNode<Material> ENTRY_FEE_CURRENCY = node(ConfigNode.builder("entry-fee.currency", Material.class)
+            .defaultValue(Material.AIR) // TODO: Convert from material ID
+            .name("entryfee-currency")
             .build());
 
     public final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode.builder("environment", World.Environment.class)
@@ -136,6 +148,40 @@ public class WorldConfigNodes {
             .name("seed")
             .build());
 
+    public final ConfigNode<Location> SPAWN_LOCATION = node(ConfigNode.builder("spawn-location", Location.class)
+            .name("spawn-location")
+            .build());
+
+    public final ConfigNode<Boolean> SPAWNING_ANIMALS = node(ConfigNode.builder("spawning.animals.spawn", Boolean.class)
+            .defaultValue(true)
+            .name("spawning-animals")
+            .build());
+
+    public final ConfigNode<Integer> SPAWNING_ANIMALS_AMOUNT = node(ConfigNode.builder("spawning.animals.amount", Integer.class)
+            .defaultValue(-1)
+            .name("spawning-animals-amount")
+            .build());
+
+    public final ConfigNode<List> SPAWNING_ANIMALS_EXCEPTIONS = node(ConfigNode.builder("spawning.animals.exceptions", List.class)
+            .defaultValue(new ArrayList<>())
+            .name("spawning-animals-exceptions")
+            .build());
+
+    public final ConfigNode<Boolean> SPAWNING_MONSTERS = node(ConfigNode.builder("spawning.monsters.spawn", Boolean.class)
+            .defaultValue(true)
+            .name("spawning-monsters")
+            .build());
+
+    public final ConfigNode<Integer> SPAWNING_MONSTERS_AMOUNT = node(ConfigNode.builder("spawning.monsters.amount", Integer.class)
+            .defaultValue(-1)
+            .name("spawning-monsters-amount")
+            .build());
+
+    public final ConfigNode<List> SPAWNING_MONSTERS_EXCEPTIONS = node(ConfigNode.builder("spawning.monsters.exceptions", List.class)
+            .defaultValue(new ArrayList<>())
+            .name("spawning-monsters-exceptions")
+            .build());
+
     public final ConfigNode<List> WORLD_BLACKLIST = node(ConfigNode.builder("world-blacklist", List.class)
             .defaultValue(new ArrayList<>())
             .name("world-blacklist")
@@ -150,8 +196,4 @@ public class WorldConfigNodes {
     }
 
     // TODO: Migrate color and style into alias
-    // TODO: spawning
-    // TODO: entryfee
-    // TODO: spawnLocation
-    // TODO: worldBlacklist
 }

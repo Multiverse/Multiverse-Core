@@ -13,7 +13,7 @@ import kotlin.test.assertNotNull
 
 class WorldConfigMangerTest : TestWithMockBukkit() {
 
-    private lateinit var worldConfigFile : WorldsConfigManager
+    private lateinit var worldConfigManager : WorldsConfigManager
 
     @BeforeTest
     fun setUp() {
@@ -21,13 +21,13 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(defaultConfig)
 
-        worldConfigFile =
+        worldConfigManager =
             WorldsConfigManager(multiverseCore)
     }
 
     @Test
     fun `World config is loaded`() {
-        assertTrue(worldConfigFile.isLoaded)
+        assertTrue(worldConfigManager.isLoaded)
     }
 
     @Test
@@ -37,24 +37,24 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Add a new world to config`() {
-        val worldConfig = worldConfigFile.addWorldConfig("newworld")
-        worldConfigFile.save()
+        val worldConfig = worldConfigManager.addWorldConfig("newworld")
+        worldConfigManager.save()
         compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
     }
 
     @Test
     fun `Updating existing world properties`() {
-        val worldConfig = worldConfigFile.getWorldConfig("world")
+        val worldConfig = worldConfigManager.getWorldConfig("world")
         worldConfig.setProperty("adjust-spawn", true)
         worldConfig.setProperty("alias", "newalias")
-        worldConfigFile.save()
+        worldConfigManager.save()
         compareConfigFile("worlds2.yml", "/properties_worlds.yml")
     }
 
     @Test
     fun `Delete world section from config`() {
-        worldConfigFile.deleteWorldConfig("world")
-        worldConfigFile.save()
+        worldConfigManager.deleteWorldConfig("world")
+        worldConfigManager.save()
         compareConfigFile("worlds2.yml", "/delete_worlds.yml")
     }
 
