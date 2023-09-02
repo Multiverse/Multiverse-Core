@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world
 
 import com.onarandombox.MultiverseCore.worldnew.WorldManager
+import com.onarandombox.MultiverseCore.worldnew.options.AddWorldOptions
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -17,7 +18,7 @@ class WorldManagerTest : TestWithMockBukkit() {
 
     @Test
     fun `Add world`() {
-        worldManager.addWorld("world")
+        worldManager.addWorld(AddWorldOptions.worldName("world"))
         // TODO: When logic is implemented, check that the world is added
     }
 

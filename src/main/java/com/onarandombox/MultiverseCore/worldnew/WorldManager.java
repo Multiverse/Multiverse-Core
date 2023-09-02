@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.worldnew;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigFile;
+import com.onarandombox.MultiverseCore.worldnew.options.AddWorldOptions;
 import jakarta.inject.Inject;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +29,13 @@ public class WorldManager {
         saveWorldsConfig();
     }
 
-    public void addWorld(String worldName) {
-        WorldConfig worldConfig = worldsConfigFile.getWorldConfig(worldName);
+    /**
+     * Adds a world to the worlds config file.
+     *
+     * @param options   The options for customizing the creation of a new world.
+     */
+    public void addWorld(AddWorldOptions options) {
+        WorldConfig worldConfig = worldsConfigFile.getWorldConfig(options.worldName());
         // TODO: Implement logic
         saveWorldsConfig();
     }
