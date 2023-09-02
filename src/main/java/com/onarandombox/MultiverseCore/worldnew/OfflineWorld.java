@@ -13,7 +13,7 @@ public class OfflineWorld {
         this.worldConfig = worldConfig;
     }
 
-    public String getWorldName() {
+    public String getName() {
         return worldName;
     }
 

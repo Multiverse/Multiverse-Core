@@ -4,15 +4,18 @@ import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorldConfigNodes {
     private final NodeGroup nodes = new NodeGroup();
+    private MVWorld world = null;
 
     WorldConfigNodes() {
     }
@@ -125,6 +128,14 @@ public class WorldConfigNodes {
             .defaultValue(new ArrayList<>())
             .name("world-blacklist")
             .build());
+
+    public void setMVWorld(@NotNull MVWorld world) {
+        this.world = world;
+    }
+
+    public void unloadMVWorld() {
+        this.world = null;
+    }
 
     // TODO: Migrate color and style into alias
     // TODO: spawning

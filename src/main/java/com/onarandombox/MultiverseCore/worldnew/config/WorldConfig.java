@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.worldnew.config;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.handle.ConfigurationSectionHandle;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import io.vavr.control.Try;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -14,17 +15,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class WorldConfig {
+
+    private final String worldName;
     private final WorldConfigNodes configNodes;
     private final ConfigurationSectionHandle configHandle;
 
-    public WorldConfig(@NotNull final ConfigurationSection configSection) {
+    public WorldConfig(@NotNull String worldName, @NotNull final ConfigurationSection configSection) {
+        this.worldName = worldName;
         this.configNodes = new WorldConfigNodes();
         // TODO: Config migration and version
         this.configHandle = ConfigurationSectionHandle.builder(configSection)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())
                 .build();
-        this.configHandle.load();
+        load();
+    }
+
+    public boolean load() {
+        return configHandle.load();
+    }
+
+    public String getWorldName() {
+        return worldName;
     }
 
     public Try<Object> getProperty(String name) {
@@ -193,5 +205,13 @@ public class WorldConfig {
 
     public void setWorldBlacklist(List<String> worldBlacklist) {
         configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
+    }
+
+    public void setMVWorld(@NotNull MVWorld world) {
+        configNodes.setMVWorld(world);
+    }
+
+    public void unloadMVWorld() {
+        configNodes.unloadMVWorld();
     }
 }

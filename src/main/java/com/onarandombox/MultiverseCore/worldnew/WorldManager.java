@@ -1,17 +1,19 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
-import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigFile;
+import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,21 +22,30 @@ public class WorldManager {
 
     private final Map<String, OfflineWorld> offlineWorldsMap;
     private final Map<String, MVWorld> worldsMap;
-    private final WorldsConfigFile worldsConfigFile;
+    private final WorldsConfigManager worldsConfigManager;
 
     @Inject
-    WorldManager(@NotNull WorldsConfigFile worldsConfigFile) {
+    WorldManager(@NotNull WorldsConfigManager worldsConfigFile) {
         this.offlineWorldsMap = new HashMap<>();
         this.worldsMap = new HashMap<>();
-        this.worldsConfigFile = worldsConfigFile;
+        this.worldsConfigManager = worldsConfigFile;
     }
 
-    public void loadAllWorlds() {
-        for (String worldName : worldsConfigFile.getAllWorldsInConfig()) {
+    public void initAllWorlds() {
+        populateOfflineWorlds();
+        worldsConfigManager.getAllWorldsInConfig().forEach(worldName -> {
             Logging.fine("Loading world: " + worldName);
             loadWorld(worldName);
-        }
+        });
         saveWorldsConfig();
+    }
+
+    private void populateOfflineWorlds() {
+        // TODO: Check for worlds that are removed after config reload
+        worldsConfigManager.getAllWorldConfigs().forEach(worldConfig -> {
+            OfflineWorld offlineWorld = new OfflineWorld(worldConfig.getWorldName(), worldConfig);
+            offlineWorldsMap.put(worldConfig.getWorldName(), offlineWorld);
+        });
     }
 
     /**
@@ -62,7 +73,7 @@ public class WorldManager {
         }
 
         // Our multiverse world
-        WorldConfig worldConfig = worldsConfigFile.getWorldConfig(options.worldName());
+        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(options.worldName());
         worldConfig.setEnvironment(options.environment());
         worldConfig.setGenerator(options.generator());
         worldConfig.setSeed(world.getSeed());
@@ -76,25 +87,44 @@ public class WorldManager {
         saveWorldsConfig();
     }
 
-    public void loadWorld(String worldName) {
-        WorldConfig worldConfig = worldsConfigFile.getWorldConfig(worldName);
+    public void loadWorld(@NotNull String worldName) {
         // TODO: Implement logic
     }
 
-    public void unloadWorld() {
+    public void unloadWorld(@NotNull MVWorld world) {
         // TODO: Implement logic
     }
 
-    public void removeWorld(String worldName) {
+    public void removeWorld(@NotNull MVWorld world) {
         // TODO: Implement logic
-        worldsConfigFile.deleteWorldConfigSection(worldName);
+        worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
     }
 
-    public void deleteWorld(String worldName) {
-        // TODO: Implement logic
-        worldsConfigFile.deleteWorldConfigSection(worldName);
+    public void deleteWorld(@NotNull MVWorld world) {
+        World bukkitWorld = world.getBukkitWorld();
+        File worldFolder = bukkitWorld.getWorldFolder();
+
+        // Unload world
+        // TODO: removePlayersFromWorld?
+        if (!Bukkit.unloadWorld(bukkitWorld, true)) {
+            Logging.severe("Failed to unload world: " + world.getName());
+            return;
+        }
+        if (Bukkit.getWorld(world.getName()) != null) {
+            Logging.severe("World still loaded: " + world.getName());
+            return;
+        }
+        worldsMap.remove(world.getName());
+
+        // Remove world from config
+        offlineWorldsMap.remove(world.getName());
+        worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
+
+        // Erase world files from disk
+        // TODO: Config options to keep certain files
+        FileUtils.deleteFolder(worldFolder);
     }
 
     public Option<OfflineWorld> getOfflineWorld(@NotNull String worldName) {
@@ -106,6 +136,6 @@ public class WorldManager {
     }
 
     public void saveWorldsConfig() {
-        worldsConfigFile.save();
+        worldsConfigManager.save();
     }
 }

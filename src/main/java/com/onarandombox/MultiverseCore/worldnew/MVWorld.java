@@ -18,6 +18,9 @@ public class MVWorld extends OfflineWorld {
     ) {
         super(worldName, worldConfig);
         this.worldUid = worldUid;
+
+        worldConfig.setMVWorld(this);
+        worldConfig.load();
     }
 
     public World getBukkitWorld() {

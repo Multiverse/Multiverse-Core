@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.world
 
-import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig
-import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigFile
+import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.mvplugins.multiverse.core.TestWithMockBukkit
@@ -12,9 +11,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class WorldConfigFileTest : TestWithMockBukkit() {
+class WorldConfigMangerTest : TestWithMockBukkit() {
 
-    private lateinit var worldConfigFile : WorldsConfigFile
+    private lateinit var worldConfigFile : WorldsConfigManager
 
     @BeforeTest
     fun setUp() {
@@ -22,8 +21,8 @@ class WorldConfigFileTest : TestWithMockBukkit() {
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(defaultConfig)
 
-        worldConfigFile = WorldsConfigFile(multiverseCore)
-        worldConfigFile.load()
+        worldConfigFile =
+            WorldsConfigManager(multiverseCore)
     }
 
     @Test
@@ -38,7 +37,7 @@ class WorldConfigFileTest : TestWithMockBukkit() {
 
     @Test
     fun `Add a new world to config`() {
-        val worldConfig = worldConfigFile.getWorldConfig("newworld")
+        val worldConfig = worldConfigFile.addWorldConfig("newworld")
         worldConfigFile.save()
         compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
     }
@@ -54,7 +53,7 @@ class WorldConfigFileTest : TestWithMockBukkit() {
 
     @Test
     fun `Delete world section from config`() {
-        worldConfigFile.deleteWorldConfigSection("world")
+        worldConfigFile.deleteWorldConfig("world")
         worldConfigFile.save()
         compareConfigFile("worlds2.yml", "/delete_worlds.yml")
     }

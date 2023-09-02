@@ -129,7 +129,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
 
         var newWorldManager = newWorldManagerProvider.get();
-        newWorldManager.loadAllWorlds(); // TODO: Possibly move this to constructor of WorldManager
+        newWorldManager.initAllWorlds(); // TODO: Possibly move this to constructor of WorldManager
 
         //Setup economy here so vault is loaded
         this.loadEconomist();
