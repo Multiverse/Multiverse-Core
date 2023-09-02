@@ -34,7 +34,11 @@ public class WorldManager {
 
     public void initAllWorlds() {
         populateOfflineWorlds();
-        getOfflineWorlds().forEach(this::loadWorld);
+        getOfflineWorlds().forEach(offlineWorld -> {
+            if (offlineWorld.getAutoLoad()) {
+                loadWorld(offlineWorld);
+            }
+        });
         saveWorldsConfig();
     }
 

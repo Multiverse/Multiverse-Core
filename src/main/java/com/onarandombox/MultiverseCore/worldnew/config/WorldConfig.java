@@ -111,11 +111,11 @@ public class WorldConfig {
         return configHandle.set(configNodes.ENVIRONMENT, environment);
     }
 
-    public GameMode getGamemode() {
+    public GameMode getGameMode() {
         return configHandle.get(configNodes.GAMEMODE);
     }
 
-    public Try<Void> setGamemode(GameMode gamemode) {
+    public Try<Void> setGameMode(GameMode gamemode) {
         return configHandle.set(configNodes.GAMEMODE, gamemode);
     }
 
@@ -203,8 +203,8 @@ public class WorldConfig {
         return (List<String>) configHandle.get(configNodes.WORLD_BLACKLIST);
     }
 
-    public void setWorldBlacklist(List<String> worldBlacklist) {
-        configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
+    public Try<Void> setWorldBlacklist(List<String> worldBlacklist) {
+        return configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
     }
 
     public void setMVWorld(@NotNull MVWorld world) {
