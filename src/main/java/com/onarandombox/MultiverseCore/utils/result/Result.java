@@ -5,6 +5,7 @@ import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public sealed interface Result<S extends SuccessReason, F extends FailureReason> permits Result.Success, Result.Failure {
@@ -26,16 +27,16 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
     @NotNull Message getReasonMessage();
 
-    default Result<S, F> onSuccess(Consumer<S> consumer) {
-        if (this.isSuccess()) {
-            consumer.accept(this.getSuccessReason());
+    default Result<S, F> onSuccess(Consumer<Success<F, S>> consumer) {
+        if (this instanceof Success) {
+            consumer.accept((Success<F, S>) this);
         }
         return this;
     }
 
-    default Result<S, F> onFailure(Consumer<F> consumer) {
-        if (this.isFailure()) {
-            consumer.accept(this.getFailureReason());
+    default Result<S, F> onFailure(Consumer<Failure<S, F>> consumer) {
+        if (this instanceof Failure) {
+            consumer.accept((Failure<S, F>) this);
         }
         return this;
     }
@@ -117,7 +118,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         @Override
         public S getSuccessReason() {
-            throw new NoSuchElementException("No reason for success");
+            throw new NoSuchElementException("No reason for failure");
         }
 
         @Override
@@ -127,7 +128,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         @Override
         public @NotNull Message getReasonMessage() {
-            return Message.of(failureReason, "Success!", replacements);
+            return Message.of(failureReason, "Failed!", replacements);
         }
 
         @Override

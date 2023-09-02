@@ -113,7 +113,11 @@ public class CreateWorldOptions {
      * @param seed  The seed of the world to create.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions seed(@NotNull String seed) {
+    public @NotNull CreateWorldOptions seed(@Nullable String seed) {
+        if (seed == null) {
+            this.seed = Long.MIN_VALUE;
+            return this;
+        }
         try {
             this.seed = Long.parseLong(seed);
         } catch (NumberFormatException numberformatexception) {

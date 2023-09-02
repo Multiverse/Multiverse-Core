@@ -77,7 +77,7 @@ newworld:
     currency: AIR
   environment: NORMAL
   gamemode: SURVIVAL
-  generator: ''
+  generator: '@error'
   hidden: false
   hunger: true
   keep-spawn-in-memory: true

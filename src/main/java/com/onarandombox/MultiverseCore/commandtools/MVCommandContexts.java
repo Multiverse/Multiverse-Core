@@ -199,7 +199,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             context.popFirstArg();
             return world;
         }
-        if (!context.isOptional()) {
+        if (context.isOptional()) {
             return null;
         }
         throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");

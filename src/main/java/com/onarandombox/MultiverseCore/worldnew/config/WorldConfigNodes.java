@@ -91,7 +91,7 @@ public class WorldConfigNodes {
             .build());
 
     public final ConfigNode<String> GENERATOR = node(ConfigNode.builder("generator", String.class)
-            .defaultValue("")
+            .defaultValue("@error") // this should be set on world creation
             .name("generator")
             .build());
 

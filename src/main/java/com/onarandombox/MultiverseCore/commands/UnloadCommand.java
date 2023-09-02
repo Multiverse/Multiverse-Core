@@ -7,11 +7,14 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -20,10 +23,10 @@ import org.jvnet.hk2.annotations.Service;
 @CommandAlias("mv")
 public class UnloadCommand extends MultiverseCommand {
 
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
-    public UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+    public UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
     }
@@ -33,22 +36,20 @@ public class UnloadCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds")
     @Syntax("<world>")
     @Description("{@@mv-core.unload.description}")
-    public void onUnloadCommand(BukkitCommandIssuer issuer,
+    public void onUnloadCommand(MVCommandIssuer issuer,
 
                                 @Syntax("<world>")
                                 @Description("{@@mv-core.unload.world.description}")
-                                MVWorld world
+                                String worldName // TODO: Use world object
     ) {
-        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING,
-                "{world}", world.getColoredWorldString());
-
-        // TODO: Should be able to use MVWorld object directly for unloadWorld
-        if (!this.worldManager.unloadWorld(world.getName())) {
-            issuer.sendError(MVCorei18n.UNLOAD_FAILURE,
-                    "{world}", world.getColoredWorldString());
-            return;
-        }
-        issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS,
-                "{world}", world.getColoredWorldString());
+        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", worldName);
+        worldManager.unloadWorld(worldName)
+                .onSuccess((success) -> {
+                    Logging.fine("World unload success: " + success);
+                    issuer.sendInfo(success.getReasonMessage());
+                }).onFailure((failure) -> {
+                    Logging.fine("World unload failure: " + failure);
+                    issuer.sendError(failure.getReasonMessage());
+                });
     }
 }
