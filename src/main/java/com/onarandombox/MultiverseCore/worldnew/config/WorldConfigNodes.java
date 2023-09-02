@@ -62,6 +62,10 @@ public class WorldConfigNodes {
     public final ConfigNode<Difficulty> DIFFICULTY = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)
             .name("difficulty")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().setDifficulty(newValue);
+            })
             .build());
 
     public final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode.builder("environment", World.Environment.class)
@@ -92,6 +96,10 @@ public class WorldConfigNodes {
     public final ConfigNode<Boolean> KEEP_SPAWN_IN_MEMORY = node(ConfigNode.builder("keep-spawn-in-memory", Boolean.class)
             .defaultValue(true)
             .name("keep-spawn-in-memory")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().setKeepSpawnInMemory(newValue);
+            })
             .build());
 
     public final ConfigNode<Integer> PLAYER_LIMIT = node(ConfigNode.builder("player-limit", Integer.class)
@@ -107,6 +115,10 @@ public class WorldConfigNodes {
     public final ConfigNode<Boolean> PVP = node(ConfigNode.builder("pvp", Boolean.class)
             .defaultValue(true)
             .name("pvp")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().setPVP(newValue);
+            })
             .build());
 
     public final ConfigNode<String> RESPAWN_WORLD = node(ConfigNode.builder("respawn-world", String.class)
