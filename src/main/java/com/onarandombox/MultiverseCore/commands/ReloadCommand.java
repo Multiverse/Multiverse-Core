@@ -64,7 +64,7 @@ public class ReloadCommand extends MultiverseCommand {
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
         this.pluginManager.callEvent(configReload);
 
-        // @TODO: replace this sendMessage and format the configsLoaded above, maybe?
+        // TODO: replace this sendMessage and format the configsLoaded above, maybe?
         configReload.getAllConfigsLoaded().forEach(issuer::sendMessage);
         issuer.sendInfo(MVCorei18n.RELOAD_SUCCESS);
     }

@@ -97,6 +97,6 @@ public class WorldEntryChecker {
         }
         return economist.isPlayerWealthyEnough(player, price, currency)
                 ? Result.success(EntryFeeResult.Success.ENOUGH_MONEY)
-                : Result.failure(EntryFeeResult.Failure.NOT_ENOUGH_MONEY, replace("{amount}").with("$##")); //TODO
+                : Result.failure(EntryFeeResult.Failure.NOT_ENOUGH_MONEY, replace("{amount}").with("$##")); // TODO: Money formatting
     }
 }

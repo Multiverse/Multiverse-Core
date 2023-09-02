@@ -19,7 +19,7 @@ public class WorldConfig {
 
     public WorldConfig(@NotNull final ConfigurationSection configSection) {
         this.configNodes = new WorldConfigNodes();
-        //todo: Config migration and version
+        // TODO: Config migration and version
         this.configHandle = ConfigurationSectionHandle.builder(configSection)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())

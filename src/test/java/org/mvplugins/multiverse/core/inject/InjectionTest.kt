@@ -134,7 +134,7 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `Destinations are available as services`() {
         val destinations = multiverseCore.getAllServices(Destination::class.java)
-        // TODO come up with a better way to test this like via actually testing the effect of using each destination
+        // TODO: come up with a better way to test this like via actually testing the effect of using each destination
         assertEquals(6, destinations.size)
     }
 

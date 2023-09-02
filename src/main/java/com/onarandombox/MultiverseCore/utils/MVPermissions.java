@@ -286,7 +286,7 @@ public class MVPermissions {
      * @param node   The permission node to check (possibly already a parent).
      * @return True if they have any parent perm, false if none.
      */
-    // TODO remove this...?
+    // TODO: remove this...?
     private boolean hasAnyParentPermission(CommandSender sender, String node) {
         String parentPerm = this.pullOneLevelOff(node);
         // Base case

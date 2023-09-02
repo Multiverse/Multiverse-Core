@@ -48,7 +48,7 @@ public class TeleportCommand extends MultiverseCommand {
                                   @Description("{@@mv-core.teleport.destination.description}")
                                   ParsedDestination<?> destination
     ) {
-        // TODO Add warning if teleporting too many players at once.
+        // TODO: Add warning if teleporting too many players at once.
 
         String playerName = players.length == 1
                 ? issuer.getPlayer() == players[0] ? "you" : players[0].getName()

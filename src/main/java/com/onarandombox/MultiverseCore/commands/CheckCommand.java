@@ -47,7 +47,7 @@ public class CheckCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.CHECK_CHECKING,
                 "{player}", player.getName(),
                 "{destination}", destination.toString());
-        //TODO More detailed output on permissions required.
+        // TODO: More detailed output on permissions required.
         this.destinationsProvider.checkTeleportPermissions(issuer, player, destination);
     }
 }

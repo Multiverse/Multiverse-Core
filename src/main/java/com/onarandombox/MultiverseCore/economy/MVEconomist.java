@@ -223,7 +223,7 @@ public class MVEconomist {
      * @return the old VaultHandler.
      * @deprecated just use the other methods in this class for economy stuff.
      */
-    // TODO make private
+    // TODO: make private
     @Deprecated
     public VaultHandler getVaultHandler() {
         return vaultHandler;

@@ -826,7 +826,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
         try {
             this.configWorlds.save(file);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            // TODO: Auto-generated catch block
             e.printStackTrace();
         }
         // load world-objects
@@ -842,7 +842,7 @@ public class SimpleMVWorldManager implements MVWorldManager {
                 WorldProperties props = (WorldProperties) obj;
                 if (this.worldsFromTheConfig.containsKey(worldName)) {
                     // Object-Recycling :D
-                    // TODO Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
+                    // TODO: Why is is checking worldsFromTheConfig and then getting from worlds?  So confused... (DTM)
                     SimpleMVWorld mvWorld = (SimpleMVWorld) this.worlds.get(worldName);
                     if (mvWorld != null) {
                         mvWorld.copyValues((WorldProperties) obj);

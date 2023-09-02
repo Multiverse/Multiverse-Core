@@ -24,7 +24,7 @@ public class WorldsConfigFile {
     }
 
     public void load() {
-        //todo: Migration from old worlds.yml
+        // TODO: Migration from old worlds.yml
         worldConfig = YamlConfiguration.loadConfiguration(worldConfigFile);
     }
 

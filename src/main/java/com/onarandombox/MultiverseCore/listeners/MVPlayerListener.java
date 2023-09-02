@@ -358,7 +358,7 @@ public class MVPlayerListener implements InjectableListener {
                                 Logging.finest("To World: %s", world);
                                 player.setGameMode(world.getGameMode());
                                 // Check if their flight mode should change
-                                // TODO need a override permission for this
+                                // TODO: need a override permission for this
                                 if (player.getAllowFlight() && !world.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
                                     player.setAllowFlight(false);
                                     if (player.isFlying()) {

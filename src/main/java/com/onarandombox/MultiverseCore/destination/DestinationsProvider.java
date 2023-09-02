@@ -167,7 +167,7 @@ public class DestinationsProvider {
      * @return True if the teleporter has permission, false otherwise.
      */
     public boolean checkTeleportPermissions(CommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
-        //TODO Move permission checking to a separate class
+        // TODO: Move permission checking to a separate class
         String permission = PERMISSION_PREFIX
                 + (teleportee.equals(teleporter.getIssuer()) ? "self" : "other") + "."
                 + destination.getDestination().getIdentifier();
@@ -176,7 +176,7 @@ public class DestinationsProvider {
             return false;
         }
 
-        //TODO Config whether to use finer permission
+        // TODO: Config whether to use finer permission
         String finerPermissionSuffix = destination.getDestinationInstance().getFinerPermissionSuffix();
         if (finerPermissionSuffix == null || finerPermissionSuffix.isEmpty()) {
             return true;

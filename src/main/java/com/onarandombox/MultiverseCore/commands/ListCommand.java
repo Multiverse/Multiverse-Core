@@ -92,8 +92,7 @@ public class ListCommand extends MultiverseCommand {
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse World List ]====", ChatColor.GOLD)
                         .withTargetPage(parsedFlags.flagValue("--page", 1, Integer.class))
-                        .withFilter(parsedFlags.flagValue("--filter", DefaultContentFilter.get(), ContentFilter.class))
-                        .withLinesPerPage(4)) //TODO Change back after testing
+                        .withFilter(parsedFlags.flagValue("--filter", DefaultContentFilter.get(), ContentFilter.class)))
                 .send(issuer);
     }
 

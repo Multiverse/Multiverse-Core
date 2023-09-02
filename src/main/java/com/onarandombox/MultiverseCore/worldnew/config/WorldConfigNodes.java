@@ -126,9 +126,9 @@ public class WorldConfigNodes {
             .name("world-blacklist")
             .build());
 
-    //todo: Migrate color and style into alias
-    //todo: spawning
-    //todo: entryfee
-    //todo: spawnLocation
-    //todo: worldBlacklist
+    // TODO: Migrate color and style into alias
+    // TODO: spawning
+    // TODO: entryfee
+    // TODO: spawnLocation
+    // TODO: worldBlacklist
 }

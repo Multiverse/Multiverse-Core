@@ -35,17 +35,17 @@ public class ConfigCommand extends MultiverseCommand {
     @CommandPermission("multiverse.core.config")
     @CommandCompletion("@mvconfigs")
     @Syntax("<name> [new-value]")
-    @Description("") //TODO
+    @Description("") // TODO: Description
     public void onConfigCommand(MVCommandIssuer issuer,
 
                                 @Syntax("<name>")
-                                @Description("") //TODO
+                                @Description("") // TODO: Description
                                 String name,
 
                                 @Optional
                                 @Single
                                 @Syntax("[new-value]")
-                                @Description("") //TODO
+                                @Description("") // TODO: Description
                                 MVConfigValue value
     ) {
         if (value == null) {

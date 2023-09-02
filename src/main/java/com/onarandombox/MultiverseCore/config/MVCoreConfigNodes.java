@@ -29,7 +29,8 @@ class MVCoreConfigNodes {
         return node;
     }
 
-    private final ConfigHeaderNode HEADER = node(ConfigHeaderNode.builder("world") // TODO hacky way to get the header to the top of the file
+    // TODO: hacky way to get the header to the top of the file
+    private final ConfigHeaderNode HEADER = node(ConfigHeaderNode.builder("world")
             .comment("####################################################################################################")
             .comment("#                                                                                                  #")
             .comment("#                    █▀▄▀█ █░█ █░░ ▀█▀ █ █░█ █▀▀ █▀█ █▀ █▀▀   █▀▀ █▀█ █▀█ █▀▀                      #")
