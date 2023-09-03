@@ -117,22 +117,13 @@ public class WorldManager {
         Logging.fine("Loaded bukkit world: " + world.getName());
 
         // Our multiverse world
-        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(options.worldName());
-        worldConfig.setEnvironment(options.environment());
-        worldConfig.setGenerator(options.generator());
-        worldConfig.setSeed(world.getSeed());
-
-        OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
-        offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
-
-        MVWorld mvWorld = new MVWorld(world.getName(), worldConfig, world.getUID());
-        worldsMap.put(mvWorld.getName(), mvWorld);
-
+        MVWorld mvWorld = newMVWorld(world);
+        mvWorld.getWorldConfig().setGenerator(options.generator());
         saveWorldsConfig();
         return Result.success(CreateWorldResult.Success.CREATED);
     }
 
-    public Result<CreateWorldResult.Success, CreateWorldResult.Failure>  importWorld(ImportWorldOptions options) {
+    public Result<CreateWorldResult.Success, CreateWorldResult.Failure> importWorld(ImportWorldOptions options) {
         // Create bukkit world
         World world = WorldCreator.name(options.worldName())
                 .environment(options.environment())
@@ -145,19 +136,21 @@ public class WorldManager {
         Logging.fine("Loaded bukkit world: " + world.getName());
 
         // Our multiverse world
-        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(options.worldName());
-        worldConfig.setEnvironment(world.getEnvironment());
-        worldConfig.setGenerator(options.generator());
-        worldConfig.setSeed(world.getSeed());
+        MVWorld mvWorld = newMVWorld(world);
+        mvWorld.getWorldConfig().setGenerator(options.generator());
+        saveWorldsConfig();
+        return Result.success(CreateWorldResult.Success.CREATED);
+    }
+
+    private MVWorld newMVWorld(World world) {
+        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
 
         OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
         offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
 
-        MVWorld mvWorld = new MVWorld(world.getName(), worldConfig, world.getUID());
+        MVWorld mvWorld = new MVWorld(world, worldConfig);
         worldsMap.put(mvWorld.getName(), mvWorld);
-
-        saveWorldsConfig();
-        return Result.success(CreateWorldResult.Success.CREATED);
+        return mvWorld;
     }
 
     public Result<LoadWorldResult.Success, LoadWorldResult.Failure> loadWorld(@NotNull String worldName) {
@@ -186,7 +179,7 @@ public class WorldManager {
 
         // Our multiverse world
         WorldConfig worldConfig = worldsConfigManager.getWorldConfig(offlineWorld.getName());
-        MVWorld mvWorld = new MVWorld(world.getName(), worldConfig, world.getUID());
+        MVWorld mvWorld = new MVWorld(world, worldConfig);
         worldsMap.put(mvWorld.getName(), mvWorld);
 
         saveWorldsConfig();

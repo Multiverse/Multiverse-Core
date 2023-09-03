@@ -13,15 +13,16 @@ public class MVWorld extends OfflineWorld {
     private final UUID worldUid;
 
     public MVWorld(
-            @NotNull String worldName,
-            @NotNull WorldConfig worldConfig,
-            @NotNull UUID worldUid
+            @NotNull World world,
+            @NotNull WorldConfig worldConfig
     ) {
-        super(worldName, worldConfig);
-        this.worldUid = worldUid;
+        super(world.getName(), worldConfig);
+        this.worldUid = world.getUID();
 
         worldConfig.setMVWorld(this);
         worldConfig.load();
+        worldConfig.setEnvironment(world.getEnvironment());
+        worldConfig.setSeed(world.getSeed());
     }
 
     public Option<World> getBukkitWorld() {
