@@ -4,7 +4,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import com.onarandombox.MultiverseCore.utils.result.Result;
-import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 import com.onarandombox.MultiverseCore.world.WorldNameChecker;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
@@ -25,10 +24,12 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WorldManager {
@@ -38,14 +39,14 @@ public class WorldManager {
     private final WorldsConfigManager worldsConfigManager;
 
     @Inject
-    WorldManager(@NotNull WorldsConfigManager worldsConfigFile) {
+    WorldManager(@NotNull WorldsConfigManager worldsConfigManager) {
         this.offlineWorldsMap = new HashMap<>();
         this.worldsMap = new HashMap<>();
-        this.worldsConfigManager = worldsConfigFile;
+        this.worldsConfigManager = worldsConfigManager;
     }
 
     public void initAllWorlds() {
-        populateOfflineWorlds();
+        populateWorldFromConfig();
         loadDefaultWorlds();
         getOfflineWorlds().forEach(world -> {
             if (isMVWorld(world) || !world.getAutoLoad()) {
@@ -58,12 +59,17 @@ public class WorldManager {
         saveWorldsConfig();
     }
 
-    private void populateOfflineWorlds() {
-        // TODO: Check for worlds that are removed after config reload
+    private void populateWorldFromConfig() {
+        worldsConfigManager.load();
         worldsConfigManager.getAllWorldConfigs().forEach(worldConfig -> {
-            OfflineWorld offlineWorld = new OfflineWorld(worldConfig.getWorldName(), worldConfig);
-            offlineWorldsMap.put(worldConfig.getWorldName(), offlineWorld);
-            Logging.fine("Loaded world %s from config", worldConfig.getWorldName());
+            getMVWorld(worldConfig.getWorldName())
+                    .peek(mvWorld -> mvWorld.setWorldConfig(worldConfig));
+            getOfflineWorld(worldConfig.getWorldName())
+                    .peek(offlineWorld -> offlineWorld.setWorldConfig(worldConfig))
+                    .onEmpty(() -> {
+                        OfflineWorld offlineWorld = new OfflineWorld(worldConfig.getWorldName(), worldConfig);
+                        offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
+                    });
         });
     }
 

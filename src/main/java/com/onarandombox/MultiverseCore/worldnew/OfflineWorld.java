@@ -14,7 +14,7 @@ import java.util.List;
 public class OfflineWorld {
 
     protected final String worldName;
-    protected final WorldConfig worldConfig;
+    protected WorldConfig worldConfig;
 
     OfflineWorld(String worldName, WorldConfig worldConfig) {
         this.worldName = worldName;
@@ -204,5 +204,9 @@ public class OfflineWorld {
      */
     WorldConfig getWorldConfig() {
         return worldConfig;
+    }
+
+    void setWorldConfig(WorldConfig worldConfig) {
+        this.worldConfig = worldConfig;
     }
 }

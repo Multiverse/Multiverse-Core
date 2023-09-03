@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class WorldsConfigManager {
@@ -28,9 +29,9 @@ public class WorldsConfigManager {
         load();
     }
 
-    private void load() {
-        // TODO: Migration from old worlds.yml
+    public void load() {
         worldsConfig = YamlConfiguration.loadConfiguration(worldConfigFile);
+        worldConfigMap.clear();
         for (String worldName : getAllWorldsInConfig()) {
             worldConfigMap.put(worldName, new WorldConfig(worldName, getWorldConfigSection(worldName)));
         }
@@ -48,7 +49,7 @@ public class WorldsConfigManager {
         }
     }
 
-    public Collection<String> getAllWorldsInConfig() {
+    public Set<String> getAllWorldsInConfig() {
         return worldsConfig.getKeys(false);
     }
 

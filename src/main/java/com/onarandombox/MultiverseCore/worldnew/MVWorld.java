@@ -19,6 +19,10 @@ public class MVWorld extends OfflineWorld {
         super(world.getName(), worldConfig);
         this.worldUid = world.getUID();
 
+        setupWorldConfig(world);
+    }
+
+    private void setupWorldConfig(World world) {
         worldConfig.setMVWorld(this);
         worldConfig.load();
         worldConfig.setEnvironment(world.getEnvironment());
@@ -27,5 +31,11 @@ public class MVWorld extends OfflineWorld {
 
     public Option<World> getBukkitWorld() {
         return Option.of(Bukkit.getWorld(worldUid));
+    }
+
+    @Override
+    void setWorldConfig(WorldConfig worldConfig) {
+        super.setWorldConfig(worldConfig);
+        setupWorldConfig(getBukkitWorld().get());
     }
 }

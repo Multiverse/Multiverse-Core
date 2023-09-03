@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class ReloadCommand extends MultiverseCommand {
 
     private final MVCoreConfig config;
     private final AnchorManager anchorManager;
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
     private final PluginManager pluginManager;
 
     @Inject
@@ -36,7 +37,7 @@ public class ReloadCommand extends MultiverseCommand {
             @NotNull MVCommandManager commandManager,
             @NotNull MVCoreConfig config,
             @NotNull AnchorManager anchorManager,
-            @NotNull MVWorldManager worldManager,
+            @NotNull WorldManager worldManager,
             @NotNull PluginManager pluginManager
     ) {
         super(commandManager);
@@ -51,14 +52,17 @@ public class ReloadCommand extends MultiverseCommand {
     @Description("{@@mv-core.reload.description}")
     public void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
-        this.config.load();
-        this.worldManager.loadWorldsConfig();
-        this.worldManager.loadWorlds(true);
-        this.anchorManager.loadAnchors();
+        try {
+            this.config.load();
+            this.worldManager.initAllWorlds();
+            this.anchorManager.loadAnchors();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         List<String> configsLoaded = new ArrayList<>();
         configsLoaded.add("Multiverse-Core - config.yml");
-        configsLoaded.add("Multiverse-Core - worlds.yml");
+        configsLoaded.add("Multiverse-Core - worlds2.yml");
         configsLoaded.add("Multiverse-Core - anchors.yml");
 
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
