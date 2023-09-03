@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.world.configuration;
+package com.onarandombox.MultiverseCore.worldnew.config;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

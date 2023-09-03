@@ -2,6 +2,9 @@ package com.onarandombox.MultiverseCore.worldnew;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
+import com.onarandombox.MultiverseCore.api.BlockSafety;
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
@@ -34,13 +37,25 @@ public class WorldManager {
     private final Map<String, MVWorld> worldsMap;
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
+    private final BlockSafety blockSafety;
+    private final SafeTTeleporter safeTTeleporter;
+    private final LocationManipulation locationManipulation;
 
     @Inject
-    WorldManager(@NotNull WorldsConfigManager worldsConfigManager, @NotNull WorldNameChecker worldNameChecker) {
+    WorldManager(
+            @NotNull WorldsConfigManager worldsConfigManager,
+            @NotNull WorldNameChecker worldNameChecker,
+            @NotNull BlockSafety blockSafety,
+            @NotNull SafeTTeleporter safeTTeleporter,
+            @NotNull LocationManipulation locationManipulation
+    ) {
         this.offlineWorldsMap = new HashMap<>();
         this.worldsMap = new HashMap<>();
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
+        this.blockSafety = blockSafety;
+        this.safeTTeleporter = safeTTeleporter;
+        this.locationManipulation = locationManipulation;
     }
 
     public void initAllWorlds() {
@@ -166,7 +181,7 @@ public class WorldManager {
         OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
         offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
 
-        MVWorld mvWorld = new MVWorld(world, worldConfig);
+        MVWorld mvWorld = new MVWorld(world, worldConfig, blockSafety, safeTTeleporter, locationManipulation);
         worldsMap.put(mvWorld.getName(), mvWorld);
         return mvWorld;
     }
@@ -197,7 +212,7 @@ public class WorldManager {
 
         // Our multiverse world
         WorldConfig worldConfig = worldsConfigManager.getWorldConfig(offlineWorld.getName());
-        MVWorld mvWorld = new MVWorld(world, worldConfig);
+        MVWorld mvWorld = new MVWorld(world, worldConfig, blockSafety, safeTTeleporter, locationManipulation);
         worldsMap.put(mvWorld.getName(), mvWorld);
 
         saveWorldsConfig();

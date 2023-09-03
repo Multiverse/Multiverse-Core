@@ -22,6 +22,8 @@ world_nether:
   respawn-world: ''
   scale: 1.0
   seed: -9223372036854775808
+  spawn-location:
+    ==: MVNullLocation (It's a bug if you see this in your config file)
   spawning:
     animals:
       spawn: true

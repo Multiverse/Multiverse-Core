@@ -26,10 +26,13 @@ import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.config.NullLocation;
+import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -102,6 +105,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void onEnable() {
         initializeDependencyInjection();
+        ConfigurationSerialization.registerClass(NullLocation.class);
+        ConfigurationSerialization.registerClass(SpawnLocation.class);
 
         // Load our configs first as we need them for everything else.
         var config = configProvider.get();

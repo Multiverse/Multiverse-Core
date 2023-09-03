@@ -154,6 +154,7 @@ public class WorldConfigNodes {
             .build());
 
     public final ConfigNode<Location> SPAWN_LOCATION = node(ConfigNode.builder("spawn-location", Location.class)
+            .defaultValue(new NullLocation())
             .name("spawn-location")
             .build());
 

@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.world
 
+import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -47,6 +48,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         val worldConfig = worldConfigManager.getWorldConfig("world")
         worldConfig.setProperty("adjust-spawn", true)
         worldConfig.setProperty("alias", "newalias")
+        worldConfig.setProperty("spawn-location", SpawnLocation(-64.0, 64.0, 48.0))
         worldConfigManager.save()
         compareConfigFile("worlds2.yml", "/properties_worlds.yml")
     }

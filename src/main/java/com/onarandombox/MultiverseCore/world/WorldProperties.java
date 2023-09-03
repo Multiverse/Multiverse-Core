@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.onarandombox.MultiverseCore.world.configuration.EntryFee;
-import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
+import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation;
 import com.onarandombox.MultiverseCore.world.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.world.configuration.WorldPropertyValidator;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;

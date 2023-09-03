@@ -73,7 +73,7 @@ public class CreateCommand extends MultiverseCommand {
                 .add(CommandValueFlag.enumBuilder("--world-type", WorldType.class)
                         .addAlias("-t")
                         .build())
-                .add(CommandFlag.builder("--adjust-spawn")
+                .add(CommandFlag.builder("--no-adjust-spawn")
                         .addAlias("-n")
                         .build())
                 .add(CommandFlag.builder("--no-structures")
@@ -109,7 +109,7 @@ public class CreateCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ENVIRONMENT, "{environment}", environment.name());
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_SEED, "{seed}", parsedFlags.flagValue("--seed", "RANDOM", String.class));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_WORLDTYPE, "{worldType}", parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class).name());
-        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ADJUSTSPAWN, "{adjustSpawn}", String.valueOf(parsedFlags.hasFlag("--adjust-spawn")));
+        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ADJUSTSPAWN, "{adjustSpawn}", String.valueOf(!parsedFlags.hasFlag("--no-adjust-spawn")));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR, "{generator}", parsedFlags.flagValue("--generator", "", String.class));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES, "{structures}", String.valueOf(!parsedFlags.hasFlag("--no-structures")));
 
@@ -119,7 +119,7 @@ public class CreateCommand extends MultiverseCommand {
                 .environment(environment)
                 .seed(parsedFlags.flagValue("--seed", String.class))
                 .worldType(parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class))
-                .useSpawnAdjust(parsedFlags.hasFlag("--adjust-spawn"))
+                .useSpawnAdjust(!parsedFlags.hasFlag("--no-adjust-spawn"))
                 .generator(parsedFlags.flagValue("--generator", "", String.class))
                 .generateStructures(!parsedFlags.hasFlag("--no-structures"))
         ).onSuccess((success) -> {
