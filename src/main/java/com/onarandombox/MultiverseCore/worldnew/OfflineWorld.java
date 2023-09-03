@@ -16,7 +16,7 @@ public class OfflineWorld {
     protected final String worldName;
     protected final WorldConfig worldConfig;
 
-    public OfflineWorld(String worldName, WorldConfig worldConfig) {
+    OfflineWorld(String worldName, WorldConfig worldConfig) {
         this.worldName = worldName;
         this.worldConfig = worldConfig;
     }

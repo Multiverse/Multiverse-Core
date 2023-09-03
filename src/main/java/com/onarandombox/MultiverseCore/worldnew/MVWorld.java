@@ -12,7 +12,7 @@ public class MVWorld extends OfflineWorld {
 
     private final UUID worldUid;
 
-    public MVWorld(
+    MVWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig
     ) {
