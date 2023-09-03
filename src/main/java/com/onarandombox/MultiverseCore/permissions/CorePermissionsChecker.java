@@ -2,13 +2,14 @@ package com.onarandombox.MultiverseCore.permissions;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.OfflineWorld;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
 public class CorePermissionsChecker {
-    public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull MVWorld world) {
+    public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull OfflineWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
     }
 

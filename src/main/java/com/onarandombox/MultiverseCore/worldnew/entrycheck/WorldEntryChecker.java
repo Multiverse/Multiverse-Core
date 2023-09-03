@@ -7,6 +7,7 @@ import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.utils.result.ResultChain;
 import com.onarandombox.MultiverseCore.world.configuration.EntryFee;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.OfflineWorld;
 import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -49,7 +50,7 @@ public class WorldEntryChecker {
                 .build();
     }
 
-    public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull MVWorld world) {
+    public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull OfflineWorld world) {
         if (!config.getEnforceAccess()) {
             return Result.success(WorldAccessResult.Success.NO_ENFORCE_WORLD_ACCESS);
         }
