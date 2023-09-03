@@ -158,21 +158,26 @@ public class DumpsCommand extends MultiverseCommand {
 
         if (!logsFile.exists()) {
             Logging.warning("Could not read logs/latest.log");
-            return "Could not read ./logs/latest.log";
+            return "Could not find log";
         }
 
-
-
+        // Try reading as ANSI encoded
         try {
             return Files.readString(logsPath, StandardCharsets.ISO_8859_1);
         } catch (IOException e) {
-            // UTF-8 encoded log
-            try {
-                return Files.readString(logsPath, StandardCharsets.UTF_8);
-            } catch (IOException ex) {
-                // It is some other strange encoding
-                throw new RuntimeException(ex);
-            }
+            Logging.finer("Log is not ANSI encoded. Trying UTF-8");
+            // Must be a UTF-8 encoded log then
+
+        }
+
+        // Try reading as UTF-8 encoded
+        try {
+            return Files.readString(logsPath, StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            // It is some other strange encoding
+            Logging.severe("Could not read ./logs/latest.log. See below for stack trace");
+            ex.printStackTrace();
+            return "Could not read log";
         }
 
     }
