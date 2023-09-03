@@ -21,9 +21,8 @@ import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import com.onarandombox.MultiverseCore.permissions.CorePermissionsChecker;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
-import com.onarandombox.MultiverseCore.utils.MVPermissions;
-import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import com.onarandombox.MultiverseCore.utils.result.ResultChain;
 import com.onarandombox.MultiverseCore.world.entrycheck.EntryFeeResult;
 import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
@@ -54,14 +53,13 @@ public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<MVWorldManager> worldManagerProvider;
-    private final PermissionTools pt;
-    private final Provider<MVPermissions> mvPermsProvider;
     private final SafeTTeleporter safeTTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
     private final Provider<MVCommandManager> commandManagerProvider;
+    private final CorePermissionsChecker permissionsChecker;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
@@ -70,25 +68,24 @@ public class MVPlayerListener implements InjectableListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<MVWorldManager> worldManagerProvider,
-            PermissionTools permissionTools,
-            Provider<MVPermissions> mvPermsProvider,
             SafeTTeleporter safeTTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
             WorldEntryCheckerProvider worldEntryCheckerProvider,
-            Provider<MVCommandManager> commandManagerProvider) {
+            Provider<MVCommandManager> commandManagerProvider,
+            CorePermissionsChecker permissionsChecker
+    ) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
-        this.pt = permissionTools;
-        this.mvPermsProvider = mvPermsProvider;
         this.safeTTeleporter = safeTTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
         this.economist = economist;
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
         this.commandManagerProvider = commandManagerProvider;
+        this.permissionsChecker = permissionsChecker;
     }
 
     private MVWorldManager getWorldManager() {
@@ -97,10 +94,6 @@ public class MVPlayerListener implements InjectableListener {
 
     private MVCommandManager getCommandManager() {
         return commandManagerProvider.get();
-    }
-
-    private MVPermissions getMVPerms() {
-        return mvPermsProvider.get();
     }
 
     /**
@@ -173,7 +166,7 @@ public class MVPlayerListener implements InjectableListener {
         } else {
             Logging.finer("Player joined AGAIN!");
             if (config.getEnforceAccess() // check this only if we're enforcing access!
-                    && !this.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
+                    && !permissionsChecker.hasWorldAccessPermission(p, getWorldManager().getFirstSpawnWorld())) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
             }
@@ -350,7 +343,7 @@ public class MVPlayerListener implements InjectableListener {
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (!MVPlayerListener.this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
+                        if (!permissionsChecker.hasGameModeBypassPermission(player, world)) {
                             // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
                             if (player.getWorld() == world.getCBWorld()) {
                                 Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
