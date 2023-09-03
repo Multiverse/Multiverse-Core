@@ -6,9 +6,9 @@ import java.util.Collections;
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,11 +17,11 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class WorldDestination implements Destination<WorldDestinationInstance> {
 
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
     private final LocationManipulation locationManipulation;
 
     @Inject
-    public WorldDestination(MVWorldManager worldManager, LocationManipulation locationManipulation) {
+    public WorldDestination(WorldManager worldManager, LocationManipulation locationManipulation) {
         this.worldManager = worldManager;
         this.locationManipulation = locationManipulation;
     }
@@ -45,7 +45,7 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
         }
 
         String worldName = items[0];
-        MVWorld world = this.worldManager.getMVWorld(worldName);
+        MVWorld world = this.worldManager.getMVWorld(worldName).getOrNull();
         if (world == null) {
             return null;
         }

@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
-import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
@@ -59,8 +59,8 @@ public class WorldDestinationInstance implements DestinationInstance {
     @Override
     public @NotNull String serialise() {
         if (this.direction != null) {
-            return this.world.getCBWorld().getName() + ":" + this.direction;
+            return this.world.getName() + ":" + this.direction;
         }
-        return this.world.getCBWorld().getName();
+        return this.world.getName();
     }
 }
