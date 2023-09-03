@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
@@ -19,6 +20,7 @@ import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ListContentProvider;
+import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryChecker;
 import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryCheckerProvider;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
@@ -78,7 +80,7 @@ public class ListCommand extends MultiverseCommand {
     @CommandCompletion("@flags:groupName=mvlist")
     @Syntax("--filter [filter] --page [page]")
     @Description("Displays a listing of all worlds that you can enter.")
-    public void onListCommand(BukkitCommandIssuer issuer,
+    public void onListCommand(MVCommandIssuer issuer,
 
                               @Syntax("--filter [filter] --page [page]")
                               @Description("Filters the list of worlds by the given regex and displays the given page.")
@@ -94,19 +96,19 @@ public class ListCommand extends MultiverseCommand {
                 .send(issuer);
     }
 
-    private List<String> getListContents(BukkitCommandIssuer issuer) {
-        Player player = issuer.isPlayer() ? issuer.getPlayer() : null;
+    private List<String> getListContents(MVCommandIssuer issuer) {
         List<String> worldList =  new ArrayList<>();
+        WorldEntryChecker worldEntryChecker = worldEntryCheckerProvider.forSender(issuer.getIssuer());
 
         worldManager.getMVWorlds().stream()
-                .filter(world -> player == null) // TODO: || worldEntryCheckerProvider.forSender(player).canAccessWorld(world).isSuccess())
-                .filter(world -> canSeeWorld(player, world))
+                .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
+                .filter(world -> canSeeWorld(issuer, world))
                 .map(world -> hiddenText(world) + world.getAlias() + " - " + parseColouredEnvironment(world.getEnvironment()))
                 .sorted()
                 .forEach(worldList::add);
 
         worldManager.getOfflineOnlyWorlds().stream()
-                .filter(world -> issuer.hasPermission("multiverse.access." + world.getName())) // TODO: Refactor stray permission check
+                .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
                 .map(world -> ChatColor.GRAY + world.getAlias() + " - UNLOADED")
                 .sorted()
                 .forEach(worldList::add);
@@ -114,10 +116,9 @@ public class ListCommand extends MultiverseCommand {
         return worldList;
     }
 
-    private boolean canSeeWorld(Player player, MVWorld world) {
+    private boolean canSeeWorld(MVCommandIssuer issuer, MVWorld world) {
         return !world.isHidden()
-                || player == null
-                || player.hasPermission("multiverse.core.modify"); // TODO: Refactor stray permission check
+                || issuer.hasPermission("multiverse.core.modify"); // TODO: Refactor stray permission check
     }
 
     private String hiddenText(MVWorld world) {
