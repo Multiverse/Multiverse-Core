@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
+import io.vavr.control.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public class MVWorld extends OfflineWorld {
         worldConfig.load();
     }
 
-    public World getBukkitWorld() {
-        return Bukkit.getWorld(worldUid);
+    public Option<World> getBukkitWorld() {
+        return Option.of(Bukkit.getWorld(worldUid));
     }
 }

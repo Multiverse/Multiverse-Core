@@ -25,7 +25,7 @@ public class CreateWorldOptions {
     private boolean generateStructures = true;
     private String generator = null;
     private long seed = Long.MIN_VALUE;
-    private boolean useSpawnAdjust = false;
+    private boolean useSpawnAdjust = true;
     private WorldType worldType = WorldType.NORMAL;
 
     /**

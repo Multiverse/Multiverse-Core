@@ -282,10 +282,14 @@ public class WorldConfig {
     }
 
     public void setMVWorld(@NotNull MVWorld world) {
-        configNodes.setMVWorld(world);
+        configNodes.world = world;
     }
 
-    public void unloadMVWorld() {
-        configNodes.unloadMVWorld();
+    public boolean hasMVWorld() {
+        return configNodes.world != null;
+    }
+
+    public void deferenceMVWorld() {
+        configNodes.world = null;
     }
 }

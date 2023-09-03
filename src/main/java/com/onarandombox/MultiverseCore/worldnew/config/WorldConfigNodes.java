@@ -17,7 +17,7 @@ import java.util.List;
 
 public class WorldConfigNodes {
     private final NodeGroup nodes = new NodeGroup();
-    private MVWorld world = null;
+    MVWorld world = null;
 
     WorldConfigNodes() {
     }
@@ -66,7 +66,7 @@ public class WorldConfigNodes {
             .name("difficulty")
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) { return; }
-                world.getBukkitWorld().setDifficulty(newValue);
+                world.getBukkitWorld().peek(world -> world.setDifficulty(newValue));
             })
             .build());
 
@@ -87,7 +87,7 @@ public class WorldConfigNodes {
 
     public final ConfigNode<GameMode> GAMEMODE = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
-            .name("gamemode")
+            .name("gamemode") // TODO: Set all gamemodes of players in world to this gamemode
             .build());
 
     public final ConfigNode<String> GENERATOR = node(ConfigNode.builder("generator", String.class)
@@ -110,7 +110,7 @@ public class WorldConfigNodes {
             .name("keep-spawn-in-memory")
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) { return; }
-                world.getBukkitWorld().setKeepSpawnInMemory(newValue);
+                world.getBukkitWorld().peek(world -> world.setKeepSpawnInMemory(newValue));
             })
             .build());
 
@@ -129,7 +129,7 @@ public class WorldConfigNodes {
             .name("pvp")
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) { return; }
-                world.getBukkitWorld().setPVP(newValue);
+                world.getBukkitWorld().peek(world -> world.setPVP(newValue));
             })
             .build());
 
@@ -155,6 +155,10 @@ public class WorldConfigNodes {
     public final ConfigNode<Boolean> SPAWNING_ANIMALS = node(ConfigNode.builder("spawning.animals.spawn", Boolean.class)
             .defaultValue(true)
             .name("spawning-animals")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().peek(world -> world.setSpawnFlags(world.getAllowMonsters(), newValue));
+            })
             .build());
 
     public final ConfigNode<Integer> SPAWNING_ANIMALS_AMOUNT = node(ConfigNode.builder("spawning.animals.amount", Integer.class)
@@ -170,6 +174,10 @@ public class WorldConfigNodes {
     public final ConfigNode<Boolean> SPAWNING_MONSTERS = node(ConfigNode.builder("spawning.monsters.spawn", Boolean.class)
             .defaultValue(true)
             .name("spawning-monsters")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().peek(world -> world.setSpawnFlags(newValue, world.getAllowAnimals()));
+            })
             .build());
 
     public final ConfigNode<Integer> SPAWNING_MONSTERS_AMOUNT = node(ConfigNode.builder("spawning.monsters.amount", Integer.class)
@@ -186,14 +194,6 @@ public class WorldConfigNodes {
             .defaultValue(new ArrayList<>())
             .name("world-blacklist")
             .build());
-
-    public void setMVWorld(@NotNull MVWorld world) {
-        this.world = world;
-    }
-
-    public void unloadMVWorld() {
-        this.world = null;
-    }
 
     // TODO: Migrate color and style into alias
 }

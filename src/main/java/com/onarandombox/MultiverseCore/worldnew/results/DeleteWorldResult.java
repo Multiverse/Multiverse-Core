@@ -10,6 +10,7 @@ public class DeleteWorldResult {
     }
 
     public static class Failure extends RemoveWorldResult.Failure {
+        public static final Failure WORLD_FOLDER_NOT_FOUND = new Failure(MVCorei18n.GENERIC_FAILURE);
         public static final Failure FAILED_TO_DELETE_FOLDER = new Failure(MVCorei18n.GENERIC_FAILURE);
 
         Failure(MessageKeyProvider message) {

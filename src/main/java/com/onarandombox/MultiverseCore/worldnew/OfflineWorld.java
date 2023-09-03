@@ -3,9 +3,11 @@ package com.onarandombox.MultiverseCore.worldnew;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import io.vavr.control.Try;
+import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,6 +23,10 @@ public class OfflineWorld {
 
     public String getName() {
         return worldName;
+    }
+
+    public boolean isLoaded() {
+        return worldConfig.hasMVWorld();
     }
 
     public Try<Object> getProperty(String name) {
@@ -151,8 +157,20 @@ public class OfflineWorld {
         return worldConfig.setPvp(pvp);
     }
 
-    public String getRespawnWorld() {
+    public String getRespawnWorldName() {
         return worldConfig.getRespawnWorld();
+    }
+
+    public @Nullable World getRespawnWorld() {
+        return Bukkit.getWorld(worldConfig.getRespawnWorld());
+    }
+
+    public Try<Void> setRespawnWorld(World respawnWorld) {
+        return worldConfig.setRespawnWorld(respawnWorld.getName());
+    }
+
+    public Try<Void> setRespawnWorld(OfflineWorld respawnWorld) {
+        return worldConfig.setRespawnWorld(respawnWorld.getName());
     }
 
     public Try<Void> setRespawnWorld(String respawnWorld) {
@@ -177,5 +195,14 @@ public class OfflineWorld {
 
     public Try<Void> setWorldBlacklist(List<String> worldBlacklist) {
         return worldConfig.setWorldBlacklist(worldBlacklist);
+    }
+
+    /**
+     * Gets the world config. Only for internal use.
+     *
+     * @return The world config.
+     */
+    WorldConfig getWorldConfig() {
+        return worldConfig;
     }
 }

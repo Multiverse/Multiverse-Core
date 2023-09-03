@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.world.WorldNameChecker;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
+import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.results.CreateWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.DeleteWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.LoadWorldResult;
@@ -26,6 +27,7 @@ import org.jvnet.hk2.annotations.Service;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -44,12 +46,13 @@ public class WorldManager {
 
     public void initAllWorlds() {
         populateOfflineWorlds();
-        getOfflineWorlds().forEach(offlineWorld -> {
-            if (!offlineWorld.getAutoLoad()) {
+        loadDefaultWorlds();
+        getOfflineWorlds().forEach(world -> {
+            if (isMVWorld(world) || !world.getAutoLoad()) {
                 return;
             }
-            loadWorld(offlineWorld).onFailure((failure) -> {
-                Logging.severe("Failed to load world %s: %s", offlineWorld.getName(), failure);
+            loadWorld(world).onFailure((failure) -> {
+                Logging.severe("Failed to load world %s: %s", world.getName(), failure);
             });
         });
         saveWorldsConfig();
@@ -61,6 +64,18 @@ public class WorldManager {
             OfflineWorld offlineWorld = new OfflineWorld(worldConfig.getWorldName(), worldConfig);
             offlineWorldsMap.put(worldConfig.getWorldName(), offlineWorld);
             Logging.fine("Loaded world %s from config", worldConfig.getWorldName());
+        });
+    }
+
+    private void loadDefaultWorlds() {
+        Bukkit.getWorlds().forEach((world) -> {
+            if (isOfflineWorld(world.getName())) {
+                return;
+            }
+            importWorld(ImportWorldOptions.worldName(world.getName())
+                    .environment(world.getEnvironment())
+                    .generator("") // TODO: Get default generators from bukkit.yml
+            );
         });
     }
 
@@ -117,6 +132,34 @@ public class WorldManager {
         return Result.success(CreateWorldResult.Success.CREATED);
     }
 
+    public Result<CreateWorldResult.Success, CreateWorldResult.Failure>  importWorld(ImportWorldOptions options) {
+        // Create bukkit world
+        World world = WorldCreator.name(options.worldName())
+                .environment(options.environment())
+                .generator(Strings.isNullOrEmpty(options.generator()) ? null : options.generator())
+                .createWorld();
+        if (world == null) {
+            Logging.severe("Failed to create world: " + options.worldName());
+            return Result.failure(CreateWorldResult.Failure.BUKKIT_CREATION_FAILED);
+        }
+        Logging.fine("Loaded bukkit world: " + world.getName());
+
+        // Our multiverse world
+        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(options.worldName());
+        worldConfig.setEnvironment(world.getEnvironment());
+        worldConfig.setGenerator(options.generator());
+        worldConfig.setSeed(world.getSeed());
+
+        OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
+        offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
+
+        MVWorld mvWorld = new MVWorld(world.getName(), worldConfig, world.getUID());
+        worldsMap.put(mvWorld.getName(), mvWorld);
+
+        saveWorldsConfig();
+        return Result.success(CreateWorldResult.Success.CREATED);
+    }
+
     public Result<LoadWorldResult.Success, LoadWorldResult.Failure> loadWorld(@NotNull String worldName) {
         return getOfflineWorld(worldName)
                 .map(this::loadWorld)
@@ -157,13 +200,20 @@ public class WorldManager {
     }
 
     public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull MVWorld world) {
-        World bukkitWorld = world.getBukkitWorld();
+        World bukkitWorld = world.getBukkitWorld().getOrNull();
         // TODO: removePlayersFromWorld?
         if (!Bukkit.unloadWorld(bukkitWorld, true)) {
             Logging.severe("Failed to unload world: " + world.getName());
             return Result.failure(UnloadWorldResult.Failure.BUKKIT_UNLOAD_FAILED);
         }
-        worldsMap.remove(world.getName());
+        MVWorld mvWorld = worldsMap.remove(world.getName());
+        if (mvWorld == null) {
+            Logging.severe("Failed to remove world from map: " + world.getName());
+            return Result.failure(UnloadWorldResult.Failure.WORLD_NON_EXISTENT);
+        }
+        Logging.fine("Unloaded world: " + world.getName());
+
+        mvWorld.getWorldConfig().deferenceMVWorld();
         return Result.success(UnloadWorldResult.Success.UNLOADED);
     }
 
@@ -174,7 +224,8 @@ public class WorldManager {
     }
 
     public Result<RemoveWorldResult.Success, UnloadWorldResult.Failure> removeWorld(@NotNull OfflineWorld world) {
-        if (world instanceof MVWorld mvWorld) {
+        MVWorld mvWorld = getMVWorld(world).getOrNull();
+        if (mvWorld != null) {
             var result = unloadWorld(mvWorld);
             if (result.isFailure()) {
                 return Result.failure(result.getFailureReason());
@@ -196,9 +247,12 @@ public class WorldManager {
     }
 
     public Result<DeleteWorldResult.Success, UnloadWorldResult.Failure> deleteWorld(@NotNull MVWorld world) {
-        // TODO: Attempt to load if unloaded so we can actually delete the world
+        File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull();
+        if (worldFolder == null || !WorldNameChecker.isValidWorldFolder(worldFolder)) {
+            Logging.severe("Failed to get world folder for world: " + world.getName());
+            return Result.failure(DeleteWorldResult.Failure.WORLD_FOLDER_NOT_FOUND);
+        }
 
-        File worldFolder = world.getBukkitWorld().getWorldFolder();
         var result = removeWorld(world);
         if (result.isFailure()) {
             return Result.failure(result.getFailureReason());
@@ -214,12 +268,32 @@ public class WorldManager {
         return Result.success(DeleteWorldResult.Success.DELETED);
     }
 
+    public Option<OfflineWorld> getOfflineOnlyWorld(@Nullable String worldName) {
+        return isMVWorld(worldName) ? Option.none() : Option.of(offlineWorldsMap.get(worldName));
+    }
+
+    public Collection<OfflineWorld> getOfflineOnlyWorlds() {
+        return offlineWorldsMap.values().stream().filter(world -> !world.isLoaded()).toList();
+    }
+
     public Option<OfflineWorld> getOfflineWorld(@Nullable String worldName) {
         return Option.of(offlineWorldsMap.get(worldName));
     }
 
     public Collection<OfflineWorld> getOfflineWorlds() {
         return offlineWorldsMap.values();
+    }
+
+    public boolean isOfflineWorld(@Nullable String worldName) {
+        return offlineWorldsMap.containsKey(worldName);
+    }
+
+    public Option<MVWorld> getMVWorld(@Nullable World world) {
+        return world == null ? Option.none() : Option.of(worldsMap.get(world.getName()));
+    }
+
+    public Option<MVWorld> getMVWorld(@Nullable OfflineWorld world) {
+        return world == null ? Option.none() : Option.of(worldsMap.get(world.getName()));
     }
 
     public Option<MVWorld> getMVWorld(@Nullable String worldName) {
