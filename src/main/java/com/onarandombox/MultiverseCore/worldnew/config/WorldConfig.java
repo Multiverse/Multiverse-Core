@@ -97,6 +97,14 @@ public class WorldConfig {
         return configHandle.set(configNodes.AUTO_LOAD, autoLoad);
     }
 
+    public boolean getBedRespawn() {
+        return configHandle.get(configNodes.BED_RESPAWN);
+    }
+
+    public Try<Void> setBedRespawn(boolean bedRespawn) {
+        return configHandle.set(configNodes.BED_RESPAWN, bedRespawn);
+    }
+
     public Difficulty getDifficulty() {
         return configHandle.get(configNodes.DIFFICULTY);
     }

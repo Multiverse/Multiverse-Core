@@ -7,6 +7,8 @@ import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,6 +88,22 @@ public class OfflineWorld {
         return worldConfig.setAutoLoad(autoLoad);
     }
 
+    public boolean getBedRespawn() {
+        return worldConfig.getBedRespawn();
+    }
+
+    public Try<Void> setBedRespawn(boolean bedRespawn) {
+        return worldConfig.setBedRespawn(bedRespawn);
+    }
+
+    public Material getCurrency() {
+        return worldConfig.getEntryFeeCurrency();
+    }
+
+    public Try<Void> setCurrency(Material currency) {
+        return worldConfig.setEntryFeeCurrency(currency);
+    }
+
     public Difficulty getDifficulty() {
         return worldConfig.getDifficulty();
     }
@@ -150,6 +168,14 @@ public class OfflineWorld {
         return worldConfig.setPortalForm(portalForm);
     }
 
+    public double getPrice() {
+        return worldConfig.getEntryFeeAmount();
+    }
+
+    public Try<Void> setPrice(double price) {
+        return worldConfig.setEntryFeeAmount(price);
+    }
+
     public boolean getPvp() {
         return worldConfig.getPvp();
     }
@@ -188,6 +214,14 @@ public class OfflineWorld {
 
     public long getSeed() {
         return worldConfig.getSeed();
+    }
+
+    public Location getSpawnLocation() {
+        return worldConfig.getSpawnLocation();
+    }
+
+    public Try<Void> setSpawnLocation(Location spawnLocation) {
+        return worldConfig.setSpawnLocation(spawnLocation);
     }
 
     public List<String> getWorldBlacklist() {

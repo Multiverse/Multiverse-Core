@@ -7,25 +7,24 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.permissions.CorePermissionsChecker;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.result.ResultChain;
-import com.onarandombox.MultiverseCore.world.entrycheck.EntryFeeResult;
-import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.entrycheck.EntryFeeResult;
+import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryCheckerProvider;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.GameMode;
@@ -45,6 +44,10 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Multiverse's Listener for players.
  */
@@ -52,7 +55,7 @@ import org.jvnet.hk2.annotations.Service;
 public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
-    private final Provider<MVWorldManager> worldManagerProvider;
+    private final Provider<WorldManager> worldManagerProvider;
     private final SafeTTeleporter safeTTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
@@ -60,6 +63,7 @@ public class MVPlayerListener implements InjectableListener {
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
     private final Provider<MVCommandManager> commandManagerProvider;
     private final CorePermissionsChecker permissionsChecker;
+    private final DestinationsProvider destinationsProvider;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
@@ -67,14 +71,15 @@ public class MVPlayerListener implements InjectableListener {
     public MVPlayerListener(
             MultiverseCore plugin,
             MVCoreConfig config,
-            Provider<MVWorldManager> worldManagerProvider,
+            Provider<WorldManager> worldManagerProvider,
             SafeTTeleporter safeTTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
             WorldEntryCheckerProvider worldEntryCheckerProvider,
             Provider<MVCommandManager> commandManagerProvider,
-            CorePermissionsChecker permissionsChecker
+            CorePermissionsChecker permissionsChecker,
+            DestinationsProvider destinationsProvider
     ) {
         this.plugin = plugin;
         this.config = config;
@@ -86,9 +91,10 @@ public class MVPlayerListener implements InjectableListener {
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
         this.commandManagerProvider = commandManagerProvider;
         this.permissionsChecker = permissionsChecker;
+        this.destinationsProvider = destinationsProvider;
     }
 
-    private MVWorldManager getWorldManager() {
+    private WorldManager getWorldManager() {
         return worldManagerProvider.get();
     }
 
@@ -110,7 +116,7 @@ public class MVPlayerListener implements InjectableListener {
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
         World world = event.getPlayer().getWorld();
-        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName());
+        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName()).getOrNull();
         // If it's not a World MV manages we stop.
         if (mvWorld == null) {
             return;
@@ -123,14 +129,14 @@ public class MVPlayerListener implements InjectableListener {
 
         // Get the instance of the World the player should respawn at.
         MVWorld respawnWorld = null;
-        if (getWorldManager().isMVWorld(mvWorld.getRespawnToWorld())) {
-            respawnWorld = getWorldManager().getMVWorld(mvWorld.getRespawnToWorld());
+        if (getWorldManager().isMVWorld(mvWorld.getRespawnWorld())) {
+            respawnWorld = getWorldManager().getMVWorld(mvWorld.getRespawnWorld()).getOrNull();
         }
 
         // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
         // NOW: We'll always handle it to get more accurate spawns
         if (respawnWorld != null) {
-            world = respawnWorld.getCBWorld();
+            world = respawnWorld.getBukkitWorld().getOrNull();
         }
         // World has been set to the appropriate world
         Location respawnLocation = getMostAccurateRespawnLocation(world);
@@ -141,7 +147,7 @@ public class MVPlayerListener implements InjectableListener {
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
-        MVWorld mvw = getWorldManager().getMVWorld(w.getName());
+        MVWorld mvw = getWorldManager().getMVWorld(w.getName()).getOrNull();
         if (mvw != null) {
             return mvw.getSpawnLocation();
         }
@@ -154,26 +160,33 @@ public class MVPlayerListener implements InjectableListener {
      */
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        if (!p.hasPlayedBefore()) {
-            Logging.finer("Player joined for the FIRST time!");
-            if (config.getFirstSpawnOverride()) {
-                Logging.fine("Moving NEW player to(firstspawnoverride): "
-                        + getWorldManager().getFirstSpawnWorld().getSpawnLocation());
-                this.sendPlayerToDefaultWorld(p);
-            }
+        Player player = event.getPlayer();
+        MVWorld world = getWorldManager().getMVWorld(player.getWorld()).getOrNull();
+        if (world == null) {
+            Logging.finer("Player joined in a world that is not managed by Multiverse.");
             return;
-        } else {
-            Logging.finer("Player joined AGAIN!");
-            if (config.getEnforceAccess() // check this only if we're enforcing access!
-                    && !permissionsChecker.hasWorldAccessPermission(p, getWorldManager().getFirstSpawnWorld())) {
-                p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
-                this.sendPlayerToDefaultWorld(p);
-            }
         }
+
+        Option.of(destinationsProvider.parseDestination(config.getFirstSpawnLocation()))
+                .peek(parsedDestination -> {
+                    if (!player.hasPlayedBefore()) {
+                        Logging.finer("Player joined for the FIRST time!");
+                        if (config.getFirstSpawnOverride()) {
+                            Logging.fine("Moving NEW player to(firstspawnoverride): %s", config.getFirstSpawnLocation());
+                            this.sendPlayerToDefaultWorld(player, parsedDestination);
+                        }
+                    } else {
+                        Logging.finer("Player joined AGAIN!");
+                        if (worldEntryCheckerProvider.forSender(player).canAccessWorld(world).isFailure()) {
+                            player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
+                            this.sendPlayerToDefaultWorld(player, parsedDestination);
+                        }
+                    }
+                });
+
         // Handle the Players GameMode setting for the new world.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
-        playerWorld.put(p.getName(), p.getWorld().getName());
+        playerWorld.put(player.getName(), player.getWorld().getName());
     }
 
     /**
@@ -213,8 +226,8 @@ public class MVPlayerListener implements InjectableListener {
         }
         Logging.finer("Inferred sender '" + teleporter + "' from name '"
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
-        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName());
-        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName()).getOrNull();
+        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName()).getOrNull();
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
                     + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
@@ -291,8 +304,8 @@ public class MVPlayerListener implements InjectableListener {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
 
-        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName());
-        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName());
+        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName()).getOrNull();
+        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName()).getOrNull();
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Portaling to the same world.
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
@@ -308,13 +321,13 @@ public class MVPlayerListener implements InjectableListener {
         Logging.fine("Teleport result: %s", entryResult);
     }
 
-    private void sendPlayerToDefaultWorld(final Player player) {
+    private void sendPlayerToDefaultWorld(final Player player, ParsedDestination parsedDestination) {
         // Remove the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
         this.server.getScheduler().scheduleSyncDelayedTask(this.plugin,
             new Runnable() {
                 @Override
                 public void run() {
-                    player.teleport(getWorldManager().getFirstSpawnWorld().getSpawnLocation());
+                    safeTTeleporter.safelyTeleportAsync(getCommandManager().getCommandIssuer(player), player, parsedDestination);
                 }
             }, 1L);
     }
@@ -322,7 +335,7 @@ public class MVPlayerListener implements InjectableListener {
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameModeAndFlight(Player player, World world) {
 
-        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName());
+        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName()).getOrNull();
         if (mvWorld != null) {
             this.handleGameModeAndFlight(player, mvWorld);
         } else {
@@ -345,7 +358,7 @@ public class MVPlayerListener implements InjectableListener {
                     public void run() {
                         if (!permissionsChecker.hasGameModeBypassPermission(player, world)) {
                             // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
-                            if (player.getWorld() == world.getCBWorld()) {
+                            if (player.getWorld() == world.getBukkitWorld().getOrNull()) {
                                 Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
                                 Logging.finest("From World: %s", player.getWorld());
                                 Logging.finest("To World: %s", world);

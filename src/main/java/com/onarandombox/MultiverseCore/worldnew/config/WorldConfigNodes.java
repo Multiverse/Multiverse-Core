@@ -61,6 +61,11 @@ public class WorldConfigNodes {
             .name("auto-load")
             .build());
 
+    public final ConfigNode<Boolean> BED_RESPAWN = node(ConfigNode.builder("bed-respawn", Boolean.class)
+            .defaultValue(true)
+            .name("bed-respawn")
+            .build());
+
     public final ConfigNode<Difficulty> DIFFICULTY = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)
             .name("difficulty")

@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.world.entrycheck;
+package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;

@@ -5,6 +5,7 @@ world:
   allow-weather: true
   auto-heal: true
   auto-load: true
+  bed-respawn: true
   difficulty: NORMAL
   entry-fee:
     amount: 0.0
@@ -38,6 +39,7 @@ world_nether:
   allow-weather: true
   auto-heal: true
   auto-load: true
+  bed-respawn: true
   difficulty: NORMAL
   entry-fee:
     amount: 0.0

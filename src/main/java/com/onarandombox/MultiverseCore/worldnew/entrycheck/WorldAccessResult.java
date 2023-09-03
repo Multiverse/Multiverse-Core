@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.world.entrycheck;
+package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;

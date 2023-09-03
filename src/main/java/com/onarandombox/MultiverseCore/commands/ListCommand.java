@@ -19,7 +19,7 @@ import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ListContentProvider;
-import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
+import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryCheckerProvider;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;

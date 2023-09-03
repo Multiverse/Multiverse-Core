@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore.economy;
 
-import com.onarandombox.MultiverseCore.api.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.World;

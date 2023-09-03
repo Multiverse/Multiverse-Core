@@ -4,7 +4,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import com.onarandombox.MultiverseCore.utils.result.Result;
-import com.onarandombox.MultiverseCore.world.WorldNameChecker;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
@@ -34,12 +33,14 @@ public class WorldManager {
     private final Map<String, OfflineWorld> offlineWorldsMap;
     private final Map<String, MVWorld> worldsMap;
     private final WorldsConfigManager worldsConfigManager;
+    private final WorldNameChecker worldNameChecker;
 
     @Inject
-    WorldManager(@NotNull WorldsConfigManager worldsConfigManager) {
+    WorldManager(@NotNull WorldsConfigManager worldsConfigManager, @NotNull WorldNameChecker worldNameChecker) {
         this.offlineWorldsMap = new HashMap<>();
         this.worldsMap = new HashMap<>();
         this.worldsConfigManager = worldsConfigManager;
+        this.worldNameChecker = worldNameChecker;
     }
 
     public void initAllWorlds() {
@@ -88,7 +89,7 @@ public class WorldManager {
      * @param options   The options for customizing the creation of a new world.
      */
     public Result<CreateWorldResult.Success, CreateWorldResult.Failure> createWorld(CreateWorldOptions options) {
-        if (!WorldNameChecker.isValidWorldName(options.worldName())) {
+        if (!worldNameChecker.isValidWorldName(options.worldName())) {
             return Result.failure(CreateWorldResult.Failure.INVALID_WORLDNAME);
         }
 
@@ -127,7 +128,7 @@ public class WorldManager {
     }
 
     public Result<CreateWorldResult.Success, CreateWorldResult.Failure> importWorld(ImportWorldOptions options) {
-        if (!WorldNameChecker.isValidWorldName(options.worldName())) {
+        if (!worldNameChecker.isValidWorldName(options.worldName())) {
             return Result.failure(CreateWorldResult.Failure.INVALID_WORLDNAME);
         }
 
@@ -258,7 +259,7 @@ public class WorldManager {
 
     public Result<DeleteWorldResult.Success, UnloadWorldResult.Failure> deleteWorld(@NotNull MVWorld world) {
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull();
-        if (worldFolder == null || !WorldNameChecker.isValidWorldFolder(worldFolder)) {
+        if (worldFolder == null || !worldNameChecker.isValidWorldFolder(worldFolder)) {
             Logging.severe("Failed to get world folder for world: " + world.getName());
             return Result.failure(DeleteWorldResult.Failure.WORLD_FOLDER_NOT_FOUND);
         }
@@ -312,6 +313,10 @@ public class WorldManager {
 
     public Collection<MVWorld> getMVWorlds() {
         return worldsMap.values();
+    }
+
+    public boolean isMVWorld(@Nullable World world) {
+        return world != null && isMVWorld(world.getName());
     }
 
     public boolean isMVWorld(@Nullable OfflineWorld world) {

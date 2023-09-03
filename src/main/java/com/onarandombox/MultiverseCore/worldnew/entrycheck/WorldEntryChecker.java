@@ -1,12 +1,12 @@
-package com.onarandombox.MultiverseCore.world.entrycheck;
+package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
-import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.permissions.CorePermissionsChecker;
 import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.utils.result.ResultChain;
 import com.onarandombox.MultiverseCore.world.configuration.EntryFee;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -66,7 +66,7 @@ public class WorldEntryChecker {
         if (permissionsChecker.hasPlayerLimitBypassPermission(sender, world)) {
             return Result.success(PlayerLimitResult.Success.BYPASS_PLAYERLIMIT);
         }
-        return playerLimit > world.getCBWorld().getPlayers().size()
+        return playerLimit > world.getBukkitWorld().map(org.bukkit.World::getPlayers).map(java.util.Collection::size).getOrElse(0)
                 ? Result.success(PlayerLimitResult.Success.WITHIN_PLAYERLIMIT)
                 : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
     }
