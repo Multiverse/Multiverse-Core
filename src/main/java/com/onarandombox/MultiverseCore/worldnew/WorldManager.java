@@ -24,12 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class WorldManager {
@@ -124,12 +121,26 @@ public class WorldManager {
 
         // Our multiverse world
         MVWorld mvWorld = newMVWorld(world);
-        mvWorld.getWorldConfig().setGenerator(options.generator());
+        mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(options.generator()) ? "" : options.generator());
         saveWorldsConfig();
         return Result.success(CreateWorldResult.Success.CREATED);
     }
 
     public Result<CreateWorldResult.Success, CreateWorldResult.Failure> importWorld(ImportWorldOptions options) {
+        if (!WorldNameChecker.isValidWorldName(options.worldName())) {
+            return Result.failure(CreateWorldResult.Failure.INVALID_WORLDNAME);
+        }
+
+        if (isMVWorld(options.worldName())) {
+            return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_LOADED);
+        }
+
+        if (isOfflineWorld(options.worldName())) {
+            return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_OFFLINE);
+        }
+
+        // TODO: Check if world folder exists
+
         // Create bukkit world
         World world = WorldCreator.name(options.worldName())
                 .environment(options.environment())
@@ -143,7 +154,7 @@ public class WorldManager {
 
         // Our multiverse world
         MVWorld mvWorld = newMVWorld(world);
-        mvWorld.getWorldConfig().setGenerator(options.generator());
+        mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(options.generator()) ? "" : options.generator());
         saveWorldsConfig();
         return Result.success(CreateWorldResult.Success.CREATED);
     }

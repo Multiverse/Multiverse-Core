@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
+import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import io.vavr.control.Try;
@@ -46,7 +47,7 @@ public class OfflineWorld {
     }
 
     public String getAlias() {
-        return worldConfig.getAlias();
+        return Strings.isNullOrEmpty(worldConfig.getAlias()) ? worldName : worldConfig.getAlias();
     }
 
     public Try<Void> setAlias(String alias) {

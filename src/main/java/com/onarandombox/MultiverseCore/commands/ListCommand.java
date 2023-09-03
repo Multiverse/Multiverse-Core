@@ -1,8 +1,5 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
@@ -11,9 +8,6 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
@@ -25,8 +19,9 @@ import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ListContentProvider;
-import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.world.entrycheck.WorldEntryCheckerProvider;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -34,17 +29,20 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @CommandAlias("mv")
 public class ListCommand extends MultiverseCommand {
 
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
     @Inject
     public ListCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull MVWorldManager worldManager,
+            @NotNull WorldManager worldManager,
             @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider
     ) {
         super(commandManager);
@@ -101,15 +99,15 @@ public class ListCommand extends MultiverseCommand {
         List<String> worldList =  new ArrayList<>();
 
         worldManager.getMVWorlds().stream()
-                .filter(world -> player == null || worldEntryCheckerProvider.forSender(player).canAccessWorld(world).isSuccess())
+                .filter(world -> player == null) // TODO: || worldEntryCheckerProvider.forSender(player).canAccessWorld(world).isSuccess())
                 .filter(world -> canSeeWorld(player, world))
-                .map(world -> hiddenText(world) + world.getColoredWorldString() + " - " + parseColouredEnvironment(world.getEnvironment()))
+                .map(world -> hiddenText(world) + world.getAlias() + " - " + parseColouredEnvironment(world.getEnvironment()))
                 .sorted()
                 .forEach(worldList::add);
 
-        worldManager.getUnloadedWorlds().stream()
-                .filter(world -> issuer.hasPermission("multiverse.access." + world)) // TODO: Refactor stray permission check
-                .map(world -> ChatColor.GRAY + world + " - UNLOADED")
+        worldManager.getOfflineOnlyWorlds().stream()
+                .filter(world -> issuer.hasPermission("multiverse.access." + world.getName())) // TODO: Refactor stray permission check
+                .map(world -> ChatColor.GRAY + world.getAlias() + " - UNLOADED")
                 .sorted()
                 .forEach(worldList::add);
 
@@ -127,18 +125,12 @@ public class ListCommand extends MultiverseCommand {
     }
 
     private String parseColouredEnvironment(World.Environment env) {
-        ChatColor color = ChatColor.GOLD;
-        switch (env) {
-            case NETHER:
-                color = ChatColor.RED;
-                break;
-            case NORMAL:
-                color = ChatColor.GREEN;
-                break;
-            case THE_END:
-                color = ChatColor.AQUA;
-                break;
-        }
+        ChatColor color = switch (env) {
+            case NETHER -> ChatColor.RED;
+            case NORMAL -> ChatColor.GREEN;
+            case THE_END -> ChatColor.AQUA;
+            default -> ChatColor.GOLD;
+        };
         return color + env.toString();
     }
 }
