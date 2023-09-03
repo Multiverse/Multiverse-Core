@@ -37,7 +37,7 @@ public class RemoveCommand extends MultiverseCommand {
     public void onRemoveCommand(MVCommandIssuer issuer,
 
                                 @Single
-                                //@Conditions("mvworlds:scope=both")
+                                @Conditions("mvworlds:scope=both")
                                 @Syntax("<world>")
                                 @Description("{@@mv-core.remove.world.description}")
                                 String worldName

@@ -40,7 +40,7 @@ public class LoadCommand extends MultiverseCommand {
     public void onLoadCommand(MVCommandIssuer issuer,
 
                               @Single
-                              //@Conditions("worldname:scope=unloaded")
+                              @Conditions("worldname:scope=unloaded")
                               @Syntax("<world>")
                               @Description("{@@mv-core.load.world.description}")
                               String worldName

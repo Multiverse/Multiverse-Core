@@ -302,6 +302,10 @@ public class WorldManager {
         return offlineWorldsMap.values().stream().filter(world -> !world.isLoaded()).toList();
     }
 
+    public boolean isOfflineOnlyWorld(@Nullable String worldName) {
+        return !isMVWorld(worldName) && isOfflineWorld(worldName);
+    }
+
     public Option<OfflineWorld> getOfflineWorld(@Nullable String worldName) {
         return Option.of(offlineWorldsMap.get(worldName));
     }

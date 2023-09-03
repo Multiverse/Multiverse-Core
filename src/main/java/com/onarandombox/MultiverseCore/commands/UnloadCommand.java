@@ -11,6 +11,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -37,10 +38,10 @@ public class UnloadCommand extends MultiverseCommand {
 
                                 @Syntax("<world>")
                                 @Description("{@@mv-core.unload.world.description}")
-                                String worldName // TODO: Use world object
+                                MVWorld world
     ) {
-        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", worldName);
-        worldManager.unloadWorld(worldName)
+        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", world.getAlias());
+        worldManager.unloadWorld(world)
                 .onSuccess((success) -> {
                     Logging.fine("World unload success: " + success);
                     issuer.sendInfo(success.getReasonMessage());

@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ public class MVCommandManager extends PaperCommandManager {
             @NotNull CommandQueueManager commandQueueManager,
             @NotNull Provider<MVCommandContexts> commandContextsProvider,
             @NotNull Provider<MVCommandCompletions> commandCompletionsProvider,
-            @NotNull MVWorldManager worldManager
+            @NotNull WorldManager worldManager
     ) {
         super(plugin);
         this.flagsManager = flagsManager;
