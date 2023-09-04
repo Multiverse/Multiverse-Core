@@ -49,6 +49,14 @@ public class WorldConfigNodes {
     public final ConfigNode<Boolean> ALLOW_WEATHER = node(ConfigNode.builder("allow-weather", Boolean.class)
             .defaultValue(true)
             .name("allow-weather")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().peek(world -> {
+                    if (!world.isClearWeather() && !newValue) {
+                        world.setClearWeatherDuration(-1);
+                    }
+                });
+            })
             .build());
 
     public final ConfigNode<Boolean> AUTO_HEAL = node(ConfigNode.builder("auto-heal", Boolean.class)

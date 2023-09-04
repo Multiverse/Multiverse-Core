@@ -7,10 +7,11 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -22,10 +23,10 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class MVWeatherListener implements InjectableListener {
 
-    private MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
-    public MVWeatherListener(MVWorldManager worldManager) {
+    public MVWeatherListener(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
@@ -35,14 +36,16 @@ public class MVWeatherListener implements InjectableListener {
      */
     @EventHandler
     public void weatherChange(WeatherChangeEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() || !event.toWeatherState()) {
             return;
         }
-        MVWorld world = this.worldManager.getMVWorld(event.getWorld().getName());
-        if (world != null) {
-            // If it's going to start raining and we have weather disabled
-            event.setCancelled((event.toWeatherState() && !world.isWeatherEnabled()));
-        }
+        worldManager.getMVWorld(event.getWorld())
+                .peek((world) -> {
+                    if (!world.getAllowWeather()) {
+                        Logging.fine("Cancelling weather for %s as getAllowWeather is false", world.getName());
+                        event.setCancelled(true);
+                    }
+                });
     }
 
     /**
@@ -51,13 +54,15 @@ public class MVWeatherListener implements InjectableListener {
      */
     @EventHandler
     public void thunderChange(ThunderChangeEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() || !event.toThunderState()) {
             return;
         }
-        MVWorld world = this.worldManager.getMVWorld(event.getWorld().getName());
-        if (world != null) {
-            // If it's going to start raining and we have weather disabled
-            event.setCancelled((event.toThunderState() && !world.isWeatherEnabled()));
-        }
+        worldManager.getMVWorld(event.getWorld())
+                .peek((world) -> {
+                    if (!world.getAllowWeather()) {
+                        Logging.fine("Cancelling thunder for %s as getAllowWeather is false", world.getName());
+                        event.setCancelled(true);
+                    }
+                });
     }
 }
