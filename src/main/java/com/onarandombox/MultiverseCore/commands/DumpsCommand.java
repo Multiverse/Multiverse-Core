@@ -167,7 +167,6 @@ public class DumpsCommand extends MultiverseCommand {
         } catch (IOException e) {
             Logging.finer("Log is not ANSI encoded. Trying UTF-8");
             // Must be a UTF-8 encoded log then
-
         }
 
         // Try reading as UTF-8 encoded
@@ -177,9 +176,8 @@ public class DumpsCommand extends MultiverseCommand {
             // It is some other strange encoding
             Logging.severe("Could not read ./logs/latest.log. See below for stack trace");
             ex.printStackTrace();
-            return "Could not read log";
         }
-
+        return "Could not read log";
     }
 
     private String getVersionString() {
