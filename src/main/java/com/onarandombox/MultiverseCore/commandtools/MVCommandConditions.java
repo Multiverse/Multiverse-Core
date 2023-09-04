@@ -6,7 +6,6 @@ import co.aikar.commands.BukkitConditionContext;
 import co.aikar.commands.CommandConditions;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.world.WorldNameChecker;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import org.jetbrains.annotations.NotNull;

@@ -292,4 +292,13 @@ public class OfflineWorld {
     void setWorldConfig(WorldConfig worldConfig) {
         this.worldConfig = worldConfig;
     }
+
+    @Override
+    public String toString() {
+        return "OfflineWorld{" +
+                "name='" + worldName + "', " +
+                "env='" + getEnvironment() + "', " +
+                "gen='" + getGenerator() + "'" +
+                '}';
+    }
 }

@@ -1,7 +1,6 @@
 package com.onarandombox.MultiverseCore.commands;
 
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -11,7 +10,6 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
@@ -24,6 +22,7 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,9 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
@@ -48,12 +44,12 @@ import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getServerProp
 public class DumpsCommand extends MultiverseCommand {
 
     private final MultiverseCore plugin;
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
                         @NotNull MultiverseCore plugin,
-                        @NotNull MVWorldManager worldManager) {
+                        @NotNull WorldManager worldManager) {
         super(commandManager);
         this.plugin = plugin;
         this.worldManager = worldManager;

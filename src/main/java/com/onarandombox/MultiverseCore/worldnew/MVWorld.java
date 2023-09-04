@@ -11,6 +11,7 @@ import io.vavr.control.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -103,9 +104,27 @@ public class MVWorld extends OfflineWorld {
         return Option.of(Bukkit.getWorld(worldUid));
     }
 
+    public Option<WorldType> getWorldType() {
+        return getBukkitWorld().map(World::getWorldType);
+    }
+
+    public Option<Boolean> canGenerateStructures() {
+        return getBukkitWorld().map(World::canGenerateStructures);
+    }
+
     @Override
     void setWorldConfig(WorldConfig worldConfig) {
         super.setWorldConfig(worldConfig);
         setupWorldConfig(getBukkitWorld().get());
+    }
+
+    @Override
+    public String toString() {
+        return "MVWorld{" +
+                "name='" + worldName + "', " +
+                "env='" + getEnvironment() + "', " +
+                "type='" + getWorldType().getOrNull() + "', " +
+                "gen='" + getGenerator() + "'" +
+                '}';
     }
 }

@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.List;
-
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitLocales;
@@ -11,7 +9,6 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.PaperCommandManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagsManager;
 import com.onarandombox.MultiverseCore.commandtools.queue.CommandQueueManager;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
@@ -21,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
+import java.util.List;
 
 /**
  * Main class to manage permissions.
