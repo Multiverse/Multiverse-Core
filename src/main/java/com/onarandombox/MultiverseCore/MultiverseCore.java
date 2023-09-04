@@ -122,16 +122,16 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         var worldManager = worldManagerProvider.get();
 
         worldManager.loadWorldsConfig();
-        worldManager.getDefaultWorldGenerators();
-        worldManager.loadDefaultWorlds();
-        worldManager.loadWorlds(true);
-
-        // Now set the firstspawnworld (after the worlds are loaded):
-        worldManager.setFirstSpawnWorld(config.getFirstSpawnLocation());
-        MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
-        if (firstSpawnWorld != null) {
-            config.setFirstSpawnLocation(firstSpawnWorld.getName());
-        }
+//        worldManager.getDefaultWorldGenerators();
+//        worldManager.loadDefaultWorlds();
+//        worldManager.loadWorlds(true);
+//
+//        // Now set the firstspawnworld (after the worlds are loaded):
+//        worldManager.setFirstSpawnWorld(config.getFirstSpawnLocation());
+//        MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
+//        if (firstSpawnWorld != null) {
+//            config.setFirstSpawnLocation(firstSpawnWorld.getName());
+//        }
 
         var newWorldManager = newWorldManagerProvider.get();
         newWorldManager.initAllWorlds(); // TODO: Possibly move this to constructor of WorldManager

@@ -26,8 +26,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -35,6 +37,8 @@ public class WorldManager {
 
     private final Map<String, OfflineWorld> offlineWorldsMap;
     private final Map<String, MVWorld> worldsMap;
+    private final List<String> unloadTracker;
+    private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
     private final BlockSafety blockSafety;
@@ -51,6 +55,8 @@ public class WorldManager {
     ) {
         this.offlineWorldsMap = new HashMap<>();
         this.worldsMap = new HashMap<>();
+        this.unloadTracker = new ArrayList<>();
+        this.loadTracker = new ArrayList<>();
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.blockSafety = blockSafety;
@@ -122,6 +128,7 @@ public class WorldManager {
         }
 
         // Create bukkit world
+        this.loadTracker.add(options.worldName());
         World world = WorldCreator.name(options.worldName())
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
@@ -129,6 +136,7 @@ public class WorldManager {
                 .seed(options.seed())
                 .type(options.worldType())
                 .createWorld();
+        this.loadTracker.remove(options.worldName());
         if (world == null) {
             Logging.severe("Failed to create world: " + options.worldName());
             return Result.failure(CreateWorldResult.Failure.BUKKIT_CREATION_FAILED);
@@ -158,10 +166,12 @@ public class WorldManager {
         // TODO: Check if world folder exists
 
         // Create bukkit world
+        this.loadTracker.add(options.worldName());
         World world = WorldCreator.name(options.worldName())
                 .environment(options.environment())
                 .generator(Strings.isNullOrEmpty(options.generator()) ? null : options.generator())
                 .createWorld();
+        this.loadTracker.remove(options.worldName());
         if (world == null) {
             Logging.severe("Failed to create world: " + options.worldName());
             return Result.failure(CreateWorldResult.Failure.BUKKIT_CREATION_FAILED);
@@ -193,17 +203,25 @@ public class WorldManager {
     }
 
     public Result<LoadWorldResult.Success, LoadWorldResult.Failure> loadWorld(@NotNull OfflineWorld offlineWorld) {
+        if (loadTracker.contains(offlineWorld.getName())) {
+            // This is to prevent recursive calls by WorldLoadEvent
+            Logging.fine("World already loading: " + offlineWorld.getName());
+            return Result.failure(LoadWorldResult.Failure.WORLD_ALREADY_LOADING);
+        }
+
         if (isMVWorld(offlineWorld)) {
             Logging.severe("World already loaded: " + offlineWorld.getName());
             return Result.failure(LoadWorldResult.Failure.WORLD_EXIST_LOADED);
         }
 
         // TODO: Reduce copy paste from createWorld method
+        this.loadTracker.add(offlineWorld.getName());
         World world = WorldCreator.name(offlineWorld.getName())
                 .environment(offlineWorld.getEnvironment())
                 .generator(Strings.isNullOrEmpty(offlineWorld.getGenerator()) ? null : offlineWorld.getGenerator())
                 .seed(offlineWorld.getSeed())
                 .createWorld();
+        this.loadTracker.remove(offlineWorld.getName());
         if (world == null) {
             Logging.severe("Failed to create world: " + offlineWorld.getName());
             return Result.failure(LoadWorldResult.Failure.BUKKIT_CREATION_FAILED);
@@ -219,6 +237,12 @@ public class WorldManager {
         return Result.success(LoadWorldResult.Success.LOADED);
     }
 
+    public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull World world) {
+        return getMVWorld(world)
+                .map(this::unloadWorld)
+                .getOrElse(() -> Result.failure(UnloadWorldResult.Failure.WORLD_NON_EXISTENT));
+    }
+
     public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull String worldName) {
         return getMVWorld(worldName)
                 .map(this::unloadWorld)
@@ -226,9 +250,18 @@ public class WorldManager {
     }
 
     public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull MVWorld world) {
+        if (unloadTracker.contains(world.getName())) {
+            // This is to prevent recursive calls by WorldUnloadEvent
+            Logging.fine("World already unloading: " + world.getName());
+            return Result.failure(UnloadWorldResult.Failure.WORLD_ALREADY_UNLOADING);
+        }
+
         World bukkitWorld = world.getBukkitWorld().getOrNull();
         // TODO: removePlayersFromWorld?
-        if (!Bukkit.unloadWorld(bukkitWorld, true)) {
+        unloadTracker.add(world.getName());
+        boolean unloadSuccess = Bukkit.unloadWorld(bukkitWorld, true);
+        unloadTracker.remove(world.getName());
+        if (!unloadSuccess) {
             Logging.severe("Failed to unload world: " + world.getName());
             return Result.failure(UnloadWorldResult.Failure.BUKKIT_UNLOAD_FAILED);
         }

@@ -15,7 +15,6 @@ import com.onarandombox.MultiverseCore.listeners.MVEntityListener
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener
 import com.onarandombox.MultiverseCore.listeners.MVPortalListener
 import com.onarandombox.MultiverseCore.listeners.MVWeatherListener
-import com.onarandombox.MultiverseCore.listeners.MVWorldInitListener
 import com.onarandombox.MultiverseCore.listeners.MVWorldListener
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
@@ -108,11 +107,6 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `MVWorldListener is available as a service`() {
         assertNotNull(multiverseCore.getService(MVWorldListener::class.java))
-    }
-
-    @Test
-    fun `MVWorldInitListener is available as a service`() {
-        assertNotNull(multiverseCore.getService(MVWorldInitListener::class.java))
     }
 
     @Test

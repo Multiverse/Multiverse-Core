@@ -12,6 +12,7 @@ public class UnloadWorldResult {
     }
 
     public static class Failure implements FailureReason {
+        public static final Failure WORLD_ALREADY_UNLOADING = new Failure(MVCorei18n.GENERIC_FAILURE);
         public static final Failure WORLD_NON_EXISTENT = new Failure(MVCorei18n.GENERIC_FAILURE);
         public static final Failure WORLD_OFFLINE = new Failure(MVCorei18n.GENERIC_FAILURE);
         public static final Failure BUKKIT_UNLOAD_FAILED = new Failure(MVCorei18n.GENERIC_FAILURE);

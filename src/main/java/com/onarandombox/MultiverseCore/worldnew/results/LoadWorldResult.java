@@ -12,6 +12,7 @@ public class LoadWorldResult {
     }
 
     public enum Failure implements FailureReason {
+        WORLD_ALREADY_LOADING(MVCorei18n.GENERIC_FAILURE),
         WORLD_NON_EXISTENT(MVCorei18n.GENERIC_FAILURE),
         WORLD_EXIST_FOLDER(MVCorei18n.GENERIC_FAILURE),
         WORLD_EXIST_LOADED(MVCorei18n.GENERIC_FAILURE),
