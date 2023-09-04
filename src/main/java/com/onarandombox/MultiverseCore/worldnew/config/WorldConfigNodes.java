@@ -10,7 +10,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,9 +182,13 @@ public class WorldConfigNodes {
             })
             .build());
 
-    public final ConfigNode<Integer> SPAWNING_ANIMALS_AMOUNT = node(ConfigNode.builder("spawning.animals.amount", Integer.class)
+    public final ConfigNode<Integer> SPAWNING_ANIMALS_TICKS = node(ConfigNode.builder("spawning.animals.tick-rate", Integer.class)
             .defaultValue(-1)
-            .name("spawning-animals-amount")
+            .name("spawning-animals-ticks")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().peek(world -> world.setTicksPerAnimalSpawns(newValue));
+            })
             .build());
 
     public final ConfigNode<List> SPAWNING_ANIMALS_EXCEPTIONS = node(ConfigNode.builder("spawning.animals.exceptions", List.class)
@@ -202,9 +205,13 @@ public class WorldConfigNodes {
             })
             .build());
 
-    public final ConfigNode<Integer> SPAWNING_MONSTERS_AMOUNT = node(ConfigNode.builder("spawning.monsters.amount", Integer.class)
+    public final ConfigNode<Integer> SPAWNING_MONSTERS_TICKS = node(ConfigNode.builder("spawning.monsters.tick-rate", Integer.class)
             .defaultValue(-1)
-            .name("spawning-monsters-amount")
+            .name("spawning-monsters-ticks")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().peek(world -> world.setTicksPerMonsterSpawns(newValue));
+            })
             .build());
 
     public final ConfigNode<List> SPAWNING_MONSTERS_EXCEPTIONS = node(ConfigNode.builder("spawning.monsters.exceptions", List.class)

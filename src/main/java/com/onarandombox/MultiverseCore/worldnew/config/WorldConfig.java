@@ -241,12 +241,12 @@ public class WorldConfig {
         return configHandle.set(configNodes.SPAWNING_ANIMALS, spawningAnimals);
     }
 
-    public int getSpawningAnimalsAmount() {
-        return configHandle.get(configNodes.SPAWNING_ANIMALS_AMOUNT);
+    public int getSpawningAnimalsTicks() {
+        return configHandle.get(configNodes.SPAWNING_ANIMALS_TICKS);
     }
 
-    public Try<Void> setSpawningAnimalsAmount(int spawningAnimalsAmount) {
-        return configHandle.set(configNodes.SPAWNING_ANIMALS_AMOUNT, spawningAnimalsAmount);
+    public Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
+        return configHandle.set(configNodes.SPAWNING_ANIMALS_TICKS, spawningAnimalsAmount);
     }
 
     public List<String> getSpawningAnimalsExceptions() {
@@ -265,12 +265,12 @@ public class WorldConfig {
         return configHandle.set(configNodes.SPAWNING_MONSTERS, spawningMonsters);
     }
 
-    public int getSpawningMonstersAmount() {
-        return configHandle.get(configNodes.SPAWNING_MONSTERS_AMOUNT);
+    public int getSpawningMonstersTicks() {
+        return configHandle.get(configNodes.SPAWNING_MONSTERS_TICKS);
     }
 
-    public Try<Void> setSpawningMonstersAmount(int spawningMonstersAmount) {
-        return configHandle.set(configNodes.SPAWNING_MONSTERS_AMOUNT, spawningMonstersAmount);
+    public Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
+        return configHandle.set(configNodes.SPAWNING_MONSTERS_TICKS, spawningMonstersAmount);
     }
 
     public List<String> getSpawningMonstersExceptions() {

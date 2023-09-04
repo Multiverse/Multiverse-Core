@@ -27,11 +27,11 @@ world:
   spawning:
     animals:
       spawn: true
-      amount: -1
+      tick-rate: -1
       exceptions: []
     monsters:
       spawn: true
-      amount: -1
+      tick-rate: -1
       exceptions: []
   world-blacklist: []
 world_nether:
@@ -63,10 +63,10 @@ world_nether:
   spawning:
     animals:
       spawn: true
-      amount: -1
+      tick-rate: -1
       exceptions: []
     monsters:
       spawn: true
-      amount: -1
+      tick-rate: -1
       exceptions: []
   world-blacklist: []

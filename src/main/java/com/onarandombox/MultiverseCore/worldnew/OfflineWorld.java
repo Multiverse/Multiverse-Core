@@ -232,12 +232,12 @@ public class OfflineWorld {
         return worldConfig.setSpawningAnimals(spawningAnimals);
     }
 
-    public int getSpawningAnimalsAmount() {
-        return worldConfig.getSpawningAnimalsAmount();
+    public int getSpawningAnimalsTicks() {
+        return worldConfig.getSpawningAnimalsTicks();
     }
 
-    public Try<Void> setSpawningAnimalsAmount(int spawningAnimalsAmount) {
-        return worldConfig.setSpawningAnimalsAmount(spawningAnimalsAmount);
+    public Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
+        return worldConfig.setSpawningAnimalsTicks(spawningAnimalsAmount);
     }
 
     public List<String> getSpawningAnimalsExceptions() {
@@ -256,12 +256,12 @@ public class OfflineWorld {
         return worldConfig.setSpawningMonsters(spawningMonsters);
     }
 
-    public int getSpawningMonstersAmount() {
-        return worldConfig.getSpawningMonstersAmount();
+    public int getSpawningMonstersTicks() {
+        return worldConfig.getSpawningMonstersTicks();
     }
 
-    public Try<Void> setSpawningMonstersAmount(int spawningMonstersAmount) {
-        return worldConfig.setSpawningMonstersAmount(spawningMonstersAmount);
+    public Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
+        return worldConfig.setSpawningMonstersTicks(spawningMonstersAmount);
     }
 
     public List<String> getSpawningMonstersExceptions() {
