@@ -18,6 +18,8 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
@@ -43,6 +45,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 /**
@@ -53,6 +56,7 @@ public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<MVWorldManager> worldManagerProvider;
+    private final DestinationsProvider destinationsProvider;
     private final SafeTTeleporter safeTTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
@@ -68,6 +72,7 @@ public class MVPlayerListener implements InjectableListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<MVWorldManager> worldManagerProvider,
+            DestinationsProvider destinationsProvider,
             SafeTTeleporter safeTTeleporter,
             Server server,
             TeleportQueue teleportQueue,
@@ -79,6 +84,7 @@ public class MVPlayerListener implements InjectableListener {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
+        this.destinationsProvider = destinationsProvider;
         this.safeTTeleporter = safeTTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
@@ -154,26 +160,69 @@ public class MVPlayerListener implements InjectableListener {
      */
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        if (!p.hasPlayedBefore()) {
+        Player player = event.getPlayer();
+        if (!player.hasPlayedBefore()) {
             Logging.finer("Player joined for the FIRST time!");
             if (config.getFirstSpawnOverride()) {
                 Logging.fine("Moving NEW player to(firstspawnoverride): "
                         + getWorldManager().getFirstSpawnWorld().getSpawnLocation());
-                this.sendPlayerToDefaultWorld(p);
+                this.sendPlayerToDefaultWorld(player);
             }
             return;
+
         } else {
             Logging.finer("Player joined AGAIN!");
+            // Ensure the player still has permission to access the world they were in
             if (config.getEnforceAccess() // check this only if we're enforcing access!
-                    && !permissionsChecker.hasWorldAccessPermission(p, getWorldManager().getFirstSpawnWorld())) {
-                p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
-                this.sendPlayerToDefaultWorld(p);
+                    && !permissionsChecker.hasWorldAccessPermission(player, getWorldManager().getFirstSpawnWorld())) {
+                player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
+                this.sendPlayerToDefaultWorld(player);
             }
+
+           handleJoinDestination(player);
         }
+
         // Handle the Players GameMode setting for the new world.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
-        playerWorld.put(p.getName(), p.getWorld().getName());
+        playerWorld.put(player.getName(), player.getWorld().getName());
+    }
+
+    /**
+     * Will teleport the player to the destination specified in config
+     * @param player The {@link Player} to teleport
+     */
+    private void handleJoinDestination(@NotNull Player player) {
+        if (!config.getEnableJoinDestination()) {
+            Logging.finer("JoinDestination is disabled");
+            // User has disabled the feature in config
+            return;
+        }
+
+        if (config.getJoinDestination() == null) {
+            Logging.warning("Joindestination is enabled but no destination has been specified in config!");
+            return;
+        }
+
+
+
+        Logging.finer("JoinDestination is " + config.getJoinDestination());
+
+        ParsedDestination<?> joinDestination = destinationsProvider.parseDestination(config.getJoinDestination());
+
+        if (joinDestination == null) {
+            Logging.warning("The destination in JoinDestination in config is invalid");
+            return;
+        }
+
+        Location joinDestinationLocation = joinDestination.getLocation(player);
+
+        if (joinDestinationLocation == null) {
+            Logging.finer("Not teleporting " + player.getName() + " because joinDestination is null");
+            return;
+        }
+        
+        // Finally, teleport the player
+        player.teleport(joinDestinationLocation);
     }
 
     /**

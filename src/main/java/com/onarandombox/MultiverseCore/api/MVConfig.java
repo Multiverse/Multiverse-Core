@@ -126,6 +126,30 @@ public interface MVConfig {
     String getFirstSpawnLocation();
 
     /**
+     * Sets alwaysSpawnDestination
+     * @param alwaysSpawnWorld The new value
+     */
+    void setJoinDestination(String alwaysSpawnWorld);
+
+    /**
+     * Gets alwaysSpawnDestination
+     * @return alwaysSpawnLocation
+     */
+    String getJoinDestination();
+
+    /**
+     * Sets alwaysSpawnDestination
+     * @param enableAlwaysSpawnDestination The new value
+     */
+    void setEnableJoinDestination(boolean enableAlwaysSpawnDestination);
+
+    /**
+     * Gets enableAlwaysSpawnDestination
+     * @return enableAlwaysSpawnDestination
+     */
+    boolean getEnableJoinDestination();
+
+    /**
      * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.
      *
      * @param useDefaultPortalSearch True to let Bukkit determine portal search radius on its own.

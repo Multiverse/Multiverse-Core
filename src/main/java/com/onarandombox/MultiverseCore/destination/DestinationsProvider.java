@@ -85,7 +85,8 @@ public class DestinationsProvider {
      * @param destinationString The destination string.
      * @return The destination object, or null if invalid format.
      */
-    public ParsedDestination<?> parseDestination(String destinationString) {
+    @Nullable
+    public ParsedDestination<?> parseDestination(@NotNull String destinationString) {
         String[] items = destinationString.split(SEPARATOR, 2);
 
         String idString = items[0];

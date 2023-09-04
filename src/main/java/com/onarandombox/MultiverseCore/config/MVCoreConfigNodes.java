@@ -7,7 +7,6 @@ import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.exceptions.MultiverseException;
-import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.vavr.control.Try;
 import org.bukkit.plugin.PluginManager;
 
@@ -111,6 +110,21 @@ class MVCoreConfigNodes {
             .comment("This only applies if first-spawn-override is set to true.")
             .defaultValue("")
             .name("first-spawn-location")
+            .build());
+
+    public final ConfigNode<String> JOIN_DESTINATION = node(ConfigNode.builder("spawn.always-spawn-destination", String.class)
+            .comment("")
+            .comment("Sets the destination that Multiverse will use to spawn players on every login")
+            .comment("Set blank to disable")
+            .defaultValue("")
+            .name("always-spawn-destination")
+            .build());
+
+    public final ConfigNode<Boolean> ENABLE_JOIN_DESTINATION = node(ConfigNode.builder("spawn.enable-always-spawn-destination", Boolean.class)
+            .comment("")
+            .comment("Enables always-spawn-destination")
+            .defaultValue(false)
+            .name("enable-always-spawn-destination")
             .build());
 
     private final ConfigHeaderNode PORTAL_HEADER = node(ConfigHeaderNode.builder("portal")
