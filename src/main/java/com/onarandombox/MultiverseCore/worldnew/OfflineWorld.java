@@ -224,6 +224,54 @@ public class OfflineWorld {
         return worldConfig.setSpawnLocation(spawnLocation);
     }
 
+    public boolean getSpawningAnimals() {
+        return worldConfig.getSpawningAnimals();
+    }
+
+    public Try<Void> setSpawningAnimals(boolean spawningAnimals) {
+        return worldConfig.setSpawningAnimals(spawningAnimals);
+    }
+
+    public int getSpawningAnimalsAmount() {
+        return worldConfig.getSpawningAnimalsAmount();
+    }
+
+    public Try<Void> setSpawningAnimalsAmount(int spawningAnimalsAmount) {
+        return worldConfig.setSpawningAnimalsAmount(spawningAnimalsAmount);
+    }
+
+    public List<String> getSpawningAnimalsExceptions() {
+        return worldConfig.getSpawningAnimalsExceptions();
+    }
+
+    public Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
+        return worldConfig.setSpawningAnimalsExceptions(spawningAnimalsExceptions);
+    }
+
+    public boolean getSpawningMonsters() {
+        return worldConfig.getSpawningMonsters();
+    }
+
+    public Try<Void> setSpawningMonsters(boolean spawningMonsters) {
+        return worldConfig.setSpawningMonsters(spawningMonsters);
+    }
+
+    public int getSpawningMonstersAmount() {
+        return worldConfig.getSpawningMonstersAmount();
+    }
+
+    public Try<Void> setSpawningMonstersAmount(int spawningMonstersAmount) {
+        return worldConfig.setSpawningMonstersAmount(spawningMonstersAmount);
+    }
+
+    public List<String> getSpawningMonstersExceptions() {
+        return worldConfig.getSpawningMonstersExceptions();
+    }
+
+    public Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
+        return worldConfig.setSpawningMonstersExceptions(spawningMonstersExceptions);
+    }
+
     public List<String> getWorldBlacklist() {
         return worldConfig.getWorldBlacklist();
     }

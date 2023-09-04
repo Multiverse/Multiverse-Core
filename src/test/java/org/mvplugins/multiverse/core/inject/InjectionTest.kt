@@ -4,8 +4,6 @@ import com.onarandombox.MultiverseCore.anchor.AnchorManager
 import com.onarandombox.MultiverseCore.api.BlockSafety
 import com.onarandombox.MultiverseCore.api.Destination
 import com.onarandombox.MultiverseCore.api.LocationManipulation
-import com.onarandombox.MultiverseCore.api.MVConfig
-import com.onarandombox.MultiverseCore.api.MVWorldManager
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand
@@ -25,11 +23,11 @@ import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue
 import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
-import com.onarandombox.MultiverseCore.world.SimpleMVWorldManager
+import com.onarandombox.MultiverseCore.worldnew.WorldManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.Test
 import kotlin.test.assertNull
 
 class InjectionTest : TestWithMockBukkit() {
@@ -79,8 +77,7 @@ class InjectionTest : TestWithMockBukkit() {
 
     @Test
     fun `MVWorldManager is available as a service`() {
-        assertNotNull(multiverseCore.getService(MVWorldManager::class.java))
-        assertNotNull(multiverseCore.getService(SimpleMVWorldManager::class.java))
+        assertNotNull(multiverseCore.getService(WorldManager::class.java))
     }
 
     @Test
