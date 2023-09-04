@@ -8,17 +8,20 @@
 package com.onarandombox.MultiverseCore.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 /**
@@ -27,10 +30,12 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class MVPortalListener implements InjectableListener {
 
-    private MVWorldManager worldManager;
+    private final MVCoreConfig config;
+    private final WorldManager worldManager;
 
     @Inject
-    public MVPortalListener(MVWorldManager worldManager) {
+    public MVPortalListener(@NotNull MVCoreConfig config, @NotNull WorldManager worldManager) {
+        this.config = config;
         this.worldManager = worldManager;
     }
 
@@ -42,7 +47,7 @@ public class MVPortalListener implements InjectableListener {
     public void portalForm(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s", event.getWorld().getName(), event.getReason());
 
-        MVWorld world = this.worldManager.getMVWorld(event.getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getWorld()).getOrNull();
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.", event.getWorld().getName());
             return;
@@ -75,7 +80,7 @@ public class MVPortalListener implements InjectableListener {
                 return;
         }
 
-        if (!world.getAllowedPortals().isPortalAllowed(targetType)) {
+        if (!world.getPortalForm().isPortalAllowed(targetType)) {
             Logging.fine("Cancelling creation of %s portal because portalForm disallows.", targetType);
             event.setCancelled(true);
         }
@@ -98,16 +103,30 @@ public class MVPortalListener implements InjectableListener {
             return;
         }
 
-        MVWorld world = this.worldManager.getMVWorld(event.getPlayer().getWorld());
+        MVWorld world = this.worldManager.getMVWorld(event.getPlayer().getWorld()).getOrNull();
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
                     event.getPlayer().getWorld().getName());
             return;
         }
 
-        if (!world.getAllowedPortals().isPortalAllowed(PortalType.ENDER)) {
+        if (!world.getPortalForm().isPortalAllowed(PortalType.ENDER)) {
             Logging.fine("Cancelling creation of ENDER portal because portalForm disallows.");
             event.setCancelled(true);
+        }
+    }
+
+    /**
+     * Handles portal search radius adjustment.
+     * @param event The Event that was fired.
+     */
+    @EventHandler
+    public void entityPortal(EntityPortalEvent event) {
+        if (event.isCancelled() || event.getTo() == null) {
+            return;
+        }
+        if (!config.isUsingCustomPortalSearch()) {
+            event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
     }
 }
