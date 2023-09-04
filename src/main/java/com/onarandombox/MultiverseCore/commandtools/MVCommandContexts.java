@@ -199,7 +199,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             context.popFirstArg();
             return world;
         }
-        if (!context.isOptional()) {
+        if (context.isOptional()) {
             return null;
         }
         throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
@@ -225,7 +225,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldStrings = context.getFirstArg();
-        String[] worldNames = worldStrings.split(",");
+        String[] worldNames = worldStrings == null ? new String[0] : worldStrings.split(",");
         Set<MVWorld> worlds = new HashSet<>(worldNames.length);
         for (String worldName : worldNames) {
             if ("*".equals(worldName)) {
@@ -259,7 +259,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             context.popFirstArg();
             return worlds.toArray(new MVWorld[0]);
         }
-        if (!context.isOptional()) {
+        if (context.isOptional()) {
             return null;
         }
         throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
@@ -303,7 +303,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             context.popFirstArg();
             return player;
         }
-        if (!context.isOptional()) {
+        if (context.isOptional()) {
             return null;
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
@@ -348,7 +348,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             context.popFirstArg();
             return players;
         }
-        if (!context.isOptional()) {
+        if (context.isOptional()) {
             return null;
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
