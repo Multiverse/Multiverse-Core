@@ -379,7 +379,7 @@ public class WorldManager {
         return worldsMap.containsKey(worldName);
     }
 
-    public void saveWorldsConfig() {
-        worldsConfigManager.save();
+    public boolean saveWorldsConfig() {
+        return worldsConfigManager.save();
     }
 }

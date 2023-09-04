@@ -41,12 +41,14 @@ public class WorldsConfigManager {
         return worldsConfig != null;
     }
 
-    public void save() {
+    public boolean save() {
         try {
             worldsConfig.save(worldConfigFile);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public Set<String> getAllWorldsInConfig() {
