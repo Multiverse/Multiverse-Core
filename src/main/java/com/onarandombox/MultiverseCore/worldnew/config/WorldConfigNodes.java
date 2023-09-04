@@ -53,7 +53,8 @@ public class WorldConfigNodes {
                 if (world == null) { return; }
                 world.getBukkitWorld().peek(world -> {
                     if (!world.isClearWeather() && !newValue) {
-                        world.setClearWeatherDuration(-1);
+                        world.setThundering(false);
+                        world.setStorm(false);
                     }
                 });
             })
@@ -164,6 +165,13 @@ public class WorldConfigNodes {
     public final ConfigNode<Location> SPAWN_LOCATION = node(ConfigNode.builder("spawn-location", Location.class)
             .defaultValue(new NullLocation())
             .name("spawn-location")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) { return; }
+                world.getBukkitWorld().peek(world -> {
+                    world.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
+                    newValue.setWorld(world);
+                });
+            })
             .build());
 
     public final ConfigNode<Boolean> SPAWNING_ANIMALS = node(ConfigNode.builder("spawning.animals.spawn", Boolean.class)

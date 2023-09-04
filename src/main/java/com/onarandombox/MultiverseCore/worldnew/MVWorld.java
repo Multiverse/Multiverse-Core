@@ -55,9 +55,7 @@ public class MVWorld extends OfflineWorld {
         if (spawnLocation == null || spawnLocation instanceof NullLocation) {
             SpawnLocation newLocation = new SpawnLocation(readSpawnFromWorld(world));
             worldConfig.setSpawnLocation(newLocation);
-            world.setSpawnLocation(newLocation.getBlockX(), newLocation.getBlockY(), newLocation.getBlockZ());
         }
-        worldConfig.getSpawnLocation().setWorld(world);
     }
 
     private Location readSpawnFromWorld(World world) { // TODO: Refactor... this is copy pasted and bad

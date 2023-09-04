@@ -7,6 +7,7 @@
 
 package com.onarandombox.MultiverseCore.listeners;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import com.onarandombox.MultiverseCore.worldnew.WorldPurger;
@@ -96,7 +97,10 @@ public class MVEntityListener implements InjectableListener {
 
         worldManager.getMVWorld(event.getEntity().getWorld())
                 .peek((world) -> {
-                    event.setCancelled(this.worldPurger.shouldWeKillThisCreature(world, event.getEntity()));
+                    if (this.worldPurger.shouldWeKillThisCreature(world, event.getEntity())) {
+                        Logging.finer("Cancelling Creature Spawn Event for: " + event.getEntity());
+                        event.setCancelled(true);
+                    }
                 });
     }
 }
