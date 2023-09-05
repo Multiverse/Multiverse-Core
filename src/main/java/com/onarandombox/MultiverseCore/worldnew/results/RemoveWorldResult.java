@@ -23,8 +23,9 @@ public class RemoveWorldResult {
         }
     }
 
-    public enum Failure implements WorldFailureReason {
+    public enum Failure implements FailureReason {
         WORLD_NON_EXISTENT(MVCorei18n.REMOVEWORLD_WORLDNONEXISTENT),
+        UNLOAD_FAILED(null),
         ;
 
         private final MessageKeyProvider message;

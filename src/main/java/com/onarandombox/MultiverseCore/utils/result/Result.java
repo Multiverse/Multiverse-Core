@@ -13,10 +13,17 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
         return new Success<>(successReason, replacements);
     }
 
+    static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason, Message message) {
+        return new Success<>(successReason, message);
+    }
+
     static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure(F failureReason, MessageReplacement...replacements) {
         return new Failure<>(failureReason, replacements);
     }
 
+    static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure(F failureReason, Message message) {
+        return new Failure<>(failureReason, message);
+    }
     boolean isSuccess();
 
     boolean isFailure();
@@ -57,11 +64,16 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
     final class Success<F extends FailureReason, S extends SuccessReason> implements Result<S, F> {
         private final S successReason;
-        private final MessageReplacement[] replacements;
+        private final Message message;
+
+        public Success(S successReason, Message message) {
+            this.successReason = successReason;
+            this.message = message;
+        }
 
         public Success(S successReason, MessageReplacement[] replacements) {
             this.successReason = successReason;
-            this.replacements = replacements;
+            this.message = Message.of(successReason, "Success!", replacements);
         }
 
         @Override
@@ -86,7 +98,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         @Override
         public @NotNull Message getReasonMessage() {
-            return Message.of(successReason, "Success!", replacements);
+            return message;
         }
 
         @Override
@@ -99,11 +111,16 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
     final class Failure<S extends SuccessReason, F extends FailureReason> implements Result<S, F> {
         private final F failureReason;
-        private final MessageReplacement[] replacements;
+        private final Message message;
+
+        public Failure(F failureReason, Message message) {
+            this.failureReason = failureReason;
+            this.message = message;
+        }
 
         public Failure(F failureReason, MessageReplacement[] replacements) {
             this.failureReason = failureReason;
-            this.replacements = replacements;
+            this.message = Message.of(failureReason, "Success!", replacements);
         }
 
         @Override
@@ -128,7 +145,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         @Override
         public @NotNull Message getReasonMessage() {
-            return Message.of(failureReason, "Failed!", replacements);
+            return message;
         }
 
         @Override

@@ -23,7 +23,7 @@ public class UnloadWorldResult {
         }
     }
 
-    public enum Failure implements WorldFailureReason {
+    public enum Failure implements FailureReason {
         WORLD_ALREADY_UNLOADING(MVCorei18n.UNLOADWORLD_WORLDALREADYUNLOADING),
         WORLD_NON_EXISTENT(MVCorei18n.UNLOADWORLD_WORLDNONEXISTENT),
         WORLD_OFFLINE(MVCorei18n.UNLOADWORLD_WORLDOFFLINE),

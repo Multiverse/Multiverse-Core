@@ -22,7 +22,7 @@ public class ImportWorldResult {
         }
     }
 
-    public enum Failure implements WorldFailureReason {
+    public enum Failure implements FailureReason {
         INVALID_WORLDNAME(MVCorei18n.IMPORTWORLD_INVALIDWORLDNAME),
         WORLD_FOLDER_INVALID(MVCorei18n.IMPORTWORLD_WORLDFOLDERINVALID),
         WORLD_EXIST_OFFLINE(MVCorei18n.IMPORTWORLD_WORLDEXISTOFFLINE),

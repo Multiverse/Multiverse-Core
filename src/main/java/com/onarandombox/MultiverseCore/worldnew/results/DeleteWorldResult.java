@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.worldnew.results;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class DeleteWorldResult {
@@ -22,9 +23,10 @@ public class DeleteWorldResult {
         }
     }
 
-    public enum Failure implements WorldFailureReason {
+    public enum Failure implements FailureReason {
         WORLD_NON_EXISTENT(MVCorei18n.DELETEWORLD_WORLDNONEXISTENT),
         WORLD_FOLDER_NOT_FOUND(MVCorei18n.DELETEWORLD_WORLDFOLDERNOTFOUND),
+        REMOVE_FAILED(null),
         FAILED_TO_DELETE_FOLDER(MVCorei18n.DELETEWORLD_FAILEDTODELETEFOLDER),
         ;
 

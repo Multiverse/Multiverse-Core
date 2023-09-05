@@ -78,8 +78,8 @@ public class GeneratorProvider implements Listener {
         }
     }
 
-    public String getDefaultGeneratorForWorld(String worldName) {
-        return defaultGenerators.getOrDefault(worldName, "");
+    public @Nullable String getDefaultGeneratorForWorld(String worldName) {
+        return defaultGenerators.getOrDefault(worldName, null);
     }
 
     public boolean registerGeneratorPlugin(@NotNull GeneratorPlugin generatorPlugin) {

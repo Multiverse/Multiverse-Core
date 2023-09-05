@@ -23,7 +23,7 @@ public class LoadWorldResult {
         }
     }
 
-    public enum Failure implements WorldFailureReason {
+    public enum Failure implements FailureReason {
         WORLD_ALREADY_LOADING(MVCorei18n.LOADWORLD_WORLDALREADYLOADING),
         WORLD_NON_EXISTENT(MVCorei18n.LOADWORLD_WORLDNONEXISTENT),
         WORLD_EXIST_FOLDER(MVCorei18n.LOADWORLD_WORLDEXISTFOLDER),

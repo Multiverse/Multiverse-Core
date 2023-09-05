@@ -23,7 +23,7 @@ public class CreateWorldResult {
         }
     }
 
-    public enum Failure implements WorldFailureReason {
+    public enum Failure implements FailureReason {
         INVALID_WORLDNAME(MVCorei18n.CREATEWORLD_INVALIDWORLDNAME),
         WORLD_EXIST_FOLDER(MVCorei18n.CREATEWORLD_WORLDEXISTFOLDER),
         WORLD_EXIST_OFFLINE(MVCorei18n.CREATEWORLD_WORLDEXISTOFFLINE),
