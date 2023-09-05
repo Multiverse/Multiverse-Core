@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.results.CreateWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.DeleteWorldResult;
+import com.onarandombox.MultiverseCore.worldnew.results.ImportWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.LoadWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.RemoveWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.UnloadWorldResult;
@@ -159,20 +160,22 @@ public class WorldManager {
         return Result.success(CreateWorldResult.Success.CREATED);
     }
 
-    public Result<CreateWorldResult.Success, CreateWorldResult.Failure> importWorld(ImportWorldOptions options) {
+    public Result<ImportWorldResult.Success, ImportWorldResult.Failure> importWorld(ImportWorldOptions options) {
         if (!worldNameChecker.isValidWorldName(options.worldName())) {
-            return Result.failure(CreateWorldResult.Failure.INVALID_WORLDNAME);
+            return Result.failure(ImportWorldResult.Failure.INVALID_WORLDNAME);
+        }
+
+        if (!worldNameChecker.isValidWorldFolder(options.worldName())) {
+            return Result.failure(ImportWorldResult.Failure.WORLD_FOLDER_INVALID);
         }
 
         if (isMVWorld(options.worldName())) {
-            return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_LOADED);
+            return Result.failure(ImportWorldResult.Failure.WORLD_EXIST_LOADED);
         }
 
         if (isOfflineWorld(options.worldName())) {
-            return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_OFFLINE);
+            return Result.failure(ImportWorldResult.Failure.WORLD_EXIST_OFFLINE);
         }
-
-        // TODO: Check if world folder exists
 
         String parsedGenerator = Strings.isNullOrEmpty(options.generator())
                 ? generatorProvider.getDefaultGeneratorForWorld(options.worldName())
@@ -187,7 +190,7 @@ public class WorldManager {
         this.loadTracker.remove(options.worldName());
         if (world == null) {
             Logging.severe("Failed to create world: " + options.worldName());
-            return Result.failure(CreateWorldResult.Failure.BUKKIT_CREATION_FAILED);
+            return Result.failure(ImportWorldResult.Failure.BUKKIT_CREATION_FAILED);
         }
         Logging.fine("Loaded bukkit world: " + world.getName());
 
@@ -195,7 +198,7 @@ public class WorldManager {
         MVWorld mvWorld = newMVWorld(world);
         mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(parsedGenerator) ? "" : options.generator());
         saveWorldsConfig();
-        return Result.success(CreateWorldResult.Success.CREATED);
+        return Result.success(ImportWorldResult.Success.IMPORTED);
     }
 
     private MVWorld newMVWorld(World world) {
