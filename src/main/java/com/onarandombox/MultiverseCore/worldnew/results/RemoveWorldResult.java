@@ -8,13 +8,34 @@ import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class RemoveWorldResult {
     public enum Success implements SuccessReason {
-        REMOVED
+        REMOVED(MVCorei18n.REMOVEWORLD_REMOVED)
+        ;
+
+        private final MessageKeyProvider message;
+
+        Success(MessageKeyProvider message) {
+            this.message = message;
+        }
+
+        @Override
+        public MessageKey getMessageKey() {
+            return message.getMessageKey();
+        }
     }
 
-    public static class Failure extends UnloadWorldResult.Failure {
-        // TODO
+    public enum Failure implements WorldFailureReason {
+        WORLD_NON_EXISTENT(MVCorei18n.REMOVEWORLD_WORLDNONEXISTENT),
+        ;
+
+        private final MessageKeyProvider message;
+
         Failure(MessageKeyProvider message) {
-            super(message);
+            this.message = message;
+        }
+
+        @Override
+        public MessageKey getMessageKey() {
+            return message.getMessageKey();
         }
     }
 }

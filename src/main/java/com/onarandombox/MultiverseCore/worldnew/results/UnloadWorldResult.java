@@ -8,14 +8,27 @@ import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class UnloadWorldResult {
     public enum Success implements SuccessReason {
-        UNLOADED
+        UNLOADED(MVCorei18n.UNLOADWORLD_UNLOADED)
+        ;
+
+        private final MessageKeyProvider message;
+
+        Success(MessageKeyProvider message) {
+            this.message = message;
+        }
+
+        @Override
+        public MessageKey getMessageKey() {
+            return message.getMessageKey();
+        }
     }
 
-    public static class Failure implements FailureReason {
-        public static final Failure WORLD_ALREADY_UNLOADING = new Failure(MVCorei18n.GENERIC_FAILURE);
-        public static final Failure WORLD_NON_EXISTENT = new Failure(MVCorei18n.GENERIC_FAILURE);
-        public static final Failure WORLD_OFFLINE = new Failure(MVCorei18n.GENERIC_FAILURE);
-        public static final Failure BUKKIT_UNLOAD_FAILED = new Failure(MVCorei18n.GENERIC_FAILURE);
+    public enum Failure implements WorldFailureReason {
+        WORLD_ALREADY_UNLOADING(MVCorei18n.UNLOADWORLD_WORLDALREADYUNLOADING),
+        WORLD_NON_EXISTENT(MVCorei18n.UNLOADWORLD_WORLDNONEXISTENT),
+        WORLD_OFFLINE(MVCorei18n.UNLOADWORLD_WORLDOFFLINE),
+        BUKKIT_UNLOAD_FAILED(MVCorei18n.UNLOADWORLD_BUKKITUNLOADFAILED),
+        ;
 
         private final MessageKeyProvider message;
 

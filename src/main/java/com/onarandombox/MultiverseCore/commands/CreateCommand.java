@@ -72,7 +72,6 @@ public class CreateCommand extends MultiverseCommand {
     @Description("{@@mv-core.create.description}")
     public void onCreateCommand(MVCommandIssuer issuer,
 
-                                @Conditions("worldname:scope=new")
                                 @Syntax("<name>")
                                 @Description("{@@mv-core.create.name.description}")
                                 String worldName,

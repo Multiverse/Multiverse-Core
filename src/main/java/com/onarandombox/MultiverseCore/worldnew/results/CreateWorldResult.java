@@ -8,15 +8,27 @@ import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class CreateWorldResult {
     public enum Success implements SuccessReason {
-        CREATED
+        CREATED(MVCorei18n.CREATEWORLD_CREATED)
+        ;
+
+        private final MessageKeyProvider message;
+
+        Success(MessageKeyProvider message) {
+            this.message = message;
+        }
+
+        @Override
+        public MessageKey getMessageKey() {
+            return message.getMessageKey();
+        }
     }
 
-    public enum Failure implements FailureReason {
-        INVALID_WORLDNAME(MVCorei18n.GENERIC_FAILURE),
-        WORLD_EXIST_FOLDER(MVCorei18n.GENERIC_FAILURE),
-        WORLD_EXIST_OFFLINE(MVCorei18n.GENERIC_FAILURE),
-        WORLD_EXIST_LOADED(MVCorei18n.GENERIC_FAILURE),
-        BUKKIT_CREATION_FAILED(MVCorei18n.GENERIC_FAILURE),
+    public enum Failure implements WorldFailureReason {
+        INVALID_WORLDNAME(MVCorei18n.CREATEWORLD_INVALIDWORLDNAME),
+        WORLD_EXIST_FOLDER(MVCorei18n.CREATEWORLD_WORLDEXISTFOLDER),
+        WORLD_EXIST_OFFLINE(MVCorei18n.CREATEWORLD_WORLDEXISTOFFLINE),
+        WORLD_EXIST_LOADED(MVCorei18n.CREATEWORLD_WORLDEXISTLOADED),
+        BUKKIT_CREATION_FAILED(MVCorei18n.CREATEWORLD_BUKKITCREATIONFAILED),
         ;
 
         private final MessageKeyProvider message;

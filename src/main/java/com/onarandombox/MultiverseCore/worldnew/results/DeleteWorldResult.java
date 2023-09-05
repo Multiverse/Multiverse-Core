@@ -1,20 +1,42 @@
 package com.onarandombox.MultiverseCore.worldnew.results;
 
+import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class DeleteWorldResult {
     public enum Success implements SuccessReason {
-        DELETED
+        DELETED(MVCorei18n.DELETEWORLD_DELETED)
+        ;
+
+        private final MessageKeyProvider message;
+
+        Success(MessageKeyProvider message) {
+            this.message = message;
+        }
+
+        @Override
+        public MessageKey getMessageKey() {
+            return message.getMessageKey();
+        }
     }
 
-    public static class Failure extends RemoveWorldResult.Failure {
-        public static final Failure WORLD_FOLDER_NOT_FOUND = new Failure(MVCorei18n.GENERIC_FAILURE);
-        public static final Failure FAILED_TO_DELETE_FOLDER = new Failure(MVCorei18n.GENERIC_FAILURE);
+    public enum Failure implements WorldFailureReason {
+        WORLD_NON_EXISTENT(MVCorei18n.DELETEWORLD_WORLDNONEXISTENT),
+        WORLD_FOLDER_NOT_FOUND(MVCorei18n.DELETEWORLD_WORLDFOLDERNOTFOUND),
+        FAILED_TO_DELETE_FOLDER(MVCorei18n.DELETEWORLD_FAILEDTODELETEFOLDER),
+        ;
+
+        private final MessageKeyProvider message;
 
         Failure(MessageKeyProvider message) {
-            super(message);
+            this.message = message;
+        }
+
+        @Override
+        public MessageKey getMessageKey() {
+            return message.getMessageKey();
         }
     }
 }
