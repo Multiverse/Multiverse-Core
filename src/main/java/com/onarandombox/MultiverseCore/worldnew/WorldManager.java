@@ -10,6 +10,7 @@ import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
 import com.onarandombox.MultiverseCore.worldnew.generators.GeneratorProvider;
+import com.onarandombox.MultiverseCore.worldnew.helpers.FilesManipulator;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.results.CreateWorldResult;
@@ -52,6 +53,7 @@ public class WorldManager {
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
     private final GeneratorProvider generatorProvider;
+    private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
     private final SafeTTeleporter safeTTeleporter;
     private final LocationManipulation locationManipulation;
@@ -61,6 +63,7 @@ public class WorldManager {
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull GeneratorProvider generatorProvider,
+            @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
             @NotNull SafeTTeleporter safeTTeleporter,
             @NotNull LocationManipulation locationManipulation
@@ -73,6 +76,7 @@ public class WorldManager {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.generatorProvider = generatorProvider;
+        this.filesManipulator = filesManipulator;
         this.blockSafety = blockSafety;
         this.safeTTeleporter = safeTTeleporter;
         this.locationManipulation = locationManipulation;
@@ -396,16 +400,36 @@ public class WorldManager {
     }
 
     /**
-     * Deletes an existing multiverse world entirely. Warning: This will delete all world files.
+     * Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
+     * Warning: This will delete all world files.
      *
      * @param worldName The name of the world to delete.
      * @return The result of the delete action.
      */
     public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull String worldName) {
-        // TODO: Attempt to load offline world
-        return getMVWorld(worldName)
+        return getOfflineWorld(worldName)
                 .map(this::deleteWorld)
                 .getOrElse(() -> Result.failure(DeleteWorldResult.Failure.WORLD_NON_EXISTENT, replace("{world}").with(worldName)));
+    }
+
+    /**
+     * Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
+     * Warning: This will delete all world files.
+     *
+     * @param world The offline world to delete.
+     * @return The result of the delete action.
+     */
+    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull OfflineWorld world) {
+        return getMVWorld(world).fold(
+                () -> {
+                    var result = loadWorld(world);
+                    if (result.isFailure()) {
+                        return Result.failure(DeleteWorldResult.Failure.LOAD_FAILED, replace("{world}").with(world.getName()));
+                    }
+                    return deleteWorld(world);
+                },
+                this::deleteWorld
+        );
     }
 
     /**
@@ -427,13 +451,14 @@ public class WorldManager {
         }
 
         // Erase world files from disk
-        // TODO: Config options to keep certain files
-        if (!FileUtils.deleteFolder(worldFolder)) {
-            Logging.severe("Failed to delete world folder: " + worldFolder);
-            return Result.failure(DeleteWorldResult.Failure.FAILED_TO_DELETE_FOLDER, replace("{world}").with(world.getName()));
-        }
-
-        return Result.success(DeleteWorldResult.Success.DELETED, replace("{world}").with(world.getName()));
+        // TODO: Possible config options to keep certain files
+        return filesManipulator.deleteFolder(worldFolder).fold(
+                (exception) -> Result.failure(DeleteWorldResult.Failure.FAILED_TO_DELETE_FOLDER,
+                        replace("{world}").with(world.getName()),
+                        replace("{error}").with(exception.getMessage())
+                ),
+                (success) -> Result.success(DeleteWorldResult.Success.DELETED, replace("{world}").with(world.getName()))
+        );
     }
 
     /**
