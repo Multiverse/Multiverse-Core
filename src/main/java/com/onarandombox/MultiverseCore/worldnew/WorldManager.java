@@ -29,7 +29,9 @@ import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -341,6 +343,16 @@ public class WorldManager {
         }
 
         return Result.success(DeleteWorldResult.Success.DELETED);
+    }
+
+    public List<String> getPotentialWorlds() {
+        File[] files = Bukkit.getWorldContainer().listFiles();
+        if (files == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(files).filter(worldNameChecker::isValidWorldFolder)
+                .map(File::getName)
+                .toList();
     }
 
     public Option<OfflineWorld> getOfflineOnlyWorld(@Nullable String worldName) {

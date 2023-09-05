@@ -141,7 +141,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                         .toList();
             }
             case "potential" -> {
-                return Collections.emptyList(); // TODO: Implement getPotentialWorlds
+                return worldManager.getPotentialWorlds();
             }
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
