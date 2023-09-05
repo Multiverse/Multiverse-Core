@@ -3,6 +3,7 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
@@ -16,18 +17,13 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.generators.GeneratorProvider;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import jakarta.inject.Inject;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Service
 @CommandAlias("mv")
@@ -39,23 +35,15 @@ public class ImportCommand extends MultiverseCommand {
     public ImportCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull UnsafeCallWrapper unsafeCallWrapper
-    ) {
+            @NotNull GeneratorProvider generatorProvider
+            ) {
         super(commandManager);
         this.worldManager = worldManager;
 
         registerFlagGroup(CommandFlagGroup.builder("mvimport")
                 .add(CommandValueFlag.builder("--generator", String.class)
                         .addAlias("-g")
-                        .completion(() -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
-                                .filter(Plugin::isEnabled)
-                                .filter(genplugin -> unsafeCallWrapper.wrap(
-                                        () -> genplugin.getDefaultWorldGenerator("world", ""),
-                                        genplugin.getName(),
-                                        "Get generator"
-                                ) != null)
-                                .map(genplugin -> genplugin.getDescription().getName())
-                                .collect(Collectors.toList()))
+                        .completion(generatorProvider::suggestGeneratorString)
                         .build())
                 .add(CommandFlag.builder("--adjust-spawn")
                         .addAlias("-a")
@@ -70,7 +58,7 @@ public class ImportCommand extends MultiverseCommand {
     @Description("{@@mv-core.import.description")
     public void onImportCommand(MVCommandIssuer issuer,
 
-                                //@Conditions("worldname:scope=new")
+                                @Conditions("worldname:scope=new")
                                 @Syntax("<name>")
                                 @Description("{@@mv-core.import.name.description}")
                                 String worldName,

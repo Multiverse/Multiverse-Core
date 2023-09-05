@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
+import com.onarandombox.MultiverseCore.worldnew.generators.GeneratorProvider;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.results.CreateWorldResult;
@@ -41,6 +42,7 @@ public class WorldManager {
     private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
+    private final GeneratorProvider generatorProvider;
     private final BlockSafety blockSafety;
     private final SafeTTeleporter safeTTeleporter;
     private final LocationManipulation locationManipulation;
@@ -49,6 +51,7 @@ public class WorldManager {
     WorldManager(
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
+            @NotNull GeneratorProvider generatorProvider,
             @NotNull BlockSafety blockSafety,
             @NotNull SafeTTeleporter safeTTeleporter,
             @NotNull LocationManipulation locationManipulation
@@ -57,8 +60,10 @@ public class WorldManager {
         this.worldsMap = new HashMap<>();
         this.unloadTracker = new ArrayList<>();
         this.loadTracker = new ArrayList<>();
+
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
+        this.generatorProvider = generatorProvider;
         this.blockSafety = blockSafety;
         this.safeTTeleporter = safeTTeleporter;
         this.locationManipulation = locationManipulation;
@@ -99,7 +104,7 @@ public class WorldManager {
             }
             importWorld(ImportWorldOptions.worldName(world.getName())
                     .environment(world.getEnvironment())
-                    .generator("") // TODO: Get default generators from bukkit.yml
+                    .generator(generatorProvider.getDefaultGeneratorForWorld(world.getName()))
             );
         });
     }
@@ -127,12 +132,16 @@ public class WorldManager {
             return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_FOLDER);
         }
 
+        String parsedGenerator = Strings.isNullOrEmpty(options.generator())
+                ? generatorProvider.getDefaultGeneratorForWorld(options.worldName())
+                : options.generator();
+
         // Create bukkit world
         this.loadTracker.add(options.worldName());
         World world = WorldCreator.name(options.worldName())
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
-                .generator(Strings.isNullOrEmpty(options.generator()) ? null : options.generator())
+                .generator(Strings.isNullOrEmpty(parsedGenerator) ? null : parsedGenerator)
                 .seed(options.seed())
                 .type(options.worldType())
                 .createWorld();
@@ -145,7 +154,7 @@ public class WorldManager {
 
         // Our multiverse world
         MVWorld mvWorld = newMVWorld(world);
-        mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(options.generator()) ? "" : options.generator());
+        mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(parsedGenerator) ? "" : options.generator());
         saveWorldsConfig();
         return Result.success(CreateWorldResult.Success.CREATED);
     }
@@ -165,11 +174,15 @@ public class WorldManager {
 
         // TODO: Check if world folder exists
 
+        String parsedGenerator = Strings.isNullOrEmpty(options.generator())
+                ? generatorProvider.getDefaultGeneratorForWorld(options.worldName())
+                : options.generator();
+
         // Create bukkit world
         this.loadTracker.add(options.worldName());
         World world = WorldCreator.name(options.worldName())
                 .environment(options.environment())
-                .generator(Strings.isNullOrEmpty(options.generator()) ? null : options.generator())
+                .generator(Strings.isNullOrEmpty(parsedGenerator) ? null : options.generator())
                 .createWorld();
         this.loadTracker.remove(options.worldName());
         if (world == null) {
@@ -180,7 +193,7 @@ public class WorldManager {
 
         // Our multiverse world
         MVWorld mvWorld = newMVWorld(world);
-        mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(options.generator()) ? "" : options.generator());
+        mvWorld.getWorldConfig().setGenerator(Strings.isNullOrEmpty(parsedGenerator) ? "" : options.generator());
         saveWorldsConfig();
         return Result.success(CreateWorldResult.Success.CREATED);
     }

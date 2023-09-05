@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +42,7 @@ public class CommandValueFlag<T> extends CommandFlag {
     private final boolean optional;
     private final T defaultValue;
     private final Function<String, T> context;
-    private final Supplier<Collection<String>> completion;
+    private final Function<String, Collection<String>>  completion;
 
     /**
      * Creates a new flag.
@@ -63,7 +62,7 @@ public class CommandValueFlag<T> extends CommandFlag {
             boolean optional,
             @Nullable T defaultValue,
             @Nullable Function<String, T> context,
-            @Nullable Supplier<Collection<String>> completion
+            @Nullable Function<String, Collection<String>>  completion
     ) {
         super(key, aliases);
         this.type = type;
@@ -114,7 +113,7 @@ public class CommandValueFlag<T> extends CommandFlag {
      *
      * @return The completion.
      */
-    public @Nullable Supplier<Collection<String>> getCompletion() {
+    public @Nullable Function<String, Collection<String>> getCompletion() {
         return completion;
     }
 
@@ -129,7 +128,7 @@ public class CommandValueFlag<T> extends CommandFlag {
         protected boolean optional = false;
         protected T defaultValue = null;
         protected Function<String, T> context = null;
-        protected Supplier<Collection<String>> completion = null;
+        protected Function<String, Collection<String>> completion = null;
 
         /**
          * Create a new builder.
@@ -177,10 +176,10 @@ public class CommandValueFlag<T> extends CommandFlag {
         /**
          * Set the completion callback for autocomplete.
          *
-         * @param completion The completion.
+         * @param completion The completion. Input is the current input string, and output is the list of suggestions.
          * @return The builder.
          */
-        public @NotNull S completion(@NotNull Supplier<Collection<String>> completion) {
+        public @NotNull S completion(@NotNull Function<String, Collection<String>>  completion) {
             this.completion = completion;
             return (S) this;
         }
@@ -210,7 +209,7 @@ public class CommandValueFlag<T> extends CommandFlag {
         protected boolean optional = false;
         protected T defaultValue = null;
         protected Function<String, T> context = null;
-        protected Supplier<Collection<String>> completion = null;
+        protected Function<String, Collection<String>>  completion = null;
 
         public EnumBuilder(@NotNull String key, @NotNull Class<T> type) {
             super(key);
@@ -234,7 +233,7 @@ public class CommandValueFlag<T> extends CommandFlag {
                     .map(type -> type.name().toLowerCase())
                     .collect(Collectors.toList());
 
-            this.completion = () -> types;
+            this.completion = (input) -> types;
         }
 
         /**

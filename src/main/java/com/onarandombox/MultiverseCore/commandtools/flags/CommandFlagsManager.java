@@ -60,10 +60,9 @@ public class CommandFlagsManager {
         Collection<String> suggestions = new ArrayList<>();
         CommandFlag currentFlag = (flags.length <= 1) ? null : flagGroup.getFlagByKey(flags[flags.length - 2]);
 
-        if (currentFlag instanceof CommandValueFlag) {
-            CommandValueFlag<?> valueFlag = (CommandValueFlag<?>) currentFlag;
+        if (currentFlag instanceof CommandValueFlag<?> valueFlag) {
             if (valueFlag.getCompletion() != null) {
-                suggestions.addAll(valueFlag.getCompletion().get());
+                suggestions.addAll(valueFlag.getCompletion().apply(flags[flags.length - 1]));
             }
             if (valueFlag.isOptional()) {
                 suggestions.addAll(flagGroup.getRemainingKeys(flags));

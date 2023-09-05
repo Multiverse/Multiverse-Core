@@ -23,7 +23,7 @@ public class CreateWorldOptions {
     private final String worldName;
     private World.Environment environment = World.Environment.NORMAL;
     private boolean generateStructures = true;
-    private String generator = "";
+    private String generator = null;
     private long seed = Long.MIN_VALUE;
     private boolean useSpawnAdjust = true;
     private WorldType worldType = WorldType.NORMAL;
@@ -92,7 +92,7 @@ public class CreateWorldOptions {
      * @param generator The custom generator plugin and its parameters.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions generator(@NotNull String generator) {
+    public @NotNull CreateWorldOptions generator(@Nullable String generator) {
         this.generator = generator;
         return this;
     }
@@ -102,7 +102,7 @@ public class CreateWorldOptions {
      *
      * @return The custom generator plugin and its parameters.
      */
-    public @NotNull String generator() {
+    public @Nullable String generator() {
         return generator;
     }
 

@@ -17,21 +17,17 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.generators.GeneratorProvider;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import jakarta.inject.Inject;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 @CommandAlias("mv")
@@ -43,7 +39,7 @@ public class CreateCommand extends MultiverseCommand {
     public CreateCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull UnsafeCallWrapper unsafeCallWrapper
+            @NotNull GeneratorProvider generatorProvider
     ) {
         super(commandManager);
         this.worldManager = worldManager;
@@ -51,19 +47,11 @@ public class CreateCommand extends MultiverseCommand {
         registerFlagGroup(CommandFlagGroup.builder("mvcreate")
                 .add(CommandValueFlag.builder("--seed", String.class)
                         .addAlias("-s")
-                        .completion(() -> Collections.singleton(String.valueOf(new Random().nextLong())))
+                        .completion((input) -> Collections.singleton(String.valueOf(new Random().nextLong())))
                         .build())
                 .add(CommandValueFlag.builder("--generator", String.class)
                         .addAlias("-g")
-                        .completion(() -> Arrays.stream(Bukkit.getServer().getPluginManager().getPlugins())
-                                .filter(Plugin::isEnabled)
-                                .filter(genplugin -> unsafeCallWrapper.wrap(
-                                        () -> genplugin.getDefaultWorldGenerator("world", ""),
-                                        genplugin.getName(),
-                                        "Get generator"
-                                ) != null)
-                                .map(genplugin -> genplugin.getDescription().getName())
-                                .collect(Collectors.toList()))
+                        .completion(generatorProvider::suggestGeneratorString)
                         .build())
                 .add(CommandValueFlag.enumBuilder("--world-type", WorldType.class)
                         .addAlias("-t")

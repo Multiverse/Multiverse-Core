@@ -40,7 +40,7 @@ public class RegenCommand extends MultiverseCommand {
         registerFlagGroup(CommandFlagGroup.builder("mvregen")
                 .add(CommandValueFlag.builder("--seed", String.class)
                         .addAlias("-s")
-                        .completion(() -> Collections.singleton(String.valueOf(new Random().nextLong())))
+                        .completion((input) -> Collections.singleton(String.valueOf(new Random().nextLong())))
                         .optional()
                         .build())
                 .add(CommandFlag.builder("--keep-gamerules")
