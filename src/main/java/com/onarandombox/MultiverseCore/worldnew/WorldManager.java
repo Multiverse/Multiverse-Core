@@ -350,7 +350,9 @@ public class WorldManager {
         if (files == null) {
             return Collections.emptyList();
         }
-        return Arrays.stream(files).filter(worldNameChecker::isValidWorldFolder)
+        return Arrays.stream(files)
+                .filter(file -> !isOfflineWorld(file.getName()))
+                .filter(worldNameChecker::isValidWorldFolder)
                 .map(File::getName)
                 .toList();
     }
