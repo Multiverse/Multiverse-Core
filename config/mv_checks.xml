@@ -20,6 +20,12 @@
     <module name="Translation"/>
     <module name="UniqueProperties"/>
 
+    <!-- Regexp -->
+    <module name="RegexpSingleline">
+        <property name="message" value="Line has trailing spaces."/>
+        <property name="format" value="\s+$"/>
+    </module>
+
     <!-- Size Violations -->
     <module name="FileLength">
         <property name="max" value="2000"/>
@@ -32,10 +38,6 @@
 
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
-    </module>
-    <module name="RegexpSingleline">
-        <property name="message" value="Line has trailing spaces."/>
-        <property name="format" value="\s+$"/>
     </module>
     <module name="TreeWalker">
         <!-- Make suppression possible -->
