@@ -68,6 +68,23 @@
         </module>
         <module name="RightCurly"/>
 
+        <!-- Class Design -->
+        <module name="DesignForExtension">
+            <property name="severity" value="info"/>
+        </module>
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InnerTypeLast"/>
+        <module name="InterfaceIsType"/>
+        <module name="MutableException"/>
+        <module name="OneTopLevelClass"/>
+        <module name="ThrowsCount">
+            <property name="max" value="0"/>
+        </module>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
+
         <!-- Javadoc Comments -->
         <module name="AtclauseOrder"/>
         <module name="InvalidJavadocPosition"/>
@@ -167,15 +184,6 @@
         <module name="MissingSwitchDefault"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
-        <!-- Don't like errors for `final` missing
-        <module name="DesignForExtension"/>
-        <module name="FinalClass"/>
-        -->
-        <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType"/>
-        <module name="VisibilityModifier">
-            <property name="protectedAllowed" value="true"/>
-        </module>
         <module name="ArrayTypeStyle"/>
         <!-- Don't like errors for `final` missing
         <module name="FinalParameters"/>
