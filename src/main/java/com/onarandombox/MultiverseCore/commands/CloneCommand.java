@@ -4,15 +4,15 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -21,10 +21,10 @@ import org.jvnet.hk2.annotations.Service;
 @CommandAlias("mv")
 public class CloneCommand extends MultiverseCommand {
 
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
-    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
     }
@@ -36,26 +36,17 @@ public class CloneCommand extends MultiverseCommand {
     @Description("{@@mv-core.clone.description}")
     public void onCloneCommand(CommandIssuer issuer,
 
-                               @Conditions("worldname:scope=both")
                                @Syntax("<world>")
                                @Description("{@@mv-core.clone.world.description}")
-                               String worldName,
+                               MVWorld world,
 
                                @Single
-                               @Conditions("worldname:scope=new")
                                @Syntax("<new world name>")
                                @Description("{@@mv-core.clone.newWorld.description}")
                                String newWorldName
     ) {
-        issuer.sendInfo(MVCorei18n.CLONE_CLONING,
-                "{world}", worldName,
-                "{newWorld}", newWorldName);
-
-        if (!this.worldManager.cloneWorld(worldName, newWorldName)) {
-            issuer.sendError(MVCorei18n.CLONE_FAILED);
-            return;
-        }
-        issuer.sendInfo(MVCorei18n.CLONE_SUCCESS,
-                "{world}", newWorldName);
+        issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newWorld}", newWorldName);
+        worldManager.cloneWorld(world, newWorldName);
+        issuer.sendInfo(MVCorei18n.CLONE_SUCCESS, "{world}", newWorldName);
     }
 }

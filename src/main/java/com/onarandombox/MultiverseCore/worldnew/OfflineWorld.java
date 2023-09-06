@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 public class OfflineWorld {
@@ -30,6 +31,10 @@ public class OfflineWorld {
 
     public boolean isLoaded() {
         return worldConfig.hasMVWorld();
+    }
+
+    public Collection<String> getConfigurablePropertyNames() {
+        return worldConfig.getConfigurablePropertyNames();
     }
 
     public Try<Object> getProperty(String name) {

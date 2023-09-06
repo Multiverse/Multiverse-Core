@@ -10,6 +10,7 @@ import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
 import com.onarandombox.MultiverseCore.worldnew.generators.GeneratorProvider;
+import com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.GameRulesStore;
 import com.onarandombox.MultiverseCore.worldnew.helpers.FilesManipulator;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
@@ -39,12 +40,14 @@ import java.util.List;
 import java.util.Map;
 
 import static com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace;
+import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.*;
 
 /**
  * This manager contains all the world managing functions that your heart desires!
  */
 @Service
 public class WorldManager {
+    private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.dat");
 
     private final Map<String, OfflineWorld> offlineWorldsMap;
     private final Map<String, MVWorld> worldsMap;
@@ -132,9 +135,7 @@ public class WorldManager {
             if (isMVWorld(world) || !world.getAutoLoad()) {
                 return;
             }
-            loadWorld(world).onFailure((failure) -> {
-                Logging.severe("Failed to load world %s: %s", world.getName(), failure);
-            });
+            loadWorld(world).onFailure((failure) -> Logging.severe("Failed to load world %s: %s", world.getName(), failure));
         });
     }
 
@@ -459,6 +460,52 @@ public class WorldManager {
                 ),
                 (success) -> Result.success(DeleteWorldResult.Success.DELETED, replace("{world}").with(world.getName()))
         );
+    }
+
+    /**
+     * Clones an existing multiverse world.
+     *
+     * @param world         The multiverse world to clone.
+     * @param newWorldName  The name of the new world.
+     */
+    public void cloneWorld(@NotNull MVWorld world, @NotNull String newWorldName) {
+        if (!worldNameChecker.isValidWorldName(newWorldName)) {
+            Logging.severe("Invalid world name: " + newWorldName);
+            return;
+        }
+        if (isOfflineWorld(newWorldName)) {
+            Logging.severe("World already exist offline: " + newWorldName);
+            return;
+        }
+        if (isMVWorld(newWorldName)) {
+            Logging.severe("World already loaded: " + newWorldName);
+            return;
+        }
+        if (worldNameChecker.isValidWorldFolder(newWorldName)) {
+            Logging.severe("World folder already exist: " + newWorldName);
+            return;
+        }
+
+        // TODO: Configure option on whether to copy these
+        GameRulesStore gameRulesStore = GameRulesStore.createAndCopyFrom(world);
+        WorldConfigStore worldConfigStore = WorldConfigStore.createAndCopyFrom(world);
+
+        File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
+        File newWorldFolder = new File(Bukkit.getWorldContainer(), newWorldName);
+        FileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES);
+
+        // TODO: Error handling
+        importWorld(ImportWorldOptions.worldName(newWorldName)
+                .environment(world.getEnvironment())
+                .generator(world.getGenerator())
+        );
+
+        // TODO: Error handling
+        getMVWorld(newWorldName).peek(newWorld -> {
+            gameRulesStore.pasteTo(newWorld);
+            worldConfigStore.pasteTo(newWorld);
+            saveWorldsConfig();
+        });
     }
 
     /**
