@@ -36,9 +36,11 @@
         <property name="severity" value="warning"/>
     </module>
 
+    <!-- Whitespace -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
     </module>
+
     <module name="TreeWalker">
         <!-- Make suppression possible -->
         <module name="SuppressWithNearbyCommentFilter">
@@ -337,21 +339,41 @@
             <property name="max" value="8"/>
         </module>
 
+        <!-- Whitespace -->
+        <module name="EmptyForInitializerPad"/>
         <module name="EmptyForIteratorPad"/>
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="allowMultipleEmptyLines" value="false"/>
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+        </module>
+        <module name="GenericWhitespace"/>
         <module name="MethodParamPad"/>
+        <module name="NoLineWrap"/>
         <module name="NoWhitespaceAfter">
-            <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+            <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP,LITERAL_SYNCHRONIZED,METHOD_REF"/>
         </module>
-        <module name="NoWhitespaceBefore"/>
-        <module name="OperatorWrap"/>
+        <module name="NoWhitespaceBefore">
+            <property name="tokens" value="COMMA,SEMI,POST_INC,POST_DEC,DOT,GENERIC_START,GENERIC_END,ELLIPSIS,LABELED_STAT,METHOD_REF"/>
+        </module>
+        <module name="NoWhitespaceBeforeCaseDefaultColon"/>
+        <module name="OperatorWrap">
+            <property name="tokens" value="QUESTION,COLON,EQUAL,NOT_EQUAL,DIV,PLUS,MINUS,STAR,MOD,SR,BSR,GE,GT,SL,LE,LT,BXOR,BOR,LOR,BAND,LAND,LITERAL_INSTANCEOF,TYPE_EXTENSION_AND,ASSIGN,DIV_ASSIGN,PLUS_ASSIGN,MINUS_ASSIGN,STAR_ASSIGN,MOD_ASSIGN,SR_ASSIGN,BSR_ASSIGN,SL_ASSIGN,BXOR_ASSIGN,BOR_ASSIGN,BAND_ASSIGN,METHOD_REF"/>
+        </module>
         <module name="ParenPad"/>
+        <module name="SeparatorWrap">
+            <property name="option" value="nl"/>
+            <property name="tokens" value="DOT,AT,RPAREN,METHOD_REF"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="option" value="eol"/>
+            <property name="tokens" value="COMMA,SEMI,ELLIPSIS,LPAREN,ARRAY_DECLARATOR,RBRACK"/>
+        </module>
+        <module name="SingleSpaceSeparator"/>
         <module name="TypecastParenPad"/>
-        <module name="WhitespaceAfter">
-            <property name="severity" value="warning"/>
-        </module>
-        <module name="WhitespaceAround">
-            <property name="severity" value="warning"/>
-        </module>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+
         <module name="HiddenField">
             <property name="tokens" value="VARIABLE_DEF"/><!-- We don't care if parameters hide fields. -->
         </module>
