@@ -55,9 +55,15 @@ repositories {
         name = 'glaremasters repo'
         url = 'https://repo.glaremasters.me/repository/towny/'
     }
+
     maven {
         name = 'PlaceholderAPI'
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+
+    maven {
+        name = 'papermc repo'
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
 }
 
