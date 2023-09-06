@@ -5,5 +5,5 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  test:
+  checkstyle:
     uses: ./.github/workflows/generic.checkstyle.yml
