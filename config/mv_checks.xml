@@ -43,11 +43,32 @@
         </module>
 
         <!-- Actual checks -->
+
+        <!-- Annotations -->
         <module name="AnnotationLocation"/>
         <module name="AnnotationUseStyle"/>
         <module name="MissingDeprecated"/>
         <module name="MissingOverride"/>
 
+        <!-- Block Checks -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="ignore"/>
+        </module>
+        <module name="LeftCurly">
+            <property name="ignoreEnums" value="false"/>
+        </module>
+        <module name="NeedBraces">
+            <property name="tokens" value="LITERAL_IF"/>
+            <property name="allowSingleLineStatement" value="true"/>
+        </module>
+        <module name="NeedBraces">
+            <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FOR,LITERAL_WHILE"/>
+        </module>
+        <module name="RightCurly"/>
+
+        <!-- Javadoc Comments -->
         <module name="AtclauseOrder"/>
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocBlockTagLocation"/>
@@ -93,6 +114,7 @@
             <property name="severity" value="ignore"/>
             <property name="tagSeverity" value="warning"/>
         </module>
+
         <module name="ConstantName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
@@ -132,12 +154,6 @@
         </module>
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
-        <module name="AvoidNestedBlocks"/>
-        <module name="EmptyBlock">
-            <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_IF,LITERAL_FOR,LITERAL_TRY,LITERAL_WHILE,INSTANCE_INIT,STATIC_INIT"/>
-        </module>
-        <module name="LeftCurly"/>
-        <module name="RightCurly"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField">
@@ -169,7 +185,5 @@
         </module>
         <module name="UpperEll"/>
         <module name="Indentation"/>
-        <module name="MissingDeprecated"/>
-        <module name="MissingOverride"/>
     </module>
 </module>
