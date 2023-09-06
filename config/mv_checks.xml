@@ -261,6 +261,10 @@
         <module name="UncommentedMain"/>
         <module name="UpperEll"/>
 
+        <!-- Modifiers -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
         <module name="ConstantName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
@@ -289,8 +293,6 @@
         <module name="WhitespaceAround">
             <property name="severity" value="warning"/>
         </module>
-        <module name="ModifierOrder"/>
-        <module name="RedundantModifier"/>
         <module name="HiddenField">
             <property name="tokens" value="VARIABLE_DEF"/><!-- We don't care if parameters hide fields. -->
         </module>
