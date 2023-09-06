@@ -265,14 +265,39 @@
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
 
+        <!-- Naming Conventions -->
+        <module name="AbbreviationAsWordInName">
+            <property name="ignoreFinal" value="false"/>
+            <property name="allowedAbbreviations" value="MV"/>
+        </module>
+        <module name="AbstractClassName"/>
+        <module name="CatchParameterName"/>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z]{1,3}$"/>
+        </module>
         <module name="ConstantName"/>
+        <module name="IllegalIdentifierName"/>
+        <module name="InterfaceTypeParameterName">
+            <property name="format" value="^[A-Z]{1,3}$"/>
+        </module>
+        <module name="LambdaParameterName"/>
+        <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
         <module name="MethodName"/>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="^[A-Z]{1,3}$"/>
+        </module>
         <module name="PackageName"/>
         <module name="ParameterName"/>
+        <module name="PatternVariableName"/>
+        <module name="RecordComponentName"/>
+        <module name="RecordTypeParameterName">
+            <property name="format" value="^[A-Z]{1,3}$"/>
+        </module>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
+
         <module name="MethodLength">
             <property name="severity" value="warning"/>
             <property name="countEmpty" value="false"/>
