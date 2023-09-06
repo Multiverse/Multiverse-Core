@@ -373,9 +373,5 @@
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
         <module name="WhitespaceAround"/>
-
-        <module name="HiddenField">
-            <property name="tokens" value="VARIABLE_DEF"/><!-- We don't care if parameters hide fields. -->
-        </module>
     </module>
 </module>
