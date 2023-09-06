@@ -149,6 +149,15 @@
             <property name="validateBetweenScopes" value="true"/>
         </module>
 
+        <!-- Imports -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport">
+            <property name="illegalPkgs" value="sun"/>
+        </module>
+        <module name="ImportOrder"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
         <!-- Javadoc Comments -->
         <module name="AtclauseOrder"/>
         <module name="InvalidJavadocPosition"/>
@@ -204,15 +213,6 @@
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
-        <module name="AvoidStarImport">
-            <property name="severity" value="warning"/>
-            <property name="excludes" value="com.onarandombox.MultiverseCore.utils,com.onarandombox.MultiverseCore.configuration,com.onarandombox.MultiverseCore.commands,com.onarandombox.MultiverseCore.destination"/>
-        </module>
-        <module name="IllegalImport"/>
-        <module name="RedundantImport"/>
-        <module name="UnusedImports">
-            <property name="processJavadoc" value="true"/>
-        </module>
         <module name="MethodLength">
             <property name="severity" value="warning"/>
             <property name="countEmpty" value="false"/>
