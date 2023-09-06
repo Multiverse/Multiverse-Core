@@ -43,6 +43,11 @@
         </module>
 
         <!-- Actual checks -->
+        <module name="AnnotationLocation"/>
+        <module name="AnnotationUseStyle"/>
+        <module name="MissingDeprecated"/>
+        <module name="MissingOverride"/>
+
         <module name="AtclauseOrder"/>
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocBlockTagLocation"/>
