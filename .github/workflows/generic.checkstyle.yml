@@ -15,5 +15,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           checkstyle_version: 10.12.2
-          checkstyle_config: ./config/mv_checks.yml
+          checkstyle_config: ./config/mv_checks.xml
           reviewdog_flags: -tee
