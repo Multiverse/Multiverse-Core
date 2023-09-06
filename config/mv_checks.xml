@@ -15,9 +15,16 @@
         <property name="max" value="160"/>
         <property name="severity" value="warning"/>
     </module>
+
+    <!-- Javadoc Comments -->
     <module name="JavadocPackage"/><!-- require package-info.java file -->
+
+    <!-- Miscellaneous -->
     <module name="NewlineAtEndOfFile" />
+    <module name="OrderedProperties"/>
     <module name="Translation"/>
+    <module name="UniqueProperties"/>
+
     <module name="FileLength"/>
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
@@ -229,6 +236,31 @@
             <property name="max" value="200"/>
         </module>
 
+        <!-- Miscellaneous -->
+        <module name="ArrayTypeStyle"/>
+        <module name="AvoidEscapedUnicodeCharacters">
+            <property name="allowNonPrintableEscapes" value="true"/>
+        </module>
+        <module name="CommentsIndentation"/>
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="4"/>
+            <property name="throwsIndent" value="4"/>
+            <property name="arrayInitIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+            <property name="forceStrictCondition" value="true"/>
+        </module>
+        <module name="NoCodeInFile"/>
+        <module name="OuterTypeFilename"/>
+        <module name="TodoComment">
+            <property name="format" value="TODO"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="TrailingComment"/>
+        <module name="UncommentedMain"/>
+        <module name="UpperEll"/>
+
         <module name="ConstantName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
@@ -262,11 +294,5 @@
         <module name="HiddenField">
             <property name="tokens" value="VARIABLE_DEF"/><!-- We don't care if parameters hide fields. -->
         </module>
-        <module name="ArrayTypeStyle"/>
-        <module name="TodoComment">
-            <property name="severity" value="info"/>
-        </module>
-        <module name="UpperEll"/>
-        <module name="Indentation"/>
     </module>
 </module>
