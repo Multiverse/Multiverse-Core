@@ -23,8 +23,7 @@ import java.util.List;
 public class AnchorDestination implements MVDestination {
     private boolean isValid;
     private Location location;
-    private MultiverseCore plugin ;
-    private Object test ;
+    private MultiverseCore plugin;
     private String name;
 
     /**
