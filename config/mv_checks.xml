@@ -15,9 +15,7 @@
         <property name="max" value="160"/>
         <property name="severity" value="warning"/>
     </module>
-    <module name="JavadocPackage">
-        <property name="allowLegacy" value="true"/>
-    </module>
+    <module name="JavadocPackage"/><!-- require package-info.java file -->
     <module name="NewlineAtEndOfFile" />
     <module name="Translation"/>
     <module name="FileLength"/>
@@ -43,16 +41,47 @@
             <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: ALL"/>
             <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: ALL"/>
         </module>
+
         <!-- Actual checks -->
+        <module name="AtclauseOrder"/>
+        <module name="InvalidJavadocPosition"/>
+        <module name="JavadocBlockTagLocation"/>
+        <module name="JavadocContentLocationCheck"/>
         <module name="JavadocMethod">
-            <property name="accessModifiers" value="public, protected, package"/><!-- We don't need javadoc for private methods -->
-            <property name="tokens" value="METHOD_DEF"/><!-- We don't need javadoc for constructors -->
+            <property name="accessModifiers" value="public, protected, package"/>
+            <property name="tokens" value="METHOD_DEF"/>
         </module>
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public"/>
+        </module>
+        <module name="JavadocMissingLeadingAsterisk"/>
+        <module name="JavadocMissingWhitespaceAfterAsterisk"/>
+        <module name="JavadocParagraph">
+            <property name="allowNewlineParagraph" value="true"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="scope" value="package"/>
+        </module>
+        <module name="JavadocTagContinuationIndentation"/>
         <module name="JavadocType"/>
         <module name="JavadocVariable">
-            <property name="scope" value="package"/><!-- We don't need javadoc for private variables -->
+            <property name="scope" value="package"/>
         </module>
-        <module name="JavadocStyle"/>
+        <module name="MissingJavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+        </module>
+        <module name="MissingJavadocMethod">
+            <property name="scope" value="protected"/>
+            <property name="excludeScope" value="public"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+            <property name="minLineCount" value="2"/>
+        </module>
+        <module name="MissingJavadocType"/>
+        <module name="NonEmptyAtclauseDescription"/>
+        <module name="RequireEmptyLineBeforeBlockTagGroup"/>
+        <module name="SingleLineJavadoc"/>
+        <module name="SummaryJavadoc"/>
         <module name="WriteTag">
             <property name="tag" value="@author"/>
             <property name="tagFormat" value="\S"/>
