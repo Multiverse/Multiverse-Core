@@ -26,6 +26,7 @@ import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -502,6 +503,45 @@ public class WorldManager {
 
         // TODO: Error handling
         getMVWorld(newWorldName).peek(newWorld -> {
+            gameRulesStore.pasteTo(newWorld);
+            worldConfigStore.pasteTo(newWorld);
+            saveWorldsConfig();
+        });
+    }
+
+    /**
+     * Regenerates a world.
+     *
+     * @param world The world to regenerate.
+     */
+    public void regenWorld(@NotNull MVWorld world) {
+        // TODO: Teleport players out of world, and back in after regen
+
+        GameRulesStore gameRulesStore = GameRulesStore.createAndCopyFrom(world);
+        WorldConfigStore worldConfigStore = WorldConfigStore.createAndCopyFrom(world);
+
+        // TODO: Random/fixed seed option
+        CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
+                .environment(world.getEnvironment())
+                .generateStructures(world.canGenerateStructures().getOrElse(true))
+                .generator(world.getGenerator())
+                .seed(world.getSeed())
+                .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
+
+        var deleteResult = deleteWorld(world);
+        if (deleteResult.isFailure()) {
+            Logging.severe("Failed to delete world: " + world.getName());
+            return;
+        }
+
+        var createResult = createWorld(createWorldOptions);
+        if (createResult.isFailure()) {
+            Logging.severe("Failed to create world: " + world.getName());
+            return;
+        }
+
+        // TODO: Error handling
+        getMVWorld(createWorldOptions.worldName()).peek(newWorld -> {
             gameRulesStore.pasteTo(newWorld);
             worldConfigStore.pasteTo(newWorld);
             saveWorldsConfig();

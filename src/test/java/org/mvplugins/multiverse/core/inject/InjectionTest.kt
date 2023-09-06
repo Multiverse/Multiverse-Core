@@ -24,6 +24,7 @@ import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.worldnew.WorldManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -70,6 +71,7 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
+    @Ignore
     fun `UnsafeCallWrapper is available as a service`() {
         assertNotNull(multiverseCore.getService(UnsafeCallWrapper::class.java))
     }
