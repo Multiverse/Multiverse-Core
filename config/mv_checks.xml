@@ -10,11 +10,6 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
 <module name="Checker">
-    <module name="LineLength">
-        <property name="fileExtensions" value="java"/>
-        <property name="max" value="160"/>
-        <property name="severity" value="warning"/>
-    </module>
 
     <!-- Javadoc Comments -->
     <module name="JavadocPackage"/><!-- require package-info.java file -->
@@ -25,7 +20,16 @@
     <module name="Translation"/>
     <module name="UniqueProperties"/>
 
-    <module name="FileLength"/>
+    <!-- Size Violations -->
+    <module name="FileLength">
+        <property name="max" value="2000"/>
+    </module>
+    <module name="LineLength">
+        <property name="fileExtensions" value="java"/>
+        <property name="max" value="160"/>
+        <property name="severity" value="warning"/>
+    </module>
+
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
     </module>
@@ -298,11 +302,39 @@
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
 
-        <module name="MethodLength">
-            <property name="severity" value="warning"/>
-            <property name="countEmpty" value="false"/>
+        <!-- Size Violations -->
+        <module name="AnonInnerLength">
+            <property name="max" value="20"/>
         </module>
-        <module name="ParameterNumber"/>
+        <module name="ExecutableStatementCount">
+            <property name="max" value="30"/>
+        </module>
+        <module name="LambdaBodyLength">
+            <property name="max" value="10"/>
+        </module>
+        <module name="MethodCount">
+            <property name="maxTotal" value="100"/>
+            <property name="maxPrivate" value="100"/>
+            <property name="maxPackage" value="100"/>
+            <property name="maxProtected" value="100"/>
+            <property name="maxPublic" value="100"/>
+        </module>
+        <module name="MethodLength">
+            <property name="max" value="50"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="OuterTypeNumber">
+            <property name="max" value="1"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="3"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="RecordComponentNumber">
+            <property name="max" value="8"/>
+        </module>
+
         <module name="EmptyForIteratorPad"/>
         <module name="MethodParamPad"/>
         <module name="NoWhitespaceAfter">
