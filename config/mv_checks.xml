@@ -10,6 +10,11 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <!-- Future reference: valid severity values are 'ignore', 'info', 'warning', 'error' -->
 <module name="Checker">
+    <module name="LineLength">
+        <property name="fileExtensions" value="java"/>
+        <property name="max" value="160"/>
+        <property name="severity" value="warning"/>
+    </module>
     <module name="JavadocPackage">
         <property name="allowLegacy" value="true"/>
     </module>
@@ -23,29 +28,24 @@
         <property name="message" value="Line has trailing spaces."/>
         <property name="format" value="\s+$"/>
     </module>
-    <module name="SuppressWithNearbyCommentFilter">
-        <property name="commentFormat" value="SUPPRESS CHECKSTYLE: (\w+)"/>
-        <property name="checkFormat" value="$1"/>
-    </module>
-    <module name="SuppressionCommentFilter">
-           <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: (\w+)"/>
-           <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: (\w+)"/>
-           <property name="checkFormat" value="$1"/>
-    </module>
-    <module name="SuppressionCommentFilter">
-           <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: ALL"/>
-           <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: ALL"/>
-    </module>
     <module name="TreeWalker">
         <!-- Make suppression possible -->
-        <module name="FileContentsHolder"/>
-        <!-- Actual checks -->
-        <module name="LineLength">
-            <property name="max" value="160"/>
-            <property name="severity" value="warning"/>
+        <module name="SuppressWithNearbyCommentFilter">
+            <property name="commentFormat" value="SUPPRESS CHECKSTYLE: (\w+)"/>
+            <property name="checkFormat" value="$1"/>
         </module>
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: (\w+)"/>
+            <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: (\w+)"/>
+            <property name="checkFormat" value="$1"/>
+        </module>
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="BEGIN CHECKSTYLE-SUPPRESSION\: ALL"/>
+            <property name="onCommentFormat" value="END CHECKSTYLE-SUPPRESSION\: ALL"/>
+        </module>
+        <!-- Actual checks -->
         <module name="JavadocMethod">
-            <property name="scope" value="package"/><!-- We don't need javadoc for private methods -->
+            <property name="accessModifiers" value="public, protected, package"/><!-- We don't need javadoc for private methods -->
             <property name="tokens" value="METHOD_DEF"/><!-- We don't need javadoc for constructors -->
         </module>
         <module name="JavadocType"/>

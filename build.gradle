@@ -161,7 +161,7 @@ processResources {
 
 
 checkstyle {
-    toolVersion = '6.1.1'
+    toolVersion = '10.12.2'
     configFile file('config/mv_checks.xml')
     ignoreFailures = true
 }
