@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
-import com.onarandombox.MultiverseCore.utils.file.FileUtils;
 import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
@@ -46,7 +45,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace;
-import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.*;
+import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldBorderStore;
+import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldConfigStore;
 
 /**
  * This manager contains all the world managing functions that your heart desires!
@@ -474,9 +474,30 @@ public class WorldManager {
      * @param options   The options for customizing the cloning of a world.
      */
     public Result<CloneWorldResult.Success, CloneWorldResult.Failure> cloneWorld(@NotNull CloneWorldOptions options) {
-        MVWorld world = options.world();
-        String newWorldName = options.newWorldName();
+        return cloneWorldValidateWorld(options)
+                .onSuccessThen(s -> cloneWorldCopyFolder(options))
+                .onSuccessThen(s -> importWorld(
+                        ImportWorldOptions.worldName(options.newWorldName())
+                                .environment(options.world().getEnvironment())
+                                .generator(options.world().getGenerator())
+                ).fold(
+                        failure -> Result.failure(CloneWorldResult.Failure.IMPORT_FAILED, failure.getReasonMessage()),
+                        success -> Result.success()
+                ))
+                .onSuccessThen(s -> getMVWorld(options.newWorldName()).fold(
+                        () -> Result.failure(CloneWorldResult.Failure.MV_WORLD_FAILED, replace("{world}").with(options.newWorldName())),
+                        mvWorld -> {
+                            cloneWorldTransferData(options, mvWorld);
+                            saveWorldsConfig();
+                            return Result.success(CloneWorldResult.Success.CLONED,
+                                    replace("{world}").with(options.world().getName()),
+                                    replace("{newworld}").with(mvWorld.getName()));
+                        }
+                ));
+    }
 
+    private Result<CloneWorldResult.Success, CloneWorldResult.Failure> cloneWorldValidateWorld(@NotNull CloneWorldOptions options) {
+        String newWorldName = options.newWorldName();
         if (!worldNameChecker.isValidWorldName(newWorldName)) {
             Logging.severe("Invalid world name: " + newWorldName);
             return Result.failure(CloneWorldResult.Failure.INVALID_WORLDNAME, replace("{world}").with(newWorldName));
@@ -492,7 +513,21 @@ public class WorldManager {
             Logging.severe("World already exist offline: " + newWorldName);
             return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_OFFLINE, replace("{world}").with(newWorldName));
         }
+        return Result.success();
+    }
 
+    private Result<CloneWorldResult.Success, CloneWorldResult.Failure> cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
+        File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
+        File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
+        return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
+                (exception) -> Result.failure(CloneWorldResult.Failure.COPY_FAILED,
+                        replace("{world}").with(options.world().getName()),
+                        replace("{error}").with(exception.getMessage())),
+                (success) -> Result.success());
+    }
+
+    private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull MVWorld newWorld) {
+        MVWorld world = options.world();
         DataTransfer<MVWorld> dataTransfer = new DataTransfer<>();
         if (options.keepWorldConfig()) {
             dataTransfer.addDataStore(new WorldConfigStore(), world);
@@ -503,29 +538,7 @@ public class WorldManager {
         if (options.keepWorldBorder()) {
             dataTransfer.addDataStore(new WorldBorderStore(), world);
         }
-
-        File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
-        File newWorldFolder = new File(Bukkit.getWorldContainer(), newWorldName);
-        return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
-                (exception) -> Result.failure(CloneWorldResult.Failure.COPY_FAILED,
-                        replace("{world}").with(world.getName()),
-                        replace("{error}").with(exception.getMessage())),
-                (success) -> {
-                    var importResult = importWorld(ImportWorldOptions.worldName(newWorldName)
-                            .environment(world.getEnvironment())
-                            .generator(world.getGenerator()));
-                    if (importResult.isFailure()) {
-                        return Result.failure(CloneWorldResult.Failure.IMPORT_FAILED, importResult.getReasonMessage());
-                    }
-
-                    getMVWorld(newWorldName).peek(newWorld -> {
-                        dataTransfer.pasteAllTo(newWorld);
-                        saveWorldsConfig();
-                    });
-                    return Result.success(CloneWorldResult.Success.CLONED,
-                            replace("{world}").with(world.getName()),
-                            replace("{newworld}").with(newWorldName));
-                });
+        dataTransfer.pasteAllTo(newWorld);
     }
 
     /**

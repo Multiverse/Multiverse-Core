@@ -7,14 +7,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public sealed interface Result<S extends SuccessReason, F extends FailureReason> permits Result.Success, Result.Failure {
+    static <F extends FailureReason, S extends SuccessReason> Result<S, F> success() {
+        return new Success<>(null, Message.of("Success!"));
+    }
+
     static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason, MessageReplacement...replacements) {
         return new Success<>(successReason, replacements);
     }
 
     static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason, Message message) {
         return new Success<>(successReason, message);
+    }
+
+    static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure() {
+        return new Failure<>(null, Message.of("Failed!"));
     }
 
     static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure(F failureReason, MessageReplacement...replacements) {
@@ -60,6 +69,29 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
             consumer.accept(this.getFailureReason());
         }
         return this;
+    }
+
+    default Result<S, F> onSuccessThen(Function<Success<F, S>, Result<S, F>> function) {
+        if (this instanceof Success) {
+            return function.apply((Success<F, S>) this);
+        }
+        return this;
+    }
+
+    default Result<S, F> onFailureThen(Function<Failure<S, F>, Result<S, F>> function) {
+        if (this instanceof Failure) {
+            return function.apply((Failure<S, F>) this);
+        }
+        return this;
+    }
+
+    default <R> R fold(Function<Failure<S, F>, R> failureFunc, Function<Success<F, S>, R> successFunc) {
+        if (this instanceof Failure) {
+            return failureFunc.apply((Failure<S, F>) this);
+        } else if (this instanceof Success) {
+            return successFunc.apply((Success<F, S>) this);
+        }
+        throw new IllegalStateException("Unknown result type: " + this.getClass().getName());
     }
 
     final class Success<F extends FailureReason, S extends SuccessReason> implements Result<S, F> {

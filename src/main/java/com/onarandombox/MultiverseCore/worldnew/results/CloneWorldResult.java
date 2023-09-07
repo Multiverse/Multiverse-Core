@@ -30,6 +30,7 @@ public class CloneWorldResult {
         WORLD_EXIST_LOADED(MVCorei18n.CLONEWORLD_WORLDEXISTLOADED),
         COPY_FAILED(MVCorei18n.CLONEWORLD_COPYFAILED),
         IMPORT_FAILED(null),
+        MV_WORLD_FAILED(null), // TODO
         ;
 
         private final MessageKeyProvider message;
