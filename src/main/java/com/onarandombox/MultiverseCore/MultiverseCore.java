@@ -151,10 +151,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onDisable() {
-        if (serviceLocator == null) {
-            // TODO: This is a workaround while waiting for MockBukkit to fix their onDisable being called twice
-            return;
-        }
         this.saveAllConfigs();
         shutdownDependencyInjection();
         Logging.shutdown();
