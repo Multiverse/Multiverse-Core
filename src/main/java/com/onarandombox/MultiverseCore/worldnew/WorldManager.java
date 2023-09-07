@@ -506,25 +506,26 @@ public class WorldManager {
 
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
         File newWorldFolder = new File(Bukkit.getWorldContainer(), newWorldName);
-        if (!FileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES)) {
-            // TODO: Use Try<Void>
-            return Result.failure(CloneWorldResult.Failure.COPY_FAILED, replace("{world}").with(world.getName()));
-        }
+        return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
+                (exception) -> Result.failure(CloneWorldResult.Failure.COPY_FAILED,
+                        replace("{world}").with(world.getName()),
+                        replace("{error}").with(exception.getMessage())),
+                (success) -> {
+                    var importResult = importWorld(ImportWorldOptions.worldName(newWorldName)
+                            .environment(world.getEnvironment())
+                            .generator(world.getGenerator()));
+                    if (importResult.isFailure()) {
+                        return Result.failure(CloneWorldResult.Failure.IMPORT_FAILED, importResult.getReasonMessage());
+                    }
 
-        var importResult = importWorld(ImportWorldOptions.worldName(newWorldName)
-                .environment(world.getEnvironment())
-                .generator(world.getGenerator()));
-        if (importResult.isFailure()) {
-            return Result.failure(CloneWorldResult.Failure.IMPORT_FAILED, importResult.getReasonMessage());
-        }
-
-        getMVWorld(newWorldName).peek(newWorld -> {
-            dataTransfer.pasteAllTo(newWorld);
-            saveWorldsConfig();
-        });
-        return Result.success(CloneWorldResult.Success.CLONED,
-                replace("{world}").with(world.getName()),
-                replace("{newworld}").with(newWorldName));
+                    getMVWorld(newWorldName).peek(newWorld -> {
+                        dataTransfer.pasteAllTo(newWorld);
+                        saveWorldsConfig();
+                    });
+                    return Result.success(CloneWorldResult.Success.CLONED,
+                            replace("{world}").with(world.getName()),
+                            replace("{newworld}").with(newWorldName));
+                });
     }
 
     /**
