@@ -7,11 +7,11 @@
 [![bukkit](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/bukkit_vector.svg)](https://dev.bukkit.org/projects/multiverse-core)
 [![Spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg)](https://www.spigotmc.org/resources/multiverse-core.390/)
 
-[![Release](https://img.shields.io/nexus/r/com.onarandombox.multiversecore/Multiverse-Core?label=release&server=https%3A%2F%2Frepo.onarandombox.com%2F)](https://dev.bukkit.org/projects/multiverse-core)
-[![Dev builds](https://img.shields.io/nexus/s/com.onarandombox.multiversecore/Multiverse-Core?label=dev%20builds&server=http%3A%2F%2Frepo.onarandombox.com%2F)](https://ci.onarandombox.com/job/Multiverse-Core/)
+[![Release](https://img.shields.io/nexus/r/com.onarandombox.multiversecore/multiverse-core?server=https%3A%2F%2Frepo.onarandombox.com&label=release&color=dark-green)](https://dev.bukkit.org/projects/multiverse-core)
+[![Dev builds](https://img.shields.io/nexus/s/com.onarandombox.multiversecore/multiverse-core?server=https%3A%2F%2Frepo.onarandombox.com&label=prerelease&color=orange)](https://ci.onarandombox.com/job/Multiverse-Core/)
 [![Discord](https://img.shields.io/discord/325459248047980545?label=discord&logo=discord)](https://discord.gg/NZtfKky)
-[![Support us on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Ddumptruckman%26type%3Dpatrons&style=flat)](https://patreon.com/dumptruckman)
-[![License](https://img.shields.io/github/license/Multiverse/Multiverse-Core)](LICENSE.md)
+[![Support us on Patreon](https://img.shields.io/badge/donate-patreon-white?logo=patreon)](https://patreon.com/dumptruckman)
+[![License](https://img.shields.io/github/license/Multiverse/Multiverse-Core?color=blue)](LICENSE.md)
 
 
 # About
