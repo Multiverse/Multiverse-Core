@@ -87,7 +87,7 @@ configurations {
 }
 
 dependencies {
-    serverApi 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    serverApi 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 
     // Economy
     externalPlugin('com.github.MilkBowl:VaultAPI:1.7.1') {
@@ -116,7 +116,7 @@ dependencies {
     }
     shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
     shadowed 'org.bstats:bstats-bukkit:2.2.1'
-    shadowed 'net.minidev:json-smart:2.4.8'
+    shadowed 'net.minidev:json-smart:2.4.9'
     shadowed 'org.jetbrains:annotations:22.0.0'
     shadowed 'io.papermc:paperlib:1.0.8'
 
@@ -131,7 +131,7 @@ dependencies {
     testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
 
     // Old Tests
-    oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
+    oldTestImplementation 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
     oldTestImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
