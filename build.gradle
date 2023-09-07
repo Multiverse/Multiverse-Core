@@ -123,7 +123,7 @@ dependencies {
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
-    testImplementation 'com.github.seeseemelk:MockBukkit-v1.20:3.19.2'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.20:3.20.2'
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
