@@ -29,7 +29,7 @@ public class GameruleCommand extends MultiverseCommand {
     }
 
     @Subcommand("gamerule")
-    @CommandPermission("multiverse.core.gamerule")
+    @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
     @Description("{@@mv-core.gamerule.description}")

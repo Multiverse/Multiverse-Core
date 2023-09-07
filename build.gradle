@@ -3,7 +3,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id "org.jetbrains.kotlin.jvm" version "1.8.10"
 }
@@ -55,9 +54,15 @@ repositories {
         name = 'glaremasters repo'
         url = 'https://repo.glaremasters.me/repository/towny/'
     }
+
     maven {
         name = 'PlaceholderAPI'
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+
+    maven {
+        name = 'papermc repo'
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
 }
 
@@ -82,7 +87,7 @@ configurations {
 }
 
 dependencies {
-    serverApi 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    serverApi 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 
     // Economy
     externalPlugin('com.github.MilkBowl:VaultAPI:1.7.1') {
@@ -111,13 +116,13 @@ dependencies {
     }
     shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
     shadowed 'org.bstats:bstats-bukkit:2.2.1'
-    shadowed 'net.minidev:json-smart:2.4.8'
+    shadowed 'net.minidev:json-smart:2.4.9'
     shadowed 'org.jetbrains:annotations:22.0.0'
     shadowed 'io.papermc:paperlib:1.0.8'
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
-    testImplementation 'com.github.seeseemelk:MockBukkit-v1.19:2.141.0'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.20:3.20.2'
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
@@ -126,7 +131,7 @@ dependencies {
     testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
 
     // Old Tests
-    oldTestImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
+    oldTestImplementation 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
     oldTestImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
@@ -260,13 +265,6 @@ processResources {
     // This task should never be skipped. The tests depend on this having been run but we want the new version number
     // that is created after tests are run and before we run again to publish.
     outputs.upToDateWhen { false }
-}
-
-
-checkstyle {
-    toolVersion = '6.1.1'
-    configFile file('config/mv_checks.xml')
-    ignoreFailures = true
 }
 
 

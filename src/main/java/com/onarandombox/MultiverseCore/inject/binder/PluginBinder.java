@@ -30,6 +30,7 @@ public abstract class PluginBinder<T extends Plugin> extends AbstractBinder {
     protected final void configure() {
         var bindingBuilder = bindPlugin(getPlugin());
         bindingBuilder.to(Plugin.class);
+        bindPluginClass(bindingBuilder);
         bind(plugin.getLogger()).to(Logger.class);
     }
 
