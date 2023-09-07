@@ -14,10 +14,12 @@ import com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.GameRulesStore
 import com.onarandombox.MultiverseCore.worldnew.helpers.FilesManipulator;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
+import com.onarandombox.MultiverseCore.worldnew.options.RegenWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.results.CreateWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.DeleteWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.ImportWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.LoadWorldResult;
+import com.onarandombox.MultiverseCore.worldnew.results.RegenWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.RemoveWorldResult;
 import com.onarandombox.MultiverseCore.worldnew.results.UnloadWorldResult;
 import io.vavr.control.Option;
@@ -512,40 +514,38 @@ public class WorldManager {
     /**
      * Regenerates a world.
      *
-     * @param world The world to regenerate.
+     * @param options   The options for customizing the regeneration of a world.
      */
-    public void regenWorld(@NotNull MVWorld world) {
+    public Result<RegenWorldResult.Success, RegenWorldResult.Failure> regenWorld(@NotNull RegenWorldOptions options) {
         // TODO: Teleport players out of world, and back in after regen
+        MVWorld world = options.world();
 
         GameRulesStore gameRulesStore = GameRulesStore.createAndCopyFrom(world);
         WorldConfigStore worldConfigStore = WorldConfigStore.createAndCopyFrom(world);
 
-        // TODO: Random/fixed seed option
         CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
                 .environment(world.getEnvironment())
                 .generateStructures(world.canGenerateStructures().getOrElse(true))
                 .generator(world.getGenerator())
-                .seed(world.getSeed())
+                .seed(options.seed())
                 .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
 
         var deleteResult = deleteWorld(world);
         if (deleteResult.isFailure()) {
-            Logging.severe("Failed to delete world: " + world.getName());
-            return;
+            return Result.failure(RegenWorldResult.Failure.DELETE_FAILED, deleteResult.getReasonMessage());
         }
 
         var createResult = createWorld(createWorldOptions);
         if (createResult.isFailure()) {
-            Logging.severe("Failed to create world: " + world.getName());
-            return;
+            return Result.failure(RegenWorldResult.Failure.CREATE_FAILED, createResult.getReasonMessage());
         }
 
-        // TODO: Error handling
         getMVWorld(createWorldOptions.worldName()).peek(newWorld -> {
             gameRulesStore.pasteTo(newWorld);
             worldConfigStore.pasteTo(newWorld);
             saveWorldsConfig();
         });
+        return Result.success(RegenWorldResult.Success.REGENERATED, replace("{world}").with(world.getName()));
     }
 
     /**

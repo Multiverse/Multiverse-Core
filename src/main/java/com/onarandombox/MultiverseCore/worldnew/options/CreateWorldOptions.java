@@ -5,6 +5,8 @@ import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Random;
+
 /**
  * Options for customizing the creation of a new world.
  */
@@ -24,7 +26,7 @@ public class CreateWorldOptions {
     private World.Environment environment = World.Environment.NORMAL;
     private boolean generateStructures = true;
     private String generator = null;
-    private long seed = Long.MIN_VALUE;
+    private long seed;
     private boolean useSpawnAdjust = true;
     private WorldType worldType = WorldType.NORMAL;
 
@@ -35,6 +37,7 @@ public class CreateWorldOptions {
      */
     CreateWorldOptions(@NotNull String worldName) {
         this.worldName = worldName;
+        this.seed = (new Random()).nextLong();
     }
 
     /**
@@ -115,7 +118,6 @@ public class CreateWorldOptions {
      */
     public @NotNull CreateWorldOptions seed(@Nullable String seed) {
         if (seed == null) {
-            this.seed = Long.MIN_VALUE;
             return this;
         }
         try {

@@ -11,9 +11,27 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A data store for storing and restoring data from an object.
+ *
+ * @param <T>   The type of the object to store data from.
+ */
 @Service
 public interface DataStore<T> {
+    /**
+     * Stores the data from the given object in this {@link DataStore} instance.
+     *
+     * @param object    The object to copy data from.
+     * @return This {@link DataStore} instance.
+     */
     DataStore<T> copyFrom(T object);
+
+    /**
+     * Copies the data from this {@link DataStore} instance to the given object.
+     *
+     * @param object    The object to paste data to.
+     * @return This {@link DataStore} instance.
+     */
     DataStore<T> pasteTo(T object);
 
     class GameRulesStore implements DataStore<MVWorld> {
@@ -23,6 +41,10 @@ public interface DataStore<T> {
 
         private Map<GameRule<?>, Object> gameRuleMap;
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public GameRulesStore copyFrom(MVWorld world) {
             this.gameRuleMap = new HashMap<>();
             world.getBukkitWorld().peek(bukkitWorld -> {
@@ -34,6 +56,10 @@ public interface DataStore<T> {
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public GameRulesStore pasteTo(MVWorld world) {
             if (gameRuleMap == null) {
                 return this;
@@ -65,6 +91,9 @@ public interface DataStore<T> {
 
         private Map<String, Object> configMap;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public WorldConfigStore copyFrom(OfflineWorld world) {
             this.configMap = new HashMap<>();
@@ -76,6 +105,9 @@ public interface DataStore<T> {
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public WorldConfigStore pasteTo(OfflineWorld world) {
             if (configMap == null) {
@@ -86,6 +118,56 @@ public interface DataStore<T> {
                     Logging.warning("Failed to set property %s to %s for world %s: %s",
                             name, value, world.getName(), e.getMessage());
                 });
+            });
+            return this;
+        }
+    }
+
+    class WorldBorderStore implements DataStore<MVWorld> {
+        /**
+         * Creates a new {@link WorldBorderStore} instance and copies the world border data from the given world.
+         *
+         * @param world The world to copy the world border data from.
+         * @return A new {@link WorldBorderStore} instance.
+         */
+        public static WorldBorderStore createAndCopyFrom(MVWorld world) {
+            return new WorldBorderStore().copyFrom(world);
+        }
+
+        private double borderCenterX;
+        private double borderCenterZ;
+        private double borderDamageAmount;
+        private double borderDamageBuffer;
+        private double borderSize;
+        private int borderTimeRemaining;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public WorldBorderStore copyFrom(MVWorld world) {
+            world.getBukkitWorld().peek(bukkitWorld -> {
+                borderCenterX = bukkitWorld.getWorldBorder().getCenter().getX();
+                borderCenterZ = bukkitWorld.getWorldBorder().getCenter().getZ();
+                borderDamageAmount = bukkitWorld.getWorldBorder().getDamageAmount();
+                borderDamageBuffer = bukkitWorld.getWorldBorder().getDamageBuffer();
+                borderSize = bukkitWorld.getWorldBorder().getSize();
+                borderTimeRemaining = bukkitWorld.getWorldBorder().getWarningTime();
+            });
+            return this;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public WorldBorderStore pasteTo(MVWorld world) {
+            world.getBukkitWorld().peek(bukkitWorld -> {
+                bukkitWorld.getWorldBorder().setCenter(borderCenterX, borderCenterZ);
+                bukkitWorld.getWorldBorder().setDamageAmount(borderDamageAmount);
+                bukkitWorld.getWorldBorder().setDamageBuffer(borderDamageBuffer);
+                bukkitWorld.getWorldBorder().setSize(borderSize);
+                bukkitWorld.getWorldBorder().setWarningTime(borderTimeRemaining);
             });
             return this;
         }

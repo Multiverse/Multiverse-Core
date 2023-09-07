@@ -9,6 +9,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
@@ -19,6 +21,7 @@ import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.options.RegenWorldOptions;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -43,8 +46,14 @@ public class RegenCommand extends MultiverseCommand {
                         .completion((input) -> Collections.singleton(String.valueOf(new Random().nextLong())))
                         .optional()
                         .build())
-                .add(CommandFlag.builder("--keep-gamerules")
-                        .addAlias("-k")
+                .add(CommandFlag.builder("--reset-world-config")
+                        .addAlias("-wc")
+                        .build())
+                .add(CommandFlag.builder("--reset-gamerules")
+                        .addAlias("-gm")
+                        .build())
+                .add(CommandFlag.builder("--reset-world-border")
+                        .addAlias("-wb")
                         .build())
                 .build());
     }
@@ -54,14 +63,14 @@ public class RegenCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregen")
     @Syntax("<world> --seed [seed] --keep-gamerules")
     @Description("{@@mv-core.regen.description}")
-    public void onRegenCommand(BukkitCommandIssuer issuer,
+    public void onRegenCommand(MVCommandIssuer issuer,
 
                                @Syntax("<world>")
                                @Description("{@@mv-core.regen.world.description}")
                                MVWorld world,
 
                                @Optional
-                               @Syntax("--seed [seed] --keep-gamerules")
+                               @Syntax("--seed [seed] --reset-gamerules")
                                @Description("{@@mv-core.regen.other.description}")
                                String[] flags
     ) {
@@ -71,8 +80,19 @@ public class RegenCommand extends MultiverseCommand {
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, "{world}", world.getName());
-                    worldManager.regenWorld(world);
-                    issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, "{world}", world.getName());
+                    worldManager.regenWorld(RegenWorldOptions.world(world)
+                            .randomSeed(!parsedFlags.hasFlagValue("--seed"))
+                            .seed(parsedFlags.flagValue("--seed", String.class))
+                            .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
+                            .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
+                            .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"))
+                    ).onSuccess((success) -> {
+                        Logging.fine("World create success: " + success);
+                        issuer.sendInfo(success.getReasonMessage());
+                    }).onFailure((failure) -> {
+                        Logging.fine("World create failure: " + failure);
+                        issuer.sendError(failure.getReasonMessage());
+                    });
                 },
                 this.commandManager.formatMessage(
                         issuer,
