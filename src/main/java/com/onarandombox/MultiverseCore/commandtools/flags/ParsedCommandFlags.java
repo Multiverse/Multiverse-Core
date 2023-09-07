@@ -29,6 +29,10 @@ public class ParsedCommandFlags
         flagValues.put(key, value);
     }
 
+    public boolean hasFlag(@NotNull CommandFlag flag) {
+        return hasFlag(flag.getKey());
+    }
+
     /**
      * Check if a flag is present.
      *
@@ -43,6 +47,10 @@ public class ParsedCommandFlags
         return flagValue(key, Object.class) != null;
     }
 
+    public @Nullable <T> T flagValue(@NotNull CommandFlag flag, @NotNull Class<T> type) {
+        return flagValue(flag.getKey(), type);
+    }
+
     /**
      * Get the value of a flag.
      *
@@ -52,6 +60,10 @@ public class ParsedCommandFlags
     public @Nullable <T> T flagValue(@Nullable String key, @NotNull Class<T> type) {
         Object value = this.flagValues.get(key);
         return (T) value;
+    }
+
+    public @Nullable <T> T flagValue(@NotNull CommandFlag flag, @NotNull T defaultValue, @NotNull Class<T> type) {
+        return flagValue(flag.getKey(), defaultValue, type);
     }
 
     public @NotNull <T> T flagValue(@Nullable String key, @NotNull T defaultValue, @NotNull Class<T> type) {
