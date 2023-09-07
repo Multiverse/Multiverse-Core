@@ -10,7 +10,9 @@ import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager;
 import com.onarandombox.MultiverseCore.worldnew.generators.GeneratorProvider;
+import com.onarandombox.MultiverseCore.worldnew.helpers.DataStore;
 import com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.GameRulesStore;
+import com.onarandombox.MultiverseCore.worldnew.helpers.DataTransfer;
 import com.onarandombox.MultiverseCore.worldnew.helpers.FilesManipulator;
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
@@ -490,8 +492,8 @@ public class WorldManager {
         }
 
         // TODO: Configure option on whether to copy these
-        GameRulesStore gameRulesStore = GameRulesStore.createAndCopyFrom(world);
-        WorldConfigStore worldConfigStore = WorldConfigStore.createAndCopyFrom(world);
+//        GameRulesStore gameRulesStore = GameRulesStore.createAndCopyFrom(world);
+//        WorldConfigStore worldConfigStore = WorldConfigStore.createAndCopyFrom(world);
 
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
         File newWorldFolder = new File(Bukkit.getWorldContainer(), newWorldName);
@@ -505,8 +507,8 @@ public class WorldManager {
 
         // TODO: Error handling
         getMVWorld(newWorldName).peek(newWorld -> {
-            gameRulesStore.pasteTo(newWorld);
-            worldConfigStore.pasteTo(newWorld);
+//            gameRulesStore.pasteTo(newWorld);
+//            worldConfigStore.pasteTo(newWorld);
             saveWorldsConfig();
         });
     }
@@ -520,15 +522,23 @@ public class WorldManager {
         // TODO: Teleport players out of world, and back in after regen
         MVWorld world = options.world();
 
-        GameRulesStore gameRulesStore = GameRulesStore.createAndCopyFrom(world);
-        WorldConfigStore worldConfigStore = WorldConfigStore.createAndCopyFrom(world);
+        DataTransfer<MVWorld> dataTransfer = new DataTransfer<>();
+        if (options.keepWorldConfig()) {
+            dataTransfer.addDataStore(new WorldConfigStore(), world);
+        }
+        if (options.keepGameRule()) {
+            dataTransfer.addDataStore(new GameRulesStore(), world);
+        }
+        if (options.keepWorldBorder()) {
+            dataTransfer.addDataStore(new WorldBorderStore(), world);
+        }
 
         CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
-                .environment(world.getEnvironment())
-                .generateStructures(world.canGenerateStructures().getOrElse(true))
-                .generator(world.getGenerator())
-                .seed(options.seed())
-                .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
+            .environment(world.getEnvironment())
+            .generateStructures(world.canGenerateStructures().getOrElse(true))
+            .generator(world.getGenerator())
+            .seed(options.seed())
+            .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
 
         var deleteResult = deleteWorld(world);
         if (deleteResult.isFailure()) {
@@ -541,8 +551,7 @@ public class WorldManager {
         }
 
         getMVWorld(createWorldOptions.worldName()).peek(newWorld -> {
-            gameRulesStore.pasteTo(newWorld);
-            worldConfigStore.pasteTo(newWorld);
+            dataTransfer.pasteAllTo(newWorld);
             saveWorldsConfig();
         });
         return Result.success(RegenWorldResult.Success.REGENERATED, replace("{world}").with(world.getName()));

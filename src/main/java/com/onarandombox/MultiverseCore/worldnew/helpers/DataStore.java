@@ -35,10 +35,6 @@ public interface DataStore<T> {
     DataStore<T> pasteTo(T object);
 
     class GameRulesStore implements DataStore<MVWorld> {
-        public static GameRulesStore createAndCopyFrom(MVWorld world) {
-            return new GameRulesStore().copyFrom(world);
-        }
-
         private Map<GameRule<?>, Object> gameRuleMap;
 
         /**
@@ -84,18 +80,14 @@ public interface DataStore<T> {
         }
     }
 
-    class WorldConfigStore implements DataStore<OfflineWorld> {
-        public static WorldConfigStore createAndCopyFrom(OfflineWorld world) {
-            return new WorldConfigStore().copyFrom(world);
-        }
-
+    class WorldConfigStore implements DataStore<MVWorld> {
         private Map<String, Object> configMap;
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public WorldConfigStore copyFrom(OfflineWorld world) {
+        public WorldConfigStore copyFrom(MVWorld world) {
             this.configMap = new HashMap<>();
             world.getConfigurablePropertyNames().forEach(name -> {
                 world.getProperty(name).peek(value -> configMap.put(name, value)).onFailure(e -> {
@@ -109,7 +101,7 @@ public interface DataStore<T> {
          * {@inheritDoc}
          */
         @Override
-        public WorldConfigStore pasteTo(OfflineWorld world) {
+        public WorldConfigStore pasteTo(MVWorld world) {
             if (configMap == null) {
                 return this;
             }
@@ -124,16 +116,6 @@ public interface DataStore<T> {
     }
 
     class WorldBorderStore implements DataStore<MVWorld> {
-        /**
-         * Creates a new {@link WorldBorderStore} instance and copies the world border data from the given world.
-         *
-         * @param world The world to copy the world border data from.
-         * @return A new {@link WorldBorderStore} instance.
-         */
-        public static WorldBorderStore createAndCopyFrom(MVWorld world) {
-            return new WorldBorderStore().copyFrom(world);
-        }
-
         private double borderCenterX;
         private double borderCenterZ;
         private double borderDamageAmount;
