@@ -202,7 +202,7 @@ class LocalizationTest : TestWithMockBukkit() {
         private val messageString = "Hello $replacementKey!"
         private val replacedMessageString = messageString.replace(replacementKey, replacementValue)
 
-        private val message = MVCorei18n.CLONE_SUCCESS
+        private val message = MVCorei18n.CLONEWORLD_CLONED
             .bundle(messageString, replace(replacementKey).with(replacementValue))
 
         @Test

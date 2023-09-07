@@ -8,7 +8,7 @@ import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class CloneWorldResult {
     public enum Success implements SuccessReason {
-        CLONED(MVCorei18n.GENERIC_SUCCESS)
+        CLONED(MVCorei18n.CLONEWORLD_CLONED)
         ;
 
         private final MessageKeyProvider message;
@@ -24,10 +24,11 @@ public class CloneWorldResult {
     }
 
     public enum Failure implements FailureReason {
-        INVALID_WORLDNAME(MVCorei18n.CREATEWORLD_INVALIDWORLDNAME),
-        WORLD_EXIST_FOLDER(MVCorei18n.CREATEWORLD_WORLDEXISTFOLDER),
-        WORLD_EXIST_OFFLINE(MVCorei18n.CREATEWORLD_WORLDEXISTOFFLINE),
-        WORLD_EXIST_LOADED(MVCorei18n.CREATEWORLD_WORLDEXISTLOADED),
+        INVALID_WORLDNAME(MVCorei18n.CLONEWORLD_INVALIDWORLDNAME),
+        WORLD_EXIST_FOLDER(MVCorei18n.CLONEWORLD_WORLDEXISTFOLDER),
+        WORLD_EXIST_OFFLINE(MVCorei18n.CLONEWORLD_WORLDEXISTOFFLINE),
+        WORLD_EXIST_LOADED(MVCorei18n.CLONEWORLD_WORLDEXISTLOADED),
+        COPY_FAILED(MVCorei18n.CLONEWORLD_COPYFAILED),
         IMPORT_FAILED(null),
         ;
 

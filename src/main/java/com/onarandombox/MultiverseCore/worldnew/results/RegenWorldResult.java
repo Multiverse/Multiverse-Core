@@ -8,7 +8,7 @@ import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 public class RegenWorldResult {
     public enum Success implements SuccessReason {
-        REGENERATED(MVCorei18n.GENERIC_SUCCESS)
+        REGENERATED(MVCorei18n.REGENWORLD_REGENERATED)
         ;
 
         private final MessageKeyProvider message;

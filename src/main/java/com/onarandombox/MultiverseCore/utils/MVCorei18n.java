@@ -16,8 +16,6 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // clone command
     CLONE_CLONING,
-    CLONE_FAILED,
-    CLONE_SUCCESS,
 
     // Coordinates command
     COORDINATES_INFO_TITLE,
@@ -58,8 +56,6 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // regen command
     REGEN_REGENERATING,
-    REGEN_FAILED,
-    REGEN_SUCCESS,
     REGEN_PROMPT,
 
     // reload command
@@ -92,6 +88,13 @@ public enum MVCorei18n implements MessageKeyProvider {
     ENTRYCHECK_NOWORLDACCESS,
 
     // world manager result
+    CLONEWORLD_CLONED,
+    CLONEWORLD_INVALIDWORLDNAME,
+    CLONEWORLD_WORLDEXISTFOLDER,
+    CLONEWORLD_WORLDEXISTOFFLINE,
+    CLONEWORLD_WORLDEXISTLOADED,
+    CLONEWORLD_COPYFAILED,
+
     CREATEWORLD_CREATED,
     CREATEWORLD_INVALIDWORLDNAME,
     CREATEWORLD_WORLDEXISTFOLDER,
@@ -118,6 +121,8 @@ public enum MVCorei18n implements MessageKeyProvider {
     LOADWORLD_WORLDEXISTFOLDER,
     LOADWORLD_WORLDEXISTLOADED,
     LOADWORLD_BUKKITCREATIONFAILED,
+
+    REGENWORLD_REGENERATED,
 
     REMOVEWORLD_REMOVED,
     REMOVEWORLD_WORLDNONEXISTENT,

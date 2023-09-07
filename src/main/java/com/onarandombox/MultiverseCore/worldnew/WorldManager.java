@@ -506,7 +506,10 @@ public class WorldManager {
 
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
         File newWorldFolder = new File(Bukkit.getWorldContainer(), newWorldName);
-        FileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES);
+        if (!FileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES)) {
+            // TODO: Use Try<Void>
+            return Result.failure(CloneWorldResult.Failure.COPY_FAILED, replace("{world}").with(world.getName()));
+        }
 
         var importResult = importWorld(ImportWorldOptions.worldName(newWorldName)
                 .environment(world.getEnvironment())
@@ -519,7 +522,9 @@ public class WorldManager {
             dataTransfer.pasteAllTo(newWorld);
             saveWorldsConfig();
         });
-        return Result.success(CloneWorldResult.Success.CLONED, replace("{world}").with(world.getName()));
+        return Result.success(CloneWorldResult.Success.CLONED,
+                replace("{world}").with(world.getName()),
+                replace("{newworld}").with(newWorldName));
     }
 
     /**
