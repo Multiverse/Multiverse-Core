@@ -20,7 +20,7 @@ public final class NullLocation extends SpawnLocation {
     @Override
     public Location clone() {
         throw new UnsupportedOperationException();
-    };
+    }
 
     @Override
     public Map<String, Object> serialize() {
@@ -44,10 +44,10 @@ public final class NullLocation extends SpawnLocation {
     @Override
     public int hashCode() {
         return -1;
-    };
+    }
 
     @Override
     public String toString() {
         return "Location{null}";
-    };
+    }
 }
