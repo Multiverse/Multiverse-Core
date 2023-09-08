@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class WorldsConfigManager {
+public final class WorldsConfigManager {
     private static final String CONFIG_FILENAME = "worlds2.yml";
 
     private final Map<String, WorldConfig> worldConfigMap;
