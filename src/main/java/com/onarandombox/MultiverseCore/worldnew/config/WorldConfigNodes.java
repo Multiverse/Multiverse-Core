@@ -49,7 +49,7 @@ public class WorldConfigNodes {
             .defaultValue(true)
             .name("allow-weather")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> {
                     if (!world.isClearWeather() && !newValue) {
                         world.setThundering(false);
@@ -78,7 +78,7 @@ public class WorldConfigNodes {
             .defaultValue(Difficulty.NORMAL)
             .name("difficulty")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setDifficulty(newValue));
             })
             .build());
@@ -93,7 +93,8 @@ public class WorldConfigNodes {
             .name("entryfee-currency")
             .build());
 
-    public final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode.builder("environment", World.Environment.class)
+    public final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode
+            .builder("environment", World.Environment.class)
             .defaultValue(World.Environment.NORMAL)
             .name("environment")
             .build());
@@ -118,11 +119,12 @@ public class WorldConfigNodes {
             .name("hunger")
             .build());
 
-    public final ConfigNode<Boolean> KEEP_SPAWN_IN_MEMORY = node(ConfigNode.builder("keep-spawn-in-memory", Boolean.class)
+    public final ConfigNode<Boolean> KEEP_SPAWN_IN_MEMORY = node(ConfigNode
+            .builder("keep-spawn-in-memory", Boolean.class)
             .defaultValue(true)
             .name("keep-spawn-in-memory")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setKeepSpawnInMemory(newValue));
             })
             .build());
@@ -132,7 +134,8 @@ public class WorldConfigNodes {
             .name("player-limit")
             .build());
 
-    public final ConfigNode<AllowedPortalType> PORTAL_FORM = node(ConfigNode.builder("portal-form", AllowedPortalType.class)
+    public final ConfigNode<AllowedPortalType> PORTAL_FORM = node(ConfigNode
+            .builder("portal-form", AllowedPortalType.class)
             .defaultValue(AllowedPortalType.ALL)
             .name("portal-form")
             .build());
@@ -141,7 +144,7 @@ public class WorldConfigNodes {
             .defaultValue(true)
             .name("pvp")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setPVP(newValue));
             })
             .build());
@@ -165,7 +168,7 @@ public class WorldConfigNodes {
             .defaultValue(new NullLocation())
             .name("spawn-location")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> {
                     world.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
                     newValue.setWorld(world);
@@ -177,44 +180,49 @@ public class WorldConfigNodes {
             .defaultValue(true)
             .name("spawning-animals")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setSpawnFlags(world.getAllowMonsters(), newValue));
             })
             .build());
 
-    public final ConfigNode<Integer> SPAWNING_ANIMALS_TICKS = node(ConfigNode.builder("spawning.animals.tick-rate", Integer.class)
+    public final ConfigNode<Integer> SPAWNING_ANIMALS_TICKS = node(ConfigNode
+            .builder("spawning.animals.tick-rate", Integer.class)
             .defaultValue(-1)
             .name("spawning-animals-ticks")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setTicksPerAnimalSpawns(newValue));
             })
             .build());
 
-    public final ConfigNode<List> SPAWNING_ANIMALS_EXCEPTIONS = node(ConfigNode.builder("spawning.animals.exceptions", List.class)
+    public final ConfigNode<List> SPAWNING_ANIMALS_EXCEPTIONS = node(ConfigNode
+            .builder("spawning.animals.exceptions", List.class)
             .defaultValue(new ArrayList<>())
             .name("spawning-animals-exceptions")
             .build());
 
-    public final ConfigNode<Boolean> SPAWNING_MONSTERS = node(ConfigNode.builder("spawning.monsters.spawn", Boolean.class)
+    public final ConfigNode<Boolean> SPAWNING_MONSTERS = node(ConfigNode
+            .builder("spawning.monsters.spawn", Boolean.class)
             .defaultValue(true)
             .name("spawning-monsters")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setSpawnFlags(newValue, world.getAllowAnimals()));
             })
             .build());
 
-    public final ConfigNode<Integer> SPAWNING_MONSTERS_TICKS = node(ConfigNode.builder("spawning.monsters.tick-rate", Integer.class)
+    public final ConfigNode<Integer> SPAWNING_MONSTERS_TICKS = node(ConfigNode
+            .builder("spawning.monsters.tick-rate", Integer.class)
             .defaultValue(-1)
             .name("spawning-monsters-ticks")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) { return; }
+                if (world == null) return;
                 world.getBukkitWorld().peek(world -> world.setTicksPerMonsterSpawns(newValue));
             })
             .build());
 
-    public final ConfigNode<List> SPAWNING_MONSTERS_EXCEPTIONS = node(ConfigNode.builder("spawning.monsters.exceptions", List.class)
+    public final ConfigNode<List> SPAWNING_MONSTERS_EXCEPTIONS = node(ConfigNode
+            .builder("spawning.monsters.exceptions", List.class)
             .defaultValue(new ArrayList<>())
             .name("spawning-monsters-exceptions")
             .build());
