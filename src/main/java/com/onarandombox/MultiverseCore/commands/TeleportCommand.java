@@ -33,6 +33,7 @@ public class TeleportCommand extends MultiverseCommand {
         this.destinationsProvider = destinationsProvider;
     }
 
+    @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
     @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
