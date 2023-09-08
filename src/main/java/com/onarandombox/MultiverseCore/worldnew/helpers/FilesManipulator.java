@@ -85,6 +85,7 @@ public class FilesManipulator {
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
             // Pass files that are set to ignore
             if (excludeFiles.contains(file.getFileName().toString())) {
+                Logging.finest("Ignoring file: " + file.getFileName());
                 return FileVisitResult.CONTINUE;
             }
             // Copy the files

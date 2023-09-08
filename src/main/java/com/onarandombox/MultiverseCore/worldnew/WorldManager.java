@@ -53,7 +53,7 @@ import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldCo
  */
 @Service
 public class WorldManager {
-    private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.dat");
+    private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
 
     private final Map<String, OfflineWorld> offlineWorldsMap;
     private final Map<String, MVWorld> worldsMap;
