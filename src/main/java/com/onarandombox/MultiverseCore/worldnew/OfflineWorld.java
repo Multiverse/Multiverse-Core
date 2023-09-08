@@ -300,10 +300,10 @@ public class OfflineWorld {
 
     @Override
     public String toString() {
-        return "OfflineWorld{" +
-                "name='" + worldName + "', " +
-                "env='" + getEnvironment() + "', " +
-                "gen='" + getGenerator() + "'" +
-                '}';
+        return "OfflineWorld{"
+                + "name='" + worldName + "', "
+                + "env='" + getEnvironment() + "', "
+                + "gen='" + getGenerator() + "'"
+                + '}';
     }
 }
