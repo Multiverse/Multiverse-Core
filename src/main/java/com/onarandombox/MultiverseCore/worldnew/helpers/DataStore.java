@@ -2,7 +2,6 @@ package com.onarandombox.MultiverseCore.worldnew.helpers;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
-import com.onarandombox.MultiverseCore.worldnew.OfflineWorld;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
