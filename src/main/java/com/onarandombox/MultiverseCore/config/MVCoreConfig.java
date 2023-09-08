@@ -89,7 +89,7 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public boolean load() {
+    public Try<Void> load() {
         migrateFromOldConfigFile();
         return configHandle.load();
     }
@@ -100,9 +100,8 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public boolean save() {
-        configHandle.save();
-        return true;
+    public Try<Void> save() {
+        return configHandle.save();
     }
 
     @Override

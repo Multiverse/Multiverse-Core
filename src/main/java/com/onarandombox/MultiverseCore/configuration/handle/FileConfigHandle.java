@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import io.vavr.control.Try;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,49 +32,43 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
      * {@inheritDoc}
      */
     @Override
-    public boolean load() {
-        boolean newFileCreated;
-        try {
-            newFileCreated = createConfigFile();
-        } catch (IOException e) {
-            Logging.severe("Failed to create config file: %s", configFile.getName());
-            Logging.severe(e.getMessage());
-            return false;
-        }
-        if (!loadConfigObject()) {
-            Logging.severe("Failed to load config file: %s", configFile.getName());
-            return false;
-        }
-        if (!newFileCreated) {
-            migrateConfig();
-        }
-        setUpNodes();
-        return true;
+    public Try<Void> load() {
+        boolean isNewFile = !configFile.exists();
+        return createConfigFile()
+                .andThenTry(this::loadConfigObject)
+                .andThenTry(() -> {
+                    if (!isNewFile) {
+                        migrateConfig();
+                    }
+                    setUpNodes();
+                });
     }
 
     /**
-     * Create a new config file if file does not exist
+     * Create a new config file if file does not exist.
      *
-     * @return True if file exist or created successfully, otherwise false.
+     * @return Whether the file was created or its given error.
      */
-    protected boolean createConfigFile() throws IOException {
-        if (configFile.exists()) {
-            return false;
-        }
-        return configFile.createNewFile();
+    protected Try<Void> createConfigFile() {
+        return Try.run(() -> {
+            if (configFile.exists()) {
+                return;
+            }
+            if (!configFile.createNewFile()) {
+                throw new IOException("Failed to create config file: " + configFile.getName());
+            }
+        });
     }
 
     /**
      * Loads the configuration object.
-     *
-     * @return True if the configuration was loaded successfully, false otherwise.
      */
-    protected abstract boolean loadConfigObject();
+    protected abstract void loadConfigObject() throws IOException, InvalidConfigurationException;
 
     /**
      * Saves the configuration.
      */
-    public abstract boolean save();
+    public abstract Try<Void> save();
 
     /**
      * Checks if the configuration is loaded.

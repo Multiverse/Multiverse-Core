@@ -95,7 +95,9 @@ public class WorldManager {
      * Loads all worlds from the worlds config.
      */
     public void initAllWorlds() {
-        populateWorldFromConfig();
+        if (!populateWorldFromConfig()) {
+            return;
+        }
         loadDefaultWorlds();
         autoLoadOfflineWorlds();
         saveWorldsConfig();
@@ -104,8 +106,13 @@ public class WorldManager {
     /**
      * Generate offline worlds from the worlds config.
      */
-    private void populateWorldFromConfig() {
-        worldsConfigManager.load();
+    private boolean populateWorldFromConfig() {
+        Try<Void> load = worldsConfigManager.load();
+        if (load.isFailure()) {
+            Logging.severe("Failed to load worlds config: " + load.getCause().getMessage());
+            load.getCause().printStackTrace();
+            return false;
+        }
         worldsConfigManager.getAllWorldConfigs().forEach(worldConfig -> {
             getMVWorld(worldConfig.getWorldName())
                     .peek(mvWorld -> mvWorld.setWorldConfig(worldConfig));
@@ -116,6 +123,7 @@ public class WorldManager {
                         offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
                     });
         });
+        return true;
     }
 
     /**
@@ -785,6 +793,11 @@ public class WorldManager {
      * @return true if it had successfully saved the file.
      */
     public boolean saveWorldsConfig() {
-        return worldsConfigManager.save();
+        return worldsConfigManager.save()
+                .onFailure(failure -> {
+                    Logging.severe("Failed to save worlds config: %s", failure);
+                    failure.printStackTrace();
+                })
+                .isSuccess();
     }
 }

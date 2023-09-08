@@ -35,7 +35,7 @@ public class WorldConfig {
         load();
     }
 
-    public boolean load() {
+    public Try<Void> load() {
         return configHandle.load();
     }
 

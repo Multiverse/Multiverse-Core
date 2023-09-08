@@ -12,7 +12,7 @@ public interface MVConfig {
      * Loads the config from disk.
      * @return True if the config was loaded successfully.
      */
-    boolean load();
+    Try<Void> load();
 
     /**
      * Whether the config has been loaded.
@@ -23,7 +23,7 @@ public interface MVConfig {
     /**
      * Saves the config to disk.
      */
-    boolean save();
+    Try<Void> save();
 
     /**
      * Gets the nodes for the config.

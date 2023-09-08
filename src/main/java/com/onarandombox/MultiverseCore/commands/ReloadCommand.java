@@ -50,7 +50,8 @@ public class ReloadCommand extends MultiverseCommand {
     public void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
         try {
-            this.config.load();
+            // TODO: Make this all Try<Void>
+            this.config.load().getOrElseThrow(e -> new RuntimeException("Failed to load config", e));
             this.worldManager.initAllWorlds();
             this.anchorManager.loadAnchors();
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,32 +23,36 @@ public class WorldsConfigManager {
     private YamlConfiguration worldsConfig;
 
     @Inject
-    public WorldsConfigManager(@NotNull MultiverseCore core) {
+    WorldsConfigManager(@NotNull MultiverseCore core) {
         worldConfigMap = new HashMap<>();
         worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
-        load();
     }
 
-    public void load() {
-        worldsConfig = YamlConfiguration.loadConfiguration(worldConfigFile);
+    public Try<Void> load() {
         worldConfigMap.clear();
-        for (String worldName : getAllWorldsInConfig()) {
-            worldConfigMap.put(worldName, new WorldConfig(worldName, getWorldConfigSection(worldName)));
-        }
+
+        return Try.run(() -> {
+            if (!worldConfigFile.exists()) {
+                worldConfigFile.createNewFile();
+            }
+            worldsConfig = new YamlConfiguration();
+            worldsConfig.load(worldConfigFile);
+        }).andThenTry(() -> {
+            for (String worldName : getAllWorldsInConfig()) {
+                worldConfigMap.put(worldName, new WorldConfig(worldName, getWorldConfigSection(worldName)));
+            }
+        }).onFailure(e -> {
+            worldsConfig = null;
+            worldConfigMap.clear();
+        });
     }
 
     public boolean isLoaded() {
         return worldsConfig != null;
     }
 
-    public boolean save() {
-        try {
-            worldsConfig.save(worldConfigFile);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public Try<Void> save() {
+        return Try.run(() -> worldsConfig.save(worldConfigFile));
     }
 
     public Set<String> getAllWorldsInConfig() {

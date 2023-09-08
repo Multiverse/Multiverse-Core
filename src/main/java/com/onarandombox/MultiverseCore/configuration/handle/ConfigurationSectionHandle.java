@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.configuration.handle;
 
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
+import io.vavr.control.Try;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,12 +17,23 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
         return new Builder<>(configurationSection);
     }
 
-    public ConfigurationSectionHandle(@NotNull ConfigurationSection configurationSection,
+    protected ConfigurationSectionHandle(@NotNull ConfigurationSection configurationSection,
                                       @Nullable Logger logger,
                                       @Nullable NodeGroup nodes,
                                       @Nullable ConfigMigrator migrator) {
         super(logger, nodes, migrator);
         this.config = configurationSection;
+    }
+
+    /**
+     * Loads the configuration with a new configuration section.
+     *
+     * @param section  The configuration section.
+     * @return Whether the configuration was loaded or its given error.
+     */
+    public Try<Void> load(@NotNull ConfigurationSection section) {
+        this.config = section;
+        return load();
     }
 
     /**
