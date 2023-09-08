@@ -2,7 +2,6 @@ package com.onarandombox.MultiverseCore.worldnew.config;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.handle.ConfigurationSectionHandle;
-import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.worldnew.MVWorld;
 import io.vavr.control.Try;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-public class WorldConfig {
+public final class WorldConfig {
 
     private final String worldName;
     private final WorldConfigNodes configNodes;
