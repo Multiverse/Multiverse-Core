@@ -60,7 +60,7 @@ public class WorldPurger {
     }
 
     public void purgeWorld(MVWorld mvworld, List<String> thingsToKill,
-                           boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
+            boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
         if (mvworld == null) {
             return;
         }
@@ -77,8 +77,7 @@ public class WorldPurger {
         List<LivingEntity> livingEntities = new ArrayList<LivingEntity>(worldEntities.size());
         List<Projectile> projectiles = new ArrayList<Projectile>(worldEntities.size());
         for (final Entity e : worldEntities) {
-            if (e instanceof Projectile) {
-                final Projectile p = (Projectile) e;
+            if (e instanceof Projectile p) {
                 if (p.getShooter() != null) {
                     projectiles.add((Projectile) e);
                 }
@@ -107,7 +106,7 @@ public class WorldPurger {
     }
 
     private boolean killDecision(Entity e, List<String> thingsToKill, boolean negateAnimals,
-                                 boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
+            boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
         boolean negate = false;
         boolean specified = false;
         if (e instanceof Golem || e instanceof Squid || e instanceof Animals
@@ -149,7 +148,8 @@ public class WorldPurger {
         return false;
     }
 
-    public boolean shouldWeKillThisCreature(Entity e, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
+    public boolean shouldWeKillThisCreature(Entity e, List<String> thingsToKill,
+            boolean negateAnimals, boolean negateMonsters) {
         boolean specifiedAll = thingsToKill.contains("ALL");
         boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
         boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
