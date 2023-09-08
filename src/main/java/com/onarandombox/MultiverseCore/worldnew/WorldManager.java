@@ -187,7 +187,7 @@ public class WorldManager {
                         replace("{error}").with(exception.getMessage())
                 ),
                 (world) -> {
-                    newMVWorld(world, parsedGenerator);
+                    newMVWorld(world, parsedGenerator, options.useSpawnAdjust());
                     return Result.success(CreateWorldResult.Success.CREATED, replace("{world}").with(world.getName()));
                 }
         );
@@ -224,7 +224,7 @@ public class WorldManager {
                         replace("{error}").with(exception.getMessage())
                 ),
                 (world) -> {
-                    newMVWorld(world, parsedGenerator);
+                    newMVWorld(world, parsedGenerator, options.useSpawnAdjust());
                     return Result.success(ImportWorldResult.Success.IMPORTED, replace("{world}").with(options.worldName()));
                 }
         );
@@ -236,15 +236,16 @@ public class WorldManager {
                 : generator;
     }
 
-    private void newMVWorld(@NotNull World world, @Nullable String generator) {
+    private void newMVWorld(@NotNull World world, @Nullable String generator, boolean adjustSpawn) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
+        worldConfig.setAdjustSpawn(adjustSpawn);
+        worldConfig.setGenerator(generator == null ? "" : generator);
 
         OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
         offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
 
         MVWorld mvWorld = new MVWorld(world, worldConfig, blockSafety, safeTTeleporter, locationManipulation);
         worldsMap.put(mvWorld.getName(), mvWorld);
-        mvWorld.getWorldConfig().setGenerator(generator == null ? "" : generator);
         saveWorldsConfig();
     }
 
