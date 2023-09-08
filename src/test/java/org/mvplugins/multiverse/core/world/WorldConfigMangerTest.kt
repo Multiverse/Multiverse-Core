@@ -48,6 +48,8 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
     @Test
     fun `Updating existing world properties`() {
         val worldConfig = worldConfigManager.getWorldConfig("world")
+        assertNotNull(worldConfig)
+
         worldConfig.setProperty("adjust-spawn", true)
         worldConfig.setProperty("alias", "newalias")
         worldConfig.setProperty("spawn-location", SpawnLocation(-64.0, 64.0, 48.0))

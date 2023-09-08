@@ -30,6 +30,7 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -115,7 +116,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         Logging.setShowingConfig(shouldShowConfig());
 
         // Initialize the worlds
-        worldManagerProvider.get().initAllWorlds();
+        worldManagerProvider.get().initAllWorlds().onFailure(e -> {
+            Logging.severe("Failed to initialize worlds");
+            e.printStackTrace();
+        });
 
         // Setup economy here so vault is loaded
         loadEconomist();

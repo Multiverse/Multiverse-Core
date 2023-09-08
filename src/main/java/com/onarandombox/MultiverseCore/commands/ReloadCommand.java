@@ -52,7 +52,7 @@ public class ReloadCommand extends MultiverseCommand {
         try {
             // TODO: Make this all Try<Void>
             this.config.load().getOrElseThrow(e -> new RuntimeException("Failed to load config", e));
-            this.worldManager.initAllWorlds();
+            this.worldManager.initAllWorlds().getOrElseThrow(e -> new RuntimeException("Failed to init worlds", e));
             this.anchorManager.loadAnchors();
         } catch (Exception e) {
             e.printStackTrace();

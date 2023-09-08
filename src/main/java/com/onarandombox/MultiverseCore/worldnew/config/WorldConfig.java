@@ -38,6 +38,10 @@ public final class WorldConfig {
         return configHandle.load();
     }
 
+    public Try<Void> load(ConfigurationSection section) {
+        return configHandle.load(section);
+    }
+
     public String getWorldName() {
         return worldName;
     }

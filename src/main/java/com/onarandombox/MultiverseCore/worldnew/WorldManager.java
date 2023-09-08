@@ -93,37 +93,40 @@ public class WorldManager {
 
     /**
      * Loads all worlds from the worlds config.
+     *
+     * @return The result of the load.
      */
-    public void initAllWorlds() {
-        if (!populateWorldFromConfig()) {
-            return;
-        }
-        loadDefaultWorlds();
-        autoLoadWorlds();
-        saveWorldsConfig();
+    public Try<Void> initAllWorlds() {
+        return populateWorldFromConfig().andThenTry(() -> {
+            loadDefaultWorlds();
+            autoLoadWorlds();
+            saveWorldsConfig();
+        });
     }
 
     /**
-     * Generate worlds from the worlds config.
+     * Populate world map from the worlds.yml config.
+     *
+     * @return The result of the world map population.
      */
-    private boolean populateWorldFromConfig() {
-        Try<Void> load = worldsConfigManager.load();
-        if (load.isFailure()) {
-            Logging.severe("Failed to load worlds config: " + load.getCause().getMessage());
-            load.getCause().printStackTrace();
-            return false;
-        }
-        worldsConfigManager.getAllWorldConfigs().forEach(worldConfig -> {
-            getLoadedWorld(worldConfig.getWorldName())
-                    .peek(loadedWorld -> loadedWorld.setWorldConfig(worldConfig));
-            getWorld(worldConfig.getWorldName())
+    private Try<Void> populateWorldFromConfig() {
+        return worldsConfigManager.load().mapTry(result -> {
+            var newWorldConfigs = result._1();
+            var removedWorlds = result._2();
+
+            newWorldConfigs.forEach(worldConfig -> getWorld(worldConfig.getWorldName())
                     .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
                     .onEmpty(() -> {
                         MultiverseWorld mvWorld = new MultiverseWorld(worldConfig.getWorldName(), worldConfig);
                         worldsMap.put(mvWorld.getName(), mvWorld);
-                    });
+                    }));
+
+            removedWorlds.forEach(worldName -> removeWorld(worldName)
+                    .onFailure(failure -> Logging.severe("Failed to unload world %s: %s", worldName, failure))
+                    .onSuccess(success -> Logging.fine("Unloaded world %s as it was removed from config", worldName)));
+
+            return null;
         });
-        return true;
     }
 
     /**
@@ -361,7 +364,7 @@ public class WorldManager {
                                     replace("{world}").with(world.getName()));
                         },
                         mvWorld -> {
-                            Logging.fine("Removed MVWorld from map: " + world.getName());
+                            Logging.fine("Removed MultiverseWorld from map: " + world.getName());
                             mvWorld.getWorldConfig().deferenceMVWorld();
                             return Result.success(UnloadWorldResult.Success.UNLOADED,
                                     replace("{world}").with(world.getName()));
