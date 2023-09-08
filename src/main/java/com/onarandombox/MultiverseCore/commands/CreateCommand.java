@@ -120,12 +120,17 @@ public class CreateCommand extends MultiverseCommand {
                 return;
             }
         }
-        Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
-        if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
-            Command.broadcastCommandMessage(sender, "Complete!");
-        } else {
-            Command.broadcastCommandMessage(sender, "FAILED.");
-        }
+        boolean finalAllowStructures = allowStructures;
+        boolean finalUseSpawnAdjust = useSpawnAdjust;
+        this.worldManager.addOrRemoveWorldSafely(worldName, "create", () -> {
+            Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
+
+            if (this.worldManager.addWorld(worldName, environment, seed, type, finalAllowStructures, generator, finalUseSpawnAdjust)) {
+                Command.broadcastCommandMessage(sender, "Complete!");
+            } else {
+                Command.broadcastCommandMessage(sender, "FAILED.");
+            }
+        });
     }
 }
