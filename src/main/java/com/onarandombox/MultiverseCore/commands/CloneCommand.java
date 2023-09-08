@@ -68,7 +68,7 @@ public class CloneCommand extends MultiverseCommand {
     ) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newWorld}", newWorldName);
+        issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newworld}", newWorldName);
         worldManager.cloneWorld(CloneWorldOptions.fromTo(world, newWorldName)
                 .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
                 .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
