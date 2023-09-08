@@ -31,8 +31,7 @@ public class MVWorld extends OfflineWorld {
             @NotNull WorldConfig worldConfig,
             @NotNull BlockSafety blockSafety,
             @NotNull SafeTTeleporter safeTTeleporter,
-            @NotNull LocationManipulation locationManipulation
-    ) {
+            @NotNull LocationManipulation locationManipulation) {
         super(world.getName(), worldConfig);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
@@ -118,11 +117,11 @@ public class MVWorld extends OfflineWorld {
 
     @Override
     public String toString() {
-        return "MVWorld{" +
-                "name='" + worldName + "', " +
-                "env='" + getEnvironment() + "', " +
-                "type='" + getWorldType().getOrNull() + "', " +
-                "gen='" + getGenerator() + "'" +
-                '}';
+        return "MVWorld{"
+                + "name='" + worldName + "', "
+                + "env='" + getEnvironment() + "', "
+                + "type='" + getWorldType().getOrNull() + "', "
+                + "gen='" + getGenerator() + "'"
+                + '}';
     }
 }
