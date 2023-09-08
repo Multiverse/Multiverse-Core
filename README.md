@@ -35,6 +35,7 @@ Simply build the source with Gradle:
 More details are available on the [build instructions wiki page](https://github.com/Multiverse/Multiverse-Core/wiki/Building).
 
 
+
 ## Contributing
 
 **Want to help improve Multiverse?** There are several ways you can support and contribute to the project.
