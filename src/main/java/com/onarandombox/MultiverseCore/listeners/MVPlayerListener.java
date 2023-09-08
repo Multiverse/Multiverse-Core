@@ -349,36 +349,42 @@ public class MVPlayerListener implements Listener {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!MVPlayerListener.this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
-                            // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
-                            if (player.getWorld() == world.getCBWorld()) {
-                                Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
-                                Logging.finest("From World: %s", player.getWorld());
-                                Logging.finest("To World: %s", world);
-                                player.setGameMode(world.getGameMode());
-                                // Check if their flight mode should change
-                                // TODO need a override permission for this
-                                if (player.getAllowFlight() && !world.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
-                                    player.setAllowFlight(false);
-                                    if (player.isFlying()) {
-                                        player.setFlying(false);
-                                    }
-                                } else if (world.getAllowFlight()) {
-                                    if (player.getGameMode() == GameMode.CREATIVE) {
-                                        player.setAllowFlight(true);
-                                    }
-                                }
-                            } else {
-                                Logging.fine("The gamemode/allowfly was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'",
-                                        player.getName(), player.getWorld().getName(), world.getName());
-                            }
-                        } else {
-                            Logging.fine("Player: " + player.getName() + " is IMMUNE to gamemode changes!");
-                        }
+            new Runnable() {
+                @Override
+                public void run() {
+                    if (player.getWorld() != world.getCBWorld()) {
+                        Logging.fine("The gamemode was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'",
+                                player.getName(), player.getWorld().getName(), world.getName());
+                        return;
                     }
-                }, 1L);
+
+                    boolean isAllowFlight = player.getAllowFlight();
+                    boolean isFlying = player.isFlying();
+
+                    if (!MVPlayerListener.this.pt.playerCanIgnoreGameModeRestriction(world, player)) {
+                        // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
+                        Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
+                        Logging.finest("From World: %s", player.getWorld());
+                        Logging.finest("To World: %s", world);
+                        player.setGameMode(world.getGameMode());
+                    } else {
+                        Logging.fine("Player: " + player.getName() + " is IMMUNE to gamemode changes!");
+                    }
+
+                    if (!MVPlayerListener.this.pt.playerCanIgnoreFlyRestriction(world, player)) {
+                        if (player.getGameMode() == GameMode.CREATIVE && world.getAllowFlight()) {
+                            player.setAllowFlight(true);
+                        } else if (isAllowFlight && player.getGameMode() != GameMode.SPECTATOR) {
+                            player.setAllowFlight(false);
+                            player.setFlying(false);
+                        }
+                    } else {
+                        // Set back to previous state before gamemode change
+                        player.setAllowFlight(isAllowFlight);
+                        player.setFlying(isFlying);
+                        Logging.fine("Player: " + player.getName() + " is IMMUNE to fly changes!");
+                    }
+                }
+            }, 1L);
     }
 }
