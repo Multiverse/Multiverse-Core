@@ -300,7 +300,7 @@ public class MultiverseWorld {
 
     @Override
     public String toString() {
-        return "OfflineWorld{"
+        return "MultiverseWorld{"
                 + "name='" + worldName + "', "
                 + "env='" + getEnvironment() + "', "
                 + "gen='" + getGenerator() + "'"

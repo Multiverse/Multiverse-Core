@@ -117,7 +117,7 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
 
     @Override
     public String toString() {
-        return "MVWorld{"
+        return "LoadedMultiverseWorld{"
                 + "name='" + worldName + "', "
                 + "env='" + getEnvironment() + "', "
                 + "type='" + getWorldType().getOrNull() + "', "

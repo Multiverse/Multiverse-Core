@@ -34,6 +34,7 @@ public class MVWorldListener implements InjectableListener {
 
     /**
      * This method is called when Bukkit fires off a WorldUnloadEvent.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler(priority = EventPriority.MONITOR)
@@ -50,14 +51,15 @@ public class MVWorldListener implements InjectableListener {
 
     /**
      * This method is called when Bukkit fires off a WorldLoadEvent.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void loadWorld(WorldLoadEvent event) {
         worldManager.getUnloadedWorld(event.getWorld().getName())
-                .peek(offlineWorld -> {
-                    Logging.fine("Loading world: " + offlineWorld.getName());
-                    worldManager.loadWorld(offlineWorld).onFailure(failure -> {
+                .peek(world -> {
+                    Logging.fine("Loading world: " + world.getName());
+                    worldManager.loadWorld(world).onFailure(failure -> {
                         if (failure.getFailureReason() != LoadWorldResult.Failure.WORLD_ALREADY_LOADING) {
                             Logging.severe("Failed to load world: " + failure);
                         }
