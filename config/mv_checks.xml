@@ -550,7 +550,7 @@
             <property name="id" value="SeparatorWrapEol"/>
             <property name="option" value="eol"/>
             <property name="tokens"
-                      value="COMMA, SEMI, ELLIPSIS, LPAREN, RPAREN, ARRAY_DECLARATOR, RBRACK"/>
+                      value="COMMA, SEMI, ELLIPSIS, RPAREN, ARRAY_DECLARATOR, RBRACK"/>
         </module>
         <module name="SingleSpaceSeparator"/>
         <module name="TypecastParenPad"/>
