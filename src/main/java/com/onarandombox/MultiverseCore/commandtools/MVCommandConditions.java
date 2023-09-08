@@ -40,14 +40,14 @@ public class MVCommandConditions {
         switch (scope) {
             // Worlds that are loaded
             case "loaded":
-                if (!this.worldManager.isMVWorld(worldName)) {
+                if (!this.worldManager.isLoadedWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist or is not loaded!");
                 }
                 break;
             // Worlds that are unloaded
             case "unloaded":
-                if (!this.worldManager.isOfflineOnlyWorld(worldName)) {
-                    if (this.worldManager.isMVWorld(worldName)) {
+                if (!this.worldManager.isUnloadedWorld(worldName)) {
+                    if (this.worldManager.isLoadedWorld(worldName)) {
                         throw new ConditionFailedException("World with name '" + worldName + "' is loaded already!");
                     }
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
@@ -55,13 +55,13 @@ public class MVCommandConditions {
                 break;
             // World that are loaded or unloaded
             case "both":
-                if (!this.worldManager.isOfflineWorld(worldName)) {
+                if (!this.worldManager.isWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
                 }
                 break;
             // World that are does not exist
             case "new":
-                if (this.worldManager.isOfflineWorld(worldName)) {
+                if (this.worldManager.isWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' already exists!");
                 }
                 switch (WorldNameChecker.checkName(worldName)) {

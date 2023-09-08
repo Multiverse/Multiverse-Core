@@ -4,7 +4,7 @@ import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class WorldConfigNodes {
     private final NodeGroup nodes = new NodeGroup();
-    MVWorld world = null;
+    LoadedMultiverseWorld world = null;
 
     WorldConfigNodes() {
     }

@@ -52,7 +52,7 @@ public class MVEntityListener implements InjectableListener {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-        worldManager.getMVWorld(player.getWorld())
+        worldManager.getLoadedWorld(player.getWorld())
                 .peek((world) -> {
                     if (!world.getHunger() && event.getFoodLevel() < player.getFoodLevel()) {
                         event.setCancelled(true);
@@ -69,7 +69,7 @@ public class MVEntityListener implements InjectableListener {
         if (event.isCancelled() || event.getRegainReason() != RegainReason.REGEN) {
             return;
         }
-        worldManager.getMVWorld(event.getEntity().getWorld())
+        worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek((world) -> {
                     if (!world.getAutoHeal()) {
                         event.setCancelled(true);
@@ -95,7 +95,7 @@ public class MVEntityListener implements InjectableListener {
             return;
         }
 
-        worldManager.getMVWorld(event.getEntity().getWorld())
+        worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek((world) -> {
                     if (this.worldPurger.shouldWeKillThisCreature(world, event.getEntity())) {
                         Logging.finer("Cancelling Creature Spawn Event for: " + event.getEntity());

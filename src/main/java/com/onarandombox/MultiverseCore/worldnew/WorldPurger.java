@@ -35,16 +35,16 @@ public class WorldPurger {
         } catch (ClassNotFoundException ignore) { }
     }
 
-    public void purgeWorlds(List<MVWorld> worlds) {
+    public void purgeWorlds(List<LoadedMultiverseWorld> worlds) {
         if (worlds == null || worlds.isEmpty()) {
             return;
         }
-        for (MVWorld world : worlds) {
+        for (LoadedMultiverseWorld world : worlds) {
             this.purgeWorld(world);
         }
     }
 
-    public void purgeWorld(MVWorld world) {
+    public void purgeWorld(LoadedMultiverseWorld world) {
         if (world == null) {
             return;
         }
@@ -53,14 +53,14 @@ public class WorldPurger {
         purgeWorld(world, allMobs, !world.getSpawningAnimals(), !world.getSpawningMonsters());
     }
 
-    public boolean shouldWeKillThisCreature(MVWorld world, Entity e) {
+    public boolean shouldWeKillThisCreature(LoadedMultiverseWorld world, Entity e) {
         ArrayList<String> allMobs = new ArrayList<String>(world.getSpawningAnimalsExceptions());
         allMobs.addAll(world.getSpawningMonstersExceptions());
         return this.shouldWeKillThisCreature(e, allMobs, !world.getSpawningAnimals(), !world.getSpawningMonsters());
     }
 
-    public void purgeWorld(MVWorld mvworld, List<String> thingsToKill,
-            boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
+    public void purgeWorld(LoadedMultiverseWorld mvworld, List<String> thingsToKill,
+                           boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
         if (mvworld == null) {
             return;
         }
@@ -156,7 +156,7 @@ public class WorldPurger {
         return this.killDecision(e, thingsToKill, negateAnimals, negateMonsters, specifiedAnimals, specifiedMonsters);
     }
 
-    public void purgeWorld(MVWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
+    public void purgeWorld(LoadedMultiverseWorld mvworld, List<String> thingsToKill, boolean negateAnimals, boolean negateMonsters) {
         purgeWorld(mvworld, thingsToKill, negateAnimals, negateMonsters, null);
     }
 }

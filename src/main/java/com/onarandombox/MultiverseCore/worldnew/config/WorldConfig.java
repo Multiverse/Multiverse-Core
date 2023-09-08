@@ -3,7 +3,7 @@ package com.onarandombox.MultiverseCore.worldnew.config;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.handle.ConfigurationSectionHandle;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import io.vavr.control.Try;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -294,7 +294,7 @@ public final class WorldConfig {
         return configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
     }
 
-    public void setMVWorld(@NotNull MVWorld world) {
+    public void setMVWorld(@NotNull LoadedMultiverseWorld world) {
         configNodes.world = world;
     }
 

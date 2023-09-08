@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.world
 
-import com.onarandombox.MultiverseCore.worldnew.MVWorld
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld
 import com.onarandombox.MultiverseCore.worldnew.WorldManager
 import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions
 import org.bukkit.World
@@ -15,7 +15,7 @@ import kotlin.test.assertNotNull
 class WorldManagerTest : TestWithMockBukkit() {
 
     private lateinit var worldManager: WorldManager
-    private lateinit var world: MVWorld
+    private lateinit var world: LoadedMultiverseWorld
 
     @BeforeTest
     fun setUp() {
@@ -23,7 +23,7 @@ class WorldManagerTest : TestWithMockBukkit() {
             throw IllegalStateException("WorldManager is not available as a service") }
 
         worldManager.createWorld(CreateWorldOptions.worldName("world"))
-        world = worldManager.getMVWorld("world").get()
+        world = worldManager.getLoadedWorld("world").get()
         assertNotNull(world)
     }
 
@@ -37,7 +37,7 @@ class WorldManagerTest : TestWithMockBukkit() {
             .worldType(WorldType.FLAT)
         )
 
-        val world = worldManager.getMVWorld("world_nether").get()
+        val world = worldManager.getLoadedWorld("world_nether").get()
         assertNotNull(world)
         assertEquals("world_nether", world.name)
         assertEquals(World.Environment.NETHER, world.getProperty("environment").get())
@@ -48,6 +48,6 @@ class WorldManagerTest : TestWithMockBukkit() {
     @Test
     fun `Delete world`() {
         worldManager.deleteWorld(world)
-        assertFalse(worldManager.getMVWorld("world").isDefined)
+        assertFalse(worldManager.getLoadedWorld("world").isDefined)
     }
 }

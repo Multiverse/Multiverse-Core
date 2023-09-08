@@ -1,17 +1,17 @@
 package com.onarandombox.MultiverseCore.worldnew.options;
 
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
 public class RegenWorldOptions {
-    public static @NotNull RegenWorldOptions world(@NotNull MVWorld world) {
+    public static @NotNull RegenWorldOptions world(@NotNull LoadedMultiverseWorld world) {
         return new RegenWorldOptions(world);
     }
 
-    private final MVWorld world;
+    private final LoadedMultiverseWorld world;
     private boolean keepGameRule = true;
     private boolean keepWorldConfig = true;
 
@@ -19,11 +19,11 @@ public class RegenWorldOptions {
     private boolean randomSeed = false;
     private long seed = Long.MIN_VALUE;
 
-    RegenWorldOptions(@NotNull MVWorld world) {
+    RegenWorldOptions(@NotNull LoadedMultiverseWorld world) {
         this.world = world;
     }
 
-    public @NotNull MVWorld world() {
+    public @NotNull LoadedMultiverseWorld world() {
         return world;
     }
 

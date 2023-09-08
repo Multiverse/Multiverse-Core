@@ -20,7 +20,7 @@ import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.permissions.CorePermissionsChecker;
 import com.onarandombox.MultiverseCore.teleportation.TeleportQueue;
 import com.onarandombox.MultiverseCore.utils.result.ResultChain;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import com.onarandombox.MultiverseCore.worldnew.entrycheck.EntryFeeResult;
 import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryCheckerProvider;
@@ -116,7 +116,7 @@ public class MVPlayerListener implements InjectableListener {
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
         World world = event.getPlayer().getWorld();
-        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName()).getOrNull();
+        LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(world.getName()).getOrNull();
         // If it's not a World MV manages we stop.
         if (mvWorld == null) {
             return;
@@ -128,9 +128,9 @@ public class MVPlayerListener implements InjectableListener {
         }
 
         // Get the instance of the World the player should respawn at.
-        MVWorld respawnWorld = null;
-        if (getWorldManager().isMVWorld(mvWorld.getRespawnWorld())) {
-            respawnWorld = getWorldManager().getMVWorld(mvWorld.getRespawnWorld()).getOrNull();
+        LoadedMultiverseWorld respawnWorld = null;
+        if (getWorldManager().isLoadedWorld(mvWorld.getRespawnWorld())) {
+            respawnWorld = getWorldManager().getLoadedWorld(mvWorld.getRespawnWorld()).getOrNull();
         }
 
         // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
@@ -147,7 +147,7 @@ public class MVPlayerListener implements InjectableListener {
     }
 
     private Location getMostAccurateRespawnLocation(World w) {
-        MVWorld mvw = getWorldManager().getMVWorld(w.getName()).getOrNull();
+        LoadedMultiverseWorld mvw = getWorldManager().getLoadedWorld(w.getName()).getOrNull();
         if (mvw != null) {
             return mvw.getSpawnLocation();
         }
@@ -161,7 +161,7 @@ public class MVPlayerListener implements InjectableListener {
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        MVWorld world = getWorldManager().getMVWorld(player.getWorld()).getOrNull();
+        LoadedMultiverseWorld world = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
         if (world == null) {
             Logging.finer("Player joined in a world that is not managed by Multiverse.");
             return;
@@ -226,8 +226,8 @@ public class MVPlayerListener implements InjectableListener {
         }
         Logging.finer("Inferred sender '" + teleporter + "' from name '"
                 + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
-        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName()).getOrNull();
-        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName()).getOrNull();
+        LoadedMultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
+        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
                     + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
@@ -304,8 +304,8 @@ public class MVPlayerListener implements InjectableListener {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
 
-        MVWorld fromWorld = getWorldManager().getMVWorld(event.getFrom().getWorld().getName()).getOrNull();
-        MVWorld toWorld = getWorldManager().getMVWorld(event.getTo().getWorld().getName()).getOrNull();
+        LoadedMultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
+        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Portaling to the same world.
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
@@ -335,7 +335,7 @@ public class MVPlayerListener implements InjectableListener {
     // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
     private void handleGameModeAndFlight(Player player, World world) {
 
-        MVWorld mvWorld = getWorldManager().getMVWorld(world.getName()).getOrNull();
+        LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(world.getName()).getOrNull();
         if (mvWorld != null) {
             this.handleGameModeAndFlight(player, mvWorld);
         } else {
@@ -349,7 +349,7 @@ public class MVPlayerListener implements InjectableListener {
      * @param player The {@link Player}.
      * @param world The world the player is in.
      */
-    public void handleGameModeAndFlight(final Player player, final MVWorld world) {
+    public void handleGameModeAndFlight(final Player player, final LoadedMultiverseWorld world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
         this.server.getScheduler().scheduleSyncDelayedTask(this.plugin,

@@ -10,7 +10,7 @@ import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public class CoordinatesCommand extends MultiverseCommand {
                                      Player player,
 
                                      @Flags("resolve=issuerOnly")
-                                         MVWorld world
+                                     LoadedMultiverseWorld world
     ) {
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_TITLE);
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLD, "{world}", world.getName());

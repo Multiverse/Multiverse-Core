@@ -6,7 +6,7 @@ import java.util.Collections;
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.Teleporter;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
@@ -54,7 +54,7 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
             return null;
         }
 
-        World world = this.worldManager.getMVWorld(worldName).map(MVWorld::getBukkitWorld).getOrNull().getOrNull();
+        World world = this.worldManager.getLoadedWorld(worldName).map(LoadedMultiverseWorld::getBukkitWorld).getOrNull().getOrNull();
         if (world == null) {
             return null;
         }

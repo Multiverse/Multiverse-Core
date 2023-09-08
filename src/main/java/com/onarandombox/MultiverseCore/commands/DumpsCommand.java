@@ -184,7 +184,7 @@ public class DumpsCommand extends MultiverseCommand {
         return "# Multiverse-Core Version info" + "\n\n"
                 + " - Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + '\n'
                 + " - Bukkit Version: " + this.plugin.getServer().getVersion() + '\n'
-                + " - Loaded Worlds: " + worldManager.getMVWorlds() + '\n'
+                + " - Loaded Worlds: " + worldManager.getLoadedWorlds() + '\n'
                 + " - Multiverse Plugins Loaded: " + this.plugin.getPluginCount() + '\n';
     }
 

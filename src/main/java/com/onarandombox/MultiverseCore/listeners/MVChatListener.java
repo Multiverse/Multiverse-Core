@@ -51,7 +51,7 @@ public class MVChatListener implements InjectableListener {
             playerListener.getPlayerWorld().put(event.getPlayer().getName(), world);
         }
 
-        String prefix = this.worldManager.getMVWorld(world)
+        String prefix = this.worldManager.getLoadedWorld(world)
                 .map((mvworld) -> mvworld.isHidden() ? "" : mvworld.getAlias())
                 .getOrElse("");
         String chat = event.getFormat();

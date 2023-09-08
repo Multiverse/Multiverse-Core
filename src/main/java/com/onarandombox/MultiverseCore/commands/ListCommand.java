@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -22,12 +21,11 @@ import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ListContentProvider;
 import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryChecker;
 import com.onarandombox.MultiverseCore.worldnew.entrycheck.WorldEntryCheckerProvider;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -100,14 +98,14 @@ public class ListCommand extends MultiverseCommand {
         List<String> worldList =  new ArrayList<>();
         WorldEntryChecker worldEntryChecker = worldEntryCheckerProvider.forSender(issuer.getIssuer());
 
-        worldManager.getMVWorlds().stream()
+        worldManager.getLoadedWorlds().stream()
                 .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
                 .filter(world -> canSeeWorld(issuer, world))
                 .map(world -> hiddenText(world) + world.getAlias() + " - " + parseColouredEnvironment(world.getEnvironment()))
                 .sorted()
                 .forEach(worldList::add);
 
-        worldManager.getOfflineOnlyWorlds().stream()
+        worldManager.getUnloadedWorlds().stream()
                 .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
                 .map(world -> ChatColor.GRAY + world.getAlias() + " - UNLOADED")
                 .sorted()
@@ -116,12 +114,12 @@ public class ListCommand extends MultiverseCommand {
         return worldList;
     }
 
-    private boolean canSeeWorld(MVCommandIssuer issuer, MVWorld world) {
+    private boolean canSeeWorld(MVCommandIssuer issuer, LoadedMultiverseWorld world) {
         return !world.isHidden()
                 || issuer.hasPermission("multiverse.core.modify"); // TODO: Refactor stray permission check
     }
 
-    private String hiddenText(MVWorld world) {
+    private String hiddenText(LoadedMultiverseWorld world) {
         return (world.isHidden()) ? String.format("%s[H] ", ChatColor.GRAY) : "";
     }
 

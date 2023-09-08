@@ -2,7 +2,7 @@ package com.onarandombox.MultiverseCore.utils.metrics;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -45,20 +45,20 @@ public class MetricsConfigurator {
 
     private void addCustomGeneratorsMetric() {
         addAdvancedPieMetric("custom_generators", map -> {
-            for (MVWorld w : worldManager.getMVWorlds()) {
+            for (LoadedMultiverseWorld w : worldManager.getLoadedWorlds()) {
                 MetricsHelper.incrementCount(map, getGeneratorName(w));
             }
         });
     }
 
-    private String getGeneratorName(MVWorld world) {
+    private String getGeneratorName(LoadedMultiverseWorld world) {
         String gen = world.getGenerator();
         return (gen != null && !gen.equalsIgnoreCase("null")) ? gen.split(":")[0] : NO_GENERATOR_NAME;
     }
 
     private void addEnvironmentsMetric() {
         addAdvancedPieMetric("environments", map -> {
-            for (MVWorld w : worldManager.getMVWorlds()) {
+            for (LoadedMultiverseWorld w : worldManager.getLoadedWorlds()) {
                 MetricsHelper.incrementCount(map, titleCaseEnv(w.getEnvironment()));
             }
         });
@@ -71,8 +71,8 @@ public class MetricsConfigurator {
 
     private void addWorldCountMetric() {
         addMultiLineMetric("world_count", map -> {
-            map.put("Loaded worlds", worldManager.getMVWorlds().size());
-            map.put("Total number of worlds", worldManager.getOfflineWorlds().size());
+            map.put("Loaded worlds", worldManager.getLoadedWorlds().size());
+            map.put("Total number of worlds", worldManager.getWorlds().size());
         });
     }
 

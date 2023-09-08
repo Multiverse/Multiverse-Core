@@ -11,8 +11,8 @@ import com.google.common.collect.Sets;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
-import com.onarandombox.MultiverseCore.worldnew.OfflineWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.MultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
@@ -56,7 +56,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("destinations", ParsedDestination.class);
         setDefaultCompletion("flags", String[].class);
         setDefaultCompletion("gamerules", GameRule.class);
-        setDefaultCompletion("mvworlds", MVWorld.class);
+        setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
     }
 
     private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {
@@ -127,17 +127,17 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         String scope = context.getConfig("scope", "loaded");
         switch (scope) {
             case "both" -> {
-                return worldManager.getOfflineWorlds().stream().map(OfflineWorld::getName).toList();
+                return worldManager.getWorlds().stream().map(MultiverseWorld::getName).toList();
             }
             case "loaded" -> {
-                return worldManager.getMVWorlds()
+                return worldManager.getLoadedWorlds()
                         .stream()
-                        .map(MVWorld::getName)
+                        .map(LoadedMultiverseWorld::getName)
                         .toList();
             }
             case "unloaded" -> {
-                return worldManager.getOfflineOnlyWorlds().stream()
-                        .map(OfflineWorld::getName)
+                return worldManager.getUnloadedWorlds().stream()
+                        .map(MultiverseWorld::getName)
                         .toList();
             }
             case "potential" -> {

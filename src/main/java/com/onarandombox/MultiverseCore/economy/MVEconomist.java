@@ -1,6 +1,6 @@
 package com.onarandombox.MultiverseCore.economy;
 
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -98,7 +98,7 @@ public class MVEconomist {
      * @param player    the player to deposit currency into.
      * @param world     the world to take entry fee from.
      */
-    public void payEntryFee(Player player, MVWorld world) {
+    public void payEntryFee(Player player, LoadedMultiverseWorld world) {
         payEntryFee(player, world.getPrice(), world.getCurrency());
     }
 

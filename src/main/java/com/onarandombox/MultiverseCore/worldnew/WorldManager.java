@@ -55,8 +55,8 @@ import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldCo
 public class WorldManager {
     private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
 
-    private final Map<String, OfflineWorld> offlineWorldsMap;
-    private final Map<String, MVWorld> worldsMap;
+    private final Map<String, MultiverseWorld> offlineWorldsMap;
+    private final Map<String, LoadedMultiverseWorld> worldsMap;
     private final List<String> unloadTracker;
     private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
@@ -114,12 +114,12 @@ public class WorldManager {
             return false;
         }
         worldsConfigManager.getAllWorldConfigs().forEach(worldConfig -> {
-            getMVWorld(worldConfig.getWorldName())
-                    .peek(mvWorld -> mvWorld.setWorldConfig(worldConfig));
-            getOfflineWorld(worldConfig.getWorldName())
-                    .peek(offlineWorld -> offlineWorld.setWorldConfig(worldConfig))
+            getLoadedWorld(worldConfig.getWorldName())
+                    .peek(loadedWorld -> loadedWorld.setWorldConfig(worldConfig));
+            getWorld(worldConfig.getWorldName())
+                    .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
                     .onEmpty(() -> {
-                        OfflineWorld offlineWorld = new OfflineWorld(worldConfig.getWorldName(), worldConfig);
+                        MultiverseWorld offlineWorld = new MultiverseWorld(worldConfig.getWorldName(), worldConfig);
                         offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
                     });
         });
@@ -130,13 +130,13 @@ public class WorldManager {
      * Load worlds that are already loaded by bukkit before Multiverse-Core is loaded.
      */
     private void loadDefaultWorlds() {
-        Bukkit.getWorlds().forEach(world -> {
-            if (isOfflineWorld(world.getName())) {
+        Bukkit.getWorlds().forEach(bukkitWorld -> {
+            if (isWorld(bukkitWorld.getName())) {
                 return;
             }
-            importWorld(ImportWorldOptions.worldName(world.getName())
-                    .environment(world.getEnvironment())
-                    .generator(generatorProvider.getDefaultGeneratorForWorld(world.getName())));
+            importWorld(ImportWorldOptions.worldName(bukkitWorld.getName())
+                    .environment(bukkitWorld.getEnvironment())
+                    .generator(generatorProvider.getDefaultGeneratorForWorld(bukkitWorld.getName())));
         });
     }
 
@@ -144,8 +144,8 @@ public class WorldManager {
      * Loads all worlds that are set to autoload.
      */
     private void autoLoadOfflineWorlds() {
-        getOfflineWorlds().forEach(world -> {
-            if (isMVWorld(world) || !world.getAutoLoad()) {
+        getWorlds().forEach(world -> {
+            if (isLoadedWorld(world) || !world.getAutoLoad()) {
                 return;
             }
             loadWorld(world).onFailure(failure -> Logging.severe("Failed to load world %s: %s", world.getName(), failure));
@@ -163,11 +163,11 @@ public class WorldManager {
             return Result.failure(CreateWorldResult.Failure.INVALID_WORLDNAME,
                     replace("{world}").with(options.worldName()));
         }
-        if (getMVWorld(options.worldName()).isDefined()) {
+        if (getLoadedWorld(options.worldName()).isDefined()) {
             return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_LOADED,
                     replace("{world}").with(options.worldName()));
         }
-        if (getOfflineWorld(options.worldName()).isDefined()) {
+        if (getWorld(options.worldName()).isDefined()) {
             return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_OFFLINE,
                     replace("{world}").with(options.worldName()));
         }
@@ -211,11 +211,11 @@ public class WorldManager {
             return Result.failure(ImportWorldResult.Failure.WORLD_FOLDER_INVALID,
                     replace("{world}").with(options.worldName()));
         }
-        if (isMVWorld(options.worldName())) {
+        if (isLoadedWorld(options.worldName())) {
             return Result.failure(ImportWorldResult.Failure.WORLD_EXIST_LOADED,
                     replace("{world}").with(options.worldName()));
         }
-        if (isOfflineWorld(options.worldName())) {
+        if (isWorld(options.worldName())) {
             return Result.failure(ImportWorldResult.Failure.WORLD_EXIST_OFFLINE,
                     replace("{world}").with(options.worldName()));
         }
@@ -246,10 +246,10 @@ public class WorldManager {
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
 
-        OfflineWorld offlineWorld = new OfflineWorld(world.getName(), worldConfig);
+        MultiverseWorld offlineWorld = new MultiverseWorld(world.getName(), worldConfig);
         offlineWorldsMap.put(offlineWorld.getName(), offlineWorld);
 
-        MVWorld mvWorld = new MVWorld(world, worldConfig, blockSafety, safeTTeleporter, locationManipulation);
+        LoadedMultiverseWorld mvWorld = new LoadedMultiverseWorld(world, worldConfig, blockSafety, safeTTeleporter, locationManipulation);
         worldsMap.put(mvWorld.getName(), mvWorld);
         saveWorldsConfig();
     }
@@ -261,7 +261,7 @@ public class WorldManager {
      * @return The result of the load.
      */
     public Result<LoadWorldResult.Success, LoadWorldResult.Failure> loadWorld(@NotNull String worldName) {
-        return getOfflineWorld(worldName)
+        return getWorld(worldName)
                 .map(this::loadWorld)
                 .getOrElse(() -> worldNameChecker.isValidWorldFolder(worldName)
                         ? Result.failure(LoadWorldResult.Failure.WORLD_EXIST_FOLDER,
@@ -276,7 +276,7 @@ public class WorldManager {
      * @param offlineWorld  The offline world to load.
      * @return The result of the load.
      */
-    public Result<LoadWorldResult.Success, LoadWorldResult.Failure> loadWorld(@NotNull OfflineWorld offlineWorld) {
+    public Result<LoadWorldResult.Success, LoadWorldResult.Failure> loadWorld(@NotNull MultiverseWorld offlineWorld) {
         // Params validations
         if (loadTracker.contains(offlineWorld.getName())) {
             // This is to prevent recursive calls by WorldLoadEvent
@@ -284,7 +284,7 @@ public class WorldManager {
             return Result.failure(LoadWorldResult.Failure.WORLD_ALREADY_LOADING,
                     replace("{world}").with(offlineWorld.getName()));
         }
-        if (isMVWorld(offlineWorld)) {
+        if (isLoadedWorld(offlineWorld)) {
             Logging.severe("World already loaded: " + offlineWorld.getName());
             return Result.failure(LoadWorldResult.Failure.WORLD_EXIST_LOADED,
                     replace("{world}").with(offlineWorld.getName()));
@@ -299,7 +299,7 @@ public class WorldManager {
                                 replace("{error}").with(exception.getMessage())),
                         world -> {
                             WorldConfig worldConfig = worldsConfigManager.getWorldConfig(offlineWorld.getName());
-                            MVWorld mvWorld = new MVWorld(world, worldConfig, blockSafety,
+                            LoadedMultiverseWorld mvWorld = new LoadedMultiverseWorld(world, worldConfig, blockSafety,
                                     safeTTeleporter, locationManipulation);
                             worldsMap.put(mvWorld.getName(), mvWorld);
                             saveWorldsConfig();
@@ -325,9 +325,9 @@ public class WorldManager {
      * @return The result of the unload action.
      */
     public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull String worldName) {
-        return getMVWorld(worldName)
+        return getLoadedWorld(worldName)
                 .map(this::unloadWorld)
-                .getOrElse(() -> isOfflineOnlyWorld(worldName)
+                .getOrElse(() -> isUnloadedWorld(worldName)
                         ? Result.failure(UnloadWorldResult.Failure.WORLD_OFFLINE,
                                 replace("{world}").with(worldName))
                         : Result.failure(UnloadWorldResult.Failure.WORLD_NON_EXISTENT,
@@ -340,7 +340,7 @@ public class WorldManager {
      * @param world The multiverse world to unload.
      * @return The result of the unload action.
      */
-    public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull MVWorld world) {
+    public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull LoadedMultiverseWorld world) {
         if (unloadTracker.contains(world.getName())) {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
@@ -376,7 +376,7 @@ public class WorldManager {
      * @return The result of the remove.
      */
     public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull String worldName) {
-        return getOfflineWorld(worldName)
+        return getWorld(worldName)
                 .map(this::removeWorld)
                 .getOrElse(() -> Result.failure(RemoveWorldResult.Failure.WORLD_NON_EXISTENT, replace("{world}").with(worldName)));
     }
@@ -388,8 +388,8 @@ public class WorldManager {
      * @param world The multiverse world to remove.
      * @return The result of the remove.
      */
-    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull OfflineWorld world) {
-        return getMVWorld(world).fold(
+    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull MultiverseWorld world) {
+        return getLoadedWorld(world).fold(
                 () -> removeWorldFromConfig(world),
                 this::removeWorld);
     }
@@ -401,7 +401,7 @@ public class WorldManager {
      * @param world The multiverse world to remove.
      * @return The result of the remove.
      */
-    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull MVWorld world) {
+    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull LoadedMultiverseWorld world) {
         var result = unloadWorld(world);
         if (result.isFailure()) {
             return Result.failure(RemoveWorldResult.Failure.UNLOAD_FAILED, result.getReasonMessage());
@@ -416,7 +416,7 @@ public class WorldManager {
      * @return The result of the remove.
      */
     private Result<RemoveWorldResult.Success, RemoveWorldResult.Failure>
-            removeWorldFromConfig(@NotNull OfflineWorld world) {
+            removeWorldFromConfig(@NotNull MultiverseWorld world) {
         // Remove world from config
         offlineWorldsMap.remove(world.getName());
         worldsConfigManager.deleteWorldConfig(world.getName());
@@ -433,7 +433,7 @@ public class WorldManager {
      * @return The result of the delete action.
      */
     public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull String worldName) {
-        return getOfflineWorld(worldName)
+        return getWorld(worldName)
                 .map(this::deleteWorld)
                 .getOrElse(() -> Result.failure(DeleteWorldResult.Failure.WORLD_NON_EXISTENT,
                         replace("{world}").with(worldName)));
@@ -446,8 +446,8 @@ public class WorldManager {
      * @param world The offline world to delete.
      * @return The result of the delete action.
      */
-    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull OfflineWorld world) {
-        return getMVWorld(world).fold(
+    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull MultiverseWorld world) {
+        return getLoadedWorld(world).fold(
                 () -> {
                     var result = loadWorld(world);
                     if (result.isFailure()) {
@@ -465,7 +465,7 @@ public class WorldManager {
      * @param world The multiverse world to delete.
      * @return The result of the delete action.
      */
-    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull MVWorld world) {
+    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull LoadedMultiverseWorld world) {
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull();
         if (worldFolder == null || !worldNameChecker.isValidWorldFolder(worldFolder)) {
             Logging.severe("Failed to get world folder for world: " + world.getName());
@@ -503,7 +503,7 @@ public class WorldManager {
                         .fold(
                                 failure -> Result.failure(CloneWorldResult.Failure.IMPORT_FAILED, failure.getReasonMessage()),
                                 success -> Result.success()))
-                .onSuccessThen(s -> getMVWorld(options.newWorldName()).fold(
+                .onSuccessThen(s -> getLoadedWorld(options.newWorldName()).fold(
                         () -> Result.failure(CloneWorldResult.Failure.MV_WORLD_FAILED,
                                 replace("{world}").with(options.newWorldName())),
                         mvWorld -> {
@@ -525,11 +525,11 @@ public class WorldManager {
         if (worldNameChecker.isValidWorldFolder(newWorldName)) {
             return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_FOLDER, replace("{world}").with(newWorldName));
         }
-        if (isMVWorld(newWorldName)) {
+        if (isLoadedWorld(newWorldName)) {
             Logging.severe("World already loaded: " + newWorldName);
             return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_LOADED, replace("{world}").with(newWorldName));
         }
-        if (isOfflineWorld(newWorldName)) {
+        if (isWorld(newWorldName)) {
             Logging.severe("World already exist offline: " + newWorldName);
             return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_OFFLINE, replace("{world}").with(newWorldName));
         }
@@ -547,9 +547,9 @@ public class WorldManager {
                 success -> Result.success());
     }
 
-    private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull MVWorld newWorld) {
-        MVWorld world = options.world();
-        DataTransfer<MVWorld> dataTransfer = new DataTransfer<>();
+    private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull LoadedMultiverseWorld newWorld) {
+        LoadedMultiverseWorld world = options.world();
+        DataTransfer<LoadedMultiverseWorld> dataTransfer = new DataTransfer<>();
         if (options.keepWorldConfig()) {
             dataTransfer.addDataStore(new WorldConfigStore(), world);
         }
@@ -569,9 +569,9 @@ public class WorldManager {
      */
     public Result<RegenWorldResult.Success, RegenWorldResult.Failure> regenWorld(@NotNull RegenWorldOptions options) {
         // TODO: Teleport players out of world, and back in after regen
-        MVWorld world = options.world();
+        LoadedMultiverseWorld world = options.world();
 
-        DataTransfer<MVWorld> dataTransfer = new DataTransfer<>();
+        DataTransfer<LoadedMultiverseWorld> dataTransfer = new DataTransfer<>();
         if (options.keepWorldConfig()) {
             dataTransfer.addDataStore(new WorldConfigStore(), world);
         }
@@ -599,7 +599,7 @@ public class WorldManager {
             return Result.failure(RegenWorldResult.Failure.CREATE_FAILED, createResult.getReasonMessage());
         }
 
-        getMVWorld(createWorldOptions.worldName()).peek(newWorld -> {
+        getLoadedWorld(createWorldOptions.worldName()).peek(newWorld -> {
             dataTransfer.pasteAllTo(newWorld);
             saveWorldsConfig();
         });
@@ -667,7 +667,7 @@ public class WorldManager {
             return Collections.emptyList();
         }
         return Arrays.stream(files)
-                .filter(file -> !isOfflineWorld(file.getName()))
+                .filter(file -> !isWorld(file.getName()))
                 .filter(worldNameChecker::isValidWorldFolder)
                 .map(File::getName)
                 .toList();
@@ -679,8 +679,8 @@ public class WorldManager {
      * @param worldName The name of the world to get.
      * @return The offline world if it exists.
      */
-    public Option<OfflineWorld> getOfflineOnlyWorld(@Nullable String worldName) {
-        return isMVWorld(worldName) ? Option.none() : Option.of(offlineWorldsMap.get(worldName));
+    public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
+        return isLoadedWorld(worldName) ? Option.none() : Option.of(offlineWorldsMap.get(worldName));
     }
 
     /**
@@ -688,7 +688,7 @@ public class WorldManager {
      *
      * @return A list of all offline worlds that are not loaded.
      */
-    public Collection<OfflineWorld> getOfflineOnlyWorlds() {
+    public Collection<MultiverseWorld> getUnloadedWorlds() {
         return offlineWorldsMap.values().stream().filter(world -> !world.isLoaded()).toList();
     }
 
@@ -698,8 +698,8 @@ public class WorldManager {
      * @param worldName The name of the world to check.
      * @return True if the world is an offline world that is not loaded.
      */
-    public boolean isOfflineOnlyWorld(@Nullable String worldName) {
-        return !isMVWorld(worldName) && isOfflineWorld(worldName);
+    public boolean isUnloadedWorld(@Nullable String worldName) {
+        return !isLoadedWorld(worldName) && isWorld(worldName);
     }
 
     /**
@@ -708,7 +708,7 @@ public class WorldManager {
      * @param worldName The name of the world to get.
      * @return The offline world if it exists.
      */
-    public Option<OfflineWorld> getOfflineWorld(@Nullable String worldName) {
+    public Option<MultiverseWorld> getWorld(@Nullable String worldName) {
         return Option.of(offlineWorldsMap.get(worldName));
     }
 
@@ -717,7 +717,7 @@ public class WorldManager {
      *
      * @return A list of all offline worlds that may or may not be loaded.
      */
-    public Collection<OfflineWorld> getOfflineWorlds() {
+    public Collection<MultiverseWorld> getWorlds() {
         return offlineWorldsMap.values();
     }
 
@@ -727,7 +727,7 @@ public class WorldManager {
      * @param worldName The name of the world to check.
      * @return True if the world is an offline world that may or may not be loaded.
      */
-    public boolean isOfflineWorld(@Nullable String worldName) {
+    public boolean isWorld(@Nullable String worldName) {
         return offlineWorldsMap.containsKey(worldName);
     }
 
@@ -737,7 +737,7 @@ public class WorldManager {
      * @param world The bukkit world that should be loaded.
      * @return The multiverse world if it exists.
      */
-    public Option<MVWorld> getMVWorld(@Nullable World world) {
+    public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable World world) {
         return world == null ? Option.none() : Option.of(worldsMap.get(world.getName()));
     }
 
@@ -747,7 +747,7 @@ public class WorldManager {
      * @param world The offline world that should be loaded.
      * @return The multiverse world if it exists.
      */
-    public Option<MVWorld> getMVWorld(@Nullable OfflineWorld world) {
+    public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable MultiverseWorld world) {
         return world == null ? Option.none() : Option.of(worldsMap.get(world.getName()));
     }
 
@@ -757,7 +757,7 @@ public class WorldManager {
      * @param worldName The name of the world to get.
      * @return The multiverse world if it exists.
      */
-    public Option<MVWorld> getMVWorld(@Nullable String worldName) {
+    public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
         return Option.of(worldsMap.get(worldName));
     }
 
@@ -766,7 +766,7 @@ public class WorldManager {
      *
      * @return A list of all multiverse worlds that are loaded.
      */
-    public Collection<MVWorld> getMVWorlds() {
+    public Collection<LoadedMultiverseWorld> getLoadedWorlds() {
         return worldsMap.values();
     }
 
@@ -776,8 +776,8 @@ public class WorldManager {
      * @param world The bukkit world to check.
      * @return True if the world is a multiverse world that is loaded.
      */
-    public boolean isMVWorld(@Nullable World world) {
-        return world != null && isMVWorld(world.getName());
+    public boolean isLoadedWorld(@Nullable World world) {
+        return world != null && isLoadedWorld(world.getName());
     }
 
     /**
@@ -786,8 +786,8 @@ public class WorldManager {
      * @param world The offline world to check.
      * @return True if the world is a multiverse world that is loaded.
      */
-    public boolean isMVWorld(@Nullable OfflineWorld world) {
-        return world != null && isMVWorld(world.getName());
+    public boolean isLoadedWorld(@Nullable MultiverseWorld world) {
+        return world != null && isLoadedWorld(world.getName());
     }
 
     /**
@@ -796,7 +796,7 @@ public class WorldManager {
      * @param worldName The name of the world to check.
      * @return True if the world is a multiverse world that is loaded.
      */
-    public boolean isMVWorld(@Nullable String worldName) {
+    public boolean isLoadedWorld(@Nullable String worldName) {
         return worldsMap.containsKey(worldName);
     }
 

@@ -2,7 +2,7 @@ package com.onarandombox.MultiverseCore.placeholders;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import io.vavr.control.Option;
 import jakarta.annotation.PostConstruct;
@@ -74,23 +74,23 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
         }
 
         final var placeholder = paramsArray[0];
-        Option<MVWorld> targetWorld;
+        Option<LoadedMultiverseWorld> targetWorld;
 
         // If no world is defined, use the player's world
         if (paramsArray.length == 1) {
             if (!offlinePlayer.isOnline()) {
                 return null;
             }
-            targetWorld = worldManager.getMVWorld(((Player)offlinePlayer).getWorld());
+            targetWorld = worldManager.getLoadedWorld(((Player)offlinePlayer).getWorld());
         } else {
-            targetWorld = worldManager.getMVWorld(paramsArray[1]);
+            targetWorld = worldManager.getLoadedWorld(paramsArray[1]);
         }
 
         // Fail if world is null
         return targetWorld.map(world -> getWorldPlaceHolderValue(placeholder, world)).getOrNull();
     }
 
-    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder, @NotNull MVWorld world) {
+    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder, @NotNull LoadedMultiverseWorld world) {
         // Switch to find what specific placeholder we want
         switch (placeholder.toLowerCase()) {
             case "alias" -> {

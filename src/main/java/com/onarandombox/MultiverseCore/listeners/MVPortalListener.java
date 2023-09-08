@@ -10,7 +10,7 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.Material;
@@ -47,7 +47,7 @@ public class MVPortalListener implements InjectableListener {
     public void portalForm(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s", event.getWorld().getName(), event.getReason());
 
-        MVWorld world = this.worldManager.getMVWorld(event.getWorld()).getOrNull();
+        LoadedMultiverseWorld world = this.worldManager.getLoadedWorld(event.getWorld()).getOrNull();
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.", event.getWorld().getName());
             return;
@@ -103,7 +103,7 @@ public class MVPortalListener implements InjectableListener {
             return;
         }
 
-        MVWorld world = this.worldManager.getMVWorld(event.getPlayer().getWorld()).getOrNull();
+        LoadedMultiverseWorld world = this.worldManager.getLoadedWorld(event.getPlayer().getWorld()).getOrNull();
         if (world == null) {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
                     event.getPlayer().getWorld().getName());

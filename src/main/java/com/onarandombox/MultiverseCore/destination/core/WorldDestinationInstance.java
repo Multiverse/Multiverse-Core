@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
 import com.onarandombox.MultiverseCore.api.DestinationInstance;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WorldDestinationInstance implements DestinationInstance {
-    private final MVWorld world;
+    private final LoadedMultiverseWorld world;
     private final String direction;
     private final float yaw;
 
@@ -18,7 +18,7 @@ public class WorldDestinationInstance implements DestinationInstance {
      *
      * @param world The world to teleport to.
      */
-    public WorldDestinationInstance(@NotNull MVWorld world, @Nullable String direction, float yaw) {
+    public WorldDestinationInstance(@NotNull LoadedMultiverseWorld world, @Nullable String direction, float yaw) {
         this.world = world;
         this.direction = direction;
         this.yaw = yaw;

@@ -7,7 +7,7 @@ import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import com.onarandombox.MultiverseCore.api.Teleporter;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
         }
 
         String worldName = items[0];
-        MVWorld world = this.worldManager.getMVWorld(worldName).getOrNull();
+        LoadedMultiverseWorld world = this.worldManager.getLoadedWorld(worldName).getOrNull();
         if (world == null) {
             return null;
         }

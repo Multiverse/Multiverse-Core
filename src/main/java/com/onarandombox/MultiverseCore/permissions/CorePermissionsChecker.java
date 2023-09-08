@@ -1,15 +1,15 @@
 package com.onarandombox.MultiverseCore.permissions;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
-import com.onarandombox.MultiverseCore.worldnew.OfflineWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.MultiverseWorld;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
 public class CorePermissionsChecker {
-    public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull OfflineWorld world) {
+    public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
     }
 
@@ -18,15 +18,15 @@ public class CorePermissionsChecker {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
     }
 
-    public boolean hasWorldExemptPermission(@NotNull CommandSender sender, @NotNull MVWorld world) {
+    public boolean hasWorldExemptPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_EXEMPT, world.getName()));
     }
 
-    public boolean hasPlayerLimitBypassPermission(@NotNull CommandSender sender, @NotNull MVWorld world) {
+    public boolean hasPlayerLimitBypassPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.PLAYERLIMIT_BYPASS, world.getName()));
     }
 
-    public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull MVWorld world) {
+    public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.GAMEMODE_BYPASS, world.getName()));
     }
 

@@ -1,26 +1,26 @@
 package com.onarandombox.MultiverseCore.worldnew.options;
 
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.jetbrains.annotations.NotNull;
 
 public class CloneWorldOptions {
-    public static CloneWorldOptions fromTo(MVWorld world, String newWorldName) {
+    public static CloneWorldOptions fromTo(LoadedMultiverseWorld world, String newWorldName) {
         return new CloneWorldOptions(world, newWorldName);
     }
 
-    private final MVWorld world;
+    private final LoadedMultiverseWorld world;
     private final String newWorldName;
     private boolean keepGameRule = true;
     private boolean keepWorldConfig = true;
 
     private boolean keepWorldBorder = true;
 
-    public CloneWorldOptions(MVWorld world, String newWorldName) {
+    public CloneWorldOptions(LoadedMultiverseWorld world, String newWorldName) {
         this.world = world;
         this.newWorldName = newWorldName;
     }
 
-    public MVWorld world() {
+    public LoadedMultiverseWorld world() {
         return world;
     }
 

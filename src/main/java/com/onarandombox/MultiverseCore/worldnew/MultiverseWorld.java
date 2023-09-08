@@ -15,12 +15,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-public class OfflineWorld {
+public class MultiverseWorld {
 
     protected final String worldName;
     protected WorldConfig worldConfig;
 
-    OfflineWorld(String worldName, WorldConfig worldConfig) {
+    MultiverseWorld(String worldName, WorldConfig worldConfig) {
         this.worldName = worldName;
         this.worldConfig = worldConfig;
     }
@@ -201,7 +201,7 @@ public class OfflineWorld {
         return worldConfig.setRespawnWorld(respawnWorld.getName());
     }
 
-    public Try<Void> setRespawnWorld(OfflineWorld respawnWorld) {
+    public Try<Void> setRespawnWorld(MultiverseWorld respawnWorld) {
         return worldConfig.setRespawnWorld(respawnWorld.getName());
     }
 

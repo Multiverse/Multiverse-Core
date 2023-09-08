@@ -1,7 +1,7 @@
 package com.onarandombox.MultiverseCore.worldnew.helpers;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
@@ -33,14 +33,14 @@ public interface DataStore<T> {
      */
     DataStore<T> pasteTo(T object);
 
-    class GameRulesStore implements DataStore<MVWorld> {
+    class GameRulesStore implements DataStore<LoadedMultiverseWorld> {
         private Map<GameRule<?>, Object> gameRuleMap;
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public GameRulesStore copyFrom(MVWorld world) {
+        public GameRulesStore copyFrom(LoadedMultiverseWorld world) {
             this.gameRuleMap = new HashMap<>();
             world.getBukkitWorld().peek(bukkitWorld -> {
                 Arrays.stream(GameRule.values()).forEach(gameRule -> {
@@ -55,7 +55,7 @@ public interface DataStore<T> {
          * {@inheritDoc}
          */
         @Override
-        public GameRulesStore pasteTo(MVWorld world) {
+        public GameRulesStore pasteTo(LoadedMultiverseWorld world) {
             if (gameRuleMap == null) {
                 return this;
             }
@@ -79,14 +79,14 @@ public interface DataStore<T> {
         }
     }
 
-    class WorldConfigStore implements DataStore<MVWorld> {
+    class WorldConfigStore implements DataStore<LoadedMultiverseWorld> {
         private Map<String, Object> configMap;
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public WorldConfigStore copyFrom(MVWorld world) {
+        public WorldConfigStore copyFrom(LoadedMultiverseWorld world) {
             this.configMap = new HashMap<>();
             world.getConfigurablePropertyNames().forEach(name -> {
                 world.getProperty(name).peek(value -> configMap.put(name, value)).onFailure(e -> {
@@ -100,7 +100,7 @@ public interface DataStore<T> {
          * {@inheritDoc}
          */
         @Override
-        public WorldConfigStore pasteTo(MVWorld world) {
+        public WorldConfigStore pasteTo(LoadedMultiverseWorld world) {
             if (configMap == null) {
                 return this;
             }
@@ -114,7 +114,7 @@ public interface DataStore<T> {
         }
     }
 
-    class WorldBorderStore implements DataStore<MVWorld> {
+    class WorldBorderStore implements DataStore<LoadedMultiverseWorld> {
         private double borderCenterX;
         private double borderCenterZ;
         private double borderDamageAmount;
@@ -126,7 +126,7 @@ public interface DataStore<T> {
          * {@inheritDoc}
          */
         @Override
-        public WorldBorderStore copyFrom(MVWorld world) {
+        public WorldBorderStore copyFrom(LoadedMultiverseWorld world) {
             world.getBukkitWorld().peek(bukkitWorld -> {
                 borderCenterX = bukkitWorld.getWorldBorder().getCenter().getX();
                 borderCenterZ = bukkitWorld.getWorldBorder().getCenter().getZ();
@@ -142,7 +142,7 @@ public interface DataStore<T> {
          * {@inheritDoc}
          */
         @Override
-        public WorldBorderStore pasteTo(MVWorld world) {
+        public WorldBorderStore pasteTo(LoadedMultiverseWorld world) {
             world.getBukkitWorld().peek(bukkitWorld -> {
                 bukkitWorld.getWorldBorder().setCenter(borderCenterX, borderCenterZ);
                 bukkitWorld.getWorldBorder().setDamageAmount(borderDamageAmount);

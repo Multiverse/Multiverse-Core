@@ -54,7 +54,7 @@ public class MVWorldListener implements InjectableListener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void loadWorld(WorldLoadEvent event) {
-        worldManager.getOfflineOnlyWorld(event.getWorld().getName())
+        worldManager.getUnloadedWorld(event.getWorld().getName())
                 .peek(offlineWorld -> {
                     Logging.fine("Loading world: " + offlineWorld.getName());
                     worldManager.loadWorld(offlineWorld).onFailure(failure -> {

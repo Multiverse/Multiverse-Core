@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -19,7 +18,7 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandValueFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.commandtools.queue.QueuedCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import com.onarandombox.MultiverseCore.worldnew.options.RegenWorldOptions;
 import jakarta.inject.Inject;
@@ -67,7 +66,7 @@ public class RegenCommand extends MultiverseCommand {
 
                                @Syntax("<world>")
                                @Description("{@@mv-core.regen.world.description}")
-                               MVWorld world,
+                               LoadedMultiverseWorld world,
 
                                @Optional
                                @Syntax("--seed [seed] --reset-gamerules")

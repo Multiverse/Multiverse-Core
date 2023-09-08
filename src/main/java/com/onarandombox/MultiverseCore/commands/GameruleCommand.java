@@ -12,7 +12,7 @@ import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -46,11 +46,11 @@ public class GameruleCommand extends MultiverseCommand {
                                   @Flags("resolve=issuerAware")
                                   @Syntax("[World or *]")
                                   @Description("{@@mv-core.gamerule.world.description}")
-                                  MVWorld[] worlds
+                                  LoadedMultiverseWorld[] worlds
     ) {
         Object value = gameRuleValue.getValue();
         boolean success = true;
-        for(MVWorld world : worlds) {
+        for(LoadedMultiverseWorld world : worlds) {
             // Set gamerules and add false to list if it fails
             World bukkitWorld = world.getBukkitWorld().getOrNull();
             if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class MVWorld extends OfflineWorld {
+public class LoadedMultiverseWorld extends MultiverseWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
@@ -26,7 +26,7 @@ public class MVWorld extends OfflineWorld {
     private final SafeTTeleporter safeTTeleporter;
     private final LocationManipulation locationManipulation;
 
-    MVWorld(
+    LoadedMultiverseWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
             @NotNull BlockSafety blockSafety,

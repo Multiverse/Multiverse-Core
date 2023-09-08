@@ -11,7 +11,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -39,7 +38,7 @@ public class MVWeatherListener implements InjectableListener {
         if (event.isCancelled() || !event.toWeatherState()) {
             return;
         }
-        worldManager.getMVWorld(event.getWorld())
+        worldManager.getLoadedWorld(event.getWorld())
                 .peek((world) -> {
                     if (!world.getAllowWeather()) {
                         Logging.fine("Cancelling weather for %s as getAllowWeather is false", world.getName());
@@ -57,7 +56,7 @@ public class MVWeatherListener implements InjectableListener {
         if (event.isCancelled() || !event.toThunderState()) {
             return;
         }
-        worldManager.getMVWorld(event.getWorld())
+        worldManager.getLoadedWorld(event.getWorld())
                 .peek((world) -> {
                     if (!world.getAllowWeather()) {
                         Logging.fine("Cancelling thunder for %s as getAllowWeather is false", world.getName());

@@ -6,8 +6,8 @@ import com.onarandombox.MultiverseCore.permissions.CorePermissionsChecker;
 import com.onarandombox.MultiverseCore.utils.result.Result;
 import com.onarandombox.MultiverseCore.utils.result.ResultChain;
 import com.onarandombox.MultiverseCore.world.configuration.EntryFee;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
-import com.onarandombox.MultiverseCore.worldnew.OfflineWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.MultiverseWorld;
 import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -37,11 +37,11 @@ public class WorldEntryChecker {
         this.sender = sender;
     }
 
-    public ResultChain canStayInWorld(@NotNull MVWorld world) {
+    public ResultChain canStayInWorld(@NotNull LoadedMultiverseWorld world) {
         return canEnterWorld(null, world);
     }
 
-    public ResultChain canEnterWorld(@Nullable MVWorld fromWorld, @NotNull MVWorld toWorld) {
+    public ResultChain canEnterWorld(@Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         return ResultChain.builder()
                 .then(() -> canAccessWorld(toWorld))
                 .then(() -> isWithinPlayerLimit(toWorld))
@@ -50,7 +50,7 @@ public class WorldEntryChecker {
                 .build();
     }
 
-    public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull OfflineWorld world) {
+    public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull MultiverseWorld world) {
         if (!config.getEnforceAccess()) {
             return Result.success(WorldAccessResult.Success.NO_ENFORCE_WORLD_ACCESS);
         }
@@ -59,7 +59,7 @@ public class WorldEntryChecker {
                 : Result.failure(WorldAccessResult.Failure.NO_WORLD_ACCESS);
     }
 
-    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(@NotNull MVWorld world) {
+    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(@NotNull LoadedMultiverseWorld world) {
         final int playerLimit = world.getPlayerLimit();
         if (playerLimit <= -1) {
             return Result.success(PlayerLimitResult.Success.NO_PLAYERLIMIT);
@@ -72,7 +72,7 @@ public class WorldEntryChecker {
                 : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
     }
 
-    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(@Nullable MVWorld fromWorld, @NotNull MVWorld toWorld) {
+    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(@Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         if (fromWorld == null) {
             return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
         }
@@ -81,7 +81,7 @@ public class WorldEntryChecker {
                 : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
-    public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(MVWorld world) {
+    public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(LoadedMultiverseWorld world) {
         double price = world.getPrice();
         Material currency = world.getCurrency();
         if (price == 0D && (currency == null || currency == EntryFee.DISABLED_MATERIAL)) {

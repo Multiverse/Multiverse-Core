@@ -15,7 +15,7 @@ import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
 import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
-import com.onarandombox.MultiverseCore.worldnew.MVWorld;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import com.onarandombox.MultiverseCore.worldnew.options.CloneWorldOptions;
 import jakarta.inject.Inject;
@@ -55,7 +55,7 @@ public class CloneCommand extends MultiverseCommand {
 
                                @Syntax("<world>")
                                @Description("{@@mv-core.clone.world.description}")
-                               MVWorld world,
+                               LoadedMultiverseWorld world,
 
                                @Syntax("<new world name>")
                                @Description("{@@mv-core.clone.newWorld.description}")
