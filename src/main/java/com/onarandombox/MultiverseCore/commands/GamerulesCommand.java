@@ -31,18 +31,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * List all gamerules in your current or specified world
+ * List all gamerules in your current or specified world.
  */
 @Service
 @CommandAlias("mv")
 public class GamerulesCommand extends MultiverseCommand {
 
-    private final MVWorldManager worldManager;
-
     @Inject
-    public GamerulesCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+    public GamerulesCommand(@NotNull MVCommandManager commandManager) {
         super(commandManager);
-        this.worldManager = worldManager;
     }
 
     @Subcommand("gamerules|rules")
@@ -51,19 +48,16 @@ public class GamerulesCommand extends MultiverseCommand {
     @Syntax("[world] [page]")
     @Description("{@@mv-core.gamerules.description}")
     public void onGamerulesCommand(@NotNull BukkitCommandIssuer issuer,
+            @Optional
+            @Syntax("<world>")
+            @Description("{@@mv-core.gamerules.description.world}")
+            MVWorld world,
 
-                                   @Optional
-                                   @Syntax("<world>")
-                                   @Description("{@@mv-core.gamerules.description.world}")
-                                   MVWorld world,
-
-                                   @Optional
-                                   @Default("1")
-                                   @Syntax("<page>")
-                                   @Description("{@@mv-core.gamerules.description.page}")
-                                   int page
-
-
+            @Optional
+            @Default("1")
+            @Syntax("<page>")
+            @Description("{@@mv-core.gamerules.description.page}")
+            int page
     ) {
         Logging.finer("Page is: " + page);
 
