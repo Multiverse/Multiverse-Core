@@ -18,3 +18,4 @@ jobs:
           checkstyle_version: 10.12.2
           checkstyle_config: ./config/mv_checks.xml
           reporter: github-pr-review
+          level: warning
