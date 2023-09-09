@@ -53,6 +53,9 @@ import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldCo
  */
 @Service
 public class WorldManager {
+
+    private static final String WORLD_PLACEHOLDER = "{world}";
+    private static final String ERROR_PLACEHOLDER = "{error}";
     private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
 
     private final Map<String, MultiverseWorld> worldsMap;
@@ -75,8 +78,7 @@ public class WorldManager {
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
             @NotNull SafeTTeleporter safetyTeleporter,
-            @NotNull LocationManipulation locationManipulation
-    ) {
+            @NotNull LocationManipulation locationManipulation) {
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
         this.unloadTracker = new ArrayList<>();
@@ -166,20 +168,20 @@ public class WorldManager {
         // Params validations
         if (!worldNameChecker.isValidWorldName(options.worldName())) {
             return Result.failure(CreateWorldResult.Failure.INVALID_WORLDNAME,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
         if (getLoadedWorld(options.worldName()).isDefined()) {
             return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_LOADED,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
         if (getWorld(options.worldName()).isDefined()) {
             return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_UNLOADED,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
         File worldFolder = new File(Bukkit.getWorldContainer(), options.worldName());
         if (worldFolder.exists()) {
             return Result.failure(CreateWorldResult.Failure.WORLD_EXIST_FOLDER,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
 
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
@@ -191,12 +193,12 @@ public class WorldManager {
                 .type(options.worldType()))
                 .fold(
                         exception -> Result.failure(CreateWorldResult.Failure.BUKKIT_CREATION_FAILED,
-                                replace("{world}").with(options.worldName()),
-                                replace("{error}").with(exception.getMessage())),
+                                replace(WORLD_PLACEHOLDER).with(options.worldName()),
+                                replace(ERROR_PLACEHOLDER).with(exception.getMessage())),
                         world -> {
                             newLoadedMultiverseWorld(world, parsedGenerator, options.useSpawnAdjust());
                             return Result.success(CreateWorldResult.Success.CREATED,
-                                    replace("{world}").with(world.getName()));
+                                    replace(WORLD_PLACEHOLDER).with(world.getName()));
                         });
     }
 
@@ -210,19 +212,19 @@ public class WorldManager {
         // Params validations
         if (!worldNameChecker.isValidWorldName(options.worldName())) {
             return Result.failure(ImportWorldResult.Failure.INVALID_WORLDNAME,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
         if (!worldNameChecker.isValidWorldFolder(options.worldName())) {
             return Result.failure(ImportWorldResult.Failure.WORLD_FOLDER_INVALID,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
         if (isLoadedWorld(options.worldName())) {
             return Result.failure(ImportWorldResult.Failure.WORLD_EXIST_LOADED,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
         if (isWorld(options.worldName())) {
             return Result.failure(ImportWorldResult.Failure.WORLD_EXIST_UNLOADED,
-                    replace("{world}").with(options.worldName()));
+                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
         }
 
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
@@ -231,12 +233,12 @@ public class WorldManager {
                 .generator(parsedGenerator))
                 .fold(
                         exception -> Result.failure(ImportWorldResult.Failure.BUKKIT_CREATION_FAILED,
-                                replace("{world}").with(options.worldName()),
-                                replace("{error}").with(exception.getMessage())),
+                                replace(WORLD_PLACEHOLDER).with(options.worldName()),
+                                replace(ERROR_PLACEHOLDER).with(exception.getMessage())),
                         world -> {
                             newLoadedMultiverseWorld(world, parsedGenerator, options.useSpawnAdjust());
                             return Result.success(ImportWorldResult.Success.IMPORTED,
-                                    replace("{world}").with(options.worldName()));
+                                    replace(WORLD_PLACEHOLDER).with(options.worldName()));
                         });
     }
 
@@ -289,9 +291,9 @@ public class WorldManager {
                 .map(this::loadWorld)
                 .getOrElse(() -> worldNameChecker.isValidWorldFolder(worldName)
                         ? Result.failure(LoadWorldResult.Failure.WORLD_EXIST_FOLDER,
-                                replace("{world}").with(worldName))
+                                replace(WORLD_PLACEHOLDER).with(worldName))
                         : Result.failure(LoadWorldResult.Failure.WORLD_NON_EXISTENT,
-                                replace("{world}").with(worldName)));
+                                replace(WORLD_PLACEHOLDER).with(worldName)));
     }
 
     /**
@@ -306,12 +308,12 @@ public class WorldManager {
             // This is to prevent recursive calls by WorldLoadEvent
             Logging.fine("World already loading: " + mvWorld.getName());
             return Result.failure(LoadWorldResult.Failure.WORLD_ALREADY_LOADING,
-                    replace("{world}").with(mvWorld.getName()));
+                    replace(WORLD_PLACEHOLDER).with(mvWorld.getName()));
         }
         if (isLoadedWorld(mvWorld)) {
             Logging.severe("World already loaded: " + mvWorld.getName());
             return Result.failure(LoadWorldResult.Failure.WORLD_EXIST_LOADED,
-                    replace("{world}").with(mvWorld.getName()));
+                    replace(WORLD_PLACEHOLDER).with(mvWorld.getName()));
         }
 
         return createBukkitWorld(WorldCreator.name(mvWorld.getName())
@@ -319,8 +321,8 @@ public class WorldManager {
                 .generator(Strings.isNullOrEmpty(mvWorld.getGenerator()) ? null : mvWorld.getGenerator())
                 .seed(mvWorld.getSeed())).fold(
                         exception -> Result.failure(LoadWorldResult.Failure.BUKKIT_CREATION_FAILED,
-                                replace("{world}").with(mvWorld.getName()),
-                                replace("{error}").with(exception.getMessage())),
+                                replace(WORLD_PLACEHOLDER).with(mvWorld.getName()),
+                                replace(ERROR_PLACEHOLDER).with(exception.getMessage())),
                         world -> {
                             // TODO: Check worldConfig null
                             WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName());
@@ -333,7 +335,7 @@ public class WorldManager {
                             loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
                             saveWorldsConfig();
                             return Result.success(LoadWorldResult.Success.LOADED,
-                                    replace("{world}").with(loadedWorld.getName()));
+                                    replace(WORLD_PLACEHOLDER).with(loadedWorld.getName()));
                         });
     }
 
@@ -358,9 +360,9 @@ public class WorldManager {
                 .map(this::unloadWorld)
                 .getOrElse(() -> isUnloadedWorld(worldName)
                         ? Result.failure(UnloadWorldResult.Failure.WORLD_UNLOADED,
-                                replace("{world}").with(worldName))
+                                replace(WORLD_PLACEHOLDER).with(worldName))
                         : Result.failure(UnloadWorldResult.Failure.WORLD_NON_EXISTENT,
-                                replace("{world}").with(worldName)));
+                                replace(WORLD_PLACEHOLDER).with(worldName)));
     }
 
     /**
@@ -375,26 +377,26 @@ public class WorldManager {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
             return Result.failure(UnloadWorldResult.Failure.WORLD_ALREADY_UNLOADING,
-                    replace("{world}").with(world.getName()));
+                    replace(WORLD_PLACEHOLDER).with(world.getName()));
         }
 
         // TODO: removePlayersFromWorld?
 
         return unloadBukkitWorld(world.getBukkitWorld().getOrNull()).fold(
                 exception -> Result.failure(UnloadWorldResult.Failure.BUKKIT_UNLOAD_FAILED,
-                        replace("{world}").with(world.getName()),
-                        replace("{error}").with(exception.getMessage())),
+                        replace(WORLD_PLACEHOLDER).with(world.getName()),
+                        replace(ERROR_PLACEHOLDER).with(exception.getMessage())),
                 success -> Option.of(loadedWorldsMap.remove(world.getName())).fold(
                         () -> {
                             Logging.severe("Failed to remove world from map: " + world.getName());
                             return Result.failure(UnloadWorldResult.Failure.WORLD_NON_EXISTENT,
-                                    replace("{world}").with(world.getName()));
+                                    replace(WORLD_PLACEHOLDER).with(world.getName()));
                         },
                         mvWorld -> {
                             Logging.fine("Removed MultiverseWorld from map: " + world.getName());
                             mvWorld.getWorldConfig().deferenceMVWorld();
                             return Result.success(UnloadWorldResult.Success.UNLOADED,
-                                    replace("{world}").with(world.getName()));
+                                    replace(WORLD_PLACEHOLDER).with(world.getName()));
                         }));
     }
 
@@ -410,7 +412,7 @@ public class WorldManager {
         return getWorld(worldName)
                 .map(this::removeWorld)
                 .getOrElse(() -> Result.failure(RemoveWorldResult.Failure.WORLD_NON_EXISTENT,
-                        replace("{world}").with(worldName)));
+                        replace(WORLD_PLACEHOLDER).with(worldName)));
     }
 
     /**
@@ -469,7 +471,7 @@ public class WorldManager {
         return getWorld(worldName)
                 .map(this::deleteWorld)
                 .getOrElse(() -> Result.failure(DeleteWorldResult.Failure.WORLD_NON_EXISTENT,
-                        replace("{world}").with(worldName)));
+                        replace(WORLD_PLACEHOLDER).with(worldName)));
     }
 
     /**
@@ -485,7 +487,7 @@ public class WorldManager {
                     var result = loadWorld(world);
                     if (result.isFailure()) {
                         return Result.failure(DeleteWorldResult.Failure.LOAD_FAILED,
-                                replace("{world}").with(world.getName()));
+                                replace(WORLD_PLACEHOLDER).with(world.getName()));
                     }
                     return deleteWorld(world);
                 },
@@ -504,7 +506,7 @@ public class WorldManager {
         if (worldFolder == null || !worldNameChecker.isValidWorldFolder(worldFolder)) {
             Logging.severe("Failed to get world folder for world: " + world.getName());
             return Result.failure(DeleteWorldResult.Failure.WORLD_FOLDER_NOT_FOUND,
-                    replace("{world}").with(world.getName()));
+                    replace(WORLD_PLACEHOLDER).with(world.getName()));
         }
 
         var result = removeWorld(world);
@@ -516,10 +518,10 @@ public class WorldManager {
         // TODO: Possible config options to keep certain files
         return filesManipulator.deleteFolder(worldFolder).fold(
                 exception -> Result.failure(DeleteWorldResult.Failure.FAILED_TO_DELETE_FOLDER,
-                        replace("{world}").with(world.getName()),
-                        replace("{error}").with(exception.getMessage())),
+                        replace(WORLD_PLACEHOLDER).with(world.getName()),
+                        replace(ERROR_PLACEHOLDER).with(exception.getMessage())),
                 success -> Result.success(DeleteWorldResult.Success.DELETED,
-                        replace("{world}").with(world.getName())));
+                        replace(WORLD_PLACEHOLDER).with(world.getName())));
     }
 
     /**
@@ -541,12 +543,12 @@ public class WorldManager {
                                 success -> Result.success()))
                 .onSuccessThen(s -> getLoadedWorld(options.newWorldName()).fold(
                         () -> Result.failure(CloneWorldResult.Failure.MV_WORLD_FAILED,
-                                replace("{world}").with(options.newWorldName())),
+                                replace(WORLD_PLACEHOLDER).with(options.newWorldName())),
                         mvWorld -> {
                             cloneWorldTransferData(options, mvWorld);
                             saveWorldsConfig();
                             return Result.success(CloneWorldResult.Success.CLONED,
-                                    replace("{world}").with(options.world().getName()),
+                                    replace(WORLD_PLACEHOLDER).with(options.world().getName()),
                                     replace("{newworld}").with(mvWorld.getName()));
                         }));
     }
@@ -556,18 +558,22 @@ public class WorldManager {
         String newWorldName = options.newWorldName();
         if (!worldNameChecker.isValidWorldName(newWorldName)) {
             Logging.severe("Invalid world name: " + newWorldName);
-            return Result.failure(CloneWorldResult.Failure.INVALID_WORLDNAME, replace("{world}").with(newWorldName));
+            return Result.failure(CloneWorldResult.Failure.INVALID_WORLDNAME,
+                    replace(WORLD_PLACEHOLDER).with(newWorldName));
         }
         if (worldNameChecker.isValidWorldFolder(newWorldName)) {
-            return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_FOLDER, replace("{world}").with(newWorldName));
+            return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_FOLDER,
+                    replace(WORLD_PLACEHOLDER).with(newWorldName));
         }
         if (isLoadedWorld(newWorldName)) {
-            Logging.severe("World already loaded: " + newWorldName);
-            return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_LOADED, replace("{world}").with(newWorldName));
+            Logging.severe("World already loaded when attempting to clone: " + newWorldName);
+            return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_LOADED,
+                    replace(WORLD_PLACEHOLDER).with(newWorldName));
         }
         if (isWorld(newWorldName)) {
             Logging.severe("World already exist unloaded: " + newWorldName);
-            return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_UNLOADED, replace("{world}").with(newWorldName));
+            return Result.failure(CloneWorldResult.Failure.WORLD_EXIST_UNLOADED,
+                    replace(WORLD_PLACEHOLDER).with(newWorldName));
         }
         return Result.success();
     }
@@ -579,8 +585,8 @@ public class WorldManager {
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
         return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> Result.failure(CloneWorldResult.Failure.COPY_FAILED,
-                        replace("{world}").with(options.world().getName()),
-                        replace("{error}").with(exception.getMessage())),
+                        replace(WORLD_PLACEHOLDER).with(options.world().getName()),
+                        replace(ERROR_PLACEHOLDER).with(exception.getMessage())),
                 success -> Result.success());
     }
 
@@ -641,7 +647,7 @@ public class WorldManager {
             dataTransfer.pasteAllTo(newWorld);
             saveWorldsConfig();
         });
-        return Result.success(RegenWorldResult.Success.REGENERATED, replace("{world}").with(world.getName()));
+        return Result.success(RegenWorldResult.Success.REGENERATED, replace(WORLD_PLACEHOLDER).with(world.getName()));
     }
 
     /**
