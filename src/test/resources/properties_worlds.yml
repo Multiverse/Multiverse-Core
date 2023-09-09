@@ -39,6 +39,7 @@ world:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
+  version: 1.0
 world_nether:
   adjust-spawn: false
   alias: ''
@@ -75,3 +76,4 @@ world_nether:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
+  version: 1.0

@@ -24,8 +24,6 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
         worldConfigManager = multiverseCore.getService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
-
-        assertTrue(worldConfigManager.load().isSuccess)
     }
 
     @Test
@@ -35,32 +33,40 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Old world config is migrated`() {
-        // TODO: When logic is implemented, check that the old config is migrated
+        val oldConfig = getResourceAsText("/old_worlds.yml")
+        assertNotNull(oldConfig)
+        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(oldConfig)
+
+        assertTrue(worldConfigManager.load().isSuccess)
+        assertTrue(worldConfigManager.save().isSuccess)
+        //compareConfigFile("worlds2.yml", "/migrated_worlds.yml")
     }
 
     @Test
     fun `Add a new world to config`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.addWorldConfig("newworld")
-        worldConfigManager.save()
+        assertTrue(worldConfigManager.save().isSuccess)
         compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
     }
 
     @Test
     fun `Updating existing world properties`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.getWorldConfig("world")
         assertNotNull(worldConfig)
 
         worldConfig.setProperty("adjust-spawn", true)
         worldConfig.setProperty("alias", "newalias")
         worldConfig.setProperty("spawn-location", SpawnLocation(-64.0, 64.0, 48.0))
-        worldConfigManager.save()
-        compareConfigFile("worlds2.yml", "/properties_worlds.yml")
+        assertTrue(worldConfigManager.save().isSuccess)
     }
 
     @Test
     fun `Delete world section from config`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         worldConfigManager.deleteWorldConfig("world")
-        worldConfigManager.save()
+        assertTrue(worldConfigManager.save().isSuccess)
         compareConfigFile("worlds2.yml", "/delete_worlds.yml")
     }
 

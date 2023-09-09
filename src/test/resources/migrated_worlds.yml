@@ -1,6 +1,48 @@
+world_the_end:
+  adjust-spawn: false
+  alias: &aworld the end
+  allow-flight: false
+  allow-weather: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: true
+  difficulty: NORMAL
+  entry-fee:
+    amount: 0.0
+    currency: AIR
+  environment: THE_END
+  gamemode: SURVIVAL
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: ALL
+  pvp: true
+  respawn-world: ''
+  scale: 16.0
+  seed: -5176596003035866649
+  spawn-location:
+    ==: MVSpawnLocation
+    x: 0.0
+    y: 65.0
+    z: 0.0
+    pitch: 0.0
+    yaw: 0.0
+  spawning:
+    animals:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+  world-blacklist: []
+  version: 1.0
 world:
   adjust-spawn: false
-  alias: my world
+  alias: ''
   allow-flight: false
   allow-weather: true
   auto-heal: true
@@ -21,9 +63,14 @@ world:
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -9223372036854775808
+  seed: -5176596003035866649
   spawn-location:
-    ==: MVNullLocation (It's a bug if you see this in your config file)
+    ==: MVSpawnLocation
+    x: -64.0
+    y: 64.0
+    z: 48.0
+    pitch: 0.0
+    yaw: 0.0
   spawning:
     animals:
       spawn: true
@@ -33,79 +80,6 @@ world:
       spawn: true
       tick-rate: -1
       exceptions: []
-  world-blacklist: []
-  version: 1.0
-world_nether:
-  adjust-spawn: false
-  alias: ''
-  allow-flight: false
-  allow-weather: true
-  auto-heal: true
-  auto-load: true
-  bed-respawn: true
-  difficulty: NORMAL
-  entry-fee:
-    amount: 0.0
-    currency: AIR
-  environment: NETHER
-  gamemode: SURVIVAL
-  generator: ''
-  hidden: false
-  hunger: true
-  keep-spawn-in-memory: true
-  player-limit: -1
-  portal-form: ALL
-  pvp: true
-  respawn-world: ''
-  scale: 1.0
-  seed: -9223372036854775808
-  spawn-location:
-    ==: MVNullLocation (It's a bug if you see this in your config file)
-  spawning:
-    animals:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
-    monsters:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
-  world-blacklist: []
-  version: 1.0
-newworld:
-  adjust-spawn: false
-  alias: ''
-  allow-flight: false
-  allow-weather: true
-  auto-heal: true
-  auto-load: true
-  bed-respawn: true
-  difficulty: NORMAL
-  entry-fee:
-    amount: 0.0
-    currency: AIR
-  environment: NORMAL
-  gamemode: SURVIVAL
-  generator: '@error'
-  hidden: false
-  hunger: true
-  keep-spawn-in-memory: true
-  player-limit: -1
-  portal-form: ALL
-  pvp: true
-  respawn-world: ''
-  scale: 1.0
-  seed: -9223372036854775808
-  spawn-location:
-    ==: MVNullLocation (It's a bug if you see this in your config file)
-  spawning:
-    animals:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
-    monsters:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
-  world-blacklist: []
+  world-blacklist:
+    - test
   version: 1.0

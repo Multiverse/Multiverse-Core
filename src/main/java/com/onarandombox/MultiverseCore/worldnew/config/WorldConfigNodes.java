@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
@@ -18,6 +19,8 @@ import java.util.List;
  * Represents nodes in a world configuration.
  */
 public class WorldConfigNodes {
+    static final double CONFIG_VERSION = 1.0;
+
     private final NodeGroup nodes = new NodeGroup();
     LoadedMultiverseWorld world = null;
 
@@ -235,5 +238,8 @@ public class WorldConfigNodes {
             .name("world-blacklist")
             .build());
 
-    // TODO: Migrate color and style into alias
+    public final ConfigNode<Double> VERSION = node(ConfigNode.builder("version", Double.class)
+            .defaultValue(CONFIG_VERSION)
+            .name(null)
+            .build());
 }

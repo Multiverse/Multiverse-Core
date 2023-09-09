@@ -2,6 +2,12 @@ package com.onarandombox.MultiverseCore.worldnew.config;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.handle.ConfigurationSectionHandle;
+import com.onarandombox.MultiverseCore.configuration.migration.BooleanMigratorAction;
+import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
+import com.onarandombox.MultiverseCore.configuration.migration.IntegerMigratorAction;
+import com.onarandombox.MultiverseCore.configuration.migration.LongMigratorAction;
+import com.onarandombox.MultiverseCore.configuration.migration.MoveMigratorAction;
+import com.onarandombox.MultiverseCore.configuration.migration.VersionMigrator;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import io.vavr.control.Try;
@@ -29,12 +35,65 @@ public final class WorldConfig {
     public WorldConfig(@NotNull String worldName, @NotNull final ConfigurationSection configSection) {
         this.worldName = worldName;
         this.configNodes = new WorldConfigNodes();
-        // TODO: Config migration and version
         this.configHandle = ConfigurationSectionHandle.builder(configSection)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())
+                .migrator(ConfigMigrator.builder(configNodes.VERSION)
+                        .addVersionMigrator(initialVersionMigrator())
+                        .build())
                 .build();
         load();
+    }
+
+    private VersionMigrator initialVersionMigrator() {
+        return VersionMigrator.builder(1.0)
+                .addAction(MoveMigratorAction.of("adjustSpawn", "adjust-spawn"))
+                .addAction(BooleanMigratorAction.of("adjust-spawn"))
+                .addAction(MoveMigratorAction.of("allowFlight", "allow-flight"))
+                .addAction(BooleanMigratorAction.of("allow-flight"))
+                .addAction(MoveMigratorAction.of("allowWeather", "allow-weather"))
+                .addAction(BooleanMigratorAction.of("allow-weather"))
+                .addAction(MoveMigratorAction.of("autoHeal", "auto-heal"))
+                .addAction(BooleanMigratorAction.of("auto-heal"))
+                .addAction(MoveMigratorAction.of("autoLoad", "auto-load"))
+                .addAction(BooleanMigratorAction.of("auto-load"))
+                .addAction(MoveMigratorAction.of("bedRespawn", "bed-respawn"))
+                .addAction(BooleanMigratorAction.of("bed-respawn"))
+                .addAction(MoveMigratorAction.of("difficulty", "difficulty"))
+                .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
+                .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
+                .addAction(MoveMigratorAction.of("environment", "environment"))
+                .addAction(MoveMigratorAction.of("gamemode", "gamemode"))
+                .addAction(MoveMigratorAction.of("generator", "generator"))
+                .addAction(MoveMigratorAction.of("hidden", "hidden"))
+                .addAction(BooleanMigratorAction.of("hidden"))
+                .addAction(MoveMigratorAction.of("hunger", "hunger"))
+                .addAction(BooleanMigratorAction.of("hunger"))
+                .addAction(MoveMigratorAction.of("keepSpawnInMemory", "keep-spawn-in-memory"))
+                .addAction(BooleanMigratorAction.of("keep-spawn-in-memory"))
+                .addAction(MoveMigratorAction.of("playerLimit", "player-limit"))
+                .addAction(IntegerMigratorAction.of("player-limit"))
+                .addAction(MoveMigratorAction.of("portalForm", "portal-form"))
+                .addAction(MoveMigratorAction.of("pvp", "pvp"))
+                .addAction(BooleanMigratorAction.of("pvp"))
+                .addAction(MoveMigratorAction.of("respawnWorld", "respawn-world"))
+                .addAction(MoveMigratorAction.of("scale", "scale"))
+                .addAction(MoveMigratorAction.of("seed", "seed"))
+                .addAction(LongMigratorAction.of("seed"))
+                .addAction(MoveMigratorAction.of("spawnLocation", "spawn-location"))
+                .addAction(MoveMigratorAction.of("spawning.animals.spawn", "spawning.animals.spawn"))
+                .addAction(BooleanMigratorAction.of("spawning.animals.spawn"))
+                .addAction(MoveMigratorAction.of("spawning.animals.amount", "spawning.animals.tick-rate"))
+                .addAction(IntegerMigratorAction.of("spawning.animals.tick-rate"))
+                .addAction(MoveMigratorAction.of("spawning.animals.exceptions", "spawning.animals.exceptions"))
+                .addAction(MoveMigratorAction.of("spawning.monsters.spawn", "spawning.monsters.spawn"))
+                .addAction(BooleanMigratorAction.of("spawning.monsters.spawn"))
+                .addAction(MoveMigratorAction.of("spawning.monsters.amount", "spawning.monsters.tick-rate"))
+                .addAction(IntegerMigratorAction.of("spawning.monsters.tick-rate"))
+                .addAction(MoveMigratorAction.of("spawning.monsters.exceptions", "spawning.monsters.exceptions"))
+                .addAction(MoveMigratorAction.of("worldBlacklist", "world-blacklist"))
+                .addAction(new LegacyAliasMigrator())
+                .build();
     }
 
     public Try<Void> load() {
