@@ -49,7 +49,7 @@ import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldBo
 import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldConfigStore;
 
 /**
- * This manager contains all the world managing functions that your heart desires!
+ * This manager contains all the world managing functions that your heart desires.
  */
 @Service
 public class WorldManager {
@@ -64,7 +64,7 @@ public class WorldManager {
     private final GeneratorProvider generatorProvider;
     private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
-    private final SafeTTeleporter safeTTeleporter;
+    private final SafeTTeleporter safetyTeleporter;
     private final LocationManipulation locationManipulation;
 
     @Inject
@@ -74,7 +74,7 @@ public class WorldManager {
             @NotNull GeneratorProvider generatorProvider,
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
-            @NotNull SafeTTeleporter safeTTeleporter,
+            @NotNull SafeTTeleporter safetyTeleporter,
             @NotNull LocationManipulation locationManipulation
     ) {
         this.worldsMap = new HashMap<>();
@@ -87,7 +87,7 @@ public class WorldManager {
         this.generatorProvider = generatorProvider;
         this.filesManipulator = filesManipulator;
         this.blockSafety = blockSafety;
-        this.safeTTeleporter = safeTTeleporter;
+        this.safetyTeleporter = safetyTeleporter;
         this.locationManipulation = locationManipulation;
     }
 
@@ -151,7 +151,8 @@ public class WorldManager {
             if (isLoadedWorld(world) || !world.getAutoLoad()) {
                 return;
             }
-            loadWorld(world).onFailure(failure -> Logging.severe("Failed to load world %s: %s", world.getName(), failure));
+            loadWorld(world).onFailure(failure -> Logging.severe("Failed to load world %s: %s",
+                    world.getName(), failure));
         });
     }
 
@@ -159,6 +160,7 @@ public class WorldManager {
      * Creates a new world.
      *
      * @param options   The options for customizing the creation of a new world.
+     * @return The result of the creation.
      */
     public Result<CreateWorldResult.Success, CreateWorldResult.Failure> createWorld(CreateWorldOptions options) {
         // Params validations
@@ -192,7 +194,7 @@ public class WorldManager {
                                 replace("{world}").with(options.worldName()),
                                 replace("{error}").with(exception.getMessage())),
                         world -> {
-                            newMVWorld(world, parsedGenerator, options.useSpawnAdjust());
+                            newLoadedMultiverseWorld(world, parsedGenerator, options.useSpawnAdjust());
                             return Result.success(CreateWorldResult.Success.CREATED,
                                     replace("{world}").with(world.getName()));
                         });
@@ -232,19 +234,33 @@ public class WorldManager {
                                 replace("{world}").with(options.worldName()),
                                 replace("{error}").with(exception.getMessage())),
                         world -> {
-                            newMVWorld(world, parsedGenerator, options.useSpawnAdjust());
+                            newLoadedMultiverseWorld(world, parsedGenerator, options.useSpawnAdjust());
                             return Result.success(ImportWorldResult.Success.IMPORTED,
                                     replace("{world}").with(options.worldName()));
                         });
     }
 
+    /**
+     * Parses generator string and defaults to generator in bukkit.yml if not specified.
+     *
+     * @param worldName The name of the world.
+     * @param generator The input generator string.
+     * @return The parsed generator string.
+     */
     private @Nullable String parseGenerator(@NotNull String worldName, @Nullable String generator) {
         return Strings.isNullOrEmpty(generator)
                 ? generatorProvider.getDefaultGeneratorForWorld(worldName)
                 : generator;
     }
 
-    private void newMVWorld(@NotNull World world, @Nullable String generator, boolean adjustSpawn) {
+    /**
+     * Creates a new loaded multiverseWorld from a bukkit world.
+     *
+     * @param world         The bukkit world to create a multiverse world from.
+     * @param generator     The generator string.
+     * @param adjustSpawn   Whether to adjust spawn.
+     */
+    private void newLoadedMultiverseWorld(@NotNull World world, @Nullable String generator, boolean adjustSpawn) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
@@ -252,7 +268,12 @@ public class WorldManager {
         MultiverseWorld mvWorld = new MultiverseWorld(world.getName(), worldConfig);
         worldsMap.put(mvWorld.getName(), mvWorld);
 
-        LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(world, worldConfig, blockSafety, safeTTeleporter, locationManipulation);
+        LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
+                world,
+                worldConfig,
+                blockSafety,
+                safetyTeleporter,
+                locationManipulation);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
     }
@@ -301,9 +322,14 @@ public class WorldManager {
                                 replace("{world}").with(mvWorld.getName()),
                                 replace("{error}").with(exception.getMessage())),
                         world -> {
+                            // TODO: Check worldConfig null
                             WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName());
-                            LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(world, worldConfig, blockSafety,
-                                    safeTTeleporter, locationManipulation);
+                            LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
+                                    world,
+                                    worldConfig,
+                                    blockSafety,
+                                    safetyTeleporter,
+                                    locationManipulation);
                             loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
                             saveWorldsConfig();
                             return Result.success(LoadWorldResult.Success.LOADED,
@@ -343,7 +369,8 @@ public class WorldManager {
      * @param world The multiverse world to unload.
      * @return The result of the unload action.
      */
-    public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure> unloadWorld(@NotNull LoadedMultiverseWorld world) {
+    public Result<UnloadWorldResult.Success, UnloadWorldResult.Failure>
+            unloadWorld(@NotNull LoadedMultiverseWorld world) {
         if (unloadTracker.contains(world.getName())) {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
@@ -378,10 +405,12 @@ public class WorldManager {
      * @param worldName The name of the world to remove.
      * @return The result of the remove.
      */
-    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull String worldName) {
+    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure>
+            removeWorld(@NotNull String worldName) {
         return getWorld(worldName)
                 .map(this::removeWorld)
-                .getOrElse(() -> Result.failure(RemoveWorldResult.Failure.WORLD_NON_EXISTENT, replace("{world}").with(worldName)));
+                .getOrElse(() -> Result.failure(RemoveWorldResult.Failure.WORLD_NON_EXISTENT,
+                        replace("{world}").with(worldName)));
     }
 
     /**
@@ -404,7 +433,8 @@ public class WorldManager {
      * @param loadedWorld The multiverse world to remove.
      * @return The result of the remove.
      */
-    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
+    public Result<RemoveWorldResult.Success, RemoveWorldResult.Failure>
+            removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
         var result = unloadWorld(loadedWorld);
         if (result.isFailure()) {
             return Result.failure(RemoveWorldResult.Failure.UNLOAD_FAILED, result.getReasonMessage());
@@ -413,7 +443,7 @@ public class WorldManager {
     }
 
     /**
-     * Removes an existing multiverse world from the world's config. It will no longer be an world known to Multiverse.
+     * Removes an existing multiverse world from the world's config. It will no longer be a world known to Multiverse.
      *
      * @param world The multiverse world to remove.
      * @return The result of the remove.
@@ -468,7 +498,8 @@ public class WorldManager {
      * @param world The multiverse world to delete.
      * @return The result of the delete action.
      */
-    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure> deleteWorld(@NotNull LoadedMultiverseWorld world) {
+    public Result<DeleteWorldResult.Success, DeleteWorldResult.Failure>
+            deleteWorld(@NotNull LoadedMultiverseWorld world) {
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull();
         if (worldFolder == null || !worldNameChecker.isValidWorldFolder(worldFolder)) {
             Logging.severe("Failed to get world folder for world: " + world.getName());
@@ -495,6 +526,7 @@ public class WorldManager {
      * Clones an existing multiverse world.
      *
      * @param options   The options for customizing the cloning of a world.
+     * @return The result of the clone.
      */
     public Result<CloneWorldResult.Success, CloneWorldResult.Failure> cloneWorld(@NotNull CloneWorldOptions options) {
         return cloneWorldValidateWorld(options)
@@ -504,7 +536,8 @@ public class WorldManager {
                                 .environment(options.world().getEnvironment())
                                 .generator(options.world().getGenerator()))
                         .fold(
-                                failure -> Result.failure(CloneWorldResult.Failure.IMPORT_FAILED, failure.getReasonMessage()),
+                                failure -> Result.failure(CloneWorldResult.Failure.IMPORT_FAILED,
+                                        failure.getReasonMessage()),
                                 success -> Result.success()))
                 .onSuccessThen(s -> getLoadedWorld(options.newWorldName()).fold(
                         () -> Result.failure(CloneWorldResult.Failure.MV_WORLD_FAILED,
@@ -541,7 +574,8 @@ public class WorldManager {
 
     private Result<CloneWorldResult.Success, CloneWorldResult.Failure>
             cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
-        File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).getOrNull(); // TODO: Check null?
+        // TODO: Check null?
+        File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).getOrNull();
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
         return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> Result.failure(CloneWorldResult.Failure.COPY_FAILED,
@@ -569,6 +603,7 @@ public class WorldManager {
      * Regenerates a world.
      *
      * @param options   The options for customizing the regeneration of a world.
+     * @return The result of the regeneration.
      */
     public Result<RegenWorldResult.Success, RegenWorldResult.Failure> regenWorld(@NotNull RegenWorldOptions options) {
         // TODO: Teleport players out of world, and back in after regen
@@ -616,22 +651,19 @@ public class WorldManager {
      * @return The created world.
      */
     private Try<World> createBukkitWorld(WorldCreator worldCreator) {
-        this.loadTracker.add(worldCreator.name());
-        try {
+        return Try.of(() -> {
+            this.loadTracker.add(worldCreator.name());
             World world = worldCreator.createWorld();
-            this.loadTracker.remove(worldCreator.name());
             if (world == null) {
-                Logging.severe("Failed to create bukkit world: " + worldCreator.name());
-                return Try.failure(new Exception("World created was null!")); // TODO: Localize this
+                // TODO: Localize this
+                throw new Exception("World created returned null!");
             }
             Logging.fine("Bukkit created world: " + world.getName());
-            return Try.success(world);
-        } catch (Exception e) {
-            this.loadTracker.remove(worldCreator.name());
+            return world;
+        }).onFailure(exception -> {
             Logging.severe("Failed to create bukkit world: " + worldCreator.name());
-            e.printStackTrace();
-            return Try.failure(e);
-        }
+            exception.printStackTrace();
+        }).andFinally(() -> this.loadTracker.remove(worldCreator.name()));
     }
 
     /**
@@ -641,21 +673,17 @@ public class WorldManager {
      * @return The unloaded world.
      */
     private Try<Void> unloadBukkitWorld(World world) {
-        try {
+        return Try.run(() -> {
             unloadTracker.add(world.getName());
-            boolean unloadSuccess = Bukkit.unloadWorld(world, true);
-            unloadTracker.remove(world.getName());
-            if (unloadSuccess) {
-                Logging.fine("Bukkit unloaded world: " + world.getName());
-                return Try.success(null);
+            if (!Bukkit.unloadWorld(world, true)) {
+                // TODO: Localize this, maybe with MultiverseException
+                throw new Exception("Is this the default world? You can't unload the default world!");
             }
-            return Try.failure(new Exception("Is this the default world? You can't unload the default world!")); // TODO: Localize this, maybe with MultiverseException
-        } catch (Exception e) {
-            unloadTracker.remove(world.getName());
+            Logging.fine("Bukkit unloaded world: " + world.getName());
+        }).onFailure(exception -> {
             Logging.severe("Failed to unload bukkit world: " + world.getName());
-            e.printStackTrace();
-            return Try.failure(e);
-        }
+            exception.printStackTrace();
+        }).andFinally(() -> unloadTracker.remove(world.getName()));
     }
 
     /**

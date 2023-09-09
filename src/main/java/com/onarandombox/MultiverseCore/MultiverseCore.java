@@ -116,24 +116,25 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         Logging.setShowingConfig(shouldShowConfig());
 
         // Initialize the worlds
-        worldManagerProvider.get().initAllWorlds().onFailure(e -> {
-            Logging.severe("Failed to initialize worlds");
+        worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
+            // Setup economy here so vault is loaded
+            loadEconomist();
+
+            // Init all the other stuff
+            loadAnchors();
+            registerEvents();
+            setUpLocales();
+            registerCommands();
+            registerDestinations();
+            setupMetrics();
+            loadPlaceholderAPIIntegration();
+            saveAllConfigs();
+            logEnableMessage();
+        }).onFailure(e -> {
+            Logging.severe("Failed to multiverse core! Disabling...");
             e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
         });
-
-        // Setup economy here so vault is loaded
-        loadEconomist();
-
-        // Init all the other stuff
-        loadAnchors();
-        registerEvents();
-        setUpLocales();
-        registerCommands();
-        registerDestinations();
-        setupMetrics();
-        loadPlaceholderAPIIntegration();
-        saveAllConfigs();
-        logEnableMessage();
     }
 
     /**
