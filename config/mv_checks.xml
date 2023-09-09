@@ -192,7 +192,9 @@
         <module name="PackageDeclaration"/>
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
-        <module name="ReturnCount"/>
+        <module name="ReturnCount">
+            <property name="severity" value="info"/>
+        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
@@ -297,11 +299,48 @@
         <module name="BooleanExpressionComplexity"/>
         <module name="ClassDataAbstractionCoupling">
             <property name="max" value="7"/>
-            <property name="excludedClasses" value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character, Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception, Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, IntStream, Integer, LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map, NullPointerException, Object, Optional, OptionalDouble, OptionalInt, OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException, Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder, SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException, Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
         </module>
         <module name="ClassFanOutComplexity">
+            <property name="id" value="FanOutComplexityGettingTooHigh"/>
             <property name="max" value="20"/>
-            <property name="excludedClasses" value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character, Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception, Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, IntStream, Integer, LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map, NullPointerException, Object, Optional, OptionalDouble, OptionalInt, OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException, Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder, SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException, Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="id" value="FanOutComplexityProbablyTooHigh"/>
+            <property name="max" value="35"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
         </module>
         <module name="CyclomaticComplexity">
             <property name="max" value="7"/>
@@ -455,7 +494,13 @@
             <property name="max" value="30"/>
         </module>
         <module name="LambdaBodyLength">
+            <property name="id" value="LambdaGettingTooLong"/>
             <property name="max" value="10"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="LambdaBodyLength">
+            <property name="id" value="LambdaProbablyTooLong"/>
+            <property name="max" value="25"/>
         </module>
         <module name="MethodCount">
             <property name="maxTotal" value="100"/>
@@ -472,9 +517,15 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
+            <property name="id" value="ConsiderLessParameters"/>
             <property name="max" value="3"/>
             <property name="ignoreOverriddenMethods" value="true"/>
-            <property name="severity" value="warning"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyParameters"/>
+            <property name="max" value="10"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
         </module>
         <module name="RecordComponentNumber">
             <property name="max" value="8"/>
