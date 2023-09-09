@@ -54,7 +54,7 @@ import static com.onarandombox.MultiverseCore.worldnew.helpers.DataStore.WorldCo
 /**
  * This manager contains all the world managing functions that your heart desires.
  */
-@Service
+@Service // SUPPRESS CHECKSTYLE: ClassFanOutComplexity This is the world manager, it's going to be complex.
 public class WorldManager {
 
     private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
@@ -100,7 +100,7 @@ public class WorldManager {
      * @return The result of the load.
      */
     public Try<Void> initAllWorlds() {
-        return populateWorldFromConfig().andThenTry(() -> {
+        return updateWorldsFromConfig().andThenTry(() -> {
             loadDefaultWorlds();
             autoLoadWorlds();
             saveWorldsConfig();
@@ -108,28 +108,31 @@ public class WorldManager {
     }
 
     /**
-     * Populate world map from the worlds.yml config.
+     * Updates the current set of worlds to match the worlds config.
      *
-     * @return The result of the world map population.
+     * @return A successful Try if the worlds.yml config was loaded successfully.
      */
-    private Try<Void> populateWorldFromConfig() {
+    private Try<Void> updateWorldsFromConfig() {
         return worldsConfigManager.load().mapTry(result -> {
-            var newWorldConfigs = result._1();
-            var removedWorlds = result._2();
-
-            newWorldConfigs.forEach(worldConfig -> getWorld(worldConfig.getWorldName())
-                    .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
-                    .onEmpty(() -> {
-                        MultiverseWorld mvWorld = new MultiverseWorld(worldConfig.getWorldName(), worldConfig);
-                        worldsMap.put(mvWorld.getName(), mvWorld);
-                    }));
-
-            removedWorlds.forEach(worldName -> removeWorld(worldName)
-                    .onFailure(failure -> Logging.severe("Failed to unload world %s: %s", worldName, failure))
-                    .onSuccess(success -> Logging.fine("Unloaded world %s as it was removed from config", worldName)));
-
+            loadNewWorldConfigs(result._1());
+            removeWorldsNotInConfigs(result._2());
             return null;
         });
+    }
+
+    private void loadNewWorldConfigs(Collection<WorldConfig> newWorldConfigs) {
+        newWorldConfigs.forEach(worldConfig -> getWorld(worldConfig.getWorldName())
+                .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
+                .onEmpty(() -> {
+                    MultiverseWorld mvWorld = new MultiverseWorld(worldConfig.getWorldName(), worldConfig);
+                    worldsMap.put(mvWorld.getName(), mvWorld);
+                }));
+    }
+
+    private void removeWorldsNotInConfigs(Collection<String> removedWorlds) {
+        removedWorlds.forEach(worldName -> removeWorld(worldName)
+                .onFailure(failure -> Logging.severe("Failed to unload world %s: %s", worldName, failure))
+                .onSuccess(success -> Logging.fine("Unloaded world %s as it was removed from config", worldName)));
     }
 
     /**
