@@ -54,6 +54,12 @@ public enum MVCorei18n implements MessageKeyProvider {
     GAMERULE_SUCCESS_SINGLE,
     GAMERULE_SUCCESS_MULTIPLE,
 
+    // Gamerules command
+    GAMERULES_DESCRIPTION,
+    GAMERULES_DESCRIPTION_PAGE,
+    GAMERULES_DESCRIPTION_WORLD,
+    GAMERULES_TITLE,
+
     // import command
     IMPORT_IMPORTING,
     IMPORT_FAILED,

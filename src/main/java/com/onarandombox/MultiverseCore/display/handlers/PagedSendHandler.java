@@ -99,7 +99,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
 
     /**
      * Sets whether display output should be paginated if is for console output.
-     * This option will be useless of {@link PagedSendHandler#paginate} is set to false.
+     * This option will be useless if {@link PagedSendHandler#paginate} is set to false.
      *
      * @param paginateInConsole State of doing pagination in console.
      * @return Same {@link PagedSendHandler} for method chaining.
