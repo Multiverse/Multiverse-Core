@@ -520,15 +520,30 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
-            <property name="id" value="ConsiderLessParameters"/>
-            <property name="max" value="3"/>
+            <property name="id" value="ConsiderLessMethodParameters"/>
+            <property name="max" value="4"/>
             <property name="ignoreOverriddenMethods" value="true"/>
             <property name="severity" value="info"/>
+            <property name="tokens" value="METHOD_DEF"/>
         </module>
         <module name="ParameterNumber">
-            <property name="id" value="ProbablyTooManyParameters"/>
+            <property name="id" value="ProbablyTooManyMethodParameters"/>
             <property name="max" value="10"/>
             <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ConsiderLessConstructorParameters"/>
+            <property name="max" value="7"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="severity" value="info"/>
+            <property name="tokens" value="CTOR_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyConstructorParameters"/>
+            <property name="max" value="12"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="CTOR_DEF"/>
         </module>
         <module name="RecordComponentNumber">
             <property name="max" value="8"/>
