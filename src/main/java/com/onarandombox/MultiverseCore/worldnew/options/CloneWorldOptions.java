@@ -3,7 +3,18 @@ package com.onarandombox.MultiverseCore.worldnew.options;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Options for customizing the cloning of a world.
+ */
 public class CloneWorldOptions {
+
+    /**
+     * Creates a new {@link CloneWorldOptions} instance with the given world.
+     *
+     * @param world         The world to clone.
+     * @param newWorldName  The name of the new world.
+     * @return A new {@link CloneWorldOptions} instance.
+     */
     public static CloneWorldOptions fromTo(LoadedMultiverseWorld world, String newWorldName) {
         return new CloneWorldOptions(world, newWorldName);
     }
@@ -15,24 +26,45 @@ public class CloneWorldOptions {
 
     private boolean keepWorldBorder = true;
 
-    public CloneWorldOptions(LoadedMultiverseWorld world, String newWorldName) {
+    CloneWorldOptions(LoadedMultiverseWorld world, String newWorldName) {
         this.world = world;
         this.newWorldName = newWorldName;
     }
 
+    /**
+     * Gets the world to clone.
+     *
+     * @return The world to clone.
+     */
     public LoadedMultiverseWorld world() {
         return world;
     }
 
+    /**
+     * Gets the name of the new world.
+     *
+     * @return The name of the new world.
+     */
     public String newWorldName() {
         return newWorldName;
     }
 
+    /**
+     * Sets whether to keep the game rule of the world during cloning.
+     *
+     * @param keepGameRule  Whether to keep the game rule of the world during cloning.
+     * @return This {@link CloneWorldOptions} instance.
+     */
     public @NotNull CloneWorldOptions keepGameRule(boolean keepGameRule) {
         this.keepGameRule = keepGameRule;
         return this;
     }
 
+    /**
+     * Gets whether to keep the game rule of the world during cloning.
+     *
+     * @return Whether to keep the game rule of the world during cloning.
+     */
     public boolean keepGameRule() {
         return keepGameRule;
     }
@@ -42,6 +74,11 @@ public class CloneWorldOptions {
         return this;
     }
 
+    /**
+     * Gets whether to keep the world config of the world during cloning.
+     *
+     * @return Whether to keep the world config of the world during cloning.
+     */
     public boolean keepWorldConfig() {
         return keepWorldConfig;
     }
@@ -51,6 +88,11 @@ public class CloneWorldOptions {
         return this;
     }
 
+    /**
+     * Gets whether to keep the world border of the world during cloning.
+     *
+     * @return Whether to keep the world border of the world during cloning.
+     */
     public boolean keepWorldBorder() {
         return keepWorldBorder;
     }

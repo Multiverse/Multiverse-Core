@@ -6,10 +6,12 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
+/**
+ * Result of a world removal operation.
+ */
 public class RemoveWorldResult {
     public enum Success implements SuccessReason {
-        REMOVED(MVCorei18n.REMOVEWORLD_REMOVED)
-        ;
+        REMOVED(MVCorei18n.REMOVEWORLD_REMOVED);
 
         private final MessageKeyProvider message;
 
@@ -25,8 +27,7 @@ public class RemoveWorldResult {
 
     public enum Failure implements FailureReason {
         WORLD_NON_EXISTENT(MVCorei18n.REMOVEWORLD_WORLDNONEXISTENT),
-        UNLOAD_FAILED(null),
-        ;
+        UNLOAD_FAILED(null);
 
         private final MessageKeyProvider message;
 

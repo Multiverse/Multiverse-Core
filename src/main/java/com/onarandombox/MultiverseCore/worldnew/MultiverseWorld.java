@@ -294,10 +294,18 @@ public class MultiverseWorld {
         return worldConfig;
     }
 
+    /**
+     * Sets the world config. Only for internal use.
+     *
+     * @param worldConfig   The world config.
+     */
     void setWorldConfig(WorldConfig worldConfig) {
         this.worldConfig = worldConfig;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "MultiverseWorld{"

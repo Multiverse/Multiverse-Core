@@ -6,10 +6,12 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
+/**
+ * Result of a world regeneration operation.
+ */
 public class RegenWorldResult {
     public enum Success implements SuccessReason {
-        REGENERATED(MVCorei18n.REGENWORLD_REGENERATED)
-        ;
+        REGENERATED(MVCorei18n.REGENWORLD_REGENERATED);
 
         private final MessageKeyProvider message;
 
@@ -25,8 +27,7 @@ public class RegenWorldResult {
 
     public enum Failure implements FailureReason {
         DELETE_FAILED(null),
-        CREATE_FAILED(null),
-        ;
+        CREATE_FAILED(null);
 
         private final MessageKeyProvider message;
 

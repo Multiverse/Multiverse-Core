@@ -14,6 +14,9 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents nodes in a world configuration.
+ */
 public class WorldConfigNodes {
     private final NodeGroup nodes = new NodeGroup();
     LoadedMultiverseWorld world = null;

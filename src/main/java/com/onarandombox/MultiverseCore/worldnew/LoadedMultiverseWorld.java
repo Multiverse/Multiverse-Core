@@ -57,7 +57,8 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         }
     }
 
-    private Location readSpawnFromWorld(World world) { // TODO: Refactor... this is copy pasted and bad
+    private Location readSpawnFromWorld(World world) {
+        // TODO: Refactor... this is copy pasted and bad
         Location location = world.getSpawnLocation();
         // Set the worldspawn to our configspawn
         // Verify that location was safe
@@ -109,12 +110,18 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         return getBukkitWorld().map(World::canGenerateStructures);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void setWorldConfig(WorldConfig worldConfig) {
         super.setWorldConfig(worldConfig);
         setupWorldConfig(getBukkitWorld().get());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "LoadedMultiverseWorld{"

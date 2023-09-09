@@ -26,7 +26,7 @@ public class WorldPurger {
 
     private Class<Entity> ambientClass = null;
 
-    public WorldPurger() {
+    WorldPurger() {
         try {
             Class entityClass = Class.forName("org.bukkit.entity.Ambient");
             if (Entity.class.isAssignableFrom(entityClass)) {

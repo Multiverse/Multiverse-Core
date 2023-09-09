@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.world.SimpleMVWorld;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
@@ -18,17 +19,18 @@ public final class NullLocation extends SpawnLocation {
     }
 
     @Override
-    public Location clone() {
+    public @NotNull Location clone() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Map<String, Object> serialize() {
+    public @NotNull Map<String, Object> serialize() {
         return Collections.emptyMap();
     }
 
     /**
      * Let Bukkit be able to deserialize this.
+     *
      * @param args The map.
      * @return The deserialized object.
      */
@@ -37,7 +39,7 @@ public final class NullLocation extends SpawnLocation {
     }
 
     @Override
-    public Vector toVector() {
+    public @NotNull Vector toVector() {
         throw new UnsupportedOperationException();
     }
 

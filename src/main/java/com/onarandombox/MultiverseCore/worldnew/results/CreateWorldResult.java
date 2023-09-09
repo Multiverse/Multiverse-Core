@@ -6,10 +6,12 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
+/**
+ * Result of a world creation operation.
+ */
 public class CreateWorldResult {
     public enum Success implements SuccessReason {
-        CREATED(MVCorei18n.CREATEWORLD_CREATED)
-        ;
+        CREATED(MVCorei18n.CREATEWORLD_CREATED);
 
         private final MessageKeyProvider message;
 
@@ -28,8 +30,7 @@ public class CreateWorldResult {
         WORLD_EXIST_FOLDER(MVCorei18n.CREATEWORLD_WORLDEXISTFOLDER),
         WORLD_EXIST_UNLOADED(MVCorei18n.CREATEWORLD_WORLDEXISTUNLOADED),
         WORLD_EXIST_LOADED(MVCorei18n.CREATEWORLD_WORLDEXISTLOADED),
-        BUKKIT_CREATION_FAILED(MVCorei18n.CREATEWORLD_BUKKITCREATIONFAILED),
-        ;
+        BUKKIT_CREATION_FAILED(MVCorei18n.CREATEWORLD_BUKKITCREATIONFAILED);
 
         private final MessageKeyProvider message;
 

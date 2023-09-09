@@ -6,10 +6,12 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
+/**
+ * Result of a world clone operation.
+ */
 public class CloneWorldResult {
     public enum Success implements SuccessReason {
-        CLONED(MVCorei18n.CLONEWORLD_CLONED)
-        ;
+        CLONED(MVCorei18n.CLONEWORLD_CLONED);
 
         private final MessageKeyProvider message;
 

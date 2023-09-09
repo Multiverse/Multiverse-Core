@@ -17,6 +17,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Represents a world configuration.
+ */
 public final class WorldConfig {
 
     private final String worldName;

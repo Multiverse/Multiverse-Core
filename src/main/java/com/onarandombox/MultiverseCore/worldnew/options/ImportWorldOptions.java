@@ -4,6 +4,9 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Options for customizing the import of a new world.
+ */
 public class ImportWorldOptions {
 
     /**

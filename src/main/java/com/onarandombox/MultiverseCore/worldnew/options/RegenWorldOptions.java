@@ -6,7 +6,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
+/**
+ * Options for customizing the regeneration of a world.
+ */
 public class RegenWorldOptions {
+
+    /**
+     * Creates a new {@link RegenWorldOptions} instance with the given world.
+     *
+     * @param world The world to regenerate.
+     * @return A new {@link RegenWorldOptions} instance.
+     */
     public static @NotNull RegenWorldOptions world(@NotNull LoadedMultiverseWorld world) {
         return new RegenWorldOptions(world);
     }
@@ -23,24 +33,51 @@ public class RegenWorldOptions {
         this.world = world;
     }
 
+    /**
+     * Gets the world to regenerate.
+     *
+     * @return The world to regenerate.
+     */
     public @NotNull LoadedMultiverseWorld world() {
         return world;
     }
 
+    /**
+     * Sets whether to keep the game rule of the world during regeneration.
+     *
+     * @param keepGameRule  Whether to keep the game rule of the world during regeneration.
+     * @return This {@link RegenWorldOptions} instance.
+     */
     public @NotNull RegenWorldOptions keepGameRule(boolean keepGameRule) {
         this.keepGameRule = keepGameRule;
         return this;
     }
 
+    /**
+     * Gets whether to keep the game rule of the world during regeneration.
+     *
+     * @return Whether to keep the game rule of the world during regeneration.
+     */
     public boolean keepGameRule() {
         return keepGameRule;
     }
 
+    /**
+     * Sets whether to keep the world config of the world during regeneration.
+     *
+     * @param keepWorldConfig   Whether to keep the world config of the world during regeneration.
+     * @return This {@link RegenWorldOptions} instance.
+     */
     public @NotNull RegenWorldOptions keepWorldConfig(boolean keepWorldConfig) {
         this.keepWorldConfig = keepWorldConfig;
         return this;
     }
 
+    /**
+     * Gets whether to keep the world config of the world during regeneration.
+     *
+     * @return Whether to keep the world config of the world during regeneration.
+     */
     public boolean keepWorldConfig() {
         return keepWorldConfig;
     }
@@ -50,10 +87,21 @@ public class RegenWorldOptions {
         return this;
     }
 
+    /**
+     * Gets whether to keep the world border of the world during regeneration.
+     *
+     * @return  Whether to keep the world border of the world during regeneration.
+     */
     public boolean keepWorldBorder() {
         return keepWorldBorder;
     }
 
+    /**
+     * Sets whether to use a random seed for the world to regenerate. Cannot be set to true when seed is set.
+     *
+     * @param randomSeed    Whether to use a random seed for the world to regenerate.
+     * @return This {@link RegenWorldOptions} instance.
+     */
     public @NotNull RegenWorldOptions randomSeed(boolean randomSeed) {
         if (randomSeed && seed != Long.MIN_VALUE) {
             throw new IllegalStateException("Cannot set randomSeed to true when seed is set");
@@ -62,10 +110,21 @@ public class RegenWorldOptions {
         return this;
     }
 
+    /**
+     * Gets whether to use a random seed for the world to regenerate.
+     *
+     * @return Whether to use a random seed for the world to regenerate.
+     */
     public boolean randomSeed() {
         return randomSeed;
     }
 
+    /**
+     * Sets the seed for the world to regenerate. Random seed will be disabled.
+     *
+     * @param seed  The seed for the world to regenerate.
+     * @return This {@link RegenWorldOptions} instance.
+     */
     public @NotNull RegenWorldOptions seed(@Nullable String seed) {
         if (seed == null) {
             this.seed = Long.MIN_VALUE;
@@ -82,11 +141,22 @@ public class RegenWorldOptions {
         return this;
     }
 
+    /**
+     * Sets the seed for the world to regenerate. Random seed will be disabled.
+     *
+     * @param seed  The seed for the world to regenerate.
+     * @return This {@link RegenWorldOptions} instance.
+     */
     public @NotNull RegenWorldOptions seed(long seed) {
         this.seed = seed;
         return this;
     }
 
+    /**
+     * Gets the seed for the world to regenerate.
+     *
+     * @return The seed for the world to regenerate.
+     */
     public long seed() {
         if (randomSeed) {
             return new Random().nextLong();

@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Just like a regular {@link Location}, however {@code world} is usually {@code null}
@@ -52,10 +53,11 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      * {@inheritDoc}
      */
     @Override
-    public Chunk getChunk() {
-        if ((this.worldRef != null) && (this.worldRef.get() != null))
+    public @NotNull Chunk getChunk() {
+        if (this.worldRef != null && this.worldRef.get() != null) {
             return this.worldRef.get().getChunkAt(this);
-        return null;
+        }
+        throw new IllegalStateException("World is null");
     }
 
     /**
@@ -63,27 +65,29 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      */
     @Override
     public Block getBlock() {
-        if ((this.worldRef != null) && (this.worldRef.get() != null))
+        if (this.worldRef != null && this.worldRef.get() != null) {
             return this.worldRef.get().getBlockAt(this);
-        return null;
+        }
+        throw new IllegalStateException("World is null");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialized = new HashMap<String, Object>(5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-        serialized.put("x", this.getX());
-        serialized.put("y", this.getY());
-        serialized.put("z", this.getZ());
-        serialized.put("pitch", this.getPitch());
-        serialized.put("yaw", this.getYaw());
-        return serialized;
+    public @NotNull Map<String, Object> serialize() {
+        return new HashMap<>() {{
+            put("x", getX());
+            put("y", getY());
+            put("z", getZ());
+            put("pitch", getPitch());
+            put("yaw", getYaw());
+        }};
     }
 
     /**
      * Let Bukkit be able to deserialize this.
+     *
      * @param args The map.
      * @return The deserialized object.
      */

@@ -60,7 +60,7 @@ public class FilesManipulator {
         }
     }
 
-    private static class CopyDirFileVisitor extends SimpleFileVisitor<Path> {
+    private static final class CopyDirFileVisitor extends SimpleFileVisitor<Path> {
 
         private final Path sourceDir;
         private final Path targetDir;

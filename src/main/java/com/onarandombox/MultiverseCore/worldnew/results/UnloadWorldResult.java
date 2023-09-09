@@ -6,10 +6,12 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
+/**
+ * Result of a world unloading operation.
+ */
 public class UnloadWorldResult {
     public enum Success implements SuccessReason {
-        UNLOADED(MVCorei18n.UNLOADWORLD_UNLOADED)
-        ;
+        UNLOADED(MVCorei18n.UNLOADWORLD_UNLOADED);
 
         private final MessageKeyProvider message;
 
@@ -27,8 +29,7 @@ public class UnloadWorldResult {
         WORLD_ALREADY_UNLOADING(MVCorei18n.UNLOADWORLD_WORLDALREADYUNLOADING),
         WORLD_NON_EXISTENT(MVCorei18n.UNLOADWORLD_WORLDNONEXISTENT),
         WORLD_UNLOADED(MVCorei18n.UNLOADWORLD_WORLDUNLOADED),
-        BUKKIT_UNLOAD_FAILED(MVCorei18n.UNLOADWORLD_BUKKITUNLOADFAILED),
-        ;
+        BUKKIT_UNLOAD_FAILED(MVCorei18n.UNLOADWORLD_BUKKITUNLOADFAILED);
 
         private final MessageKeyProvider message;
 

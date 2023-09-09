@@ -48,6 +48,12 @@ public final class WorldsConfigManager {
         });
     }
 
+    /**
+     * Loads the worlds.yml file.
+     *
+     * @throws IOException                      If an error occurs while loading the file.
+     * @throws InvalidConfigurationException    If the file is not a valid YAML file.
+     */
     private void loadWorldYmlFile() throws IOException, InvalidConfigurationException {
         if (!worldConfigFile.exists() && !worldConfigFile.createNewFile()) {
             throw new IllegalStateException("Could not create worlds.yml config file");
@@ -57,6 +63,11 @@ public final class WorldsConfigManager {
         worldsConfig.load(worldConfigFile);
     }
 
+    /**
+     * Parses the worlds.yml file and creates a WorldConfig for each world in the file if it doesn't already exist.
+     *
+     * @return A tuple containing a list of the new WorldConfigs added and a list of the worlds removed from the config.
+     */
     private Tuple2<List<WorldConfig>, List<String>> parseNewAndRemovedWorlds() {
         Set<String> allWorldsInConfig = worldsConfig.getKeys(false);
         List<WorldConfig> newWorldsAdded = new ArrayList<>();
@@ -136,6 +147,13 @@ public final class WorldsConfigManager {
         worldsConfig.set(worldName, null);
     }
 
+    /**
+     * Gets the {@link ConfigurationSection} for the given world in the worlds.yml file. If the section doesn't exist,
+     * it is created.
+     *
+     * @param worldName The name of the world.
+     * @return The {@link ConfigurationSection} for the given world.
+     */
     private ConfigurationSection getWorldConfigSection(String worldName) {
         return worldsConfig.isConfigurationSection(worldName)
                 ? worldsConfig.getConfigurationSection(worldName) : worldsConfig.createSection(worldName);

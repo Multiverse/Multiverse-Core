@@ -33,6 +33,9 @@ public interface DataStore<T> {
      */
     DataStore<T> pasteTo(T object);
 
+    /**
+     * A {@link DataStore} for storing and restoring game rules for a multiverse world.
+     */
     class GameRulesStore implements DataStore<LoadedMultiverseWorld> {
         private Map<GameRule<?>, Object> gameRuleMap;
 
@@ -79,6 +82,9 @@ public interface DataStore<T> {
         }
     }
 
+    /**
+     * A {@link DataStore} for storing and restoring world properties for a multiverse world.
+     */
     class WorldConfigStore implements DataStore<LoadedMultiverseWorld> {
         private Map<String, Object> configMap;
 
@@ -114,6 +120,9 @@ public interface DataStore<T> {
         }
     }
 
+    /**
+     * A {@link DataStore} for storing and restoring world border properties for a multiverse world.
+     */
     class WorldBorderStore implements DataStore<LoadedMultiverseWorld> {
         private double borderCenterX;
         private double borderCenterZ;
