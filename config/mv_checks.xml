@@ -380,7 +380,9 @@
             <property name="format" value="TODO"/>
             <property name="severity" value="warning"/>
         </module>
-        <module name="TrailingComment"/>
+        <module name="TrailingComment">
+            <property name="legalComment" value="^\sSUPPRESS CHECKSTYLE:"/>
+        </module>
         <module name="UncommentedMain"/>
         <module name="UpperEll"/>
 
