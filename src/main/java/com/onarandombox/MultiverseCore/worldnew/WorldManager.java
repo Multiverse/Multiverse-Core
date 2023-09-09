@@ -193,7 +193,7 @@ public class WorldManager {
                                 options.worldName(), exception.getMessage()),
                         world -> {
                             newLoadedMultiverseWorld(world, parsedGenerator, options.useSpawnAdjust());
-                            return worldActionResult(CreateWorldResult.Success.CREATED, options.worldName());
+                            return worldActionResult(CreateWorldResult.Success.CREATED, world.getName());
                         });
     }
 
