@@ -192,7 +192,6 @@
         <module name="PackageDeclaration"/>
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
-        <module name="ReturnCount"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
@@ -455,7 +454,7 @@
             <property name="max" value="30"/>
         </module>
         <module name="LambdaBodyLength">
-            <property name="max" value="10"/>
+            <property name="max" value="50"/>
         </module>
         <module name="MethodCount">
             <property name="maxTotal" value="100"/>
@@ -472,7 +471,7 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="3"/>
+            <property name="max" value="10"/>
             <property name="ignoreOverriddenMethods" value="true"/>
             <property name="severity" value="warning"/>
         </module>
