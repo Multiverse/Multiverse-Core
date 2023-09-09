@@ -192,6 +192,9 @@
         <module name="PackageDeclaration"/>
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
+        <module name="ReturnCount">
+            <property name="severity" value="info"/>
+        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
@@ -454,7 +457,13 @@
             <property name="max" value="30"/>
         </module>
         <module name="LambdaBodyLength">
-            <property name="max" value="50"/>
+            <property name="id" value="LambdaGettingTooLong"/>
+            <property name="max" value="10"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="LambdaBodyLength">
+            <property name="id" value="LambdaProbablyTooLong"/>
+            <property name="max" value="25"/>
         </module>
         <module name="MethodCount">
             <property name="maxTotal" value="100"/>
@@ -471,9 +480,15 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
+            <property name="id" value="ConsiderLessParameters"/>
+            <property name="max" value="3"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyParameters"/>
             <property name="max" value="10"/>
             <property name="ignoreOverriddenMethods" value="true"/>
-            <property name="severity" value="warning"/>
         </module>
         <module name="RecordComponentNumber">
             <property name="max" value="8"/>
