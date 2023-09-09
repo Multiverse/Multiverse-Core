@@ -6,9 +6,9 @@ import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
-import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
@@ -16,11 +16,14 @@ import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.display.ContentDisplay;
+import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
+import com.onarandombox.MultiverseCore.display.parsers.MapContentProvider;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
+import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -43,35 +46,42 @@ public class GamerulesCommand extends MultiverseCommand {
     }
 
     @Subcommand("gamerules|rules")
-    @CommandPermission("multiverse.core.gamerules.list")
-    @CommandCompletion("@mvworlds")
-    @Syntax("[World]")
+    @CommandPermission("multiverse.core.gamerule.list")
+    @CommandCompletion("@mvworlds @range:1-6")
+    @Syntax("[world] [page]")
     @Description("{@@mv-core.gamerules.description}")
     public void onGamerulesCommand(@NotNull BukkitCommandIssuer issuer,
 
-                                   @Single
+                                   @Optional
                                    @Syntax("<world>")
                                    @Description("{@@mv-core.gamerules.description.world}")
-                                   MVWorld world
+                                   MVWorld world,
+
+                                   @Optional
+                                   @Default("1")
+                                   @Syntax("<page>")
+                                   @Description("{@@mv-core.gamerules.description.page}")
+                                   int page
+
+
     ) {
-        if (!issuer.isPlayer() && world == null) {
-                issuer.sendInfo(MVCorei18n.GAMERULES_ERROR_SPECIFYWORLD);
-                return;
-        }
+        Logging.finer("Page is: " + page);
 
-        // Get the players world if none is specified
-        if (world == null) {
-            Player player = issuer.getPlayer(); // Need to do it here so the command can be run from console
-            Logging.finer("Getting the player's current world to list gamerules for");
-            world = worldManager.getMVWorld(player.getWorld());
-        }
+        ContentDisplay.create()
+                .addContent(
+                        new MapContentProvider<>(getGameRuleMap(world.getCBWorld()))
+                        .withKeyColor(ChatColor.AQUA)
+                        .withValueColor(ChatColor.WHITE)
+                )
+                .withSendHandler(
+                        new PagedSendHandler()
+                                .withHeader(this.getTitle(issuer, world.getCBWorld()))
+                                .doPagination(true)
+                                .withLinesPerPage(8)
+                                .withTargetPage(page)
+                )
 
-        // Finally, send the list
-        issuer.sendInfo(MVCorei18n.GAMERULES_TITLE, "{world}", world.getName());
-        issuer.sendMessage("\n" + encodeMap(issuer, getGameRuleMap(world.getCBWorld())));
-
-
-
+                .send(issuer);
     }
 
     /**
@@ -93,18 +103,11 @@ public class GamerulesCommand extends MultiverseCommand {
         return gameRuleMap;
     }
 
-    private String encodeMap(CommandIssuer issuer, Map<String, String> inMap) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String key : inMap.keySet()) {
-            String value = inMap.get(key);
-
-            stringBuilder.append(this.commandManager.formatMessage(
-                    issuer,
-                    MessageType.INFO,
-                    MVCorei18n.GAMERULES_RULE,
-                    "{gamerule}", key, "{value}", value))
-                    .append("\n");
-        }
-        return stringBuilder.toString();
+    private String getTitle(CommandIssuer issuer, World world) {
+        return this.commandManager.formatMessage(
+                issuer,
+                MessageType.INFO,
+                MVCorei18n.GAMERULES_TITLE,
+                "{world}", world.getName());
     }
 }
