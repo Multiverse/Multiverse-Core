@@ -53,6 +53,17 @@ public class CommandFlag {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "Builder{"
+                + "key='" + key + '\''
+                + ", aliases=" + aliases
+                + '}';
+    }
+
+    /**
      * A builder for a flag.
      *
      * @param <S> The type of the builder.

@@ -14,6 +14,7 @@ import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.MultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
@@ -96,8 +97,11 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestFlags(@NotNull BukkitCommandCompletionContext context) {
-        return this.commandManager.getFlagsManager().suggest(
-                context.getConfig("groupName", ""), context.getContextValue(String[].class));
+        String groupName = context.getConfig("groupName", "");
+
+        return Try.of(() -> context.getContextValue(String[].class))
+                .map(flags -> commandManager.getFlagsManager().suggest(groupName, flags))
+                .getOrElse(Collections.emptyList());
     }
 
     private Collection<String> suggestGamerules() {
