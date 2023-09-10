@@ -74,10 +74,10 @@ public final class WorldsConfigManager {
                     if (!configData.contains("==: MVWorld")) {
                         throw new ConfigMigratedException();
                     }
-                    return configData.replace("==: MVWorld", "")
-                            .replace("==: MVSpawnSettings", "")
-                            .replace("==: MVSpawnSubSettings", "")
-                            .replace("==: MVEntryFee", "");
+                    return configData.replace("    ==: MVWorld\n", "")
+                            .replace("      ==: MVSpawnSettings\n", "")
+                            .replace("        ==: MVSpawnSubSettings\n", "")
+                            .replace("        ==: MVEntryFee\n", "");
                 })
                 .andThenTry(configData -> Files.writeString(worldConfigFile.toPath(), configData))
                 .andThenTry(() -> {
