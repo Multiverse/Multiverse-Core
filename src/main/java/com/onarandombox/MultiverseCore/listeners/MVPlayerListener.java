@@ -169,7 +169,6 @@ public class MVPlayerListener implements InjectableListener {
                 this.sendPlayerToDefaultWorld(player);
             }
             return;
-
         } else {
             Logging.finer("Player joined AGAIN!");
             // Ensure the player still has permission to access the world they were in
@@ -203,10 +202,7 @@ public class MVPlayerListener implements InjectableListener {
             return;
         }
 
-
-
         Logging.finer("JoinDestination is " + config.getJoinDestination());
-
         ParsedDestination<?> joinDestination = destinationsProvider.parseDestination(config.getJoinDestination());
 
         if (joinDestination == null) {
@@ -215,7 +211,6 @@ public class MVPlayerListener implements InjectableListener {
         }
 
         Location joinDestinationLocation = joinDestination.getLocation(player);
-
         if (joinDestinationLocation == null) {
             Logging.finer("Not teleporting " + player.getName() + " because joinDestination is null");
             return;
