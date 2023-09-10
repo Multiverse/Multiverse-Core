@@ -43,7 +43,7 @@ public class MVWorldListener implements InjectableListener {
             return;
         }
         worldManager.unloadWorld(event.getWorld()).onFailure(failure -> {
-            if (failure.getFailureReason() != UnloadWorldResult.Failure.WORLD_ALREADY_UNLOADING) {
+            if (failure.getFailureReason() != UnloadWorldResult.WORLD_ALREADY_UNLOADING) {
                 Logging.severe("Failed to unload world: " + failure);
             }
         });
@@ -60,7 +60,7 @@ public class MVWorldListener implements InjectableListener {
                 .peek(world -> {
                     Logging.fine("Loading world: " + world.getName());
                     worldManager.loadWorld(world).onFailure(failure -> {
-                        if (failure.getFailureReason() != LoadWorldResult.Failure.WORLD_ALREADY_LOADING) {
+                        if (failure.getFailureReason() != LoadWorldResult.WORLD_ALREADY_LOADING) {
                             Logging.severe("Failed to load world: " + failure);
                         }
                     });

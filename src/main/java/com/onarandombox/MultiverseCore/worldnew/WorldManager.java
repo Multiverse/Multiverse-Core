@@ -488,7 +488,7 @@ public class WorldManager {
     public Attempt<String, DeleteWorldResult> deleteWorld(@NotNull MultiverseWorld world) {
         return getLoadedWorld(world).fold(
                 () -> loadWorld(world)
-                        .convertReason(DeleteWorldResult.LOAD_FAILED)
+                        .transform(DeleteWorldResult.LOAD_FAILED)
                         .mapAttempt(this::deleteWorld),
                 this::deleteWorld);
     }
@@ -535,7 +535,7 @@ public class WorldManager {
                             .worldName(validatedOptions.newWorldName())
                             .environment(validatedOptions.world().getEnvironment())
                             .generator(validatedOptions.world().getGenerator());
-                    return importWorld(importWorldOptions).convertReason(CloneWorldResult.IMPORT_FAILED);
+                    return importWorld(importWorldOptions).transform(CloneWorldResult.IMPORT_FAILED);
                 })
                 .onSuccess(newWorld -> {
                     cloneWorldTransferData(options, newWorld);
@@ -616,8 +616,8 @@ public class WorldManager {
                 .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
 
         return deleteWorld(world)
-                .convertReason(RegenWorldResult.DELETE_FAILED)
-                .mapAttempt(() -> createWorld(createWorldOptions).convertReason(RegenWorldResult.CREATE_FAILED))
+                .transform(RegenWorldResult.DELETE_FAILED)
+                .mapAttempt(() -> createWorld(createWorldOptions).transform(RegenWorldResult.CREATE_FAILED))
                 .onSuccess(newWorld -> {
                     dataTransfer.pasteAllTo(newWorld);
                     saveWorldsConfig();
