@@ -82,8 +82,7 @@ public class CreateCommand extends MultiverseCommand {
                                 @Optional
                                 @Syntax("--seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
                                 @Description("{@@mv-core.create.flags.description}")
-                                String[] flags
-    ) {
+                                String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES, "{worldName}", worldName);

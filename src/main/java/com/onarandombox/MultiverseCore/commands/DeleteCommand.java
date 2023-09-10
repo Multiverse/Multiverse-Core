@@ -49,18 +49,14 @@ public class DeleteCommand extends MultiverseCommand {
                 issuer.getIssuer(),
                 () -> {
                     issuer.sendInfo(MVCorei18n.DELETE_DELETING, "{world}", worldName);
-                    try {
-                        worldManager.deleteWorld(worldName)
-                                .onSuccess(deletedWorldName -> {
-                                    Logging.fine("World delete success: " + deletedWorldName);
-                                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, "{world}", deletedWorldName);
-                                }).onFailure(failure -> {
-                                    Logging.fine("World delete failure: " + failure);
-                                    issuer.sendError(failure.getFailureMessage());
-                                });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    worldManager.deleteWorld(worldName)
+                            .onSuccess(deletedWorldName -> {
+                                Logging.fine("World delete success: " + deletedWorldName);
+                                issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, "{world}", deletedWorldName);
+                            }).onFailure(failure -> {
+                                Logging.fine("World delete failure: " + failure);
+                                issuer.sendError(failure.getFailureMessage());
+                            });
                 },
                 this.commandManager.formatMessage(
                         issuer,

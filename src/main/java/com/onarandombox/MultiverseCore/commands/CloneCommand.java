@@ -63,7 +63,7 @@ public class CloneCommand extends MultiverseCommand {
             String newWorldName,
 
             @Optional
-            @Syntax("") // TODO
+            @Syntax(/* TODO */ "")
             @Description("{@@mv-core.regen.other.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);

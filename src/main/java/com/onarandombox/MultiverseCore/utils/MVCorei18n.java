@@ -7,6 +7,8 @@ import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 import org.jetbrains.annotations.NotNull;
 
 public enum MVCorei18n implements MessageKeyProvider {
+    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
+
     // config status
     CONFIG_SAVE_FAILED,
     CONFIG_NODE_NOTFOUND,
@@ -140,9 +142,9 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // generic
     GENERIC_SUCCESS,
-    GENERIC_FAILURE
+    GENERIC_FAILURE;
 
-    ;
+    // END CHECKSTYLE-SUPPRESSION: Javadoc
 
     private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.').toLowerCase());
 
