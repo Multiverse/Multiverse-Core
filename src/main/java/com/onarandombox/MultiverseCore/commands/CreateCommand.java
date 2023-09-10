@@ -104,12 +104,12 @@ public class CreateCommand extends MultiverseCommand {
                 .useSpawnAdjust(!parsedFlags.hasFlag("--no-adjust-spawn"))
                 .generator(parsedFlags.flagValue("--generator", "", String.class))
                 .generateStructures(!parsedFlags.hasFlag("--no-structures"))
-        ).onSuccess((success) -> {
+        ).onSuccess(success -> {
             Logging.fine("World create success: " + success);
-            issuer.sendInfo(success.getReasonMessage());
-        }).onFailure((failure) -> {
+            issuer.sendInfo(success.getMessage());
+        }).onFailure(failure -> {
             Logging.fine("World create failure: " + failure);
-            issuer.sendError(failure.getReasonMessage());
+            issuer.sendError(failure.getMessage());
         });
     }
 }

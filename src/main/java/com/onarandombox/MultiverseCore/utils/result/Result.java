@@ -2,120 +2,189 @@ package com.onarandombox.MultiverseCore.utils.result;
 
 import com.onarandombox.MultiverseCore.utils.message.Message;
 import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.NoSuchElementException;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public sealed interface Result<S extends SuccessReason, F extends FailureReason> permits Result.Success, Result.Failure {
-    static <F extends FailureReason, S extends SuccessReason> Result<S, F> success() {
-        return new Success<>(null, Message.of("Success!"));
+public interface Result<T, S extends SuccessReason, F extends FailureReason> {
+
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> success() {
+        return new Success<>(null, null, Message.of("Success!"));
     }
 
-    static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason, MessageReplacement...replacements) {
-        return new Success<>(successReason, replacements);
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> success(
+            S successReason, MessageReplacement... messageReplacements) {
+        return new Success<>(null, successReason, Message.of(successReason, "Success!", messageReplacements));
     }
 
-    static <F extends FailureReason, S extends SuccessReason> Result<S, F> success(S successReason, Message message) {
-        return new Success<>(successReason, message);
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> success(
+            S successReason, Message message) {
+        return new Success<>(null, successReason, message);
     }
 
-    static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure() {
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> successValue(T value) {
+        return new Success<>(value, null, Message.of("Success!"));
+    }
+
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> successValue(
+            T value, S successReason, MessageReplacement... messageReplacements) {
+        return new Success<>(value, successReason, Message.of(successReason, "Success!", messageReplacements));
+    }
+
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> successValue(
+            T value, S successReason, Message message) {
+        return new Success<>(value, successReason, message);
+    }
+
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> failure() {
         return new Failure<>(null, Message.of("Failed!"));
     }
 
-    static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure(F failureReason, MessageReplacement...replacements) {
-        return new Failure<>(failureReason, replacements);
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> failure(
+            F failureReason, MessageReplacement... messageReplacements) {
+        return new Failure<>(failureReason, Message.of(failureReason, "Failed!", messageReplacements));
     }
 
-    static <F extends FailureReason, S extends SuccessReason> Result<S, F> failure(F failureReason, Message message) {
+    static <T, S extends SuccessReason, F extends FailureReason> Result<T, S, F> failure(
+            F failureReason, Message message) {
         return new Failure<>(failureReason, message);
     }
-    boolean isSuccess();
 
-    boolean isFailure();
+    T getValue();
 
     S getSuccessReason();
 
     F getFailureReason();
 
-    @NotNull Message getReasonMessage();
+    Message getMessage();
 
-    default Result<S, F> onSuccess(Consumer<Success<F, S>> consumer) {
+    default boolean isSuccess() {
+        return this instanceof Success;
+    }
+
+    default boolean isFailure() {
+        return this instanceof Failure;
+    }
+
+    default Result<T, S, F> peek(Consumer<T> consumer) {
         if (this instanceof Success) {
-            consumer.accept((Success<F, S>) this);
+            consumer.accept(getValue());
         }
         return this;
     }
 
-    default Result<S, F> onFailure(Consumer<Failure<S, F>> consumer) {
-        if (this instanceof Failure) {
-            consumer.accept((Failure<S, F>) this);
-        }
-        return this;
-    }
-
-    default Result<S, F> onSuccessReason(S successReason, Consumer<S> consumer) {
-        if (this.isSuccess() && this.getSuccessReason() == successReason) {
-            consumer.accept(this.getSuccessReason());
-        }
-        return this;
-    }
-
-    default Result<S, F> onFailureReason(F failureReason, Consumer<F> consumer) {
-        if (this.isFailure() && this.getFailureReason() == failureReason) {
-            consumer.accept(this.getFailureReason());
-        }
-        return this;
-    }
-
-    default Result<S, F> onSuccessThen(Function<Success<F, S>, Result<S, F>> function) {
+    default <N> Result<N, S, F> map(Function<Success<T, S, F>, Result<N, S, F>> mapper) {
         if (this instanceof Success) {
-            return function.apply((Success<F, S>) this);
+            return mapper.apply((Success<T, S, F>) this);
+        } else {
+            return new Failure<>(getFailureReason(), getMessage());
+        }
+    }
+
+    default <N> Result<N, S, F> map(Supplier<Result<N, S, F>> mapper) {
+        if (this instanceof Success) {
+            return mapper.get();
+        } else {
+            return new Failure<>(getFailureReason(), getMessage());
+        }
+    }
+
+    default <N> Result<N, S, F> mapValue(Function<T, Result<N, S, F>> mapper) {
+        if (this instanceof Success) {
+            return mapper.apply(this.getValue());
+        } else {
+            return new Failure<>(getFailureReason(), getMessage());
+        }
+    }
+
+    default <NS extends SuccessReason, NF extends FailureReason> Result<T, NS, NF> convertReason(
+            NS success, NF failure) {
+        if (this instanceof Success) {
+            return new Success<>(getValue(), success, getMessage());
+        } else {
+            return new Failure<>(failure, getMessage());
+        }
+    }
+
+    default <N> N fold(Function<Failure<T, S, F>, N> failureMapper, Function<Success<T, S, F>, N> successMapper) {
+        if (this instanceof Success) {
+            return successMapper.apply((Success<T, S, F>) this);
+        } else {
+            return failureMapper.apply((Failure<T, S, F>) this);
+        }
+    }
+
+    default Result<T, S, F> onSuccess(Runnable runnable) {
+        if (this instanceof Success) {
+            runnable.run();
         }
         return this;
     }
 
-    default Result<S, F> onFailureThen(Function<Failure<S, F>, Result<S, F>> function) {
-        if (this instanceof Failure) {
-            return function.apply((Failure<S, F>) this);
+    default Result<T, S, F> onSuccess(Consumer<Success<T, S, F>> consumer) {
+        if (this instanceof Success) {
+            consumer.accept((Success<T, S, F>) this);
         }
         return this;
     }
 
-    default <R> R fold(Function<Failure<S, F>, R> failureFunc, Function<Success<F, S>, R> successFunc) {
-        if (this instanceof Failure) {
-            return failureFunc.apply((Failure<S, F>) this);
-        } else if (this instanceof Success) {
-            return successFunc.apply((Success<F, S>) this);
+    default Result<T, S, F> onSuccessReason(S successReason, Runnable runnable) {
+        if (this instanceof Success && this.getSuccessReason() == successReason) {
+            runnable.run();
         }
-        throw new IllegalStateException("Unknown result type: " + this.getClass().getName());
+        return this;
     }
 
-    final class Success<F extends FailureReason, S extends SuccessReason> implements Result<S, F> {
+    default Result<T, S, F> onSuccessValue(Consumer<T> consumer) {
+        if (this instanceof Success) {
+            consumer.accept(getValue());
+        }
+        return this;
+    }
+
+    default Result<T, S, F> onSuccessReason(Consumer<S> consumer) {
+        if (this instanceof Success) {
+            consumer.accept(getSuccessReason());
+        }
+        return this;
+    }
+
+    default Result<T, S, F> onFailure(Runnable runnable) {
+        if (this instanceof Failure) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    default Result<T, S, F> onFailure(Consumer<Failure<T, S, F>> consumer) {
+        if (this instanceof Failure) {
+            consumer.accept((Failure<T, S, F>) this);
+        }
+        return this;
+    }
+
+    default Result<T, S, F> onFailureReason(Consumer<F> consumer) {
+        if (this instanceof Failure) {
+            consumer.accept(getFailureReason());
+        }
+        return this;
+    }
+
+    class Success<T, S extends SuccessReason, F extends FailureReason> implements Result<T, S, F> {
+        private final T value;
         private final S successReason;
         private final Message message;
 
-        public Success(S successReason, Message message) {
+        Success(T value, S successReason, Message message) {
+            this.value = value;
             this.successReason = successReason;
             this.message = message;
         }
 
-        public Success(S successReason, MessageReplacement[] replacements) {
-            this.successReason = successReason;
-            this.message = Message.of(successReason, "Success!", replacements);
-        }
-
         @Override
-        public boolean isSuccess() {
-            return true;
-        }
-
-        @Override
-        public boolean isFailure() {
-            return false;
+        public T getValue() {
+            return value;
         }
 
         @Override
@@ -125,49 +194,40 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         @Override
         public F getFailureReason() {
-            throw new NoSuchElementException("No reason for failure");
+            return null;
         }
 
         @Override
-        public @NotNull Message getReasonMessage() {
+        public Message getMessage() {
             return message;
         }
 
         @Override
         public String toString() {
-            return "Success{" +
-                    "reason=" + successReason +
-                    '}';
+            return "Success{"
+                    + "reason=" + successReason + ", "
+                    + "value=" + value
+                    + '}';
         }
     }
 
-    final class Failure<S extends SuccessReason, F extends FailureReason> implements Result<S, F> {
+    class Failure<T, S extends SuccessReason, F extends FailureReason> implements Result<T, S, F> {
         private final F failureReason;
         private final Message message;
 
-        public Failure(F failureReason, Message message) {
+        Failure(F failureReason, Message message) {
             this.failureReason = failureReason;
             this.message = message;
         }
 
-        public Failure(F failureReason, MessageReplacement[] replacements) {
-            this.failureReason = failureReason;
-            this.message = Message.of(failureReason, "Success!", replacements);
-        }
-
         @Override
-        public boolean isSuccess() {
-            return false;
-        }
-
-        @Override
-        public boolean isFailure() {
-            return true;
+        public T getValue() {
+            return null;
         }
 
         @Override
         public S getSuccessReason() {
-            throw new NoSuchElementException("No reason for failure");
+            return null;
         }
 
         @Override
@@ -176,15 +236,15 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
         }
 
         @Override
-        public @NotNull Message getReasonMessage() {
+        public Message getMessage() {
             return message;
         }
 
         @Override
         public String toString() {
-            return "Failure{" +
-                    "reason=" + failureReason +
-                    '}';
+            return "Failure{"
+                    + "reason=" + failureReason
+                    + '}';
         }
     }
 }

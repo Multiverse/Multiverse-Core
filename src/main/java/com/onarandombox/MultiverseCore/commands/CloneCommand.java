@@ -73,12 +73,12 @@ public class CloneCommand extends MultiverseCommand {
                 .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
                 .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
                 .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"))
-        ).onSuccess((success) -> {
+        ).onSuccess(success -> {
             Logging.fine("World remove success: " + success);
-            issuer.sendInfo(success.getReasonMessage());
-        }).onFailure((failure) -> {
+            issuer.sendInfo(success.getMessage());
+        }).onFailure(failure -> {
             Logging.fine("World remove failure: " + failure);
-            issuer.sendError(failure.getReasonMessage());
+            issuer.sendError(failure.getMessage());
         });
     }
 }

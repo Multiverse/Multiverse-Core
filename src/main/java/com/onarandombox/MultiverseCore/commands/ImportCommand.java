@@ -79,12 +79,12 @@ public class ImportCommand extends MultiverseCommand {
                 .environment(environment)
                 .generator(parsedFlags.flagValue("--generator", String.class))
                 .useSpawnAdjust(parsedFlags.hasFlag("--adjust-spawn"))
-        ).onSuccess((success) -> {
+        ).onSuccess(success -> {
             Logging.fine("World create success: " + success);
-            issuer.sendInfo(success.getReasonMessage());
-        }).onFailure((failure) -> {
+            issuer.sendInfo(success.getMessage());
+        }).onFailure(failure -> {
             Logging.fine("World create failure: " + failure);
-            issuer.sendError(failure.getReasonMessage());
+            issuer.sendError(failure.getMessage());
         });
     }
 }

@@ -45,12 +45,12 @@ public class LoadCommand extends MultiverseCommand {
     ) {
         issuer.sendInfo(MVCorei18n.LOAD_LOADING, "{world}", worldName);
         worldManager.loadWorld(worldName)
-                .onSuccess((success) -> {
+                .onSuccess(success -> {
                     Logging.fine("World load success: " + success);
-                    issuer.sendInfo(success.getReasonMessage());
-                }).onFailure((failure) -> {
+                    issuer.sendInfo(success.getMessage());
+                }).onFailure(failure -> {
                     Logging.fine("World load failure: " + failure);
-                    issuer.sendError(failure.getReasonMessage());
+                    issuer.sendError(failure.getMessage());
                 });
     }
 }

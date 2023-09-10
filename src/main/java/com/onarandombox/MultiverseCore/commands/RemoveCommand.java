@@ -43,12 +43,12 @@ public class RemoveCommand extends MultiverseCommand {
                                 String worldName
     ) {
         worldManager.removeWorld(worldName)
-                .onSuccess((success) -> {
+                .onSuccess(success -> {
                     Logging.fine("World remove success: " + success);
-                    issuer.sendInfo(success.getReasonMessage());
-                }).onFailure((failure) -> {
+                    issuer.sendInfo(success.getMessage());
+                }).onFailure(failure -> {
                     Logging.fine("World remove failure: " + failure);
-                    issuer.sendError(failure.getReasonMessage());
+                    issuer.sendError(failure.getMessage());
                 });
     }
 }
