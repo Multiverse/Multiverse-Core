@@ -11,7 +11,6 @@ import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
@@ -24,6 +23,7 @@ import com.onarandombox.MultiverseCore.display.filters.RegexContentFilter;
 import com.onarandombox.MultiverseCore.display.handlers.PagedSendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.MapContentProvider;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -81,7 +81,7 @@ public class GamerulesCommand extends MultiverseCommand {
             @Flags("resolve=issuerAware")
             @Syntax("<world>")
             @Description("{@@mv-core.gamerules.description.world}")
-            MVWorld world,
+            LoadedMultiverseWorld world,
 
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
@@ -91,11 +91,11 @@ public class GamerulesCommand extends MultiverseCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         ContentDisplay.create()
-                .addContent(new MapContentProvider<>(getGameRuleMap(world.getCBWorld()))
+                .addContent(new MapContentProvider<>(getGameRuleMap(world.getBukkitWorld().getOrNull())) // TODO: Handle null
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
                 .withSendHandler(new PagedSendHandler()
-                        .withHeader(this.getTitle(issuer, world.getCBWorld()))
+                        .withHeader(this.getTitle(issuer, world.getBukkitWorld().getOrNull()))
                         .doPagination(true)
                         .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
                         .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
