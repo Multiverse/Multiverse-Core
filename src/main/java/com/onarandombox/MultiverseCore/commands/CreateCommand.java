@@ -101,13 +101,13 @@ public class CreateCommand extends MultiverseCommand {
                 .worldType(parsedFlags.flagValue("--world-type", WorldType.NORMAL, WorldType.class))
                 .useSpawnAdjust(!parsedFlags.hasFlag("--no-adjust-spawn"))
                 .generator(parsedFlags.flagValue("--generator", "", String.class))
-                .generateStructures(!parsedFlags.hasFlag("--no-structures"))
-        ).onSuccess(newWorld -> {
-            Logging.fine("World create success: " + newWorld);
-            issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, "{world}", newWorld.getName());
-        }).onFailure(failure -> {
-            Logging.fine("World create failure: " + failure);
-            issuer.sendError(failure.getFailureMessage());
-        });
+                .generateStructures(!parsedFlags.hasFlag("--no-structures")))
+                .onSuccess(newWorld -> {
+                    Logging.fine("World create success: " + newWorld);
+                    issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, "{world}", newWorld.getName());
+                }).onFailure(failure -> {
+                    Logging.fine("World create failure: " + failure);
+                    issuer.sendError(failure.getFailureMessage());
+                });
     }
 }
