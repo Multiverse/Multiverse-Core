@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Options for customizing the cloning of a world.
  */
-public class CloneWorldOptions {
+public final class CloneWorldOptions implements KeepWorldSettingsOptions {
 
     /**
      * Creates a new {@link CloneWorldOptions} instance with the given world.
@@ -55,6 +55,7 @@ public class CloneWorldOptions {
      * @param keepGameRule  Whether to keep the game rule of the world during cloning.
      * @return This {@link CloneWorldOptions} instance.
      */
+    @Override
     public @NotNull CloneWorldOptions keepGameRule(boolean keepGameRule) {
         this.keepGameRule = keepGameRule;
         return this;
@@ -65,10 +66,12 @@ public class CloneWorldOptions {
      *
      * @return Whether to keep the game rule of the world during cloning.
      */
+    @Override
     public boolean keepGameRule() {
         return keepGameRule;
     }
 
+    @Override
     public @NotNull CloneWorldOptions keepWorldConfig(boolean keepWorldConfig) {
         this.keepWorldConfig = keepWorldConfig;
         return this;
@@ -79,10 +82,12 @@ public class CloneWorldOptions {
      *
      * @return Whether to keep the world config of the world during cloning.
      */
+    @Override
     public boolean keepWorldConfig() {
         return keepWorldConfig;
     }
 
+    @Override
     public @NotNull CloneWorldOptions keepWorldBorder(boolean keepWorldBorder) {
         this.keepWorldBorder = keepWorldBorder;
         return this;
@@ -93,6 +98,7 @@ public class CloneWorldOptions {
      *
      * @return Whether to keep the world border of the world during cloning.
      */
+    @Override
     public boolean keepWorldBorder() {
         return keepWorldBorder;
     }

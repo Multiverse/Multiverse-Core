@@ -145,7 +145,10 @@
         <module name="AvoidDoubleBraceInitialization"/>
         <module name="AvoidNoArgumentSuperConstructorCall"/>
         <module name="CovariantEquals"/>
-        <module name="DeclarationOrder"/>
+        <module name="DeclarationOrder">
+            <!-- Doesn't respect static methods at top -->
+            <property name="severity" value="ignore"/>
+        </module>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
@@ -380,7 +383,9 @@
             <property name="format" value="TODO"/>
             <property name="severity" value="warning"/>
         </module>
-        <module name="TrailingComment"/>
+        <module name="TrailingComment">
+            <property name="legalComment" value="^\sSUPPRESS CHECKSTYLE:"/>
+        </module>
         <module name="UncommentedMain"/>
         <module name="UpperEll"/>
 
@@ -518,15 +523,30 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
-            <property name="id" value="ConsiderLessParameters"/>
-            <property name="max" value="3"/>
+            <property name="id" value="ConsiderLessMethodParameters"/>
+            <property name="max" value="4"/>
             <property name="ignoreOverriddenMethods" value="true"/>
             <property name="severity" value="info"/>
+            <property name="tokens" value="METHOD_DEF"/>
         </module>
         <module name="ParameterNumber">
-            <property name="id" value="ProbablyTooManyParameters"/>
+            <property name="id" value="ProbablyTooManyMethodParameters"/>
             <property name="max" value="10"/>
             <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ConsiderLessConstructorParameters"/>
+            <property name="max" value="7"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="severity" value="info"/>
+            <property name="tokens" value="CTOR_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyConstructorParameters"/>
+            <property name="max" value="12"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="CTOR_DEF"/>
         </module>
         <module name="RecordComponentNumber">
             <property name="max" value="8"/>
