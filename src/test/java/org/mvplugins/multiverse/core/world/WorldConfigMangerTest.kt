@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world
 
 import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
+import org.bukkit.World.Environment
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.mvplugins.multiverse.core.TestWithMockBukkit
@@ -24,8 +25,6 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
         worldConfigManager = multiverseCore.getService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
-
-        assertTrue(worldConfigManager.load().isSuccess)
     }
 
     @Test
@@ -35,32 +34,51 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Old world config is migrated`() {
-        // TODO: When logic is implemented, check that the old config is migrated
+        val oldConfig = getResourceAsText("/old_worlds.yml")
+        assertNotNull(oldConfig)
+        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(oldConfig)
+
+        assertTrue(worldConfigManager.load().isSuccess)
+        assertTrue(worldConfigManager.save().isSuccess)
+
+        val endWorldConfig = worldConfigManager.getWorldConfig("world_the_end")
+        assertNotNull(endWorldConfig)
+
+        assertEquals("&aworld the end", endWorldConfig.alias)
+        assertEquals(Environment.THE_END, endWorldConfig.environment)
+
+        val worldConfig = worldConfigManager.getWorldConfig("world")
+        assertNotNull(worldConfig)
+
+        assertEquals(-5176596003035866649, worldConfig.seed)
+        assertEquals(listOf("test"), worldConfig.worldBlacklist)
     }
 
     @Test
     fun `Add a new world to config`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.addWorldConfig("newworld")
-        worldConfigManager.save()
+        assertTrue(worldConfigManager.save().isSuccess)
         compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
     }
 
     @Test
     fun `Updating existing world properties`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.getWorldConfig("world")
         assertNotNull(worldConfig)
 
         worldConfig.setProperty("adjust-spawn", true)
         worldConfig.setProperty("alias", "newalias")
         worldConfig.setProperty("spawn-location", SpawnLocation(-64.0, 64.0, 48.0))
-        worldConfigManager.save()
-        compareConfigFile("worlds2.yml", "/properties_worlds.yml")
+        assertTrue(worldConfigManager.save().isSuccess)
     }
 
     @Test
     fun `Delete world section from config`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         worldConfigManager.deleteWorldConfig("world")
-        worldConfigManager.save()
+        assertTrue(worldConfigManager.save().isSuccess)
         compareConfigFile("worlds2.yml", "/delete_worlds.yml")
     }
 

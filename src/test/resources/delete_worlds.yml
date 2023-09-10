@@ -34,3 +34,4 @@ world_nether:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
+  version: 1.0

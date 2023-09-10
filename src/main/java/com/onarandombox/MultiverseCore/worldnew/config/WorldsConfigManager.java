@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
@@ -13,6 +14,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,12 +57,52 @@ public final class WorldsConfigManager {
      * @throws InvalidConfigurationException    If the file is not a valid YAML file.
      */
     private void loadWorldYmlFile() throws IOException, InvalidConfigurationException {
-        if (!worldConfigFile.exists() && !worldConfigFile.createNewFile()) {
+        boolean exists = worldConfigFile.exists();
+        if (!exists && !worldConfigFile.createNewFile()) {
             throw new IllegalStateException("Could not create worlds.yml config file");
         }
-
+        if (exists) {
+            migrateRemoveOldConfigSerializable();
+        }
         worldsConfig = new YamlConfiguration();
         worldsConfig.load(worldConfigFile);
+    }
+
+    private void migrateRemoveOldConfigSerializable() {
+        Try.of(() -> Files.readString(worldConfigFile.toPath()))
+                .mapTry(configData -> {
+                    if (!configData.contains("==: MVWorld")) {
+                        throw new ConfigMigratedException();
+                    }
+                    return configData.replace("    ==: MVWorld\n", "")
+                            .replace("      ==: MVSpawnSettings\n", "")
+                            .replace("        ==: MVSpawnSubSettings\n", "")
+                            .replace("        ==: MVEntryFee\n", "");
+                })
+                .andThenTry(configData -> Files.writeString(worldConfigFile.toPath(), configData))
+                .andThenTry(() -> {
+                    YamlConfiguration config = YamlConfiguration.loadConfiguration(worldConfigFile);
+                    List<ConfigurationSection> worlds = config.getConfigurationSection("worlds")
+                            .getKeys(false)
+                            .stream()
+                            .map(worldName -> config.getConfigurationSection("worlds." + worldName))
+                            .toList();
+
+                    config.set("worlds", null);
+
+                    for (ConfigurationSection world : worlds) {
+                        config.createSection(world.getName(), world.getValues(true));
+                    }
+                    config.save(worldConfigFile);
+                })
+                .onFailure(e -> {
+                    if (e instanceof ConfigMigratedException) {
+                        Logging.fine("Config already migrated");
+                        return;
+                    }
+                    Logging.warning("Failed to migrate old worlds.yml file: %s", e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     /**
@@ -157,5 +199,11 @@ public final class WorldsConfigManager {
     private ConfigurationSection getWorldConfigSection(String worldName) {
         return worldsConfig.isConfigurationSection(worldName)
                 ? worldsConfig.getConfigurationSection(worldName) : worldsConfig.createSection(worldName);
+    }
+
+    private final class ConfigMigratedException extends RuntimeException {
+        private ConfigMigratedException() {
+            super("Config migrated");
+        }
     }
 }

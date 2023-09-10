@@ -37,8 +37,8 @@ public class MoveMigratorAction implements MigratorAction {
     public void migrate(ConfigurationSection config) {
         Optional.ofNullable(config.get(fromPath))
                 .ifPresent(value -> {
-                    config.set(toPath, value);
                     config.set(fromPath, null);
+                    config.set(toPath, value);
                     Logging.config("Moved path %s to %s", fromPath, toPath);
                 });
     }

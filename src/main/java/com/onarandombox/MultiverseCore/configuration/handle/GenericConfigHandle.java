@@ -35,7 +35,9 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      */
     public Try<Void> load() {
         return Try.run(() -> {
-            migrateConfig();
+            if (!config.getKeys(false).isEmpty()) {
+                migrateConfig();
+            }
             setUpNodes();
         });
     }
