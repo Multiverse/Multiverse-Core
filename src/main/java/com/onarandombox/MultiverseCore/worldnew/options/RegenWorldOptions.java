@@ -9,7 +9,7 @@ import java.util.Random;
 /**
  * Options for customizing the regeneration of a world.
  */
-public class RegenWorldOptions {
+public final class RegenWorldOptions implements KeepWorldSettingsOptions {
 
     /**
      * Creates a new {@link RegenWorldOptions} instance with the given world.
@@ -48,6 +48,7 @@ public class RegenWorldOptions {
      * @param keepGameRule  Whether to keep the game rule of the world during regeneration.
      * @return This {@link RegenWorldOptions} instance.
      */
+    @Override
     public @NotNull RegenWorldOptions keepGameRule(boolean keepGameRule) {
         this.keepGameRule = keepGameRule;
         return this;
@@ -58,6 +59,7 @@ public class RegenWorldOptions {
      *
      * @return Whether to keep the game rule of the world during regeneration.
      */
+    @Override
     public boolean keepGameRule() {
         return keepGameRule;
     }
@@ -68,6 +70,7 @@ public class RegenWorldOptions {
      * @param keepWorldConfig   Whether to keep the world config of the world during regeneration.
      * @return This {@link RegenWorldOptions} instance.
      */
+    @Override
     public @NotNull RegenWorldOptions keepWorldConfig(boolean keepWorldConfig) {
         this.keepWorldConfig = keepWorldConfig;
         return this;
