@@ -191,7 +191,7 @@ public class CommandValueFlag<T> extends CommandFlag {
          * @return The flag.
          */
         @Override
-        public @NotNull CommandFlag build() {
+        public @NotNull CommandValueFlag<T> build() {
             if (context == null && !String.class.equals(type)) {
                 throw new IllegalStateException("Context is required for none-string value flags");
             }

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Contract;
 
 @Contract
-public abstract class MultiverseCommand extends BaseCommand {
+public abstract class  MultiverseCommand extends BaseCommand {
 
     protected final MVCommandManager commandManager;
     private String flagGroupName;
@@ -33,11 +33,12 @@ public abstract class MultiverseCommand extends BaseCommand {
         return commandManager.getFlagsManager();
     }
 
-    protected CommandFlag flag(CommandFlag flag) {
+    protected <T extends CommandFlag> T flag(T flag) {
         if (flagGroupBuilder == null) {
             flagGroupBuilder = CommandFlagGroup.builder("mv" + getClass().getSimpleName().toLowerCase());
         }
         flagGroupBuilder.add(flag);
+        Logging.finest("Registered flag: " + flag);
         return flag;
     }
 
