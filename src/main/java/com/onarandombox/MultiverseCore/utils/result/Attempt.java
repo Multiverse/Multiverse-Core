@@ -43,19 +43,43 @@ public interface Attempt<T, F extends FailureReason> {
         return this;
     }
 
-    default <N> Attempt<N, F> map(Function<T, Attempt<N, F>> mapper) {
+    default <U> Attempt<U, F> map(Function<? super T, ? extends U> mapper) {
         if (this instanceof Success) {
-            return mapper.apply(this.get());
+            return new Success<>(mapper.apply(get()));
         } else {
             return new Failure<>(getFailureReason(), getFailureMessage());
         }
     }
 
-    default <N> Attempt<N, F> map(Supplier<Attempt<N, F>> mapper) {
+    default <U> Attempt<U, F> map(Supplier<? extends U> mapper) {
+        if (this instanceof Success) {
+            return new Success<>(mapper.get());
+        } else {
+            return new Failure<>(getFailureReason(), getFailureMessage());
+        }
+    }
+
+    default <U> Attempt<U, F> mapAttempt(Function<? super T, Attempt<U, F>> mapper) {
+        if (this instanceof Success) {
+            return mapper.apply(get());
+        } else {
+            return new Failure<>(getFailureReason(), getFailureMessage());
+        }
+    }
+
+    default <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper) {
         if (this instanceof Success) {
             return mapper.get();
         } else {
             return new Failure<>(getFailureReason(), getFailureMessage());
+        }
+    }
+
+    default <UF extends FailureReason> Attempt<T, UF> transform(UF failureReason) {
+        if (this instanceof Success) {
+            return new Success<>(get());
+        } else {
+            return new Failure<>(failureReason, getFailureMessage());
         }
     }
 

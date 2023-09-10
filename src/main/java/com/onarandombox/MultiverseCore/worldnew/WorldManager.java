@@ -170,7 +170,7 @@ public class WorldManager {
      * @return The result of the creation.
      */
     public Attempt<LoadedMultiverseWorld, CreateWorldResult.Failure> createWorld(CreateWorldOptions options) {
-        return validateCreateWorldOptions(options).map(this::createValidatedWorld);
+        return validateCreateWorldOptions(options).mapAttempt(this::createValidatedWorld);
     }
 
     private Attempt<CreateWorldOptions, CreateWorldResult.Failure> validateCreateWorldOptions(
@@ -221,7 +221,7 @@ public class WorldManager {
      */
     public Attempt<LoadedMultiverseWorld, ImportWorldResult.Failure> importWorld(
             ImportWorldOptions options) {
-        return validateImportWorldOptions(options).map(this::doImportWorld);
+        return validateImportWorldOptions(options).mapAttempt(this::doImportWorld);
     }
 
     private Attempt<ImportWorldOptions, ImportWorldResult.Failure> validateImportWorldOptions(
@@ -317,7 +317,7 @@ public class WorldManager {
      * @return The result of the load.
      */
     public Attempt<LoadedMultiverseWorld, LoadWorldResult.Failure> loadWorld(@NotNull MultiverseWorld world) {
-        return validateWorldToLoad(world).map(this::doLoadWorld);
+        return validateWorldToLoad(world).mapAttempt(this::doLoadWorld);
     }
 
     private Attempt<MultiverseWorld, LoadWorldResult.Failure> validateWorldToLoad(
@@ -493,7 +493,7 @@ public class WorldManager {
         return getLoadedWorld(world).fold(
                 () -> loadWorld(world)
                         .convertReason(DeleteWorldResult.Failure.LOAD_FAILED)
-                        .map(this::deleteWorld),
+                        .mapAttempt(this::deleteWorld),
                 this::deleteWorld);
     }
 
@@ -508,8 +508,8 @@ public class WorldManager {
         AtomicReference<File> worldFolder = new AtomicReference<>();
         return validateWorldToDelete(world)
                 .peek(worldFolder::set)
-                .map(() -> removeWorld(world).convertReason(DeleteWorldResult.Failure.REMOVE_FAILED))
-                .map(() -> filesManipulator.deleteFolder(worldFolder.get()).fold(
+                .mapAttempt(() -> removeWorld(world).transform(DeleteWorldResult.Failure.REMOVE_FAILED))
+                .mapAttempt(() -> filesManipulator.deleteFolder(worldFolder.get()).fold(
                         exception -> worldActionResult(DeleteWorldResult.Failure.FAILED_TO_DELETE_FOLDER,
                                 world.getName(), exception),
                         success -> worldActionResult(world.getName())));
@@ -533,17 +533,16 @@ public class WorldManager {
      */
     public Attempt<LoadedMultiverseWorld, CloneWorldResult.Failure> cloneWorld(@NotNull CloneWorldOptions options) {
         return cloneWorldValidateWorld(options)
-                .map(this::cloneWorldCopyFolder)
-                .map(validatedOptions -> {
+                .mapAttempt(this::cloneWorldCopyFolder)
+                .mapAttempt(validatedOptions -> {
                     ImportWorldOptions importWorldOptions = ImportWorldOptions.worldName(validatedOptions.newWorldName())
                             .environment(validatedOptions.world().getEnvironment())
                             .generator(validatedOptions.world().getGenerator());
                     return importWorld(importWorldOptions).convertReason(CloneWorldResult.Failure.IMPORT_FAILED);
                 })
-                .map(newWorld -> {
+                .onSuccess(newWorld -> {
                     cloneWorldTransferData(options, newWorld);
                     saveWorldsConfig();
-                    return worldActionResult(newWorld);
                 });
     }
 
@@ -621,11 +620,10 @@ public class WorldManager {
 
         return deleteWorld(world)
                 .convertReason(RegenWorldResult.Failure.DELETE_FAILED)
-                .map(() -> createWorld(createWorldOptions).convertReason(RegenWorldResult.Failure.CREATE_FAILED))
-                .map(newWorld -> {
+                .mapAttempt(() -> createWorld(createWorldOptions).convertReason(RegenWorldResult.Failure.CREATE_FAILED))
+                .onSuccess(newWorld -> {
                     dataTransfer.pasteAllTo(newWorld);
                     saveWorldsConfig();
-                    return worldActionResult(newWorld);
                 });
     }
 
