@@ -21,9 +21,9 @@ public class ResultChain {
     }
 
     private final boolean isSuccess;
-    private final List<Result<?, ?, ?>> results;
+    private final List<Result<?, ?>> results;
 
-    ResultChain(boolean isSuccess, List<Result<?, ?, ?>> results) {
+    ResultChain(boolean isSuccess, List<Result<?, ?>> results) {
         this.isSuccess = isSuccess;
         this.results = results;
     }
@@ -102,7 +102,7 @@ public class ResultChain {
     }
 
     public Message getLastResultMessage() {
-        return Iterables.getLast(results).getMessage();
+        return Iterables.getLast(results).getReasonMessage();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ResultChain {
 
     public static class Builder {
         private final boolean stopOnFailure;
-        private final List<Result<?, ?, ?>> results;
+        private final List<Result<?, ?>> results;
 
         private boolean isSuccess = true;
 
@@ -124,11 +124,11 @@ public class ResultChain {
             this.results = new ArrayList<>();
         }
 
-        public Builder then(Supplier<Result<?, ?, ?>> resultSupplier) {
+        public Builder then(Supplier<Result<?, ?>> resultSupplier) {
             if (!isSuccess && stopOnFailure) {
                 return this;
             }
-            Result<?, ?, ?> result = resultSupplier.get();
+            Result<?, ?> result = resultSupplier.get();
             if (result.isFailure()) {
                 isSuccess = false;
             }

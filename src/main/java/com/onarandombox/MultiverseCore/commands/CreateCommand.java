@@ -3,7 +3,6 @@ package com.onarandombox.MultiverseCore.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
@@ -104,12 +103,12 @@ public class CreateCommand extends MultiverseCommand {
                 .useSpawnAdjust(!parsedFlags.hasFlag("--no-adjust-spawn"))
                 .generator(parsedFlags.flagValue("--generator", "", String.class))
                 .generateStructures(!parsedFlags.hasFlag("--no-structures"))
-        ).onSuccess(success -> {
-            Logging.fine("World create success: " + success);
-            issuer.sendInfo(success.getMessage());
+        ).onSuccess(newWorld -> {
+            Logging.fine("World create success: " + newWorld);
+            issuer.sendInfo(MVCorei18n.CREATEWORLD_CREATED, "{world}", newWorld.getName());
         }).onFailure(failure -> {
             Logging.fine("World create failure: " + failure);
-            issuer.sendError(failure.getMessage());
+            issuer.sendError(failure.getFailureMessage());
         });
     }
 }

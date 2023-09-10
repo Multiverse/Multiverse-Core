@@ -50,7 +50,7 @@ public class WorldEntryChecker {
                 .build();
     }
 
-    public Result<Void, WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull MultiverseWorld world) {
+    public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull MultiverseWorld world) {
         if (!config.getEnforceAccess()) {
             return Result.success(WorldAccessResult.Success.NO_ENFORCE_WORLD_ACCESS);
         }
@@ -59,7 +59,7 @@ public class WorldEntryChecker {
                 : Result.failure(WorldAccessResult.Failure.NO_WORLD_ACCESS);
     }
 
-    public Result<Void, PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(@NotNull LoadedMultiverseWorld world) {
+    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(@NotNull LoadedMultiverseWorld world) {
         final int playerLimit = world.getPlayerLimit();
         if (playerLimit <= -1) {
             return Result.success(PlayerLimitResult.Success.NO_PLAYERLIMIT);
@@ -72,7 +72,7 @@ public class WorldEntryChecker {
                 : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
     }
 
-    public Result<Void, BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(@Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
+    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(@Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         if (fromWorld == null) {
             return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
         }
@@ -81,7 +81,7 @@ public class WorldEntryChecker {
                 : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
-    public Result<Void, EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(LoadedMultiverseWorld world) {
+    public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(LoadedMultiverseWorld world) {
         double price = world.getPrice();
         Material currency = world.getCurrency();
         if (price == 0D && (currency == null || currency == EntryFee.DISABLED_MATERIAL)) {
