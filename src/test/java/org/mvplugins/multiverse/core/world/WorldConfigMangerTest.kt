@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world
 
 import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation
 import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
+import org.bukkit.World.Environment
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.mvplugins.multiverse.core.TestWithMockBukkit
@@ -39,7 +40,18 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
         assertTrue(worldConfigManager.load().isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
-        //compareConfigFile("worlds2.yml", "/migrated_worlds.yml")
+
+        val endWorldConfig = worldConfigManager.getWorldConfig("world_the_end")
+        assertNotNull(endWorldConfig)
+
+        assertEquals("&aworld the end", endWorldConfig.alias)
+        assertEquals(Environment.THE_END, endWorldConfig.environment)
+
+        val worldConfig = worldConfigManager.getWorldConfig("world")
+        assertNotNull(worldConfig)
+
+        assertEquals(-5176596003035866649, worldConfig.seed)
+        assertEquals(listOf("test"), worldConfig.worldBlacklist)
     }
 
     @Test

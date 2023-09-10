@@ -81,5 +81,5 @@ world:
       tick-rate: -1
       exceptions: []
   world-blacklist:
-    - test
+  - test
   version: 1.0

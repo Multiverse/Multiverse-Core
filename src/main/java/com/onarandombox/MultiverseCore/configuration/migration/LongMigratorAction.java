@@ -19,6 +19,6 @@ public class LongMigratorAction implements MigratorAction {
     @Override
     public void migrate(ConfigurationSection config) {
         config.set(path, ACFUtil.parseLong(config.getString(path)));
-        Logging.info("Converted %s to integer %s", path, config.getLong(path));
+        Logging.info("Converted %s to long %s", path, config.getLong(path));
     }
 }
