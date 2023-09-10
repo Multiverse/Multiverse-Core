@@ -81,7 +81,7 @@ public class ImportCommand extends MultiverseCommand {
                 .useSpawnAdjust(parsedFlags.hasFlag("--adjust-spawn"))
         ).onSuccess(newWorld -> {
             Logging.fine("World import success: " + newWorld);
-            issuer.sendInfo(MVCorei18n.IMPORTWORLD_IMPORTED, "{world}", newWorld.getName());
+            issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, "{world}", newWorld.getName());
         }).onFailure(failure -> {
             Logging.fine("World import failure: " + failure);
             issuer.sendError(failure.getFailureMessage());

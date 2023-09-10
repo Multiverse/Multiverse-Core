@@ -105,7 +105,7 @@ public class CreateCommand extends MultiverseCommand {
                 .generateStructures(!parsedFlags.hasFlag("--no-structures"))
         ).onSuccess(newWorld -> {
             Logging.fine("World create success: " + newWorld);
-            issuer.sendInfo(MVCorei18n.CREATEWORLD_CREATED, "{world}", newWorld.getName());
+            issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, "{world}", newWorld.getName());
         }).onFailure(failure -> {
             Logging.fine("World create failure: " + failure);
             issuer.sendError(failure.getFailureMessage());

@@ -44,7 +44,7 @@ public class UnloadCommand extends MultiverseCommand {
         worldManager.unloadWorld(world)
                 .onSuccess(loadedWorld -> {
                     Logging.fine("World unload success: " + loadedWorld);
-                    issuer.sendInfo(MVCorei18n.UNLOADWORLD_UNLOADED, "{world}", loadedWorld.getName());
+                    issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS, "{world}", loadedWorld.getName());
                 }).onFailure(failure -> {
                     Logging.fine("World unload failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());

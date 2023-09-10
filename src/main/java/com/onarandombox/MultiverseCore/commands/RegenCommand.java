@@ -87,7 +87,7 @@ public class RegenCommand extends MultiverseCommand {
                             .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"))
                     ).onSuccess(newWorld -> {
                         Logging.fine("World regen success: " + newWorld);
-                        issuer.sendInfo(MVCorei18n.REGENWORLD_REGENERATED, "{world}", newWorld.getName());
+                        issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, "{world}", newWorld.getName());
                     }).onFailure(failure -> {
                         Logging.fine("World regen failure: " + failure);
                         issuer.sendError(failure.getFailureMessage());
