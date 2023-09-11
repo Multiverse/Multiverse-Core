@@ -60,43 +60,46 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
     }
 
     private Location readSpawnFromWorld(World world) {
-        // TODO: Refactor... this is copy pasted and bad
         Location location = world.getSpawnLocation();
-        // Set the worldspawn to our configspawn
+
         // Verify that location was safe
-        if (!blockSafety.playerCanSpawnHereSafely(location)) {
-            if (!this.getAdjustSpawn()) {
-                Logging.fine("Spawn location from world.dat file was unsafe!!");
-                Logging.fine("NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
-                Logging.fine("To turn on spawn adjustment for this world simply type:");
-                Logging.fine("/mvm set adjustspawn true " + this.getAlias());
-                return location;
-            }
-            // If it's not, find a better one.
-            Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
-            Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
-            Location newSpawn = safeTTeleporter.getSafeLocation(location,
-                    SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
-            // I think we could also do this, as I think this is what Notch does.
-            // Not sure how it will work in the nether...
-            //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
-            if (newSpawn != null) {
-                Logging.info("New Spawn for '%s' is located at: %s",
-                        this.getName(), locationManipulation.locationToString(newSpawn));
-                return newSpawn;
-            } else {
-                // If it's a standard end world, let's check in a better place:
-                Location newerSpawn;
-                newerSpawn = blockSafety.getTopBlock(new Location(world, 0, 0, 0));
-                if (newerSpawn != null) {
-                    Logging.info("New Spawn for '%s' is located at: %s",
-                            this.getName(), locationManipulation.locationToString(newerSpawn));
-                    return newerSpawn;
-                } else {
-                    Logging.severe("Safe spawn NOT found!!!");
-                }
-            }
+        if (blockSafety.playerCanSpawnHereSafely(location)) {
+            return location;
         }
+
+        if (!this.getAdjustSpawn()) {
+            Logging.fine("Spawn location from world.dat file was unsafe!!");
+            Logging.fine("NOT adjusting spawn for '" + this.getAlias() + "' because you told me not to.");
+            Logging.fine("To turn on spawn adjustment for this world simply type:");
+            Logging.fine("/mvm set adjustspawn true " + this.getAlias());
+            return location;
+        }
+
+        // The location is not safe, so we need to find a better one.
+        Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
+        Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
+        Location newSpawn = safeTTeleporter.getSafeLocation(location,
+                SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
+        // I think we could also do this, as I think this is what Notch does.
+        // Not sure how it will work in the nether...
+        //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
+        if (newSpawn != null) {
+            Logging.info("New Spawn for '%s' is located at: %s",
+                    this.getName(), locationManipulation.locationToString(newSpawn));
+            return newSpawn;
+        }
+
+        // If it's a standard end world, let's check in a better place:
+        Logging.fine("Checking for a safe location using top block...");
+        Location newerSpawn;
+        newerSpawn = blockSafety.getTopBlock(new Location(world, 0, 0, 0));
+        if (newerSpawn != null) {
+            Logging.info("New Spawn for '%s' is located at: %s",
+                    this.getName(), locationManipulation.locationToString(newerSpawn));
+            return newerSpawn;
+        }
+
+        Logging.severe("Safe spawn NOT found!!!");
         return location;
     }
 
