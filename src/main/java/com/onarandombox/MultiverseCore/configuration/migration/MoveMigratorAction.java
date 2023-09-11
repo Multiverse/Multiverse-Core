@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.configuration.migration;
 
+import java.util.Optional;
+
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
-
-import java.util.Optional;
 
 /**
  * Single migrator action that moves a value from one path to another.

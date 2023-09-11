@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.configuration.handle;
 
+import java.util.logging.Logger;
+
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNodeNotFoundException;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
@@ -9,8 +11,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.logging.Logger;
 
 /**
  * Generic configuration handle for all ConfigurationSection types.

@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.worldnew.options;
 
+import java.util.Random;
+
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Random;
 
 /**
  * Options for customizing the creation of a new world.

@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.inject.binder;
 
+import java.util.logging.Logger;
+
 import org.bukkit.plugin.Plugin;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.logging.Logger;
 
 /**
  * The base class for all plugin binders. Initiates the binding of the plugin instance and initially binds it to the

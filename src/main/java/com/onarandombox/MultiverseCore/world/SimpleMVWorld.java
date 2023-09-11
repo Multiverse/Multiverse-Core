@@ -7,6 +7,11 @@
 
 package com.onarandombox.MultiverseCore.world;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
@@ -41,11 +46,6 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * The implementation of a Multiverse handled world.

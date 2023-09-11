@@ -7,6 +7,10 @@
 
 package com.onarandombox.MultiverseCore.world;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
@@ -24,10 +28,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Utility class that removes animals from worlds that don't belong there.

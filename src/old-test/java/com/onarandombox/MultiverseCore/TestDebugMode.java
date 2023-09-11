@@ -7,9 +7,15 @@
 
 package com.onarandombox.MultiverseCore;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+
 import com.onarandombox.MultiverseCore.api.MVCore;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
-import junit.framework.Assert;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,13 +23,6 @@ import org.bukkit.plugin.Plugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TestDebugMode {
     TestInstanceCreator creator;

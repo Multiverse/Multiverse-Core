@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class used to help in doing various reflection actions.

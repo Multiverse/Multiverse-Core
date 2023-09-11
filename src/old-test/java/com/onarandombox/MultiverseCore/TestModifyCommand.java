@@ -1,20 +1,16 @@
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.MVWorld;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
 import org.bukkit.Server;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TestModifyCommand {
     TestInstanceCreator creator;

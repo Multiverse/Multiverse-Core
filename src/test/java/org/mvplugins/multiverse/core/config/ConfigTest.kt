@@ -5,13 +5,7 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class ConfigTest : TestWithMockBukkit() {
 

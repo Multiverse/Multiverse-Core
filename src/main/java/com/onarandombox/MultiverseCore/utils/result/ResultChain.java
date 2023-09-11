@@ -1,15 +1,15 @@
 package com.onarandombox.MultiverseCore.utils.result;
 
-import com.google.common.collect.Iterables;
-import com.onarandombox.MultiverseCore.utils.message.Message;
-import io.vavr.control.Option;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Iterables;
+import com.onarandombox.MultiverseCore.utils.message.Message;
+import io.vavr.control.Option;
 
 public class ResultChain {
     public static Builder builder() {

@@ -1,13 +1,13 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.onarandombox.MultiverseCore.world.SimpleMVWorld;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Null-location.

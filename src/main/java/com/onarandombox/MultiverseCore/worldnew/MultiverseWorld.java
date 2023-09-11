@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig;
@@ -11,9 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Represents a world handled by Multiverse which has all the custom properties provided by Multiverse.

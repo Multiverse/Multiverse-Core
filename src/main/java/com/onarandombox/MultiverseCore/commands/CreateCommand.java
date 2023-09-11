@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.util.Collections;
+import java.util.Random;
+
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -24,9 +27,6 @@ import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Collections;
-import java.util.Random;
 
 @Service
 @CommandAlias("mv")

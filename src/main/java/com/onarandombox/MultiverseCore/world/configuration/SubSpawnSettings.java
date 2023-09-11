@@ -1,12 +1,12 @@
 package com.onarandombox.MultiverseCore.world.configuration;
 
-import me.main__.util.SerializationConfig.Property;
-import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.configuration.serialization.SerializableAs;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import me.main__.util.SerializationConfig.Property;
+import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bukkit.configuration.serialization.SerializableAs;
 
 /**
  * SpawnSubSettings.

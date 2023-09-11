@@ -7,6 +7,12 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
+import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,12 +21,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 import org.jvnet.hk2.annotations.Service;
-
-import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * The default-implementation of {@link LocationManipulation}.

@@ -1,10 +1,10 @@
 package com.onarandombox.MultiverseCore.worldnew.options;
 
+import java.util.Random;
+
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Random;
 
 /**
  * Options for customizing the regeneration of a world.

@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
@@ -10,9 +13,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents nodes in a world configuration.

@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.api;
 
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.destination.ParsedDestination;
 import com.onarandombox.MultiverseCore.teleportation.TeleportResult;
@@ -7,8 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.jvnet.hk2.annotations.Contract;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Used to safely teleport people.

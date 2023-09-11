@@ -1,14 +1,14 @@
 package com.onarandombox.MultiverseCore.display;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.display.handlers.DefaultSendHandler;
 import com.onarandombox.MultiverseCore.display.handlers.SendHandler;
 import com.onarandombox.MultiverseCore.display.parsers.ContentProvider;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Helps to display contents such as list and maps in a nicely formatted fashion.

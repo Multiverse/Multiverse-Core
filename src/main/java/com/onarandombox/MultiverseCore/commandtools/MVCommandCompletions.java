@@ -1,5 +1,13 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
@@ -19,14 +27,6 @@ import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {

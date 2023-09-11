@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.display.parsers;
 
+import java.util.Collection;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 /**
  * Parse objects into string or list of strings.

@@ -1,9 +1,7 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import com.onarandombox.MultiverseCore.utils.file.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.onarandombox.MultiverseCore.utils.file.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FileUtilsTest {
 

@@ -1,13 +1,13 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
+import java.io.File;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.io.File;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * <p>Utility class in helping to check the status of a world name and it's associated world folder.</p>

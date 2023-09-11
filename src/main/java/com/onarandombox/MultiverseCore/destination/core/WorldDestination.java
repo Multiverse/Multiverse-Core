@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
@@ -10,9 +13,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * {@link Destination} implementation for exact locations.

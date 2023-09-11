@@ -1,5 +1,10 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -18,11 +23,6 @@ import org.bukkit.entity.Squid;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
 
 // TODO: This entire class is a mess.
 /**

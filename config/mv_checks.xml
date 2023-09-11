@@ -226,8 +226,7 @@
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="separateLineBetweenGroups" value="true"/>
             <property name="customImportOrderRules"
-                      value="THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
-            <!--                      value="SAME_PACKAGE(3)###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>-->
+                      value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
             <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
         </module>
         <module name="IllegalImport">

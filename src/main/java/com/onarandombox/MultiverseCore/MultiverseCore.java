@@ -7,6 +7,12 @@
 
 package com.onarandombox.MultiverseCore;
 
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.Destination;
@@ -40,12 +46,6 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.io.File;
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
