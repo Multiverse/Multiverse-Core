@@ -15,6 +15,31 @@ public class MultiverseException extends Exception {
     private final @Nullable Message message;
 
     /**
+     * Creates a new exception with the given message.
+     * <br/>
+     * If the message is not null, this exception will also contain a {@link Message} which can be accessed via
+     * {@link #getMVMessage()}. This message will just be the given message wrapped in a {@link Message}.
+     *
+     * @param message   The message for the exception
+     */
+    public MultiverseException(@Nullable String message) {
+        this(message != null ? Message.of(message) : null);
+    }
+
+    /**
+     * Creates a new exception with the given message.
+     * <br/>
+     * If the message is not null, this exception will also contain a String message which can be accessed via
+     * {@link #getMessage()}. This message will just be the given message formatted without locale support.
+     *
+     * @param message   The message for the exception
+     */
+    public MultiverseException(@Nullable Message message) {
+        super(message != null ? message.formatted() : null);
+        this.message = message;
+    }
+
+    /**
      * Creates a new exception with the given message and cause.
      * <br/>
      * If the message is not null, this exception will also contain a {@link Message} which can be accessed via
