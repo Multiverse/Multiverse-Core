@@ -383,6 +383,7 @@
         <module name="OuterTypeFilename"/>
         <module name="TodoComment">
             <property name="format" value="TODO"/>
+            <!-- TODO change back to warning after MV5 -->
             <property name="severity" value="info"/>
         </module>
         <module name="TrailingComment">
