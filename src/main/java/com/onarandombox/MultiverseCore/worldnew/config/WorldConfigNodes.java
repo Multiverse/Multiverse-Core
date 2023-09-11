@@ -102,7 +102,7 @@ public class WorldConfigNodes {
     public final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode
             .builder("environment", World.Environment.class)
             .defaultValue(World.Environment.NORMAL)
-            .name("environment")
+            .name(null)
             .build());
 
     public final ConfigNode<GameMode> GAMEMODE = node(ConfigNode.builder("gamemode", GameMode.class)
@@ -112,7 +112,7 @@ public class WorldConfigNodes {
 
     public final ConfigNode<String> GENERATOR = node(ConfigNode.builder("generator", String.class)
             .defaultValue("@error") // this should be set on world creation
-            .name("generator")
+            .name(null)
             .build());
 
     public final ConfigNode<Boolean> HIDDEN = node(ConfigNode.builder("hidden", Boolean.class)
@@ -167,12 +167,12 @@ public class WorldConfigNodes {
 
     public final ConfigNode<Long> SEED = node(ConfigNode.builder("seed", Long.class)
             .defaultValue(Long.MIN_VALUE)
-            .name("seed")
+            .name(null)
             .build());
 
     public final ConfigNode<Location> SPAWN_LOCATION = node(ConfigNode.builder("spawn-location", Location.class)
             .defaultValue(new NullLocation())
-            .name("spawn-location")
+            .name(null)
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) return;
                 world.getBukkitWorld().peek(world -> {
