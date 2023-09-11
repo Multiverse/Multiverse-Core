@@ -558,8 +558,7 @@ public class WorldManager {
 
     private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(
             @NotNull CloneWorldOptions options) {
-        // TODO: Check null?
-        File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).getOrNull();
+        File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).get();
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
         return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
