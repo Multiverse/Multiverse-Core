@@ -48,8 +48,7 @@ public sealed class Message permits LocalizedMessage {
     public static Message of(
             @NotNull MessageKeyProvider messageKeyProvider,
             @NotNull String nonLocalizedMessage,
-            @NotNull MessageReplacement... replacements
-    ) {
+            @NotNull MessageReplacement... replacements) {
         Objects.requireNonNull(messageKeyProvider, "messageKeyProvider must not be null");
         Objects.requireNonNull(nonLocalizedMessage, "message must not be null");
         for (MessageReplacement replacement : replacements) {
@@ -60,11 +59,11 @@ public sealed class Message permits LocalizedMessage {
     }
 
     private final @NotNull String message;
-    private final @NotNull String[] replacements;
+    protected final @NotNull MessageReplacement[] replacements;
 
     protected Message(@NotNull String message, @NotNull MessageReplacement... replacements) {
         this.message = message;
-        this.replacements = toReplacementsArray(replacements);
+        this.replacements = replacements;
     }
 
     /**
@@ -76,7 +75,21 @@ public sealed class Message permits LocalizedMessage {
      * @return The replacements
      */
     public @NotNull String[] getReplacements() {
-        return replacements;
+        return toReplacementsArray(replacements);
+    }
+
+    /**
+     * Gets the replacements for this message with localization support.
+     * <br/>
+     * This array is guaranteed to be of even length and suitable for use with
+     * {@link ACFUtil#replaceStrings(String, String...)}.
+     *
+     * @param locales       The MultiverseCore locales provider
+     * @param commandIssuer The command issuer the message is for, or null for the console (default locale)
+     * @return The replacements
+     */
+    public @NotNull String[] getReplacements(@NotNull PluginLocales locales, @Nullable CommandIssuer commandIssuer) {
+        return getReplacements();
     }
 
     /**
@@ -96,10 +109,11 @@ public sealed class Message permits LocalizedMessage {
      * @return The formatted message
      */
     public @NotNull String formatted() {
-        if (replacements.length == 0) {
+        String[] parsedReplacements = getReplacements();
+        if (parsedReplacements.length == 0) {
             return raw();
         }
-        return ACFUtil.replaceStrings(message, replacements);
+        return ACFUtil.replaceStrings(message, parsedReplacements);
     }
 
     /**
@@ -133,7 +147,7 @@ public sealed class Message permits LocalizedMessage {
         int i = 0;
         for (MessageReplacement replacement : replacements) {
             replacementsArray[i++] = replacement.getKey();
-            replacementsArray[i++] = replacement.getReplacement();
+            replacementsArray[i++] = replacement.getReplacement().fold(s -> s, Message::formatted);
         }
         return replacementsArray;
     }

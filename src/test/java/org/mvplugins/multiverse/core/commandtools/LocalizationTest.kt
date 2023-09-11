@@ -253,4 +253,64 @@ class LocalizationTest : TestWithMockBukkit() {
             }
         }
     }
+
+    @Nested
+    inner class WithMessagesAsReplacement {
+        private val replacementKey = "{world}"
+        private val replacementValue = Message.of(MVCorei18n.GENERIC_SUCCESS, "success")
+        private val messageString = "Hello $replacementKey!"
+        private val replacedMessageString = "Hello success!"
+        private val replacedMessageStringLocale = "Cloned world 'Success!'!"
+
+        private val message = MVCorei18n.CLONE_SUCCESS
+            .bundle(messageString, replace(replacementKey).with(replacementValue))
+
+        @Test
+        fun `The raw message should be the same as the original`() {
+            assertEquals(messageString, message.raw())
+        }
+
+        @Test
+        fun `The formatted message should be the replaced original string`() {
+            assertEquals(replacedMessageString, message.formatted())
+        }
+
+        @Test
+        fun `The formatted message with PluginLocales should be different from the replaced original string`() {
+            assertEquals(replacedMessageStringLocale, message.formatted(locales))
+        }
+
+        @Test
+        fun `The formatted message with PluginLocales should have performed replacement`() {
+            assertThat(message.formatted(locales), !containsSubstring(replacementKey))
+            assertThat(message.formatted(locales), containsSubstring("Success!"))
+        }
+
+        @Nested
+        @DisplayName("And a command sender is provided")
+        inner class WithCommandSender {
+
+            private lateinit var sender: CommandSender
+            private lateinit var issuer: MVCommandIssuer
+
+            @BeforeTest
+            fun setUp() {
+                sender = spy(Bukkit.getConsoleSender())
+                issuer = commandManager.getCommandIssuer(sender)
+            }
+
+            @Test
+            fun `Sending the issuer the message should send the formatted message to the sender`() {
+                issuer.sendInfo(message);
+
+                val sentMessage = argumentCaptor<String> {
+                    verify(sender).sendMessage(capture())
+                }.firstValue
+
+                assertNotEquals(replacedMessageString, sentMessage)
+                assertThat(sentMessage, !containsSubstring(replacementKey))
+                assertThat(sentMessage, containsSubstring(replacedMessageStringLocale))
+            }
+        }
+    }
 }
