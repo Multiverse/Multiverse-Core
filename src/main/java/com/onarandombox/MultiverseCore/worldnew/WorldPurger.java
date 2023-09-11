@@ -22,6 +22,7 @@ import org.jvnet.hk2.annotations.Service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 // TODO: This entire class is a mess.
 /**
@@ -84,8 +85,12 @@ public class WorldPurger {
      * @param negateMonsters    Whether the animals in the list should be negated.
      * @param sender The {@link CommandSender} that initiated the action. He will/should be notified.
      */
-    public void purgeWorld(@Nullable LoadedMultiverseWorld world, @NotNull List<String> thingsToKill,
-                           boolean negateAnimals, boolean negateMonsters, CommandSender sender) {
+    public void purgeWorld(
+            @Nullable LoadedMultiverseWorld world,
+            @NotNull List<String> thingsToKill,
+            boolean negateAnimals,
+            boolean negateMonsters,
+            CommandSender sender) {
         if (world == null) {
             return;
         }
@@ -115,7 +120,7 @@ public class WorldPurger {
                 final Iterator<Projectile> it = projectiles.iterator();
                 while (it.hasNext()) {
                     final Projectile p = it.next();
-                    if (p.getShooter().equals(e)) {
+                    if (Objects.equals(p.getShooter(), e)) {
                         p.remove();
                         it.remove();
                         projectilesKilled++;
@@ -161,11 +166,22 @@ public class WorldPurger {
         boolean specifiedAll = thingsToKill.contains("ALL");
         boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
         boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
-        return this.killDecision(entity, thingsToKill, negateAnimals, negateMonsters, specifiedAnimals, specifiedMonsters);
+        return this.killDecision(
+                entity,
+                thingsToKill,
+                negateAnimals,
+                negateMonsters,
+                specifiedAnimals,
+                specifiedMonsters);
     }
 
-    private boolean killDecision(Entity entity, List<String> thingsToKill, boolean negateAnimals,
-            boolean negateMonsters, boolean specifiedAnimals, boolean specifiedMonsters) {
+    private boolean killDecision(
+            Entity entity,
+            List<String> thingsToKill,
+            boolean negateAnimals,
+            boolean negateMonsters,
+            boolean specifiedAnimals,
+            boolean specifiedMonsters) {
         boolean negate = false;
         boolean specified = false;
         if (entity instanceof Golem
@@ -178,8 +194,9 @@ public class WorldPurger {
                         entity.getWorld().getName(), entity);
                 return true;
             }
-            if (specifiedAnimals)
+            if (specifiedAnimals) {
                 specified = true;
+            }
             negate = negateAnimals;
         } else if (entity instanceof Monster
                 || entity instanceof Ghast
@@ -191,8 +208,9 @@ public class WorldPurger {
                         entity.getWorld().getName(), entity);
                 return true;
             }
-            if (specifiedMonsters)
+            if (specifiedMonsters) {
                 specified = true;
+            }
             negate = negateMonsters;
         }
         for (String s : thingsToKill) {
@@ -200,7 +218,8 @@ public class WorldPurger {
             if (type != null && type.equals(entity.getType())) {
                 specified = true;
                 if (!negate) {
-                    Logging.finest("Removing an entity because it WAS specified and we are NOT negating in world %s: %s",
+                    Logging.finest(
+                            "Removing an entity because it WAS specified and we are NOT negating in world %s: %s",
                             entity.getWorld().getName(), entity);
                     return true;
                 }
