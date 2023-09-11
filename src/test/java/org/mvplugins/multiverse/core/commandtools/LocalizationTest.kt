@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.commandtools
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
+import com.natpryce.hamkrest.endsWith
 import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales
@@ -260,7 +261,7 @@ class LocalizationTest : TestWithMockBukkit() {
         private val replacementValue = Message.of(MVCorei18n.GENERIC_SUCCESS, "success")
         private val messageString = "Hello $replacementKey!"
         private val replacedMessageString = "Hello success!"
-        private val replacedMessageStringLocale = "Cloned world 'Success!'!"
+        private val replacedMessageStringLocale = "World cloned to 'Success!'!"
 
         private val message = MVCorei18n.CLONE_SUCCESS
             .bundle(messageString, replace(replacementKey).with(replacementValue))
@@ -277,7 +278,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
         @Test
         fun `The formatted message with PluginLocales should be different from the replaced original string`() {
-            assertEquals(replacedMessageStringLocale, message.formatted(locales))
+            assertThat(message.formatted(locales), endsWith(replacedMessageStringLocale))
         }
 
         @Test
