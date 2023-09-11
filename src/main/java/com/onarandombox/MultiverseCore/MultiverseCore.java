@@ -84,11 +84,15 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     @Override
     public void onLoad() {
-        // Create our DataFolder
-        getDataFolder().mkdirs();
-
         // Setup our Logging
         Logging.init(this);
+
+        // Create our DataFolder
+        if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
+            Logging.severe("Failed to create data folder!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         // Register our config classes
         SerializationConfig.registerAll(WorldProperties.class);
@@ -373,6 +377,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      *
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
      * @param qualifiers     The set of qualifiers that must match this service definition
+     * @param <T>            The type of the contract to get
      * @return An instance of the contract or impl if it is a service and is already instantiated, null otherwise
      * @throws MultiException if there was an error during service lookup
      */

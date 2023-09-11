@@ -29,7 +29,7 @@ public class MVWorldListener implements InjectableListener {
     private final WorldManager worldManager;
 
     @Inject
-    public MVWorldListener(WorldManager worldManager) {
+    MVWorldListener(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 

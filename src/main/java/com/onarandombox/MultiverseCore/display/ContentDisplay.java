@@ -28,7 +28,7 @@ public class ContentDisplay {
     private final List<ContentProvider> contentParsers = new ArrayList<>();
     private SendHandler sendHandler = DefaultSendHandler.getInstance();
 
-    public ContentDisplay() {
+    ContentDisplay() {
     }
 
     /**

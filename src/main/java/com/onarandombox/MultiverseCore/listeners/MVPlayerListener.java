@@ -68,7 +68,7 @@ public class MVPlayerListener implements InjectableListener {
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
     @Inject
-    public MVPlayerListener(
+    MVPlayerListener(
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
@@ -79,8 +79,7 @@ public class MVPlayerListener implements InjectableListener {
             WorldEntryCheckerProvider worldEntryCheckerProvider,
             Provider<MVCommandManager> commandManagerProvider,
             CorePermissionsChecker permissionsChecker,
-            DestinationsProvider destinationsProvider
-    ) {
+            DestinationsProvider destinationsProvider) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -103,6 +102,8 @@ public class MVPlayerListener implements InjectableListener {
     }
 
     /**
+     * Gets the map of player and the world name they are in.
+     *
      * @return the playerWorld-map
      */
     public Map<String, String> getPlayerWorld() {
@@ -111,6 +112,7 @@ public class MVPlayerListener implements InjectableListener {
 
     /**
      * This method is called when a player respawns.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler(priority = EventPriority.LOW)

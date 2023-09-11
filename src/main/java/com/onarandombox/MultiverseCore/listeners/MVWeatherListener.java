@@ -25,12 +25,13 @@ public class MVWeatherListener implements InjectableListener {
     private final WorldManager worldManager;
 
     @Inject
-    public MVWeatherListener(WorldManager worldManager) {
+    MVWeatherListener(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
     /**
      * This method is called when the weather changes.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler
@@ -39,7 +40,7 @@ public class MVWeatherListener implements InjectableListener {
             return;
         }
         worldManager.getLoadedWorld(event.getWorld())
-                .peek((world) -> {
+                .peek(world -> {
                     if (!world.getAllowWeather()) {
                         Logging.fine("Cancelling weather for %s as getAllowWeather is false", world.getName());
                         event.setCancelled(true);
@@ -49,6 +50,7 @@ public class MVWeatherListener implements InjectableListener {
 
     /**
      * This method is called when a big storm is going to start.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler
@@ -57,7 +59,7 @@ public class MVWeatherListener implements InjectableListener {
             return;
         }
         worldManager.getLoadedWorld(event.getWorld())
-                .peek((world) -> {
+                .peek(world -> {
                     if (!world.getAllowWeather()) {
                         Logging.fine("Cancelling thunder for %s as getAllowWeather is false", world.getName());
                         event.setCancelled(true);

@@ -12,13 +12,16 @@ import org.jvnet.hk2.annotations.Service;
 
 import java.util.Collection;
 
+/**
+ * {@link Destination} implementation for anchors.
+ */
 @Service
 public class AnchorDestination implements Destination<AnchorDestinationInstance> {
 
     private final AnchorManager anchorManager;
 
     @Inject
-    public AnchorDestination(AnchorManager anchorManager) {
+    AnchorDestination(AnchorManager anchorManager) {
         this.anchorManager = anchorManager;
     }
 

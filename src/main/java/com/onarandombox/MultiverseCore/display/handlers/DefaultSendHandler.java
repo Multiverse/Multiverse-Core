@@ -5,10 +5,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DefaultSendHandler implements SendHandler {
+/**
+ * Most basic implementation of {@link SendHandler} that just sends content with no formatting.
+ */
+public final class DefaultSendHandler implements SendHandler {
 
     private static DefaultSendHandler instance;
 
+    /**
+     * Gets the singleton instance of this class.
+     *
+     * @return The singleton instance of this class.
+     */
     public static DefaultSendHandler getInstance() {
         if (instance == null) {
             instance = new DefaultSendHandler();

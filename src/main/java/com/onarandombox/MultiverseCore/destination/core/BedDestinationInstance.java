@@ -8,6 +8,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Destination instance implementation for the {@link BedDestination}.
+ */
 public class BedDestinationInstance implements DestinationInstance {
     private final Player player;
 
@@ -16,7 +19,7 @@ public class BedDestinationInstance implements DestinationInstance {
      *
      * @param player The player whose bed to use.
      */
-    public BedDestinationInstance(Player player) {
+    BedDestinationInstance(Player player) {
         this.player = player;
     }
 

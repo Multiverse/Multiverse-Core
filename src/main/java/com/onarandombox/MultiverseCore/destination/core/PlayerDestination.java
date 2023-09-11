@@ -13,12 +13,15 @@ import org.jvnet.hk2.annotations.Service;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * {@link Destination} implementation for players.s
+ */
 @Service
 public class PlayerDestination implements Destination<PlayerDestinationInstance> {
     /**
      * Creates a new instance of the PlayerDestination.
      */
-    public PlayerDestination() {
+    PlayerDestination() {
     }
 
     /**

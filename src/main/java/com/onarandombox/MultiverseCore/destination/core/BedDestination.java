@@ -14,11 +14,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * {@link Destination} implementation for beds.
+ */
 @Service
 public class BedDestination implements Destination<BedDestinationInstance> {
-    public static final String OWN_BED_STRING = "playerbed";
+    static final String OWN_BED_STRING = "playerbed";
 
-    public BedDestination() {
+    BedDestination() {
     }
 
     /**

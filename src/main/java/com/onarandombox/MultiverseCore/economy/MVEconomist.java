@@ -103,7 +103,7 @@ public class MVEconomist {
     }
 
     /**
-     * Pays for a given amount of currency either from the player's economy account or inventory if the currency
+     * Pays for a given amount of currency either from the player's economy account or inventory if the currency.
      *
      * @param player    the player to take currency from.
      * @param price     the amount to take.

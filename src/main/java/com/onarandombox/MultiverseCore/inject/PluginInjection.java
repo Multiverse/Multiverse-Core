@@ -30,7 +30,7 @@ public final class PluginInjection {
      * {@link org.bukkit.plugin.java.JavaPlugin}.
      *
      * @param pluginBinder The plugin binder for the plugin.
-     * @return
+     * @return A {@link ServiceLocator} for the plugin.
      */
     @NotNull
     public static Try<ServiceLocator> createServiceLocator(@NotNull PluginBinder<?> pluginBinder) {
@@ -74,8 +74,7 @@ public final class PluginInjection {
     private PluginInjection(
             @NotNull PluginBinder<?> pluginBinder,
             @NotNull ServiceLocatorFactory serviceLocatorFactory,
-            @NotNull ServiceLocator serverServiceLocator
-    ) {
+            @NotNull ServiceLocator serverServiceLocator) {
         this.pluginBinder = pluginBinder;
         plugin = pluginBinder.getPlugin();
         pluginServiceLocator = serviceLocatorFactory.create(plugin.getName(), serverServiceLocator);
@@ -89,16 +88,14 @@ public final class PluginInjection {
     @NotNull
     private static Try<ServiceLocator> createServerServiceLocator(
             @NotNull ServiceLocatorFactory serviceLocatorFactory,
-            @NotNull ServiceLocator systemServiceLocator
-    ) {
+            @NotNull ServiceLocator systemServiceLocator) {
         return Try.of(() -> serviceLocatorFactory.create("server", systemServiceLocator))
                 .andThenTry(locator -> ServiceLocatorUtilities.bind(locator, new ServerBinder()));
     }
 
     @NotNull
     private static Try<ServiceLocator> createSystemServiceLocator(
-            @NotNull ServiceLocatorFactory serviceLocatorFactory
-    ) {
+            @NotNull ServiceLocatorFactory serviceLocatorFactory) {
         ServiceLocator serviceLocator = serviceLocatorFactory.create("system");
 
         return Try.of(() -> serviceLocator.getService(DynamicConfigurationService.class))
@@ -111,15 +108,12 @@ public final class PluginInjection {
     @NotNull
     private static Try<ServiceLocator> populatePluginServiceLocator(
             @NotNull ServiceLocator serviceLocator,
-            @NotNull Plugin plugin
-    ) {
+            @NotNull Plugin plugin) {
         return Try.of(() -> serviceLocator.getService(DynamicConfigurationService.class))
                 .mapTry(dynamicConfigurationService -> {
-                    dynamicConfigurationService
-                            .getPopulator()
-                            .populate(new ClasspathDescriptorFileFinder(
-                                    plugin.getClass().getClassLoader(),
-                                    plugin.getName()));
+                    dynamicConfigurationService.getPopulator().populate(new ClasspathDescriptorFileFinder(
+                            plugin.getClass().getClassLoader(),
+                            plugin.getName()));
                     return serviceLocator;
                 });
     }

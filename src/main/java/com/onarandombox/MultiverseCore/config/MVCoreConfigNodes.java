@@ -28,6 +28,13 @@ class MVCoreConfigNodes {
         return node;
     }
 
+    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
+    // BEGIN CHECKSTYLE-SUPPRESSION: MemberName
+    // BEGIN CHECKSTYLE-SUPPRESSION: Abbreviation
+    // BEGIN CHECKSTYLE-SUPPRESSION: VisibilityModifier
+    // BEGIN CHECKSTYLE-SUPPRESSION: MultipleStringLiterals
+    // BEGIN CHECKSTYLE-SUPPRESSION: LineLength
+
     // TODO: hacky way to get the header to the top of the file
     private final ConfigHeaderNode HEADER = node(ConfigHeaderNode.builder("world")
             .comment("####################################################################################################")
@@ -53,12 +60,12 @@ class MVCoreConfigNodes {
             .comment("")
             .build());
 
-//    private final ConfigHeaderNode WORLD_HEADER = node(ConfigHeaderNode.builder("world")
-//            .comment("")
-//            .comment("")
-//            .build());
+    //private final ConfigHeaderNode WORLD_HEADER = node(ConfigHeaderNode.builder("world")
+    //        .comment("")
+    //        .comment("")
+    //        .build());
 
-    public final ConfigNode<Boolean> ENFORCE_ACCESS = node(ConfigNode.builder("world.enforce-access", Boolean.class)
+    final ConfigNode<Boolean> ENFORCE_ACCESS = node(ConfigNode.builder("world.enforce-access", Boolean.class)
             .comment("This setting will prevent players from entering worlds they don't have access to.")
             .comment("If this is set to false, players will be able to enter any world they want.")
             .comment("If this is set to true, players will only be able to enter worlds they have")
@@ -67,7 +74,7 @@ class MVCoreConfigNodes {
             .name("enforce-access")
             .build());
 
-    public final ConfigNode<Boolean> ENFORCE_GAMEMODE = node(ConfigNode.builder("world.enforce-gamemode", Boolean.class)
+    final ConfigNode<Boolean> ENFORCE_GAMEMODE = node(ConfigNode.builder("world.enforce-gamemode", Boolean.class)
             .comment("")
             .comment("Sets whether Multiverse will should enforce gamemode on world change.")
             .comment("If enabled, players will be forced into the gamemode of the world they are entering, unless they have")
@@ -76,14 +83,14 @@ class MVCoreConfigNodes {
             .name("enforce-gamemode")
             .build());
 
-    public final ConfigNode<Boolean> AUTO_PURGE_ENTITIES = node(ConfigNode.builder("world.auto-purge-entities", Boolean.class)
+    final ConfigNode<Boolean> AUTO_PURGE_ENTITIES = node(ConfigNode.builder("world.auto-purge-entities", Boolean.class)
             .comment("")
             .comment("Sets whether Multiverse will purge mobs and entities with be automatically.")
             .defaultValue(false)
             .name("auto-purge-entities")
             .build());
 
-    public final ConfigNode<Boolean> TELEPORT_INTERCEPT = node(ConfigNode.builder("world.teleport-intercept", Boolean.class)
+    final ConfigNode<Boolean> TELEPORT_INTERCEPT = node(ConfigNode.builder("world.teleport-intercept", Boolean.class)
             .comment("")
             .comment("If this is set to true, Multiverse will enforce access permissions for all teleportation,")
             .comment("including teleportation from other plugins.")
@@ -96,7 +103,7 @@ class MVCoreConfigNodes {
             .comment("")
             .build());
 
-    public final ConfigNode<Boolean> FIRST_SPAWN_OVERRIDE = node(ConfigNode.builder("spawn.first-spawn-override", Boolean.class)
+    final ConfigNode<Boolean> FIRST_SPAWN_OVERRIDE = node(ConfigNode.builder("spawn.first-spawn-override", Boolean.class)
             .comment("Sets whether Multiverse will override the first spawn location of a world.")
             .comment("If enabled, Multiverse will set the first spawn location of a world to the spawn location of the world.")
             .comment("If disabled, it will default to server.properties settings.")
@@ -104,7 +111,7 @@ class MVCoreConfigNodes {
             .name("first-spawn-override")
             .build());
 
-    public final ConfigNode<String> FIRST_SPAWN_LOCATION = node(ConfigNode.builder("spawn.first-spawn-location", String.class)
+    final ConfigNode<String> FIRST_SPAWN_LOCATION = node(ConfigNode.builder("spawn.first-spawn-location", String.class)
             .comment("")
             .comment("Sets the world that Multiverse will use as the location for players that first join the server.")
             .comment("This only applies if first-spawn-override is set to true.")
@@ -117,14 +124,14 @@ class MVCoreConfigNodes {
             .comment("")
             .build());
 
-    public final ConfigNode<Boolean> USE_CUSTOM_PORTAL_SEARCH = node(ConfigNode.builder("portal.use-custom-portal-search", Boolean.class)
+    final ConfigNode<Boolean> USE_CUSTOM_PORTAL_SEARCH = node(ConfigNode.builder("portal.use-custom-portal-search", Boolean.class)
             .comment("This config option defines whether or not Multiverse should interfere with's Bukkit's default portal search radius.")
             .comment("Setting it to false would mean you want to simply let Bukkit decides the search radius itself.")
             .defaultValue(false)
             .name("use-custom-portal-search")
             .build());
 
-    public final ConfigNode<Integer> CUSTOM_PORTAL_SEARCH_RADIUS = node(ConfigNode.builder("portal.custom-portal-search-radius", Integer.class)
+    final ConfigNode<Integer> CUSTOM_PORTAL_SEARCH_RADIUS = node(ConfigNode.builder("portal.custom-portal-search-radius", Integer.class)
             .comment("")
             .comment("This config option defines the search radius Multiverse should use when searching for a portal.")
             .comment("This only applies if use-custom-portal-search is set to true.")
@@ -140,14 +147,14 @@ class MVCoreConfigNodes {
             .comment("")
             .build());
 
-    public final ConfigNode<Boolean> ENABLE_CHAT_PREFIX = node(ConfigNode.builder("messaging.enable-chat-prefix", Boolean.class)
+    final ConfigNode<Boolean> ENABLE_CHAT_PREFIX = node(ConfigNode.builder("messaging.enable-chat-prefix", Boolean.class)
             .comment("This config option defines whether or not Multiverse should prefix the chat with the world name.")
             .comment("This only applies if use-custom-portal-search is set to true.")
             .defaultValue(false)
             .name("enable-chat-prefix")
             .build());
 
-    public final ConfigNode<String> CHAT_PREFIX_FORMAT = node(ConfigNode.builder("messaging.chat-prefix-format", String.class)
+    final ConfigNode<String> CHAT_PREFIX_FORMAT = node(ConfigNode.builder("messaging.chat-prefix-format", String.class)
             .comment("")
             .comment("This config option defines the format Multiverse should use when prefixing the chat with the world name.")
             .comment("This only applies if enable-chat-prefix is set to true.")
@@ -155,7 +162,7 @@ class MVCoreConfigNodes {
             .name("chat-prefix-format")
             .build());
 
-    public final ConfigNode<Boolean> REGISTER_PAPI_HOOK = node(ConfigNode.builder("messaging.register-papi-hook", Boolean.class)
+    final ConfigNode<Boolean> REGISTER_PAPI_HOOK = node(ConfigNode.builder("messaging.register-papi-hook", Boolean.class)
             .comment("")
             .comment("This config option defines whether or not Multiverse should register the PlaceholderAPI hook.")
             .comment("This only applies if PlaceholderAPI is installed.")
@@ -168,7 +175,7 @@ class MVCoreConfigNodes {
             .comment("")
             .build());
 
-    public final ConfigNode<Integer> GLOBAL_DEBUG = node(ConfigNode.builder("misc.global-debug", Integer.class)
+    final ConfigNode<Integer> GLOBAL_DEBUG = node(ConfigNode.builder("misc.global-debug", Integer.class)
             .comment("This is our debug flag to help identify issues with Multiverse.")
             .comment("If you are having issues with Multiverse, please set this to 3 and then post your log to pastebin.com")
             .comment("Otherwise, there's no need to touch this. If not instructed by a wiki page or developer.")
@@ -190,7 +197,7 @@ class MVCoreConfigNodes {
             })
             .build());
 
-    public final ConfigNode<Boolean> SILENT_START = node(ConfigNode.builder("misc.silent-start", Boolean.class)
+    final ConfigNode<Boolean> SILENT_START = node(ConfigNode.builder("misc.silent-start", Boolean.class)
             .comment("")
             .comment("If true, the startup console messages will no longer show.")
             .defaultValue(false)
@@ -198,14 +205,14 @@ class MVCoreConfigNodes {
             .onSetValue((oldValue, newValue) -> Logging.setShowingConfig(!newValue))
             .build());
 
-    public final ConfigNode<Boolean> SHOW_DONATION_MESSAGE = node(ConfigNode.builder("misc.show-donation-message", Boolean.class)
+    final ConfigNode<Boolean> SHOW_DONATION_MESSAGE = node(ConfigNode.builder("misc.show-donation-message", Boolean.class)
             .comment("")
             .comment("If you don't want to donate, you can set this to false and Multiverse will stop nagging you.")
             .defaultValue(true)
             .name("show-donation-message")
             .build());
 
-    public final ConfigNode<Double> VERSION = node(ConfigNode.builder("version", Double.class)
+    final ConfigNode<Double> VERSION = node(ConfigNode.builder("version", Double.class)
             .comment("")
             .comment("")
             .comment("This just signifies the version number so we can see what version of config you have.")
@@ -213,4 +220,11 @@ class MVCoreConfigNodes {
             .defaultValue(MVCoreConfig.CONFIG_VERSION)
             .name(null)
             .build());
+
+    // END CHECKSTYLE-SUPPRESSION: Javadoc
+    // END CHECKSTYLE-SUPPRESSION: MemberName
+    // END CHECKSTYLE-SUPPRESSION: Abbreviation
+    // END CHECKSTYLE-SUPPRESSION: VisibilityModifier
+    // END CHECKSTYLE-SUPPRESSION: MultipleStringLiterals
+    // END CHECKSTYLE-SUPPRESSION: LineLength
 }

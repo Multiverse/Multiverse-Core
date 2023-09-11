@@ -134,7 +134,7 @@
         <module name="MutableException"/>
         <module name="OneTopLevelClass"/>
         <module name="ThrowsCount">
-            <property name="max" value="0"/>
+            <property name="max" value="2"/>
         </module>
         <module name="VisibilityModifier">
             <property name="protectedAllowed" value="true"/>
@@ -161,6 +161,8 @@
             <property name="ignoreSetter" value="true"/>
             <property name="setterCanReturnItsClass" value="true"/>
             <property name="ignoreAbstractMethods" value="true"/>
+            <!-- Not smart enough -->
+            <property name="severity" value="ignore"/>
         </module>
         <module name="IllegalCatch"/>
         <module name="IllegalThrows"/>
@@ -381,7 +383,7 @@
         <module name="OuterTypeFilename"/>
         <module name="TodoComment">
             <property name="format" value="TODO"/>
-            <property name="severity" value="warning"/>
+            <property name="severity" value="info"/>
         </module>
         <module name="TrailingComment">
             <property name="legalComment" value="^\sSUPPRESS CHECKSTYLE:"/>
@@ -404,6 +406,7 @@
                     RECORD_COMPONENT_DEF"/>
         </module>
         <module name="AbstractClassName">
+            <property name="ignoreName" value="true"/>
             <message key="name.invalidPattern"
                      value="Abstract class name ''{0}'' must match pattern ''{1}''."/>
         </module>

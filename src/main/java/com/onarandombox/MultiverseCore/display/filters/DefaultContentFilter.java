@@ -3,10 +3,15 @@ package com.onarandombox.MultiverseCore.display.filters;
 /**
  * Default implementation of {@link ContentFilter} that doesn't filter anything.
  */
-public class DefaultContentFilter implements ContentFilter {
+public final class DefaultContentFilter implements ContentFilter {
 
-    public static DefaultContentFilter instance;
+    private static DefaultContentFilter instance;
 
+    /**
+     * Gets the singleton instance of this class.
+     *
+     * @return The singleton instance of this class.
+     */
     public static DefaultContentFilter get() {
         if (instance == null) {
             instance = new DefaultContentFilter();

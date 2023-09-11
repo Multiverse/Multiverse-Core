@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
+// TODO: Make thsi no static
 class ItemEconomy {
 
     private static final String ECONOMY_NAME = "Simple Item Economy";

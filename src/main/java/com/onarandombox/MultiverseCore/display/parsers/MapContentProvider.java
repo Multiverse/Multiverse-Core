@@ -35,7 +35,7 @@ public class MapContentProvider<K, V> implements ContentProvider {
     private ChatColor valueColor = ChatColor.WHITE;
     private String separator = ": ";
 
-    public MapContentProvider(Map<K, V> map) {
+    MapContentProvider(Map<K, V> map) {
         this.map = map;
     }
 

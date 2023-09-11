@@ -15,6 +15,9 @@ import org.jvnet.hk2.annotations.Service;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * {@link Destination} implementation for exact locations.
+ */
 @Service
 public class ExactDestination implements Destination<ExactDestinationInstance> {
 
