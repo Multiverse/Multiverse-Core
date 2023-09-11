@@ -45,12 +45,12 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets whether to keep the game rule of the world during regeneration.
      *
-     * @param keepGameRule  Whether to keep the game rule of the world during regeneration.
+     * @param keepGameRuleInput  Whether to keep the game rule of the world during regeneration.
      * @return This {@link RegenWorldOptions} instance.
      */
     @Override
-    public @NotNull RegenWorldOptions keepGameRule(boolean keepGameRule) {
-        this.keepGameRule = keepGameRule;
+    public @NotNull RegenWorldOptions keepGameRule(boolean keepGameRuleInput) {
+        this.keepGameRule = keepGameRuleInput;
         return this;
     }
 
@@ -67,12 +67,12 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets whether to keep the world config of the world during regeneration.
      *
-     * @param keepWorldConfig   Whether to keep the world config of the world during regeneration.
+     * @param keepWorldConfigInput  Whether to keep the world config of the world during regeneration.
      * @return This {@link RegenWorldOptions} instance.
      */
     @Override
-    public @NotNull RegenWorldOptions keepWorldConfig(boolean keepWorldConfig) {
-        this.keepWorldConfig = keepWorldConfig;
+    public @NotNull RegenWorldOptions keepWorldConfig(boolean keepWorldConfigInput) {
+        this.keepWorldConfig = keepWorldConfigInput;
         return this;
     }
 
@@ -81,12 +81,20 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      *
      * @return Whether to keep the world config of the world during regeneration.
      */
+    @Override
     public boolean keepWorldConfig() {
         return keepWorldConfig;
     }
 
-    public @NotNull RegenWorldOptions keepWorldBorder(boolean keepWorldBorder) {
-        this.keepWorldBorder = keepWorldBorder;
+    /**
+     * Sets whether to keep the world border of the world during regeneration.
+     *
+     * @param keepWorldBorderInput  Whether to keep the world border of the world.
+     * @return This {@link RegenWorldOptions} instance.
+     */
+    @Override
+    public @NotNull RegenWorldOptions keepWorldBorder(boolean keepWorldBorderInput) {
+        this.keepWorldBorder = keepWorldBorderInput;
         return this;
     }
 
@@ -95,6 +103,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      *
      * @return  Whether to keep the world border of the world during regeneration.
      */
+    @Override
     public boolean keepWorldBorder() {
         return keepWorldBorder;
     }
@@ -102,14 +111,14 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets whether to use a random seed for the world to regenerate. Cannot be set to true when seed is set.
      *
-     * @param randomSeed    Whether to use a random seed for the world to regenerate.
+     * @param randomSeedInput   Whether to use a random seed for the world to regenerate.
      * @return This {@link RegenWorldOptions} instance.
      */
-    public @NotNull RegenWorldOptions randomSeed(boolean randomSeed) {
-        if (randomSeed && seed != Long.MIN_VALUE) {
+    public @NotNull RegenWorldOptions randomSeed(boolean randomSeedInput) {
+        if (randomSeedInput && seed != Long.MIN_VALUE) {
             throw new IllegalStateException("Cannot set randomSeed to true when seed is set");
         }
-        this.randomSeed = randomSeed;
+        this.randomSeed = randomSeedInput;
         return this;
     }
 
@@ -125,11 +134,11 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets the seed for the world to regenerate. Random seed will be disabled.
      *
-     * @param seed  The seed for the world to regenerate.
+     * @param seedInput The seed for the world to regenerate.
      * @return This {@link RegenWorldOptions} instance.
      */
-    public @NotNull RegenWorldOptions seed(@Nullable String seed) {
-        if (seed == null) {
+    public @NotNull RegenWorldOptions seed(@Nullable String seedInput) {
+        if (seedInput == null) {
             this.seed = Long.MIN_VALUE;
             return this;
         }
@@ -137,9 +146,9 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
             randomSeed(false);
         }
         try {
-            this.seed = Long.parseLong(seed);
+            this.seed = Long.parseLong(seedInput);
         } catch (NumberFormatException numberformatexception) {
-            this.seed = seed.hashCode();
+            this.seed = seedInput.hashCode();
         }
         return this;
     }
@@ -147,11 +156,11 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets the seed for the world to regenerate. Random seed will be disabled.
      *
-     * @param seed  The seed for the world to regenerate.
+     * @param seedInput The seed for the world to regenerate.
      * @return This {@link RegenWorldOptions} instance.
      */
-    public @NotNull RegenWorldOptions seed(long seed) {
-        this.seed = seed;
+    public @NotNull RegenWorldOptions seed(long seedInput) {
+        this.seed = seedInput;
         return this;
     }
 
@@ -163,8 +172,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     public long seed() {
         if (randomSeed) {
             return new Random().nextLong();
-        }
-        if (seed == Long.MIN_VALUE) {
+        } else if (seed == Long.MIN_VALUE) {
             return world.getSeed();
         }
         return seed;

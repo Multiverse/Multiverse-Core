@@ -2,15 +2,18 @@ package com.onarandombox.MultiverseCore.worldnew.options;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Options for customizing the keeping of world settings. Used by clone and regen.
+ */
 public sealed interface KeepWorldSettingsOptions permits CloneWorldOptions, RegenWorldOptions {
 
     /**
      * Sets whether to keep the game rule of the world.
      *
-     * @param keepGameRule Whether to keep the game rule of the world.
+     * @param keepGameRuleInput Whether to keep the game rule of the world.
      * @return This {@link KeepWorldSettingsOptions} instance.
      */
-    @NotNull KeepWorldSettingsOptions keepGameRule(boolean keepGameRule);
+    @NotNull KeepWorldSettingsOptions keepGameRule(boolean keepGameRuleInput);
 
     /**
      * Gets whether to keep the game rule of the world.
@@ -22,10 +25,10 @@ public sealed interface KeepWorldSettingsOptions permits CloneWorldOptions, Rege
     /**
      * Sets whether to keep the world config of the world.
      *
-     * @param keepWorldConfig   Whether to keep the world config of the world.
+     * @param keepWorldConfigInput  Whether to keep the world config of the world.
      * @return This {@link KeepWorldSettingsOptions} instance.
      */
-    @NotNull KeepWorldSettingsOptions keepWorldConfig(boolean keepWorldConfig);
+    @NotNull KeepWorldSettingsOptions keepWorldConfig(boolean keepWorldConfigInput);
 
     /**
      * Gets whether to keep the world config of the world.
@@ -37,10 +40,10 @@ public sealed interface KeepWorldSettingsOptions permits CloneWorldOptions, Rege
     /**
      * Sets whether to keep the world border of the world.
      *
-     * @param keepWorldBorder  Whether to keep the world border of the world.
+     * @param keepWorldBorderInput  Whether to keep the world border of the world.
      * @return This {@link KeepWorldSettingsOptions} instance.
      */
-    @NotNull KeepWorldSettingsOptions keepWorldBorder(boolean keepWorldBorder);
+    @NotNull KeepWorldSettingsOptions keepWorldBorder(boolean keepWorldBorderInput);
 
     /**
      * Gets whether to keep the world border of the world.

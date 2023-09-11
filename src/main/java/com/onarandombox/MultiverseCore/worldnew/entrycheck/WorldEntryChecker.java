@@ -9,6 +9,7 @@ import com.onarandombox.MultiverseCore.world.configuration.EntryFee;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.MultiverseWorld;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,8 +17,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+
 import static com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace;
 
+/**
+ * Checks if a player can enter a world.
+ */
 public class WorldEntryChecker {
     private final @NotNull MVCoreConfig config;
     private final @NotNull MVEconomist economist;
@@ -25,23 +31,39 @@ public class WorldEntryChecker {
 
     private final @NotNull CommandSender sender;
 
-    public WorldEntryChecker(
+    WorldEntryChecker(
             @NotNull MVCoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
             @NotNull MVEconomist economist,
-            @NotNull CommandSender sender
-            ) {
+            @NotNull CommandSender sender) {
         this.config = config;
         this.permissionsChecker = permissionsChecker;
         this.economist = economist;
         this.sender = sender;
     }
 
+    /**
+     * Checks if the sender have access to be in the world.
+     *
+     * @param world The world to check.
+     * @return The result of the check.
+     */
     public ResultChain canStayInWorld(@NotNull LoadedMultiverseWorld world) {
-        return canEnterWorld(null, world);
+        return ResultChain.builder()
+                .then(() -> canAccessWorld(world))
+                .then(() -> isWithinPlayerLimit(world))
+                .build();
     }
 
-    public ResultChain canEnterWorld(@Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
+    /**
+     * Checks if the sender can enter the given world.
+     *
+     * @param fromWorld The world the sender is coming from.
+     * @param toWorld   The world the sender is going to.
+     * @return The result of the check.
+     */
+    public ResultChain canEnterWorld(
+            @Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         return ResultChain.builder()
                 .then(() -> canAccessWorld(toWorld))
                 .then(() -> isWithinPlayerLimit(toWorld))
@@ -50,6 +72,12 @@ public class WorldEntryChecker {
                 .build();
     }
 
+    /**
+     * Checks if the sender can access the given world.
+     *
+     * @param world The world to check.
+     * @return The result of the check.
+     */
     public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull MultiverseWorld world) {
         if (!config.getEnforceAccess()) {
             return Result.success(WorldAccessResult.Success.NO_ENFORCE_WORLD_ACCESS);
@@ -59,7 +87,14 @@ public class WorldEntryChecker {
                 : Result.failure(WorldAccessResult.Failure.NO_WORLD_ACCESS);
     }
 
-    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(@NotNull LoadedMultiverseWorld world) {
+    /**
+     * Checks if the sender is within the player limit of the given world.
+     *
+     * @param world The world to check.
+     * @return The result of the check.
+     */
+    public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(
+            @NotNull LoadedMultiverseWorld world) {
         final int playerLimit = world.getPlayerLimit();
         if (playerLimit <= -1) {
             return Result.success(PlayerLimitResult.Success.NO_PLAYERLIMIT);
@@ -67,12 +102,23 @@ public class WorldEntryChecker {
         if (permissionsChecker.hasPlayerLimitBypassPermission(sender, world)) {
             return Result.success(PlayerLimitResult.Success.BYPASS_PLAYERLIMIT);
         }
-        return playerLimit > world.getBukkitWorld().map(org.bukkit.World::getPlayers).map(java.util.Collection::size).getOrElse(0)
+        int numberOfPlayersInWorld = world.getBukkitWorld().map(World::getPlayers)
+                .map(Collection::size)
+                .getOrElse(0);
+        return playerLimit > numberOfPlayersInWorld
                 ? Result.success(PlayerLimitResult.Success.WITHIN_PLAYERLIMIT)
                 : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
     }
 
-    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(@Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
+    /**
+     * Checks if the sender is not blacklisted from the given world.
+     *
+     * @param fromWorld The world the sender is coming from.
+     * @param toWorld   The world the sender is going to.
+     * @return The result of the check.
+     */
+    public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(
+            @Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         if (fromWorld == null) {
             return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
         }
@@ -81,6 +127,12 @@ public class WorldEntryChecker {
                 : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
+    /**
+     * Checks if the sender can pay the entry fee for the given world.
+     *
+     * @param world The world to check.
+     * @return The result of the check.
+     */
     public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(LoadedMultiverseWorld world) {
         double price = world.getPrice();
         Material currency = world.getCurrency();
@@ -98,6 +150,8 @@ public class WorldEntryChecker {
         }
         return economist.isPlayerWealthyEnough(player, price, currency)
                 ? Result.success(EntryFeeResult.Success.ENOUGH_MONEY)
-                : Result.failure(EntryFeeResult.Failure.NOT_ENOUGH_MONEY, replace("{amount}").with("$##")); // TODO: Money formatting
+                : Result.failure(EntryFeeResult.Failure.NOT_ENOUGH_MONEY,
+                replace("{amount}").with("$##"));
+                // TODO: Money formatting
     }
 }

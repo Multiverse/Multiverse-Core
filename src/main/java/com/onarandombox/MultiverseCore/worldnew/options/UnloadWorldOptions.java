@@ -37,11 +37,11 @@ public class UnloadWorldOptions {
     /**
      * Sets whether to teleport the players out from the world before unloading.
      *
-     * @param removePlayers Whether to remove players from the world before unloading.
+     * @param removePlayersInput    Whether to remove players from the world before unloading.
      * @return This {@link UnloadWorldOptions} instance.
      */
-    public UnloadWorldOptions removePlayers(boolean removePlayers) {
-        this.removePlayers = removePlayers;
+    public UnloadWorldOptions removePlayers(boolean removePlayersInput) {
+        this.removePlayers = removePlayersInput;
         return this;
     }
 
@@ -57,11 +57,11 @@ public class UnloadWorldOptions {
     /**
      * Sets whether to save the bukkit world before unloading.
      *
-     * @param saveBukkitWorld   Whether to save the bukkit world before unloading.
+     * @param saveBukkitWorldInput  Whether to save the bukkit world before unloading.
      * @return This {@link UnloadWorldOptions} instance.
      */
-    public UnloadWorldOptions saveBukkitWorld(boolean saveBukkitWorld) {
-        this.saveBukkitWorld = saveBukkitWorld;
+    public UnloadWorldOptions saveBukkitWorld(boolean saveBukkitWorldInput) {
+        this.saveBukkitWorld = saveBukkitWorldInput;
         return this;
     }
 

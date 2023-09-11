@@ -19,8 +19,7 @@ public class WorldEntryCheckerProvider {
     WorldEntryCheckerProvider(
             @NotNull MVCoreConfig config,
             @NotNull MVEconomist economist,
-            @NotNull CorePermissionsChecker permissionsChecker
-    ) {
+            @NotNull CorePermissionsChecker permissionsChecker) {
         this.config = config;
         this.economist = economist;
         this.permissionsChecker = permissionsChecker;

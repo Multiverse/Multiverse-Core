@@ -52,12 +52,12 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets whether to keep the game rule of the world during cloning.
      *
-     * @param keepGameRule  Whether to keep the game rule of the world during cloning.
+     * @param keepGameRuleInput Whether to keep the game rule of the world during cloning.
      * @return This {@link CloneWorldOptions} instance.
      */
     @Override
-    public @NotNull CloneWorldOptions keepGameRule(boolean keepGameRule) {
-        this.keepGameRule = keepGameRule;
+    public @NotNull CloneWorldOptions keepGameRule(boolean keepGameRuleInput) {
+        this.keepGameRule = keepGameRuleInput;
         return this;
     }
 
@@ -71,9 +71,15 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
         return keepGameRule;
     }
 
+    /**
+     * Sets whether to keep the world config of the world during cloning.
+     *
+     * @param keepWorldConfigInput  Whether to keep the world config of the world.
+     * @return This {@link CloneWorldOptions} instance.
+     */
     @Override
-    public @NotNull CloneWorldOptions keepWorldConfig(boolean keepWorldConfig) {
-        this.keepWorldConfig = keepWorldConfig;
+    public @NotNull CloneWorldOptions keepWorldConfig(boolean keepWorldConfigInput) {
+        this.keepWorldConfig = keepWorldConfigInput;
         return this;
     }
 
@@ -87,9 +93,16 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
         return keepWorldConfig;
     }
 
+
+    /**
+     * Sets whether to keep the world border of the world during cloning.
+     *
+     * @param keepWorldBorderInput  Whether to keep the world border of the world.
+     * @return This {@link CloneWorldOptions} instance.
+     */
     @Override
-    public @NotNull CloneWorldOptions keepWorldBorder(boolean keepWorldBorder) {
-        this.keepWorldBorder = keepWorldBorder;
+    public @NotNull CloneWorldOptions keepWorldBorder(boolean keepWorldBorderInput) {
+        this.keepWorldBorder = keepWorldBorderInput;
         return this;
     }
 

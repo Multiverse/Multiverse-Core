@@ -52,11 +52,11 @@ public class CreateWorldOptions {
     /**
      * Sets the environment of the world to create.
      *
-     * @param environment   The environment of the world to create.
+     * @param environmentInput  The environment of the world to create.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions environment(@NotNull World.Environment environment) {
-        this.environment = environment;
+    public @NotNull CreateWorldOptions environment(@NotNull World.Environment environmentInput) {
+        this.environment = environmentInput;
         return this;
     }
 
@@ -72,11 +72,11 @@ public class CreateWorldOptions {
     /**
      * Sets whether structures such as NPC villages should be generated.
      *
-     * @param generateStructures    Whether structures such as NPC villages should be generated.
+     * @param generateStructuresInput   Whether structures such as NPC villages should be generated.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions generateStructures(boolean generateStructures) {
-        this.generateStructures = generateStructures;
+    public @NotNull CreateWorldOptions generateStructures(boolean generateStructuresInput) {
+        this.generateStructures = generateStructuresInput;
         return this;
     }
 
@@ -92,11 +92,11 @@ public class CreateWorldOptions {
     /**
      * Sets the custom generator plugin and its parameters.
      *
-     * @param generator The custom generator plugin and its parameters.
+     * @param generatorInput    The custom generator plugin and its parameters.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions generator(@Nullable String generator) {
-        this.generator = generator;
+    public @NotNull CreateWorldOptions generator(@Nullable String generatorInput) {
+        this.generator = generatorInput;
         return this;
     }
 
@@ -113,17 +113,17 @@ public class CreateWorldOptions {
      * Sets the seed of the world to create. If the seed is a number, it will be parsed as a long. Otherwise, it will be
      * hashed.
      *
-     * @param seed  The seed of the world to create.
+     * @param seedInput The seed of the world to create.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions seed(@Nullable String seed) {
-        if (seed == null) {
+    public @NotNull CreateWorldOptions seed(@Nullable String seedInput) {
+        if (seedInput == null) {
             return this;
         }
         try {
-            this.seed = Long.parseLong(seed);
+            this.seed = Long.parseLong(seedInput);
         } catch (NumberFormatException numberformatexception) {
-            this.seed = seed.hashCode();
+            this.seed = seedInput.hashCode();
         }
         return this;
     }
@@ -131,11 +131,11 @@ public class CreateWorldOptions {
     /**
      * Sets the seed of the world to create.
      *
-     * @param seed  The seed of the world to create.
+     * @param seedInput The seed of the world to create.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions seed(long seed) {
-        this.seed = seed;
+    public @NotNull CreateWorldOptions seed(long seedInput) {
+        this.seed = seedInput;
         return this;
     }
 
@@ -151,11 +151,11 @@ public class CreateWorldOptions {
     /**
      * Sets whether multiverse will search for a safe spawn location.
      *
-     * @param useSpawnAdjust    Whether multiverse will search for a safe spawn location.
+     * @param useSpawnAdjustInput   Whether multiverse will search for a safe spawn location.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions useSpawnAdjust(boolean useSpawnAdjust) {
-        this.useSpawnAdjust = useSpawnAdjust;
+    public @NotNull CreateWorldOptions useSpawnAdjust(boolean useSpawnAdjustInput) {
+        this.useSpawnAdjust = useSpawnAdjustInput;
         return this;
     }
 
@@ -171,11 +171,11 @@ public class CreateWorldOptions {
     /**
      * Sets the world type.
      *
-     * @param worldType The world type.
+     * @param worldTypeInput    The world type.
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions worldType(@NotNull WorldType worldType) {
-        this.worldType = worldType;
+    public @NotNull CreateWorldOptions worldType(@NotNull WorldType worldTypeInput) {
+        this.worldType = worldTypeInput;
         return this;
     }
 

@@ -33,7 +33,7 @@ public final class WorldConfig {
     private final WorldConfigNodes configNodes;
     private final ConfigurationSectionHandle configHandle;
 
-    public WorldConfig(@NotNull String worldName, @NotNull final ConfigurationSection configSection) {
+    WorldConfig(@NotNull String worldName, @NotNull final ConfigurationSection configSection) {
         this.worldName = worldName;
         this.configNodes = new WorldConfigNodes();
         this.configHandle = ConfigurationSectionHandle.builder(configSection)

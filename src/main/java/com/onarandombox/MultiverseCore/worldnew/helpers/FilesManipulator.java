@@ -19,13 +19,30 @@ import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
+/**
+ * A helper class for manipulating files and folders.
+ */
 @Service
 public class FilesManipulator {
 
+    /**
+     * Deletes the given folder completely.
+     *
+     * @param file  The folder to delete.
+     * @return A {@link Try} that will contain {@code null} if the folder was deleted successfully, or an exception if
+     *         the folder could not be deleted.
+     */
     public Try<Void> deleteFolder(File file) {
         return deleteFolder(file.toPath());
     }
 
+    /**
+     * Deletes the given folder completely.
+     *
+     * @param path  The folder to delete.
+     * @return A {@link Try} that will contain {@code null} if the folder was deleted successfully, or an exception if
+     *         the folder could not be deleted.
+     */
     public Try<Void> deleteFolder(Path path) {
         try (Stream<Path> files = Files.walk(path)) {
             files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
@@ -37,27 +54,58 @@ public class FilesManipulator {
         }
     }
 
+    /**
+     * Copies all the content of the given folder to the given target folder.
+     *
+     * @param sourceDir The folder to copy.
+     * @param targetDir The target folder to copy to.
+     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
+     *         the folder could not be copied.
+     */
     public Try<Void> copyFolder(File sourceDir, File targetDir) {
         return copyFolder(sourceDir.toPath(), targetDir.toPath(), Collections.emptyList());
     }
 
+    /**
+     * Copies most of the content of the given folder to the given target folder, except the list of excluded files
+     * specified.
+     *
+     * @param sourceDir     The folder to copy.
+     * @param targetDir     The target folder to copy to.
+     * @param excludeFiles  The list of files to exclude from copying.
+     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
+     */
     public Try<Void> copyFolder(File sourceDir, File targetDir, List<String> excludeFiles) {
         return copyFolder(sourceDir.toPath(), targetDir.toPath(), excludeFiles);
     }
 
+    /**
+     * Copies all the content of the given folder to the given target folder.
+     *
+     * @param sourceDir The folder to copy.
+     * @param targetDir The target folder to copy to.
+     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
+     *         the folder could not be copied.
+     */
     public Try<Void> copyFolder(Path sourceDir, Path targetDir) {
         return copyFolder(sourceDir, targetDir, Collections.emptyList());
     }
 
+    /**
+     * Copies most of the content of the given folder to the given target folder, except the list of excluded files
+     * specified.
+     *
+     * @param sourceDir     The folder to copy.
+     * @param targetDir     The target folder to copy to.
+     * @param excludeFiles  The list of files to exclude from copying.
+     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
+     */
     public Try<Void> copyFolder(Path sourceDir, Path targetDir, List<String> excludeFiles) {
-        try {
-            Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir, excludeFiles));
-            return Try.success(null);
-        } catch (IOException e) {
-            Logging.severe("Failed to copy folder: " + sourceDir.toAbsolutePath());
-            e.printStackTrace();
-            return Try.failure(e);
-        }
+        return Try.run(() -> Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir, excludeFiles)))
+                .onFailure(e -> {
+                    Logging.severe("Failed to copy folder: " + sourceDir.toAbsolutePath());
+                    e.printStackTrace();
+                });
     }
 
     private static final class CopyDirFileVisitor extends SimpleFileVisitor<Path> {

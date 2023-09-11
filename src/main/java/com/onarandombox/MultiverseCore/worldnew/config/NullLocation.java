@@ -14,7 +14,18 @@ import java.util.Map;
  */
 @SerializableAs("MVNullLocation (It's a bug if you see this in your config file)")
 public final class NullLocation extends SpawnLocation {
-    public NullLocation() {
+    private static final NullLocation INSTANCE = new NullLocation();
+
+    /**
+     * Get the default null location instance.
+     *
+     * @return The instance.
+     */
+    public static NullLocation get() {
+        return INSTANCE;
+    }
+
+    private NullLocation() {
         super(0, -1, 0);
     }
 
@@ -46,6 +57,11 @@ public final class NullLocation extends SpawnLocation {
     @Override
     public int hashCode() {
         return -1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return false;
     }
 
     @Override

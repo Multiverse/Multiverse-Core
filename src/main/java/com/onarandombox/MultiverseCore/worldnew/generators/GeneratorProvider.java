@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.worldnew.generators;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -84,16 +85,14 @@ public class GeneratorProvider implements Listener {
      */
     private boolean testIsGeneratorPlugin(Plugin plugin) {
         String worldName = Bukkit.getWorlds().stream().findFirst().map(World::getName).orElse("world");
-        try {
-            return plugin.getDefaultWorldGenerator(worldName, "") != null;
-        } catch (IllegalArgumentException e) {
-            Logging.fine("Testing id is wrong, but it is probably a generator plugin: %s", plugin.getName());
-            return true;
-        } catch (Throwable t) {
-            Logging.warning("Plugin %s threw an exception when testing if it is a generator plugin!", plugin.getName());
-            t.printStackTrace();
-            return false;
-        }
+        return Try.of(() -> plugin.getDefaultWorldGenerator(worldName, "") != null)
+                .recover(IllegalArgumentException.class, true)
+                .recover(throwable -> {
+                    Logging.warning("Plugin %s threw an exception when testing if it is a generator plugin!",
+                            plugin.getName());
+                    throwable.printStackTrace();
+                    return false;
+                }).getOrElse(false);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.onarandombox.MultiverseCore.worldnew.helpers;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import io.vavr.control.Try;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
@@ -62,23 +63,17 @@ public interface DataStore<T> {
             if (gameRuleMap == null) {
                 return this;
             }
-            world.getBukkitWorld().peek(bukkitWorld -> {
-                gameRuleMap.forEach((gameRule, value) -> {
-                    if (!setGameRuleValue(bukkitWorld, gameRule, value)) {
-                        Logging.warning("Failed to set game rule " + gameRule.getName() + " to " + value);
-                    }
+            world.getBukkitWorld().peek(bukkitWorld -> gameRuleMap.forEach((gameRule, value) -> {
+                setGameRuleValue(bukkitWorld, gameRule, value).onFailure(e -> {
+                    Logging.warning("Failed to set game rule " + gameRule.getName() + " to " + value);
+                    e.printStackTrace();
                 });
-            });
+            }));
             return this;
         }
 
-        private <T> boolean setGameRuleValue(World world, GameRule<T> gameRule, Object value) {
-            try {
-                return world.setGameRule(gameRule, (T) value);
-            } catch (Exception e) {
-                Logging.fine(e.getMessage());
-                return false;
-            }
+        private <T> Try<Void> setGameRuleValue(World world, GameRule<T> gameRule, Object value) {
+            return Try.run(() -> world.setGameRule(gameRule, (T) value));
         }
     }
 
@@ -94,11 +89,11 @@ public interface DataStore<T> {
         @Override
         public WorldConfigStore copyFrom(LoadedMultiverseWorld world) {
             this.configMap = new HashMap<>();
-            world.getConfigurablePropertyNames().forEach(name -> {
-                world.getProperty(name).peek(value -> configMap.put(name, value)).onFailure(e -> {
-                    Logging.warning("Failed to get property " + name + " from world " + world.getName() + ": " + e.getMessage());
-                });
-            });
+            world.getConfigurablePropertyNames().forEach(name -> world.getProperty(name)
+                    .peek(value -> configMap.put(name, value)).onFailure(e -> {
+                        Logging.warning("Failed to get property " + name + " from world "
+                                + world.getName() + ": " + e.getMessage());
+                    }));
             return this;
         }
 

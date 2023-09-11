@@ -18,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Extension of {@link MultiverseWorld} that represents a world that is currently loaded with bukkit world object.
+ */
 public class LoadedMultiverseWorld extends MultiverseWorld {
     private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
     private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
@@ -25,19 +28,19 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
     private final UUID worldUid;
 
     private final BlockSafety blockSafety;
-    private final SafeTTeleporter safeTTeleporter;
+    private final SafeTTeleporter safetyTeleporter;
     private final LocationManipulation locationManipulation;
 
     LoadedMultiverseWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
             @NotNull BlockSafety blockSafety,
-            @NotNull SafeTTeleporter safeTTeleporter,
+            @NotNull SafeTTeleporter safetyTeleporter,
             @NotNull LocationManipulation locationManipulation) {
         super(world.getName(), worldConfig);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
-        this.safeTTeleporter = safeTTeleporter;
+        this.safetyTeleporter = safetyTeleporter;
         this.locationManipulation = locationManipulation;
 
         setupWorldConfig(world);
@@ -78,7 +81,7 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         // The location is not safe, so we need to find a better one.
         Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
         Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
-        Location newSpawn = safeTTeleporter.getSafeLocation(location,
+        Location newSpawn = safetyTeleporter.getSafeLocation(location,
                 SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
         // I think we could also do this, as I think this is what Notch does.
         // Not sure how it will work in the nether...
@@ -103,18 +106,39 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         return location;
     }
 
+    /**
+     * Gets the Bukkit world object that this world describes.
+     *
+     * @return Bukkit world object.
+     */
     public Option<World> getBukkitWorld() {
         return Option.of(Bukkit.getWorld(worldUid));
     }
 
+    /**
+     * Gets the type of this world.
+     *
+     * @return Type of this world.
+     */
     public Option<WorldType> getWorldType() {
+        //noinspection deprecation
         return getBukkitWorld().map(World::getWorldType);
     }
 
+    /**
+     * Gets whether or not structures are being generated.
+     *
+     * @return True if structures are being generated.
+     */
     public Option<Boolean> canGenerateStructures() {
         return getBukkitWorld().map(World::canGenerateStructures);
     }
 
+    /**
+     * Get a list of all players in this World.
+     *
+     * @return A list of all Players currently residing in this world
+     */
     public Option<List<Player>> getPlayers() {
         return getBukkitWorld().map(World::getPlayers);
     }

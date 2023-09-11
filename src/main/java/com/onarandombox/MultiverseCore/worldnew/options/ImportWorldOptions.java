@@ -40,11 +40,11 @@ public class ImportWorldOptions {
     /**
      * Sets the environment of the world to create.
      *
-     * @param environment   The environment of the world to create.
+     * @param environmentInput  The environment of the world to create.
      * @return This {@link ImportWorldOptions} instance.
      */
-    public @NotNull ImportWorldOptions environment(@NotNull World.Environment environment) {
-        this.environment = environment;
+    public @NotNull ImportWorldOptions environment(@NotNull World.Environment environmentInput) {
+        this.environment = environmentInput;
         return this;
     }
 
@@ -60,11 +60,11 @@ public class ImportWorldOptions {
     /**
      * Sets the custom generator plugin and its parameters.
      *
-     * @param generator The custom generator plugin and its parameters.
+     * @param generatorInput    The custom generator plugin and its parameters.
      * @return This {@link ImportWorldOptions} instance.
      */
-    public @NotNull ImportWorldOptions generator(@Nullable String generator) {
-        this.generator = generator;
+    public @NotNull ImportWorldOptions generator(@Nullable String generatorInput) {
+        this.generator = generatorInput;
         return this;
     }
 
@@ -80,11 +80,11 @@ public class ImportWorldOptions {
     /**
      * Sets whether multiverse will search for a safe spawn location.
      *
-     * @param useSpawnAdjust    Whether multiverse will search for a safe spawn location.
+     * @param useSpawnAdjustInput   Whether multiverse will search for a safe spawn location.
      * @return This {@link ImportWorldOptions} instance.
      */
-    public @NotNull ImportWorldOptions useSpawnAdjust(boolean useSpawnAdjust) {
-        this.useSpawnAdjust = useSpawnAdjust;
+    public @NotNull ImportWorldOptions useSpawnAdjust(boolean useSpawnAdjustInput) {
+        this.useSpawnAdjust = useSpawnAdjustInput;
         return this;
     }
 

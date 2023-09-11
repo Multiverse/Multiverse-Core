@@ -200,7 +200,7 @@ public final class WorldsConfigManager {
                 ? worldsConfig.getConfigurationSection(worldName) : worldsConfig.createSection(worldName);
     }
 
-    private final class ConfigMigratedException extends RuntimeException {
+    private static final class ConfigMigratedException extends RuntimeException {
         private ConfigMigratedException() {
             super("Config migrated");
         }

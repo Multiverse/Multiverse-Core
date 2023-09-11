@@ -1,13 +1,18 @@
 package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
-
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
+/**
+ * Result of a world entry fee check.
+ */
 public class EntryFeeResult {
+    /**
+     * Success reasons for an entry fee check.
+     */
     public enum Success implements SuccessReason {
         FREE_ENTRY,
         ENOUGH_MONEY,
@@ -15,6 +20,9 @@ public class EntryFeeResult {
         CONSOLE_OR_BLOCK_COMMAND_SENDER
     }
 
+    /**
+     * Failure reasons for an entry fee check.
+     */
     public enum Failure implements FailureReason {
         NOT_ENOUGH_MONEY(MVCorei18n.ENTRYCHECK_NOTENOUGHMONEY),
         CANNOT_PAY_ENTRY_FEE(MVCorei18n.ENTRYCHECK_CANNOTPAYENTRYFEE);

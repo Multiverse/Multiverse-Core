@@ -22,6 +22,7 @@ public class DataTransfer<T> {
      * Adds a {@link DataStore} to this {@link DataTransfer} instance.
      *
      * @param dataStore The {@link DataStore} to add.
+     * @param object    The object to copy data from.
      * @return This {@link DataTransfer} instance.
      */
     public DataTransfer<T> addDataStore(DataStore<T> dataStore, T object) {
