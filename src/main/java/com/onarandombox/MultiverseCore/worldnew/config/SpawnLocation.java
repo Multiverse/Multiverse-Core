@@ -1,9 +1,4 @@
-package com.onarandombox.MultiverseCore.world.configuration;
-
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
+package com.onarandombox.MultiverseCore.worldnew.config;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -11,6 +6,12 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Just like a regular {@link Location}, however {@code world} is usually {@code null}
@@ -20,14 +21,35 @@ import org.bukkit.configuration.serialization.SerializableAs;
 public class SpawnLocation extends Location implements ConfigurationSerializable {
     private Reference<World> worldRef;
 
+    /**
+     * Constructs a new Location with the given coordinates.
+     *
+     * @param x The x-coordinate of this new location
+     * @param y The y-coordinate of this new location
+     * @param z The z-coordinate of this new location
+     */
     public SpawnLocation(double x, double y, double z) {
         super(null, x, y, z);
     }
 
+    /**
+     * Constructs a new Location with the given coordinates and direction.
+     *
+     * @param x The x-coordinate of this new location
+     * @param y The y-coordinate of this new location
+     * @param z The z-coordinate of this new location
+     * @param yaw The absolute rotation on the x-plane, in degrees
+     * @param pitch The absolute rotation on the y-plane, in degrees
+     */
     public SpawnLocation(double x, double y, double z, float yaw, float pitch) {
         super(null, x, y, z, yaw, pitch);
     }
 
+    /**
+     * Constructs a new Location from an existing Location.
+     *
+     * @param loc   The location to clone.
+     */
     public SpawnLocation(Location loc) {
         this(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
     }
@@ -52,38 +74,43 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      * {@inheritDoc}
      */
     @Override
-    public Chunk getChunk() {
-        if ((this.worldRef != null) && (this.worldRef.get() != null))
-            return this.worldRef.get().getChunkAt(this);
-        return null;
+    public @NotNull Chunk getChunk() {
+        World world = this.worldRef != null ? this.worldRef.get() : null;
+        if (world != null) {
+            return world.getChunkAt(this);
+        }
+        throw new IllegalStateException("World is null");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Block getBlock() {
-        if ((this.worldRef != null) && (this.worldRef.get() != null))
-            return this.worldRef.get().getBlockAt(this);
-        return null;
+    public @NotNull Block getBlock() {
+        World world = this.worldRef != null ? this.worldRef.get() : null;
+        if (world != null) {
+            return world.getBlockAt(this);
+        }
+        throw new IllegalStateException("World is null");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialized = new HashMap<String, Object>(5); // SUPPRESS CHECKSTYLE: MagicNumberCheck
-        serialized.put("x", this.getX());
-        serialized.put("y", this.getY());
-        serialized.put("z", this.getZ());
-        serialized.put("pitch", this.getPitch());
-        serialized.put("yaw", this.getYaw());
-        return serialized;
+    public @NotNull Map<String, Object> serialize() {
+        return new HashMap<>() {{
+            put("x", getX());
+            put("y", getY());
+            put("z", getZ());
+            put("pitch", getPitch());
+            put("yaw", getYaw());
+        }};
     }
 
     /**
      * Let Bukkit be able to deserialize this.
+     *
      * @param args The map.
      * @return The deserialized object.
      */

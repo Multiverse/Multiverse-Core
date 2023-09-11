@@ -1,6 +1,25 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
-import java.util.ArrayList;
+import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.PaperCommandCompletions;
+import co.aikar.commands.RegisteredCommand;
+import co.aikar.commands.RootCommand;
+import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.collect.Sets;
+import com.onarandombox.MultiverseCore.config.MVCoreConfig;
+import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
+import com.onarandombox.MultiverseCore.destination.ParsedDestination;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.MultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import io.vavr.control.Try;
+import jakarta.inject.Inject;
+import org.bukkit.GameRule;
+import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,35 +28,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.BukkitCommandCompletionContext;
-import co.aikar.commands.BukkitCommandIssuer;
-import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.PaperCommandCompletions;
-import co.aikar.commands.RegisteredCommand;
-import co.aikar.commands.RootCommand;
-import com.google.common.collect.Sets;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.config.MVCoreConfig;
-import com.onarandombox.MultiverseCore.destination.DestinationsProvider;
-import com.onarandombox.MultiverseCore.destination.ParsedDestination;
-import io.vavr.control.Try;
-import jakarta.inject.Inject;
-import org.bukkit.GameRule;
-import org.jetbrains.annotations.NotNull;
-import org.jvnet.hk2.annotations.Service;
-
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {
 
     protected final MVCommandManager commandManager;
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
     private final DestinationsProvider destinationsProvider;
 
     @Inject
     public MVCommandCompletions(
             @NotNull MVCommandManager mvCommandManager,
-            @NotNull MVWorldManager worldManager,
+            @NotNull WorldManager worldManager,
             @NotNull DestinationsProvider destinationsProvider,
             @NotNull MVCoreConfig config
             ) {
@@ -56,7 +57,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("destinations", ParsedDestination.class);
         setDefaultCompletion("flags", String[].class);
         setDefaultCompletion("gamerules", GameRule.class);
-        setDefaultCompletion("mvworlds", MVWorld.class);
+        setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
     }
 
     private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {
@@ -128,23 +129,26 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private List<String> getMVWorldNames(BukkitCommandCompletionContext context) {
         String scope = context.getConfig("scope", "loaded");
-        List<String> worlds = new ArrayList<>();
         switch (scope) {
-            case "both":
-                worlds.addAll(worldManager.getUnloadedWorlds());
-            case "loaded":
-                worldManager.getMVWorlds()
+            case "both" -> {
+                return worldManager.getWorlds().stream().map(MultiverseWorld::getName).toList();
+            }
+            case "loaded" -> {
+                return worldManager.getLoadedWorlds()
                         .stream()
-                        .map(MVWorld::getName)
-                        .forEach(worlds::add);
-                break;
-            case "unloaded":
-                worlds.addAll(worldManager.getUnloadedWorlds());
-                break;
-            case "potential":
-                worlds.addAll(worldManager.getPotentialWorlds());
-                break;
+                        .map(LoadedMultiverseWorld::getName)
+                        .toList();
+            }
+            case "unloaded" -> {
+                return worldManager.getUnloadedWorlds().stream()
+                        .map(MultiverseWorld::getName)
+                        .toList();
+            }
+            case "potential" -> {
+                return worldManager.getPotentialWorlds();
+            }
         }
-        return worlds;
+        Logging.severe("Invalid MVWorld scope: " + scope);
+        return Collections.emptyList();
     }
 }

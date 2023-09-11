@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.world.entrycheck;
+package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
@@ -6,15 +6,24 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
-public class BlacklistResult {
+/**
+ * Result of a world player limit check.
+ */
+public class PlayerLimitResult {
+    /**
+     * Success reasons for a player limit check.
+     */
     public enum Success implements SuccessReason {
-        UNKNOWN_FROM_WORLD,
-        BYPASSED_BLACKLISTED,
-        NOT_BLACKLISTED
+        NO_PLAYERLIMIT,
+        WITHIN_PLAYERLIMIT,
+        BYPASS_PLAYERLIMIT
     }
 
+    /**
+     * Failure reasons for a player limit check.
+     */
     public enum Failure implements FailureReason {
-        BLACKLISTED(MVCorei18n.ENTRYCHECK_BLACKLISTED);
+        EXCEED_PLAYERLIMIT(MVCorei18n.ENTRYCHECK_EXCEEDPLAYERLIMIT);
 
         private final MessageKeyProvider message;
 

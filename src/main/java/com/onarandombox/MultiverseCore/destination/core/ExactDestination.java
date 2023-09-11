@@ -5,11 +5,12 @@ import java.util.Collections;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.Teleporter;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -17,10 +18,10 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class ExactDestination implements Destination<ExactDestinationInstance> {
 
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
-    public ExactDestination(MVWorldManager worldManager) {
+    public ExactDestination(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
@@ -49,7 +50,7 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
             return null;
         }
 
-        MVWorld world = this.worldManager.getMVWorld(worldName);
+        World world = this.worldManager.getLoadedWorld(worldName).map(LoadedMultiverseWorld::getBukkitWorld).getOrNull().getOrNull();
         if (world == null) {
             return null;
         }
@@ -57,7 +58,7 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
         Location location;
         try {
             location = new Location(
-                    world.getCBWorld(),
+                    world,
                     Double.parseDouble(coordinatesParams[0]),
                     Double.parseDouble(coordinatesParams[1]),
                     Double.parseDouble(coordinatesParams[2])

@@ -1,18 +1,23 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlagGroup;
+import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.options.CloneWorldOptions;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -21,12 +26,24 @@ import org.jvnet.hk2.annotations.Service;
 @CommandAlias("mv")
 public class CloneCommand extends MultiverseCommand {
 
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
-    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull MVWorldManager worldManager) {
+    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
+
+        registerFlagGroup(CommandFlagGroup.builder("mvclone")
+                .add(CommandFlag.builder("--reset-world-config")
+                        .addAlias("-wc")
+                        .build())
+                .add(CommandFlag.builder("--reset-gamerules")
+                        .addAlias("-gm")
+                        .build())
+                .add(CommandFlag.builder("--reset-world-border")
+                        .addAlias("-wb")
+                        .build())
+                .build());
     }
 
     @Subcommand("clone")
@@ -34,28 +51,35 @@ public class CloneCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=both @empty")
     @Syntax("<world> <new world name>")
     @Description("{@@mv-core.clone.description}")
-    public void onCloneCommand(CommandIssuer issuer,
+    void onCloneCommand(
+            MVCommandIssuer issuer,
 
-                               @Conditions("worldname:scope=both")
-                               @Syntax("<world>")
-                               @Description("{@@mv-core.clone.world.description}")
-                               String worldName,
+            @Syntax("<world>")
+            @Description("{@@mv-core.clone.world.description}")
+            LoadedMultiverseWorld world,
 
-                               @Single
-                               @Conditions("worldname:scope=new")
-                               @Syntax("<new world name>")
-                               @Description("{@@mv-core.clone.newWorld.description}")
-                               String newWorldName
-    ) {
-        issuer.sendInfo(MVCorei18n.CLONE_CLONING,
-                "{world}", worldName,
-                "{newWorld}", newWorldName);
+            @Syntax("<new world name>")
+            @Description("{@@mv-core.clone.newWorld.description}")
+            String newWorldName,
 
-        if (!this.worldManager.cloneWorld(worldName, newWorldName)) {
-            issuer.sendError(MVCorei18n.CLONE_FAILED);
-            return;
-        }
-        issuer.sendInfo(MVCorei18n.CLONE_SUCCESS,
-                "{world}", newWorldName);
+            @Optional
+            @Syntax(/* TODO */ "")
+            @Description("{@@mv-core.regen.other.description}")
+            String[] flags) {
+        ParsedCommandFlags parsedFlags = parseFlags(flags);
+
+        issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newworld}", newWorldName);
+        CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
+                .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
+                .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
+                .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"));
+        worldManager.cloneWorld(cloneWorldOptions)
+                .onSuccess(newWorld -> {
+                    Logging.fine("World clone success: " + newWorld);
+                    issuer.sendInfo(MVCorei18n.CLONE_SUCCESS, "{world}", newWorld.getName());
+                }).onFailure(failure -> {
+                    Logging.fine("World clone failure: " + failure);
+                    issuer.sendError(failure.getFailureMessage());
+                });
     }
 }

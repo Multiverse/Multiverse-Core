@@ -11,8 +11,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.MVCore;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales;
@@ -26,10 +24,14 @@ import com.onarandombox.MultiverseCore.utils.TestingMode;
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator;
 import com.onarandombox.MultiverseCore.world.WorldProperties;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.config.NullLocation;
+import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -57,9 +59,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Inject
     private Provider<MVCoreConfig> configProvider;
     @Inject
-    private Provider<MVWorldManager> worldManagerProvider;
-    @Inject
-    private Provider<WorldManager> newWorldManagerProvider;
+    private Provider<WorldManager> worldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
     @Inject
@@ -102,6 +102,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void onEnable() {
         initializeDependencyInjection();
+        ConfigurationSerialization.registerClass(NullLocation.class);
+        ConfigurationSerialization.registerClass(SpawnLocation.class);
 
         // Load our configs first as we need them for everything else.
         var config = configProvider.get();
@@ -111,39 +113,28 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
         Logging.setShowingConfig(shouldShowConfig());
 
-        var worldManager = worldManagerProvider.get();
+        // Initialize the worlds
+        worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
+            // Setup economy here so vault is loaded
+            loadEconomist();
 
-        worldManager.loadWorldsConfig();
-        worldManager.getDefaultWorldGenerators();
-        worldManager.loadDefaultWorlds();
-        worldManager.loadWorlds(true);
-
-        // Now set the firstspawnworld (after the worlds are loaded):
-        worldManager.setFirstSpawnWorld(config.getFirstSpawnLocation());
-        MVWorld firstSpawnWorld = worldManager.getFirstSpawnWorld();
-        if (firstSpawnWorld != null) {
-            config.setFirstSpawnLocation(firstSpawnWorld.getName());
-        }
-
-        var newWorldManager = newWorldManagerProvider.get();
-        newWorldManager.loadAllWorlds(); // TODO: Possibly move this to constructor of WorldManager
-
-        //Setup economy here so vault is loaded
-        this.loadEconomist();
-
-        // Init all the other stuff
-        this.loadAnchors();
-        this.registerEvents();
-        this.setUpLocales();
-        this.registerCommands();
-        this.registerDestinations();
-        this.setupMetrics();
-        this.loadPlaceholderAPIIntegration();
-        this.saveAllConfigs();
-        this.logEnableMessage();
+            // Init all the other stuff
+            loadAnchors();
+            registerEvents();
+            setUpLocales();
+            registerCommands();
+            registerDestinations();
+            setupMetrics();
+            loadPlaceholderAPIIntegration();
+            saveAllConfigs();
+            logEnableMessage();
+        }).onFailure(e -> {
+            Logging.severe("Failed to multiverse core! Disabling...");
+            e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
+        });
     }
 
     /**
@@ -151,7 +142,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onDisable() {
-        this.saveAllConfigs();
+        saveAllConfigs();
         shutdownDependencyInjection();
         Logging.shutdown();
     }
@@ -372,11 +363,11 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public boolean saveAllConfigs() {
-        return configProvider.get().save()
+        // TODO: Make this all Try<Void>
+        return configProvider.get().save().isSuccess()
                 && worldManagerProvider.get().saveWorldsConfig()
                 && anchorManagerProvider.get().saveAnchors();
     }
-
 
     /**
      * Gets the best service from this plugin that implements the given contract or has the given implementation.

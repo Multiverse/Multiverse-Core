@@ -1,5 +1,4 @@
-package com.onarandombox.MultiverseCore.world.entrycheck;
-
+package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
@@ -7,17 +6,24 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
-public class EntryFeeResult {
+/**
+ * Result of a world blacklist check.
+ */
+public class BlacklistResult {
+    /**
+     * Success reasons for a blacklist check.
+     */
     public enum Success implements SuccessReason {
-        FREE_ENTRY,
-        ENOUGH_MONEY,
-        EXEMPT_FROM_ENTRY_FEE,
-        CONSOLE_OR_BLOCK_COMMAND_SENDER
+        UNKNOWN_FROM_WORLD,
+        BYPASSED_BLACKLISTED,
+        NOT_BLACKLISTED
     }
 
+    /**
+     * Failure reasons for a blacklist check.
+     */
     public enum Failure implements FailureReason {
-        NOT_ENOUGH_MONEY(MVCorei18n.ENTRYCHECK_NOTENOUGHMONEY),
-        CANNOT_PAY_ENTRY_FEE(MVCorei18n.ENTRYCHECK_CANNOTPAYENTRYFEE);
+        BLACKLISTED(MVCorei18n.ENTRYCHECK_BLACKLISTED);
 
         private final MessageKeyProvider message;
 

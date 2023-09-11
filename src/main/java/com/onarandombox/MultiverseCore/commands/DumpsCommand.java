@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
@@ -23,6 +22,7 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteFailedException;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteService;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceFactory;
 import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,12 +45,12 @@ import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getServerProp
 public class DumpsCommand extends MultiverseCommand {
 
     private final MultiverseCore plugin;
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
 
     @Inject
     public DumpsCommand(@NotNull MVCommandManager commandManager,
                         @NotNull MultiverseCore plugin,
-                        @NotNull MVWorldManager worldManager) {
+                        @NotNull WorldManager worldManager) {
         super(commandManager);
         this.plugin = plugin;
         this.worldManager = worldManager;
@@ -184,7 +184,7 @@ public class DumpsCommand extends MultiverseCommand {
         return "# Multiverse-Core Version info" + "\n\n"
                 + " - Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + '\n'
                 + " - Bukkit Version: " + this.plugin.getServer().getVersion() + '\n'
-                + " - Loaded Worlds: " + worldManager.getMVWorlds() + '\n'
+                + " - Loaded Worlds: " + worldManager.getLoadedWorlds() + '\n'
                 + " - Multiverse Plugins Loaded: " + this.plugin.getPluginCount() + '\n';
     }
 

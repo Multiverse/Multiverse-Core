@@ -1,7 +1,9 @@
 package org.mvplugins.multiverse.core.world
 
 import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig
-import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigFile
+import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
+import org.bukkit.Location
+import org.junit.jupiter.api.Assertions
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import java.io.File
 import java.nio.file.Path
@@ -14,7 +16,7 @@ import kotlin.test.assertTrue
 
 class WorldConfigTest : TestWithMockBukkit() {
 
-    private lateinit var worldConfigFile : WorldsConfigFile
+    private lateinit var worldConfigManager : WorldsConfigManager
     private lateinit var worldConfig : WorldConfig
 
     @BeforeTest
@@ -23,9 +25,13 @@ class WorldConfigTest : TestWithMockBukkit() {
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(defaultConfig)
 
-        worldConfigFile = WorldsConfigFile(multiverseCore)
-        worldConfigFile.load()
-        worldConfig = worldConfigFile.getWorldConfig("world")
+        worldConfigManager = multiverseCore.getService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("WorldsConfigManager is not available as a service") }
+
+        assertTrue(worldConfigManager.load().isSuccess)
+        worldConfig = worldConfigManager.getWorldConfig("world").orNull.takeIf { it != null } ?: run {
+            throw IllegalStateException("WorldConfig for world is not available") }
+        assertNotNull(worldConfig);
     }
 
     @Test

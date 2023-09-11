@@ -7,10 +7,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
-import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -40,12 +40,12 @@ public class CoordinatesCommand extends MultiverseCommand {
                                      Player player,
 
                                      @Flags("resolve=issuerOnly")
-                                     MVWorld world
+                                     LoadedMultiverseWorld world
     ) {
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_TITLE);
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLD, "{world}", world.getName());
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, "{alias}", world.getColoredWorldString());
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLDSCALE, "{scale}", String.valueOf(world.getScaling()));
+        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, "{alias}", world.getAlias());
+        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLDSCALE, "{scale}", String.valueOf(world.getScale()));
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_COORDINATES, "{coordinates}", locationManipulation.strCoords(player.getLocation()));
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_DIRECTION, "{direction}", locationManipulation.getDirection(player.getLocation()));
     }

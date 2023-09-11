@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
-import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
+import io.vavr.control.Try;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -35,27 +35,17 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
      * {@inheritDoc}
      */
     @Override
-    protected boolean loadConfigObject() {
+    protected void loadConfigObject() throws IOException, InvalidConfigurationException {
         config = new YamlConfiguration();
-        try {
-            config.load(configFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            return false;
-        }
-        return true;
+        config.load(configFile);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean save() {
-        try {
-            config.save(configFile);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
+    public Try<Void> save() {
+        return Try.run(() -> config.save(configFile));
     }
 
     /**

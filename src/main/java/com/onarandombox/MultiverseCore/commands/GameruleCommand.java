@@ -8,13 +8,14 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.commandtools.context.GameRuleValue;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -45,13 +46,14 @@ public class GameruleCommand extends MultiverseCommand {
                                   @Flags("resolve=issuerAware")
                                   @Syntax("[World or *]")
                                   @Description("{@@mv-core.gamerule.world.description}")
-                                  MVWorld[] worlds
+                                  LoadedMultiverseWorld[] worlds
     ) {
         Object value = gameRuleValue.getValue();
         boolean success = true;
-        for(MVWorld world : worlds) {
+        for(LoadedMultiverseWorld world : worlds) {
             // Set gamerules and add false to list if it fails
-            if (!world.getCBWorld().setGameRule(gamerule, value)) {
+            World bukkitWorld = world.getBukkitWorld().getOrNull();
+            if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {
                 issuer.sendError(MVCorei18n.GAMERULE_FAILED,
                         "{gamerule}", gamerule.getName(),
                         "{value}", value.toString(),

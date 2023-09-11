@@ -1,15 +1,15 @@
 package com.onarandombox.MultiverseCore.placeholders;
 
-import java.util.Optional;
-
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
+import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import io.vavr.control.Option;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,11 +19,11 @@ import org.jvnet.hk2.annotations.Service;
 public class MultiverseCorePlaceholders extends PlaceholderExpansion {
 
     private final MultiverseCore plugin;
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
     private final MVEconomist economist;
 
     @Inject
-    public MultiverseCorePlaceholders(MultiverseCore plugin, MVWorldManager worldManager, MVEconomist economist) {
+    public MultiverseCorePlaceholders(MultiverseCore plugin, WorldManager worldManager, MVEconomist economist) {
         this.plugin = plugin;
         this.worldManager = worldManager;
         this.economist = economist;
@@ -74,31 +74,30 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
         }
 
         final var placeholder = paramsArray[0];
-        Optional<MVWorld> targetWorld;
+        Option<LoadedMultiverseWorld> targetWorld;
 
         // If no world is defined, use the player's world
         if (paramsArray.length == 1) {
             if (!offlinePlayer.isOnline()) {
                 return null;
             }
-            targetWorld = Optional.ofNullable(worldManager.getMVWorld(((Player)offlinePlayer).getWorld()));
+            targetWorld = worldManager.getLoadedWorld(((Player)offlinePlayer).getWorld());
         } else {
-            targetWorld = Optional.ofNullable(worldManager.getMVWorld(paramsArray[1]));
+            targetWorld = worldManager.getLoadedWorld(paramsArray[1]);
         }
 
         // Fail if world is null
-        return targetWorld.map(world -> getWorldPlaceHolderValue(placeholder, world))
-                .orElse(null);
+        return targetWorld.map(world -> getWorldPlaceHolderValue(placeholder, world)).getOrNull();
     }
 
-    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder, @NotNull MVWorld world) {
+    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder, @NotNull LoadedMultiverseWorld world) {
         // Switch to find what specific placeholder we want
         switch (placeholder.toLowerCase()) {
             case "alias" -> {
-                return world.getColoredWorldString();
+                return world.getAlias();
             }
             case "animalspawn" -> {
-                return String.valueOf(world.canAnimalsSpawn());
+                return String.valueOf(world.getSpawningAnimals());
             }
             case "autoheal" -> {
                 return String.valueOf(world.getAutoHeal());
@@ -131,7 +130,7 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
                 return String.valueOf(world.getHunger());
             }
             case "monstersspawn" -> {
-                return String.valueOf(world.canMonstersSpawn());
+                return String.valueOf(world.getSpawningMonsters());
             }
             case "name" -> {
                 return world.getName();
@@ -143,19 +142,20 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
                 return String.valueOf(world.getPrice());
             }
             case "pvp" -> {
-                return String.valueOf(world.isPVPEnabled());
+                return String.valueOf(world.getPvp());
             }
             case "seed" -> {
                 return String.valueOf(world.getSeed());
             }
-            case "time" -> {
-                return world.getTime();
-            }
+            // TODO: Time is removed, not sure if it's worth adding back
+            // case "time" -> {
+            //    return world.getTime();
+            // }
             case "type" -> {
-                return world.getWorldType().toString().toLowerCase();
+                return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
             }
             case "weather" -> {
-                return String.valueOf(world.isWeatherEnabled());
+                return String.valueOf(world.getAllowWeather());
             }
             default -> {
                 warning("Unknown placeholder: " + placeholder);

@@ -24,7 +24,7 @@ import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.world.configuration.EnglishChatColor;
-import com.onarandombox.MultiverseCore.world.configuration.SpawnLocation;
+import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation;
 import com.onarandombox.MultiverseCore.world.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.world.configuration.WorldPropertyValidator;
 import me.main__.util.SerializationConfig.ChangeDeniedException;
@@ -342,7 +342,7 @@ public class SimpleMVWorld implements MVWorld {
             for (Player p : server.getWorld(getName()).getPlayers()) {
                 Logging.finer(String.format("Setting %s's GameMode to %s",
                         p.getName(), newValue.toString()));
-                playerListener.handleGameModeAndFlight(p, SimpleMVWorld.this);
+                //playerListener.handleGameModeAndFlight(p, SimpleMVWorld.this);
             }
             return super.validateChange(property, newValue, oldValue, object);
         }

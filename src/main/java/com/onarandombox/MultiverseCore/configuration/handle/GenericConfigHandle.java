@@ -3,9 +3,7 @@ package com.onarandombox.MultiverseCore.configuration.handle;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNodeNotFoundException;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
-import com.onarandombox.MultiverseCore.configuration.node.NodeSerializer;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -24,7 +22,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
 
     protected C config;
 
-    public GenericConfigHandle(@Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected GenericConfigHandle(@Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         this.logger = logger;
         this.nodes = nodes;
         this.migrator = migrator;
@@ -33,12 +31,15 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     /**
      * Loads the configuration.
      *
-     * @return True if the configuration was loaded successfully, false otherwise.
+     * @return Whether the configuration was loaded or its given error.
      */
-    public boolean load() {
-        migrateConfig();
-        setUpNodes();
-        return true;
+    public Try<Void> load() {
+        return Try.run(() -> {
+            if (!config.getKeys(false).isEmpty()) {
+                migrateConfig();
+            }
+            setUpNodes();
+        });
     }
 
     /**

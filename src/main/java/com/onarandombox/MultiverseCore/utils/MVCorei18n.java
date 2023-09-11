@@ -7,6 +7,8 @@ import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 import org.jetbrains.annotations.NotNull;
 
 public enum MVCorei18n implements MessageKeyProvider {
+    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
+
     // config status
     CONFIG_SAVE_FAILED,
     CONFIG_NODE_NOTFOUND,
@@ -16,7 +18,6 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // clone command
     CLONE_CLONING,
-    CLONE_FAILED,
     CLONE_SUCCESS,
 
     // Coordinates command
@@ -36,13 +37,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     CREATE_PROPERTIES_GENERATOR,
     CREATE_PROPERTIES_STRUCTURES,
     CREATE_LOADING,
-    CREATE_FAILED,
     CREATE_SUCCESS,
 
     // delete command
     DELETE_DELETING,
-    DELETE_FAILED,
-    DELETE_SUCCESS,
     DELETE_PROMPT,
 
     // Dumps command
@@ -62,27 +60,20 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // import command
     IMPORT_IMPORTING,
-    IMPORT_FAILED,
     IMPORT_SUCCESS,
 
     // load command
     LOAD_LOADING,
-    LOAD_FAILED,
     LOAD_SUCCESS,
 
     // regen command
     REGEN_REGENERATING,
-    REGEN_FAILED,
-    REGEN_SUCCESS,
     REGEN_PROMPT,
+    REGEN_SUCCESS,
 
     // reload command
     RELOAD_RELOADING,
     RELOAD_SUCCESS,
-
-    // remove command
-    REMOVE_FAILED,
-    REMOVE_SUCCESS,
 
     // root MV command
     ROOT_TITLE,
@@ -93,7 +84,6 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // unload command
     UNLOAD_UNLOADING,
-    UNLOAD_FAILURE,
     UNLOAD_SUCCESS,
 
     // debug command
@@ -111,11 +101,50 @@ public enum MVCorei18n implements MessageKeyProvider {
     ENTRYCHECK_EXCEEDPLAYERLIMIT,
     ENTRYCHECK_NOWORLDACCESS,
 
+    // world manager result
+    CLONEWORLD_INVALIDWORLDNAME,
+    CLONEWORLD_WORLDEXISTFOLDER,
+    CLONEWORLD_WORLDEXISTUNLOADED,
+    CLONEWORLD_WORLDEXISTLOADED,
+    CLONEWORLD_COPYFAILED,
+
+    CREATEWORLD_INVALIDWORLDNAME,
+    CREATEWORLD_WORLDEXISTFOLDER,
+    CREATEWORLD_WORLDEXISTUNLOADED,
+    CREATEWORLD_WORLDEXISTLOADED,
+    CREATEWORLD_BUKKITCREATIONFAILED,
+
+    DELETE_SUCCESS,
+    DELETEWORLD_WORLDNONEXISTENT,
+    DELETEWORLD_LOADFAILED,
+    DELETEWORLD_WORLDFOLDERNOTFOUND,
+    DELETEWORLD_FAILEDTODELETEFOLDER,
+
+    IMPORTWORLD_INVALIDWORLDNAME,
+    IMPORTWORLD_WORLDFOLDERINVALID,
+    IMPORTWORLD_WORLDEXISTUNLOADED,
+    IMPORTWORLD_WORLDEXISTLOADED,
+    IMPORTWORLD_BUKKITCREATIONFAILED,
+
+    LOADWORLD_WORLDALREADYLOADING,
+    LOADWORLD_WORLDNONEXISTENT,
+    LOADWORLD_WORLDEXISTFOLDER,
+    LOADWORLD_WORLDEXISTLOADED,
+    LOADWORLD_BUKKITCREATIONFAILED,
+
+    REMOVEWORLD_REMOVED,
+    REMOVEWORLD_WORLDNONEXISTENT,
+
+    UNLOADWORLD_WORLDALREADYUNLOADING,
+    UNLOADWORLD_WORLDNONEXISTENT,
+    UNLOADWORLD_WORLDUNLOADED,
+    UNLOADWORLD_BUKKITUNLOADFAILED,
+
     // generic
     GENERIC_SUCCESS,
-    GENERIC_FAILURE
+    GENERIC_FAILURE;
 
-    ;
+    // END CHECKSTYLE-SUPPRESSION: Javadoc
 
     private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.').toLowerCase());
 

@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.configuration.handle;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
@@ -9,6 +10,7 @@ import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.configuration.node.CommentedNode;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
+import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,9 +37,12 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
      * {@inheritDoc}
      */
     @Override
-    protected boolean loadConfigObject() {
+    protected void loadConfigObject() throws IOException {
         config = new CommentedConfiguration(configPath, logger);
-        return config.load();
+        if (!config.load()) {
+            throw new IOException("Failed to load commented config file " + configPath
+                    + ". See console for details.");
+        }
     }
 
     /**
@@ -71,9 +76,9 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
      * {@inheritDoc}
      */
     @Override
-    public boolean save() {
-        config.save();
-        return true;
+    public Try<Void> save() {
+        // TODO: There is no way to check if the save was successful.
+        return Try.run(() -> config.save());
     }
 
     public static class Builder extends FileConfigHandle.Builder<CommentedConfiguration, Builder> {

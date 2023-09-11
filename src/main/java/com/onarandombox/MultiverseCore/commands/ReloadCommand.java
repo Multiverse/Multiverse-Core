@@ -1,26 +1,24 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
-import com.onarandombox.MultiverseCore.api.MVCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.event.MVConfigReloadEvent;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
+import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @CommandAlias("mv")
@@ -28,7 +26,7 @@ public class ReloadCommand extends MultiverseCommand {
 
     private final MVCoreConfig config;
     private final AnchorManager anchorManager;
-    private final MVWorldManager worldManager;
+    private final WorldManager worldManager;
     private final PluginManager pluginManager;
 
     @Inject
@@ -36,7 +34,7 @@ public class ReloadCommand extends MultiverseCommand {
             @NotNull MVCommandManager commandManager,
             @NotNull MVCoreConfig config,
             @NotNull AnchorManager anchorManager,
-            @NotNull MVWorldManager worldManager,
+            @NotNull WorldManager worldManager,
             @NotNull PluginManager pluginManager
     ) {
         super(commandManager);
@@ -51,14 +49,18 @@ public class ReloadCommand extends MultiverseCommand {
     @Description("{@@mv-core.reload.description}")
     public void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
-        this.config.load();
-        this.worldManager.loadWorldsConfig();
-        this.worldManager.loadWorlds(true);
-        this.anchorManager.loadAnchors();
+        try {
+            // TODO: Make this all Try<Void>
+            this.config.load().getOrElseThrow(e -> new RuntimeException("Failed to load config", e));
+            this.worldManager.initAllWorlds().getOrElseThrow(e -> new RuntimeException("Failed to init worlds", e));
+            this.anchorManager.loadAnchors();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         List<String> configsLoaded = new ArrayList<>();
         configsLoaded.add("Multiverse-Core - config.yml");
-        configsLoaded.add("Multiverse-Core - worlds.yml");
+        configsLoaded.add("Multiverse-Core - worlds2.yml");
         configsLoaded.add("Multiverse-Core - anchors.yml");
 
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
