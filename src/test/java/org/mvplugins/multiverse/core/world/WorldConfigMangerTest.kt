@@ -41,13 +41,13 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
 
-        val endWorldConfig = worldConfigManager.getWorldConfig("world_the_end")
+        val endWorldConfig = worldConfigManager.getWorldConfig("world_the_end").orNull
         assertNotNull(endWorldConfig)
 
         assertEquals("&aworld the end", endWorldConfig.alias)
         assertEquals(Environment.THE_END, endWorldConfig.environment)
 
-        val worldConfig = worldConfigManager.getWorldConfig("world")
+        val worldConfig = worldConfigManager.getWorldConfig("world").orNull
         assertNotNull(worldConfig)
 
         assertEquals(-5176596003035866649, worldConfig.seed)
@@ -65,7 +65,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
     @Test
     fun `Updating existing world properties`() {
         assertTrue(worldConfigManager.load().isSuccess)
-        val worldConfig = worldConfigManager.getWorldConfig("world")
+        val worldConfig = worldConfigManager.getWorldConfig("world").orNull
         assertNotNull(worldConfig)
 
         worldConfig.setProperty("adjust-spawn", true)

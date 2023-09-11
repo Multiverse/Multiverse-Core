@@ -341,8 +341,7 @@ public class WorldManager {
                         exception -> worldActionResult(LoadWorldResult.BUKKIT_CREATION_FAILED,
                                 mvWorld.getName(), exception),
                         world -> {
-                            // TODO: Check worldConfig null
-                            WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName());
+                            WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get();
                             LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                                     world,
                                     worldConfig,

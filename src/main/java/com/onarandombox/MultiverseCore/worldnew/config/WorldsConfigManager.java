@@ -3,13 +3,13 @@ package com.onarandombox.MultiverseCore.worldnew.config;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import io.vavr.Tuple2;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import java.io.File;
@@ -115,14 +115,13 @@ public final class WorldsConfigManager {
         List<WorldConfig> newWorldsAdded = new ArrayList<>();
 
         for (String worldName : allWorldsInConfig) {
-            WorldConfig worldConfig = getWorldConfig(worldName);
-            if (worldConfig == null) {
-                WorldConfig newWorldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName));
-                worldConfigMap.put(worldName, newWorldConfig);
-                newWorldsAdded.add(newWorldConfig);
-            } else {
-                worldConfig.load(getWorldConfigSection(worldName));
-            }
+            getWorldConfig(worldName)
+                    .peek(config -> config.load(getWorldConfigSection(worldName)))
+                    .onEmpty(() -> {
+                        WorldConfig newWorldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName));
+                        worldConfigMap.put(worldName, newWorldConfig);
+                        newWorldsAdded.add(newWorldConfig);
+                    });
         }
 
         List<String> worldsRemoved = worldConfigMap.keySet().stream()
@@ -158,10 +157,10 @@ public final class WorldsConfigManager {
      * Gets the {@link WorldConfig} instance of all worlds in the worlds.yml file.
      *
      * @param worldName The name of the world to check.
-     * @return Whether the worlds.yml file contains the given world.
+     * @return The {@link WorldConfig} instance of the world, or empty option if it doesn't exist.
      */
-    public @Nullable WorldConfig getWorldConfig(@NotNull String worldName) {
-        return worldConfigMap.get(worldName);
+    public @NotNull Option<WorldConfig> getWorldConfig(@NotNull String worldName) {
+        return Option.of(worldConfigMap.get(worldName));
     }
 
     /**

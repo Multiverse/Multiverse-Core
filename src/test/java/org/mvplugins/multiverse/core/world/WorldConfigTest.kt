@@ -29,7 +29,7 @@ class WorldConfigTest : TestWithMockBukkit() {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
 
         assertTrue(worldConfigManager.load().isSuccess)
-        worldConfig = worldConfigManager.getWorldConfig("world").takeIf { it != null } ?: run {
+        worldConfig = worldConfigManager.getWorldConfig("world").orNull.takeIf { it != null } ?: run {
             throw IllegalStateException("WorldConfig for world is not available") }
         assertNotNull(worldConfig);
     }
