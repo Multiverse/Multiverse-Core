@@ -31,16 +31,13 @@ public class DestinationsProvider {
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
 
     private final PluginManager pluginManager;
-    private final SafeTTeleporter safeTTeleporter;
+    private final SafeTTeleporter safetyTeleporter;
     private final Map<String, Destination<?>> destinationMap;
 
-    /**
-     * Creates a new destinations provider.
-     */
     @Inject
-    public DestinationsProvider(@NotNull PluginManager pluginManager, @NotNull SafeTTeleporter safeTTeleporter) {
+    DestinationsProvider(@NotNull PluginManager pluginManager, @NotNull SafeTTeleporter safetyTeleporter) {
         this.pluginManager = pluginManager;
-        this.safeTTeleporter = safeTTeleporter;
+        this.safetyTeleporter = safetyTeleporter;
         this.destinationMap = new HashMap<>();
     }
 
@@ -66,9 +63,9 @@ public class DestinationsProvider {
      * @param deststring The current destination string.
      * @return A collection of tab completions.
      */
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer,
-                                                           @Nullable String deststring
-    ) {
+    public @NotNull Collection<String> suggestDestinations(
+            @NotNull BukkitCommandIssuer issuer,
+            @Nullable String deststring) {
         return destinationMap.values().stream()
                 .filter(destination -> issuer.hasPermission(PERMISSION_PREFIX + "self." + destination.getIdentifier())
                         || issuer.hasPermission(PERMISSION_PREFIX + "other." + destination.getIdentifier()))
@@ -129,11 +126,12 @@ public class DestinationsProvider {
      * @param teleporter    The teleporter.
      * @param teleportee    The teleportee.
      * @param destination   The destination.
+     * @return The async teleport result.
      */
-    public CompletableFuture<TeleportResult> playerTeleportAsync(@NotNull BukkitCommandIssuer teleporter,
-                               @NotNull Player teleportee,
-                               @NotNull ParsedDestination<?> destination
-    ) {
+    public CompletableFuture<TeleportResult> playerTeleportAsync(
+            @NotNull BukkitCommandIssuer teleporter,
+            @NotNull Player teleportee,
+            @NotNull ParsedDestination<?> destination) {
         if (!checkTeleportPermissions(teleporter, teleportee, destination)) {
             return CompletableFuture.completedFuture(TeleportResult.FAIL_PERMISSION);
         }
@@ -146,14 +144,15 @@ public class DestinationsProvider {
      * @param teleporter    The teleporter.
      * @param teleportee    The teleportee.
      * @param destination   The destination.
+     * @return The async teleport result.
      */
-    public CompletableFuture<TeleportResult> teleportAsync(@NotNull BukkitCommandIssuer teleporter,
-                                                           @NotNull Entity teleportee,
-                                                           @NotNull ParsedDestination<?> destination
-    ) {
+    public CompletableFuture<TeleportResult> teleportAsync(
+            @NotNull BukkitCommandIssuer teleporter,
+            @NotNull Entity teleportee,
+            @NotNull ParsedDestination<?> destination) {
         Teleporter teleportHandler = destination.getDestination().getTeleporter();
         if (teleportHandler == null) {
-            teleportHandler = safeTTeleporter;
+            teleportHandler = safetyTeleporter;
         }
         return teleportHandler.teleportAsync(teleporter, teleportee, destination);
     }
@@ -166,7 +165,8 @@ public class DestinationsProvider {
      * @param destination   The destination.
      * @return True if the teleporter has permission, false otherwise.
      */
-    public boolean checkTeleportPermissions(CommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
+    public boolean checkTeleportPermissions(
+            CommandIssuer teleporter, Entity teleportee, ParsedDestination<?> destination) {
         // TODO: Move permission checking to a separate class
         String permission = PERMISSION_PREFIX
                 + (teleportee.equals(teleporter.getIssuer()) ? "self" : "other") + "."

@@ -19,8 +19,14 @@ import java.util.List;
  * Represents a world handled by Multiverse which has all the custom properties provided by Multiverse.
  */
 public class MultiverseWorld {
-
+    /**
+     * This world's name.
+     */
     protected final String worldName;
+
+    /**
+     * This world's configuration.
+     */
     protected WorldConfig worldConfig;
 
     MultiverseWorld(String worldName, WorldConfig worldConfig) {
@@ -49,14 +55,33 @@ public class MultiverseWorld {
         return worldConfig.hasMVWorld();
     }
 
+    /**
+     * Gets the properties that can be configured on this world. Can be used for {@link #getProperty(String)} and
+     * {@link #setProperty(String, Object)}.
+     *
+     * @return A collection of property names.
+     */
     public Collection<String> getConfigurablePropertyNames() {
         return worldConfig.getConfigurablePropertyNames();
     }
 
+    /**
+     * Gets a property on this world.
+     *
+     * @param name  The name of the property.
+     * @return The value of the property.
+     */
     public Try<Object> getProperty(String name) {
         return worldConfig.getProperty(name);
     }
 
+    /**
+     * Sets a property on this world.
+     *
+     * @param name  The name of the property.
+     * @param value The value of the property.
+     * @return Result of setting property.
+     */
     public Try<Void> setProperty(String name, Object value) {
         return worldConfig.setProperty(name, value);
     }
@@ -74,6 +99,7 @@ public class MultiverseWorld {
      * Sets whether or not Multiverse should auto-adjust the spawn for this world.
      *
      * @param adjustSpawn   True if multiverse should adjust the spawn, false if not.
+     * @return Result of setting property.
      */
     public Try<Void> setAdjustSpawn(boolean adjustSpawn) {
         return worldConfig.setAdjustSpawn(adjustSpawn);
@@ -94,6 +120,7 @@ public class MultiverseWorld {
      * Sets the alias of the world.
      *
      * @param alias A string that is the new alias.
+     * @return Result of setting property.
      */
     public Try<Void> setAlias(String alias) {
         return worldConfig.setAlias(alias);
@@ -112,6 +139,7 @@ public class MultiverseWorld {
      * Sets whether or not players are allowed to fly in this world.
      *
      * @param allowFlight   True to allow flight in this world.
+     * @return Result of setting property.
      */
     public Try<Void> setAllowFlight(boolean allowFlight) {
         return worldConfig.setAllowFlight(allowFlight);
@@ -131,6 +159,7 @@ public class MultiverseWorld {
      * If set to false, Multiverse will disable the weather in the world immediately.
      *
      * @param allowWeather  True if weather events should occur in a world, false if not.
+     * @return Result of setting property.
      */
     public Try<Void> setAllowWeather(boolean allowWeather) {
         return worldConfig.setAllowWeather(allowWeather);
@@ -149,6 +178,7 @@ public class MultiverseWorld {
      * Sets whether or not a world will auto-heal players if the difficulty is on peaceful.
      *
      * @param autoHeal  True if the world will heal.
+     * @return Result of setting property.
      */
     public Try<Void> setAutoHeal(boolean autoHeal) {
         return worldConfig.setAutoHeal(autoHeal);
@@ -169,6 +199,7 @@ public class MultiverseWorld {
      * True is default.
      *
      * @param autoLoad  True if multiverse should autoload this world the spawn, false if not.
+     * @return Result of setting property.
      */
     public Try<Void> setAutoLoad(boolean autoLoad) {
         return worldConfig.setAutoLoad(autoLoad);
@@ -191,6 +222,7 @@ public class MultiverseWorld {
      * True is default.
      *
      * @param bedRespawn    True if players dying in this world respawn at their bed.
+     * @return Result of setting property.
      */
     public Try<Void> setBedRespawn(boolean bedRespawn) {
         return worldConfig.setBedRespawn(bedRespawn);
@@ -211,6 +243,7 @@ public class MultiverseWorld {
      * Use a value of null to specify a non-item based currency.
      *
      * @param currency  The Type of currency that will be used when users enter this world.
+     * @return Result of setting property.
      */
     public Try<Void> setCurrency(Material currency) {
         return worldConfig.setEntryFeeCurrency(currency);
@@ -231,6 +264,7 @@ public class MultiverseWorld {
      * the name that resides in the Bukkit enum, ex. PEACEFUL
      *
      * @param difficulty    The new difficulty.
+     * @return Result of setting property.
      */
     public Try<Void> setDifficulty(Difficulty difficulty) {
         return worldConfig.setDifficulty(difficulty);
@@ -258,6 +292,7 @@ public class MultiverseWorld {
      * Sets the game mode of this world.
      *
      * @param gameMode The new {@link GameMode}.
+     * @return Result of setting property.
      */
     public Try<Void> setGameMode(GameMode gameMode) {
         return worldConfig.setGameMode(gameMode);
@@ -287,6 +322,7 @@ public class MultiverseWorld {
      * access permissions to go to this world.
      *
      * @param hidden    True if the world should be hidden, false if not.
+     * @return Result of setting property.
      */
     public Try<Void> setHidden(boolean hidden) {
         return worldConfig.setHidden(hidden);
@@ -305,6 +341,7 @@ public class MultiverseWorld {
      * Sets whether or not the hunger level of players will go down in a world.
      *
      * @param hunger    True if hunger will go down, false to keep it at the level they entered a world with.
+     * @return Result of setting property.
      */
     public Try<Void> setHunger(boolean hunger) {
         return worldConfig.setHunger(hunger);
@@ -325,6 +362,7 @@ public class MultiverseWorld {
      * This will not happen immediately.
      *
      * @param keepSpawnInMemory If true, CraftBukkit will keep the spawn chunks loaded in memory.
+     * @return Result of setting property.
      */
     public Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         return worldConfig.setKeepSpawnInMemory(keepSpawnInMemory);
@@ -345,6 +383,7 @@ public class MultiverseWorld {
      * permission node will not be allowed in. A value of -1 or less signifies no limit
      *
      * @param playerLimit   The new limit
+     * @return Result of setting property.
      */
     public Try<Void> setPlayerLimit(int playerLimit) {
         return worldConfig.setPlayerLimit(playerLimit);
@@ -363,6 +402,7 @@ public class MultiverseWorld {
      * Sets The types of portals that are allowed in this world.
      *
      * @param portalForm    The type of portals allowed in this world.
+     * @return Result of setting property.
      */
     public Try<Void> setPortalForm(AllowedPortalType portalForm) {
         return worldConfig.setPortalForm(portalForm);
@@ -383,6 +423,7 @@ public class MultiverseWorld {
      * The type can be set with {@link #setCurrency(Material)}
      *
      * @param price The Amount of money/item to enter the world.
+     * @return Result of setting property.
      */
     public Try<Void> setPrice(double price) {
         return worldConfig.setEntryFeeAmount(price);
@@ -401,6 +442,7 @@ public class MultiverseWorld {
      * Turn pvp on or off. This setting is used to set the world's PVP mode.
      *
      * @param pvp   True to enable PVP damage, false to disable it.
+     * @return Result of setting property.
      */
     public Try<Void> setPvp(boolean pvp) {
         return worldConfig.setPvp(pvp);
@@ -429,6 +471,7 @@ public class MultiverseWorld {
      * Returns true upon success, false upon failure.
      *
      * @param respawnWorld The name of a world that exists on the server.
+     * @return Result of setting property.
      */
     public Try<Void> setRespawnWorld(World respawnWorld) {
         return worldConfig.setRespawnWorld(respawnWorld.getName());
@@ -439,6 +482,7 @@ public class MultiverseWorld {
      * Returns true upon success, false upon failure.
      *
      * @param respawnWorld The name of a world that exists on the server.
+     * @return Result of setting property.
      */
     public Try<Void> setRespawnWorld(MultiverseWorld respawnWorld) {
         return worldConfig.setRespawnWorld(respawnWorld.getName());
@@ -449,6 +493,7 @@ public class MultiverseWorld {
      * Returns true upon success, false upon failure.
      *
      * @param respawnWorld The name of a world that exists on the server.
+     * @return Result of setting property.
      */
     public Try<Void> setRespawnWorld(String respawnWorld) {
         return worldConfig.setRespawnWorld(respawnWorld);
@@ -464,11 +509,13 @@ public class MultiverseWorld {
         return worldConfig.getScale();
     }
 
+    //TODO: we are removing mvnp
     /**
      * Sets the scale of this world. Really only has an effect if you use
-     * Multiverse-NetherPortals. TODO: we are removing mvnp.
+     * Multiverse-NetherPortals.
      *
      * @param scale A scaling value, cannot be negative or 0.
+     * @return Result of setting property.
      */
     public Try<Void> setScale(double scale) {
         return worldConfig.setScale(scale);
@@ -496,6 +543,7 @@ public class MultiverseWorld {
      * Sets the spawn location for a world.
      *
      * @param spawnLocation The spawn location for a world.
+     * @return Result of setting property.
      */
     public Try<Void> setSpawnLocation(Location spawnLocation) {
         return worldConfig.setSpawnLocation(spawnLocation);
@@ -517,6 +565,7 @@ public class MultiverseWorld {
      * those animals become the exceptions, and will spawn
      *
      * @param spawningAnimals True to allow spawning of monsters, false to prevent.
+     * @return Result of setting property.
      */
     public Try<Void> setSpawningAnimals(boolean spawningAnimals) {
         return worldConfig.setSpawningAnimals(spawningAnimals);

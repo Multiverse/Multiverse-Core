@@ -8,6 +8,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Destination instance implementation for the {@link PlayerDestination}.
+ */
 public class PlayerDestinationInstance implements DestinationInstance {
     private final Player player;
 
@@ -16,7 +19,7 @@ public class PlayerDestinationInstance implements DestinationInstance {
      *
      * @param player The player whose location to go to.
      */
-    public PlayerDestinationInstance(Player player) {
+    PlayerDestinationInstance(Player player) {
         this.player = player;
     }
 

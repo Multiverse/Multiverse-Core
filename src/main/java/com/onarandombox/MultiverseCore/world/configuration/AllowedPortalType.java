@@ -38,12 +38,19 @@ public enum AllowedPortalType {
 
     /**
      * Gets the text.
+     *
      * @return The text.
      */
     public PortalType getActualPortalType() {
         return this.type;
     }
 
+    /**
+     * Checks if the given portal type is allowed.
+     *
+     * @param portalType    The portal type.
+     * @return True if allowed, else false.
+     */
     public boolean isPortalAllowed(PortalType portalType) {
         return this != NONE && (getActualPortalType() == portalType || this == ALL);
     }

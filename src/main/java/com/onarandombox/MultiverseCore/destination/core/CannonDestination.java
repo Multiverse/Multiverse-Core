@@ -15,13 +15,16 @@ import org.jvnet.hk2.annotations.Service;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * {@link Destination} implementation for cannons.
+ */
 @Service
 public class CannonDestination implements Destination<CannonDestinationInstance> {
 
     private final WorldManager worldManager;
 
     @Inject
-    public CannonDestination(WorldManager worldManager) {
+    CannonDestination(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 

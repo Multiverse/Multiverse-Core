@@ -7,6 +7,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Destination instance implementation for the {@link CannonDestination}.
+ */
 public class CannonDestinationInstance implements DestinationInstance {
     private final Location location;
     private final double speed;
@@ -17,7 +20,7 @@ public class CannonDestinationInstance implements DestinationInstance {
      * @param location The location to teleport to.
      * @param speed The speed to fire the player at.
      */
-    public CannonDestinationInstance(@NotNull Location location, double speed) {
+    CannonDestinationInstance(@NotNull Location location, double speed) {
         this.location = location;
         this.speed = speed;
     }

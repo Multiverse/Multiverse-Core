@@ -17,15 +17,16 @@ public class VaultHandler implements Listener {
 
     private Economy economy;
 
-    public VaultHandler(final Plugin plugin) {
+    VaultHandler(final Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(new VaultListener(), plugin);
         setupVaultEconomy();
     }
 
     private boolean setupVaultEconomy() {
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-            final RegisteredServiceProvider<Economy> economyProvider =
-                    Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+            final RegisteredServiceProvider<Economy> economyProvider = Bukkit
+                    .getServicesManager()
+                    .getRegistration(net.milkbowl.vault.economy.Economy.class);
             if (economyProvider != null) {
                 Logging.fine("Vault economy enabled.");
                 economy = economyProvider.getProvider();
@@ -38,7 +39,7 @@ public class VaultHandler implements Listener {
             economy = null;
         }
 
-        return (economy != null);
+        return economy != null;
     }
 
     /**
@@ -62,7 +63,7 @@ public class VaultHandler implements Listener {
     /**
      * Listens for Vault plugin events.
      */
-    private class VaultListener implements Listener {
+    private final class VaultListener implements Listener {
         @EventHandler
         private void vaultEnabled(PluginEnableEvent event) {
             if (event.getPlugin() != null && event.getPlugin().getName().equals("Vault")) {

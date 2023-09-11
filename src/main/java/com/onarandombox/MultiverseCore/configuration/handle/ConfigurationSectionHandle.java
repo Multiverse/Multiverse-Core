@@ -13,6 +13,12 @@ import java.util.logging.Logger;
  * Configuration handle for a single configuration section.
  */
 public class ConfigurationSectionHandle extends GenericConfigHandle<ConfigurationSection> {
+    /**
+     * Creates a new builder for a {@link ConfigurationSectionHandle}.
+     *
+     * @param configurationSection  The configuration section.
+     * @return The builder.
+     */
     public static Builder<? extends Builder> builder(@NotNull ConfigurationSection configurationSection) {
         return new Builder<>(configurationSection);
     }

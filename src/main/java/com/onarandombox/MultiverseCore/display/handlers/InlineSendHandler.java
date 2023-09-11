@@ -23,7 +23,7 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
     private String delimiter = ChatColor.WHITE + ", ";
     private String prefix = null;
 
-    public InlineSendHandler() {
+    InlineSendHandler() {
     }
 
     /**

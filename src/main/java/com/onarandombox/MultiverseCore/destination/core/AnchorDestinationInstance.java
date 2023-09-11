@@ -7,6 +7,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Destination instance implementation for the {@link AnchorDestination}.
+ */
 public class AnchorDestinationInstance implements DestinationInstance {
     private final String anchorName;
     private final Location anchorLocation;
@@ -17,7 +20,7 @@ public class AnchorDestinationInstance implements DestinationInstance {
      * @param anchorName        The name of the anchor.
      * @param anchorLocation    The location of the anchor.
      */
-    public AnchorDestinationInstance(@NotNull String anchorName, @NotNull Location anchorLocation) {
+    AnchorDestinationInstance(@NotNull String anchorName, @NotNull Location anchorLocation) {
         this.anchorName = anchorName;
         this.anchorLocation = anchorLocation;
     }

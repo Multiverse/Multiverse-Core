@@ -29,7 +29,11 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
         return new Builder(configPath);
     }
 
-    protected CommentedYamlConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected CommentedYamlConfigHandle(
+            @NotNull Path configPath,
+            @Nullable Logger logger,
+            @Nullable NodeGroup nodes,
+            @Nullable ConfigMigrator migrator) {
         super(configPath, logger, nodes, migrator);
     }
 
@@ -64,10 +68,15 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
                 }
             }
             if (node instanceof ValueNode valueNode) {
-                set(valueNode, oldConfig.getObject(valueNode.getPath(), valueNode.getType(), valueNode.getDefaultValue())).onFailure(e -> {
-                    Logging.warning("Failed to set node " + valueNode.getPath() + " to " + valueNode.getDefaultValue());
-                    setDefault(valueNode);
-                });
+                //noinspection unchecked
+                set(valueNode, oldConfig.getObject(
+                        valueNode.getPath(),
+                        valueNode.getType(),
+                        valueNode.getDefaultValue())).onFailure(e -> {
+                            Logging.warning("Failed to set node " + valueNode.getPath()
+                                    + " to " + valueNode.getDefaultValue());
+                            setDefault(valueNode);
+                        });
             }
         });
     }
@@ -81,6 +90,9 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
         return Try.run(() -> config.save());
     }
 
+    /**
+     * Builder for {@link CommentedYamlConfigHandle}.
+     */
     public static class Builder extends FileConfigHandle.Builder<CommentedConfiguration, Builder> {
 
         protected Builder(@NotNull Path configPath) {

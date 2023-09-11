@@ -34,7 +34,7 @@ public class MVPortalListener implements InjectableListener {
     private final WorldManager worldManager;
 
     @Inject
-    public MVPortalListener(@NotNull MVCoreConfig config, @NotNull WorldManager worldManager) {
+    MVPortalListener(@NotNull MVCoreConfig config, @NotNull WorldManager worldManager) {
         this.config = config;
         this.worldManager = worldManager;
     }
@@ -118,6 +118,7 @@ public class MVPortalListener implements InjectableListener {
 
     /**
      * Handles portal search radius adjustment.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler

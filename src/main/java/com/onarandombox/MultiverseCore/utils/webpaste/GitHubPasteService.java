@@ -20,6 +20,7 @@ class GitHubPasteService extends PasteService {
     GitHubPasteService(boolean isPrivate) {
         super(GITHUB_POST_REQUEST, ACCESS_TOKEN);
         this.isPrivate = isPrivate;
+        //noinspection ConstantValue - this is a placeholder that should be replaced with a real access token
         if (ACCESS_TOKEN.endsWith("access-token")) {
             throw new UnsupportedOperationException();
         }
@@ -60,8 +61,8 @@ class GitHubPasteService extends PasteService {
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
-            String stringJSON = this.exec(encodeData(data), ContentType.JSON);
-            return (String) ((JSONObject) new JSONParser().parse(stringJSON)).get("html_url");
+            String stringJson = this.exec(encodeData(data), ContentType.JSON);
+            return (String) ((JSONObject) new JSONParser(JSONParser.MODE_PERMISSIVE).parse(stringJson)).get("html_url");
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }
@@ -74,7 +75,7 @@ class GitHubPasteService extends PasteService {
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
             String stringJSON = this.exec(encodeData(data), ContentType.JSON);
-            return (String) ((JSONObject) new JSONParser().parse(stringJSON)).get("html_url");
+            return (String) ((JSONObject) new JSONParser(JSONParser.MODE_PERMISSIVE).parse(stringJSON)).get("html_url");
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }

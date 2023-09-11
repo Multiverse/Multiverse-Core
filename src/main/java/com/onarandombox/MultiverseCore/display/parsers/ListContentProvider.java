@@ -29,7 +29,7 @@ public class ListContentProvider<T> implements ContentProvider {
 
     private String format = null;
 
-    public ListContentProvider(List<T> list) {
+    ListContentProvider(List<T> list) {
         this.list = list;
     }
 

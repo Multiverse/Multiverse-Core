@@ -7,6 +7,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Destination instance implementation for the {@link ExactDestination}.
+ */
 public class ExactDestinationInstance implements DestinationInstance {
     private final Location location;
 
@@ -15,7 +18,7 @@ public class ExactDestinationInstance implements DestinationInstance {
      *
      * @param location The location to teleport to.
      */
-    public ExactDestinationInstance(Location location) {
+    ExactDestinationInstance(Location location) {
         this.location = location;
     }
 

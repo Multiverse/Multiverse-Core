@@ -8,6 +8,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Destination instance implementation for the {@link WorldDestination}.
+ */
 public class WorldDestinationInstance implements DestinationInstance {
     private final LoadedMultiverseWorld world;
     private final String direction;
@@ -16,9 +19,11 @@ public class WorldDestinationInstance implements DestinationInstance {
     /**
      * Constructor.
      *
-     * @param world The world to teleport to.
+     * @param world     The world to teleport to.
+     * @param direction The direction to face.
+     * @param yaw       The yaw to face.
      */
-    public WorldDestinationInstance(@NotNull LoadedMultiverseWorld world, @Nullable String direction, float yaw) {
+    WorldDestinationInstance(@NotNull LoadedMultiverseWorld world, @Nullable String direction, float yaw) {
         this.world = world;
         this.direction = direction;
         this.yaw = yaw;

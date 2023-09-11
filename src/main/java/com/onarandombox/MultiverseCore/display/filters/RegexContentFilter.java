@@ -18,7 +18,7 @@ public class RegexContentFilter implements ContentFilter {
 
     /**
      * Compile regex pattern to create a regex filter.
-     *
+     * <br/>
      * When prefixed with 'r=', filter string is used as the full regex pattern.
      * Else, set to regex that contains the filterString.
      *
@@ -40,7 +40,7 @@ public class RegexContentFilter implements ContentFilter {
     private final String regexString;
     private Pattern regexPattern;
 
-    public RegexContentFilter(@Nullable String regexString) {
+    RegexContentFilter(@Nullable String regexString) {
         this.regexString = regexString;
         convertToPattern();
     }
@@ -85,14 +85,29 @@ public class RegexContentFilter implements ContentFilter {
         return hasValidRegex();
     }
 
+    /**
+     * Check if the regex is valid.
+     *
+     * @return True if the regex is valid.
+     */
     public boolean hasValidRegex() {
         return regexPattern != null;
     }
 
+    /**
+     * Get the regex string.
+     *
+     * @return The regex string.
+     */
     public String getRegexString() {
         return regexString;
     }
 
+    /**
+     * Get the compiled regex pattern.
+     *
+     * @return The compiled regex pattern.
+     */
     public Pattern getRegexPattern() {
         return regexPattern;
     }

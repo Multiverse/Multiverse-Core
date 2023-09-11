@@ -91,10 +91,10 @@ public class GamerulesCommand extends MultiverseCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         ContentDisplay.create()
-                .addContent(new MapContentProvider<>(getGameRuleMap(world.getBukkitWorld().getOrNull())) // TODO: Handle null
+                .addContent(MapContentProvider.forContent(getGameRuleMap(world.getBukkitWorld().getOrNull())) // TODO: Handle null
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
-                .withSendHandler(new PagedSendHandler()
+                .withSendHandler(PagedSendHandler.create()
                         .withHeader(this.getTitle(issuer, world.getBukkitWorld().getOrNull()))
                         .doPagination(true)
                         .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))

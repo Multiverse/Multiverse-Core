@@ -19,11 +19,10 @@ public class MVChatListener implements InjectableListener {
     private final MVPlayerListener playerListener;
 
     @Inject
-    public MVChatListener(
+    MVChatListener(
             MVCoreConfig config,
             WorldManager worldManager,
-            MVPlayerListener playerListener
-    ) {
+            MVPlayerListener playerListener) {
         this.config = config;
         this.worldManager = worldManager;
         this.playerListener = playerListener;
@@ -52,7 +51,7 @@ public class MVChatListener implements InjectableListener {
         }
 
         String prefix = this.worldManager.getLoadedWorld(world)
-                .map((mvworld) -> mvworld.isHidden() ? "" : mvworld.getAlias())
+                .map(mvworld -> mvworld.isHidden() ? "" : mvworld.getAlias())
                 .getOrElse("");
         String chat = event.getFormat();
 

@@ -24,10 +24,10 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
     private boolean paginate = true;
     private boolean paginateInConsole = false;
     private boolean padEnd = true;
-    private int linesPerPage = 8;
+    private int linesPerPage = 8; // SUPPRESS CHECKSTYLE: MagicNumberCheck
     private int targetPage = 1;
 
-    public PagedSendHandler() {
+    PagedSendHandler() {
     }
 
     /**

@@ -18,8 +18,19 @@ import java.util.stream.Collectors;
  */
 public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements SendHandler {
 
+    /**
+     * Header to be displayed.
+     */
     protected String header = "";
+
+    /**
+     * Filter to keep only contents that matches the filter.
+     */
     protected ContentFilter filter = DefaultContentFilter.get();
+
+    /**
+     * Fallback message to be displayed when there is no content to display.
+     */
     protected String noContentMessage = String.format("%sThere is no content to display.", ChatColor.RED);
 
     /**
@@ -75,9 +86,9 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      * @param replacements  String formatting replacements.
      * @return Same {@link T} for method chaining.
      */
-    public T withHeader(@NotNull String header, @NotNull Object...replacements) {
+    public T withHeader(@NotNull String header, @NotNull Object... replacements) {
         this.header = String.format(header, replacements);
-        return (T) this;
+        return getT();
     }
 
     /**
@@ -88,7 +99,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      */
     public T withFilter(@NotNull ContentFilter filter) {
         this.filter = filter;
-        return (T) this;
+        return getT();
     }
 
     /**
@@ -99,6 +110,11 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      */
     public T noContentMessage(@Nullable String message) {
         this.noContentMessage = message;
+        return getT();
+    }
+
+    @SuppressWarnings("unchecked")
+    private @NotNull T getT() {
         return (T) this;
     }
 
