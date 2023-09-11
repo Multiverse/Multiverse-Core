@@ -19,14 +19,14 @@ import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.KeepWorldSettingsOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.RegenWorldOptions;
-import com.onarandombox.MultiverseCore.worldnew.results.CloneWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.CreateWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.DeleteWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.ImportWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.LoadWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.RegenWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.RemoveWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.UnloadWorldResult;
+import com.onarandombox.MultiverseCore.worldnew.reasons.CloneFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.CreateFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.DeleteFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.ImportFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.LoadFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.RegenFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.RemoveFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.UnloadFailureReason;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
@@ -169,20 +169,20 @@ public class WorldManager {
      * @param options   The options for customizing the creation of a new world.
      * @return The result of the creation.
      */
-    public Attempt<LoadedMultiverseWorld, CreateWorldResult> createWorld(CreateWorldOptions options) {
+    public Attempt<LoadedMultiverseWorld, CreateFailureReason> createWorld(CreateWorldOptions options) {
         return validateCreateWorldOptions(options).mapAttempt(this::createValidatedWorld);
     }
 
-    private Attempt<CreateWorldOptions, CreateWorldResult> validateCreateWorldOptions(
+    private Attempt<CreateWorldOptions, CreateFailureReason> validateCreateWorldOptions(
             CreateWorldOptions options) {
         if (!worldNameChecker.isValidWorldName(options.worldName())) {
-            return worldActionResult(CreateWorldResult.INVALID_WORLDNAME, options.worldName());
+            return worldActionResult(CreateFailureReason.INVALID_WORLDNAME, options.worldName());
         } else if (getLoadedWorld(options.worldName()).isDefined()) {
-            return worldActionResult(CreateWorldResult.WORLD_EXIST_LOADED, options.worldName());
+            return worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, options.worldName());
         } else if (getWorld(options.worldName()).isDefined()) {
-            return worldActionResult(CreateWorldResult.WORLD_EXIST_UNLOADED, options.worldName());
+            return worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, options.worldName());
         } else if (hasWorldFolder(options.worldName())) {
-            return worldActionResult(CreateWorldResult.WORLD_EXIST_FOLDER, options.worldName());
+            return worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, options.worldName());
         }
         return worldActionResult(options);
     }
@@ -192,7 +192,7 @@ public class WorldManager {
         return worldFolder.exists();
     }
 
-    private Attempt<LoadedMultiverseWorld, CreateWorldResult> createValidatedWorld(
+    private Attempt<LoadedMultiverseWorld, CreateFailureReason> createValidatedWorld(
             CreateWorldOptions options) {
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
@@ -202,7 +202,7 @@ public class WorldManager {
                 .seed(options.seed())
                 .type(options.worldType());
         return createBukkitWorld(worldCreator).fold(
-                exception -> worldActionResult(CreateWorldResult.BUKKIT_CREATION_FAILED,
+                exception -> worldActionResult(CreateFailureReason.BUKKIT_CREATION_FAILED,
                         options.worldName(), exception),
                 world -> {
                     LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
@@ -219,34 +219,34 @@ public class WorldManager {
      * @param options   The options for customizing the import of an existing world folder.
      * @return The result of the import.
      */
-    public Attempt<LoadedMultiverseWorld, ImportWorldResult> importWorld(
+    public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(
             ImportWorldOptions options) {
         return validateImportWorldOptions(options).mapAttempt(this::doImportWorld);
     }
 
-    private Attempt<ImportWorldOptions, ImportWorldResult> validateImportWorldOptions(
+    private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(
             ImportWorldOptions options) {
         String worldName = options.worldName();
         if (!worldNameChecker.isValidWorldName(worldName)) {
-            return worldActionResult(ImportWorldResult.INVALID_WORLDNAME, worldName);
+            return worldActionResult(ImportFailureReason.INVALID_WORLDNAME, worldName);
         } else if (!worldNameChecker.isValidWorldFolder(worldName)) {
-            return worldActionResult(ImportWorldResult.WORLD_FOLDER_INVALID, worldName);
+            return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, worldName);
         } else if (isLoadedWorld(worldName)) {
-            return worldActionResult(ImportWorldResult.WORLD_EXIST_LOADED, worldName);
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, worldName);
         } else if (isWorld(worldName)) {
-            return worldActionResult(ImportWorldResult.WORLD_EXIST_UNLOADED, worldName);
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, worldName);
         }
         return worldActionResult(options);
     }
 
-    private Attempt<LoadedMultiverseWorld, ImportWorldResult> doImportWorld(
+    private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportWorld(
             ImportWorldOptions options) {
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
                 .environment(options.environment())
                 .generator(parsedGenerator);
         return createBukkitWorld(worldCreator).fold(
-                exception -> worldActionResult(ImportWorldResult.BUKKIT_CREATION_FAILED,
+                exception -> worldActionResult(ImportFailureReason.BUKKIT_CREATION_FAILED,
                         options.worldName(), exception),
                 world -> {
                     LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(world,
@@ -302,12 +302,12 @@ public class WorldManager {
      * @param worldName The name of the world to load.
      * @return The result of the load.
      */
-    public Attempt<LoadedMultiverseWorld, LoadWorldResult> loadWorld(@NotNull String worldName) {
+    public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull String worldName) {
         return getWorld(worldName)
                 .map(this::loadWorld)
                 .getOrElse(() -> worldNameChecker.isValidWorldFolder(worldName)
-                        ? worldActionResult(LoadWorldResult.WORLD_EXIST_FOLDER, worldName)
-                        : worldActionResult(LoadWorldResult.WORLD_NON_EXISTENT, worldName));
+                        ? worldActionResult(LoadFailureReason.WORLD_EXIST_FOLDER, worldName)
+                        : worldActionResult(LoadFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
     /**
@@ -316,29 +316,29 @@ public class WorldManager {
      * @param world  The world to load.
      * @return The result of the load.
      */
-    public Attempt<LoadedMultiverseWorld, LoadWorldResult> loadWorld(@NotNull MultiverseWorld world) {
+    public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull MultiverseWorld world) {
         return validateWorldToLoad(world).mapAttempt(this::doLoadWorld);
     }
 
-    private Attempt<MultiverseWorld, LoadWorldResult> validateWorldToLoad(
+    private Attempt<MultiverseWorld, LoadFailureReason> validateWorldToLoad(
             @NotNull MultiverseWorld mvWorld) {
         if (loadTracker.contains(mvWorld.getName())) {
             // This is to prevent recursive calls by WorldLoadEvent
             Logging.fine("World already loading: " + mvWorld.getName());
-            return worldActionResult(LoadWorldResult.WORLD_ALREADY_LOADING, mvWorld.getName());
+            return worldActionResult(LoadFailureReason.WORLD_ALREADY_LOADING, mvWorld.getName());
         } else if (isLoadedWorld(mvWorld)) {
             Logging.severe("World already loaded: " + mvWorld.getName());
-            return worldActionResult(LoadWorldResult.WORLD_EXIST_LOADED, mvWorld.getName());
+            return worldActionResult(LoadFailureReason.WORLD_EXIST_LOADED, mvWorld.getName());
         }
         return worldActionResult(mvWorld);
     }
 
-    private Attempt<LoadedMultiverseWorld, LoadWorldResult> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
+    private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
         return createBukkitWorld(WorldCreator.name(mvWorld.getName())
                 .environment(mvWorld.getEnvironment())
                 .generator(Strings.isNullOrEmpty(mvWorld.getGenerator()) ? null : mvWorld.getGenerator())
                 .seed(mvWorld.getSeed())).fold(
-                        exception -> worldActionResult(LoadWorldResult.BUKKIT_CREATION_FAILED,
+                        exception -> worldActionResult(LoadFailureReason.BUKKIT_CREATION_FAILED,
                                 mvWorld.getName(), exception),
                         world -> {
                             WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get();
@@ -360,7 +360,7 @@ public class WorldManager {
      * @param world The bukkit world to unload.
      * @return The result of the unload action.
      */
-    public Attempt<MultiverseWorld, UnloadWorldResult> unloadWorld(@NotNull World world) {
+    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull World world) {
         return unloadWorld(world.getName());
     }
 
@@ -370,12 +370,12 @@ public class WorldManager {
      * @param worldName The name of the world to unload.
      * @return The result of the unload action.
      */
-    public Attempt<MultiverseWorld, UnloadWorldResult> unloadWorld(@NotNull String worldName) {
+    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull String worldName) {
         return getLoadedWorld(worldName)
                 .map(this::unloadWorld)
                 .getOrElse(() -> isUnloadedWorld(worldName)
-                        ? worldActionResult(UnloadWorldResult.WORLD_UNLOADED, worldName)
-                        : worldActionResult(UnloadWorldResult.WORLD_NON_EXISTENT, worldName));
+                        ? worldActionResult(UnloadFailureReason.WORLD_UNLOADED, worldName)
+                        : worldActionResult(UnloadFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
     /**
@@ -384,23 +384,23 @@ public class WorldManager {
      * @param world The multiverse world to unload.
      * @return The result of the unload action.
      */
-    public Attempt<MultiverseWorld, UnloadWorldResult> unloadWorld(
+    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(
             @NotNull LoadedMultiverseWorld world) {
         if (unloadTracker.contains(world.getName())) {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
-            return worldActionResult(UnloadWorldResult.WORLD_ALREADY_UNLOADING, world.getName());
+            return worldActionResult(UnloadFailureReason.WORLD_ALREADY_UNLOADING, world.getName());
         }
 
         // TODO: removePlayersFromWorld?
 
         return unloadBukkitWorld(world.getBukkitWorld().getOrNull()).fold(
-                exception -> worldActionResult(UnloadWorldResult.BUKKIT_UNLOAD_FAILED,
+                exception -> worldActionResult(UnloadFailureReason.BUKKIT_UNLOAD_FAILED,
                         world.getName(), exception),
                 success -> Option.of(loadedWorldsMap.remove(world.getName())).fold(
                         () -> {
                             Logging.severe("Failed to remove world from map: " + world.getName());
-                            return worldActionResult(UnloadWorldResult.WORLD_NON_EXISTENT, world.getName());
+                            return worldActionResult(UnloadFailureReason.WORLD_NON_EXISTENT, world.getName());
                         },
                         mvWorld -> {
                             Logging.fine("Removed MultiverseWorld from map: " + world.getName());
@@ -416,11 +416,11 @@ public class WorldManager {
      * @param worldName The name of the world to remove.
      * @return The result of the remove.
      */
-    public Attempt<String, RemoveWorldResult> removeWorld(
+    public Attempt<String, RemoveFailureReason> removeWorld(
             @NotNull String worldName) {
         return getWorld(worldName)
                 .map(this::removeWorld)
-                .getOrElse(() -> worldActionResult(RemoveWorldResult.WORLD_NON_EXISTENT, worldName));
+                .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
     /**
@@ -430,7 +430,7 @@ public class WorldManager {
      * @param world The multiverse world to remove.
      * @return The result of the remove.
      */
-    public Attempt<String, RemoveWorldResult> removeWorld(@NotNull MultiverseWorld world) {
+    public Attempt<String, RemoveFailureReason> removeWorld(@NotNull MultiverseWorld world) {
         return getLoadedWorld(world).fold(
                 () -> removeWorldFromConfig(world),
                 this::removeWorld);
@@ -443,9 +443,9 @@ public class WorldManager {
      * @param loadedWorld The multiverse world to remove.
      * @return The result of the remove.
      */
-    public Attempt<String, RemoveWorldResult> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
+    public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
         return unloadWorld(loadedWorld)
-                .transform(RemoveWorldResult.UNLOAD_FAILED)
+                .transform(RemoveFailureReason.UNLOAD_FAILED)
                 .mapAttempt(this::removeWorldFromConfig);
     }
 
@@ -455,7 +455,7 @@ public class WorldManager {
      * @param world The multiverse world to remove.
      * @return The result of the remove.
      */
-    private Attempt<String, RemoveWorldResult> removeWorldFromConfig(@NotNull MultiverseWorld world) {
+    private Attempt<String, RemoveFailureReason> removeWorldFromConfig(@NotNull MultiverseWorld world) {
         // Remove world from config
         worldsMap.remove(world.getName());
         worldsConfigManager.deleteWorldConfig(world.getName());
@@ -471,10 +471,10 @@ public class WorldManager {
      * @param worldName The name of the world to delete.
      * @return The result of the delete action.
      */
-    public Attempt<String, DeleteWorldResult> deleteWorld(@NotNull String worldName) {
+    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull String worldName) {
         return getWorld(worldName)
                 .map(this::deleteWorld)
-                .getOrElse(() -> worldActionResult(DeleteWorldResult.WORLD_NON_EXISTENT, worldName));
+                .getOrElse(() -> worldActionResult(DeleteFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
     /**
@@ -484,10 +484,10 @@ public class WorldManager {
      * @param world The world to delete.
      * @return The result of the delete action.
      */
-    public Attempt<String, DeleteWorldResult> deleteWorld(@NotNull MultiverseWorld world) {
+    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull MultiverseWorld world) {
         return getLoadedWorld(world).fold(
                 () -> loadWorld(world)
-                        .transform(DeleteWorldResult.LOAD_FAILED)
+                        .transform(DeleteFailureReason.LOAD_FAILED)
                         .mapAttempt(this::deleteWorld),
                 this::deleteWorld);
     }
@@ -498,24 +498,24 @@ public class WorldManager {
      * @param world The multiverse world to delete.
      * @return The result of the delete action.
      */
-    public Attempt<String, DeleteWorldResult> deleteWorld(@NotNull LoadedMultiverseWorld world) {
+    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull LoadedMultiverseWorld world) {
         // TODO: Possible config options to keep certain files
         AtomicReference<File> worldFolder = new AtomicReference<>();
         return validateWorldToDelete(world)
                 .peek(worldFolder::set)
-                .mapAttempt(() -> removeWorld(world).transform(DeleteWorldResult.REMOVE_FAILED))
+                .mapAttempt(() -> removeWorld(world).transform(DeleteFailureReason.REMOVE_FAILED))
                 .mapAttempt(() -> filesManipulator.deleteFolder(worldFolder.get()).fold(
-                        exception -> worldActionResult(DeleteWorldResult.FAILED_TO_DELETE_FOLDER,
+                        exception -> worldActionResult(DeleteFailureReason.FAILED_TO_DELETE_FOLDER,
                                 world.getName(), exception),
                         success -> worldActionResult(world.getName())));
     }
 
-    private Attempt<File, DeleteWorldResult> validateWorldToDelete(
+    private Attempt<File, DeleteFailureReason> validateWorldToDelete(
             @NotNull LoadedMultiverseWorld world) {
         File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull();
         if (worldFolder == null || !worldNameChecker.isValidWorldFolder(worldFolder)) {
             Logging.severe("Failed to get world folder for world: " + world.getName());
-            return worldActionResult(DeleteWorldResult.WORLD_FOLDER_NOT_FOUND, world.getName());
+            return worldActionResult(DeleteFailureReason.WORLD_FOLDER_NOT_FOUND, world.getName());
         }
         return worldActionResult(worldFolder);
     }
@@ -526,7 +526,7 @@ public class WorldManager {
      * @param options   The options for customizing the cloning of a world.
      * @return The result of the clone.
      */
-    public Attempt<LoadedMultiverseWorld, CloneWorldResult> cloneWorld(@NotNull CloneWorldOptions options) {
+    public Attempt<LoadedMultiverseWorld, CloneFailureReason> cloneWorld(@NotNull CloneWorldOptions options) {
         return cloneWorldValidateWorld(options)
                 .mapAttempt(this::cloneWorldCopyFolder)
                 .mapAttempt(validatedOptions -> {
@@ -534,7 +534,7 @@ public class WorldManager {
                             .worldName(validatedOptions.newWorldName())
                             .environment(validatedOptions.world().getEnvironment())
                             .generator(validatedOptions.world().getGenerator());
-                    return importWorld(importWorldOptions).transform(CloneWorldResult.IMPORT_FAILED);
+                    return importWorld(importWorldOptions).transform(CloneFailureReason.IMPORT_FAILED);
                 })
                 .onSuccess(newWorld -> {
                     cloneWorldTransferData(options, newWorld);
@@ -542,34 +542,34 @@ public class WorldManager {
                 });
     }
 
-    private Attempt<CloneWorldOptions, CloneWorldResult> cloneWorldValidateWorld(
+    private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldValidateWorld(
             @NotNull CloneWorldOptions options) {
         String newWorldName = options.newWorldName();
         if (!worldNameChecker.isValidWorldName(newWorldName)) {
             Logging.severe("Invalid world name: " + newWorldName);
-            return worldActionResult(CloneWorldResult.INVALID_WORLDNAME, newWorldName);
+            return worldActionResult(CloneFailureReason.INVALID_WORLDNAME, newWorldName);
         }
         if (worldNameChecker.isValidWorldFolder(newWorldName)) {
-            return worldActionResult(CloneWorldResult.WORLD_EXIST_FOLDER, newWorldName);
+            return worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, newWorldName);
         }
         if (isLoadedWorld(newWorldName)) {
             Logging.severe("World already loaded when attempting to clone: " + newWorldName);
-            return worldActionResult(CloneWorldResult.WORLD_EXIST_LOADED, newWorldName);
+            return worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, newWorldName);
         }
         if (isWorld(newWorldName)) {
             Logging.severe("World already exist unloaded: " + newWorldName);
-            return worldActionResult(CloneWorldResult.WORLD_EXIST_UNLOADED, newWorldName);
+            return worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, newWorldName);
         }
         return worldActionResult(options);
     }
 
-    private Attempt<CloneWorldOptions, CloneWorldResult> cloneWorldCopyFolder(
+    private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(
             @NotNull CloneWorldOptions options) {
         // TODO: Check null?
         File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).getOrNull();
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
         return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
-                exception -> worldActionResult(CloneWorldResult.COPY_FAILED,
+                exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
                         options.world().getName(), exception),
                 success -> worldActionResult(options));
     }
@@ -602,7 +602,7 @@ public class WorldManager {
      * @param options   The options for customizing the regeneration of a world.
      * @return The result of the regeneration.
      */
-    public Attempt<LoadedMultiverseWorld, RegenWorldResult> regenWorld(@NotNull RegenWorldOptions options) {
+    public Attempt<LoadedMultiverseWorld, RegenFailureReason> regenWorld(@NotNull RegenWorldOptions options) {
         // TODO: Teleport players out of world, and back in after regen
 
         LoadedMultiverseWorld world = options.world();
@@ -615,8 +615,8 @@ public class WorldManager {
                 .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
 
         return deleteWorld(world)
-                .transform(RegenWorldResult.DELETE_FAILED)
-                .mapAttempt(() -> createWorld(createWorldOptions).transform(RegenWorldResult.CREATE_FAILED))
+                .transform(RegenFailureReason.DELETE_FAILED)
+                .mapAttempt(() -> createWorld(createWorldOptions).transform(RegenFailureReason.CREATE_FAILED))
                 .onSuccess(newWorld -> {
                     dataTransfer.pasteAllTo(newWorld);
                     saveWorldsConfig();

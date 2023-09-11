@@ -10,8 +10,8 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
-import com.onarandombox.MultiverseCore.worldnew.results.LoadWorldResult;
-import com.onarandombox.MultiverseCore.worldnew.results.UnloadWorldResult;
+import com.onarandombox.MultiverseCore.worldnew.reasons.LoadFailureReason;
+import com.onarandombox.MultiverseCore.worldnew.reasons.UnloadFailureReason;
 import jakarta.inject.Inject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,7 +43,7 @@ public class MVWorldListener implements InjectableListener {
             return;
         }
         worldManager.unloadWorld(event.getWorld()).onFailure(failure -> {
-            if (failure.getFailureReason() != UnloadWorldResult.WORLD_ALREADY_UNLOADING) {
+            if (failure.getFailureReason() != UnloadFailureReason.WORLD_ALREADY_UNLOADING) {
                 Logging.severe("Failed to unload world: " + failure);
             }
         });
@@ -60,7 +60,7 @@ public class MVWorldListener implements InjectableListener {
                 .peek(world -> {
                     Logging.fine("Loading world: " + world.getName());
                     worldManager.loadWorld(world).onFailure(failure -> {
-                        if (failure.getFailureReason() != LoadWorldResult.WORLD_ALREADY_LOADING) {
+                        if (failure.getFailureReason() != LoadFailureReason.WORLD_ALREADY_LOADING) {
                             Logging.severe("Failed to load world: " + failure);
                         }
                     });

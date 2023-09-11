@@ -1,4 +1,4 @@
-package com.onarandombox.MultiverseCore.worldnew.results;
+package com.onarandombox.MultiverseCore.worldnew.reasons;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
@@ -8,13 +8,20 @@ import com.onarandombox.MultiverseCore.utils.result.FailureReason;
 /**
  * Result of a world removal operation.
  */
-public enum RemoveWorldResult implements FailureReason {
+public enum RemoveFailureReason implements FailureReason {
+    /**
+     * The world does not exist.
+     */
     WORLD_NON_EXISTENT(MVCorei18n.REMOVEWORLD_WORLDNONEXISTENT),
-    UNLOAD_FAILED(null);
+
+    /**
+     * The world could not be unloaded.
+     */
+    UNLOAD_FAILED(MVCorei18n.GENERIC_FAILURE);
 
     private final MessageKeyProvider message;
 
-    RemoveWorldResult(MessageKeyProvider message) {
+    RemoveFailureReason(MessageKeyProvider message) {
         this.message = message;
     }
 

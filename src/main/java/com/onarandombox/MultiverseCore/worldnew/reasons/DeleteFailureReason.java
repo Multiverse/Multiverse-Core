@@ -1,24 +1,42 @@
-package com.onarandombox.MultiverseCore.worldnew.results;
+package com.onarandombox.MultiverseCore.worldnew.reasons;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
-import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 /**
  * Result of a world deletion operation.
  */
-public enum DeleteWorldResult implements FailureReason {
+public enum DeleteFailureReason implements FailureReason {
+    /**
+     * The world does not exist.
+     */
     WORLD_NON_EXISTENT(MVCorei18n.DELETEWORLD_WORLDNONEXISTENT),
+
+    /**
+     * The world could not be loaded.
+     */
     LOAD_FAILED(MVCorei18n.DELETEWORLD_LOADFAILED),
+
+    /**
+     * The world could not be unloaded.
+     */
     WORLD_FOLDER_NOT_FOUND(MVCorei18n.DELETEWORLD_WORLDFOLDERNOTFOUND),
-    REMOVE_FAILED(null),
+
+    /**
+     * The world could not be removed.
+     */
+    REMOVE_FAILED(MVCorei18n.GENERIC_FAILURE),
+
+    /**
+     * The world folder could not be deleted.
+     */
     FAILED_TO_DELETE_FOLDER(MVCorei18n.DELETEWORLD_FAILEDTODELETEFOLDER);
 
     private final MessageKeyProvider message;
 
-    DeleteWorldResult(MessageKeyProvider message) {
+    DeleteFailureReason(MessageKeyProvider message) {
         this.message = message;
     }
 
