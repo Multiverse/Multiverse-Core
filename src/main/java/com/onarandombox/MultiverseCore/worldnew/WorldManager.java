@@ -19,6 +19,7 @@ import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.ImportWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.KeepWorldSettingsOptions;
 import com.onarandombox.MultiverseCore.worldnew.options.RegenWorldOptions;
+import com.onarandombox.MultiverseCore.worldnew.options.UnloadWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.reasons.CloneFailureReason;
 import com.onarandombox.MultiverseCore.worldnew.reasons.CreateFailureReason;
 import com.onarandombox.MultiverseCore.worldnew.reasons.DeleteFailureReason;
@@ -31,9 +32,11 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -355,46 +358,25 @@ public class WorldManager {
     }
 
     /**
-     * Unloads an existing multiverse world. It will still remain as an unloaded world in mv config.
-     *
-     * @param world The bukkit world to unload.
-     * @return The result of the unload action.
-     */
-    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull World world) {
-        return unloadWorld(world.getName());
-    }
-
-    /**
-     * Unloads an existing multiverse world. It will still remain as an unloaded world in mv config.
-     *
-     * @param worldName The name of the world to unload.
-     * @return The result of the unload action.
-     */
-    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull String worldName) {
-        return getLoadedWorld(worldName)
-                .map(this::unloadWorld)
-                .getOrElse(() -> isUnloadedWorld(worldName)
-                        ? worldActionResult(UnloadFailureReason.WORLD_UNLOADED, worldName)
-                        : worldActionResult(UnloadFailureReason.WORLD_NON_EXISTENT, worldName));
-    }
-
-    /**
      * Unloads an existing multiverse world. It will still remain as an unloaded world.
      *
-     * @param world The multiverse world to unload.
+     * @param options   The options for customizing the unloading of a world.
      * @return The result of the unload action.
      */
-    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(
-            @NotNull LoadedMultiverseWorld world) {
+    public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull UnloadWorldOptions options) {
+        LoadedMultiverseWorld world = options.world();
+
         if (unloadTracker.contains(world.getName())) {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
             return worldActionResult(UnloadFailureReason.WORLD_ALREADY_UNLOADING, world.getName());
         }
 
-        // TODO: removePlayersFromWorld?
+        if (options.removePlayers()) {
+            removePlayersFromWorld(world);
+        }
 
-        return unloadBukkitWorld(world.getBukkitWorld().getOrNull()).fold(
+        return unloadBukkitWorld(world.getBukkitWorld().getOrNull(), options.saveBukkitWorld()).fold(
                 exception -> worldActionResult(UnloadFailureReason.BUKKIT_UNLOAD_FAILED,
                         world.getName(), exception),
                 success -> Option.of(loadedWorldsMap.remove(world.getName())).fold(
@@ -407,6 +389,16 @@ public class WorldManager {
                             mvWorld.getWorldConfig().deferenceMVWorld();
                             return worldActionResult(getWorld(mvWorld.getName()).get());
                         }));
+    }
+
+    private void removePlayersFromWorld(@NotNull LoadedMultiverseWorld world) {
+        world.getPlayers().peek(players -> players.forEach(player -> {
+            Location spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+            if (player.isOnline()) {
+                Logging.fine("Teleporting player '%s' to world spawn: %s", player.getName(), spawnLocation);
+                safetyTeleporter.safelyTeleport(null, player, spawnLocation, true);
+            }
+        }));
     }
 
     /**
@@ -444,7 +436,8 @@ public class WorldManager {
      * @return The result of the remove.
      */
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
-        return unloadWorld(loadedWorld)
+        // TODO: Config option on removePlayers
+        return unloadWorld(UnloadWorldOptions.world(loadedWorld).removePlayers(true))
                 .transform(RemoveFailureReason.UNLOAD_FAILED)
                 .mapAttempt(this::removeWorldFromConfig);
     }
@@ -603,9 +596,8 @@ public class WorldManager {
      * @return The result of the regeneration.
      */
     public Attempt<LoadedMultiverseWorld, RegenFailureReason> regenWorld(@NotNull RegenWorldOptions options) {
-        // TODO: Teleport players out of world, and back in after regen
-
         LoadedMultiverseWorld world = options.world();
+        List<Player> playersInWorld = world.getPlayers().getOrElse(Collections.emptyList());
         DataTransfer<LoadedMultiverseWorld> dataTransfer = transferData(options, world);
         CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
                 .environment(world.getEnvironment())
@@ -619,8 +611,18 @@ public class WorldManager {
                 .mapAttempt(() -> createWorld(createWorldOptions).transform(RegenFailureReason.CREATE_FAILED))
                 .onSuccess(newWorld -> {
                     dataTransfer.pasteAllTo(newWorld);
+                    teleportPlayersToWorld(playersInWorld, newWorld);
                     saveWorldsConfig();
                 });
+    }
+
+    private void teleportPlayersToWorld(@NotNull List<Player> players, @NotNull LoadedMultiverseWorld world) {
+        players.forEach(player -> {
+            Location spawnLocation = world.getSpawnLocation();
+            if (player.isOnline()) {
+                safetyTeleporter.safelyTeleport(null, player, spawnLocation, true);
+            }
+        });
     }
 
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(@NotNull T value) {
@@ -674,10 +676,13 @@ public class WorldManager {
      * @param world The bukkit world to unload.
      * @return The unloaded world.
      */
-    private Try<Void> unloadBukkitWorld(World world) {
+    private Try<Void> unloadBukkitWorld(World world, boolean save) {
         return Try.run(() -> {
+            if (world == null) {
+                return;
+            }
             unloadTracker.add(world.getName());
-            if (!Bukkit.unloadWorld(world, true)) {
+            if (!Bukkit.unloadWorld(world, save)) {
                 // TODO: Localize this, maybe with MultiverseException
                 throw new Exception("Is this the default world? You can't unload the default world!");
             }

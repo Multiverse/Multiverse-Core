@@ -12,8 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.UUID;
 
 public class LoadedMultiverseWorld extends MultiverseWorld {
@@ -108,6 +110,10 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
 
     public Option<Boolean> canGenerateStructures() {
         return getBukkitWorld().map(World::canGenerateStructures);
+    }
+
+    public Option<List<Player>> getPlayers() {
+        return getBukkitWorld().map(World::getPlayers);
     }
 
     /**

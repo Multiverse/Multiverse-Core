@@ -4,15 +4,19 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.commandtools.flags.CommandFlag;
+import com.onarandombox.MultiverseCore.commandtools.flags.ParsedCommandFlags;
 import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.options.UnloadWorldOptions;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -23,6 +27,14 @@ public class UnloadCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
+    private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
+            .addAlias("-r")
+            .build());
+
+    private final CommandFlag NO_SAVE_FLAG = flag(CommandFlag.builder("--no-save")
+            .addAlias("-n")
+            .build());
+
     @Inject
     public UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
@@ -31,17 +43,27 @@ public class UnloadCommand extends MultiverseCommand {
 
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
-    @CommandCompletion("@mvworlds")
+    @CommandCompletion("@mvworlds @flags:groupName=mvunloadcommand")
     @Syntax("<world>")
     @Description("{@@mv-core.unload.description}")
-    public void onUnloadCommand(MVCommandIssuer issuer,
+    public void onUnloadCommand(
+            MVCommandIssuer issuer,
 
-                                @Syntax("<world>")
-                                @Description("{@@mv-core.unload.world.description}")
-                                LoadedMultiverseWorld world
-    ) {
+            @Syntax("<world>")
+            @Description("{@@mv-core.unload.world.description}")
+            LoadedMultiverseWorld world,
+
+            @Optional
+            @Syntax("[--remove-players] [--no-save]")
+            @Description("{@@mv-core.gamerules.description.page}")
+            String[] flags) {
+        ParsedCommandFlags parsedFlags = parseFlags(flags);
+
         issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", world.getAlias());
-        worldManager.unloadWorld(world)
+        UnloadWorldOptions unloadWorldOptions = UnloadWorldOptions.world(world)
+                .removePlayers(parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG))
+                .saveBukkitWorld(!parsedFlags.hasFlag(NO_SAVE_FLAG));
+        worldManager.unloadWorld(unloadWorldOptions)
                 .onSuccess(loadedWorld -> {
                     Logging.fine("World unload success: " + loadedWorld);
                     issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS, "{world}", loadedWorld.getName());

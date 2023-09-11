@@ -10,6 +10,7 @@ package com.onarandombox.MultiverseCore.listeners;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.inject.InjectableListener;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
+import com.onarandombox.MultiverseCore.worldnew.options.UnloadWorldOptions;
 import com.onarandombox.MultiverseCore.worldnew.reasons.LoadFailureReason;
 import com.onarandombox.MultiverseCore.worldnew.reasons.UnloadFailureReason;
 import jakarta.inject.Inject;
@@ -42,11 +43,12 @@ public class MVWorldListener implements InjectableListener {
         if (event.isCancelled()) {
             return;
         }
-        worldManager.unloadWorld(event.getWorld()).onFailure(failure -> {
-            if (failure.getFailureReason() != UnloadFailureReason.WORLD_ALREADY_UNLOADING) {
-                Logging.severe("Failed to unload world: " + failure);
-            }
-        });
+        worldManager.getLoadedWorld(event.getWorld().getName())
+                .peek(world -> worldManager.unloadWorld(UnloadWorldOptions.world(world)).onFailure(failure -> {
+                    if (failure.getFailureReason() != UnloadFailureReason.WORLD_ALREADY_UNLOADING) {
+                        Logging.severe("Failed to unload world: " + failure);
+                    }
+                }));
     }
 
     /**
