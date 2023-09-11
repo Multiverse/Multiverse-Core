@@ -1,6 +1,5 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
-import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.configuration.node.ConfigNode;
 import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
@@ -175,9 +174,10 @@ public class WorldConfigNodes {
             .name(null)
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) return;
-                world.getBukkitWorld().peek(world -> {
-                    world.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
-                    newValue.setWorld(world);
+                if (newValue == null || newValue instanceof NullLocation) return;
+                world.getBukkitWorld().peek(bukkitWorld -> {
+                    bukkitWorld.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
+                    newValue.setWorld(bukkitWorld);
                 });
             })
             .build());
