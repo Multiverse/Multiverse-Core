@@ -145,7 +145,10 @@
         <module name="AvoidDoubleBraceInitialization"/>
         <module name="AvoidNoArgumentSuperConstructorCall"/>
         <module name="CovariantEquals"/>
-        <module name="DeclarationOrder"/>
+        <module name="DeclarationOrder">
+            <!-- Doesn't respect static methods at top -->
+            <property name="severity" value="ignore"/>
+        </module>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
@@ -192,7 +195,9 @@
         <module name="PackageDeclaration"/>
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
-        <module name="ReturnCount"/>
+        <module name="ReturnCount">
+            <property name="severity" value="info"/>
+        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
@@ -220,13 +225,13 @@
             <property name="separateLineBetweenGroups" value="true"/>
             <property name="customImportOrderRules"
                       value="THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
-<!--                      value="SAME_PACKAGE(3)###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>-->
+            <!--                      value="SAME_PACKAGE(3)###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>-->
             <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
         </module>
         <module name="IllegalImport">
             <property name="illegalPkgs" value="sun"/>
         </module>
-<!--        <module name="ImportOrder"/>-->
+        <!--        <module name="ImportOrder"/>-->
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
@@ -297,11 +302,48 @@
         <module name="BooleanExpressionComplexity"/>
         <module name="ClassDataAbstractionCoupling">
             <property name="max" value="7"/>
-            <property name="excludedClasses" value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character, Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception, Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, IntStream, Integer, LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map, NullPointerException, Object, Optional, OptionalDouble, OptionalInt, OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException, Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder, SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException, Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
         </module>
         <module name="ClassFanOutComplexity">
+            <property name="id" value="FanOutComplexityGettingTooHigh"/>
             <property name="max" value="20"/>
-            <property name="excludedClasses" value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character, Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception, Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, IntStream, Integer, LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map, NullPointerException, Object, Optional, OptionalDouble, OptionalInt, OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException, Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder, SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException, Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="id" value="FanOutComplexityProbablyTooHigh"/>
+            <property name="max" value="35"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
         </module>
         <module name="CyclomaticComplexity">
             <property name="max" value="7"/>
@@ -341,7 +383,9 @@
             <property name="format" value="TODO"/>
             <property name="severity" value="warning"/>
         </module>
-        <module name="TrailingComment"/>
+        <module name="TrailingComment">
+            <property name="legalComment" value="^\sSUPPRESS CHECKSTYLE:"/>
+        </module>
         <module name="UncommentedMain"/>
         <module name="UpperEll"/>
 
@@ -412,6 +456,7 @@
                      value="Method type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="PackageName">
+            <property name="severity" value="info"/>
             <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
             <message key="name.invalidPattern"
                      value="Package name ''{0}'' must match pattern ''{1}''."/>
@@ -455,7 +500,13 @@
             <property name="max" value="30"/>
         </module>
         <module name="LambdaBodyLength">
+            <property name="id" value="LambdaGettingTooLong"/>
             <property name="max" value="10"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="LambdaBodyLength">
+            <property name="id" value="LambdaProbablyTooLong"/>
+            <property name="max" value="25"/>
         </module>
         <module name="MethodCount">
             <property name="maxTotal" value="100"/>
@@ -472,9 +523,30 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="3"/>
+            <property name="id" value="ConsiderLessMethodParameters"/>
+            <property name="max" value="4"/>
             <property name="ignoreOverriddenMethods" value="true"/>
-            <property name="severity" value="warning"/>
+            <property name="severity" value="info"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyMethodParameters"/>
+            <property name="max" value="10"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ConsiderLessConstructorParameters"/>
+            <property name="max" value="7"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="severity" value="info"/>
+            <property name="tokens" value="CTOR_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyConstructorParameters"/>
+            <property name="max" value="12"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="CTOR_DEF"/>
         </module>
         <module name="RecordComponentNumber">
             <property name="max" value="8"/>
