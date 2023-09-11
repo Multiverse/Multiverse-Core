@@ -19,7 +19,13 @@ import java.util.regex.Pattern;
 public class WorldNameChecker {
 
     private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
-    private static final Set<String> BLACKLIST_NAMES = Set.of("plugins", "logs", "cache", "crash-reports"); // TODO: Configurable blacklist names
+    private static final Set<String> BLACKLIST_NAMES = Set.of(
+            "cache",
+            "config",
+            "crash-reports",
+            "logs",
+            "plugins",
+            "versions");
 
     /**
      * Checks if a world name is valid.
