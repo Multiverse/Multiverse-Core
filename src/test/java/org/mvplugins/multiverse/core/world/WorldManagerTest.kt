@@ -1,11 +1,11 @@
 package org.mvplugins.multiverse.core.world
 
-import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld
-import com.onarandombox.MultiverseCore.worldnew.WorldManager
-import com.onarandombox.MultiverseCore.worldnew.options.CreateWorldOptions
 import org.bukkit.World
 import org.bukkit.WorldType
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld
+import org.mvplugins.multiverse.core.worldnew.WorldManager
+import org.mvplugins.multiverse.core.worldnew.options.CreateWorldOptions
 import kotlin.test.*
 
 class WorldManagerTest : TestWithMockBukkit() {

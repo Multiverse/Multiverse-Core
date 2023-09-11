@@ -1,5 +1,5 @@
 name: Multiverse-Core
-main: com.onarandombox.MultiverseCore.MultiverseCore
+main: org.mvplugins.multiverse.core.MultiverseCore
 authors: ['dumptruckman', 'Rigby', 'fernferret', 'lithium3141', 'main--']
 website: 'https://dev.bukkit.org/projects/multiverse-core'
 softdepend: ['Vault', 'PlaceholderAPI']

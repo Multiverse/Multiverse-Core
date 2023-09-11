@@ -1,8 +1,8 @@
 package org.mvplugins.multiverse.core.world
 
-import com.onarandombox.MultiverseCore.worldnew.config.WorldConfig
-import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.worldnew.config.WorldConfig
+import org.mvplugins.multiverse.core.worldnew.config.WorldsConfigManager
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString

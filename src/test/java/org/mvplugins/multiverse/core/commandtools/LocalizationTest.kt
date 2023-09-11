@@ -3,12 +3,6 @@ package org.mvplugins.multiverse.core.commandtools
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.endsWith
-import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer
-import com.onarandombox.MultiverseCore.commandtools.MVCommandManager
-import com.onarandombox.MultiverseCore.commandtools.PluginLocales
-import com.onarandombox.MultiverseCore.utils.MVCorei18n
-import com.onarandombox.MultiverseCore.utils.message.Message
-import com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.junit.jupiter.api.DisplayName
@@ -17,6 +11,9 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.utils.MVCorei18n
+import org.mvplugins.multiverse.core.utils.message.Message
+import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
 import kotlin.test.*
 
 class LocalizationTest : TestWithMockBukkit() {
