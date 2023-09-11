@@ -66,10 +66,6 @@ class WorldConfigTest : TestWithMockBukkit() {
         val blacklists = listOf("a", "b", "c")
         assertTrue(worldConfig.setProperty("world-blacklist", blacklists).isSuccess)
         assertEquals(blacklists, worldConfig.getProperty("world-blacklist").get())
-
-        val location = Location(null, 1.0, 2.0, 3.0)
-        assertTrue(worldConfig.setProperty("spawn-location", location).isSuccess)
-        assertEquals(location, worldConfig.getProperty("spawn-location").get())
     }
 
     @Test

@@ -598,11 +598,15 @@ public class WorldManager {
         LoadedMultiverseWorld world = options.world();
         List<Player> playersInWorld = world.getPlayers().getOrElse(Collections.emptyList());
         DataTransfer<LoadedMultiverseWorld> dataTransfer = transferData(options, world);
+        boolean shouldKeepSpawnLocation = options.keepWorldConfig() && options.seed() == world.getSeed();
+        Location spawnLocation = world.getSpawnLocation();
+
         CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
                 .environment(world.getEnvironment())
                 .generateStructures(world.canGenerateStructures().getOrElse(true))
                 .generator(world.getGenerator())
                 .seed(options.seed())
+                .useSpawnAdjust(!shouldKeepSpawnLocation && world.getAdjustSpawn())
                 .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
 
         return deleteWorld(world)
@@ -610,6 +614,11 @@ public class WorldManager {
                 .mapAttempt(() -> createWorld(createWorldOptions).transform(RegenFailureReason.CREATE_FAILED))
                 .onSuccess(newWorld -> {
                     dataTransfer.pasteAllTo(newWorld);
+                    if (shouldKeepSpawnLocation) {
+                        // Special case for spawn location to prevent unsafe location if world was regen using a
+                        // different seed.
+                        newWorld.setSpawnLocation(spawnLocation);
+                    }
                     teleportPlayersToWorld(playersInWorld, newWorld);
                     saveWorldsConfig();
                 });
