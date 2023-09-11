@@ -531,6 +531,9 @@ public class WorldManager {
                 })
                 .onSuccess(newWorld -> {
                     cloneWorldTransferData(options, newWorld);
+                    if (options.keepWorldConfig()) {
+                        newWorld.setSpawnLocation(options.world().getSpawnLocation());
+                    }
                     saveWorldsConfig();
                 });
     }
