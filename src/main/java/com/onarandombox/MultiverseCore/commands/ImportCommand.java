@@ -78,13 +78,14 @@ public class ImportCommand extends MultiverseCommand {
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
                 .environment(environment)
                 .generator(parsedFlags.flagValue("--generator", String.class))
-                .useSpawnAdjust(parsedFlags.hasFlag("--adjust-spawn"))
-        ).onSuccess((success) -> {
-            Logging.fine("World create success: " + success);
-            issuer.sendInfo(success.getReasonMessage());
-        }).onFailure((failure) -> {
-            Logging.fine("World create failure: " + failure);
-            issuer.sendError(failure.getReasonMessage());
-        });
+                .useSpawnAdjust(parsedFlags.hasFlag("--adjust-spawn")))
+                .onSuccess(newWorld -> {
+                    Logging.fine("World import success: " + newWorld);
+                    issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, "{world}", newWorld.getName());
+                })
+                .onFailure(failure -> {
+                    Logging.fine("World import failure: " + failure);
+                    issuer.sendError(failure.getFailureMessage());
+                });
     }
 }

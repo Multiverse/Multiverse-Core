@@ -12,6 +12,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandIssuer;
 import com.onarandombox.MultiverseCore.commandtools.MVCommandManager;
 import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand;
+import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.worldnew.WorldManager;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -43,12 +44,12 @@ public class RemoveCommand extends MultiverseCommand {
                                 String worldName
     ) {
         worldManager.removeWorld(worldName)
-                .onSuccess((success) -> {
-                    Logging.fine("World remove success: " + success);
-                    issuer.sendInfo(success.getReasonMessage());
-                }).onFailure((failure) -> {
+                .onSuccess(removedWorldName -> {
+                    Logging.fine("World remove success: " + removedWorldName);
+                    issuer.sendInfo(MVCorei18n.REMOVEWORLD_REMOVED, "{world}", removedWorldName);
+                }).onFailure(failure -> {
                     Logging.fine("World remove failure: " + failure);
-                    issuer.sendError(failure.getReasonMessage());
+                    issuer.sendError(failure.getFailureMessage());
                 });
     }
 }

@@ -42,12 +42,12 @@ public class UnloadCommand extends MultiverseCommand {
     ) {
         issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", world.getAlias());
         worldManager.unloadWorld(world)
-                .onSuccess((success) -> {
-                    Logging.fine("World unload success: " + success);
-                    issuer.sendInfo(success.getReasonMessage());
-                }).onFailure((failure) -> {
+                .onSuccess(loadedWorld -> {
+                    Logging.fine("World unload success: " + loadedWorld);
+                    issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS, "{world}", loadedWorld.getName());
+                }).onFailure(failure -> {
                     Logging.fine("World unload failure: " + failure);
-                    issuer.sendError(failure.getReasonMessage());
+                    issuer.sendError(failure.getFailureMessage());
                 });
     }
 }

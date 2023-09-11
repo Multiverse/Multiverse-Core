@@ -51,34 +51,35 @@ public class CloneCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=both @empty")
     @Syntax("<world> <new world name>")
     @Description("{@@mv-core.clone.description}")
-    public void onCloneCommand(MVCommandIssuer issuer,
+    void onCloneCommand(
+            MVCommandIssuer issuer,
 
-                               @Syntax("<world>")
-                               @Description("{@@mv-core.clone.world.description}")
-                               LoadedMultiverseWorld world,
+            @Syntax("<world>")
+            @Description("{@@mv-core.clone.world.description}")
+            LoadedMultiverseWorld world,
 
-                               @Syntax("<new world name>")
-                               @Description("{@@mv-core.clone.newWorld.description}")
-                               String newWorldName,
+            @Syntax("<new world name>")
+            @Description("{@@mv-core.clone.newWorld.description}")
+            String newWorldName,
 
-                               @Optional
-                               @Syntax("") // TODO
-                               @Description("{@@mv-core.regen.other.description}")
-                               String[] flags
-    ) {
+            @Optional
+            @Syntax(/* TODO */ "")
+            @Description("{@@mv-core.regen.other.description}")
+            String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newworld}", newWorldName);
-        worldManager.cloneWorld(CloneWorldOptions.fromTo(world, newWorldName)
+        CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
                 .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
                 .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
-                .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"))
-        ).onSuccess((success) -> {
-            Logging.fine("World remove success: " + success);
-            issuer.sendInfo(success.getReasonMessage());
-        }).onFailure((failure) -> {
-            Logging.fine("World remove failure: " + failure);
-            issuer.sendError(failure.getReasonMessage());
-        });
+                .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"));
+        worldManager.cloneWorld(cloneWorldOptions)
+                .onSuccess(newWorld -> {
+                    Logging.fine("World clone success: " + newWorld);
+                    issuer.sendInfo(MVCorei18n.CLONE_SUCCESS, "{world}", newWorld.getName());
+                }).onFailure(failure -> {
+                    Logging.fine("World clone failure: " + failure);
+                    issuer.sendError(failure.getFailureMessage());
+                });
     }
 }

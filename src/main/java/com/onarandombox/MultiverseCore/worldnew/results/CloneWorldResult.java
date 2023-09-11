@@ -9,41 +9,24 @@ import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 /**
  * Result of a world clone operation.
  */
-public class CloneWorldResult {
-    public enum Success implements SuccessReason {
-        CLONED(MVCorei18n.CLONEWORLD_CLONED);
+public enum CloneWorldResult implements FailureReason {
+    INVALID_WORLDNAME(MVCorei18n.CLONEWORLD_INVALIDWORLDNAME),
+    WORLD_EXIST_FOLDER(MVCorei18n.CLONEWORLD_WORLDEXISTFOLDER),
+    WORLD_EXIST_UNLOADED(MVCorei18n.CLONEWORLD_WORLDEXISTUNLOADED),
+    WORLD_EXIST_LOADED(MVCorei18n.CLONEWORLD_WORLDEXISTLOADED),
+    COPY_FAILED(MVCorei18n.CLONEWORLD_COPYFAILED),
+    IMPORT_FAILED(null),
+    MV_WORLD_FAILED(null), // TODO
+    ;
 
-        private final MessageKeyProvider message;
+    private final MessageKeyProvider message;
 
-        Success(MessageKeyProvider message) {
-            this.message = message;
-        }
-
-        @Override
-        public MessageKey getMessageKey() {
-            return message.getMessageKey();
-        }
+    CloneWorldResult(MessageKeyProvider message) {
+        this.message = message;
     }
 
-    public enum Failure implements FailureReason {
-        INVALID_WORLDNAME(MVCorei18n.CLONEWORLD_INVALIDWORLDNAME),
-        WORLD_EXIST_FOLDER(MVCorei18n.CLONEWORLD_WORLDEXISTFOLDER),
-        WORLD_EXIST_UNLOADED(MVCorei18n.CLONEWORLD_WORLDEXISTUNLOADED),
-        WORLD_EXIST_LOADED(MVCorei18n.CLONEWORLD_WORLDEXISTLOADED),
-        COPY_FAILED(MVCorei18n.CLONEWORLD_COPYFAILED),
-        IMPORT_FAILED(null),
-        MV_WORLD_FAILED(null), // TODO
-        ;
-
-        private final MessageKeyProvider message;
-
-        Failure(MessageKeyProvider message) {
-            this.message = message;
-        }
-
-        @Override
-        public MessageKey getMessageKey() {
-            return message.getMessageKey();
-        }
+    @Override
+    public MessageKey getMessageKey() {
+        return message.getMessageKey();
     }
 }

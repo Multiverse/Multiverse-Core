@@ -85,12 +85,12 @@ public class RegenCommand extends MultiverseCommand {
                             .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
                             .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
                             .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"))
-                    ).onSuccess((success) -> {
-                        Logging.fine("World create success: " + success);
-                        issuer.sendInfo(success.getReasonMessage());
-                    }).onFailure((failure) -> {
-                        Logging.fine("World create failure: " + failure);
-                        issuer.sendError(failure.getReasonMessage());
+                    ).onSuccess(newWorld -> {
+                        Logging.fine("World regen success: " + newWorld);
+                        issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, "{world}", newWorld.getName());
+                    }).onFailure(failure -> {
+                        Logging.fine("World regen failure: " + failure);
+                        issuer.sendError(failure.getFailureMessage());
                     });
                 },
                 this.commandManager.formatMessage(

@@ -2,42 +2,23 @@ package com.onarandombox.MultiverseCore.worldnew.results;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
-import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import com.onarandombox.MultiverseCore.utils.result.FailureReason;
-import com.onarandombox.MultiverseCore.utils.result.SuccessReason;
 
 /**
  * Result of a world regeneration operation.
  */
-public class RegenWorldResult {
-    public enum Success implements SuccessReason {
-        REGENERATED(MVCorei18n.REGENWORLD_REGENERATED);
+public enum RegenWorldResult implements FailureReason {
+    DELETE_FAILED(null),
+    CREATE_FAILED(null);
 
-        private final MessageKeyProvider message;
+    private final MessageKeyProvider message;
 
-        Success(MessageKeyProvider message) {
-            this.message = message;
-        }
-
-        @Override
-        public MessageKey getMessageKey() {
-            return message.getMessageKey();
-        }
+    RegenWorldResult(MessageKeyProvider message) {
+        this.message = message;
     }
 
-    public enum Failure implements FailureReason {
-        DELETE_FAILED(null),
-        CREATE_FAILED(null);
-
-        private final MessageKeyProvider message;
-
-        Failure(MessageKeyProvider message) {
-            this.message = message;
-        }
-
-        @Override
-        public MessageKey getMessageKey() {
-            return message.getMessageKey();
-        }
+    @Override
+    public MessageKey getMessageKey() {
+        return message.getMessageKey();
     }
 }
