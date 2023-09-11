@@ -80,7 +80,7 @@ public class RegenCommand extends MultiverseCommand {
                 () -> {
                     issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, "{world}", world.getName());
                     worldManager.regenWorld(RegenWorldOptions.world(world)
-                            .randomSeed(!parsedFlags.hasFlagValue("--seed"))
+                            .randomSeed(parsedFlags.hasFlag("--seed"))
                             .seed(parsedFlags.flagValue("--seed", String.class))
                             .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
                             .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
