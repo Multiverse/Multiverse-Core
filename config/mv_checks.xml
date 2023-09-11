@@ -134,7 +134,7 @@
         <module name="MutableException"/>
         <module name="OneTopLevelClass"/>
         <module name="ThrowsCount">
-            <property name="max" value="2"/>
+            <property name="max" value="0"/>
         </module>
         <module name="VisibilityModifier">
             <property name="protectedAllowed" value="true"/>
