@@ -7,8 +7,6 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import java.util.List;
-
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.world.configuration.AddProperties;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
@@ -22,6 +20,8 @@ import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * The API for a Multiverse Handled World.

@@ -1,12 +1,12 @@
 package com.onarandombox.MultiverseCore.display.parsers;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Simple parser for map object.

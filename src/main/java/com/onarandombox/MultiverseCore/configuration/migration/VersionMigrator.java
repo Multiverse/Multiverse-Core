@@ -1,10 +1,9 @@
 package com.onarandombox.MultiverseCore.configuration.migration;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * A version migrator is a collection of migrator actions that are performed when migrating a config to a specific version.

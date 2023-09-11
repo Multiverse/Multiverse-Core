@@ -7,9 +7,6 @@
 
 package com.onarandombox.MultiverseCore.commandtools.queue;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import jakarta.inject.Inject;
@@ -22,6 +19,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>

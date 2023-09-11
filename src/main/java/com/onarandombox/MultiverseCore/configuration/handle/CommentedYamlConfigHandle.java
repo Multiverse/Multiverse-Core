@@ -1,18 +1,18 @@
 package com.onarandombox.MultiverseCore.configuration.handle;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.logging.Logger;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
-import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.configuration.node.CommentedNode;
+import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.logging.Logger;
 
 /**
  * Configuration handle for commented YAML files.

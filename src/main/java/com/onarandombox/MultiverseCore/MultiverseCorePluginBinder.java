@@ -12,7 +12,8 @@ class MultiverseCorePluginBinder extends JavaPluginBinder<MultiverseCore> {
     }
 
     @Override
-    protected ScopedBindingBuilder<MultiverseCore> bindPluginClass(ScopedBindingBuilder<MultiverseCore> bindingBuilder) {
+    protected ScopedBindingBuilder<MultiverseCore> bindPluginClass(
+            ScopedBindingBuilder<MultiverseCore> bindingBuilder) {
         return super.bindPluginClass(bindingBuilder).to(MVCore.class).to(MultiverseCore.class);
     }
 }

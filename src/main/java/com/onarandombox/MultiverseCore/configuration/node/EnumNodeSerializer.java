@@ -1,7 +1,5 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
-import com.dumptruckman.minecraft.util.Logging;
-
 public class EnumNodeSerializer<T extends Enum<T>> implements NodeSerializer<T> {
 
     @Override

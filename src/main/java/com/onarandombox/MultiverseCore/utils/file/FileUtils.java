@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.utils.file;
 
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import static org.bukkit.Bukkit.getServer;
+import com.dumptruckman.minecraft.util.Logging;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,16 +17,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import org.jetbrains.annotations.Nullable;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static org.bukkit.Bukkit.getServer;
 
 /**
  * File-utilities.

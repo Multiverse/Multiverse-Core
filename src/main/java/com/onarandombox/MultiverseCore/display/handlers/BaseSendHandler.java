@@ -1,8 +1,5 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import com.google.common.base.Strings;
 import com.onarandombox.MultiverseCore.display.filters.ContentFilter;
@@ -10,6 +7,9 @@ import com.onarandombox.MultiverseCore.display.filters.DefaultContentFilter;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Base implementation of {@link SendHandler} with some common parameters.

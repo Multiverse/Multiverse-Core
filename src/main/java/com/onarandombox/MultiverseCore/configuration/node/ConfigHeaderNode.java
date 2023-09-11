@@ -1,10 +1,10 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A node that represents a header without any value.

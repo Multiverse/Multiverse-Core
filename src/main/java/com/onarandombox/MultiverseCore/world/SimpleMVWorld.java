@@ -7,11 +7,6 @@
 
 package com.onarandombox.MultiverseCore.world;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
@@ -24,9 +19,9 @@ import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import com.onarandombox.MultiverseCore.listeners.MVPlayerListener;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.world.configuration.EnglishChatColor;
-import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation;
 import com.onarandombox.MultiverseCore.world.configuration.SpawnSettings;
 import com.onarandombox.MultiverseCore.world.configuration.WorldPropertyValidator;
+import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation;
 import me.main__.util.SerializationConfig.ChangeDeniedException;
 import me.main__.util.SerializationConfig.NoSuchPropertyException;
 import me.main__.util.SerializationConfig.VirtualProperty;
@@ -46,6 +41,11 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * The implementation of a Multiverse handled world.

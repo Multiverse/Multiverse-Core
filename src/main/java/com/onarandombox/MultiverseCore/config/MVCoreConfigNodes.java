@@ -7,7 +7,6 @@ import com.onarandombox.MultiverseCore.configuration.node.Node;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.exceptions.MultiverseException;
-import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.vavr.control.Try;
 import org.bukkit.plugin.PluginManager;
 

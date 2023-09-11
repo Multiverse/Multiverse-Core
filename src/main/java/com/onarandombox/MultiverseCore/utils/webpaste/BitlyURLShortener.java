@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.utils.webpaste;
 
-import java.io.IOException;
-import java.util.Map;
-
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * A {@link URLShortener} using {@code bit.ly}. Requires an access token.

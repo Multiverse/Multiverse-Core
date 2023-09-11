@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.teleportation;
 
+import com.dumptruckman.minecraft.util.Logging;
+import org.jvnet.hk2.annotations.Service;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.dumptruckman.minecraft.util.Logging;
-import org.jvnet.hk2.annotations.Service;
 
 @Service
 public class TeleportQueue {

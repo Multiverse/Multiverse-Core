@@ -7,14 +7,13 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
+import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
-
-import com.onarandombox.MultiverseCore.api.LocationManipulation;
 import org.jvnet.hk2.annotations.Service;
 
 import java.text.DecimalFormat;

@@ -1,13 +1,11 @@
 package com.onarandombox.MultiverseCore.configuration.migration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.node.ValueNode;
-import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper class for migrating configs to the latest config version.

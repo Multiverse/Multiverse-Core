@@ -7,15 +7,15 @@
 
 package com.onarandombox.MultiverseCore.api;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
 import org.jvnet.hk2.annotations.Contract;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Multiverse 2 World Manager API

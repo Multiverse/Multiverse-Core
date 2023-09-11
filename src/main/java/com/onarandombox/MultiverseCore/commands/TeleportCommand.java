@@ -1,8 +1,5 @@
 package com.onarandombox.MultiverseCore.commands;
 
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
@@ -20,6 +17,9 @@ import com.onarandombox.MultiverseCore.utils.MVCorei18n;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jvnet.hk2.annotations.Service;
+
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @CommandAlias("mv")

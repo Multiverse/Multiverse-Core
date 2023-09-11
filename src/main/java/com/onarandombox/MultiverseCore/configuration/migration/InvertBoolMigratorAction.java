@@ -2,7 +2,6 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Single migrator action that inverts a boolean value for a given path.

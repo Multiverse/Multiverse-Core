@@ -3,7 +3,6 @@ package com.onarandombox.MultiverseCore.configuration.migration;
 import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Single migrator action that converts a string value to an integer.

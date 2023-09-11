@@ -1,11 +1,10 @@
 package com.onarandombox.MultiverseCore.world.configuration;
 
-import java.util.Map;
-
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
-
 import org.bukkit.configuration.serialization.SerializableAs;
+
+import java.util.Map;
 
 /**
  * Spawning-Settings.

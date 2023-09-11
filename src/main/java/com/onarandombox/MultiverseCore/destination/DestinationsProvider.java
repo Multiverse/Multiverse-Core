@@ -1,11 +1,5 @@
 package com.onarandombox.MultiverseCore.destination;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
@@ -21,6 +15,12 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Provides destinations for teleportation.

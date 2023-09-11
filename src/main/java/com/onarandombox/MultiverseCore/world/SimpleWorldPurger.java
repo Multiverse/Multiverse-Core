@@ -8,7 +8,6 @@
 package com.onarandombox.MultiverseCore.world;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorld;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import org.bukkit.World;

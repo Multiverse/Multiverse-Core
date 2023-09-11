@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
-import java.util.List;
-
 import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Display content as a list with optional pagination.

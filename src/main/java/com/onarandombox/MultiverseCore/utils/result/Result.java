@@ -4,7 +4,6 @@ import com.onarandombox.MultiverseCore.utils.message.Message;
 import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 

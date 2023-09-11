@@ -1,11 +1,5 @@
 package com.onarandombox.MultiverseCore.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import org.bukkit.Bukkit;
@@ -13,6 +7,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Helper class to get {@link Player} from name, UUID or Selectors.

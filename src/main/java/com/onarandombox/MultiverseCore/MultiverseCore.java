@@ -30,7 +30,6 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -127,7 +126,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             registerCommands();
             registerDestinations();
             setupMetrics();
-            loadPlaceholderAPIIntegration();
+            loadPlaceholderApiIntegration();
             saveAllConfigs();
             logEnableMessage();
         }).onFailure(e -> {
@@ -193,8 +192,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void registerEvents() {
         var pluginManager = getServer().getPluginManager();
 
-        Try.run(() -> serviceLocator.getAllServices(InjectableListener.class)
-                        .forEach(listener -> pluginManager.registerEvents(listener, this)))
+        Try.run(() -> serviceLocator.getAllServices(InjectableListener.class).forEach(
+                listener -> pluginManager.registerEvents(listener, this)))
                 .onFailure(e -> {
                     throw new RuntimeException("Failed to register listeners. Terminating...", e);
                 });
@@ -216,7 +215,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     /**
-     * Register locales
+     * Register locales.
      */
     private void setUpLocales() {
         Try.of(() -> commandManagerProvider.get())
@@ -277,7 +276,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
     }
 
-    private void loadPlaceholderAPIIntegration() {
+    private void loadPlaceholderApiIntegration() {
         if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Try.run(() -> serviceLocator.createAndInitialize(MultiverseCorePlaceholders.class))
@@ -310,7 +309,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public String getAuthors() {
         List<String> authorsList = this.getDescription().getAuthors();
-        if (authorsList.size() == 0) {
+        if (authorsList.isEmpty()) {
             return "";
         }
 
@@ -392,15 +391,15 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      *
      * @param contractOrImpl The contract or concrete implementation to get the best instance of
      * @param qualifiers     The set of qualifiers that must match this service definition
+     * @param <T>            The type of the contract to get
      * @return A list of services implementing this contract or concrete implementation. May not return null, but may
-     * return an empty list
+     *         return an empty list.
      * @throws MultiException if there was an error during service lookup
      */
     @NotNull
     public <T> List<T> getAllServices(
             @NotNull Class<T> contractOrImpl,
-            Annotation... qualifiers
-    ) throws MultiException {
+            Annotation... qualifiers) throws MultiException {
         var handles = serviceLocator.getAllServiceHandles(contractOrImpl, qualifiers);
         return handles.stream()
                 .filter(ServiceHandle::isActive)

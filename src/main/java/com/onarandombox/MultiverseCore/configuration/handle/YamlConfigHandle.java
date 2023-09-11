@@ -1,9 +1,5 @@
 package com.onarandombox.MultiverseCore.configuration.handle;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.logging.Logger;
-
 import com.onarandombox.MultiverseCore.configuration.migration.ConfigMigrator;
 import com.onarandombox.MultiverseCore.configuration.node.NodeGroup;
 import io.vavr.control.Try;
@@ -11,6 +7,10 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.logging.Logger;
 
 /**
  * Configuration handle for YAML files.
