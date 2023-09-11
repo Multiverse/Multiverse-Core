@@ -35,7 +35,8 @@ public class MVCommandIssuer extends OpenBukkitCommandIssuer {
 
     private void sendMessage(MessageType messageType, Message message) {
         if (message instanceof MessageKeyProvider) {
-            sendMessage(messageType, (MessageKeyProvider) message, message.getReplacements());
+            sendMessage(messageType, (MessageKeyProvider) message,
+                    message.getReplacements(getManager().getLocales(), this));
         } else {
             var formatter = getManager().getFormat(messageType);
             if (formatter != null) {

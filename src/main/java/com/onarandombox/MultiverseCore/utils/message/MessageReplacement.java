@@ -1,5 +1,6 @@
 package com.onarandombox.MultiverseCore.utils.message;
 
+import io.vavr.control.Either;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -7,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Captures string replacements for {@link Message}s.
  */
-    public final class MessageReplacement {
+public final class MessageReplacement {
 
     /**
      * Creates a replacement key for the given key string.
@@ -20,12 +21,26 @@ import org.jetbrains.annotations.Nullable;
         return new MessageReplacement.Key(key);
     }
 
+    /**
+     * A replacement key that maps to a value it can be replaced with.
+     */
     public static final class Key {
 
         private final @NotNull String key;
 
         private Key(@NotNull String key) {
             this.key = key;
+        }
+
+        /**
+         * Creates a replacement for this key.
+         *
+         * @param replacement The replacement message
+         * @return A new message replacement
+         */
+        @Contract(value = "_ -> new", pure = true)
+        public MessageReplacement with(@NotNull Message replacement) {
+            return new MessageReplacement(key, replacement);
         }
 
         /**
@@ -41,11 +56,16 @@ import org.jetbrains.annotations.Nullable;
     }
 
     private final @NotNull String key;
-    private final @NotNull String replacement;
+    private final @NotNull Either<String, Message> replacement;
+
+    private MessageReplacement(@NotNull String key, @NotNull Message replacement) {
+        this.key = key;
+        this.replacement = Either.right(replacement);
+    }
 
     private MessageReplacement(@NotNull String key, @Nullable Object replacement) {
         this.key = key;
-        this.replacement = String.valueOf(replacement);
+        this.replacement = Either.left(String.valueOf(replacement));
     }
 
     /**
@@ -62,7 +82,7 @@ import org.jetbrains.annotations.Nullable;
      *
      * @return The replacement
      */
-    public @NotNull String getReplacement() {
+    public @NotNull Either<String, Message> getReplacement() {
         return replacement;
     }
 }

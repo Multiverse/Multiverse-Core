@@ -58,9 +58,12 @@ public class MVCommandManager extends PaperCommandManager {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public BukkitLocales getLocales() {
-        return this.locales;
+    public PluginLocales getLocales() {
+        return (PluginLocales) this.locales;
     }
 
     /**
