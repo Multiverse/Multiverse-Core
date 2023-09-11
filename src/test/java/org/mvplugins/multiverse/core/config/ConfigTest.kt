@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.config
 
-import com.onarandombox.MultiverseCore.config.MVCoreConfig
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import java.io.File
 import java.nio.file.Path

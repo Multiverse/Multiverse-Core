@@ -1,11 +1,11 @@
 package org.mvplugins.multiverse.core.world
 
-import com.onarandombox.MultiverseCore.worldnew.config.SpawnLocation
-import com.onarandombox.MultiverseCore.worldnew.config.WorldsConfigManager
 import org.bukkit.World.Environment
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.worldnew.config.SpawnLocation
+import org.mvplugins.multiverse.core.worldnew.config.WorldsConfigManager
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
