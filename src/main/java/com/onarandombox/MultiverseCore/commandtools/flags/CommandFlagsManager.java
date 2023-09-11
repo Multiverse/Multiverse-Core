@@ -1,15 +1,15 @@
 package com.onarandombox.MultiverseCore.commandtools.flags;
 
-import co.aikar.commands.InvalidCommandArgument;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jvnet.hk2.annotations.Service;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import co.aikar.commands.InvalidCommandArgument;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Manages all the flag groups and parsing.

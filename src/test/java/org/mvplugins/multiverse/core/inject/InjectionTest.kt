@@ -10,12 +10,7 @@ import com.onarandombox.MultiverseCore.commandtools.MultiverseCommand
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales
 import com.onarandombox.MultiverseCore.config.MVCoreConfig
 import com.onarandombox.MultiverseCore.economy.MVEconomist
-import com.onarandombox.MultiverseCore.listeners.MVChatListener
-import com.onarandombox.MultiverseCore.listeners.MVEntityListener
-import com.onarandombox.MultiverseCore.listeners.MVPlayerListener
-import com.onarandombox.MultiverseCore.listeners.MVPortalListener
-import com.onarandombox.MultiverseCore.listeners.MVWeatherListener
-import com.onarandombox.MultiverseCore.listeners.MVWorldListener
+import com.onarandombox.MultiverseCore.listeners.*
 import com.onarandombox.MultiverseCore.teleportation.SimpleBlockSafety
 import com.onarandombox.MultiverseCore.teleportation.SimpleLocationManipulation
 import com.onarandombox.MultiverseCore.teleportation.SimpleSafeTTeleporter
@@ -24,11 +19,7 @@ import com.onarandombox.MultiverseCore.utils.UnsafeCallWrapper
 import com.onarandombox.MultiverseCore.utils.metrics.MetricsConfigurator
 import com.onarandombox.MultiverseCore.worldnew.WorldManager
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import kotlin.test.*
 
 class InjectionTest : TestWithMockBukkit() {
 

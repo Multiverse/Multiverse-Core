@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.commandtools;
 
+import java.util.List;
+
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandCompletions;
@@ -17,8 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.List;
 
 /**
  * Main class to manage permissions.

@@ -1,9 +1,5 @@
 package com.onarandombox.MultiverseCore.event;
 
-import com.dumptruckman.minecraft.util.Logging;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +8,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.dumptruckman.minecraft.util.Logging;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * Called when somebody requests version information about Multiverse.

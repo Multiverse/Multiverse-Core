@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.api;
 
+import java.util.Collection;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
-
-import java.util.Collection;
 
 @Contract
 public interface Destination<T extends DestinationInstance> {

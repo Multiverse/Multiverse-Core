@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.commandtools.queue;
 
+import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -9,9 +12,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Used by {@link CommandQueueManager}, so different commands block can be recognised as one.

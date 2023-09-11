@@ -1,13 +1,13 @@
 package com.onarandombox.MultiverseCore.display.filters;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Filter content and text based on regex matching.

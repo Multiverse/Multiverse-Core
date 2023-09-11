@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.utils.result;
 
-import com.onarandombox.MultiverseCore.utils.message.Message;
-import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.onarandombox.MultiverseCore.utils.message.Message;
+import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 
 /**
  * Represents an attempt to process a value that can fail with a reason that has a localized message.

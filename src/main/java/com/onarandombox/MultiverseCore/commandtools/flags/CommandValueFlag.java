@@ -1,14 +1,14 @@
 package com.onarandombox.MultiverseCore.commandtools.flags;
 
-import co.aikar.commands.InvalidCommandArgument;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import co.aikar.commands.InvalidCommandArgument;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a flag with a value.

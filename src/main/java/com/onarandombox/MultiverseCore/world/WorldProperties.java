@@ -1,5 +1,13 @@
 package com.onarandombox.MultiverseCore.world;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.onarandombox.MultiverseCore.world.SimpleMVWorld.NullLocation;
 import com.onarandombox.MultiverseCore.world.configuration.AllowedPortalType;
 import com.onarandombox.MultiverseCore.world.configuration.EnglishChatColor;
@@ -22,14 +30,6 @@ import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  * This is a property class, I think we don't need that much javadoc.

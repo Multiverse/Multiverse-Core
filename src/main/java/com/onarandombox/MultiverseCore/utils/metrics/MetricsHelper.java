@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.utils.metrics;
 
-import org.bstats.charts.AdvancedPie;
-import org.bstats.charts.MultiLineChart;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.MultiLineChart;
 
 enum MetricsHelper {
     ;

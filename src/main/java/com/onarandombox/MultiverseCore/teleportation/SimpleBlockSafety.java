@@ -7,6 +7,10 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
@@ -20,10 +24,6 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * The default-implementation of {@link BlockSafety}.

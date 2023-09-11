@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageType;
@@ -30,9 +33,6 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * List all gamerules in your current or specified world.

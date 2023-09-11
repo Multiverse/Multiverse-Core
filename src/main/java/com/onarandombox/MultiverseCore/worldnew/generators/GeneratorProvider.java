@@ -1,5 +1,16 @@
 package com.onarandombox.MultiverseCore.worldnew.generators;
 
+import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import io.vavr.control.Try;
@@ -17,17 +28,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.onarandombox.MultiverseCore.utils.file.FileUtils.getBukkitConfig;
 
 /**
  * Parse the default world generators from the bukkit config and load any generator plugins.

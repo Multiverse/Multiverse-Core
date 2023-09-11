@@ -1,12 +1,12 @@
 package com.onarandombox.MultiverseCore.configuration.node;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * A node that contains a value.

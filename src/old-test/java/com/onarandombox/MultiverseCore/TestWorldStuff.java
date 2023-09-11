@@ -7,34 +7,25 @@
 
 package com.onarandombox.MultiverseCore;
 
-import com.onarandombox.MultiverseCore.api.MVWorld;
-import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+
 import com.onarandombox.MultiverseCore.utils.MockWorldFactory;
 import com.onarandombox.MultiverseCore.utils.TestInstanceCreator;
-import com.onarandombox.MultiverseCore.utils.WorldCreatorMatcher;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Server;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.internal.verification.VerificationModeFactory;
-
-import java.io.File;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class TestWorldStuff {
 

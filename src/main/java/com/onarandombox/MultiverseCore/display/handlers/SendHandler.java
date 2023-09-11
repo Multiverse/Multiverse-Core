@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.display.handlers;
 
+import java.util.List;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Handles the sending of all content to the command sender.

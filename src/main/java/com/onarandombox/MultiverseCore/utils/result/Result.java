@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.utils.result;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import com.onarandombox.MultiverseCore.utils.message.Message;
 import com.onarandombox.MultiverseCore.utils.message.MessageReplacement;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Represents result of an operation with a reason for success or failure that has localized messages.

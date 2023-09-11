@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.message;
 
+import java.util.Objects;
+
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.locales.MessageKeyProvider;
@@ -7,8 +9,6 @@ import com.onarandombox.MultiverseCore.commandtools.PluginLocales;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * A message that can be formatted with replacements and localized.

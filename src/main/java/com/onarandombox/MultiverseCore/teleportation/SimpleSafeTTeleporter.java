@@ -7,6 +7,8 @@
 
 package com.onarandombox.MultiverseCore.teleportation;
 
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -29,8 +31,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  * The default-implementation of {@link SafeTTeleporter}.

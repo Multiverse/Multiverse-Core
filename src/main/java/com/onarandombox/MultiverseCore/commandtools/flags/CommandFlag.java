@@ -1,10 +1,10 @@
 package com.onarandombox.MultiverseCore.commandtools.flags;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a flag.

@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.onarandombox.MultiverseCore.configuration.migration.MigratorAction;
 import io.vavr.control.Try;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 class LegacyAliasMigrator implements MigratorAction {
     @Override

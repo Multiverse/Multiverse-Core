@@ -1,5 +1,9 @@
 package com.onarandombox.MultiverseCore.worldnew.entrycheck;
 
+import static com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace;
+
+import java.util.Collection;
+
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import com.onarandombox.MultiverseCore.economy.MVEconomist;
 import com.onarandombox.MultiverseCore.permissions.CorePermissionsChecker;
@@ -16,10 +20,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-
-import static com.onarandombox.MultiverseCore.utils.message.MessageReplacement.replace;
 
 /**
  * Checks if a player can enter a world.

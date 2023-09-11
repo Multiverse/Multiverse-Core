@@ -1,5 +1,10 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -7,11 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Just like a regular {@link Location}, however {@code world} is usually {@code null}

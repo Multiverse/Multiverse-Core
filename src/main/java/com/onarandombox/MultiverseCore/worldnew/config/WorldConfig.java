@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.worldnew.config;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.configuration.handle.ConfigurationSectionHandle;
 import com.onarandombox.MultiverseCore.configuration.migration.BooleanMigratorAction;
@@ -20,9 +23,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Represents a world configuration.

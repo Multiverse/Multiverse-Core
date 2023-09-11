@@ -7,8 +7,8 @@
 
 package com.onarandombox.MultiverseCore.utils.file;
 
-import com.dumptruckman.minecraft.util.Logging;
-import org.jetbrains.annotations.Nullable;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static org.bukkit.Bukkit.getServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +21,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import static org.bukkit.Bukkit.getServer;
+import com.dumptruckman.minecraft.util.Logging;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * File-utilities.

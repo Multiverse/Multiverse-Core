@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.api.Destination;
 import com.onarandombox.MultiverseCore.api.Teleporter;
@@ -9,9 +12,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * {@link Destination} implementation for players.s

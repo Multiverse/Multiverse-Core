@@ -7,10 +7,10 @@
 
 package com.onarandombox.MultiverseCore.event;
 
+import java.util.List;
+
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import java.util.List;
 
 /**
  * Called when the Multiverse-config should be reloaded.

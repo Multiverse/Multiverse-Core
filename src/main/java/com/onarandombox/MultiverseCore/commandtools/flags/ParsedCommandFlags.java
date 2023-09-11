@@ -1,10 +1,10 @@
 package com.onarandombox.MultiverseCore.commandtools.flags;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Object to contain the results of the flags present and its values.

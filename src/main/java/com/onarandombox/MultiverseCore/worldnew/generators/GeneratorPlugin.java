@@ -1,9 +1,9 @@
 package com.onarandombox.MultiverseCore.worldnew.generators;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 /**
  * <p>A generator API for Multiverse.</p>

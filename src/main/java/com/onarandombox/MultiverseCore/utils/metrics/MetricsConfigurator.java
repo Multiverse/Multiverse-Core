@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.utils.metrics;
 
+import java.util.Map;
+import java.util.function.Consumer;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
@@ -10,9 +13,6 @@ import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 @Service
 public class MetricsConfigurator {

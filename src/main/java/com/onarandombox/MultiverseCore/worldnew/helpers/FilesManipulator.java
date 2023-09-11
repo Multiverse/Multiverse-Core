@@ -1,9 +1,6 @@
 package com.onarandombox.MultiverseCore.worldnew.helpers;
 
-import com.dumptruckman.minecraft.util.Logging;
-import io.vavr.control.Try;
-import org.jetbrains.annotations.NotNull;
-import org.jvnet.hk2.annotations.Service;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +14,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
+import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * A helper class for manipulating files and folders.

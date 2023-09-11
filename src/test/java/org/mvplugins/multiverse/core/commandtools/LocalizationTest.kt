@@ -17,11 +17,7 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 class LocalizationTest : TestWithMockBukkit() {
 

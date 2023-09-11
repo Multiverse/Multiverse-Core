@@ -1,5 +1,8 @@
 package com.onarandombox.MultiverseCore.worldnew;
 
+import java.util.List;
+import java.util.UUID;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.api.BlockSafety;
 import com.onarandombox.MultiverseCore.api.LocationManipulation;
@@ -14,9 +17,6 @@ import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Extension of {@link MultiverseWorld} that represents a world that is currently loaded with bukkit world object.

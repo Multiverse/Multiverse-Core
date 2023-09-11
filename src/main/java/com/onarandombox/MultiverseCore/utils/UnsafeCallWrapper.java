@@ -1,11 +1,11 @@
 package com.onarandombox.MultiverseCore.utils;
 
+import java.util.concurrent.Callable;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.config.MVCoreConfig;
 import jakarta.inject.Inject;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.concurrent.Callable;
 
 /**
  * Wraps calls that could result in exceptions that are not Multiverse's fault.

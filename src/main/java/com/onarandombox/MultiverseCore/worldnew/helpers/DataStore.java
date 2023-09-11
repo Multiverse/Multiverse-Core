@@ -1,15 +1,15 @@
 package com.onarandombox.MultiverseCore.worldnew.helpers;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.worldnew.LoadedMultiverseWorld;
 import io.vavr.control.Try;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A data store for storing and restoring data from an object.

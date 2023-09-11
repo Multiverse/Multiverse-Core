@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.destination.core;
 
+import java.util.Collection;
+
 import co.aikar.commands.BukkitCommandIssuer;
 import com.onarandombox.MultiverseCore.anchor.AnchorManager;
 import com.onarandombox.MultiverseCore.api.Destination;
@@ -9,8 +11,6 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import java.util.Collection;
 
 /**
  * {@link Destination} implementation for anchors.

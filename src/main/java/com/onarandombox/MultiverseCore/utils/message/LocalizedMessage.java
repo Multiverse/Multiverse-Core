@@ -1,5 +1,7 @@
 package com.onarandombox.MultiverseCore.utils.message;
 
+import java.util.Objects;
+
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.locales.MessageKey;
@@ -7,8 +9,6 @@ import co.aikar.locales.MessageKeyProvider;
 import com.onarandombox.MultiverseCore.commandtools.PluginLocales;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 final class LocalizedMessage extends Message implements MessageKeyProvider {
 
