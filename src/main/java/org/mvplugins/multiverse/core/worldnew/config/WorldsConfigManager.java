@@ -19,6 +19,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 
 /**

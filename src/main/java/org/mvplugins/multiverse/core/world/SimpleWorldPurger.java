@@ -26,6 +26,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.api.MVWorld;
 import org.mvplugins.multiverse.core.api.WorldPurger;
 

@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueueManager;

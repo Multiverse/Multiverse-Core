@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 
 /**

@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.world.SimpleMVWorld;
 
 /**

@@ -9,6 +9,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 

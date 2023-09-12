@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;

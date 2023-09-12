@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
 import org.mvplugins.multiverse.core.worldnew.config.WorldConfig;
 

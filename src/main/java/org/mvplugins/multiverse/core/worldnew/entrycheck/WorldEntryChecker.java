@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.worldnew.entrycheck;
 
-import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
-
 import java.util.Collection;
 
 import org.bukkit.Material;
@@ -12,6 +10,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
@@ -20,6 +19,8 @@ import org.mvplugins.multiverse.core.utils.result.ResultChain;
 import org.mvplugins.multiverse.core.world.configuration.EntryFee;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.MultiverseWorld;
+
+import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
 
 /**
  * Checks if a player can enter a world.

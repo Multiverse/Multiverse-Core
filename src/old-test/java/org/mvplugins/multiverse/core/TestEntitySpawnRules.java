@@ -1,13 +1,5 @@
 package org.mvplugins.multiverse.core;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,11 +16,20 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mvplugins.multiverse.core.api.MVWorld;
 import org.mvplugins.multiverse.core.api.MVWorldManager;
 import org.mvplugins.multiverse.core.listeners.MVEntityListener;
 import org.mvplugins.multiverse.core.utils.MockWorldFactory;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TestEntitySpawnRules {
     TestInstanceCreator creator;

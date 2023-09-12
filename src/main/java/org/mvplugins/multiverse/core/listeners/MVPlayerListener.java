@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.SafeTTeleporter;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;

@@ -22,6 +22,7 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 

@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Subcommand;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 

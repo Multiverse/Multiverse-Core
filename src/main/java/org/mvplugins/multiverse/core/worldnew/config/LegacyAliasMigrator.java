@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.vavr.control.Try;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+
 import org.mvplugins.multiverse.core.configuration.migration.MigratorAction;
 
 class LegacyAliasMigrator implements MigratorAction {

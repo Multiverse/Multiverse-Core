@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.api;
 
 import io.vavr.control.Try;
 import org.jvnet.hk2.annotations.Contract;
+
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 

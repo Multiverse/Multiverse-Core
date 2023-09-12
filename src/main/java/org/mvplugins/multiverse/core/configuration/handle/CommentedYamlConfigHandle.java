@@ -9,6 +9,7 @@ import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.node.CommentedNode;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;

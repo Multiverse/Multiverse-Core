@@ -5,6 +5,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import jakarta.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Contract;
+
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;

@@ -1,8 +1,5 @@
 package org.mvplugins.multiverse.core.commands;
 
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getServerProperties;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,6 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
@@ -39,6 +37,9 @@ import org.mvplugins.multiverse.core.utils.webpaste.PasteService;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceFactory;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
+
+import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
+import static org.mvplugins.multiverse.core.utils.file.FileUtils.getServerProperties;
 
 @Service
 @CommandAlias("mv")

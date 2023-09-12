@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.api.Destination;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.api.Teleporter;

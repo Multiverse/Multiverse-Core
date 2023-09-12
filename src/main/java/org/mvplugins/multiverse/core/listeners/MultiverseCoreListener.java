@@ -8,6 +8,7 @@
 package org.mvplugins.multiverse.core.listeners;
 
 import org.bukkit.event.EventHandler;
+
 import org.mvplugins.multiverse.core.event.MVConfigReloadEvent;
 import org.mvplugins.multiverse.core.event.MVPlayerTouchedPortalEvent;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;

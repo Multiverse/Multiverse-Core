@@ -8,6 +8,7 @@ import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.commandtools.PluginLocales;
 
 /**

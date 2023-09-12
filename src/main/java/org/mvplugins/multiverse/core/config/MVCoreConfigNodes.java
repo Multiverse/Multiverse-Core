@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.config;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.plugin.PluginManager;
+
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
