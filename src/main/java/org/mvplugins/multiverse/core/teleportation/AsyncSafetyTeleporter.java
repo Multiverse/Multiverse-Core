@@ -45,7 +45,9 @@ public class AsyncSafetyTeleporter {
         if (destination == null) {
             return CompletableFuture.completedFuture(Result.failure(TeleportResult.Failure.NULL_DESTINATION));
         }
-        return teleportSafely(teleporter, teleportee, destination.getLocation(teleportee));
+        return destination.getDestination().checkTeleportSafety()
+                ? teleportSafely(teleporter, teleportee, destination.getLocation(teleportee))
+                : teleport(teleporter, teleportee, destination.getLocation(teleportee));
     }
 
     public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
@@ -120,23 +122,33 @@ public class AsyncSafetyTeleporter {
         }
 
         CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> future = new CompletableFuture<>();
+        doAsyncTeleport(teleportee, location, future, shouldAddToQueue);
+        return future;
+    }
+
+    private void doAsyncTeleport(
+            @NotNull Entity teleportee,
+            @NotNull Location location,
+            CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> future,
+            boolean shouldAddToQueue) {
         Try.run(() -> PaperLib.teleportAsync(teleportee, location).thenAccept(result -> {
-            Logging.fine("Teleported %s to %s", teleportee.getName(), location);
+            Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
             future.complete(result
                     ? Result.success(TeleportResult.Success.SUCCESS)
                     : Result.failure(TeleportResult.Failure.TELEPORT_FAILED));
         }).exceptionally(exception -> {
-            Logging.fine("Failed to teleport %s to %s: %s", teleportee.getName(), location, exception.getMessage());
+            Logging.warning("Failed to teleport %s to %s: %s",
+                    teleportee.getName(), location, exception.getMessage());
             future.completeExceptionally(exception);
             return null;
         })).onFailure(exception -> {
-            Logging.fine("Failed to teleport %s to %s: %s", teleportee.getName(), location, exception.getMessage());
+            Logging.warning("Failed to teleport %s to %s: %s",
+                    teleportee.getName(), location, exception.getMessage());
             future.complete(Result.failure(TeleportResult.Failure.TELEPORT_FAILED_EXCEPTION));
         }).andFinally(() -> {
             if (shouldAddToQueue) {
                 teleportQueue.popFromQueue(teleportee.getName());
             }
         });
-        return future;
     }
 }
