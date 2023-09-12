@@ -19,15 +19,14 @@ import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 
 @Service
 @CommandAlias("mv")
-public class CoordinatesCommand extends MultiverseCommand {
+class CoordinatesCommand extends MultiverseCommand {
 
     private final LocationManipulation locationManipulation;
 
     @Inject
-    public CoordinatesCommand(
+    CoordinatesCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull LocationManipulation locationManipulation
-    ) {
+            @NotNull LocationManipulation locationManipulation) {
         super(commandManager);
         this.locationManipulation = locationManipulation;
     }
@@ -35,14 +34,14 @@ public class CoordinatesCommand extends MultiverseCommand {
     @Subcommand("coordinates|coords|coord|co")
     @CommandPermission("multiverse.core.coord")
     @Description("{@@mv-core.coordinates.description}")
-    public void onCoordinatesCommand(BukkitCommandIssuer issuer,
+    void onCoordinatesCommand(
+            BukkitCommandIssuer issuer,
 
-                                     @Flags("resolve=issuerOnly")
-                                     Player player,
+            @Flags("resolve=issuerOnly")
+            Player player,
 
-                                     @Flags("resolve=issuerOnly")
-                                     LoadedMultiverseWorld world
-    ) {
+            @Flags("resolve=issuerOnly")
+            LoadedMultiverseWorld world) {
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_TITLE);
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLD, "{world}", world.getName());
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, "{alias}", world.getAlias());

@@ -5,7 +5,6 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import io.vavr.control.Option;
@@ -22,12 +21,12 @@ import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
 @Service
 @CommandAlias("mv")
-public class ConfigCommand extends MultiverseCommand {
+class ConfigCommand extends MultiverseCommand {
 
     private final MVCoreConfig config;
 
     @Inject
-    public ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
+    ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
         super(commandManager);
         this.config = config;
     }
@@ -37,18 +36,17 @@ public class ConfigCommand extends MultiverseCommand {
     @CommandCompletion("@mvconfigs")
     @Syntax("<name> [new-value]")
     @Description("") // TODO: Description
-    public void onConfigCommand(MVCommandIssuer issuer,
+    void onConfigCommand(
+            MVCommandIssuer issuer,
 
-                                @Syntax("<name>")
-                                @Description("") // TODO: Description
-                                String name,
+            @Syntax("<name>")
+            @Description("") // TODO: Description
+            String name,
 
-                                @Optional
-                                @Single
-                                @Syntax("[new-value]")
-                                @Description("") // TODO: Description
-                                MVConfigValue value
-    ) {
+            @Optional
+            @Syntax("[new-value]")
+            @Description("") // TODO: Description
+            MVConfigValue value) {
         if (value == null) {
             showConfigValue(issuer, name);
             return;

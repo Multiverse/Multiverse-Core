@@ -22,10 +22,10 @@ import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 
 @Service
 @CommandAlias("mv")
-public class GameruleCommand extends MultiverseCommand {
+class GameruleCommand extends MultiverseCommand {
 
     @Inject
-    public GameruleCommand(@NotNull MVCommandManager commandManager) {
+    GameruleCommand(@NotNull MVCommandManager commandManager) {
         super(commandManager);
     }
 
@@ -34,24 +34,24 @@ public class GameruleCommand extends MultiverseCommand {
     @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
     @Description("{@@mv-core.gamerule.description}")
-    public void onGameruleCommand(BukkitCommandIssuer issuer,
+    void onGameruleCommand(
+            BukkitCommandIssuer issuer,
 
-                                  @Syntax("<Gamerule>")
-                                  @Description("{@@mv-core.gamerule.gamerule.description}")
-                                  GameRule gamerule,
+            @Syntax("<Gamerule>")
+            @Description("{@@mv-core.gamerule.gamerule.description}")
+            GameRule gamerule,
 
-                                  @Syntax("<Value>")
-                                  @Description("{@@mv-core.gamerule.value.description}")
-                                  GameRuleValue gameRuleValue,
+            @Syntax("<Value>")
+            @Description("{@@mv-core.gamerule.value.description}")
+            GameRuleValue gameRuleValue,
 
-                                  @Flags("resolve=issuerAware")
-                                  @Syntax("[World or *]")
-                                  @Description("{@@mv-core.gamerule.world.description}")
-                                  LoadedMultiverseWorld[] worlds
-    ) {
+            @Flags("resolve=issuerAware")
+            @Syntax("[World or *]")
+            @Description("{@@mv-core.gamerule.world.description}")
+            LoadedMultiverseWorld[] worlds) {
         Object value = gameRuleValue.getValue();
         boolean success = true;
-        for(LoadedMultiverseWorld world : worlds) {
+        for (LoadedMultiverseWorld world : worlds) {
             // Set gamerules and add false to list if it fails
             World bukkitWorld = world.getBukkitWorld().getOrNull();
             if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {
@@ -70,8 +70,7 @@ public class GameruleCommand extends MultiverseCommand {
                         "{gamerule}", gamerule.getName(),
                         "{value}", value.toString(),
                         "{world}", worlds[0].getName());
-            }
-            else if (worlds.length > 1) {
+            } else if (worlds.length > 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_SUCCESS_MULTIPLE,
                         "{gamerule}", gamerule.getName(),
                         "{value}", value.toString(),

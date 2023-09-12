@@ -26,13 +26,13 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-public class TeleportCommand extends MultiverseCommand {
+class TeleportCommand extends MultiverseCommand {
 
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
 
     @Inject
-    public TeleportCommand(
+    TeleportCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull CorePermissionsChecker permissionsChecker,
             @NotNull AsyncSafetyTeleporter safetyTeleporter) {
@@ -46,7 +46,7 @@ public class TeleportCommand extends MultiverseCommand {
     @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
     @Description("{@@mv-core.teleport.description}")
-    public void onTeleportCommand(
+    void onTeleportCommand(
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")

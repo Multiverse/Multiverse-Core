@@ -40,7 +40,7 @@ import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
  */
 @Service
 @CommandAlias("mv")
-public class GamerulesCommand extends MultiverseCommand {
+class GamerulesCommand extends MultiverseCommand {
 
     private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
             .builder("--page", Integer.class)
@@ -76,7 +76,7 @@ public class GamerulesCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulescommand @flags:groupName=mvgamerulescommand")
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.gamerules.description}")
-    public void onGamerulesCommand(
+    void onGamerulesCommand(
             @NotNull MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
@@ -87,8 +87,7 @@ public class GamerulesCommand extends MultiverseCommand {
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
             @Description("{@@mv-core.gamerules.description.page}")
-            String[] flags
-    ) {
+            String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         ContentDisplay.create()

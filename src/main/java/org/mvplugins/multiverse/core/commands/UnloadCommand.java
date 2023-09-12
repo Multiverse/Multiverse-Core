@@ -24,7 +24,7 @@ import org.mvplugins.multiverse.core.worldnew.options.UnloadWorldOptions;
 
 @Service
 @CommandAlias("mv")
-public class UnloadCommand extends MultiverseCommand {
+class UnloadCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
@@ -37,7 +37,7 @@ public class UnloadCommand extends MultiverseCommand {
             .build());
 
     @Inject
-    public UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
     }
@@ -47,7 +47,7 @@ public class UnloadCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds @flags:groupName=mvunloadcommand")
     @Syntax("<world>")
     @Description("{@@mv-core.unload.description}")
-    public void onUnloadCommand(
+    void onUnloadCommand(
             MVCommandIssuer issuer,
 
             @Syntax("<world>")

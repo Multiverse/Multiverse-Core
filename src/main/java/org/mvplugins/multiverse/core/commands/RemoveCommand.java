@@ -21,12 +21,12 @@ import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
 @Service
 @CommandAlias("mv")
-public class RemoveCommand extends MultiverseCommand {
+class RemoveCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
     @Inject
-    public RemoveCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    RemoveCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
     }
@@ -36,14 +36,14 @@ public class RemoveCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=both")
     @Syntax("<world>")
     @Description("{@@mv-core.remove.description}")
-    public void onRemoveCommand(MVCommandIssuer issuer,
+    void onRemoveCommand(
+            MVCommandIssuer issuer,
 
-                                @Single
-                                @Conditions("mvworlds:scope=both")
-                                @Syntax("<world>")
-                                @Description("{@@mv-core.remove.world.description}")
-                                String worldName
-    ) {
+            @Single
+            @Conditions("mvworlds:scope=both")
+            @Syntax("<world>")
+            @Description("{@@mv-core.remove.world.description}")
+            String worldName) {
         worldManager.removeWorld(worldName)
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);

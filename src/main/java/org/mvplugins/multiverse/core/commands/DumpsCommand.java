@@ -43,30 +43,33 @@ import static org.mvplugins.multiverse.core.utils.file.FileUtils.getServerProper
 
 @Service
 @CommandAlias("mv")
-public class DumpsCommand extends MultiverseCommand {
+class DumpsCommand extends MultiverseCommand {
 
     private final MultiverseCore plugin;
     private final WorldManager worldManager;
 
+    private final CommandValueFlag<LogsTypeOption> LOGS_FLAG = flag(CommandValueFlag
+            .enumBuilder("--logs", LogsTypeOption.class)
+            .addAlias("-l")
+            .build());
+
+    private final CommandValueFlag<ServiceTypeOption> UPLOAD_FLAG = flag(CommandValueFlag
+            .enumBuilder("--upload", ServiceTypeOption.class)
+            .addAlias("-u")
+            .build());
+
+    // Does not upload logs or plugin list (except if --logs mclogs is there)
+    private final CommandFlag PARANOID_FLAG = flag(CommandFlag.builder("--paranoid")
+            .addAlias("-p")
+            .build());
+
     @Inject
-    public DumpsCommand(@NotNull MVCommandManager commandManager,
+    DumpsCommand(@NotNull MVCommandManager commandManager,
                         @NotNull MultiverseCore plugin,
                         @NotNull WorldManager worldManager) {
         super(commandManager);
         this.plugin = plugin;
         this.worldManager = worldManager;
-
-        registerFlagGroup(CommandFlagGroup.builder("mvdumps")
-                .add(CommandValueFlag.enumBuilder("--logs", LogsTypeOption.class)
-                        .addAlias("-l")
-                        .build())
-                .add(CommandValueFlag.enumBuilder("--upload", ServiceTypeOption.class)
-                        .addAlias("-u")
-                        .build())
-                .add(CommandFlag.builder("--paranoid")// Does not upload logs or plugin list (except if --logs mclogs is there)
-                        .addAlias("-p")
-                        .build())
-                .build());
     }
 
     private enum ServiceTypeOption {
@@ -81,21 +84,21 @@ public class DumpsCommand extends MultiverseCommand {
 
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
-    @CommandCompletion("@flags:groupName=mvdumps")
+    @CommandCompletion("@flags:groupName=mvdumpscommand")
     @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
     @Description("{@@mv-core.dumps.description}")
-    public void onDumpsCommand(CommandIssuer issuer,
+    void onDumpsCommand(
+            CommandIssuer issuer,
 
-                               @Optional
-                               @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
-                               String[] flags
-    ) {
+            @Optional
+            @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
+            String[] flags) {
         final ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Grab all our flags
-        final boolean paranoid = parsedFlags.hasFlag("--paranoid");
-        final LogsTypeOption logsType = parsedFlags.flagValue("--logs", LogsTypeOption.MCLOGS, LogsTypeOption.class);
-        final ServiceTypeOption servicesType = parsedFlags.flagValue("--upload", ServiceTypeOption.PASTEGG, ServiceTypeOption.class);
+        final boolean paranoid = parsedFlags.hasFlag(PARANOID_FLAG);
+        final LogsTypeOption logsType = parsedFlags.flagValue(LOGS_FLAG, LogsTypeOption.MCLOGS);
+        final ServiceTypeOption servicesType = parsedFlags.flagValue(UPLOAD_FLAG, ServiceTypeOption.PASTEGG);
 
         // Initialise and add info to the debug event
         MVVersionEvent versionEvent = new MVVersionEvent();
@@ -119,8 +122,7 @@ public class DumpsCommand extends MultiverseCommand {
                     switch (logsType) {
                         case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                                 "{service}", "Logs",
-                                "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null)
-                        );
+                                "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null));
                         case APPEND -> versionEvent.putDetailedVersionInfo("latest.log", getLogs());
                     }
                 }
@@ -132,13 +134,10 @@ public class DumpsCommand extends MultiverseCommand {
                 switch (servicesType) {
                     case PASTEGG -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                             "{service}", "paste.gg",
-                            "{link}", postToService(PasteServiceType.PASTEGG, true, null, files)
-                    );
-
+                            "{link}", postToService(PasteServiceType.PASTEGG, true, null, files));
                     case PASTESDEV -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                             "{service}", "pastes.dev",
-                            "{link}", postToService(PasteServiceType.PASTESDEV, true, null, files)
-                    );
+                            "{link}", postToService(PasteServiceType.PASTESDEV, true, null, files));
                 }
 
             }
@@ -149,6 +148,7 @@ public class DumpsCommand extends MultiverseCommand {
     }
 
     /**
+     * Get the contents of the latest.log file
      *
      * @return A string containing the latest.log file
      */
@@ -222,7 +222,8 @@ public class DumpsCommand extends MultiverseCommand {
     }
 
     /**
-     * Turns a list of files in to a string containing askii art
+     * Turns a list of files in to a string containing askii art.
+     *
      * @param files Map of filenames/contents
      * @return The askii art
      */

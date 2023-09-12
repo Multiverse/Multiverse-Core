@@ -17,10 +17,10 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")
-public class UsageCommand extends MultiverseCommand {
+class UsageCommand extends MultiverseCommand {
 
     @Inject
-    public UsageCommand(@NotNull MVCommandManager commandManager) {
+    UsageCommand(@NotNull MVCommandManager commandManager) {
         super(commandManager);
     }
 
@@ -30,7 +30,7 @@ public class UsageCommand extends MultiverseCommand {
     @CommandCompletion("@commands:mv")
     @Syntax("[filter] [page]")
     @Description("{@@mv-core.usage.description}")
-    public void onUsageCommand(CommandHelp help) {
+    void onUsageCommand(CommandHelp help) {
         if (help.getIssuer().isPlayer()) {
             // Prevent flooding the chat
             help.setPerPage(4);

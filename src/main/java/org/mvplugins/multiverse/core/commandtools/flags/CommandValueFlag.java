@@ -263,7 +263,7 @@ public class CommandValueFlag<T> extends CommandFlag {
          * @return The flag.
          */
         @Override
-        public @NotNull CommandFlag build() {
+        public @NotNull CommandValueFlag<T> build() {
             return new CommandValueFlag<>(key, aliases, type, optional, defaultValue, context, completion);
         }
     }

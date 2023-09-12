@@ -16,7 +16,6 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
@@ -25,31 +24,31 @@ import org.mvplugins.multiverse.core.worldnew.options.CloneWorldOptions;
 
 @Service
 @CommandAlias("mv")
-public class CloneCommand extends MultiverseCommand {
+class CloneCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
+    private final CommandFlag RESET_WORLD_CONFIG_FLAG = flag(CommandFlag.builder("--reset-world-config")
+            .addAlias("-wc")
+            .build());
+
+    private final CommandFlag RESET_GAMERULES_FLAG = flag(CommandFlag.builder("--reset-gamerules")
+            .addAlias("-gm")
+            .build());
+
+    private final CommandFlag RESET_WORLD_BORDER_FLAG = flag(CommandFlag.builder("--reset-world-border")
+            .addAlias("-wb")
+            .build());
+
     @Inject
-    public CloneCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    CloneCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
-
-        registerFlagGroup(CommandFlagGroup.builder("mvclone")
-                .add(CommandFlag.builder("--reset-world-config")
-                        .addAlias("-wc")
-                        .build())
-                .add(CommandFlag.builder("--reset-gamerules")
-                        .addAlias("-gm")
-                        .build())
-                .add(CommandFlag.builder("--reset-world-border")
-                        .addAlias("-wb")
-                        .build())
-                .build());
     }
 
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
-    @CommandCompletion("@mvworlds:scope=both @empty")
+    @CommandCompletion("@mvworlds:scope=loaded @empty @flags:groupName=mvclonecommand")
     @Syntax("<world> <new world name>")
     @Description("{@@mv-core.clone.description}")
     void onCloneCommand(
@@ -71,9 +70,9 @@ public class CloneCommand extends MultiverseCommand {
 
         issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newworld}", newWorldName);
         CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
-                .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
-                .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
-                .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"));
+                .keepWorldConfig(!parsedFlags.hasFlag(RESET_WORLD_CONFIG_FLAG))
+                .keepGameRule(!parsedFlags.hasFlag(RESET_GAMERULES_FLAG))
+                .keepWorldBorder(!parsedFlags.hasFlag(RESET_WORLD_BORDER_FLAG));
         worldManager.cloneWorld(cloneWorldOptions)
                 .onSuccess(newWorld -> {
                     Logging.fine("World clone success: " + newWorld);
