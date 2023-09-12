@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.worldnew.helpers;
 
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -18,6 +16,8 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
 /**
  * A helper class for manipulating files and folders.

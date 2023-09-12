@@ -9,6 +9,7 @@ import org.glassfish.hk2.internal.ServiceLocatorFactoryImpl;
 import org.glassfish.hk2.utilities.ClasspathDescriptorFileFinder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.inject.binder.JavaPluginBinder;
 import org.mvplugins.multiverse.core.inject.binder.PluginBinder;
 import org.mvplugins.multiverse.core.inject.binder.ServerBinder;

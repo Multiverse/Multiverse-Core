@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.utils.file.FileResClassLoader;
 
 /**

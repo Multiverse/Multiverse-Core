@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.utils.webpaste;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * HTTP API-client.

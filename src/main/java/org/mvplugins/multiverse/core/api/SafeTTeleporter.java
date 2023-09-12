@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.jvnet.hk2.annotations.Contract;
+
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.teleportation.TeleportResult;
 

@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNodeNotFoundException;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;

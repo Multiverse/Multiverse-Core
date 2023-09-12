@@ -10,6 +10,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;

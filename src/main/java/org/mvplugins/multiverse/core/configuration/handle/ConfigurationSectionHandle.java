@@ -6,6 +6,7 @@ import io.vavr.control.Try;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 

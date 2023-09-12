@@ -1,16 +1,17 @@
 package org.mvplugins.multiverse.core;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestModifyCommand {
     TestInstanceCreator creator;

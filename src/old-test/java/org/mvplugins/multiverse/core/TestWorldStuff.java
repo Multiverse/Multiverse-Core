@@ -7,13 +7,6 @@
 
 package org.mvplugins.multiverse.core;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 
 import org.bukkit.ChatColor;
@@ -24,8 +17,16 @@ import org.bukkit.plugin.Plugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mvplugins.multiverse.core.utils.MockWorldFactory;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TestWorldStuff {
 

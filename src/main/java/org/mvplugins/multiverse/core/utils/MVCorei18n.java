@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 

@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.worldnew.generators;
 
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +25,10 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
+
+import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
 
 /**
  * Parse the default world generators from the bukkit config and load any generator plugins.

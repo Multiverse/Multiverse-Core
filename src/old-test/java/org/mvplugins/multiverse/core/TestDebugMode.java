@@ -7,11 +7,6 @@
 
 package org.mvplugins.multiverse.core;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 
 import org.bukkit.Server;
@@ -21,8 +16,14 @@ import org.bukkit.plugin.Plugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mvplugins.multiverse.core.api.MVCore;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestDebugMode {
     TestInstanceCreator creator;

@@ -7,13 +7,6 @@
 
 package org.mvplugins.multiverse.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,9 +26,17 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mvplugins.multiverse.core.api.MVWorld;
 import org.mvplugins.multiverse.core.utils.MockWorldFactory;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TestWorldProperties {
     private TestInstanceCreator creator;

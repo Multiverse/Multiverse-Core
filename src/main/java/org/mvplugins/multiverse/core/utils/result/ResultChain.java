@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
 import io.vavr.control.Option;
+
 import org.mvplugins.multiverse.core.utils.message.Message;
 
 public class ResultChain {

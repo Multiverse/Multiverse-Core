@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.MVConfig;
 import org.mvplugins.multiverse.core.configuration.handle.CommentedYamlConfigHandle;

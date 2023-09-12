@@ -7,8 +7,6 @@
 
 package org.mvplugins.multiverse.core.world;
 
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +42,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
@@ -56,6 +55,8 @@ import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.listeners.MVPlayerListener;
 import org.mvplugins.multiverse.core.utils.UnsafeCallWrapper;
 import org.mvplugins.multiverse.core.utils.file.FileUtils;
+
+import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
 
 /**
  * Public facing API to add/remove Multiverse worlds.

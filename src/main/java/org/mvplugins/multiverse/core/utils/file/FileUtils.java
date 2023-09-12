@@ -7,9 +7,6 @@
 
 package org.mvplugins.multiverse.core.utils.file;
 
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import static org.bukkit.Bukkit.getServer;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -23,6 +20,9 @@ import java.util.stream.Stream;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.Nullable;
+
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static org.bukkit.Bukkit.getServer;
 
 /**
  * File-utilities.

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 

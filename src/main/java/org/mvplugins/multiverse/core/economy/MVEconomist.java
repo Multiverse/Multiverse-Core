@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 
 /**

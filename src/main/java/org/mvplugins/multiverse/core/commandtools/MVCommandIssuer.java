@@ -5,6 +5,7 @@ import co.aikar.commands.OpenBukkitCommandIssuer;
 import co.aikar.locales.MessageKeyProvider;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.utils.message.Message;
 
 public class MVCommandIssuer extends OpenBukkitCommandIssuer {

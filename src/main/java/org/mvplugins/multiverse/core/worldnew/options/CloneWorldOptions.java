@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.worldnew.options;
 
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 
 /**
