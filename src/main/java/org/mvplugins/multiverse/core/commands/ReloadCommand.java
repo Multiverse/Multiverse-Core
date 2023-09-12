@@ -23,7 +23,7 @@ import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
 @Service
 @CommandAlias("mv")
-public class ReloadCommand extends MultiverseCommand {
+class ReloadCommand extends MultiverseCommand {
 
     private final MVCoreConfig config;
     private final AnchorManager anchorManager;
@@ -31,13 +31,12 @@ public class ReloadCommand extends MultiverseCommand {
     private final PluginManager pluginManager;
 
     @Inject
-    public ReloadCommand(
+    ReloadCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull MVCoreConfig config,
             @NotNull AnchorManager anchorManager,
             @NotNull WorldManager worldManager,
-            @NotNull PluginManager pluginManager
-    ) {
+            @NotNull PluginManager pluginManager) {
         super(commandManager);
         this.config = config;
         this.anchorManager = anchorManager;
@@ -48,7 +47,7 @@ public class ReloadCommand extends MultiverseCommand {
     @Subcommand("reload")
     @CommandPermission("multiverse.core.reload")
     @Description("{@@mv-core.reload.description}")
-    public void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
+    void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
         try {
             // TODO: Make this all Try<Void>

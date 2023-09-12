@@ -21,12 +21,12 @@ import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
 @Service
 @CommandAlias("mv")
-public class LoadCommand extends MultiverseCommand {
+class LoadCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
     @Inject
-    public LoadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    LoadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
     }
@@ -36,14 +36,14 @@ public class LoadCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=unloaded")
     @Syntax("<world>")
     @Description("{@@mv-core.load.description}")
-    public void onLoadCommand(MVCommandIssuer issuer,
+    void onLoadCommand(
+            MVCommandIssuer issuer,
 
-                              @Single
-                              @Conditions("worldname:scope=unloaded")
-                              @Syntax("<world>")
-                              @Description("{@@mv-core.load.world.description}")
-                              String worldName
-    ) {
+            @Single
+            @Conditions("worldname:scope=unloaded")
+            @Syntax("<world>")
+            @Description("{@@mv-core.load.world.description}")
+            String worldName) {
         issuer.sendInfo(MVCorei18n.LOAD_LOADING, "{world}", worldName);
         worldManager.loadWorld(worldName)
                 .onSuccess(newWorld -> {

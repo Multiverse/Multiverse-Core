@@ -23,12 +23,12 @@ import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
 @Service
 @CommandAlias("mv")
-public class DeleteCommand extends MultiverseCommand {
+class DeleteCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
     @Inject
-    public DeleteCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    DeleteCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
     }
@@ -38,14 +38,14 @@ public class DeleteCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=both")
     @Syntax("<world>")
     @Description("{@@mv-core.delete.description}")
-    public void onDeleteCommand(MVCommandIssuer issuer,
+    void onDeleteCommand(
+            MVCommandIssuer issuer,
 
-                                @Single
-                                @Conditions("worldname:scope=both")
-                                @Syntax("<world>")
-                                @Description("The world you want to delete.")
-                                String worldName
-    ) {
+            @Single
+            @Conditions("worldname:scope=both")
+            @Syntax("<world>")
+            @Description("The world you want to delete.")
+            String worldName) {
         this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
                 issuer.getIssuer(),
                 () -> {
@@ -58,12 +58,7 @@ public class DeleteCommand extends MultiverseCommand {
                                 Logging.fine("World delete failure: " + failure);
                                 issuer.sendError(failure.getFailureMessage());
                             });
-                },
-                this.commandManager.formatMessage(
-                        issuer,
-                        MessageType.INFO,
-                        MVCorei18n.DELETE_PROMPT,
-                        "{world}", worldName)
-        ));
+                }, this.commandManager.formatMessage(
+                        issuer, MessageType.INFO, MVCorei18n.DELETE_PROMPT, "{world}", worldName)));
     }
 }

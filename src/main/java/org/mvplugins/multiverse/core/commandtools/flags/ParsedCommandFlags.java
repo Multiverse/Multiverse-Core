@@ -88,6 +88,17 @@ public class ParsedCommandFlags
      *
      * @param <T>           The type of the value.
      * @param flag          The flag to get the value of.
+     * @return The value of the flag, default value if flag does not exist or no value.
+     */
+    public @Nullable <T> T flagValue(@NotNull CommandValueFlag<T> flag) {
+        return flagValue(flag.getKey(), flag.getType());
+    }
+
+    /**
+     * Get the value of a flag.
+     *
+     * @param <T>           The type of the value.
+     * @param flag          The flag to get the value of.
      * @param defaultValue  The default value if flag does not exist or no value.
      * @return The value of the flag, default value if flag does not exist or no value.
      */

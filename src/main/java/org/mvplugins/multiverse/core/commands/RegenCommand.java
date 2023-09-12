@@ -20,7 +20,6 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
@@ -31,49 +30,49 @@ import org.mvplugins.multiverse.core.worldnew.options.RegenWorldOptions;
 
 @Service
 @CommandAlias("mv")
-public class RegenCommand extends MultiverseCommand {
+class RegenCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
 
+    private final CommandValueFlag<String> SEED_FLAG = flag(CommandValueFlag.builder("--seed", String.class)
+            .addAlias("-s")
+            .completion(input -> Collections.singleton(String.valueOf(new Random().nextLong())))
+            .build());
+
+    private final CommandFlag RESET_WORLD_CONFIG_FLAG = flag(CommandFlag.builder("--reset-world-config")
+            .addAlias("-wc")
+            .build());
+
+    private final CommandFlag RESET_GAMERULES_FLAG = flag(CommandFlag.builder("--reset-gamerules")
+            .addAlias("-gm")
+            .build());
+
+    private final CommandFlag RESET_WORLD_BORDER_FLAG = flag(CommandFlag.builder("--reset-world-border")
+            .addAlias("-wb")
+            .build());
+
     @Inject
-    public RegenCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    RegenCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
         super(commandManager);
         this.worldManager = worldManager;
-
-        registerFlagGroup(CommandFlagGroup.builder("mvregen")
-                .add(CommandValueFlag.builder("--seed", String.class)
-                        .addAlias("-s")
-                        .completion((input) -> Collections.singleton(String.valueOf(new Random().nextLong())))
-                        .optional()
-                        .build())
-                .add(CommandFlag.builder("--reset-world-config")
-                        .addAlias("-wc")
-                        .build())
-                .add(CommandFlag.builder("--reset-gamerules")
-                        .addAlias("-gm")
-                        .build())
-                .add(CommandFlag.builder("--reset-world-border")
-                        .addAlias("-wb")
-                        .build())
-                .build());
     }
 
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
-    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregen")
+    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregencommand")
     @Syntax("<world> --seed [seed] --keep-gamerules")
     @Description("{@@mv-core.regen.description}")
-    public void onRegenCommand(MVCommandIssuer issuer,
+    void onRegenCommand(
+            MVCommandIssuer issuer,
 
-                               @Syntax("<world>")
-                               @Description("{@@mv-core.regen.world.description}")
-                               LoadedMultiverseWorld world,
+            @Syntax("<world>")
+            @Description("{@@mv-core.regen.world.description}")
+            LoadedMultiverseWorld world,
 
-                               @Optional
-                               @Syntax("--seed [seed] --reset-gamerules")
-                               @Description("{@@mv-core.regen.other.description}")
-                               String[] flags
-    ) {
+            @Optional
+            @Syntax("--seed [seed] --reset-gamerules")
+            @Description("{@@mv-core.regen.other.description}")
+            String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
@@ -81,11 +80,11 @@ public class RegenCommand extends MultiverseCommand {
                 () -> {
                     issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, "{world}", world.getName());
                     worldManager.regenWorld(RegenWorldOptions.world(world)
-                            .randomSeed(parsedFlags.hasFlag("--seed"))
-                            .seed(parsedFlags.flagValue("--seed", String.class))
-                            .keepWorldConfig(!parsedFlags.hasFlag("--reset-world-config"))
-                            .keepGameRule(!parsedFlags.hasFlag("--reset-gamerules"))
-                            .keepWorldBorder(!parsedFlags.hasFlag("--reset-world-border"))
+                            .randomSeed(parsedFlags.hasFlag(SEED_FLAG))
+                            .seed(parsedFlags.flagValue(SEED_FLAG))
+                            .keepWorldConfig(!parsedFlags.hasFlag(RESET_WORLD_CONFIG_FLAG))
+                            .keepGameRule(!parsedFlags.hasFlag(RESET_GAMERULES_FLAG))
+                            .keepWorldBorder(!parsedFlags.hasFlag(RESET_WORLD_BORDER_FLAG))
                     ).onSuccess(newWorld -> {
                         Logging.fine("World regen success: " + newWorld);
                         issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, "{world}", newWorld.getName());
@@ -95,10 +94,6 @@ public class RegenCommand extends MultiverseCommand {
                     });
                 },
                 this.commandManager.formatMessage(
-                        issuer,
-                        MessageType.INFO,
-                        MVCorei18n.REGEN_PROMPT,
-                        "{world}", world.getName())
-        ));
+                        issuer, MessageType.INFO, MVCorei18n.REGEN_PROMPT, "{world}", world.getName())));
     }
 }

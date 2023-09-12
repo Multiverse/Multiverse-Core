@@ -14,18 +14,18 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
-public class RootCommand extends MultiverseCommand {
+class RootCommand extends MultiverseCommand {
 
     private final Plugin plugin;
 
     @Inject
-    public RootCommand(@NotNull MVCommandManager commandManager, @NotNull MultiverseCore plugin) {
+    RootCommand(@NotNull MVCommandManager commandManager, @NotNull MultiverseCore plugin) {
         super(commandManager);
         this.plugin = plugin;
     }
 
     @CommandAlias("mv")
-    public void onRootCommand(CommandIssuer issuer) {
+    void onRootCommand(CommandIssuer issuer) {
         PluginDescriptionFile description = this.plugin.getDescription();
         issuer.sendInfo(MVCorei18n.ROOT_TITLE,
                 "{name}", description.getName(),

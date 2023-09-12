@@ -35,68 +35,68 @@ import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvid
 
 @Service
 @CommandAlias("mv")
-public class ListCommand extends MultiverseCommand {
+class ListCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
+    private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
+            .builder("--page", Integer.class)
+            .addAlias("-p")
+            .context(value -> {
+                try {
+                    return Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    throw new InvalidCommandArgument("Invalid page number: " + value);
+                }
+            })
+            .build());
+
+    private final CommandValueFlag<ContentFilter> FILTER_FLAG = flag(CommandValueFlag
+            .builder("--filter", ContentFilter.class)
+            .addAlias("-f")
+            .context(value -> {
+                try {
+                    return RegexContentFilter.fromString(value);
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidCommandArgument("Invalid filter: " + value);
+                }
+            })
+            .build());
+
     @Inject
-    public ListCommand(
+    ListCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider
-    ) {
+            @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider) {
         super(commandManager);
         this.worldManager = worldManager;
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
-
-        registerFlagGroup(CommandFlagGroup.builder("mvlist")
-                .add(CommandValueFlag.builder("--filter", ContentFilter.class)
-                        .addAlias("-f")
-                        .context((value) -> {
-                            try {
-                                return RegexContentFilter.fromString(value);
-                            } catch (IllegalArgumentException e) {
-                                throw new InvalidCommandArgument("Invalid filter: " + value);
-                            }
-                        })
-                        .build())
-                .add(CommandValueFlag.builder("--page", Integer.class)
-                        .addAlias("-p")
-                        .context((value) -> {
-                            try {
-                                return Integer.parseInt(value);
-                            } catch (NumberFormatException e) {
-                                throw new InvalidCommandArgument("Invalid page number: " + value);
-                            }
-                        })
-                        .build())
-                .build());
     }
 
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
-    @CommandCompletion("@flags:groupName=mvlist")
+    @CommandCompletion("@flags:groupName=mvlistcommand")
     @Syntax("--filter [filter] --page [page]")
     @Description("Displays a listing of all worlds that you can enter.")
-    public void onListCommand(MVCommandIssuer issuer,
+    public void onListCommand(
+            MVCommandIssuer issuer,
 
-                              @Syntax("--filter [filter] --page [page]")
-                              @Description("Filters the list of worlds by the given regex and displays the given page.")
-                              String[] flags
-    ) {
+            @Syntax("[--filter <filter>] [--page <page>]")
+            @Description("Filters the list of worlds by the given regex and displays the given page.")
+            String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
         ContentDisplay.create()
                 .addContent(ListContentProvider.forContent(getListContents(issuer)))
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse World List ]====", ChatColor.GOLD)
-                        .withTargetPage(parsedFlags.flagValue("--page", 1, Integer.class))
-                        .withFilter(parsedFlags.flagValue("--filter", DefaultContentFilter.get(), ContentFilter.class)))
+                        .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
+                        .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
     private List<String> getListContents(MVCommandIssuer issuer) {
-        List<String> worldList =  new ArrayList<>();
+        List<String> worldList = new ArrayList<>();
         WorldEntryChecker worldEntryChecker = worldEntryCheckerProvider.forSender(issuer.getIssuer());
 
         worldManager.getLoadedWorlds().stream()

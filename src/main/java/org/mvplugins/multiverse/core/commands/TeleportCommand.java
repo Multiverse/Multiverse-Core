@@ -24,12 +24,12 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-public class TeleportCommand extends MultiverseCommand {
+class TeleportCommand extends MultiverseCommand {
 
     private final DestinationsProvider destinationsProvider;
 
     @Inject
-    public TeleportCommand(MVCommandManager commandManager, DestinationsProvider destinationsProvider) {
+    TeleportCommand(MVCommandManager commandManager, DestinationsProvider destinationsProvider) {
         super(commandManager);
         this.destinationsProvider = destinationsProvider;
     }
@@ -39,17 +39,17 @@ public class TeleportCommand extends MultiverseCommand {
     @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
     @Description("{@@mv-core.teleport.description}")
-    public void onTeleportCommand(BukkitCommandIssuer issuer,
+    void onTeleportCommand(
+            BukkitCommandIssuer issuer,
 
-                                  @Flags("resolve=issuerAware")
-                                  @Syntax("[player]")
-                                  @Description("{@@mv-core.teleport.player.description}")
-                                  Player[] players,
+            @Flags("resolve=issuerAware")
+            @Syntax("[player]")
+            @Description("{@@mv-core.teleport.player.description}")
+            Player[] players,
 
-                                  @Syntax("<destination>")
-                                  @Description("{@@mv-core.teleport.destination.description}")
-                                  ParsedDestination<?> destination
-    ) {
+            @Syntax("<destination>")
+            @Description("{@@mv-core.teleport.destination.description}")
+            ParsedDestination<?> destination) {
         // TODO: Add warning if teleporting too many players at once.
 
         String playerName = players.length == 1

@@ -14,17 +14,17 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")
-public class ConfirmCommand extends MultiverseCommand {
+class ConfirmCommand extends MultiverseCommand {
 
     @Inject
-    public ConfirmCommand(@NotNull MVCommandManager commandManager) {
+    ConfirmCommand(@NotNull MVCommandManager commandManager) {
         super(commandManager);
     }
 
     @Subcommand("confirm")
     @CommandPermission("multiverse.core.confirm")
     @Description("{@@mv-core.confirm.description}")
-    public void onConfirmCommand(@NotNull BukkitCommandIssuer issuer) {
+    void onConfirmCommand(@NotNull BukkitCommandIssuer issuer) {
         this.commandManager.getCommandQueueManager().runQueuedCommand(issuer.getIssuer());
     }
 }

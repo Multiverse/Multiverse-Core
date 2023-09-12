@@ -19,12 +19,12 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-public class DebugCommand extends MultiverseCommand {
+class DebugCommand extends MultiverseCommand {
 
     private final MVCoreConfig config;
 
     @Inject
-    public DebugCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
+    DebugCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
         super(commandManager);
         this.config = config;
     }
@@ -32,7 +32,7 @@ public class DebugCommand extends MultiverseCommand {
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @Description("{@@mv-core.debug.info.description}")
-    public void onShowDebugCommand(BukkitCommandIssuer issuer) {
+    void onShowDebugCommand(BukkitCommandIssuer issuer) {
         this.displayDebugMode(issuer);
     }
 
@@ -41,11 +41,12 @@ public class DebugCommand extends MultiverseCommand {
     @CommandCompletion("@range:3")
     @Syntax("<{@@mv-core.debug.change.syntax}>")
     @Description("{@@mv-core.debug.change.description}")
-    public void onChangeDebugCommand(BukkitCommandIssuer issuer,
+    void onChangeDebugCommand(
+            BukkitCommandIssuer issuer,
 
-                                     @Syntax("<{@@mv-core.debug.change.syntax}>")
-                                     @Description("{@@mv-core.debug.change.level.description}")
-                                     int level) {
+            @Syntax("<{@@mv-core.debug.change.syntax}>")
+            @Description("{@@mv-core.debug.change.level.description}")
+            int level) {
 
         config.setGlobalDebug(level);
         config.save();
