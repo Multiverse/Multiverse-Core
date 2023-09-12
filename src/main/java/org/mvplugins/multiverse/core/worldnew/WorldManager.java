@@ -37,6 +37,7 @@ import org.mvplugins.multiverse.core.worldnew.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.worldnew.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.worldnew.helpers.DataTransfer;
 import org.mvplugins.multiverse.core.worldnew.helpers.FilesManipulator;
+import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldActions;
 import org.mvplugins.multiverse.core.worldnew.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.worldnew.options.CreateWorldOptions;
 import org.mvplugins.multiverse.core.worldnew.options.ImportWorldOptions;
@@ -71,6 +72,7 @@ public class WorldManager {
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
     private final GeneratorProvider generatorProvider;
+    private final PlayerWorldActions playerWorldActions;
     private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
     private final SafeTTeleporter safetyTeleporter;
@@ -81,6 +83,7 @@ public class WorldManager {
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull GeneratorProvider generatorProvider,
+            @NotNull PlayerWorldActions playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
             @NotNull SafeTTeleporter safetyTeleporter,
@@ -93,6 +96,7 @@ public class WorldManager {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.generatorProvider = generatorProvider;
+        this.playerWorldActions = playerWorldActions;
         this.filesManipulator = filesManipulator;
         this.blockSafety = blockSafety;
         this.safetyTeleporter = safetyTeleporter;
@@ -374,7 +378,7 @@ public class WorldManager {
         }
 
         if (options.removePlayers()) {
-            removePlayersFromWorld(world);
+            playerWorldActions.removeFromWorld(world);
         }
 
         return unloadBukkitWorld(world.getBukkitWorld().getOrNull(), options.saveBukkitWorld()).fold(
@@ -390,16 +394,6 @@ public class WorldManager {
                             mvWorld.getWorldConfig().deferenceMVWorld();
                             return worldActionResult(getWorld(mvWorld.getName()).get());
                         }));
-    }
-
-    private void removePlayersFromWorld(@NotNull LoadedMultiverseWorld world) {
-        world.getPlayers().peek(players -> players.forEach(player -> {
-            Location spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-            if (player.isOnline()) {
-                Logging.fine("Teleporting player '%s' to world spawn: %s", player.getName(), spawnLocation);
-                safetyTeleporter.safelyTeleport(null, player, spawnLocation, true);
-            }
-        }));
     }
 
     /**
@@ -623,18 +617,9 @@ public class WorldManager {
                         // different seed.
                         newWorld.setSpawnLocation(spawnLocation);
                     }
-                    teleportPlayersToWorld(playersInWorld, newWorld);
+                    playerWorldActions.teleportPlayersToWorld(playersInWorld, newWorld);
                     saveWorldsConfig();
                 });
-    }
-
-    private void teleportPlayersToWorld(@NotNull List<Player> players, @NotNull LoadedMultiverseWorld world) {
-        players.forEach(player -> {
-            Location spawnLocation = world.getSpawnLocation();
-            if (player.isOnline()) {
-                safetyTeleporter.safelyTeleport(null, player, spawnLocation, true);
-            }
-        });
     }
 
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(@NotNull T value) {
