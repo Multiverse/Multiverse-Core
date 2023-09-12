@@ -120,6 +120,21 @@ class MVCoreConfigNodes {
             .name("first-spawn-location")
             .build());
 
+    final ConfigNode<Boolean> ENABLE_JOIN_DESTINATION = node(ConfigNode.builder("spawn.enable-join-destination", Boolean.class)
+            .comment("")
+            .comment("Enables join-destination below.")
+            .defaultValue(false)
+            .name("enable-join-destination")
+            .build());
+
+    final ConfigNode<String> JOIN_DESTINATION = node(ConfigNode.builder("spawn.join-destination", String.class)
+            .comment("")
+            .comment("Sets the destination that Multiverse will use to spawn players on every login")
+            .comment("Set the above enable-join-destination to false to disable")
+            .defaultValue("")
+            .name("join-destination")
+            .build());
+
     private final ConfigHeaderNode PORTAL_HEADER = node(ConfigHeaderNode.builder("portal")
             .comment("")
             .comment("")

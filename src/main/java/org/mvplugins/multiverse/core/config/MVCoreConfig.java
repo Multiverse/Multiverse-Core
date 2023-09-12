@@ -3,12 +3,14 @@ package org.mvplugins.multiverse.core.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
@@ -178,6 +180,30 @@ public class MVCoreConfig implements MVConfig {
     @Override
     public String getFirstSpawnLocation() {
         return configHandle.get(configNodes.FIRST_SPAWN_LOCATION);
+    }
+
+    @Override
+    public void setEnableJoinDestination(boolean enableJoinDestination) {
+        configHandle.set(configNodes.ENABLE_JOIN_DESTINATION, enableJoinDestination);
+    }
+
+    @Override
+    public boolean getEnableJoinDestination() {
+        return  configHandle.get(configNodes.ENABLE_JOIN_DESTINATION);
+    }
+
+    @Override
+    public void setJoinDestination(String alwaysSpawnDestination) {
+        configHandle.set(configNodes.JOIN_DESTINATION, alwaysSpawnDestination);
+    }
+
+    @Override
+    @Nullable
+    public String getJoinDestination() {
+        if (Objects.equals(configHandle.get(configNodes.JOIN_DESTINATION), "")) {
+            return null;
+        }
+        return  configHandle.get(configNodes.JOIN_DESTINATION);
     }
 
     @Override

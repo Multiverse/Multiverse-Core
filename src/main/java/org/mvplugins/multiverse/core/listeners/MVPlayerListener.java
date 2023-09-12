@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
@@ -57,7 +58,7 @@ public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
-    private final SafeTTeleporter safeTTeleporter;
+    private final SafeTTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
@@ -73,7 +74,7 @@ public class MVPlayerListener implements InjectableListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
-            SafeTTeleporter safeTTeleporter,
+            SafeTTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
@@ -84,7 +85,7 @@ public class MVPlayerListener implements InjectableListener {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
-        this.safeTTeleporter = safeTTeleporter;
+        this.safetyTeleporter = safetyTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
         this.economist = economist;
@@ -178,18 +179,41 @@ public class MVPlayerListener implements InjectableListener {
                             Logging.fine("Moving NEW player to(firstspawnoverride): %s", config.getFirstSpawnLocation());
                             this.sendPlayerToDefaultWorld(player, parsedDestination);
                         }
-                    } else {
-                        Logging.finer("Player joined AGAIN!");
-                        if (worldEntryCheckerProvider.forSender(player).canAccessWorld(world).isFailure()) {
-                            player.sendMessage("[MV] - Sorry you can't be in this world anymore!");
-                            this.sendPlayerToDefaultWorld(player, parsedDestination);
-                        }
                     }
+                    handleJoinDestination(player);
                 });
 
         // Handle the Players GameMode setting for the new world.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
         playerWorld.put(player.getName(), player.getWorld().getName());
+    }
+
+    /**
+     * Will teleport the player to the destination specified in config
+     * @param player The {@link Player} to teleport
+     */
+    private void handleJoinDestination(@NotNull Player player) {
+        if (!config.getEnableJoinDestination()) {
+            Logging.finer("JoinDestination is disabled");
+            // User has disabled the feature in config
+            return;
+        }
+
+        if (config.getJoinDestination() == null) {
+            Logging.warning("Joindestination is enabled but no destination has been specified in config!");
+            return;
+        }
+
+        Logging.finer("JoinDestination is " + config.getJoinDestination());
+        ParsedDestination<?> joinDestination = destinationsProvider.parseDestination(config.getJoinDestination());
+
+        if (joinDestination == null) {
+            Logging.warning("The destination in JoinDestination in config is invalid");
+            return;
+        }
+
+        // Finally, teleport the player
+        safetyTeleporter.teleportAsync(getCommandManager().getCommandIssuer(player), player, joinDestination);
     }
 
     /**
@@ -278,7 +302,7 @@ public class MVPlayerListener implements InjectableListener {
         // REMEMBER! getTo MAY be NULL HERE!!!
         // If the player was actually outside of the portal, adjust the from location
         if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.NETHER_PORTAL) {
-            Location newloc = this.safeTTeleporter.findPortalBlockNextTo(event.getFrom());
+            Location newloc = this.safetyTeleporter.findPortalBlockNextTo(event.getFrom());
             // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
             // TODO: we want to do here.
             if (newloc != null) {
@@ -330,7 +354,7 @@ public class MVPlayerListener implements InjectableListener {
             new Runnable() {
                 @Override
                 public void run() {
-                    safeTTeleporter.safelyTeleportAsync(getCommandManager().getCommandIssuer(player), player, parsedDestination);
+                    safetyTeleporter.safelyTeleportAsync(getCommandManager().getCommandIssuer(player), player, parsedDestination);
                 }
             }, 1L);
     }
