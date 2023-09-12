@@ -9,19 +9,24 @@ import co.aikar.commands.ConditionFailedException;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.world.WorldNameChecker;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 public class MVCommandConditions {
-    static void load(MVCommandManager commandManager, WorldManager worldManager) {
-        new MVCommandConditions(commandManager, worldManager);
+    static void load(MVCommandManager commandManager, WorldManager worldManager, WorldNameChecker worldNameChecker) {
+        new MVCommandConditions(commandManager, worldManager, worldNameChecker);
     }
 
     private final WorldManager worldManager;
     private final MVCommandManager commandManager;
+    private final WorldNameChecker worldNameChecker;
 
-    private MVCommandConditions(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    private MVCommandConditions(
+            @NotNull MVCommandManager commandManager,
+            @NotNull WorldManager worldManager,
+            @NotNull WorldNameChecker worldNameChecker) {
         this.worldManager = worldManager;
         this.commandManager = commandManager;
+        this.worldNameChecker = worldNameChecker;
         registerConditions();
     }
 
@@ -32,10 +37,10 @@ public class MVCommandConditions {
         conditions.addCondition(String.class, "worldname", this::checkWorldname);
     }
 
-    private void checkWorldname(ConditionContext<BukkitCommandIssuer> context,
-                                BukkitCommandExecutionContext executionContext,
-                                String worldName
-    ) {
+    private void checkWorldname(
+            ConditionContext<BukkitCommandIssuer> context,
+            BukkitCommandExecutionContext executionContext,
+            String worldName) {
         String scope = context.getConfigValue("scope", "loaded");
 
         switch (scope) {
@@ -65,7 +70,7 @@ public class MVCommandConditions {
                 if (this.worldManager.isWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' already exists!");
                 }
-                switch (WorldNameChecker.checkName(worldName)) {
+                switch (worldNameChecker.checkName(worldName)) {
                     case INVALID_CHARS ->
                             throw new ConditionFailedException("World name '" + worldName + "' contains invalid characters!");
                     case BLACKLISTED ->

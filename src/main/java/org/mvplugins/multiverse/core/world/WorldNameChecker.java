@@ -1,14 +1,13 @@
 package org.mvplugins.multiverse.core.world;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * <p>Utility class in helping to check the status of a world name and it's associated world folder.</p>
@@ -16,15 +15,17 @@ import org.jetbrains.annotations.Nullable;
  * <p>Note this is for preliminary checks and better command output. A valid result will suggest but not
  * 100% determine that a world name can be created, loaded or imported.</p>
  */
+@Service
 public class WorldNameChecker {
 
     private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
-    private static final Set<String> BLACKLIST_NAMES = Collections.unmodifiableSet(new HashSet<String>() {{
-        add("plugins");
-        add("logs");
-        add("cache");
-        add("crash-reports");
-    }});
+    private static final Set<String> BLACKLIST_NAMES = Set.of(
+            "cache",
+            "config",
+            "crash-reports",
+            "logs",
+            "plugins",
+            "versions");
 
     /**
      * Checks if a world name is valid.
@@ -32,7 +33,7 @@ public class WorldNameChecker {
      * @param worldName The world name to check on.
      * @return True if check result is valid, else false.
      */
-    public static boolean isValidWorldName(@Nullable String worldName) {
+    public boolean isValidWorldName(@Nullable String worldName) {
         return checkName(worldName) == NameStatus.VALID;
     }
 
@@ -43,7 +44,7 @@ public class WorldNameChecker {
      * @return The resulting name status.
      */
     @NotNull
-    public static NameStatus checkName(@Nullable String worldName) {
+    public NameStatus checkName(@Nullable String worldName) {
         if (BLACKLIST_NAMES.contains(worldName)) {
             return NameStatus.BLACKLISTED;
         }
@@ -59,7 +60,7 @@ public class WorldNameChecker {
      * @param worldName The world name to check on.
      * @return True if check result is valid, else false.
      */
-    public static boolean isValidWorldFolder(@Nullable String worldName) {
+    public boolean isValidWorldFolder(@Nullable String worldName) {
         return checkFolder(worldName) == FolderStatus.VALID;
     }
 
@@ -69,7 +70,7 @@ public class WorldNameChecker {
      * @param worldFolder   The world folder to check on.
      * @return True if check result is valid, else false.
      */
-    public static boolean isValidWorldFolder(@Nullable File worldFolder) {
+    public boolean isValidWorldFolder(@Nullable File worldFolder) {
         return checkFolder(worldFolder) == FolderStatus.VALID;
     }
 
@@ -80,7 +81,7 @@ public class WorldNameChecker {
      * @return The resulting folder status.
      */
     @NotNull
-    public static FolderStatus checkFolder(@Nullable String worldName) {
+    public FolderStatus checkFolder(@Nullable String worldName) {
         if (worldName == null) {
             return FolderStatus.DOES_NOT_EXIST;
         }
@@ -95,7 +96,7 @@ public class WorldNameChecker {
      * @return The resulting folder status.
      */
     @NotNull
-    public static FolderStatus checkFolder(@Nullable File worldFolder) {
+    public FolderStatus checkFolder(@Nullable File worldFolder) {
         if (worldFolder == null || !worldFolder.exists() || !worldFolder.isDirectory()) {
             return FolderStatus.DOES_NOT_EXIST;
         }
@@ -112,7 +113,7 @@ public class WorldNameChecker {
      * @param worldFolder   The File that may be a world.
      * @return True if it looks like a world, else false.
      */
-    private static boolean folderHasDat(@NotNull File worldFolder) {
+    private boolean folderHasDat(@NotNull File worldFolder) {
         File[] files = worldFolder.listFiles((file, name) -> name.toLowerCase().endsWith(".dat"));
         return files != null && files.length > 0;
     }

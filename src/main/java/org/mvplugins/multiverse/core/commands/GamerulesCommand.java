@@ -33,7 +33,7 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
  * List all gamerules in your current or specified world.

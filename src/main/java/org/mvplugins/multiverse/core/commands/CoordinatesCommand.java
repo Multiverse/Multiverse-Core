@@ -15,7 +15,7 @@ import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 @Service
 @CommandAlias("mv")

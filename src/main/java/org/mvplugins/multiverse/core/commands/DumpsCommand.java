@@ -27,7 +27,6 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.event.MVVersionEvent;
@@ -36,7 +35,7 @@ import org.mvplugins.multiverse.core.utils.webpaste.PasteFailedException;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteService;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceFactory;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
 import static org.mvplugins.multiverse.core.utils.file.FileUtils.getServerProperties;
