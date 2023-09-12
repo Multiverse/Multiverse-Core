@@ -58,7 +58,7 @@ public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
-    private final SafeTTeleporter safeTTeleporter;
+    private final SafeTTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
@@ -74,7 +74,7 @@ public class MVPlayerListener implements InjectableListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
-            SafeTTeleporter safeTTeleporter,
+            SafeTTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
@@ -85,7 +85,7 @@ public class MVPlayerListener implements InjectableListener {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
-        this.safeTTeleporter = safeTTeleporter;
+        this.safetyTeleporter = safetyTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
         this.economist = economist;
@@ -212,14 +212,8 @@ public class MVPlayerListener implements InjectableListener {
             return;
         }
 
-        Location joinDestinationLocation = joinDestination.getLocation(player);
-        if (joinDestinationLocation == null) {
-            Logging.finer("Not teleporting " + player.getName() + " because joinDestination is null");
-            return;
-        }
-
         // Finally, teleport the player
-        player.teleport(joinDestinationLocation);
+        safetyTeleporter.teleportAsync(getCommandManager().getCommandIssuer(player), player, joinDestination);
     }
 
     /**
@@ -308,7 +302,7 @@ public class MVPlayerListener implements InjectableListener {
         // REMEMBER! getTo MAY be NULL HERE!!!
         // If the player was actually outside of the portal, adjust the from location
         if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.NETHER_PORTAL) {
-            Location newloc = this.safeTTeleporter.findPortalBlockNextTo(event.getFrom());
+            Location newloc = this.safetyTeleporter.findPortalBlockNextTo(event.getFrom());
             // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
             // TODO: we want to do here.
             if (newloc != null) {
@@ -360,7 +354,7 @@ public class MVPlayerListener implements InjectableListener {
             new Runnable() {
                 @Override
                 public void run() {
-                    safeTTeleporter.safelyTeleportAsync(getCommandManager().getCommandIssuer(player), player, parsedDestination);
+                    safetyTeleporter.safelyTeleportAsync(getCommandManager().getCommandIssuer(player), player, parsedDestination);
                 }
             }, 1L);
     }

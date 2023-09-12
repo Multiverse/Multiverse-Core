@@ -183,8 +183,18 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public void setJoinDestination(String alwaysSpawnWorld) {
-        configHandle.set(configNodes.JOIN_DESTINATION, alwaysSpawnWorld);
+    public void setEnableJoinDestination(boolean enableJoinDestination) {
+        configHandle.set(configNodes.ENABLE_JOIN_DESTINATION, enableJoinDestination);
+    }
+
+    @Override
+    public boolean getEnableJoinDestination() {
+        return  configHandle.get(configNodes.ENABLE_JOIN_DESTINATION);
+    }
+
+    @Override
+    public void setJoinDestination(String alwaysSpawnDestination) {
+        configHandle.set(configNodes.JOIN_DESTINATION, alwaysSpawnDestination);
     }
 
     @Override
@@ -194,16 +204,6 @@ public class MVCoreConfig implements MVConfig {
             return null;
         }
         return  configHandle.get(configNodes.JOIN_DESTINATION);
-    }
-
-    @Override
-    public void setEnableJoinDestination(boolean enableJoinDestination) {
-        configHandle.set(configNodes.ENABLE_JOIN_DESTINATION, enableJoinDestination);
-    }
-
-    @Override
-    public boolean getEnableJoinDestination() {
-        return  configHandle.get(configNodes.ENABLE_JOIN_DESTINATION);
     }
 
     @Override
