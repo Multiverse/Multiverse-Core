@@ -24,6 +24,7 @@ import org.mvplugins.multiverse.core.configuration.migration.NullStringMigratorA
 import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
 
 /**
  * Represents a world configuration.
@@ -34,9 +35,12 @@ public final class WorldConfig {
     private final WorldConfigNodes configNodes;
     private final ConfigurationSectionHandle configHandle;
 
-    WorldConfig(@NotNull String worldName, @NotNull final ConfigurationSection configSection) {
+    WorldConfig(
+            @NotNull String worldName,
+            @NotNull ConfigurationSection configSection,
+            @NotNull EnforcementHandler enforcementHandler) {
         this.worldName = worldName;
-        this.configNodes = new WorldConfigNodes();
+        this.configNodes = new WorldConfigNodes(enforcementHandler);
         this.configHandle = ConfigurationSectionHandle.builder(configSection)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())
@@ -364,14 +368,14 @@ public final class WorldConfig {
     }
 
     public void setMVWorld(@NotNull LoadedMultiverseWorld world) {
-        configNodes.world = world;
+        configNodes.setWorld(world);
     }
 
     public boolean hasMVWorld() {
-        return configNodes.world != null;
+        return configNodes.getWorld() != null;
     }
 
     public void deferenceMVWorld() {
-        configNodes.world = null;
+        configNodes.setWorld(null);
     }
 }

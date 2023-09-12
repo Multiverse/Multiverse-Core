@@ -15,7 +15,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -32,7 +31,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.SafeTTeleporter;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
@@ -49,6 +47,8 @@ import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
 import org.mvplugins.multiverse.core.worldnew.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvider;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
+import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
 
 /**
  * Multiverse's Listener for players.
@@ -64,8 +64,8 @@ public class MVPlayerListener implements InjectableListener {
     private final MVEconomist economist;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
     private final Provider<MVCommandManager> commandManagerProvider;
-    private final CorePermissionsChecker permissionsChecker;
     private final DestinationsProvider destinationsProvider;
+    private final EnforcementHandler enforcementHandler;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
@@ -80,8 +80,8 @@ public class MVPlayerListener implements InjectableListener {
             MVEconomist economist,
             WorldEntryCheckerProvider worldEntryCheckerProvider,
             Provider<MVCommandManager> commandManagerProvider,
-            CorePermissionsChecker permissionsChecker,
-            DestinationsProvider destinationsProvider) {
+            DestinationsProvider destinationsProvider,
+            EnforcementHandler enforcementHandler) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -91,8 +91,8 @@ public class MVPlayerListener implements InjectableListener {
         this.economist = economist;
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
         this.commandManagerProvider = commandManagerProvider;
-        this.permissionsChecker = permissionsChecker;
         this.destinationsProvider = destinationsProvider;
+        this.enforcementHandler = enforcementHandler;
     }
 
     private WorldManager getWorldManager() {
@@ -359,57 +359,21 @@ public class MVPlayerListener implements InjectableListener {
             }, 1L);
     }
 
-    // FOLLOWING 2 Methods and Private class handle Per Player GameModes.
-    private void handleGameModeAndFlight(Player player, World world) {
-
-        LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(world.getName()).getOrNull();
-        if (mvWorld != null) {
-            this.handleGameModeAndFlight(player, mvWorld);
-        } else {
-            Logging.finer("Not handling gamemode and flight for world '" + world.getName()
-                    + "' not managed by Multiverse.");
-        }
-    }
-
     /**
      * Handles the gamemode for the specified {@link Player}.
+     *
      * @param player The {@link Player}.
-     * @param world The world the player is in.
+     * @param world  The {@link World} the player is supposed to be in.
      */
-    public void handleGameModeAndFlight(final Player player, final LoadedMultiverseWorld world) {
+    private void handleGameModeAndFlight(final Player player, World world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
-        this.server.getScheduler().scheduleSyncDelayedTask(this.plugin,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!permissionsChecker.hasGameModeBypassPermission(player, world)) {
-                            // Check that the player is in the new world and they haven't been teleported elsewhere or the event cancelled.
-                            if (player.getWorld() == world.getBukkitWorld().getOrNull()) {
-                                Logging.fine("Handling gamemode for player: %s, Changing to %s", player.getName(), world.getGameMode().toString());
-                                Logging.finest("From World: %s", player.getWorld());
-                                Logging.finest("To World: %s", world);
-                                player.setGameMode(world.getGameMode());
-                                // Check if their flight mode should change
-                                // TODO: need a override permission for this
-                                if (player.getAllowFlight() && !world.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
-                                    player.setAllowFlight(false);
-                                    if (player.isFlying()) {
-                                        player.setFlying(false);
-                                    }
-                                } else if (world.getAllowFlight()) {
-                                    if (player.getGameMode() == GameMode.CREATIVE) {
-                                        player.setAllowFlight(true);
-                                    }
-                                }
-                            } else {
-                                Logging.fine("The gamemode/allowfly was NOT changed for player '%s' because he is now in world '%s' instead of world '%s'",
-                                        player.getName(), player.getWorld().getName(), world.getName());
-                            }
-                        } else {
-                            Logging.fine("Player: " + player.getName() + " is IMMUNE to gamemode changes!");
-                        }
-                    }
-                }, 1L);
+        this.server.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+            if (!player.isOnline() || !player.getWorld().equals(world)) {
+                return;
+            }
+            enforcementHandler.handleFlightEnforcement(player);
+            enforcementHandler.handleGameModeEnforcement(player);
+        }, 1L);
     }
 }

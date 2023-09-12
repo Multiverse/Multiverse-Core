@@ -8,23 +8,35 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
 
 /**
  * Represents nodes in a world configuration.
  */
 public class WorldConfigNodes {
-    static final double CONFIG_VERSION = 1.0;
+    private static final double CONFIG_VERSION = 1.0;
 
     private final NodeGroup nodes = new NodeGroup();
-    LoadedMultiverseWorld world = null;
+    private EnforcementHandler enforcementHandler;
+    private LoadedMultiverseWorld world = null;
 
-    WorldConfigNodes() {
+    WorldConfigNodes(@NotNull EnforcementHandler enforcementHandler) {
+        this.enforcementHandler = enforcementHandler;
+    }
+
+    LoadedMultiverseWorld getWorld() {
+        return world;
+    }
+
+    void setWorld(LoadedMultiverseWorld world) {
+        this.world = world;
     }
 
     public NodeGroup getNodes() {
@@ -36,6 +48,11 @@ public class WorldConfigNodes {
         return node;
     }
 
+    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
+    // BEGIN CHECKSTYLE-SUPPRESSION: MemberName
+    // BEGIN CHECKSTYLE-SUPPRESSION: Abbreviation
+    // BEGIN CHECKSTYLE-SUPPRESSION: VisibilityModifier
+
     final ConfigNode<Boolean> ADJUST_SPAWN = node(ConfigNode.builder("adjust-spawn", Boolean.class)
             .defaultValue(false)
             .build());
@@ -46,6 +63,10 @@ public class WorldConfigNodes {
 
     final ConfigNode<Boolean> ALLOW_FLIGHT = node(ConfigNode.builder("allow-flight", Boolean.class)
             .defaultValue(false)
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) return;
+                enforcementHandler.handleAllFlightEnforcement(world);
+            })
             .build());
 
     final ConfigNode<Boolean> ALLOW_WEATHER = node(ConfigNode.builder("allow-weather", Boolean.class)
@@ -87,7 +108,8 @@ public class WorldConfigNodes {
             .build());
 
     final ConfigNode<Material> ENTRY_FEE_CURRENCY = node(ConfigNode.builder("entry-fee.currency", Material.class)
-            .defaultValue(Material.AIR) // TODO: Convert from material ID
+            // TODO: Convert from material ID
+            .defaultValue(Material.AIR)
             .name("entryfee-currency")
             .build());
 
@@ -99,11 +121,15 @@ public class WorldConfigNodes {
 
     final ConfigNode<GameMode> GAMEMODE = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
-            // TODO: Set all gamemodes of players in world to this gamemode
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) return;
+                enforcementHandler.handleAllGameModeEnforcement(world);
+            })
             .build());
 
     final ConfigNode<String> GENERATOR = node(ConfigNode.builder("generator", String.class)
-            .defaultValue("@error") // this should be set on world creation
+            // this should be set on world creation, if @error is shown in config, something went wrong
+            .defaultValue("@error")
             .name(null)
             .build());
 
@@ -126,7 +152,6 @@ public class WorldConfigNodes {
 
     final ConfigNode<Integer> PLAYER_LIMIT = node(ConfigNode.builder("player-limit", Integer.class)
             .defaultValue(-1)
-            .name("player-limit")
             .build());
 
     final ConfigNode<AllowedPortalType> PORTAL_FORM = node(ConfigNode
@@ -227,4 +252,9 @@ public class WorldConfigNodes {
             .defaultValue(CONFIG_VERSION)
             .name(null)
             .build());
+
+    // END CHECKSTYLE-SUPPRESSION: Javadoc
+    // END CHECKSTYLE-SUPPRESSION: MemberName
+    // END CHECKSTYLE-SUPPRESSION: Abbreviation
+    // END CHECKSTYLE-SUPPRESSION: VisibilityModifier
 }

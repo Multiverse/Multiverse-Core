@@ -21,22 +21,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
 
 /**
  * Manages the worlds.yml file.
  */
 @Service
 public final class WorldsConfigManager {
-    private static final String CONFIG_FILENAME = "worlds2.yml"; // TODO: Rename to worlds.yml
+    // TODO: Rename to worlds.yml
+    private static final String CONFIG_FILENAME = "worlds2.yml";
 
     private final Map<String, WorldConfig> worldConfigMap;
     private final File worldConfigFile;
     private YamlConfiguration worldsConfig;
 
+    private final EnforcementHandler enforcementHandler;
+
     @Inject
-    WorldsConfigManager(@NotNull MultiverseCore core) {
+    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull EnforcementHandler enforcementHandler) {
         worldConfigMap = new HashMap<>();
         worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
+
+        this.enforcementHandler = enforcementHandler;
     }
 
     /**
@@ -119,7 +125,10 @@ public final class WorldsConfigManager {
             getWorldConfig(worldName)
                     .peek(config -> config.load(getWorldConfigSection(worldName)))
                     .onEmpty(() -> {
-                        WorldConfig newWorldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName));
+                        WorldConfig newWorldConfig = new WorldConfig(
+                                worldName,
+                                getWorldConfigSection(worldName),
+                                enforcementHandler);
                         worldConfigMap.put(worldName, newWorldConfig);
                         newWorldsAdded.add(newWorldConfig);
                     });
@@ -174,7 +183,7 @@ public final class WorldsConfigManager {
         if (worldConfigMap.containsKey(worldName)) {
             throw new IllegalArgumentException("WorldConfig for world " + worldName + " already exists.");
         }
-        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName));
+        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), enforcementHandler);
         worldConfigMap.put(worldName, worldConfig);
         return worldConfig;
     }
