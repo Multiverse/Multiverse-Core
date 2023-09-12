@@ -222,17 +222,21 @@
 
         <!-- Imports -->
         <module name="AvoidStarImport"/>
-        <module name="CustomImportOrder">
-            <property name="sortImportsInGroupAlphabetically" value="true"/>
-            <property name="separateLineBetweenGroups" value="true"/>
-            <property name="customImportOrderRules"
-                      value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
-            <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
-        </module>
         <module name="IllegalImport">
             <property name="illegalPkgs" value="sun"/>
         </module>
-        <!--        <module name="ImportOrder"/>-->
+        <module name="ImportOrder">
+            <property name="option" value="bottom"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="separatedStaticGroups" value="true"/>
+            <property name="caseSensitive" value="true"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+            <property name="groups"
+                      value="java,javax,*,org.mvplugins"/>
+            <property name="staticGroups"
+                      value="/^.*$/"/>
+        </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
