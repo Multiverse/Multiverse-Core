@@ -2,8 +2,7 @@ package org.mvplugins.multiverse.core
 
 import be.seeseemelk.mockbukkit.MockBukkit
 import be.seeseemelk.mockbukkit.ServerMock
-import com.onarandombox.MultiverseCore.MultiverseCore
-import com.onarandombox.MultiverseCore.utils.TestingMode
+import org.mvplugins.multiverse.core.utils.TestingMode
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 

@@ -1,17 +1,10 @@
 package org.mvplugins.multiverse.core.config
 
-import com.onarandombox.MultiverseCore.config.MVCoreConfig
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class ConfigTest : TestWithMockBukkit() {
 
@@ -26,8 +19,8 @@ class ConfigTest : TestWithMockBukkit() {
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString()).writeText(defaultConfig)
 
-        assertTrue(config.load())
-        assertTrue(config.save())
+        assertTrue(config.load().isSuccess)
+        assertTrue(config.save().isSuccess)
     }
 
     @Test
@@ -40,8 +33,8 @@ class ConfigTest : TestWithMockBukkit() {
         val oldConfig = getResourceAsText("/old_config.yml")
         assertNotNull(oldConfig)
         multiverseCore.dataFolder.toPath().resolve("config.yml").toFile().writeText(oldConfig)
-        assertTrue(config.load())
-        assertTrue(config.save())
+        assertTrue(config.load().isSuccess)
+        assertTrue(config.save().isSuccess)
 
         assertEquals(true, config.enforceAccess)
         assertEquals(false, config.isEnablePrefixChat)
