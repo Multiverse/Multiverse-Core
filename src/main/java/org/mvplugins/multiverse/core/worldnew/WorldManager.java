@@ -27,7 +27,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
-import org.mvplugins.multiverse.core.api.SafeTTeleporter;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
@@ -75,7 +74,6 @@ public class WorldManager {
     private final PlayerWorldTeleporter playerWorldActions;
     private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
-    private final SafeTTeleporter safetyTeleporter;
     private final LocationManipulation locationManipulation;
 
     @Inject
@@ -86,7 +84,6 @@ public class WorldManager {
             @NotNull PlayerWorldTeleporter playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
-            @NotNull SafeTTeleporter safetyTeleporter,
             @NotNull LocationManipulation locationManipulation) {
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
@@ -99,7 +96,6 @@ public class WorldManager {
         this.playerWorldActions = playerWorldActions;
         this.filesManipulator = filesManipulator;
         this.blockSafety = blockSafety;
-        this.safetyTeleporter = safetyTeleporter;
         this.locationManipulation = locationManipulation;
     }
 
@@ -297,7 +293,6 @@ public class WorldManager {
                 world,
                 worldConfig,
                 blockSafety,
-                safetyTeleporter,
                 locationManipulation);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
@@ -354,7 +349,6 @@ public class WorldManager {
                                     world,
                                     worldConfig,
                                     blockSafety,
-                                    safetyTeleporter,
                                     locationManipulation);
                             loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
                             saveWorldsConfig();

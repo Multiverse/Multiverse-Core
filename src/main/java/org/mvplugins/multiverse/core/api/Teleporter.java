@@ -9,6 +9,7 @@ import org.jvnet.hk2.annotations.Contract;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.teleportation.TeleportResult;
 
+@Deprecated
 @Contract
 public interface Teleporter {
     /**

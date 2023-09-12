@@ -11,7 +11,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.api.Destination;
-import org.mvplugins.multiverse.core.api.Teleporter;
 
 /**
  * {@link Destination} implementation for anchors.
@@ -60,13 +59,5 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
     @Override
     public boolean checkTeleportSafety() {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @Nullable Teleporter getTeleporter() {
-        return null;
     }
 }

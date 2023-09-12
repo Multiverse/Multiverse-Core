@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.Destination;
-import org.mvplugins.multiverse.core.api.Teleporter;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
@@ -99,13 +98,5 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
     @Override
     public boolean checkTeleportSafety() {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @Nullable Teleporter getTeleporter() {
-        return null;
     }
 }

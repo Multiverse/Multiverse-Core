@@ -11,7 +11,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.Destination;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
-import org.mvplugins.multiverse.core.api.Teleporter;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
@@ -75,13 +74,5 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
     @Override
     public boolean checkTeleportSafety() {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @Nullable Teleporter getTeleporter() {
-        return null;
     }
 }

@@ -31,8 +31,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.SafeTTeleporter;
+import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -40,7 +41,7 @@ import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.inject.InjectableListener;
-import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
@@ -48,7 +49,6 @@ import org.mvplugins.multiverse.core.worldnew.WorldManager;
 import org.mvplugins.multiverse.core.worldnew.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvider;
 import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
 
 /**
  * Multiverse's Listener for players.
@@ -58,7 +58,8 @@ public class MVPlayerListener implements InjectableListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
-    private final SafeTTeleporter safetyTeleporter;
+    private final BlockSafety blockSafety;
+    private final AsyncSafetyTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
@@ -74,7 +75,8 @@ public class MVPlayerListener implements InjectableListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
-            SafeTTeleporter safetyTeleporter,
+            BlockSafety blockSafety,
+            AsyncSafetyTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
@@ -85,6 +87,7 @@ public class MVPlayerListener implements InjectableListener {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
+        this.blockSafety = blockSafety;
         this.safetyTeleporter = safetyTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
@@ -213,7 +216,7 @@ public class MVPlayerListener implements InjectableListener {
         }
 
         // Finally, teleport the player
-        safetyTeleporter.teleportAsync(getCommandManager().getCommandIssuer(player), player, joinDestination);
+        safetyTeleporter.teleportSafely(player, player, joinDestination);
     }
 
     /**
@@ -302,7 +305,7 @@ public class MVPlayerListener implements InjectableListener {
         // REMEMBER! getTo MAY be NULL HERE!!!
         // If the player was actually outside of the portal, adjust the from location
         if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.NETHER_PORTAL) {
-            Location newloc = this.safetyTeleporter.findPortalBlockNextTo(event.getFrom());
+            Location newloc = blockSafety.findPortalBlockNextTo(event.getFrom());
             // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
             // TODO: we want to do here.
             if (newloc != null) {
@@ -354,7 +357,7 @@ public class MVPlayerListener implements InjectableListener {
             new Runnable() {
                 @Override
                 public void run() {
-                    safetyTeleporter.safelyTeleportAsync(getCommandManager().getCommandIssuer(player), player, parsedDestination);
+                    safetyTeleporter.teleportSafely(player, player, parsedDestination);
                 }
             }, 1L);
     }

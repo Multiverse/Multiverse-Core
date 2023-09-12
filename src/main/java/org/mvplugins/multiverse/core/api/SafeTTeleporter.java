@@ -14,6 +14,7 @@ import org.mvplugins.multiverse.core.teleportation.TeleportResult;
 /**
  * Used to safely teleport people.
  */
+@Deprecated
 @Contract
 public interface SafeTTeleporter extends Teleporter {
 
