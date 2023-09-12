@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldActions;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
 
 /**
  * Manages the worlds.yml file.
@@ -35,14 +35,14 @@ public final class WorldsConfigManager {
     private final File worldConfigFile;
     private YamlConfiguration worldsConfig;
 
-    private final PlayerWorldActions playerWorldActions;
+    private final EnforcementHandler enforcementHandler;
 
     @Inject
-    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull PlayerWorldActions playerWorldActions) {
+    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull EnforcementHandler enforcementHandler) {
         worldConfigMap = new HashMap<>();
         worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
 
-        this.playerWorldActions = playerWorldActions;
+        this.enforcementHandler = enforcementHandler;
     }
 
     /**
@@ -126,9 +126,9 @@ public final class WorldsConfigManager {
                     .peek(config -> config.load(getWorldConfigSection(worldName)))
                     .onEmpty(() -> {
                         WorldConfig newWorldConfig = new WorldConfig(
-                                playerWorldActions,
                                 worldName,
-                                getWorldConfigSection(worldName));
+                                getWorldConfigSection(worldName),
+                                enforcementHandler);
                         worldConfigMap.put(worldName, newWorldConfig);
                         newWorldsAdded.add(newWorldConfig);
                     });
@@ -183,7 +183,7 @@ public final class WorldsConfigManager {
         if (worldConfigMap.containsKey(worldName)) {
             throw new IllegalArgumentException("WorldConfig for world " + worldName + " already exists.");
         }
-        WorldConfig worldConfig = new WorldConfig(playerWorldActions, worldName, getWorldConfigSection(worldName));
+        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), enforcementHandler);
         worldConfigMap.put(worldName, worldConfig);
         return worldConfig;
     }

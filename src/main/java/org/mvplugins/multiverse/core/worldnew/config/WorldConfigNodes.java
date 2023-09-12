@@ -15,7 +15,7 @@ import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldActions;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
 
 /**
  * Represents nodes in a world configuration.
@@ -24,11 +24,11 @@ public class WorldConfigNodes {
     private static final double CONFIG_VERSION = 1.0;
 
     private final NodeGroup nodes = new NodeGroup();
-    private PlayerWorldActions playerWorldActions;
+    private EnforcementHandler enforcementHandler;
     private LoadedMultiverseWorld world = null;
 
-    WorldConfigNodes(@NotNull PlayerWorldActions playerWorldActions) {
-        this.playerWorldActions = playerWorldActions;
+    WorldConfigNodes(@NotNull EnforcementHandler enforcementHandler) {
+        this.enforcementHandler = enforcementHandler;
     }
 
     LoadedMultiverseWorld getWorld() {
@@ -65,7 +65,7 @@ public class WorldConfigNodes {
             .defaultValue(false)
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) return;
-                playerWorldActions.handleAllFlightEnforcement(world);
+                enforcementHandler.handleAllFlightEnforcement(world);
             })
             .build());
 
@@ -123,7 +123,7 @@ public class WorldConfigNodes {
             .defaultValue(GameMode.SURVIVAL)
             .onSetValue((oldValue, newValue) -> {
                 if (world == null) return;
-                playerWorldActions.handleAllGameModeEnforcement(world);
+                enforcementHandler.handleAllGameModeEnforcement(world);
             })
             .build());
 

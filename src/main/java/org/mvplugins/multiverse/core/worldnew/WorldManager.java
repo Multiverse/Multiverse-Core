@@ -37,7 +37,7 @@ import org.mvplugins.multiverse.core.worldnew.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.worldnew.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.worldnew.helpers.DataTransfer;
 import org.mvplugins.multiverse.core.worldnew.helpers.FilesManipulator;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldActions;
+import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.worldnew.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.worldnew.options.CreateWorldOptions;
 import org.mvplugins.multiverse.core.worldnew.options.ImportWorldOptions;
@@ -72,7 +72,7 @@ public class WorldManager {
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
     private final GeneratorProvider generatorProvider;
-    private final PlayerWorldActions playerWorldActions;
+    private final PlayerWorldTeleporter playerWorldActions;
     private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
     private final SafeTTeleporter safetyTeleporter;
@@ -83,7 +83,7 @@ public class WorldManager {
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull GeneratorProvider generatorProvider,
-            @NotNull PlayerWorldActions playerWorldActions,
+            @NotNull PlayerWorldTeleporter playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
             @NotNull SafeTTeleporter safetyTeleporter,

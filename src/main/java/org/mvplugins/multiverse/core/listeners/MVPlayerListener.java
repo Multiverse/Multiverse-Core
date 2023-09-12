@@ -47,7 +47,8 @@ import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
 import org.mvplugins.multiverse.core.worldnew.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvider;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldActions;
+import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
+import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
 
 /**
  * Multiverse's Listener for players.
@@ -63,9 +64,8 @@ public class MVPlayerListener implements InjectableListener {
     private final MVEconomist economist;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
     private final Provider<MVCommandManager> commandManagerProvider;
-    private final CorePermissionsChecker permissionsChecker;
     private final DestinationsProvider destinationsProvider;
-    private final PlayerWorldActions playerWorldActions;
+    private final EnforcementHandler enforcementHandler;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
 
@@ -80,9 +80,8 @@ public class MVPlayerListener implements InjectableListener {
             MVEconomist economist,
             WorldEntryCheckerProvider worldEntryCheckerProvider,
             Provider<MVCommandManager> commandManagerProvider,
-            CorePermissionsChecker permissionsChecker,
             DestinationsProvider destinationsProvider,
-            PlayerWorldActions playerWorldActions) {
+            EnforcementHandler enforcementHandler) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -92,9 +91,8 @@ public class MVPlayerListener implements InjectableListener {
         this.economist = economist;
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
         this.commandManagerProvider = commandManagerProvider;
-        this.permissionsChecker = permissionsChecker;
         this.destinationsProvider = destinationsProvider;
-        this.playerWorldActions = playerWorldActions;
+        this.enforcementHandler = enforcementHandler;
     }
 
     private WorldManager getWorldManager() {
@@ -374,8 +372,8 @@ public class MVPlayerListener implements InjectableListener {
             if (!player.isOnline() || !player.getWorld().equals(world)) {
                 return;
             }
-            playerWorldActions.handleFlightEnforcement(player);
-            playerWorldActions.handleGameModeEnforcement(player);
+            enforcementHandler.handleFlightEnforcement(player);
+            enforcementHandler.handleGameModeEnforcement(player);
         }, 1L);
     }
 }
