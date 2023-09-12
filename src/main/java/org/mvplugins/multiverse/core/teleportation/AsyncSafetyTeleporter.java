@@ -19,6 +19,7 @@ import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.utils.result.Result;
 
+@SuppressWarnings("unchecked")
 @Service
 public class AsyncSafetyTeleporter {
     private final BlockSafety blockSafety;
@@ -36,6 +37,15 @@ public class AsyncSafetyTeleporter {
             @NotNull Entity teleportee,
             @Nullable ParsedDestination<?> destination) {
         return teleportSafely(null, teleportee, destination);
+    }
+
+    public <T extends Entity> CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[] teleportSafely(
+            @Nullable CommandSender teleporter,
+            @NotNull List<T> teleportees,
+            @Nullable ParsedDestination<?> destination) {
+        return teleportees.stream()
+                .map(teleportee -> teleportSafely(teleporter, teleportee, destination))
+                .toArray(CompletableFuture[]::new);
     }
 
     public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
@@ -70,12 +80,12 @@ public class AsyncSafetyTeleporter {
         return teleport(teleporter, teleportee, safeLocation);
     }
 
-    public <T extends Entity> List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>> teleport(
+    public <T extends Entity> CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[] teleport(
             @NotNull List<T> teleportees,
             @Nullable ParsedDestination<?> destination) {
         return teleportees.stream()
                 .map(teleportee -> teleport(teleportee, destination))
-                .toList();
+                .toArray(CompletableFuture[]::new);
     }
 
     public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
@@ -94,12 +104,12 @@ public class AsyncSafetyTeleporter {
         return teleport(teleporter, teleportee, destination.getLocation(teleportee));
     }
 
-    public <T extends Entity> List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>> teleport(
+    public <T extends Entity> CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[] teleport(
             @NotNull List<T> teleportees,
             @Nullable Location location) {
         return teleportees.stream()
                 .map(teleportee -> teleport(teleportee, location))
-                .toList();
+                .toArray(CompletableFuture[]::new);
     }
 
     public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(

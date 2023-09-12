@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.commands;
 
+import java.util.concurrent.CompletableFuture;
+
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -20,6 +22,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.worldnew.options.UnloadWorldOptions;
 
 @Service
@@ -27,6 +30,7 @@ import org.mvplugins.multiverse.core.worldnew.options.UnloadWorldOptions;
 class UnloadCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
+    private final PlayerWorldTeleporter playerWorldTeleporter;
 
     private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
             .addAlias("-r")
@@ -37,9 +41,13 @@ class UnloadCommand extends MultiverseCommand {
             .build());
 
     @Inject
-    UnloadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+    UnloadCommand(
+            @NotNull MVCommandManager commandManager,
+            @NotNull WorldManager worldManager,
+            @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
         super(commandManager);
         this.worldManager = worldManager;
+        this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
     @Subcommand("unload")
@@ -61,8 +69,16 @@ class UnloadCommand extends MultiverseCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", world.getAlias());
+
+        CompletableFuture<Void> future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+                ? CompletableFuture.allOf(playerWorldTeleporter.removeFromWorld(world))
+                : CompletableFuture.completedFuture(null);
+
+        future.thenRun(() -> doWorldUnloading(issuer, world, parsedFlags));
+    }
+
+    private void doWorldUnloading(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
         UnloadWorldOptions unloadWorldOptions = UnloadWorldOptions.world(world)
-                .removePlayers(parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG))
                 .saveBukkitWorld(!parsedFlags.hasFlag(NO_SAVE_FLAG));
         worldManager.unloadWorld(unloadWorldOptions)
                 .onSuccess(loadedWorld -> {

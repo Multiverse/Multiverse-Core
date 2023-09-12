@@ -371,10 +371,6 @@ public class WorldManager {
             return worldActionResult(UnloadFailureReason.WORLD_ALREADY_UNLOADING, world.getName());
         }
 
-        if (options.removePlayers()) {
-            playerWorldActions.removeFromWorld(world);
-        }
-
         return unloadBukkitWorld(world.getBukkitWorld().getOrNull(), options.saveBukkitWorld()).fold(
                 exception -> worldActionResult(UnloadFailureReason.BUKKIT_UNLOAD_FAILED,
                         world.getName(), exception),
@@ -426,7 +422,7 @@ public class WorldManager {
      */
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
         // TODO: Config option on removePlayers
-        return unloadWorld(UnloadWorldOptions.world(loadedWorld).removePlayers(true))
+        return unloadWorld(UnloadWorldOptions.world(loadedWorld))
                 .transform(RemoveFailureReason.UNLOAD_FAILED)
                 .mapAttempt(this::removeWorldFromConfig);
     }
@@ -588,7 +584,6 @@ public class WorldManager {
      */
     public Attempt<LoadedMultiverseWorld, RegenFailureReason> regenWorld(@NotNull RegenWorldOptions options) {
         LoadedMultiverseWorld world = options.world();
-        List<Player> playersInWorld = world.getPlayers().getOrElse(Collections.emptyList());
         DataTransfer<LoadedMultiverseWorld> dataTransfer = transferData(options, world);
         boolean shouldKeepSpawnLocation = options.keepWorldConfig() && options.seed() == world.getSeed();
         Location spawnLocation = world.getSpawnLocation();
@@ -611,7 +606,6 @@ public class WorldManager {
                         // different seed.
                         newWorld.setSpawnLocation(spawnLocation);
                     }
-                    playerWorldActions.teleportPlayersToWorld(playersInWorld, newWorld);
                     saveWorldsConfig();
                 });
     }

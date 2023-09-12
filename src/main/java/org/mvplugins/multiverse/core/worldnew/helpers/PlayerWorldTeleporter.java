@@ -34,7 +34,7 @@ public class PlayerWorldTeleporter {
      *
      * @param world The world to remove all players from.
      */
-    public List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>>
+    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[]
             removeFromWorld(@NotNull LoadedMultiverseWorld world) {
         // TODO: Better handling of fallback world
         World toWorld = Bukkit.getWorlds().get(0);
@@ -47,7 +47,7 @@ public class PlayerWorldTeleporter {
      * @param from  The world to transfer players from.
      * @param to    The location to transfer players to.
      */
-    public List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>>
+    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[]
             transferFromWorldTo(@NotNull LoadedMultiverseWorld from, @NotNull LoadedMultiverseWorld to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
     }
@@ -58,7 +58,7 @@ public class PlayerWorldTeleporter {
      * @param from  The world to transfer players from.
      * @param to    The world to transfer players to.
      */
-    public List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>>
+    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[]
             transferFromWorldTo(@NotNull LoadedMultiverseWorld from, @NotNull World to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
     }
@@ -70,11 +70,11 @@ public class PlayerWorldTeleporter {
      * @param location The location to transfer players to.
      * @return A list of futures that represent the teleportation of each player.
      */
-    public List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>>
+    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[]
             transferAllFromWorldToLocation(@NotNull LoadedMultiverseWorld world, @NotNull Location location) {
         return world.getPlayers()
                 .map(players -> safetyTeleporter.teleport(players, location))
-                .getOrElse(Collections.emptyList());
+                .getOrElse(new CompletableFuture[0]);
     }
 
     /**
@@ -83,7 +83,7 @@ public class PlayerWorldTeleporter {
      * @param players   The players to teleport.
      * @param world     The world to teleport players to.
      */
-    public List<CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>>
+    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[]
             teleportPlayersToWorld(@NotNull List<Player> players, @NotNull LoadedMultiverseWorld world) {
         Location spawnLocation = world.getSpawnLocation();
         return safetyTeleporter.teleport(players, spawnLocation);

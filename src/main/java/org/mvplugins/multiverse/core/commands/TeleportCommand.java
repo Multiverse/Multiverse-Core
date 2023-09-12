@@ -72,10 +72,10 @@ class TeleportCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                 "{player}", playerName, "{destination}", destination.toString());
 
-        CompletableFuture.allOf(Arrays.stream(players)
-                        .map(player -> safetyTeleporter.teleportSafely(issuer.getIssuer(), player, destination))
-                        .toArray(CompletableFuture[]::new))
-                .thenRun(() -> Logging.finer("Async teleport completed."));
+        CompletableFuture
+                .allOf(safetyTeleporter.teleportSafely(issuer.getIssuer(), Arrays.stream(players).toList(),
+                        destination))
+                .thenAccept(result -> Logging.fine("Async teleport result: %s", result));
     }
 
     @Override
