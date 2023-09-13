@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Collections;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -22,6 +22,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.result.AsyncResult;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
@@ -66,11 +67,11 @@ class RemoveCommand extends MultiverseCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        CompletableFuture<Void> future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
                 ? worldManager.getLoadedWorld(worldName)
-                .map(world -> CompletableFuture.allOf(playerWorldTeleporter.removeFromWorld(world)))
-                .getOrElse(CompletableFuture.completedFuture(null))
-                : CompletableFuture.completedFuture(null);
+                .map(playerWorldTeleporter::removeFromWorld)
+                .getOrElse(AsyncResult.completedFuture(Collections.emptyList()))
+                : AsyncResult.completedFuture(Collections.emptyList());
 
         future.thenRun(() -> doWorldRemoving(issuer, worldName));
     }

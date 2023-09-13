@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Collections;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -20,6 +20,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.result.AsyncResult;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
@@ -70,9 +71,9 @@ class UnloadCommand extends MultiverseCommand {
 
         issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", world.getAlias());
 
-        CompletableFuture<Void> future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
-                ? CompletableFuture.allOf(playerWorldTeleporter.removeFromWorld(world))
-                : CompletableFuture.completedFuture(null);
+        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+                ? playerWorldTeleporter.removeFromWorld(world)
+                : AsyncResult.completedFuture(Collections.emptyList());
 
         future.thenRun(() -> doWorldUnloading(issuer, world, parsedFlags));
     }

@@ -3,7 +3,6 @@ package org.mvplugins.multiverse.core.commands;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
@@ -27,6 +26,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.result.AsyncResult;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
@@ -99,9 +99,9 @@ class RegenCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, "{world}", world.getName());
         List<Player> worldPlayers = world.getPlayers().getOrElse(Collections.emptyList());
 
-        CompletableFuture<Void> future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
-                ? CompletableFuture.allOf(playerWorldTeleporter.removeFromWorld(world))
-                : CompletableFuture.completedFuture(null);
+        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+                ? playerWorldTeleporter.removeFromWorld(world)
+                : AsyncResult.completedFuture(Collections.emptyList());
 
         future.thenRun(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers));
     }

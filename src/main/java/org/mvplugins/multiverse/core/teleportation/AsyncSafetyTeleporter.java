@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.teleportation;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.papermc.lib.PaperLib;
@@ -17,6 +16,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
+import org.mvplugins.multiverse.core.utils.result.AsyncResult;
 import org.mvplugins.multiverse.core.utils.result.Result;
 
 @SuppressWarnings("unchecked")
@@ -33,97 +33,97 @@ public class AsyncSafetyTeleporter {
         this.teleportQueue = teleportQueue;
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
             @NotNull Entity teleportee,
             @Nullable ParsedDestination<?> destination) {
         return teleportSafely(null, teleportee, destination);
     }
 
-    public <T extends Entity> CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[] teleportSafely(
+    public <T extends Entity> AsyncResult<List<Result<TeleportResult.Success, TeleportResult.Failure>>> teleportSafely(
             @Nullable CommandSender teleporter,
             @NotNull List<T> teleportees,
             @Nullable ParsedDestination<?> destination) {
-        return teleportees.stream()
+        return AsyncResult.allOf(teleportees.stream()
                 .map(teleportee -> teleportSafely(teleporter, teleportee, destination))
-                .toArray(CompletableFuture[]::new);
+                .toList());
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
             @Nullable CommandSender teleporter,
             @NotNull Entity teleportee,
             @Nullable ParsedDestination<?> destination) {
         if (destination == null) {
-            return CompletableFuture.completedFuture(Result.failure(TeleportResult.Failure.NULL_DESTINATION));
+            return AsyncResult.completedFuture(Result.failure(TeleportResult.Failure.NULL_DESTINATION));
         }
         return destination.getDestination().checkTeleportSafety()
                 ? teleportSafely(teleporter, teleportee, destination.getLocation(teleportee))
                 : teleport(teleporter, teleportee, destination.getLocation(teleportee));
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
             @NotNull Entity teleportee,
             @Nullable Location location) {
         return teleportSafely(null, teleportee, location);
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleportSafely(
             @Nullable CommandSender teleporter,
             @NotNull Entity teleportee,
             @Nullable Location location) {
         if (location == null) {
-            return CompletableFuture.completedFuture(Result.failure(TeleportResult.Failure.NULL_LOCATION));
+            return AsyncResult.completedFuture(Result.failure(TeleportResult.Failure.NULL_LOCATION));
         }
         Location safeLocation = blockSafety.getSafeLocation(location);
         if (safeLocation == null) {
-            return CompletableFuture.completedFuture(Result.failure(TeleportResult.Failure.UNSAFE_LOCATION));
+            return AsyncResult.completedFuture(Result.failure(TeleportResult.Failure.UNSAFE_LOCATION));
         }
         return teleport(teleporter, teleportee, safeLocation);
     }
 
-    public <T extends Entity> CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[] teleport(
+    public <T extends Entity> AsyncResult<List<Result<TeleportResult.Success, TeleportResult.Failure>>> teleport(
             @NotNull List<T> teleportees,
             @Nullable ParsedDestination<?> destination) {
-        return teleportees.stream()
+        return AsyncResult.allOf(teleportees.stream()
                 .map(teleportee -> teleport(teleportee, destination))
-                .toArray(CompletableFuture[]::new);
+                .toList());
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
             @NotNull Entity teleportee,
             @Nullable ParsedDestination<?> destination) {
         return teleport(null, teleportee, destination);
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
             @Nullable CommandSender teleporter,
             @NotNull Entity teleportee,
             @Nullable ParsedDestination<?> destination) {
         if (destination == null) {
-            return CompletableFuture.completedFuture(Result.failure(TeleportResult.Failure.NULL_DESTINATION));
+            return AsyncResult.completedFuture(Result.failure(TeleportResult.Failure.NULL_DESTINATION));
         }
         return teleport(teleporter, teleportee, destination.getLocation(teleportee));
     }
 
-    public <T extends Entity> CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>>[] teleport(
+    public <T extends Entity> AsyncResult<List<Result<TeleportResult.Success, TeleportResult.Failure>>> teleport(
             @NotNull List<T> teleportees,
             @Nullable Location location) {
-        return teleportees.stream()
+        return AsyncResult.allOf(teleportees.stream()
                 .map(teleportee -> teleport(teleportee, location))
-                .toArray(CompletableFuture[]::new);
+                .toList());
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
             @NotNull Entity teleportee,
             @Nullable Location location) {
         return teleport(null, teleportee, location);
     }
 
-    public CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
+    public AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> teleport(
             @Nullable CommandSender teleporter,
             @NotNull Entity teleportee,
             @Nullable Location location) {
         if (location == null) {
-            return CompletableFuture.completedFuture(Result.failure(TeleportResult.Failure.NULL_LOCATION));
+            return AsyncResult.completedFuture(Result.failure(TeleportResult.Failure.NULL_LOCATION));
         }
 
         boolean shouldAddToQueue = teleporter != null && teleportee instanceof Player;
@@ -131,7 +131,7 @@ public class AsyncSafetyTeleporter {
             teleportQueue.addToQueue(teleporter.getName(), teleportee.getName());
         }
 
-        CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> future = new CompletableFuture<>();
+        AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> future = new AsyncResult<>();
         doAsyncTeleport(teleportee, location, future, shouldAddToQueue);
         return future;
     }
@@ -139,7 +139,7 @@ public class AsyncSafetyTeleporter {
     private void doAsyncTeleport(
             @NotNull Entity teleportee,
             @NotNull Location location,
-            CompletableFuture<Result<TeleportResult.Success, TeleportResult.Failure>> future,
+            AsyncResult<Result<TeleportResult.Success, TeleportResult.Failure>> future,
             boolean shouldAddToQueue) {
         Try.run(() -> PaperLib.teleportAsync(teleportee, location).thenAccept(result -> {
             Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
