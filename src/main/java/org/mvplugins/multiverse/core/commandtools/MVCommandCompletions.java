@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.commandtools;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,10 +20,12 @@ import com.google.common.collect.Sets;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
@@ -37,27 +40,32 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final DestinationsProvider destinationsProvider;
 
     @Inject
-    public MVCommandCompletions(
+    MVCommandCompletions(
             @NotNull MVCommandManager mvCommandManager,
             @NotNull WorldManager worldManager,
             @NotNull DestinationsProvider destinationsProvider,
-            @NotNull MVCoreConfig config
-            ) {
+            @NotNull MVCoreConfig config) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
         this.destinationsProvider = destinationsProvider;
 
         registerAsyncCompletion("commands", this::suggestCommands);
+        registerStaticCompletion("configmodifytype", suggestEnums(ConfigModifyType.class));
         registerAsyncCompletion("destinations", this::suggestDestinations);
+        registerStaticCompletion("environments", suggestEnums(World.Environment.class));
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamerules", this::suggestGamerules);
         registerStaticCompletion("mvconfigs", config.getNodes().getNames());
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
+        registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
+        registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
 
+        setDefaultCompletion("configmodifytype", ConfigModifyType.class);
         setDefaultCompletion("destinations", ParsedDestination.class);
-        setDefaultCompletion("flags", String[].class);
+        setDefaultCompletion("environments", World.Environment.class);
         setDefaultCompletion("gamerules", GameRule.class);
+        setDefaultCompletion("mvworlds", MultiverseWorld.class);
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
     }
 
@@ -151,5 +159,42 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
         return Collections.emptyList();
+    }
+
+    private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld mvWorld = context.getContextValue(MultiverseWorld.class);
+            ConfigModifyType modifyType = context.getContextValue(ConfigModifyType.class);
+            return mvWorld.getConfigurablePropertyNames(modifyType);
+        }).getOrElse(Collections.emptyList());
+    }
+
+    private Collection<String> suggestMVWorldPropsValue(BukkitCommandCompletionContext context) {
+        //noinspection unchecked
+        return Try.of(() -> {
+            MultiverseWorld mvWorld = context.getContextValue(MultiverseWorld.class);
+            String propertyName = context.getContextValue(String.class);
+            Class type = mvWorld.getPropertyType(propertyName).get();
+            if (type.isEnum()) {
+                return suggestEnums(type);
+            }
+            if (type == Boolean.class) {
+                return List.of("true", "false");
+            }
+            if (type == Integer.class) {
+                return List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+            }
+            if (type == Double.class) {
+                return List.of("0.0", "1.0", "2.0", "3.0", "4.0", "5.0");
+            }
+            return Collections.emptyList();
+        }).getOrElse(Collections.emptyList());
+    }
+
+    private <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
+        return EnumSet.allOf(enumClass).stream()
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .toList();
     }
 }

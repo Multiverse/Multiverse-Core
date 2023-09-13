@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
 import org.mvplugins.multiverse.core.worldnew.config.WorldConfig;
 
@@ -66,6 +67,14 @@ public class MultiverseWorld {
         return worldConfig.getConfigurablePropertyNames();
     }
 
+    public Collection<String> getConfigurablePropertyNames(ConfigModifyType configModifyType) {
+        return worldConfig.getConfigurablePropertyNames(configModifyType);
+    }
+
+    public Try<Class> getPropertyType(String name) {
+        return worldConfig.getPropertyType(name);
+    }
+
     /**
      * Gets a property on this world.
      *
@@ -85,6 +94,10 @@ public class MultiverseWorld {
      */
     public Try<Void> setProperty(String name, Object value) {
         return worldConfig.setProperty(name, value);
+    }
+
+    public Try<Void> modifyProperty(ConfigModifyType type, String name, Object value) {
+        return worldConfig.modifyProperty(type, name, value);
     }
 
     /**

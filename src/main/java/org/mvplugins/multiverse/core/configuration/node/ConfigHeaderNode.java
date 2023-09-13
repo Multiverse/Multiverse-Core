@@ -66,7 +66,7 @@ public class ConfigHeaderNode implements CommentedNode {
                 comment = "# " + comment;
             }
             comments.add(comment);
-            return (B) this;
+            return self();
         }
 
         /**
@@ -76,6 +76,11 @@ public class ConfigHeaderNode implements CommentedNode {
          */
         public @NotNull ConfigHeaderNode build() {
             return new ConfigHeaderNode(path, comments.toArray(new String[0]));
+        }
+
+        protected B self() {
+            //noinspection unchecked
+            return (B) this;
         }
     }
 }

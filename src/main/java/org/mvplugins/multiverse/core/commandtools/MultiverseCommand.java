@@ -12,7 +12,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 
 @Contract
-public abstract class  MultiverseCommand extends BaseCommand {
+public abstract class MultiverseCommand extends BaseCommand {
 
     protected final MVCommandManager commandManager;
     private String flagGroupName;

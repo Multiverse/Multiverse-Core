@@ -76,7 +76,7 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
                         valueNode.getDefaultValue())).onFailure(e -> {
                             Logging.warning("Failed to set node " + valueNode.getPath()
                                     + " to " + valueNode.getDefaultValue());
-                            setDefault(valueNode);
+                            reset(valueNode);
                         });
             }
         });

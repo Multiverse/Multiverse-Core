@@ -1,6 +1,9 @@
 package org.mvplugins.multiverse.core.commandtools;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
@@ -8,8 +11,10 @@ import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
+import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
@@ -17,7 +22,9 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
 import org.mvplugins.multiverse.core.commandtools.context.MVConfigValue;
+import org.mvplugins.multiverse.core.commandtools.context.WorldConfigValue;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -27,10 +34,11 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.worldnew.MultiverseWorld;
 import org.mvplugins.multiverse.core.worldnew.WorldManager;
 
 @Service
-public class MVCommandContexts extends PaperCommandContexts {
+class MVCommandContexts extends PaperCommandContexts {
 
     private final MVCommandManager mvCommandManager;
     private final DestinationsProvider destinationsProvider;
@@ -38,12 +46,11 @@ public class MVCommandContexts extends PaperCommandContexts {
     private final MVCoreConfig config;
 
     @Inject
-    public MVCommandContexts(
+    MVCommandContexts(
             MVCommandManager mvCommandManager,
             DestinationsProvider destinationsProvider,
             WorldManager worldManager,
-            MVCoreConfig config
-    ) {
+            MVCoreConfig config) {
         super(mvCommandManager);
         this.mvCommandManager = mvCommandManager;
         this.destinationsProvider = destinationsProvider;
@@ -57,10 +64,12 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(GameRule.class, this::parseGameRule);
         registerContext(GameRuleValue.class, this::parseGameRuleValue);
         registerContext(MVConfigValue.class, this::parseMVConfigValue);
-        registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseMVWorld);
-        registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseMVWorldArray);
+        registerIssuerAwareContext(MultiverseWorld.class, this::parseWorld);
+        registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedWorld);
+        registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+        registerIssuerAwareContext(WorldConfigValue.class, this::parseWorldConfigValue);
     }
 
     private MVCommandIssuer parseMVCommandIssuer(BukkitCommandExecutionContext context) {
@@ -162,13 +171,14 @@ public class MVCommandContexts extends PaperCommandContexts {
         return new MVConfigValue(resolvedValue);
     }
 
-    private LoadedMultiverseWorld parseMVWorld(BukkitCommandExecutionContext context) {
+    private MultiverseWorld parseWorld(BukkitCommandExecutionContext context) {
         String resolve = context.getFlagValue("resolve", "");
 
         // Get world based on sender only
         if (resolve.equals("issuerOnly")) {
             if (context.getIssuer().isPlayer()) {
-                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
+                return worldManager.getWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("Player is not in a Multiverse World."));
             }
             if (context.isOptional()) {
                 return null;
@@ -177,7 +187,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldName = context.getFirstArg();
-        LoadedMultiverseWorld world = worldManager.getLoadedWorld(worldName).getOrNull();
+        MultiverseWorld world = worldManager.getWorld(worldName).getOrNull();
 
         // Get world based on input, fallback to sender if input is not a world
         if (resolve.equals("issuerAware")) {
@@ -186,7 +196,8 @@ public class MVCommandContexts extends PaperCommandContexts {
                 return world;
             }
             if (context.getIssuer().isPlayer()) {
-                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
+                return worldManager.getWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("Player is not in a Multiverse World."));
             }
             if (context.isOptional()) {
                 return null;
@@ -205,7 +216,53 @@ public class MVCommandContexts extends PaperCommandContexts {
         throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
     }
 
-    private LoadedMultiverseWorld[] parseMVWorldArray(BukkitCommandExecutionContext context) {
+
+    private LoadedMultiverseWorld parseLoadedWorld(BukkitCommandExecutionContext context) {
+        String resolve = context.getFlagValue("resolve", "");
+
+        // Get world based on sender only
+        if (resolve.equals("issuerOnly")) {
+            if (context.getIssuer().isPlayer()) {
+                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("Player is not in a Multiverse World."));
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
+        }
+
+        String worldName = context.getFirstArg();
+        LoadedMultiverseWorld world = worldManager.getLoadedWorld(worldName).getOrNull();
+
+        // Get world based on input, fallback to sender if input is not a world
+        if (resolve.equals("issuerAware")) {
+            if (world != null) {
+                context.popFirstArg();
+                return world;
+            }
+            if (context.getIssuer().isPlayer()) {
+                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("Player is not in a Multiverse World."));
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+        }
+
+        // Get world based on input only
+        if (world != null) {
+            context.popFirstArg();
+            return world;
+        }
+        if (context.isOptional()) {
+            return null;
+        }
+        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+    }
+
+    private LoadedMultiverseWorld[] parseLoadedWorldArray(BukkitCommandExecutionContext context) {
         String resolve = context.getFlagValue("resolve", "");
 
         LoadedMultiverseWorld playerWorld = null;
@@ -309,7 +366,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
     }
 
-
     private Player[] parsePlayerArray(BukkitCommandExecutionContext context) {
         String resolve = context.getFlagValue("resolve", "");
 
@@ -352,5 +408,51 @@ public class MVCommandContexts extends PaperCommandContexts {
             return null;
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
+    }
+
+    private WorldConfigValue parseWorldConfigValue(BukkitCommandExecutionContext context) {
+        MultiverseWorld mvWorld = (MultiverseWorld) context.getResolvedArg(MultiverseWorld.class);
+        ConfigModifyType modifyType = (ConfigModifyType) context.getResolvedArg(ConfigModifyType.class);
+        String propertyName = (String) context.getResolvedArg(String.class);
+        if (mvWorld == null || modifyType == null || propertyName == null) {
+            throw new InvalidCommandArgument("No world or property specified.");
+        }
+
+        if (modifyType == ConfigModifyType.RESET) {
+            if (context.popFirstArg() != null) {
+                throw new InvalidCommandArgument("No value should be specified for reset.");
+            }
+            return new WorldConfigValue(null);
+        }
+
+        Class<?> type = mvWorld.getPropertyType(propertyName)
+                .getOrElseThrow(() -> {
+                    return new InvalidCommandArgument("The property " + propertyName + " is not valid for world "
+                            + mvWorld.getName() + ".");
+                });
+        return new WorldConfigValue(parseType(context, type));
+    }
+
+    private Object parseType(BukkitCommandExecutionContext context, Class<?> type) {
+        Object value = context.getFirstArg();
+        if (value == null) {
+            throw new InvalidCommandArgument("No value specified.");
+        }
+
+        // Special case for enums
+        if (type.isEnum()) {
+            return Try.of(() -> Enum.valueOf((Class<? extends Enum>) type, context.popFirstArg().toUpperCase()))
+                    .getOrElseThrow(() -> new InvalidCommandArgument(("The value %s is not a valid %s. "
+                            + "Valid values are: %s").formatted(
+                                    value,
+                                    type.getSimpleName(),
+                                    Arrays.stream(((Class<? extends Enum>) type).getEnumConstants())
+                                            .map(enumValue -> enumValue.name().toLowerCase())
+                                            .reduce((a, b) -> a + ", " + b)
+                                            .orElse(""))));
+        }
+
+        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(type);
+        return resolver == null ? value : resolver.getContext(context);
     }
 }

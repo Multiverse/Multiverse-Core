@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
+import org.mvplugins.multiverse.core.configuration.node.ListConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
@@ -212,9 +213,8 @@ public class WorldConfigNodes {
             })
             .build());
 
-    final ConfigNode<List> SPAWNING_ANIMALS_EXCEPTIONS = node(ConfigNode
-            .builder("spawning.animals.exceptions", List.class)
-            .defaultValue(new ArrayList<>())
+    final ListConfigNode<String> SPAWNING_ANIMALS_EXCEPTIONS = node(ListConfigNode
+            .listBuilder("spawning.animals.exceptions", String.class)
             .name("spawning-animals-exceptions")
             .build());
 
@@ -238,14 +238,13 @@ public class WorldConfigNodes {
             })
             .build());
 
-    final ConfigNode<List> SPAWNING_MONSTERS_EXCEPTIONS = node(ConfigNode
-            .builder("spawning.monsters.exceptions", List.class)
-            .defaultValue(new ArrayList<>())
+    final ListConfigNode<String> SPAWNING_MONSTERS_EXCEPTIONS = node(ListConfigNode
+            .listBuilder("spawning.monsters.exceptions", String.class)
             .name("spawning-monsters-exceptions")
             .build());
 
-    final ConfigNode<List> WORLD_BLACKLIST = node(ConfigNode.builder("world-blacklist", List.class)
-            .defaultValue(new ArrayList<>())
+    final ListConfigNode<String> WORLD_BLACKLIST = node(ListConfigNode
+            .listBuilder("world-blacklist", String.class)
             .build());
 
     final ConfigNode<Double> VERSION = node(ConfigNode.builder("version", Double.class)

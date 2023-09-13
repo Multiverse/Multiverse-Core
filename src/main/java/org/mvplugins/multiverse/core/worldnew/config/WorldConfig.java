@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigurationSectionHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
@@ -116,7 +117,15 @@ public final class WorldConfig {
     }
 
     public Collection<String> getConfigurablePropertyNames() {
-        return configNodes.getNodes().getNames();
+        return configHandle.getNames();
+    }
+
+    public Collection<String> getConfigurablePropertyNames(ConfigModifyType configModifyType) {
+        return configHandle.getNamesThatSupports(configModifyType);
+    }
+
+    public Try<Class> getPropertyType(String name) {
+        return configHandle.getTypeByName(name);
     }
 
     public Try<Object> getProperty(String name) {
@@ -125,6 +134,10 @@ public final class WorldConfig {
 
     public Try<Void> setProperty(String name, Object value) {
         return configHandle.set(name, value);
+    }
+
+    public Try<Void> modifyProperty(ConfigModifyType type, String name, Object value) {
+        return configHandle.modify(type, name, value);
     }
 
     public boolean getAdjustSpawn() {

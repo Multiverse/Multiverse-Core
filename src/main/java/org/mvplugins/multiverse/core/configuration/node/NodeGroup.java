@@ -9,6 +9,7 @@ import java.util.Map;
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
 import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A collection of {@link CommentedNode}s, with mappings to nodes by name.
@@ -49,10 +50,6 @@ public class NodeGroup implements Collection<Node> {
         return nodesMap.keySet();
     }
 
-    public Map<String, Node> getNodesMap() {
-        return nodesMap;
-    }
-
     /**
      * Gets the node with the given name.
      *
@@ -68,9 +65,10 @@ public class NodeGroup implements Collection<Node> {
      *
      * @param name The name of the node to get.
      * @param type The type of the node to get.
+     * @param <T>  The type of the node.
      * @return The node with the given name, or {@link Option.None} if no node with the given name exists.
      */
-    public <T extends Node> Option<T> findNode(String name, Class<T> type) {
+    public <T extends Node> @NotNull Option<T> findNode(@Nullable String name, @NotNull Class<T> type) {
         return Option.of(nodesMap.get(name)).map(node -> type.isAssignableFrom(node.getClass()) ? (T) node : null);
     }
 
