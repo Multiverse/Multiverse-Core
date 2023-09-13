@@ -14,8 +14,8 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import org.mvplugins.multiverse.core.api.SafeTTeleporter;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 
 /**
  * Event that gets called when a player use the /mvtp command.
@@ -89,8 +89,8 @@ public class MVTeleportEvent extends Event implements Cancellable {
     }
 
     /**
-     * Looks if this {@link MVTeleportEvent} is using the {@link SafeTTeleporter}.
-     * @return True if this {@link MVTeleportEvent} is using the {@link SafeTTeleporter}.
+     * Looks if this {@link MVTeleportEvent} is using the {@link AsyncSafetyTeleporter}.
+     * @return True if this {@link MVTeleportEvent} is using the {@link AsyncSafetyTeleporter}.
      */
     public boolean isUsingSafeTTeleporter() {
         return useSafeTeleport;
