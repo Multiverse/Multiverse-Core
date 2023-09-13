@@ -16,10 +16,10 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.inject.InjectableListener;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.options.UnloadWorldOptions;
-import org.mvplugins.multiverse.core.worldnew.reasons.LoadFailureReason;
-import org.mvplugins.multiverse.core.worldnew.reasons.UnloadFailureReason;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
+import org.mvplugins.multiverse.core.world.reasons.LoadFailureReason;
+import org.mvplugins.multiverse.core.world.reasons.UnloadFailureReason;
 
 /**
  * Multiverse's World Listener.

@@ -40,15 +40,13 @@ import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.inject.InjectableListener;
-import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.entrycheck.EntryFeeResult;
-import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvider;
-import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.entrycheck.EntryFeeResult;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
+import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
  * Multiverse's Listener for players.

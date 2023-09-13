@@ -18,7 +18,7 @@ import org.mvplugins.multiverse.core.teleportation.SimpleSafeTTeleporter
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
 import org.mvplugins.multiverse.core.utils.UnsafeCallWrapper
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
-import org.mvplugins.multiverse.core.worldnew.WorldManager
+import org.mvplugins.multiverse.core.world.WorldManager
 import kotlin.test.*
 
 class InjectionTest : TestWithMockBukkit() {
