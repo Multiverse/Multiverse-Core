@@ -26,8 +26,8 @@ import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 public class MVCommandContexts extends PaperCommandContexts {

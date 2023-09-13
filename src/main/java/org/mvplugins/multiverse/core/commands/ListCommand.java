@@ -19,7 +19,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
@@ -28,10 +27,10 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryChecker;
-import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvider;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 @Service
 @CommandAlias("mv")

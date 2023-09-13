@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.api.DestinationInstance;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
  * Destination instance implementation for the {@link WorldDestination}.

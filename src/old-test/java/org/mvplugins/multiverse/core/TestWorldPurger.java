@@ -10,8 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mvplugins.multiverse.core.api.MVWorld;
-import org.mvplugins.multiverse.core.api.WorldPurger;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
 
 import static org.junit.Assert.assertTrue;

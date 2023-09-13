@@ -27,10 +27,9 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.helpers.PlayerWorldTeleporter;
-import org.mvplugins.multiverse.core.worldnew.options.RegenWorldOptions;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
 
 @Service
 @CommandAlias("mv")

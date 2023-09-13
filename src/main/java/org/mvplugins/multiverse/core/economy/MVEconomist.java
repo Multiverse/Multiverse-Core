@@ -8,13 +8,14 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
  * Multiverse's Friendly Economist. This is used to deal with external economies and also item costs for stuff in MV.
  */
 @Service
 public class MVEconomist {
+    public static final Material DISABLED_MATERIAL = Material.AIR;
 
     private final VaultHandler vaultHandler;
 

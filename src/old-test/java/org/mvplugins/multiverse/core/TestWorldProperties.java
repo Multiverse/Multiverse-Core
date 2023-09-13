@@ -27,7 +27,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mvplugins.multiverse.core.api.MVWorld;
 import org.mvplugins.multiverse.core.utils.MockWorldFactory;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
 

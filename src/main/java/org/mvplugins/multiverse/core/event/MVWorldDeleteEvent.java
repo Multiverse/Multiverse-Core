@@ -4,7 +4,8 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import org.mvplugins.multiverse.core.api.MVWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Called when a world is about to be deleted by Multiverse.
@@ -12,13 +13,13 @@ import org.mvplugins.multiverse.core.api.MVWorld;
 public class MVWorldDeleteEvent extends Event implements Cancellable {
     private boolean cancelled = false;
 
-    private final MVWorld world;
+    private final LoadedMultiverseWorld world;
     private final boolean removeFromConfig;
 
-    public MVWorldDeleteEvent(MVWorld world, boolean removeFromConfig) {
-        if (world == null)
+    public MVWorldDeleteEvent(LoadedMultiverseWorld world, boolean removeFromConfig) {
+        if (world == null) {
             throw new IllegalArgumentException("world can't be null!");
-
+        }
         this.world = world;
         this.removeFromConfig = removeFromConfig;
     }
@@ -60,9 +61,9 @@ public class MVWorldDeleteEvent extends Event implements Cancellable {
     /**
      * Gets the world that's about to be deleted.
      *
-     * @return That {@link MVWorld}.
+     * @return That {@link MultiverseWorld}.
      */
-    public MVWorld getWorld() {
+    public LoadedMultiverseWorld getWorld() {
         return world;
     }
 

@@ -44,11 +44,11 @@ import org.mvplugins.multiverse.core.inject.InjectableListener;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.entrycheck.EntryFeeResult;
-import org.mvplugins.multiverse.core.worldnew.entrycheck.WorldEntryCheckerProvider;
-import org.mvplugins.multiverse.core.worldnew.helpers.EnforcementHandler;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.entrycheck.EntryFeeResult;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
+import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
  * Multiverse's Listener for players.

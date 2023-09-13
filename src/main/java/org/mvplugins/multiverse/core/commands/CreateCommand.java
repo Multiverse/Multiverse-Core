@@ -24,9 +24,9 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.generators.GeneratorProvider;
-import org.mvplugins.multiverse.core.worldnew.options.CreateWorldOptions;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
+import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
 
 @Service
 @CommandAlias("mv")

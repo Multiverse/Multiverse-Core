@@ -8,11 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.Destination;
-import org.mvplugins.multiverse.core.api.MVWorld;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 @Service
 public class CorePermissionsChecker {
@@ -28,11 +27,6 @@ public class CorePermissionsChecker {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
     }
 
-    @Deprecated // TODO: Remove old MVWorld
-    public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull MVWorld world) {
-        return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
-    }
-
     public boolean hasWorldExemptPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_EXEMPT, world.getName()));
     }
@@ -42,11 +36,6 @@ public class CorePermissionsChecker {
     }
 
     public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
-        return hasPermission(sender, concatPermission(CorePermissions.GAMEMODE_BYPASS, world.getName()));
-    }
-
-    @Deprecated // TODO: Remove old MVWorld
-    public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull MVWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.GAMEMODE_BYPASS, world.getName()));
     }
 
