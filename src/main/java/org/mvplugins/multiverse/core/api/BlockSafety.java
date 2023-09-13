@@ -57,8 +57,8 @@ public interface BlockSafety {
      * Gets the next safe location around the given location.
      *
      * @param location  A {@link Location}.
-     * @param tolerance The tolerance.
-     * @param radius    The radius.
+     * @param tolerance The tolerance of how far up and down to search.
+     * @param radius    The radius around given location to search.
      * @return A safe {@link Location}.
      */
     @Nullable Location getSafeLocation(Location location, int tolerance, int radius);
