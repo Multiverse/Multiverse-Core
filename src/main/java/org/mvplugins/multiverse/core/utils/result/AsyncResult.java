@@ -6,6 +6,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Represents the result of an asynchronous operation that wraps a {@link CompletableFuture}.
+ *
+ * @param <T>   The type of the value.
+ */
 public final class AsyncResult<T> {
 
     /**
