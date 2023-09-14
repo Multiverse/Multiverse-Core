@@ -13,10 +13,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.world.config.AllowedPortalType;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
-import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
-import org.mvplugins.multiverse.core.world.configuration.AllowedPortalType;
 
 /**
  * Represents a world handled by Multiverse which has all the custom properties provided by Multiverse.

@@ -17,8 +17,8 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.context.WorldConfigValue;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
-import org.mvplugins.multiverse.core.worldnew.MultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
