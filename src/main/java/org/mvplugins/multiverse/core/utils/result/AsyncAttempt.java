@@ -21,19 +21,15 @@ public final class AsyncAttempt<T, F extends FailureReason> {
     public static <T, F extends FailureReason> AsyncAttempt<T, F> of(
             CompletableFuture<T> future,
             BiFunction<T, Throwable, Attempt<T, F>> completionHandler) {
-        return new AsyncAttempt<>(future.handleAsync(completionHandler));
+        return new AsyncAttempt<>(future.handle(completionHandler));
     }
 
     public static <T, F extends FailureReason> AsyncAttempt<T, F> of(
             CompletableFuture<T> future,
             Function<Throwable, Attempt<T, F>> exceptionHandler) {
-        BiFunction<T, Throwable, Attempt<T, F>> completionHandler = (result, exception) -> {
-            if (exception != null) {
-                return exceptionHandler.apply(exception);
-            } else {
-                return Attempt.success(result);
-            }
-        };
+        BiFunction<T, Throwable, Attempt<T, F>> completionHandler = (result, exception) -> exception != null
+                ? exceptionHandler.apply(exception)
+                : Attempt.success(result);
         return of(future, completionHandler);
     }
 
@@ -56,6 +52,10 @@ public final class AsyncAttempt<T, F extends FailureReason> {
 
     public <U> AsyncAttempt<U, F> map(Function<? super T, ? extends U> mapper) {
         return new AsyncAttempt<>(future.thenApply(attempt -> attempt.map(mapper)));
+    }
+
+    public <U> AsyncAttempt<U, F> mapAttempt(Function<? super T, Attempt<U, F>> mapper) {
+        return new AsyncAttempt<>(future.thenApply(attempt -> attempt.mapAttempt(mapper)));
     }
 
     public <U> AsyncAttempt<U, F> mapAsyncAttempt(Function<? super T, AsyncAttempt<U, F>> mapper) {

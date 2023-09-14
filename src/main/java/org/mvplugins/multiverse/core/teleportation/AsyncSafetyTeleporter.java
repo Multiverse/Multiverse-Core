@@ -144,16 +144,15 @@ public class AsyncSafetyTeleporter {
             Logging.warning("Failed to teleport %s to %s: %s",
                     teleportee.getName(), location, exception.getMessage());
             return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED_EXCEPTION);
-        }).mapAsyncAttempt(result -> {
+        }).mapAttempt(result -> {
             Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
             if (result) {
                 if (shouldAddToQueue) {
                     teleportQueue.popFromQueue(teleportee.getName());
                 }
-                return AsyncAttempt.success();
-            } else {
-                return AsyncAttempt.failure(TeleportResult.Failure.TELEPORT_FAILED);
+                return Attempt.success(null);
             }
+            return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED);
         });
     }
 }

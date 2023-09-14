@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
-import java.util.Arrays;
+import java.util.List;
 
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
@@ -22,7 +22,6 @@ import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 
 @Service
 @CommandAlias("mv")
@@ -72,10 +71,8 @@ class TeleportCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                 "{player}", playerName, "{destination}", destination.toString());
 
-        AsyncAttempt.allOf(Arrays.stream(players)
-                        .map(player -> safetyTeleporter.teleportSafely(issuer.getIssuer(), player, destination))
-                        .toList())
-                .thenRun(() -> Logging.fine("Async teleport result: %s"))
+        safetyTeleporter.teleportSafely(issuer.getIssuer(), List.of(players), destination)
+                .thenAccept(attempts -> Logging.fine("Async teleport completed: %s", attempts))
                 .exceptionally(throwable -> {
                     Logging.severe("Error while teleporting %s to %s: %s",
                             playerName, destination, throwable.getMessage());
