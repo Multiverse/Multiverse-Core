@@ -3,9 +3,7 @@ package org.mvplugins.multiverse.core.world
 import org.bukkit.World
 import org.bukkit.WorldType
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld
-import org.mvplugins.multiverse.core.worldnew.WorldManager
-import org.mvplugins.multiverse.core.worldnew.options.CreateWorldOptions
+import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.*
 
 class WorldManagerTest : TestWithMockBukkit() {

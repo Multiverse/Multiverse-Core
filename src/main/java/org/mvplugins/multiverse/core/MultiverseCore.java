@@ -43,10 +43,9 @@ import org.mvplugins.multiverse.core.inject.PluginInjection;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 import org.mvplugins.multiverse.core.utils.TestingMode;
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
-import org.mvplugins.multiverse.core.world.WorldProperties;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
-import org.mvplugins.multiverse.core.worldnew.config.NullLocation;
-import org.mvplugins.multiverse.core.worldnew.config.SpawnLocation;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.config.NullLocation;
+import org.mvplugins.multiverse.core.world.config.SpawnLocation;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
@@ -96,8 +95,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
 
         // Register our config classes
-        SerializationConfig.registerAll(WorldProperties.class);
         SerializationConfig.initLogging(Logging.getLogger());
+        ConfigurationSerialization.registerClass(NullLocation.class);
+        ConfigurationSerialization.registerClass(SpawnLocation.class);
     }
 
     /**
@@ -106,8 +106,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void onEnable() {
         initializeDependencyInjection();
-        ConfigurationSerialization.registerClass(NullLocation.class);
-        ConfigurationSerialization.registerClass(SpawnLocation.class);
 
         // Load our configs first as we need them for everything else.
         var config = configProvider.get();

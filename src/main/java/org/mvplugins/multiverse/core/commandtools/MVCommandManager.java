@@ -19,7 +19,8 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueueManager;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldNameChecker;
 
 /**
  * Main class to manage permissions.
@@ -33,21 +34,21 @@ public class MVCommandManager extends PaperCommandManager {
     private final Provider<MVCommandCompletions> commandCompletionsProvider;
 
     @Inject
-    public MVCommandManager(
+    MVCommandManager(
             @NotNull MultiverseCore plugin,
             @NotNull CommandFlagsManager flagsManager,
             @NotNull CommandQueueManager commandQueueManager,
             @NotNull Provider<MVCommandContexts> commandContextsProvider,
             @NotNull Provider<MVCommandCompletions> commandCompletionsProvider,
-            @NotNull WorldManager worldManager
-    ) {
+            @NotNull WorldManager worldManager,
+            @NotNull WorldNameChecker worldNameChecker) {
         super(plugin);
         this.flagsManager = flagsManager;
         this.commandQueueManager = commandQueueManager;
         this.commandContextsProvider = commandContextsProvider;
         this.commandCompletionsProvider = commandCompletionsProvider;
 
-        MVCommandConditions.load(this, worldManager);
+        MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
     }
 

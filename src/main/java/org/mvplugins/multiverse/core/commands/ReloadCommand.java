@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.event.MVConfigReloadEvent;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")

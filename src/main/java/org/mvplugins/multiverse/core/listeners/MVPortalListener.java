@@ -22,8 +22,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.inject.InjectableListener;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
  * A custom listener for portal related events.

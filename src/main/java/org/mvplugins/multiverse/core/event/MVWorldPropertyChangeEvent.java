@@ -12,7 +12,8 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import org.mvplugins.multiverse.core.api.MVWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * This event is fired *before* the property is actually changed.
@@ -25,13 +26,13 @@ import org.mvplugins.multiverse.core.api.MVWorld;
  * @param <T> The type of the property that was set.
  */
 public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable {
-    private MVWorld world;
+    private MultiverseWorld world;
     private CommandSender changer;
     private boolean isCancelled = false;
     private String name;
     private T value;
 
-    public MVWorldPropertyChangeEvent(MVWorld world, CommandSender changer, String name, T value) {
+    public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, T value) {
         this.world = world;
         this.changer = changer;
         this.name = name;
@@ -107,7 +108,7 @@ public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable 
      *
      * @return A valid MultiverseWorld.
      */
-    public MVWorld getWorld() {
+    public MultiverseWorld getWorld() {
         return this.world;
     }
 

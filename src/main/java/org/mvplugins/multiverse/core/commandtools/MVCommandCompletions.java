@@ -28,9 +28,9 @@ import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
-import org.mvplugins.multiverse.core.worldnew.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.MultiverseWorld;
-import org.mvplugins.multiverse.core.worldnew.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {
