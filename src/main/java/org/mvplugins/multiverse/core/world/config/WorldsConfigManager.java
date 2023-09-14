@@ -33,16 +33,14 @@ public final class WorldsConfigManager {
 
     private final Map<String, WorldConfig> worldConfigMap;
     private final File worldConfigFile;
+    private final MultiverseCore multiverseCore;
     private YamlConfiguration worldsConfig;
 
-    private final EnforcementHandler enforcementHandler;
-
     @Inject
-    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull EnforcementHandler enforcementHandler) {
+    WorldsConfigManager(@NotNull MultiverseCore multiverseCore) {
         worldConfigMap = new HashMap<>();
-        worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
-
-        this.enforcementHandler = enforcementHandler;
+        worldConfigFile = multiverseCore.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
+        this.multiverseCore = multiverseCore;
     }
 
     /**
@@ -128,7 +126,7 @@ public final class WorldsConfigManager {
                         WorldConfig newWorldConfig = new WorldConfig(
                                 worldName,
                                 getWorldConfigSection(worldName),
-                                enforcementHandler);
+                                multiverseCore);
                         worldConfigMap.put(worldName, newWorldConfig);
                         newWorldsAdded.add(newWorldConfig);
                     });
@@ -183,7 +181,7 @@ public final class WorldsConfigManager {
         if (worldConfigMap.containsKey(worldName)) {
             throw new IllegalArgumentException("WorldConfig for world " + worldName + " already exists.");
         }
-        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), enforcementHandler);
+        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), multiverseCore);
         worldConfigMap.put(worldName, worldConfig);
         return worldConfig;
     }

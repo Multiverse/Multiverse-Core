@@ -1,13 +1,17 @@
 package org.mvplugins.multiverse.core.configuration.node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.Value;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,6 +74,91 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         this.itemSerializer = itemSerializer;
         this.itemValidator = itemValidator;
         this.onSetItemValue = onSetItemValue;
+
+        if (this.itemSuggester != null && this.suggester == null) {
+            setDefaultSuggester();
+        }
+        if (this.itemStringParser != null && this.stringParser == null) {
+            Logging.fine("Setting default string parser for list node " + path);
+            setDefaultStringParser();
+        }
+        if (this.itemValidator != null && this.validator == null) {
+            setDefaultValidator();
+        }
+        if (this.itemSerializer != null && this.serializer == null) {
+            setDefaultSerialiser();
+        }
+        if (this.onSetItemValue != null && this.onSetValue == null) {
+            setDefaultOnSetValue();
+        }
+    }
+
+    private void setDefaultSuggester() {
+        this.suggester = input -> {
+            int lastIndexOf = input.lastIndexOf(',');
+            if (lastIndexOf == -1) {
+                return itemSuggester.suggest(input);
+            }
+
+            String lastInput = input.substring(lastIndexOf + 1);
+            String inputBeforeLast = input.substring(0, lastIndexOf + 1);
+            Set<String> inputs = Set.of(inputBeforeLast.split(","));
+            return itemSuggester.suggest(lastInput).stream()
+                    .filter(item -> !inputs.contains(item))
+                    .map(item -> inputBeforeLast + item)
+                    .toList();
+        };
+    }
+
+    private void setDefaultStringParser() {
+        this.stringParser = (input, type) -> {
+            if (input == null) {
+                return Try.failure(new IllegalArgumentException("Input cannot be null"));
+            }
+            return Try.sequence(Arrays.stream(input.split(","))
+                    .map(inputItem -> itemStringParser.parse(inputItem, itemType))
+                    .toList()).map(Value::toJavaList);
+        };
+    }
+
+    private void setDefaultValidator() {
+        this.validator = value -> {
+            if (value != null) {
+                return Try.sequence(value.stream().map(itemValidator).toList()).map(v -> null);
+            }
+            return Try.success(null);
+        };
+    }
+
+    private void setDefaultSerialiser() {
+        this.serializer = new NodeSerializer<>() {
+            @Override
+            public List<I> deserialize(Object object, Class<List<I>> type) {
+                if (object instanceof List list) {
+                    return list.stream().map(item -> itemSerializer.deserialize(item, itemType)).toList();
+                }
+                return new ArrayList<>();
+            }
+
+            @Override
+            public Object serialize(List<I> object, Class<List<I>> type) {
+                if (object != null) {
+                    return object.stream().map(item -> itemSerializer.serialize(item, itemType)).toList();
+                }
+                return new ArrayList<>();
+            }
+        };
+    }
+
+    private void setDefaultOnSetValue() {
+        this.onSetValue = (oldValue, newValue) -> {
+            if (oldValue != null) {
+                oldValue.stream()
+                        .filter(value -> !newValue.contains(value))
+                        .forEach(item -> onSetItemValue.accept(item, null));
+            }
+            newValue.forEach(item -> onSetItemValue.accept(null, item));
+        };
     }
 
     /**
@@ -80,6 +169,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return itemType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Collection<String> suggestItem(@Nullable String input) {
         if (itemSuggester != null) {
@@ -88,6 +180,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return Collections.emptyList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull Try<I> parseItemFromString(@Nullable String input) {
         if (itemStringParser != null) {
@@ -176,19 +271,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
          */
         public @NotNull B itemValidator(@NotNull Function<I, Try<Void>> itemValidator) {
             this.itemValidator = itemValidator;
-            if (validator == null) {
-                setDefaultValidator();
-            }
             return self();
-        }
-
-        private void setDefaultValidator() {
-            this.validator = value -> {
-                if (value != null) {
-                    return Try.sequence(value.stream().map(itemValidator).toList()).map(v -> null);
-                }
-                return Try.success(null);
-            };
         }
 
         /**
@@ -199,21 +282,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
          */
         public @NotNull B onSetItemValue(@Nullable BiConsumer<I, I> onSetItemValue) {
             this.onSetItemValue = onSetItemValue;
-            if (onSetValue == null) {
-                setDefaultOnSetValue();
-            }
             return self();
-        }
-
-        private void setDefaultOnSetValue() {
-            this.onSetValue = (oldValue, newValue) -> {
-                if (oldValue != null) {
-                    oldValue.stream()
-                            .filter(value -> !newValue.contains(value))
-                            .forEach(item -> onSetItemValue.accept(item, null));
-                }
-                newValue.forEach(item -> onSetItemValue.accept(null, item));
-            };
         }
 
         /**

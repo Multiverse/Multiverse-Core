@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
@@ -55,6 +56,7 @@ class ModifyCommand extends MultiverseCommand {
             String propertyName,
 
             @Optional
+            @Single
             @Syntax("[value]")
             @Description("")
             String propertyValue) {
