@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.configuration.node;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -8,6 +10,13 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import org.mvplugins.multiverse.core.configuration.functions.DefaultSerializerProvider;
+import org.mvplugins.multiverse.core.configuration.functions.DefaultStringParserProvider;
+import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterProvider;
+import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
+import org.mvplugins.multiverse.core.configuration.functions.NodeStringParser;
+import org.mvplugins.multiverse.core.configuration.functions.NodeSuggester;
 
 /**
  * A node that contains a value.
@@ -33,6 +42,8 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     protected final @Nullable String name;
     protected final @NotNull Class<T> type;
     protected final @Nullable Supplier<T> defaultValueSupplier;
+    protected final @Nullable NodeSuggester suggester;
+    protected final @Nullable NodeStringParser<T> stringParser;
     protected final @Nullable NodeSerializer<T> serializer;
     protected final @Nullable Function<T, Try<Void>> validator;
     protected final @Nullable BiConsumer<T, T> onSetValue;
@@ -43,6 +54,8 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             @Nullable String name,
             @NotNull Class<T> type,
             @Nullable Supplier<T> defaultValueSupplier,
+            @Nullable NodeSuggester suggester,
+            @Nullable NodeStringParser<T> stringParser,
             @Nullable NodeSerializer<T> serializer,
             @Nullable Function<T, Try<Void>> validator,
             @Nullable BiConsumer<T, T> onSetValue) {
@@ -50,7 +63,15 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         this.name = name;
         this.type = type;
         this.defaultValueSupplier = defaultValueSupplier;
-        this.serializer = serializer;
+        this.suggester = suggester != null
+                ? suggester
+                : DefaultSuggesterProvider.getDefaultSuggester(type);
+        this.stringParser = stringParser != null
+                ? stringParser
+                : DefaultStringParserProvider.getDefaultStringParser(type);
+        this.serializer = serializer != null
+                ? serializer
+                : DefaultSerializerProvider.getDefaultSerializer(type);
         this.validator = validator;
         this.onSetValue = onSetValue;
     }
@@ -77,6 +98,28 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     @Override
     public @Nullable T getDefaultValue() {
         return defaultValueSupplier != null ? defaultValueSupplier.get() : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Collection<String> suggest(@Nullable String input) {
+        if (suggester != null) {
+            return suggester.suggest(input);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Try<T> parseFromString(@Nullable String input) {
+        if (stringParser != null) {
+            return stringParser.parse(input, type);
+        }
+        return Try.failure(new UnsupportedOperationException("No string parser for type " + type.getName()));
     }
 
     public @Nullable NodeSerializer<T> getSerializer() {
@@ -111,11 +154,12 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * @param <B>   The type of the builder.
      */
     public static class Builder<T, B extends ConfigNode.Builder<T, B>> extends ConfigHeaderNode.Builder<B> {
-        private static final NodeSerializer<?> ENUM_NODE_SERIALIZER = new EnumNodeSerializer<>();
 
         protected @Nullable String name;
         protected @NotNull final Class<T> type;
         protected @Nullable Supplier<T> defaultValueSupplier;
+        protected @Nullable NodeSuggester suggester;
+        protected @Nullable NodeStringParser<T> stringParser;
         protected @Nullable NodeSerializer<T> serializer;
         protected @Nullable Function<T, Try<Void>> validator;
         protected @Nullable BiConsumer<T, T> onSetValue;
@@ -130,9 +174,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             super(path);
             this.name = path;
             this.type = type;
-            if (type.isEnum()) {
-                this.serializer = (NodeSerializer<T>) ENUM_NODE_SERIALIZER;
-            }
         }
 
         /**
@@ -168,6 +209,16 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             return self();
         }
 
+        public @NotNull B suggester(@NotNull NodeSuggester suggester) {
+            this.suggester = suggester;
+            return self();
+        }
+
+        public @NotNull B stringParser(@NotNull NodeStringParser<T> stringParser) {
+            this.stringParser = stringParser;
+            return self();
+        }
+
         public @NotNull B serializer(@NotNull NodeSerializer<T> serializer) {
             this.serializer = serializer;
             return self();
@@ -200,6 +251,8 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
                     name,
                     type,
                     defaultValueSupplier,
+                    suggester,
+                    stringParser,
                     serializer,
                     validator,
                     onSetValue);

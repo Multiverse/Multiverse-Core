@@ -170,24 +170,11 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestMVWorldPropsValue(BukkitCommandCompletionContext context) {
-        //noinspection unchecked
         return Try.of(() -> {
             MultiverseWorld mvWorld = context.getContextValue(MultiverseWorld.class);
+            ConfigModifyType modifyType = context.getContextValue(ConfigModifyType.class);
             String propertyName = context.getContextValue(String.class);
-            Class type = mvWorld.getPropertyType(propertyName).get();
-            if (type.isEnum()) {
-                return suggestEnums(type);
-            }
-            if (type == Boolean.class) {
-                return List.of("true", "false");
-            }
-            if (type == Integer.class) {
-                return List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-            }
-            if (type == Double.class) {
-                return List.of("0.0", "1.0", "2.0", "3.0", "4.0", "5.0");
-            }
-            return Collections.emptyList();
+            return mvWorld.suggestPropertyValues(modifyType, propertyName, context.getInput());
         }).getOrElse(Collections.emptyList());
     }
 

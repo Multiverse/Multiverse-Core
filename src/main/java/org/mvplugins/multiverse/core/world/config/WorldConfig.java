@@ -116,27 +116,32 @@ public final class WorldConfig {
     }
 
     public Collection<String> getConfigurablePropertyNames() {
-        return configHandle.getNames();
+        return configHandle.getPropertyNames();
     }
 
     public Collection<String> getConfigurablePropertyNames(ConfigModifyType configModifyType) {
-        return configHandle.getNamesThatSupports(configModifyType);
+        return configHandle.getPropertyNames(configModifyType);
     }
 
     public Try<Class> getPropertyType(String name) {
-        return configHandle.getTypeByName(name);
+        return configHandle.getPropertyType(name);
+    }
+
+    public Collection<String> suggestPropertyValues(
+            @NotNull ConfigModifyType type, @Nullable String name, @Nullable String input) {
+        return configHandle.suggestPropertyValues(type, name, input);
     }
 
     public Try<Object> getProperty(String name) {
-        return configHandle.get(name);
+        return configHandle.getProperty(name);
+    }
+
+    public Try<Void> modifyProperty(ConfigModifyType type, String name, String value) {
+        return configHandle.modifyProperty(type, name, value);
     }
 
     public Try<Void> setProperty(String name, Object value) {
-        return configHandle.set(name, value);
-    }
-
-    public Try<Void> modifyProperty(ConfigModifyType type, String name, Object value) {
-        return configHandle.modify(type, name, value);
+        return configHandle.setProperty(name, value);
     }
 
     public boolean getAdjustSpawn() {

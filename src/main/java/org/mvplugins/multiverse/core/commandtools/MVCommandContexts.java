@@ -1,9 +1,6 @@
 package org.mvplugins.multiverse.core.commandtools;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
@@ -11,10 +8,8 @@ import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
-import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
 import io.vavr.control.Option;
-import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
@@ -22,9 +17,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
 import org.mvplugins.multiverse.core.commandtools.context.MVConfigValue;
-import org.mvplugins.multiverse.core.commandtools.context.WorldConfigValue;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -69,7 +62,6 @@ class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
-        registerIssuerAwareContext(WorldConfigValue.class, this::parseWorldConfigValue);
     }
 
     private MVCommandIssuer parseMVCommandIssuer(BukkitCommandExecutionContext context) {
@@ -408,51 +400,5 @@ class MVCommandContexts extends PaperCommandContexts {
             return null;
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
-    }
-
-    private WorldConfigValue parseWorldConfigValue(BukkitCommandExecutionContext context) {
-        MultiverseWorld mvWorld = (MultiverseWorld) context.getResolvedArg(MultiverseWorld.class);
-        ConfigModifyType modifyType = (ConfigModifyType) context.getResolvedArg(ConfigModifyType.class);
-        String propertyName = (String) context.getResolvedArg(String.class);
-        if (mvWorld == null || modifyType == null || propertyName == null) {
-            throw new InvalidCommandArgument("No world or property specified.");
-        }
-
-        if (modifyType == ConfigModifyType.RESET) {
-            if (context.popFirstArg() != null) {
-                throw new InvalidCommandArgument("No value should be specified for reset.");
-            }
-            return new WorldConfigValue(null);
-        }
-
-        Class<?> type = mvWorld.getPropertyType(propertyName)
-                .getOrElseThrow(() -> {
-                    return new InvalidCommandArgument("The property " + propertyName + " is not valid for world "
-                            + mvWorld.getName() + ".");
-                });
-        return new WorldConfigValue(parseType(context, type));
-    }
-
-    private Object parseType(BukkitCommandExecutionContext context, Class<?> type) {
-        Object value = context.getFirstArg();
-        if (value == null) {
-            throw new InvalidCommandArgument("No value specified.");
-        }
-
-        // Special case for enums
-        if (type.isEnum()) {
-            return Try.of(() -> Enum.valueOf((Class<? extends Enum>) type, context.popFirstArg().toUpperCase()))
-                    .getOrElseThrow(() -> new InvalidCommandArgument(("The value %s is not a valid %s. "
-                            + "Valid values are: %s").formatted(
-                                    value,
-                                    type.getSimpleName(),
-                                    Arrays.stream(((Class<? extends Enum>) type).getEnumConstants())
-                                            .map(enumValue -> enumValue.name().toLowerCase())
-                                            .reduce((a, b) -> a + ", " + b)
-                                            .orElse(""))));
-        }
-
-        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(type);
-        return resolver == null ? value : resolver.getContext(context);
     }
 }

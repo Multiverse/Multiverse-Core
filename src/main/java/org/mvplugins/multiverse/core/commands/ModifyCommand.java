@@ -10,12 +10,12 @@ import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jvnet.hk2.annotations.Optional;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.commandtools.context.WorldConfigValue;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -54,19 +54,20 @@ class ModifyCommand extends MultiverseCommand {
             @Description("")
             String propertyName,
 
+            @Optional
             @Syntax("[value]")
             @Description("")
-            WorldConfigValue propertyValue) {
+            String propertyValue) {
         Logging.fine("ModifyCommand.onModifyCommand: world=%s, configModifyType=%s, propertyName=%s, propertyValue=%s",
                 world, configModifyType, propertyName, propertyValue);
 
-        world.modifyProperty(configModifyType, propertyName, propertyValue.getValue()).onSuccess(ignore -> {
+        world.modifyProperty(configModifyType, propertyName, propertyValue).onSuccess(ignore -> {
             issuer.sendMessage("Property " + propertyName + " set to " + world.getProperty(propertyName).getOrNull()
                     + " for world " + world.getName() + ".");
             worldManager.saveWorldsConfig();
         }).onFailure(exception -> {
             issuer.sendMessage("Failed to " + configModifyType.name().toLowerCase() + " property " + propertyName
-                    + " to " + propertyValue.getValue() + " for world " + world.getName() + ".");
+                    + " to " + propertyValue + " for world " + world.getName() + ".");
             issuer.sendMessage(exception.getMessage());
         });
     }

@@ -11,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.handle.ConfigModifyType;
@@ -71,8 +72,9 @@ public class MultiverseWorld {
         return worldConfig.getConfigurablePropertyNames(configModifyType);
     }
 
-    public Try<Class> getPropertyType(String name) {
-        return worldConfig.getPropertyType(name);
+    public Collection<String> suggestPropertyValues(
+            @NotNull ConfigModifyType type, @Nullable String name, @Nullable String input) {
+        return worldConfig.suggestPropertyValues(type, name, input);
     }
 
     /**
@@ -85,6 +87,10 @@ public class MultiverseWorld {
         return worldConfig.getProperty(name);
     }
 
+    public Try<Void> modifyProperty(ConfigModifyType type, String name, String value) {
+        return worldConfig.modifyProperty(type, name, value);
+    }
+
     /**
      * Sets a property on this world.
      *
@@ -94,10 +100,6 @@ public class MultiverseWorld {
      */
     public Try<Void> setProperty(String name, Object value) {
         return worldConfig.setProperty(name, value);
-    }
-
-    public Try<Void> modifyProperty(ConfigModifyType type, String name, Object value) {
-        return worldConfig.modifyProperty(type, name, value);
     }
 
     /**

@@ -1,7 +1,9 @@
 package org.mvplugins.multiverse.core.configuration.handle;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import io.vavr.control.Option;
@@ -71,11 +73,11 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
         });
     }
 
-    public Collection<String> getNames() {
+    public Collection<String> getPropertyNames() {
         return nodes.getNames();
     }
 
-    public Collection<String> getNamesThatSupports(ConfigModifyType configModifyType) {
+    public Collection<String> getPropertyNames(ConfigModifyType configModifyType) {
         return switch (configModifyType) {
             case SET, RESET -> nodes.getNames();
             case ADD, REMOVE -> nodes.stream()
@@ -87,7 +89,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
         };
     }
 
-    public Try<Class> getTypeByName(@Nullable String name) {
+    public Try<Class> getPropertyType(@Nullable String name) {
         return nodes.findNode(name, ValueNode.class)
                 .map(valueNode -> {
                     if (valueNode instanceof ListValueNode listValueNode) {
@@ -98,22 +100,46 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
                 .toTry(() -> new ConfigNodeNotFoundException(name));
     }
 
+    public Collection<String> suggestPropertyValues(
+            @NotNull ConfigModifyType type, @Nullable String name, @Nullable String input) {
+        return switch (type) {
+            case RESET -> Collections.emptyList();
+            case SET -> nodes.findNode(name, ValueNode.class)
+                    .map(node -> node.suggest(input))
+                    .getOrElse(Collections.emptyList());
+            case ADD -> nodes.findNode(name, ListValueNode.class)
+                    .map(node -> node.suggestItem(input))
+                    .getOrElse(Collections.emptyList());
+            case REMOVE -> nodes.findNode(name, ListValueNode.class)
+                    .toTry()
+                    .map(node -> Option.of(get((ValueNode<List>) node))
+                            .map(list -> list.stream().map(Object::toString).toList())
+                            .getOrElse(Collections.emptyList()))
+                    .getOrElse(Collections.emptyList());
+            default -> Collections.emptyList();
+        };
+    }
+
     /**
      * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
      *
      * @param name  The name of the node.
      * @return The value of the node.
      */
-    public Try<Object> get(@Nullable String name) {
+    public Try<Object> getProperty(@Nullable String name) {
         return nodes.findNode(name, ValueNode.class)
                 .toTry(() -> new ConfigNodeNotFoundException(name))
                 .map(node -> get((ValueNode<Object>) node));
     }
 
-    public Try<Void> modify(@NotNull ConfigModifyType type, @Nullable String name, @Nullable Object value) {
-        return nodes.findNode(name, ValueNode.class)
-                .toTry(() -> new ConfigNodeNotFoundException(name))
-                .flatMapTry(node -> modify(type, node, value));
+    public Try<Void> modifyProperty(@NotNull ConfigModifyType type, @Nullable String name, @Nullable String value) {
+        return switch (type) {
+            case SET -> setProperty(name, value);
+            case RESET -> resetProperty(name);
+            case ADD -> addProperty(name, value);
+            case REMOVE -> removeProperty(name, value);
+            default -> Try.failure(new IllegalArgumentException("Unknown config modify type: " + type));
+        };
     }
 
     /**
@@ -123,31 +149,57 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      * @param value The value to set.
      * @return True if the value was set, false otherwise.
      */
-    public Try<Void> set(@Nullable String name, Object value) {
+    public Try<Void> setProperty(@Nullable String name, @Nullable String value) {
         //noinspection unchecked
-        return nodes.findNode(name, ValueNode.class)
-                .toTry(() -> new ConfigNodeNotFoundException(name))
-                .flatMapTry(node -> set(node, value));
+        return propertyAction(name, ValueNode.class, node ->
+            node.parseFromString(value).flatMapTry(parsedValue -> set(node, parsedValue)));
     }
 
-    public Try<Void> add(@Nullable String name, Object value) {
+    public Try<Void> addProperty(@Nullable String name, @Nullable String value) {
         //noinspection unchecked
-        return nodes.findNode(name, ListValueNode.class)
-                .toTry(() -> new ConfigNodeNotFoundException(name))
-                .flatMapTry(node -> add(node, value));
+        return propertyAction(name, ListValueNode.class, node ->
+                node.parseItemFromString(value).flatMapTry(item -> add(node, item)));
     }
 
-    public Try<Void> remove(@Nullable String name, Object value) {
+    public Try<Void> removeProperty(@Nullable String name, @Nullable String value) {
         //noinspection unchecked
-        return nodes.findNode(name, ListValueNode.class)
-                .toTry(() -> new ConfigNodeNotFoundException(name))
-                .flatMapTry(node -> remove(node, value));
+        return propertyAction(name, ListValueNode.class, node ->
+                node.parseItemFromString(value).flatMapTry(item -> remove(node, item)));
     }
 
-    public Try<Void> reset(@Nullable String name) {
-        return nodes.findNode(name, ValueNode.class)
+    public Try<Void> resetProperty(@Nullable String name) {
+        return propertyAction(name, ValueNode.class, this::reset);
+    }
+
+    /**
+     * Sets the value of a node, if the validator is not null, it will be tested first.
+     *
+     * @param name  The name of the node.
+     * @param value The value to set.
+     * @return True if the value was set, false otherwise.
+     */
+    public Try<Void> setProperty(@Nullable String name, @Nullable Object value) {
+        //noinspection unchecked
+        return propertyAction(name, ValueNode.class, node -> set(node, value));
+    }
+
+    public Try<Void> addProperty(@Nullable String name, @Nullable Object value) {
+        //noinspection unchecked
+        return propertyAction(name, ListValueNode.class, node -> add(node, value));
+    }
+
+    public Try<Void> removeProperty(@Nullable String name, @Nullable Object value) {
+        //noinspection unchecked
+        return propertyAction(name, ListValueNode.class, node -> remove(node, value));
+    }
+
+    private <T extends ValueNode<?>> Try<Void> propertyAction(
+            @Nullable String name,
+            @NotNull Class<T> nodeClass,
+            @NotNull Function<T, Try<Void>> action) {
+        return nodes.findNode(name, nodeClass)
                 .toTry(() -> new ConfigNodeNotFoundException(name))
-                .flatMapTry(this::reset);
+                .flatMapTry(action::apply);
     }
 
     /**
@@ -162,30 +214,6 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
             return config.getObject(node.getPath(), node.getType(), node.getDefaultValue());
         }
         return node.getSerializer().deserialize(config.get(node.getPath(), node.getDefaultValue()), node.getType());
-    }
-
-    public Try<Void> modify(@NotNull ConfigModifyType type, @NotNull ValueNode node, @Nullable Object value) {
-        return switch (type) {
-            case SET -> set(node, value);
-            case REMOVE -> {
-                if (!(node instanceof ListValueNode listNode)) {
-                    yield Try.failure(new IllegalArgumentException("Node is not a list"));
-                }
-                yield remove(listNode, value);
-            }
-            case ADD -> {
-                if (!(node instanceof ListValueNode listNode)) {
-                    yield Try.failure(new IllegalArgumentException("Node is not a list"));
-                }
-                yield add(listNode, value);
-            }
-            case RESET -> {
-                if (value != null) {
-                    yield Try.failure(new IllegalArgumentException("Reset type cannot have a value"));
-                }
-                yield reset(node);
-            }
-        };
     }
 
     /**

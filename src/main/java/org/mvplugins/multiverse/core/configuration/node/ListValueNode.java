@@ -1,10 +1,13 @@
 package org.mvplugins.multiverse.core.configuration.node;
 
+import java.util.Collection;
 import java.util.List;
 
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
 
 public interface ListValueNode<I> extends ValueNode<List<I>> {
 
@@ -14,6 +17,22 @@ public interface ListValueNode<I> extends ValueNode<List<I>> {
      * @return The class type of list item.
      */
     @NotNull Class<I> getItemType();
+
+    /**
+     * Suggests possible string values for this node.
+     *
+     * @param input The input string.
+     * @return A collection of possible string values.
+     */
+    @NotNull Collection<String> suggestItem(@Nullable String input);
+
+    /**
+     * Parses the given string into a value of type {@link I}. Used for property set by user input.
+     *
+     * @param input The string to parse.
+     * @return The parsed value, or given exception if parsing failed.
+     */
+    @NotNull Try<I> parseItemFromString(@Nullable String input);
 
     /**
      * Gets the serializer for this node.

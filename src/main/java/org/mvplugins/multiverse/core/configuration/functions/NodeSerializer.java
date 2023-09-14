@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.configuration.node;
+package org.mvplugins.multiverse.core.configuration.functions;
 
 public interface NodeSerializer<T> {
     T deserialize(Object object, Class<T> type);
