@@ -669,12 +669,13 @@ public class WorldManager {
             unloadTracker.add(world.getName());
             if (!Bukkit.unloadWorld(world, save)) {
                 // TODO: Localize this, maybe with MultiverseException
+                if (!world.getPlayers().isEmpty()) {
+                    throw new Exception("There are still players in the world! Please use --remove-players flag to "
+                            + "your command if wish to teleport all players out of the world.");
+                }
                 throw new Exception("Is this the default world? You can't unload the default world!");
             }
             Logging.fine("Bukkit unloaded world: " + world.getName());
-        }).onFailure(exception -> {
-            Logging.severe("Failed to unload bukkit world: " + world.getName());
-            exception.printStackTrace();
         }).andFinally(() -> unloadTracker.remove(world.getName()));
     }
 

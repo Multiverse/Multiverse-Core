@@ -26,7 +26,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.result.AsyncResult;
+import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
@@ -101,7 +101,7 @@ class RegenCommand extends MultiverseCommand {
 
         var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
                 ? playerWorldTeleporter.removeFromWorld(world)
-                : AsyncResult.completedFuture(Collections.emptyList());
+                : Async.completedFuture(Collections.emptyList());
 
         future.thenRun(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers));
     }
