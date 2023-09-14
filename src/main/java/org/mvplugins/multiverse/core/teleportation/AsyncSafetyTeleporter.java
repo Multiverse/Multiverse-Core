@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.papermc.lib.PaperLib;
-import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -16,12 +15,13 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
+import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
-import org.mvplugins.multiverse.core.utils.result.AsyncResult;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
-import org.mvplugins.multiverse.core.utils.result.Result;
 
-@SuppressWarnings("unchecked")
+/**
+ * Teleports entities safely and asynchronously.
+ */
 @Service
 public class AsyncSafetyTeleporter {
     private final BlockSafety blockSafety;
@@ -41,11 +41,11 @@ public class AsyncSafetyTeleporter {
         return teleportSafely(null, teleportee, destination);
     }
 
-    public <T extends Entity> AsyncResult<List<Result<TeleportResult.Success, TeleportResult.Failure>>> teleportSafely(
+    public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleportSafely(
             @Nullable CommandSender teleporter,
             @NotNull List<T> teleportees,
             @Nullable ParsedDestination<?> destination) {
-        return AsyncResult.allOf(teleportees.stream()
+        return AsyncAttempt.allOf(teleportees.stream()
                 .map(teleportee -> teleportSafely(teleporter, teleportee, destination))
                 .toList());
     }
@@ -82,10 +82,10 @@ public class AsyncSafetyTeleporter {
         return teleport(teleporter, teleportee, safeLocation);
     }
 
-    public <T extends Entity> AsyncResult<List<Result<TeleportResult.Success, TeleportResult.Failure>>> teleport(
+    public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleport(
             @NotNull List<T> teleportees,
             @Nullable ParsedDestination<?> destination) {
-        return AsyncResult.allOf(teleportees.stream()
+        return AsyncAttempt.allOf(teleportees.stream()
                 .map(teleportee -> teleport(teleportee, destination))
                 .toList());
     }
@@ -106,10 +106,10 @@ public class AsyncSafetyTeleporter {
         return teleport(teleporter, teleportee, destination.getLocation(teleportee));
     }
 
-    public <T extends Entity> AsyncResult<List<Result<TeleportResult.Success, TeleportResult.Failure>>> teleport(
+    public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleport(
             @NotNull List<T> teleportees,
             @Nullable Location location) {
-        return AsyncResult.allOf(teleportees.stream()
+        return AsyncAttempt.allOf(teleportees.stream()
                 .map(teleportee -> teleport(teleportee, location))
                 .toList());
     }

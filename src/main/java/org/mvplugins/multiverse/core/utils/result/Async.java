@@ -11,7 +11,7 @@ import java.util.function.Function;
  *
  * @param <T>   The type of the value.
  */
-public final class AsyncResult<T> {
+public final class Async<T> {
 
     /**
      * Returns a new AsyncResult that is completed when all of the given AsyncResult complete.
@@ -19,8 +19,8 @@ public final class AsyncResult<T> {
      * @param results   The results to wait for.
      * @return A new AsyncResult that is completed when all of the given AsyncResult complete.
      */
-    public static AsyncResult<Void> allOf(AsyncResult<?>... results) {
-        return new AsyncResult<>(CompletableFuture.allOf(Arrays.stream(results)
+    public static Async<Void> allOf(Async<?>... results) {
+        return new Async<>(CompletableFuture.allOf(Arrays.stream(results)
                 .map(result -> result.future)
                 .toArray(CompletableFuture[]::new)));
     }
@@ -32,8 +32,8 @@ public final class AsyncResult<T> {
      * @param <T>       The type of the AsyncResult.
      * @return A new AsyncResult that is completed when all of the given AsyncResult complete.
      */
-    public static <T> AsyncResult<List<T>> allOf(List<AsyncResult<T>> results) {
-        return new AsyncResult<>(CompletableFuture.allOf(results.stream()
+    public static <T> Async<List<T>> allOf(List<Async<T>> results) {
+        return new Async<>(CompletableFuture.allOf(results.stream()
                 .map(result -> result.future)
                 .toArray(CompletableFuture[]::new))
                 .thenApply(v -> results.stream()
@@ -48,8 +48,8 @@ public final class AsyncResult<T> {
      * @param <T>       The type of the future.
      * @return A new AsyncResult that is completed when the given future completes.
      */
-    public static <T> AsyncResult<T> of(CompletableFuture<T> future) {
-        return new AsyncResult<>(future);
+    public static <T> Async<T> of(CompletableFuture<T> future) {
+        return new Async<>(future);
     }
 
     /**
@@ -59,8 +59,8 @@ public final class AsyncResult<T> {
      * @param <T>   The type of the value.
      * @return The completed AsyncResult.
      */
-    public static <T> AsyncResult<T> completedFuture(T value) {
-        return new AsyncResult<>(CompletableFuture.completedFuture(value));
+    public static <T> Async<T> completedFuture(T value) {
+        return new Async<>(CompletableFuture.completedFuture(value));
     }
 
     /**
@@ -70,8 +70,8 @@ public final class AsyncResult<T> {
      * @param <T>       The type of the value.
      * @return The completed AsyncResult.
      */
-    public static <T> AsyncResult<T> failedFuture(Throwable throwable) {
-        return new AsyncResult<>(CompletableFuture.failedFuture(throwable));
+    public static <T> Async<T> failedFuture(Throwable throwable) {
+        return new Async<>(CompletableFuture.failedFuture(throwable));
     }
 
     private final CompletableFuture<T> future;
@@ -79,11 +79,11 @@ public final class AsyncResult<T> {
     /**
      * Creates a new AsyncResult.
      */
-    public AsyncResult() {
+    public Async() {
         this(new CompletableFuture<>());
     }
 
-    private AsyncResult(CompletableFuture<T> future) {
+    private Async(CompletableFuture<T> future) {
         this.future = future;
     }
 
@@ -113,8 +113,8 @@ public final class AsyncResult<T> {
      * @param consumer  The action to perform.
      * @return This AsyncResult.
      */
-    public AsyncResult<Void> thenAccept(Consumer<T> consumer) {
-        return new AsyncResult<>(future.thenAccept(consumer));
+    public Async<Void> thenAccept(Consumer<T> consumer) {
+        return new Async<>(future.thenAccept(consumer));
     }
 
     /**
@@ -123,8 +123,8 @@ public final class AsyncResult<T> {
      * @param runnable  The action to perform.
      * @return This AsyncResult.
      */
-    public AsyncResult<Void> thenRun(Runnable runnable) {
-        return new AsyncResult<>(future.thenRun(runnable));
+    public Async<Void> thenRun(Runnable runnable) {
+        return new Async<>(future.thenRun(runnable));
     }
 
     /**
@@ -134,8 +134,8 @@ public final class AsyncResult<T> {
      * @param <U>       The type of the new value.
      * @return A new AsyncResult with the new value.
      */
-    public <U> AsyncResult<U> thenApply(Function<T, U> function) {
-        return new AsyncResult<>(future.thenApply(function));
+    public <U> Async<U> thenApply(Function<T, U> function) {
+        return new Async<>(future.thenApply(function));
     }
 
     /**
@@ -144,8 +144,8 @@ public final class AsyncResult<T> {
      * @param consumer  The action to perform.
      * @return This AsyncResult.
      */
-    public AsyncResult<T> exceptionally(Consumer<Throwable> consumer) {
-        return new AsyncResult<>(future.exceptionally(throwable -> {
+    public Async<T> exceptionally(Consumer<Throwable> consumer) {
+        return new Async<>(future.exceptionally(throwable -> {
             consumer.accept(throwable);
             return null;
         }));
@@ -157,7 +157,7 @@ public final class AsyncResult<T> {
      * @param function  The action to perform.
      * @return A new AsyncResult with the new value.
      */
-    public AsyncResult<T> exceptionally(Function<Throwable, T> function) {
-        return new AsyncResult<>(future.exceptionally(function));
+    public Async<T> exceptionally(Function<Throwable, T> function) {
+        return new Async<>(future.exceptionally(function));
     }
 }

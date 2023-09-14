@@ -22,7 +22,7 @@ import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.result.AsyncResult;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 
 @Service
 @CommandAlias("mv")
@@ -72,7 +72,7 @@ class TeleportCommand extends MultiverseCommand {
         issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                 "{player}", playerName, "{destination}", destination.toString());
 
-        AsyncResult.allOf(Arrays.stream(players)
+        AsyncAttempt.allOf(Arrays.stream(players)
                         .map(player -> safetyTeleporter.teleportSafely(issuer.getIssuer(), player, destination))
                         .toList())
                 .thenRun(() -> Logging.fine("Async teleport result: %s"))

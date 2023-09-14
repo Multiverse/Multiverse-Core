@@ -22,7 +22,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.result.AsyncResult;
+import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
@@ -70,8 +70,8 @@ class RemoveCommand extends MultiverseCommand {
         var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
                 ? worldManager.getLoadedWorld(worldName)
                 .map(playerWorldTeleporter::removeFromWorld)
-                .getOrElse(AsyncResult.completedFuture(Collections.emptyList()))
-                : AsyncResult.completedFuture(Collections.emptyList());
+                .getOrElse(Async.completedFuture(Collections.emptyList()))
+                : Async.completedFuture(Collections.emptyList());
 
         future.thenRun(() -> doWorldRemoving(issuer, worldName));
     }
