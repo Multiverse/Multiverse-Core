@@ -33,9 +33,9 @@ public interface ValueNode<T> extends Node {
     @Nullable T getDefaultValue();
 
     /**
-     * Suggests possible string values for this node.
+     * Suggests possible string values for this node. Generated based on the current user input.
      *
-     * @param input The input string.
+     * @param input The current partial user input
      * @return A collection of possible string values.
      */
     @NotNull Collection<String> suggest(@Nullable String input);

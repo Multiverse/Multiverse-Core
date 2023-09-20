@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface NodeSuggester {
     /**
-     * Suggests possible values for a node value.
+     * Suggests possible values for a node value. Generated based on the current user input.
      *
-     * @param input The current user input
+     * @param input The current partial user input
      * @return The possible values.
      */
     @NotNull Collection<String> suggest(@Nullable String input);
