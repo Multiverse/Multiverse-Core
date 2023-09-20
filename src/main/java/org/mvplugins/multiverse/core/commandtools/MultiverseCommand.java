@@ -11,15 +11,26 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 
+/**
+ * Base class for all Multiverse commands.
+ */
 @Contract
-public abstract class  MultiverseCommand extends BaseCommand {
+public abstract class MultiverseCommand extends BaseCommand {
 
+    /**
+     * The command manager with multiverse specific methods.
+     */
     protected final MVCommandManager commandManager;
+    /**
+     * The flags manager for the above command manager.
+     */
+    protected final CommandFlagsManager flagsManager;
     private String flagGroupName;
     private CommandFlagGroup.Builder flagGroupBuilder;
 
     protected MultiverseCommand(@NotNull MVCommandManager commandManager) {
         this.commandManager = commandManager;
+        this.flagsManager = commandManager.getFlagsManager();
     }
 
     @PostConstruct
@@ -30,10 +41,22 @@ public abstract class  MultiverseCommand extends BaseCommand {
         }
     }
 
-    protected CommandFlagsManager getFlagsManager() {
-        return commandManager.getFlagsManager();
+    private void registerFlagGroup(@NotNull CommandFlagGroup flagGroup) {
+        if (flagGroupName != null) {
+            throw new IllegalStateException("Flag group already registered! (name: " + flagGroupName + ")");
+        }
+        flagsManager.registerFlagGroup(flagGroup);
+        flagGroupName = flagGroup.getName();
+        Logging.finest("Registered flag group: " + flagGroupName);
     }
 
+    /**
+     * Add a new flag to the flag builder.
+     *
+     * @param flag  The flag to add.
+     * @param <T>   The type of the flag.
+     * @return The flag.
+     */
     protected <T extends CommandFlag> T flag(T flag) {
         if (flagGroupBuilder == null) {
             flagGroupBuilder = CommandFlagGroup.builder("mv" + getClass().getSimpleName().toLowerCase());
@@ -43,16 +66,13 @@ public abstract class  MultiverseCommand extends BaseCommand {
         return flag;
     }
 
-    protected void registerFlagGroup(@NotNull CommandFlagGroup flagGroup) {
-        if (flagGroupName != null) {
-            throw new IllegalStateException("Flag group already registered! (name: " + flagGroupName + ")");
-        }
-        getFlagsManager().registerFlagGroup(flagGroup);
-        flagGroupName = flagGroup.getName();
-        Logging.fine("Registered flag group: " + flagGroupName);
-    }
-
+    /**
+     * Parses flags.
+     *
+     * @param flags The raw string array to parse into flags.
+     * @return The parsed flags.
+     */
     protected @NotNull ParsedCommandFlags parseFlags(@NotNull String[] flags) {
-        return getFlagsManager().parse(flagGroupName, flags);
+        return flagsManager.parse(flagGroupName, flags);
     }
 }
