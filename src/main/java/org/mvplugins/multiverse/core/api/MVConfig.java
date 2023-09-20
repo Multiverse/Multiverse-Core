@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.api;
 
+import java.util.Collection;
+
 import io.vavr.control.Try;
 import org.jvnet.hk2.annotations.Contract;
 
@@ -34,6 +36,15 @@ public interface MVConfig {
     NodeGroup getNodes();
 
     /**
+     * Auto-complete suggestions for a property.
+     *
+     * @param name  The name of the node.
+     * @param input The current user input.
+     * @return A collection of possible string values.
+     */
+    Collection<String> suggestPropertyValues(String name, String input);
+
+    /**
      * Gets a property from the config.
      *
      * @param name The name of the property.
@@ -48,9 +59,19 @@ public interface MVConfig {
      * @param name  The name of the property.
      * @param value The value of the property.
      * @return An empty {@link Try} if the property was set successfully, otherwise a {@link Try.Failure} with the
-     * exception explaining why the property could not be set.
+     *         exception explaining why the property could not be set.
      */
     Try<Void> setProperty(String name, Object value);
+
+    /**
+     * Sets a string property in the config.
+     *
+     * @param name  The name of the property.
+     * @param value The string value of the property.
+     * @return An empty {@link Try} if the property was set successfully, otherwise a {@link Try.Failure} with the
+     *         exception explaining why the property could not be set.
+     */
+    Try<Void> setPropertyString(String name, String value);
 
     /**
      * Sets world access permissions should be enforced.

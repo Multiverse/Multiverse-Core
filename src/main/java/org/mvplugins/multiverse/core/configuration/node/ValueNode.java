@@ -1,9 +1,13 @@
 package org.mvplugins.multiverse.core.configuration.node;
 
+import java.util.Collection;
+
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
 
 public interface ValueNode<T> extends Node {
 
@@ -27,6 +31,22 @@ public interface ValueNode<T> extends Node {
      * @return The default value of the node.
      */
     @Nullable T getDefaultValue();
+
+    /**
+     * Suggests possible string values for this node.
+     *
+     * @param input The input string.
+     * @return A collection of possible string values.
+     */
+    @NotNull Collection<String> suggest(@Nullable String input);
+
+    /**
+     * Parses the given string into a value of type {@link T}. Used for property set by user input.
+     *
+     * @param input The string to parse.
+     * @return The parsed value, or given exception if parsing failed.
+     */
+    @NotNull Try<T> parseFromString(@Nullable String input);
 
     /**
      * Gets the serializer for this node.

@@ -9,17 +9,13 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
-import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
-import org.mvplugins.multiverse.core.commandtools.context.MVConfigValue;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.configuration.node.Node;
-import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
@@ -59,7 +55,6 @@ class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedMultiverseWorld);
         registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedMultiverseWorldArray);
         registerIssuerAwareContext(MultiverseWorld.class, this::parseMultiverseWorld);
-        registerContext(MVConfigValue.class, this::parseMVConfigValue);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
@@ -274,39 +269,6 @@ class MVCommandContexts extends PaperCommandContexts {
             return null;
         }
         throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
-    }
-
-    private MVConfigValue parseMVConfigValue(BukkitCommandExecutionContext context) {
-        String configName = (String) context.getResolvedArg(String.class);
-        if (Strings.isNullOrEmpty(configName)) {
-            throw new InvalidCommandArgument("No config name specified.");
-        }
-        Option<Node> node = config.getNodes().findNode(configName);
-        if (node.isEmpty()) {
-            throw new InvalidCommandArgument("The config " + configName + " is not valid.");
-        }
-
-        String valueString = context.getFirstArg();
-        if (Strings.isNullOrEmpty(valueString)) {
-            throw new InvalidCommandArgument("No config value specified.");
-        }
-
-        if (!(node.get() instanceof ValueNode)) {
-            context.popFirstArg();
-            return new MVConfigValue(valueString);
-        }
-
-        ContextResolver<?, BukkitCommandExecutionContext> resolver = getResolver(((ValueNode<?>) node.get()).getType());
-        if (resolver == null) {
-            context.popFirstArg();
-            return new MVConfigValue(valueString);
-        }
-
-        Object resolvedValue = resolver.getContext(context);
-        if (resolvedValue == null) {
-            throw new InvalidCommandArgument("The config value " + valueString + " is not valid for config " + configName + ".");
-        }
-        return new MVConfigValue(resolvedValue);
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {

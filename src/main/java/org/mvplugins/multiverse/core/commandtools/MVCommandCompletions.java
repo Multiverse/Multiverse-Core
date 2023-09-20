@@ -39,6 +39,7 @@ class MVCommandCompletions extends PaperCommandCompletions {
     private final MVCommandManager commandManager;
     private final WorldManager worldManager;
     private final DestinationsProvider destinationsProvider;
+    private final MVCoreConfig config;
 
     @Inject
     MVCommandCompletions(
@@ -50,6 +51,7 @@ class MVCommandCompletions extends PaperCommandCompletions {
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
         this.destinationsProvider = destinationsProvider;
+        this.config = config;
 
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
@@ -59,6 +61,7 @@ class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
         registerStaticCompletion("mvconfigs", config.getNodes().getNames());
+        registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
 
         setDefaultCompletion("destinations", ParsedDestination.class);
@@ -116,6 +119,12 @@ class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestGamerules() {
         return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
+    }
+
+    private Collection<String> suggestMVConfigValues(BukkitCommandCompletionContext context) {
+        return Try.of(() -> context.getContextValue(String.class))
+                .map(propertyName -> config.suggestPropertyValues(propertyName, context.getInput()))
+                .getOrElse(Collections.emptyList());
     }
 
     private Collection<String> suggestMVWorlds(BukkitCommandCompletionContext context) {

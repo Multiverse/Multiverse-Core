@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -113,13 +114,23 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
+    public Collection<String> suggestPropertyValues(String name, String input) {
+        return configHandle.suggestPropertyValues(name, input);
+    }
+
+    @Override
     public Try<Object> getProperty(String name) {
-        return configHandle.get(name);
+        return configHandle.getProperty(name);
     }
 
     @Override
     public Try<Void> setProperty(String name, Object value) {
-        return configHandle.set(name, value);
+        return configHandle.setProperty(name, value);
+    }
+
+    @Override
+    public Try<Void> setPropertyString(String name, String value) {
+        return configHandle.setPropertyString(name, value);
     }
 
     @Override

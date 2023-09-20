@@ -119,11 +119,11 @@ public final class WorldConfig {
     }
 
     public Try<Object> getProperty(String name) {
-        return configHandle.get(name);
+        return configHandle.getProperty(name);
     }
 
     public Try<Void> setProperty(String name, Object value) {
-        return configHandle.set(name, value);
+        return configHandle.setProperty(name, value);
     }
 
     public boolean getAdjustSpawn() {
