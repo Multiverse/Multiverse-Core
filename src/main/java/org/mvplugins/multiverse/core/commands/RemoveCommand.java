@@ -17,6 +17,7 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
@@ -43,8 +44,8 @@ class RemoveCommand extends MultiverseCommand {
             @Conditions("mvworlds:scope=both")
             @Syntax("<world>")
             @Description("{@@mv-core.remove.world.description}")
-            String worldName) {
-        worldManager.removeWorld(worldName)
+            MultiverseWorld world) {
+        worldManager.removeWorld(world)
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);
                     issuer.sendInfo(MVCorei18n.REMOVEWORLD_REMOVED, "{world}", removedWorldName);
