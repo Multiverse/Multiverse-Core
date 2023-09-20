@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigurationSectionHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
@@ -23,7 +24,6 @@ import org.mvplugins.multiverse.core.configuration.migration.MoveMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.NullStringMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
  * Represents a world configuration.
@@ -37,9 +37,9 @@ public final class WorldConfig {
     WorldConfig(
             @NotNull String worldName,
             @NotNull ConfigurationSection configSection,
-            @NotNull EnforcementHandler enforcementHandler) {
+            @NotNull MultiverseCore multiverseCore) {
         this.worldName = worldName;
-        this.configNodes = new WorldConfigNodes(enforcementHandler);
+        this.configNodes = new WorldConfigNodes(multiverseCore);
         this.configHandle = ConfigurationSectionHandle.builder(configSection)
                 .logger(Logging.getLogger())
                 .nodes(configNodes.getNodes())
