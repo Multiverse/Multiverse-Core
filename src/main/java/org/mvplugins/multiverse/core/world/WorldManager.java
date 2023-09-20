@@ -741,6 +741,17 @@ public class WorldManager {
      * Get a world that may or may not be loaded. It will an {@link LoadedMultiverseWorld} if the world is loaded,
      * otherwise returns an {@link MultiverseWorld} instance.
      *
+     * @param world The bukkit world to get.
+     * @return The world if it exists.
+     */
+    public Option<MultiverseWorld> getWorld(@Nullable World world) {
+        return Option.of(world).flatMap(this::getWorld);
+    }
+
+    /**
+     * Get a world that may or may not be loaded. It will an {@link LoadedMultiverseWorld} if the world is loaded,
+     * otherwise returns an {@link MultiverseWorld} instance.
+     *
      * @param worldName The name of the world to get.
      * @return The world if it exists.
      */
