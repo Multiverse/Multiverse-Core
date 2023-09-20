@@ -43,6 +43,7 @@ public enum MVCorei18n implements MessageKeyProvider {
     // delete command
     DELETE_DELETING,
     DELETE_PROMPT,
+    DELETE_SUCCESS,
 
     // Dumps command
     DUMPS_DESCRIPTION,
@@ -75,6 +76,9 @@ public enum MVCorei18n implements MessageKeyProvider {
     // reload command
     RELOAD_RELOADING,
     RELOAD_SUCCESS,
+
+    // remove command
+    REMOVE_SUCCESS,
 
     // root MV command
     ROOT_TITLE,
@@ -115,7 +119,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     CREATEWORLD_WORLDEXISTLOADED,
     CREATEWORLD_BUKKITCREATIONFAILED,
 
-    DELETE_SUCCESS,
     DELETEWORLD_WORLDNONEXISTENT,
     DELETEWORLD_LOADFAILED,
     DELETEWORLD_WORLDFOLDERNOTFOUND,
@@ -133,7 +136,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     LOADWORLD_WORLDEXISTLOADED,
     LOADWORLD_BUKKITCREATIONFAILED,
 
-    REMOVEWORLD_REMOVED,
     REMOVEWORLD_WORLDNONEXISTENT,
 
     UNLOADWORLD_WORLDALREADYUNLOADING,

@@ -48,7 +48,7 @@ class RemoveCommand extends MultiverseCommand {
         worldManager.removeWorld(world)
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);
-                    issuer.sendInfo(MVCorei18n.REMOVEWORLD_REMOVED, "{world}", removedWorldName);
+                    issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS, "{world}", removedWorldName);
                 }).onFailure(failure -> {
                     Logging.fine("World remove failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
