@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.commandtools;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,10 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.collect.Sets;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -30,19 +34,18 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-public class MVCommandCompletions extends PaperCommandCompletions {
+class MVCommandCompletions extends PaperCommandCompletions {
 
-    protected final MVCommandManager commandManager;
+    private final MVCommandManager commandManager;
     private final WorldManager worldManager;
     private final DestinationsProvider destinationsProvider;
 
     @Inject
-    public MVCommandCompletions(
+    MVCommandCompletions(
             @NotNull MVCommandManager mvCommandManager,
             @NotNull WorldManager worldManager,
             @NotNull DestinationsProvider destinationsProvider,
-            @NotNull MVCoreConfig config
-            ) {
+            @NotNull MVCoreConfig config) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
@@ -50,13 +53,19 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
+        registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
+        registerStaticCompletion("environments", suggestEnums(World.Environment.class));
         registerAsyncCompletion("flags", this::suggestFlags);
+        registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
         registerStaticCompletion("mvconfigs", config.getNodes().getNames());
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
 
         setDefaultCompletion("destinations", ParsedDestination.class);
+        setDefaultCompletion("difficulties", Difficulty.class);
+        setDefaultCompletion("environments", World.Environment.class);
         setDefaultCompletion("flags", String[].class);
+        setDefaultCompletion("gamemodes", GameMode.class);
         setDefaultCompletion("gamerules", GameRule.class);
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
     }
@@ -94,7 +103,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
 
         return this.destinationsProvider
-                .suggestDestinations((BukkitCommandIssuer)context.getIssuer(), context.getInput());
+                .suggestDestinations((BukkitCommandIssuer) context.getIssuer(), context.getInput());
     }
 
     private Collection<String> suggestFlags(@NotNull BukkitCommandCompletionContext context) {
@@ -151,5 +160,12 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
         return Collections.emptyList();
+    }
+
+    private <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
+        return EnumSet.allOf(enumClass).stream()
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .toList();
     }
 }
