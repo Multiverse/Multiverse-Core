@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.configuration.handle;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import io.vavr.control.Try;
@@ -11,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.configuration.node.ConfigNodeNotFoundException;
-import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 
@@ -21,12 +17,12 @@ import org.mvplugins.multiverse.core.configuration.node.ValueNode;
  */
 public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     protected final @Nullable Logger logger;
-    protected final @Nullable NodeGroup nodes;
+    protected final @NotNull NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
 
     protected C config;
 
-    protected GenericConfigHandle(@Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected GenericConfigHandle(@Nullable Logger logger, @NotNull NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         this.logger = logger;
         this.nodes = nodes;
         this.migrator = migrator;
@@ -71,58 +67,6 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     }
 
     /**
-     * Auto-complete suggestions for a property.
-     *
-     * @param name  The name of the node.
-     * @param input The current user input.
-     * @return A collection of possible string values.
-     */
-    public Collection<String> suggestPropertyValues(@Nullable String name, @Nullable String input) {
-        return findNode(name, ValueNode.class)
-                .map(node -> node.suggest(input))
-                .getOrElse(Collections.emptyList());
-    }
-
-    /**
-     * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
-     *
-     * @param name  The name of the node.
-     * @return The value of the node, or an error if the node was not found.
-     */
-    public Try<Object> getProperty(@Nullable String name) {
-        return findNode(name, ValueNode.class).map(this::get);
-    }
-
-    /**
-     * Sets the string value of a node, if the validator is not null, it will be tested first.
-     *
-     * @param name  The name of the node.
-     * @param value The string value to set.
-     * @return Empty try if the value was set, try containing an error otherwise.
-     */
-    public Try<Void> setPropertyString(@Nullable String name, @Nullable String value) {
-        return findNode(name, ValueNode.class)
-                .flatMap(node -> node.parseFromString(value)
-                        .flatMap(parsedValue -> set(node, parsedValue)));
-    }
-
-    /**
-     * Sets the value of a node, if the validator is not null, it will be tested first.
-     *
-     * @param name  The name of the node.
-     * @param value The value to set.
-     * @return Empty try if the value was set, try containing an error otherwise.
-     */
-    public Try<Void> setProperty(@Nullable String name, @Nullable Object value) {
-        return findNode(name, ValueNode.class).flatMap(node -> set(node, value));
-    }
-
-    private <T extends Node> Try<T> findNode(@Nullable String name, @NotNull Class<T> type) {
-        return nodes.findNode(name, type)
-                .toTry(() -> new ConfigNodeNotFoundException(name));
-    }
-
-    /**
      * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
      *
      * @param node The node to get the value of.
@@ -155,6 +99,15 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
             node.onSetValue(oldValue, get(node));
             return null;
         });
+    }
+
+    /**
+     * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
+     *
+     * @return The configuration.
+     */
+    @NotNull NodeGroup getNodes() {
+        return nodes;
     }
 
     /**
