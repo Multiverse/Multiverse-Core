@@ -44,6 +44,5 @@ public interface Destination<T extends DestinationInstance> {
      *
      * @return True if the SafeTeleporter will be used, false if not.
      */
-    // TODO: Check this in AsyncSafetyTeleporter
     boolean checkTeleportSafety();
 }

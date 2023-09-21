@@ -74,8 +74,8 @@ class DeleteCommand extends MultiverseCommand {
                 issuer.getIssuer(),
                 () -> {
                     runDeleteCommand(issuer, world, parsedFlags);
-                }, this.commandManager.formatMessage(
-                        issuer, MessageType.INFO, MVCorei18n.DELETE_PROMPT, "{world}", world.getName())));
+                }, this.commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.DELETE_PROMPT,
+                "{world}", world.getName())));
     }
 
     private void runDeleteCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {

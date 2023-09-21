@@ -40,6 +40,7 @@ public interface BlockSafety {
 
     /**
      * Finds a portal-block next to the specified {@link Location}.
+     *
      * @param location  The {@link Location}
      * @return The next portal-block's {@link Location}.
      */
