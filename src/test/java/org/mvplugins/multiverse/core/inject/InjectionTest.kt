@@ -11,6 +11,7 @@ import org.mvplugins.multiverse.core.commandtools.PluginLocales
 import org.mvplugins.multiverse.core.config.MVCoreConfig
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.listeners.*
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
 import org.mvplugins.multiverse.core.teleportation.SimpleBlockSafety
 import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
@@ -24,6 +25,11 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `AnchorManager is available as a service`() {
         assertNotNull(multiverseCore.getService(AnchorManager::class.java))
+    }
+
+    @Test
+    fun `AsyncSafetyTeleporter is available as a service`() {
+        assertNotNull(multiverseCore.getService(AsyncSafetyTeleporter::class.java))
     }
 
     @Test
