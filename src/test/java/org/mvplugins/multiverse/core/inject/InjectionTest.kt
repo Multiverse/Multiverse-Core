@@ -16,7 +16,6 @@ import org.mvplugins.multiverse.core.teleportation.SimpleBlockSafety
 import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
 import org.mvplugins.multiverse.core.teleportation.SimpleSafeTTeleporter
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
-import org.mvplugins.multiverse.core.utils.UnsafeCallWrapper
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
 import org.mvplugins.multiverse.core.world.WorldManager
 import kotlin.test.*
@@ -59,12 +58,6 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `TeleportQueue is available as a service`() {
         assertNotNull(multiverseCore.getService(TeleportQueue::class.java))
-    }
-
-    @Test
-    @Ignore
-    fun `UnsafeCallWrapper is available as a service`() {
-        assertNotNull(multiverseCore.getService(UnsafeCallWrapper::class.java))
     }
 
     @Test
