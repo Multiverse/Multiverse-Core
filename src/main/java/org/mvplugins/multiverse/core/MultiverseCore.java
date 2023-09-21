@@ -368,7 +368,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // TODO: Make this all Try<Void>
         return configProvider.get().save().isSuccess()
                 && worldManagerProvider.get().saveWorldsConfig()
-                && anchorManagerProvider.get().saveAnchors();
+                && anchorManagerProvider.get().saveAnchors().isSuccess();
     }
 
     /**
