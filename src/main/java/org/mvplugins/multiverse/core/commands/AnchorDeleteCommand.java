@@ -29,7 +29,7 @@ class AnchorDeleteCommand extends MultiverseCommand {
 
     @Subcommand("anchor delete")
     @CommandPermission("multiverse.core.anchor.delete")
-    @CommandCompletion("")
+    @CommandCompletion("@anchornames")
     @Syntax("<name>")
     @Description("")
     void onAnchorDeleteCommand(

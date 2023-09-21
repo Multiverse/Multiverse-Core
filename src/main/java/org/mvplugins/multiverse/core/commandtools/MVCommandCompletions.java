@@ -26,6 +26,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
@@ -38,19 +39,23 @@ class MVCommandCompletions extends PaperCommandCompletions {
 
     private final MVCommandManager commandManager;
     private final WorldManager worldManager;
+    private final AnchorManager anchorManager;
     private final DestinationsProvider destinationsProvider;
 
     @Inject
     MVCommandCompletions(
             @NotNull MVCommandManager mvCommandManager,
             @NotNull WorldManager worldManager,
+            @NotNull AnchorManager anchorManager,
             @NotNull DestinationsProvider destinationsProvider,
             @NotNull MVCoreConfig config) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
+        this.anchorManager = anchorManager;
         this.destinationsProvider = destinationsProvider;
 
+        registerAsyncCompletion("anchornames", this::suggestAnchorNames);
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
@@ -68,6 +73,10 @@ class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("gamemodes", GameMode.class);
         setDefaultCompletion("gamerules", GameRule.class);
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
+    }
+
+    private Collection<String> suggestAnchorNames(BukkitCommandCompletionContext context) {
+        return anchorManager.getAnchors(context.getPlayer());
     }
 
     private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {
