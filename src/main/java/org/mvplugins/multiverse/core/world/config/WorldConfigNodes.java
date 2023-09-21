@@ -10,10 +10,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
-import org.mvplugins.multiverse.core.world.config.AllowedPortalType;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
@@ -27,8 +27,8 @@ public class WorldConfigNodes {
     private EnforcementHandler enforcementHandler;
     private LoadedMultiverseWorld world = null;
 
-    WorldConfigNodes(@NotNull EnforcementHandler enforcementHandler) {
-        this.enforcementHandler = enforcementHandler;
+    WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
+        this.enforcementHandler = multiverseCore.getService(EnforcementHandler.class);
     }
 
     LoadedMultiverseWorld getWorld() {

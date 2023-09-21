@@ -71,7 +71,7 @@ class CreateCommand extends MultiverseCommand {
 
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
-    @CommandCompletion("@empty  @flags:groupName=mvcreatecommand")
+    @CommandCompletion("@empty @environments @flags:groupName=mvcreatecommand")
     @Syntax("<name> <environment> --seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
     @Description("{@@mv-core.create.description}")
     void onCreateCommand(

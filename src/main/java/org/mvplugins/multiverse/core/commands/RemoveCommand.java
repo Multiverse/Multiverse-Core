@@ -23,6 +23,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
@@ -59,7 +60,7 @@ class RemoveCommand extends MultiverseCommand {
             @Conditions("mvworlds:scope=both @flags:groupName=mvremovecommand")
             @Syntax("<world>")
             @Description("{@@mv-core.remove.world.description}")
-            String worldName,
+            MultiverseWorld world,
 
             @Optional
             @Syntax("[--remove-players]")
@@ -68,19 +69,19 @@ class RemoveCommand extends MultiverseCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
-                ? worldManager.getLoadedWorld(worldName)
+                ? worldManager.getLoadedWorld(world)
                 .map(playerWorldTeleporter::removeFromWorld)
                 .getOrElse(Async.completedFuture(Collections.emptyList()))
                 : Async.completedFuture(Collections.emptyList());
 
-        future.thenRun(() -> doWorldRemoving(issuer, worldName));
+        future.thenRun(() -> doWorldRemoving(issuer, world));
     }
 
-    private void doWorldRemoving(MVCommandIssuer issuer, String worldName) {
-        worldManager.removeWorld(worldName)
+    private void doWorldRemoving(MVCommandIssuer issuer, MultiverseWorld world) {
+        worldManager.removeWorld(world)
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);
-                    issuer.sendInfo(MVCorei18n.REMOVEWORLD_REMOVED, "{world}", removedWorldName);
+                    issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS, "{world}", removedWorldName);
                 }).onFailure(failure -> {
                     Logging.fine("World remove failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
  * Manages the worlds.yml file.
@@ -35,14 +34,14 @@ public final class WorldsConfigManager {
     private final File worldConfigFile;
     private YamlConfiguration worldsConfig;
 
-    private final EnforcementHandler enforcementHandler;
+    private final MultiverseCore multiverseCore;
 
     @Inject
-    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull EnforcementHandler enforcementHandler) {
+    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull MultiverseCore multiverseCore) {
         worldConfigMap = new HashMap<>();
         worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
 
-        this.enforcementHandler = enforcementHandler;
+        this.multiverseCore = multiverseCore;
     }
 
     /**
@@ -128,7 +127,7 @@ public final class WorldsConfigManager {
                         WorldConfig newWorldConfig = new WorldConfig(
                                 worldName,
                                 getWorldConfigSection(worldName),
-                                enforcementHandler);
+                                multiverseCore);
                         worldConfigMap.put(worldName, newWorldConfig);
                         newWorldsAdded.add(newWorldConfig);
                     });
@@ -183,7 +182,7 @@ public final class WorldsConfigManager {
         if (worldConfigMap.containsKey(worldName)) {
             throw new IllegalArgumentException("WorldConfig for world " + worldName + " already exists.");
         }
-        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), enforcementHandler);
+        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), multiverseCore);
         worldConfigMap.put(worldName, worldConfig);
         return worldConfig;
     }
