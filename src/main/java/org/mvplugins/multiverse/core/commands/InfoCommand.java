@@ -1,11 +1,12 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import java.util.HashMap;
+import java.util.Map;
+
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
@@ -13,9 +14,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
@@ -30,14 +31,11 @@ import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
-
-import java.util.HashMap;
 
 @Service
 @CommandAlias("mv")
-public class InfoCommand extends MultiverseCommand {
+class InfoCommand extends MultiverseCommand {
 
     private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
             .builder("--page", Integer.class)
@@ -68,12 +66,11 @@ public class InfoCommand extends MultiverseCommand {
     private final MVEconomist economist;
 
     @Inject
-    public InfoCommand(
+    InfoCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
             @NotNull LocationManipulation locationManipulation,
-            @NotNull MVEconomist economist
-    ) {
+            @NotNull MVEconomist economist) {
         super(commandManager);
         this.worldManager = worldManager;
         this.locationManipulation = locationManipulation;
@@ -97,15 +94,13 @@ public class InfoCommand extends MultiverseCommand {
             @Optional
             @Syntax("[--page <page>]")
             @Description("{@@mv-core.info.description.page}")
-            String[] flags
-    ) {
+            String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         ContentDisplay.create()
                 .addContent(MapContentProvider.forContent(getInfo(world))
                         .withKeyColor(ChatColor.AQUA)
-                        .withValueColor(ChatColor.WHITE)
-                )
+                        .withValueColor(ChatColor.WHITE))
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader(getTitle())
                         .doPagination(true)
@@ -114,8 +109,8 @@ public class InfoCommand extends MultiverseCommand {
                 .send(issuer);
     }
 
-    private HashMap<String, String> getInfo(LoadedMultiverseWorld world) {
-        HashMap<String, String> outMap = new HashMap<>();
+    private Map<String, String> getInfo(LoadedMultiverseWorld world) {
+        Map<String, String> outMap = new HashMap<>();
 
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
@@ -144,8 +139,8 @@ public class InfoCommand extends MultiverseCommand {
         return "tmp";
     }
 
-    private HashMap<String, String> getAnimalMap(LoadedMultiverseWorld world) {
-        HashMap<String, String> outMap = new HashMap<>();
+                private Map<String, String> getAnimalMap(LoadedMultiverseWorld world) {
+        Map<String, String> outMap = new HashMap<>();
 
         if (world.getSpawningAnimals()) {
             outMap.put("Spawning Animals", "ALL");
@@ -155,15 +150,13 @@ public class InfoCommand extends MultiverseCommand {
             } else {
                 outMap.put("Spawning Animals", "NONE");
             }
-
         }
 
         return outMap;
-
     }
 
-    private HashMap<String, String> getMonsterMap(LoadedMultiverseWorld world) {
-        HashMap<String, String> outMap = new HashMap<>();
+    private Map<String, String> getMonsterMap(LoadedMultiverseWorld world) {
+        Map<String, String> outMap = new HashMap<>();
 
         if (world.getSpawningMonsters()) {
             outMap.put("Spawning Monsters", "ALL");
@@ -173,25 +166,22 @@ public class InfoCommand extends MultiverseCommand {
             } else {
                 outMap.put("Spawning Monsters", "NONE");
             }
-
         }
 
         return outMap;
-
     }
 
-    private HashMap<String, String> getPriceMap(LoadedMultiverseWorld world) {
-        HashMap<String, String> outMap = new HashMap<>();
+    private Map<String, String> getPriceMap(LoadedMultiverseWorld world) {
+        Map<String, String> outMap = new HashMap<>();
         double price = world.getPrice();
 
         if (price == 0) {
             outMap.put("Entry Fee", "FREE");
-        } else if (price > 0){
+        } else if (price > 0) {
             outMap.put("Entry Fee", economist.formatPrice(-price, world.getCurrency()));
-        } else if (price < 0){
+        } else if (price < 0) {
             outMap.put("Entry Reward", economist.formatPrice(price, world.getCurrency()));
         }
         return outMap;
     }
-
 }
