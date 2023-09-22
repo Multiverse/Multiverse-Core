@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import co.aikar.commands.InvalidCommandArgument;
@@ -31,7 +31,6 @@ import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
@@ -61,18 +60,15 @@ class InfoCommand extends MultiverseCommand {
             })
             .build());
 
-    private final WorldManager worldManager;
     private final LocationManipulation locationManipulation;
     private final MVEconomist economist;
 
     @Inject
     InfoCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull WorldManager worldManager,
             @NotNull LocationManipulation locationManipulation,
             @NotNull MVEconomist economist) {
         super(commandManager);
-        this.worldManager = worldManager;
         this.locationManipulation = locationManipulation;
         this.economist = economist;
     }
@@ -82,7 +78,7 @@ class InfoCommand extends MultiverseCommand {
     @CommandCompletion("@mvworlds:scope=both")
     @Syntax("")
     @Description("{@@mv-core.info.description")
-    public void onImportCommand(
+    public void onInfoCommand(
 
             @NotNull MVCommandIssuer issuer,
 
@@ -110,7 +106,7 @@ class InfoCommand extends MultiverseCommand {
     }
 
     private Map<String, String> getInfo(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new HashMap<>();
+        Map<String, String> outMap = new LinkedHashMap<>();
 
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
@@ -139,8 +135,8 @@ class InfoCommand extends MultiverseCommand {
         return "tmp";
     }
 
-                private Map<String, String> getAnimalMap(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new HashMap<>();
+    private Map<String, String> getAnimalMap(LoadedMultiverseWorld world) {
+        Map<String, String> outMap = new LinkedHashMap<>();
 
         if (world.getSpawningAnimals()) {
             outMap.put("Spawning Animals", "ALL");
@@ -156,7 +152,7 @@ class InfoCommand extends MultiverseCommand {
     }
 
     private Map<String, String> getMonsterMap(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new HashMap<>();
+        Map<String, String> outMap = new LinkedHashMap<>();
 
         if (world.getSpawningMonsters()) {
             outMap.put("Spawning Monsters", "ALL");
@@ -172,7 +168,7 @@ class InfoCommand extends MultiverseCommand {
     }
 
     private Map<String, String> getPriceMap(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new HashMap<>();
+        Map<String, String> outMap = new LinkedHashMap<>();
         double price = world.getPrice();
 
         if (price == 0) {
