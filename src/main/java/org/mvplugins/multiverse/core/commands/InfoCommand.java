@@ -31,6 +31,7 @@ import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 @Service
 @CommandAlias("mv")
@@ -73,14 +74,14 @@ class InfoCommand extends MultiverseCommand {
         this.economist = economist;
     }
 
+    // TODO: support info for unloaded worlds
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
-    @CommandCompletion("@mvworlds:scope=both")
-    @Syntax("")
+    @CommandCompletion("@mvworlds:scope=both|@flags:groupName=mvinfocommand @flags:groupName=mvinfocommand")
+    @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.info.description")
     public void onInfoCommand(
-
-            @NotNull MVCommandIssuer issuer,
+            MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("<world>")
@@ -98,11 +99,15 @@ class InfoCommand extends MultiverseCommand {
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader(getTitle())
+                        .withHeader(getTitle(world))
                         .doPagination(true)
                         .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
                         .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
                 .send(issuer);
+    }
+
+    private String getTitle(MultiverseWorld world) {
+        return "&a&l---- World Info: &f&l%s&a&l ----".formatted(world.getName());
     }
 
     private Map<String, String> getInfo(LoadedMultiverseWorld world) {
@@ -110,34 +115,39 @@ class InfoCommand extends MultiverseCommand {
 
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
-        outMap.put("Gamemode: ", world.getGameMode().toString());
-        outMap.put("Difficulty: ", world.getDifficulty().toString());
+        outMap.put("World UID", world.getUID().toString());
+        outMap.put("Game Mode: ", world.getGameMode().toString());
+        outMap.put("Difficulty", world.getDifficulty().toString());
         outMap.put("Spawn Location", locationManipulation.strCoords(world.getSpawnLocation()));
-        outMap.put("World Scale", String.valueOf(world.getScale()));
         outMap.put("Seed", String.valueOf(world.getSeed()));
-        outMap.putAll(getPriceMap(world)); // Entry fee/reward
+        getEntryFeeInfo(outMap, world); // Entry fee/reward
         outMap.put("Respawn World", world.getRespawnWorldName());
         outMap.put("World Type", world.getWorldType().get().toString());
         outMap.put("Generator", world.getGenerator());
-        outMap.put("Structures Generate", world.canGenerateStructures().get().toString());
+        outMap.put("Generate Structures", world.canGenerateStructures().get().toString());
+        outMap.put("World Scale", String.valueOf(world.getScale()));
         outMap.put("Weather Enabled", String.valueOf(world.getAllowWeather()));
         outMap.put("Hunger Depletes", String.valueOf(world.getHunger()));
         outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
-        outMap.put("Multiverse PVP enabled", String.valueOf(world.getPvp()));
-        outMap.put("Bukkit PVP enabled", String.valueOf(world.getBukkitWorld().get().getPVP()));
-        outMap.putAll(getMonsterMap(world)); // Monsters that can spawn
-        outMap.putAll(getAnimalMap(world)); // Animals that can spawn
+        outMap.put("PVP Enabled", String.valueOf(world.getPvp()));
+        getAnimalSpawningInfo(outMap, world); // Animals that can spawn
+        getMonsterSpawningInfo(outMap, world); // Monsters that can spawn
 
         return outMap;
     }
 
-    private String getTitle() {
-        return "tmp";
+    private void getEntryFeeInfo(Map<String, String> outMap, LoadedMultiverseWorld world) {
+        double price = world.getPrice();
+        if (price == 0) {
+            outMap.put("Entry Fee", "FREE!");
+        } else if (price > 0) {
+            outMap.put("Entry Fee", economist.formatPrice(-price, world.getCurrency()));
+        } else if (price < 0) {
+            outMap.put("Entry Reward", economist.formatPrice(price, world.getCurrency()));
+        }
     }
 
-    private Map<String, String> getAnimalMap(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new LinkedHashMap<>();
-
+    private void getAnimalSpawningInfo(Map<String, String> outMap, LoadedMultiverseWorld world) {
         if (world.getSpawningAnimals()) {
             outMap.put("Spawning Animals", "ALL");
         } else {
@@ -147,13 +157,9 @@ class InfoCommand extends MultiverseCommand {
                 outMap.put("Spawning Animals", "NONE");
             }
         }
-
-        return outMap;
     }
 
-    private Map<String, String> getMonsterMap(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new LinkedHashMap<>();
-
+    private void getMonsterSpawningInfo(Map<String, String> outMap, LoadedMultiverseWorld world) {
         if (world.getSpawningMonsters()) {
             outMap.put("Spawning Monsters", "ALL");
         } else {
@@ -163,21 +169,5 @@ class InfoCommand extends MultiverseCommand {
                 outMap.put("Spawning Monsters", "NONE");
             }
         }
-
-        return outMap;
-    }
-
-    private Map<String, String> getPriceMap(LoadedMultiverseWorld world) {
-        Map<String, String> outMap = new LinkedHashMap<>();
-        double price = world.getPrice();
-
-        if (price == 0) {
-            outMap.put("Entry Fee", "FREE");
-        } else if (price > 0) {
-            outMap.put("Entry Fee", economist.formatPrice(-price, world.getCurrency()));
-        } else if (price < 0) {
-            outMap.put("Entry Reward", economist.formatPrice(price, world.getCurrency()));
-        }
-        return outMap;
     }
 }
