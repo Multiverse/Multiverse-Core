@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commandtools;
 
+import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.OpenBukkitCommandIssuer;
 import co.aikar.locales.MessageKeyProvider;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.utils.message.Message;
+import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 
 public class MVCommandIssuer extends OpenBukkitCommandIssuer {
 
@@ -22,6 +24,58 @@ public class MVCommandIssuer extends OpenBukkitCommandIssuer {
         return commandManager;
     }
 
+    public void sendError(String message) {
+        sendMessage(MessageType.INFO, MessageKeys.INFO_MESSAGE, "{message}", message);
+    }
+
+    public void sendSyntax(String message) {
+        sendMessage(MessageType.SYNTAX, MessageKeys.INFO_MESSAGE, "{message}", message);
+    }
+
+    public void sendInfo(String message) {
+        sendMessage(MessageType.INFO, MessageKeys.INFO_MESSAGE, "{message}", message);
+    }
+
+    public void sendMessage(MessageType messageType, String message) {
+        var formatter = getManager().getFormat(messageType);
+        if (formatter != null) {
+            sendMessage(formatter.format(message));
+        } else {
+            sendMessage(message);
+        }
+    }
+
+    public void sendError(MessageKeyProvider key) {
+        sendMessage(MessageType.ERROR, key, new String[0]);
+    }
+
+    public void sendSyntax(MessageKeyProvider key) {
+        sendMessage(MessageType.SYNTAX, key, new String[0]);
+    }
+
+    public void sendInfo(MessageKeyProvider key) {
+        sendMessage(MessageType.INFO, key, new String[0]);
+    }
+
+    public void sendError(MessageKeyProvider key, MessageReplacement... replacements) {
+        sendMessage(MessageType.ERROR, key, replacements);
+    }
+
+    public void sendSyntax(MessageKeyProvider key, MessageReplacement... replacements) {
+        sendMessage(MessageType.SYNTAX, key, replacements);
+    }
+
+    public void sendInfo(MessageKeyProvider key, MessageReplacement... replacements) {
+        sendMessage(MessageType.INFO, key, replacements);
+    }
+
+    private void sendMessage(MessageType messageType, MessageKeyProvider key, MessageReplacement... replacements) {
+        sendMessage(messageType, Message.of(
+                key,
+                "{error_key: %s}".formatted(key.getMessageKey().getKey()),
+                replacements));
+    }
+
     public void sendError(Message message) {
         sendMessage(MessageType.ERROR, message);
     }
@@ -34,7 +88,7 @@ public class MVCommandIssuer extends OpenBukkitCommandIssuer {
         sendMessage(MessageType.INFO, message);
     }
 
-    private void sendMessage(MessageType messageType, Message message) {
+    public void sendMessage(MessageType messageType, Message message) {
         if (message instanceof MessageKeyProvider) {
             sendMessage(messageType, (MessageKeyProvider) message,
                     message.getReplacements(getManager().getLocales(), this));
