@@ -36,7 +36,7 @@ public class StringPropertyHandle {
     }
 
     /**
-     * Gets the type of a property.
+     * Gets the type of property.
      *
      * @param name  The name of the property.
      * @return The type of the property, or an error if the property was not found.

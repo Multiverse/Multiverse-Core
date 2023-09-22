@@ -3,7 +3,6 @@ package org.mvplugins.multiverse.core.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -24,7 +23,6 @@ import org.mvplugins.multiverse.core.configuration.migration.IntegerMigratorActi
 import org.mvplugins.multiverse.core.configuration.migration.InvertBoolMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.MoveMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
-import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 
 @Service
 public class MVCoreConfig implements MVConfig {
@@ -111,28 +109,8 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public NodeGroup getNodes() {
-        return configNodes.getNodes();
-    }
-
-    @Override
-    public Collection<String> suggestPropertyValues(String name, String input) {
-        return stringPropertyHandle.getPropertySuggestedValues(name, input);
-    }
-
-    @Override
-    public Try<Object> getProperty(String name) {
-        return stringPropertyHandle.getProperty(name);
-    }
-
-    @Override
-    public Try<Void> setProperty(String name, Object value) {
-        return stringPropertyHandle.setProperty(name, value);
-    }
-
-    @Override
-    public Try<Void> setPropertyString(String name, String value) {
-        return stringPropertyHandle.setPropertyString(name, value);
+    public StringPropertyHandle getStringPropertyHandle() {
+        return stringPropertyHandle;
     }
 
     @Override

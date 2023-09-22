@@ -60,7 +60,7 @@ class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
-        registerStaticCompletion("mvconfigs", config.getNodes().getNames());
+        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getPropertyNames());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
 
@@ -123,7 +123,8 @@ class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestMVConfigValues(BukkitCommandCompletionContext context) {
         return Try.of(() -> context.getContextValue(String.class))
-                .map(propertyName -> config.suggestPropertyValues(propertyName, context.getInput()))
+                .map(propertyName -> config.getStringPropertyHandle()
+                        .getPropertySuggestedValues(propertyName, context.getInput()))
                 .getOrElse(Collections.emptyList());
     }
 

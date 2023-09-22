@@ -1,11 +1,9 @@
 package org.mvplugins.multiverse.core.api;
 
-import java.util.Collection;
-
 import io.vavr.control.Try;
 import org.jvnet.hk2.annotations.Contract;
 
-import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 
 @Contract
@@ -29,49 +27,11 @@ public interface MVConfig {
     Try<Void> save();
 
     /**
-     * Gets the nodes for the config.
+     * Gets the handler for managing config with string names and values.
      *
-     * @return The nodes for the config.
+     * @return The config handle for string properties.
      */
-    NodeGroup getNodes();
-
-    /**
-     * Auto-complete suggestions for a property.
-     *
-     * @param name  The name of the node.
-     * @param input The current user input.
-     * @return A collection of possible string values.
-     */
-    Collection<String> suggestPropertyValues(String name, String input);
-
-    /**
-     * Gets a property from the config.
-     *
-     * @param name The name of the property.
-     * @return A {@link Try} with the value of the property, otherwise a {@link Try.Failure} if there is no property by
-     * that name.
-     */
-    Try<Object> getProperty(String name);
-
-    /**
-     * Sets a property in the config.
-     *
-     * @param name  The name of the property.
-     * @param value The value of the property.
-     * @return An empty {@link Try} if the property was set successfully, otherwise a {@link Try.Failure} with the
-     *         exception explaining why the property could not be set.
-     */
-    Try<Void> setProperty(String name, Object value);
-
-    /**
-     * Sets a string property in the config.
-     *
-     * @param name  The name of the property.
-     * @param value The string value of the property.
-     * @return An empty {@link Try} if the property was set successfully, otherwise a {@link Try.Failure} with the
-     *         exception explaining why the property could not be set.
-     */
-    Try<Void> setPropertyString(String name, String value);
+    StringPropertyHandle getStringPropertyHandle();
 
     /**
      * Sets world access permissions should be enforced.
