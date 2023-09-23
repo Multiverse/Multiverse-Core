@@ -42,9 +42,8 @@ public final class WorldConfig {
             @NotNull MultiverseCore multiverseCore) {
         this.worldName = worldName;
         this.configNodes = new WorldConfigNodes(multiverseCore);
-        this.configHandle = ConfigurationSectionHandle.builder(configSection)
+        this.configHandle = ConfigurationSectionHandle.builder(configSection, configNodes.getNodes())
                 .logger(Logging.getLogger())
-                .nodes(configNodes.getNodes())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
                         .addVersionMigrator(initialVersionMigrator())
                         .build())

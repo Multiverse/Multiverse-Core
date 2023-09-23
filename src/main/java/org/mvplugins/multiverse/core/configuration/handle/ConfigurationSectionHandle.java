@@ -18,16 +18,19 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
      * Creates a new builder for a {@link ConfigurationSectionHandle}.
      *
      * @param configurationSection  The configuration section.
+     * @param nodes                 The nodes.
      * @return The builder.
      */
-    public static Builder<? extends Builder> builder(@NotNull ConfigurationSection configurationSection) {
-        return new Builder<>(configurationSection);
+    public static Builder<? extends Builder> builder(
+            @NotNull ConfigurationSection configurationSection, @NotNull NodeGroup nodes) {
+        return new Builder<>(configurationSection, nodes);
     }
 
-    protected ConfigurationSectionHandle(@NotNull ConfigurationSection configurationSection,
-                                      @Nullable Logger logger,
-                                      @Nullable NodeGroup nodes,
-                                      @Nullable ConfigMigrator migrator) {
+    protected ConfigurationSectionHandle(
+            @NotNull ConfigurationSection configurationSection,
+            @Nullable Logger logger,
+            @NotNull NodeGroup nodes,
+            @Nullable ConfigMigrator migrator) {
         super(logger, nodes, migrator);
         this.config = configurationSection;
     }
@@ -51,7 +54,8 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
     public static class Builder<B extends Builder<B>> extends GenericConfigHandle.Builder<ConfigurationSection, B> {
         private final ConfigurationSection configurationSection;
 
-        protected Builder(@NotNull ConfigurationSection configurationSection) {
+        protected Builder(@NotNull ConfigurationSection configurationSection, @NotNull NodeGroup nodes) {
+            super(nodes);
             this.configurationSection = configurationSection;
         }
 

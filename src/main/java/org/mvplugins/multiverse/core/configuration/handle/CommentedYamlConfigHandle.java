@@ -24,16 +24,17 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
      * Creates a new builder for a {@link CommentedYamlConfigHandle}.
      *
      * @param configPath    The path to the config file.
+     * @param nodes         The nodes.
      * @return The builder.
      */
-    public static @NotNull Builder builder(@NotNull Path configPath) {
-        return new Builder(configPath);
+    public static @NotNull Builder builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
+        return new Builder(configPath, nodes);
     }
 
     protected CommentedYamlConfigHandle(
             @NotNull Path configPath,
             @Nullable Logger logger,
-            @Nullable NodeGroup nodes,
+            @NotNull NodeGroup nodes,
             @Nullable ConfigMigrator migrator) {
         super(configPath, logger, nodes, migrator);
     }
@@ -96,8 +97,8 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
      */
     public static class Builder extends FileConfigHandle.Builder<CommentedConfiguration, Builder> {
 
-        protected Builder(@NotNull Path configPath) {
-            super(configPath);
+        protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
+            super(configPath, nodes);
         }
 
         /**

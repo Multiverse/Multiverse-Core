@@ -16,14 +16,19 @@ import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 
 /**
  * Generic configuration handle for file based configurations.
+ *
  * @param <C>   The configuration type.
  */
-abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConfigHandle<C> {
+public abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConfigHandle<C> {
 
     protected final @NotNull Path configPath;
     protected final @NotNull File configFile;
 
-    protected FileConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected FileConfigHandle(
+            @NotNull Path configPath,
+            @Nullable Logger logger,
+            @NotNull NodeGroup nodes,
+            @Nullable ConfigMigrator migrator) {
         super(logger, nodes, migrator);
         this.configPath = configPath;
         this.configFile = configPath.toFile();
@@ -95,11 +100,13 @@ abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConf
      * @param <C>   The configuration type.
      * @param <B>   The builder type.
      */
-    public static abstract class Builder<C extends FileConfiguration, B extends Builder<C, B>> extends GenericConfigHandle.Builder<C, B> {
+    public abstract static class Builder<C extends FileConfiguration, B extends Builder<C, B>>
+            extends GenericConfigHandle.Builder<C, B> {
 
         protected @NotNull Path configPath;
 
-        protected Builder(@NotNull Path configPath) {
+        protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
+            super(nodes);
             this.configPath = configPath;
         }
 

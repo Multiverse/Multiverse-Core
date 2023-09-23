@@ -22,13 +22,18 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
      * Creates a new builder for {@link YamlConfigHandle}.
      *
      * @param configPath    The path to the config file.
+     * @param nodes         The nodes.
      * @return The builder.
      */
-    public static @NotNull Builder<? extends Builder> builder(@NotNull Path configPath) {
-        return new Builder<>(configPath);
+    public static @NotNull Builder<? extends Builder> builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
+        return new Builder<>(configPath, nodes);
     }
 
-    protected YamlConfigHandle(@NotNull Path configPath, @Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected YamlConfigHandle(
+            @NotNull Path configPath,
+            @Nullable Logger logger,
+            @NotNull NodeGroup nodes,
+            @Nullable ConfigMigrator migrator) {
         super(configPath, logger, nodes, migrator);
     }
 
@@ -51,12 +56,13 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
 
     /**
      * Builder for {@link YamlConfigHandle}.
+     *
      * @param <B>   The type of the builder.
      */
     public static class Builder<B extends Builder<B>> extends FileConfigHandle.Builder<YamlConfiguration, B> {
 
-        protected Builder(@NotNull Path configPath) {
-            super(configPath);
+        protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
+            super(configPath, nodes);
         }
 
         /**

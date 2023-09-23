@@ -59,7 +59,8 @@ public interface ValueNode<T> extends Node {
      * Validates the value of this node.
      *
      * @param value The value to validate.
-     * @return True if the value is valid, false otherwise.
+     * @return An empty {@link Try} if the value is valid, or a {@link Try} containing an exception if the value is
+     *         invalid.
      */
     Try<Void> validate(@Nullable T value);
 

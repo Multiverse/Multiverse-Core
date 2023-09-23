@@ -14,8 +14,11 @@ import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 
 /**
  * Generic configuration handle for all ConfigurationSection types.
+ *
+ * @param <C>   The configuration type.
  */
 public abstract class GenericConfigHandle<C extends ConfigurationSection> {
+
     protected final @Nullable Logger logger;
     protected final @NotNull NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
@@ -128,11 +131,12 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      */
     public abstract static class Builder<C extends ConfigurationSection, B extends GenericConfigHandle.Builder<C, B>> {
 
+        protected final @NotNull NodeGroup nodes;
         protected @Nullable Logger logger;
-        protected @Nullable NodeGroup nodes;
         protected @Nullable ConfigMigrator migrator;
 
-        protected Builder() {
+        protected Builder(@NotNull NodeGroup nodes) {
+            this.nodes = nodes;
         }
 
         /**
@@ -154,17 +158,6 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
          */
         public B logger(Plugin plugin) {
             this.logger = plugin.getLogger();
-            return self();
-        }
-
-        /**
-         * Sets the nodes.
-         *
-         * @param nodes The nodes.
-         * @return The builder.
-         */
-        public B nodes(@Nullable NodeGroup nodes) {
-            this.nodes = nodes;
             return self();
         }
 
