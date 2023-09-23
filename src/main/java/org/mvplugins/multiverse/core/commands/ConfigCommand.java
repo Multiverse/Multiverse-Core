@@ -15,7 +15,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.commandtools.context.MVConfigValue;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
@@ -33,35 +32,35 @@ class ConfigCommand extends MultiverseCommand {
 
     @Subcommand("config")
     @CommandPermission("multiverse.core.config")
-    @CommandCompletion("@mvconfigs")
-    @Syntax("<name> [new-value]")
-    @Description("") // TODO: Description
+    @CommandCompletion("@mvconfigs @mvconfigvalues")
+    @Syntax("<name> [value]")
+    @Description("Show or set a config value.")
     void onConfigCommand(
             MVCommandIssuer issuer,
 
             @Syntax("<name>")
-            @Description("") // TODO: Description
+            @Description("The name of the config to set or show.")
             String name,
 
             @Optional
-            @Syntax("[new-value]")
-            @Description("") // TODO: Description
-            MVConfigValue value) {
+            @Syntax("[value]")
+            @Description("The value to set the config to. If not specified, the current value will be shown.")
+            String value) {
         if (value == null) {
             showConfigValue(issuer, name);
             return;
         }
-        updateConfigValue(issuer, name, value.getValue());
+        updateConfigValue(issuer, name, value);
     }
 
     private void showConfigValue(MVCommandIssuer issuer, String name) {
-        config.getProperty(name)
+        config.getStringPropertyHandle().getProperty(name)
                 .onSuccess(value -> issuer.sendMessage(name + "is currently set to " + value))
                 .onFailure(e -> issuer.sendMessage(e.getMessage()));
     }
 
-    private void updateConfigValue(MVCommandIssuer issuer, String name, Object value) {
-        config.setProperty(name, value)
+    private void updateConfigValue(MVCommandIssuer issuer, String name, String value) {
+        config.getStringPropertyHandle().setPropertyString(name, value)
                 .onSuccess(ignore -> {
                     config.save();
                     issuer.sendMessage("Successfully set " + name + " to " + value);

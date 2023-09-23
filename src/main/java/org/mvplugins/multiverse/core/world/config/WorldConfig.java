@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigurationSectionHandle;
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.migration.IntegerMigratorAction;
@@ -33,6 +34,7 @@ public final class WorldConfig {
     private final String worldName;
     private final WorldConfigNodes configNodes;
     private final ConfigurationSectionHandle configHandle;
+    private final StringPropertyHandle stringPropertyHandle;
 
     WorldConfig(
             @NotNull String worldName,
@@ -47,6 +49,7 @@ public final class WorldConfig {
                         .addVersionMigrator(initialVersionMigrator())
                         .build())
                 .build();
+        this.stringPropertyHandle = new StringPropertyHandle(configHandle);
         load();
     }
 
@@ -119,11 +122,11 @@ public final class WorldConfig {
     }
 
     public Try<Object> getProperty(String name) {
-        return configHandle.get(name);
+        return stringPropertyHandle.getProperty(name);
     }
 
     public Try<Void> setProperty(String name, Object value) {
-        return configHandle.set(name, value);
+        return stringPropertyHandle.setProperty(name, value);
     }
 
     public boolean getAdjustSpawn() {

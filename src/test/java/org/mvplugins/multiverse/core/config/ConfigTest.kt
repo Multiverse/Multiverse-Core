@@ -52,14 +52,14 @@ class ConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Getting existing config property with getProperty returns expected value`() {
-        assertEquals(false, config.getProperty("enforce-access").get())
-        assertEquals("world", config.getProperty("first-spawn-location").get())
+        assertEquals(false, config.stringPropertyHandle.getProperty("enforce-access").get())
+        assertEquals("world", config.stringPropertyHandle.getProperty("first-spawn-location").get())
     }
 
     @Test
     fun `Getting non-existing config property with getProperty returns null`() {
-        assertTrue(config.getProperty("invalid-property").isFailure)
-        assertTrue(config.getProperty("version").isFailure)
+        assertTrue(config.stringPropertyHandle.getProperty("invalid-property").isFailure)
+        assertTrue(config.stringPropertyHandle.getProperty("version").isFailure)
     }
 
     @Test
@@ -70,19 +70,31 @@ class ConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Updating an existing config property with setProperty reflects the changes in getProperty`() {
-        assertTrue(config.setProperty("enforce-access", true).isSuccess)
-        assertEquals(true, config.getProperty("enforce-access").get())
+        assertTrue(config.stringPropertyHandle.setProperty("enforce-access", true).isSuccess)
+        assertEquals(true, config.stringPropertyHandle.getProperty("enforce-access").get())
 
-        assertTrue(config.setProperty("first-spawn-location", "world2").isSuccess)
-        assertEquals("world2", config.getProperty("first-spawn-location").get())
+        assertTrue(config.stringPropertyHandle.setProperty("first-spawn-location", "world2").isSuccess)
+        assertEquals("world2", config.stringPropertyHandle.getProperty("first-spawn-location").get())
 
-        assertTrue(config.setProperty("global-debug", 1).isSuccess)
-        assertEquals(1, config.getProperty("global-debug").get())
+        assertTrue(config.stringPropertyHandle.setProperty("global-debug", 1).isSuccess)
+        assertEquals(1, config.stringPropertyHandle.getProperty("global-debug").get())
+    }
+
+    @Test
+    fun `Updating an existing config property with setPropertyString reflects the changes in getProperty`() {
+        assertTrue(config.stringPropertyHandle.setPropertyString("enforce-access", "true").isSuccess)
+        assertEquals(true, config.stringPropertyHandle.getProperty("enforce-access").get())
+
+        assertTrue(config.stringPropertyHandle.setPropertyString("first-spawn-location", "world2").isSuccess)
+        assertEquals("world2", config.stringPropertyHandle.getProperty("first-spawn-location").get())
+
+        assertTrue(config.stringPropertyHandle.setPropertyString("global-debug", "1").isSuccess)
+        assertEquals(1, config.stringPropertyHandle.getProperty("global-debug").get())
     }
 
     @Test
     fun `Updating a non-existing property with setProperty returns false`() {
-        assertTrue(config.setProperty("invalid-property", false).isFailure)
-        assertTrue(config.setProperty("version", 1.1).isFailure)
+        assertTrue(config.stringPropertyHandle.setProperty("invalid-property", false).isFailure)
+        assertTrue(config.stringPropertyHandle.setProperty("version", 1.1).isFailure)
     }
 }

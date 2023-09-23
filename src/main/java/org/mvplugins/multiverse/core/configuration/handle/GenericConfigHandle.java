@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.configuration.node.ConfigNodeNotFoundException;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 
@@ -18,12 +17,12 @@ import org.mvplugins.multiverse.core.configuration.node.ValueNode;
  */
 public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     protected final @Nullable Logger logger;
-    protected final @Nullable NodeGroup nodes;
+    protected final @NotNull NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
 
     protected C config;
 
-    protected GenericConfigHandle(@Nullable Logger logger, @Nullable NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected GenericConfigHandle(@Nullable Logger logger, @NotNull NodeGroup nodes, @Nullable ConfigMigrator migrator) {
         this.logger = logger;
         this.nodes = nodes;
         this.migrator = migrator;
@@ -69,17 +68,6 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
 
     /**
      * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
-     * @param name  The name of the node.
-     * @return The value of the node.
-     */
-    public Try<Object> get(@Nullable String name) {
-        return nodes.findNode(name, ValueNode.class)
-                .toTry(() -> new ConfigNodeNotFoundException(name))
-                .map(node -> get((ValueNode<Object>) node));
-    }
-
-    /**
-     * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
      *
      * @param node The node to get the value of.
      * @return The value of the node.
@@ -94,23 +82,10 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     /**
      * Sets the value of a node, if the validator is not null, it will be tested first.
      *
-     * @param name  The name of the node.
-     * @param value The value to set.
-     * @return True if the value was set, false otherwise.
-     */
-    public Try<Void> set(@Nullable String name, Object value) {
-        return nodes.findNode(name, ValueNode.class)
-                .toTry(() -> new ConfigNodeNotFoundException(name))
-                .flatMap(node -> set(node, value));
-    }
-
-    /**
-     * Sets the value of a node, if the validator is not null, it will be tested first.
-     *
      * @param node  The node to set the value of.
      * @param value The value to set.
-     * @return True if the value was set, false otherwise.
      * @param <T>   The type of the node value.
+     * @return Empty try if the value was set, try containing an error otherwise.
      */
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         return node.validate(value).map(ignore -> {
@@ -127,11 +102,21 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     }
 
     /**
+     * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
+     *
+     * @return The configuration.
+     */
+    @NotNull NodeGroup getNodes() {
+        return nodes;
+    }
+
+    /**
      * Sets the default value of a node.
      *
      * @param node  The node to set the default value of.
+     * @param <T>   The type of the node value.
      */
-    public void setDefault(@NotNull ValueNode node) {
+    public <T> void setDefault(@NotNull ValueNode<T> node) {
         config.set(node.getPath(), node.getDefaultValue());
     }
 
@@ -141,13 +126,14 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      * @param <C>   The configuration type.
      * @param <B>   The builder type.
      */
-    public static abstract class Builder<C extends ConfigurationSection, B extends GenericConfigHandle.Builder<C, B>> {
+    public abstract static class Builder<C extends ConfigurationSection, B extends GenericConfigHandle.Builder<C, B>> {
 
         protected @Nullable Logger logger;
         protected @Nullable NodeGroup nodes;
         protected @Nullable ConfigMigrator migrator;
 
-        protected Builder() {}
+        protected Builder() {
+        }
 
         /**
          * Sets the logger.

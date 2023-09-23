@@ -16,13 +16,13 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.MVConfig;
 import org.mvplugins.multiverse.core.configuration.handle.CommentedYamlConfigHandle;
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.migration.IntegerMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.InvertBoolMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.MoveMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
-import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 
 @Service
 public class MVCoreConfig implements MVConfig {
@@ -32,6 +32,7 @@ public class MVCoreConfig implements MVConfig {
     private final Path configPath;
     private final MVCoreConfigNodes configNodes;
     private final CommentedYamlConfigHandle configHandle;
+    private final StringPropertyHandle stringPropertyHandle;
 
     @Inject
     MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager) {
@@ -70,7 +71,7 @@ public class MVCoreConfig implements MVConfig {
                                 .build())
                         .build())
                 .build();
-
+        this.stringPropertyHandle = new StringPropertyHandle(configHandle);
         load();
         save();
     }
@@ -108,18 +109,8 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public NodeGroup getNodes() {
-        return configNodes.getNodes();
-    }
-
-    @Override
-    public Try<Object> getProperty(String name) {
-        return configHandle.get(name);
-    }
-
-    @Override
-    public Try<Void> setProperty(String name, Object value) {
-        return configHandle.set(name, value);
+    public StringPropertyHandle getStringPropertyHandle() {
+        return stringPropertyHandle;
     }
 
     @Override
