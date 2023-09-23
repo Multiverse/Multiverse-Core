@@ -60,6 +60,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     GAMERULES_DESCRIPTION_WORLD,
     GAMERULES_TITLE,
 
+    // Generators command
+    GENERATORS_DESCRIPTION,
+    GENERATORS_DESCRIPTION_FLAGS,
+    GENERATORS_EMPTY,
+
     // import command
     IMPORT_IMPORTING,
     IMPORT_SUCCESS,
