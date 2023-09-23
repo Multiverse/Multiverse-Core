@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.commands;
 
+import java.util.List;
+
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
@@ -13,6 +15,7 @@ import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
@@ -26,8 +29,6 @@ import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
-
-import java.util.List;
 
 /**
  * List all gamerules in your current or specified world.
@@ -79,8 +80,7 @@ class GeneratorsCommand extends MultiverseCommand {
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
             @Description("{@@mv-core.generators.description.flags}")
-            String[] flags
-    ) {
+            String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Get the generators loaded using the command suggestions
