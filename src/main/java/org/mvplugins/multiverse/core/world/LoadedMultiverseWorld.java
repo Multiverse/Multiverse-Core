@@ -104,6 +104,15 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
     }
 
     /**
+     * Gets the Unique ID of this world.
+     *
+     * @return Unique ID of this world.
+     */
+    public UUID getUID() {
+        return worldUid;
+    }
+
+    /**
      * Gets the Bukkit world object that this world describes.
      *
      * @return Bukkit world object.

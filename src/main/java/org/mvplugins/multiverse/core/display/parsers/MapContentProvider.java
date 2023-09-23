@@ -2,9 +2,9 @@ package org.mvplugins.multiverse.core.display.parsers;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,8 +45,15 @@ public class MapContentProvider<K, V> implements ContentProvider {
     @Override
     public Collection<String> parse(@NotNull BukkitCommandIssuer issuer) {
         return map.entrySet().stream()
-                .map(e -> String.format(format, keyColor, e.getKey(), separator, valueColor, e.getValue()))
-                .collect(Collectors.toList());
+                .map(e -> String.format(format, keyColor, e.getKey(), separator, valueColor, formatValue(e.getValue())))
+                .toList();
+    }
+
+    private String formatValue(V value) {
+        if (value instanceof String stringValue) {
+            return Strings.isNullOrEmpty(stringValue) ? "&7&onull" : stringValue;
+        }
+        return value == null ? "&7&onull" : String.valueOf(value);
     }
 
     /**
