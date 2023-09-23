@@ -5,16 +5,15 @@ import org.mvplugins.multiverse.core.anchor.AnchorManager
 import org.mvplugins.multiverse.core.api.BlockSafety
 import org.mvplugins.multiverse.core.api.Destination
 import org.mvplugins.multiverse.core.api.LocationManipulation
-import org.mvplugins.multiverse.core.api.SafeTTeleporter
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand
 import org.mvplugins.multiverse.core.commandtools.PluginLocales
 import org.mvplugins.multiverse.core.config.MVCoreConfig
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.listeners.*
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
 import org.mvplugins.multiverse.core.teleportation.SimpleBlockSafety
 import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
-import org.mvplugins.multiverse.core.teleportation.SimpleSafeTTeleporter
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
 import org.mvplugins.multiverse.core.world.WorldManager
@@ -25,6 +24,11 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `AnchorManager is available as a service`() {
         assertNotNull(multiverseCore.getService(AnchorManager::class.java))
+    }
+
+    @Test
+    fun `AsyncSafetyTeleporter is available as a service`() {
+        assertNotNull(multiverseCore.getService(AsyncSafetyTeleporter::class.java))
     }
 
     @Test
@@ -47,12 +51,6 @@ class InjectionTest : TestWithMockBukkit() {
     fun `LocationManipulation is available as a service`() {
         assertNotNull(multiverseCore.getService(LocationManipulation::class.java))
         assertNotNull(multiverseCore.getService(SimpleLocationManipulation::class.java))
-    }
-
-    @Test
-    fun `SafeTTeleporter is available as a service`() {
-        assertNotNull(multiverseCore.getService(SafeTTeleporter::class.java))
-        assertNotNull(multiverseCore.getService(SimpleSafeTTeleporter::class.java))
     }
 
     @Test

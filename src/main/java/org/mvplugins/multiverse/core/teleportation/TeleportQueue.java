@@ -12,7 +12,7 @@ public class TeleportQueue {
 
     private final Map<String, String> teleportQueue;
 
-    public TeleportQueue() {
+    TeleportQueue() {
         teleportQueue = new HashMap<>();
     }
 

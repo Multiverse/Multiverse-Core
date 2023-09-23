@@ -18,7 +18,6 @@ public class UnloadWorldOptions {
     }
 
     private final LoadedMultiverseWorld world;
-    private boolean removePlayers = false;
     private boolean saveBukkitWorld = true;
 
     UnloadWorldOptions(LoadedMultiverseWorld world) {
@@ -32,26 +31,6 @@ public class UnloadWorldOptions {
      */
     public LoadedMultiverseWorld world() {
         return world;
-    }
-
-    /**
-     * Sets whether to teleport the players out from the world before unloading.
-     *
-     * @param removePlayersInput    Whether to remove players from the world before unloading.
-     * @return This {@link UnloadWorldOptions} instance.
-     */
-    public UnloadWorldOptions removePlayers(boolean removePlayersInput) {
-        this.removePlayers = removePlayersInput;
-        return this;
-    }
-
-    /**
-     * Gets whether to teleport the players out from the world before unloading.
-     *
-     * @return Whether to remove players from the world before unloading.
-     */
-    public boolean removePlayers() {
-        return removePlayers;
     }
 
     /**

@@ -27,7 +27,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
-import org.mvplugins.multiverse.core.api.SafeTTeleporter;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
@@ -75,7 +74,6 @@ public class WorldManager {
     private final PlayerWorldTeleporter playerWorldActions;
     private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
-    private final SafeTTeleporter safetyTeleporter;
     private final LocationManipulation locationManipulation;
 
     @Inject
@@ -86,7 +84,6 @@ public class WorldManager {
             @NotNull PlayerWorldTeleporter playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
-            @NotNull SafeTTeleporter safetyTeleporter,
             @NotNull LocationManipulation locationManipulation) {
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
@@ -99,7 +96,6 @@ public class WorldManager {
         this.playerWorldActions = playerWorldActions;
         this.filesManipulator = filesManipulator;
         this.blockSafety = blockSafety;
-        this.safetyTeleporter = safetyTeleporter;
         this.locationManipulation = locationManipulation;
     }
 
@@ -297,7 +293,6 @@ public class WorldManager {
                 world,
                 worldConfig,
                 blockSafety,
-                safetyTeleporter,
                 locationManipulation);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
@@ -354,7 +349,6 @@ public class WorldManager {
                                     world,
                                     worldConfig,
                                     blockSafety,
-                                    safetyTeleporter,
                                     locationManipulation);
                             loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
                             saveWorldsConfig();
@@ -375,10 +369,6 @@ public class WorldManager {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
             return worldActionResult(UnloadFailureReason.WORLD_ALREADY_UNLOADING, world.getName());
-        }
-
-        if (options.removePlayers()) {
-            playerWorldActions.removeFromWorld(world);
         }
 
         return unloadBukkitWorld(world.getBukkitWorld().getOrNull(), options.saveBukkitWorld()).fold(
@@ -432,7 +422,7 @@ public class WorldManager {
      */
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
         // TODO: Config option on removePlayers
-        return unloadWorld(UnloadWorldOptions.world(loadedWorld).removePlayers(true))
+        return unloadWorld(UnloadWorldOptions.world(loadedWorld))
                 .transform(RemoveFailureReason.UNLOAD_FAILED)
                 .mapAttempt(this::removeWorldFromConfig);
     }
@@ -594,7 +584,6 @@ public class WorldManager {
      */
     public Attempt<LoadedMultiverseWorld, RegenFailureReason> regenWorld(@NotNull RegenWorldOptions options) {
         LoadedMultiverseWorld world = options.world();
-        List<Player> playersInWorld = world.getPlayers().getOrElse(Collections.emptyList());
         DataTransfer<LoadedMultiverseWorld> dataTransfer = transferData(options, world);
         boolean shouldKeepSpawnLocation = options.keepWorldConfig() && options.seed() == world.getSeed();
         Location spawnLocation = world.getSpawnLocation();
@@ -617,7 +606,6 @@ public class WorldManager {
                         // different seed.
                         newWorld.setSpawnLocation(spawnLocation);
                     }
-                    playerWorldActions.teleportPlayersToWorld(playersInWorld, newWorld);
                     saveWorldsConfig();
                 });
     }
@@ -681,12 +669,13 @@ public class WorldManager {
             unloadTracker.add(world.getName());
             if (!Bukkit.unloadWorld(world, save)) {
                 // TODO: Localize this, maybe with MultiverseException
+                if (!world.getPlayers().isEmpty()) {
+                    throw new Exception("There are still players in the world! Please use --remove-players flag to "
+                            + "your command if wish to teleport all players out of the world.");
+                }
                 throw new Exception("Is this the default world? You can't unload the default world!");
             }
             Logging.fine("Bukkit unloaded world: " + world.getName());
-        }).onFailure(exception -> {
-            Logging.severe("Failed to unload bukkit world: " + world.getName());
-            exception.printStackTrace();
         }).andFinally(() -> unloadTracker.remove(world.getName()));
     }
 

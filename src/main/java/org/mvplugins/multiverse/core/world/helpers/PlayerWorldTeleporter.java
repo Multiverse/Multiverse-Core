@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.world.helpers;
 
 import java.util.List;
 
-import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,7 +10,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.SafeTTeleporter;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.teleportation.TeleportResult;
+import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
@@ -19,10 +21,10 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
  */
 @Service
 public class PlayerWorldTeleporter {
-    private final SafeTTeleporter safetyTeleporter;
+    private final AsyncSafetyTeleporter safetyTeleporter;
 
     @Inject
-    PlayerWorldTeleporter(@NotNull SafeTTeleporter safetyTeleporter) {
+    PlayerWorldTeleporter(@NotNull AsyncSafetyTeleporter safetyTeleporter) {
         this.safetyTeleporter = safetyTeleporter;
     }
 
@@ -30,11 +32,12 @@ public class PlayerWorldTeleporter {
      * Removes all players from the given world.
      *
      * @param world The world to remove all players from.
+     * @return A list of async futures that represent the teleportation result of each player.
      */
-    public void removeFromWorld(@NotNull LoadedMultiverseWorld world) {
+    public Async<List<Attempt<Void, TeleportResult.Failure>>> removeFromWorld(@NotNull LoadedMultiverseWorld world) {
         // TODO: Better handling of fallback world
         World toWorld = Bukkit.getWorlds().get(0);
-        transferFromWorldTo(world, toWorld);
+        return transferFromWorldTo(world, toWorld);
     }
 
     /**
@@ -42,9 +45,12 @@ public class PlayerWorldTeleporter {
      *
      * @param from  The world to transfer players from.
      * @param to    The location to transfer players to.
+     * @return A list of async futures that represent the teleportation result of each player.
      */
-    public void transferFromWorldTo(@NotNull LoadedMultiverseWorld from, @NotNull LoadedMultiverseWorld to) {
-        transferAllFromWorldToLocation(from, to.getSpawnLocation());
+    public Async<List<Attempt<Void, TeleportResult.Failure>>> transferFromWorldTo(
+            @NotNull LoadedMultiverseWorld from,
+            @NotNull LoadedMultiverseWorld to) {
+        return transferAllFromWorldToLocation(from, to.getSpawnLocation());
     }
 
     /**
@@ -52,24 +58,28 @@ public class PlayerWorldTeleporter {
      *
      * @param from  The world to transfer players from.
      * @param to    The world to transfer players to.
+     * @return A list of async futures that represent the teleportation result of each player.
      */
-    public void transferFromWorldTo(@NotNull LoadedMultiverseWorld from, @NotNull World to) {
-        transferAllFromWorldToLocation(from, to.getSpawnLocation());
+    public Async<List<Attempt<Void, TeleportResult.Failure>>> transferFromWorldTo(
+            @NotNull LoadedMultiverseWorld from,
+            @NotNull World to) {
+        return transferAllFromWorldToLocation(from, to.getSpawnLocation());
     }
 
     /**
      * Transfers all players from the given world to the given location.
      *
-     * @param world     The world to transfer players from.
-     * @param location  The location to transfer players to.
+     * @param world    The world to transfer players from.
+     * @param location The location to transfer players to.
+     * @return A list of async futures that represent the teleportation result of each player.
      */
-    public void transferAllFromWorldToLocation(@NotNull LoadedMultiverseWorld world, @NotNull Location location) {
-        world.getPlayers().peek(players -> players.forEach(player -> {
-            if (player.isOnline()) {
-                Logging.fine("Teleporting player '%s' to world spawn: %s", player.getName(), location);
-                safetyTeleporter.safelyTeleport(null, player, location, true);
-            }
-        }));
+    public Async<List<Attempt<Void, TeleportResult.Failure>>> transferAllFromWorldToLocation(
+            @NotNull LoadedMultiverseWorld world,
+            @NotNull Location location) {
+        return world.getPlayers()
+                .map(players -> safetyTeleporter.teleport(players, location))
+                .getOrElse(() -> Async.failedFuture(
+                        new IllegalStateException("Unable to get players from world" + world.getName())));
     }
 
     /**
@@ -77,13 +87,12 @@ public class PlayerWorldTeleporter {
      *
      * @param players   The players to teleport.
      * @param world     The world to teleport players to.
+     * @return A list of async futures that represent the teleportation result of each player.
      */
-    public void teleportPlayersToWorld(@NotNull List<Player> players, @NotNull LoadedMultiverseWorld world) {
-        players.forEach(player -> {
-            Location spawnLocation = world.getSpawnLocation();
-            if (player.isOnline()) {
-                safetyTeleporter.safelyTeleport(null, player, spawnLocation, true);
-            }
-        });
+    public Async<List<Attempt<Void, TeleportResult.Failure>>> teleportPlayersToWorld(
+            @NotNull List<Player> players,
+            @NotNull LoadedMultiverseWorld world) {
+        Location spawnLocation = world.getSpawnLocation();
+        return safetyTeleporter.teleport(players, spawnLocation);
     }
 }

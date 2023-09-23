@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.Destination;
-import org.mvplugins.multiverse.core.api.Teleporter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -96,13 +95,5 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
     @Override
     public boolean checkTeleportSafety() {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @Nullable Teleporter getTeleporter() {
-        return null;
     }
 }

@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
-import org.mvplugins.multiverse.core.api.SafeTTeleporter;
 import org.mvplugins.multiverse.core.world.config.NullLocation;
 import org.mvplugins.multiverse.core.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
@@ -29,19 +28,16 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
     private final UUID worldUid;
 
     private final BlockSafety blockSafety;
-    private final SafeTTeleporter safetyTeleporter;
     private final LocationManipulation locationManipulation;
 
     LoadedMultiverseWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
             @NotNull BlockSafety blockSafety,
-            @NotNull SafeTTeleporter safetyTeleporter,
             @NotNull LocationManipulation locationManipulation) {
         super(world.getName(), worldConfig);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
-        this.safetyTeleporter = safetyTeleporter;
         this.locationManipulation = locationManipulation;
 
         setupWorldConfig(world);
@@ -82,7 +78,7 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         // The location is not safe, so we need to find a better one.
         Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
         Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
-        Location newSpawn = safetyTeleporter.getSafeLocation(location,
+        Location newSpawn = blockSafety.getSafeLocation(location,
                 SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
         // I think we could also do this, as I think this is what Notch does.
         // Not sure how it will work in the nether...

@@ -45,14 +45,4 @@ public interface Destination<T extends DestinationInstance> {
      * @return True if the SafeTeleporter will be used, false if not.
      */
     boolean checkTeleportSafety();
-
-    /**
-     * Returns the teleporter to use for this destination.
-     *
-     * <p>By default, Multiverse will automatically use SafeTeleporter. If you want to use a different teleporter, you can
-     * override this method.</p>
-     *
-     * @return The custom teleporter to use for this destination. Return null to use the default teleporter.
-     */
-    @Nullable Teleporter getTeleporter();
 }
