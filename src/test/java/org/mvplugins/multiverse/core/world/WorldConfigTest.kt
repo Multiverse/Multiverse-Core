@@ -30,14 +30,14 @@ class WorldConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Getting existing world property with getProperty returns expected value`() {
-        assertEquals("my world", worldConfig.getProperty("alias").get())
-        assertEquals(false, worldConfig.getProperty("hidden").get())
+        assertEquals("my world", worldConfig.stringPropertyHandle.getProperty("alias").get())
+        assertEquals(false, worldConfig.stringPropertyHandle.getProperty("hidden").get())
     }
 
     @Test
     fun `Getting non-existing world property with getProperty returns null`() {
-        assertTrue(worldConfig.getProperty("invalid-property").isFailure)
-        assertTrue(worldConfig.getProperty("version").isFailure)
+        assertTrue(worldConfig.stringPropertyHandle.getProperty("invalid-property").isFailure)
+        assertTrue(worldConfig.stringPropertyHandle.getProperty("version").isFailure)
     }
 
     @Test
@@ -48,23 +48,23 @@ class WorldConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Updating an existing world property with setProperty reflects the changes in getProperty`() {
-        assertTrue(worldConfig.setProperty("adjust-spawn", true).isSuccess)
-        assertEquals(true, worldConfig.getProperty("adjust-spawn").get())
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("adjust-spawn", true).isSuccess)
+        assertEquals(true, worldConfig.stringPropertyHandle.getProperty("adjust-spawn").get())
 
-        assertTrue(worldConfig.setProperty("alias", "abc").isSuccess)
-        assertEquals("abc", worldConfig.getProperty("alias").get())
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("alias", "abc").isSuccess)
+        assertEquals("abc", worldConfig.stringPropertyHandle.getProperty("alias").get())
 
-        assertTrue(worldConfig.setProperty("scale", 2.0).isSuccess)
-        assertEquals(2.0, worldConfig.getProperty("scale").get())
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("scale", 2.0).isSuccess)
+        assertEquals(2.0, worldConfig.stringPropertyHandle.getProperty("scale").get())
 
         val blacklists = listOf("a", "b", "c")
-        assertTrue(worldConfig.setProperty("world-blacklist", blacklists).isSuccess)
-        assertEquals(blacklists, worldConfig.getProperty("world-blacklist").get())
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("world-blacklist", blacklists).isSuccess)
+        assertEquals(blacklists, worldConfig.stringPropertyHandle.getProperty("world-blacklist").get())
     }
 
     @Test
     fun `Updating a non-existing property with setProperty returns false`() {
-        assertTrue(worldConfig.setProperty("invalid-property", false).isFailure)
-        assertTrue(worldConfig.setProperty("version", 1.1).isFailure)
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("invalid-property", false).isFailure)
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("version", 1.1).isFailure)
     }
 }

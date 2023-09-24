@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.world;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.Strings;
@@ -13,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.config.AllowedPortalType;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
 
@@ -57,34 +57,12 @@ public class MultiverseWorld {
     }
 
     /**
-     * Gets the properties that can be configured on this world. Can be used for {@link #getProperty(String)} and
-     * {@link #setProperty(String, Object)}.
+     * Gets the properties handler of this world.
      *
-     * @return A collection of property names.
+     * @return The properties handler of this world.
      */
-    public Collection<String> getConfigurablePropertyNames() {
-        return worldConfig.getConfigurablePropertyNames();
-    }
-
-    /**
-     * Gets a property on this world.
-     *
-     * @param name  The name of the property.
-     * @return The value of the property.
-     */
-    public Try<Object> getProperty(String name) {
-        return worldConfig.getProperty(name);
-    }
-
-    /**
-     * Sets a property on this world.
-     *
-     * @param name  The name of the property.
-     * @param value The value of the property.
-     * @return Result of setting property.
-     */
-    public Try<Void> setProperty(String name, Object value) {
-        return worldConfig.setProperty(name, value);
+    public StringPropertyHandle getStringPropertyHandle() {
+        return worldConfig.getStringPropertyHandle();
     }
 
     /**

@@ -112,20 +112,12 @@ public final class WorldConfig {
         return configHandle.load(section);
     }
 
+    public StringPropertyHandle getStringPropertyHandle() {
+        return stringPropertyHandle;
+    }
+
     public String getWorldName() {
         return worldName;
-    }
-
-    public Collection<String> getConfigurablePropertyNames() {
-        return configNodes.getNodes().getNames();
-    }
-
-    public Try<Object> getProperty(String name) {
-        return stringPropertyHandle.getProperty(name);
-    }
-
-    public Try<Void> setProperty(String name, Object value) {
-        return stringPropertyHandle.setProperty(name, value);
     }
 
     public boolean getAdjustSpawn() {

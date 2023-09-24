@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.configuration.handle;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import io.vavr.control.Try;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
+import org.mvplugins.multiverse.core.configuration.node.ListValueNode;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 
@@ -105,12 +107,53 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     }
 
     /**
-     * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
+     * Adds an item to a list node.
      *
-     * @return The configuration.
+     * @param node      The list node to add the item to.
+     * @param itemValue The value of the item to add.
+     * @param <I>       The type of the list item.
+     * @return Empty try if the item was added, try containing an error otherwise.
      */
-    @NotNull NodeGroup getNodes() {
-        return nodes;
+    public <I> Try<Void> add(@NotNull ListValueNode<I> node, I itemValue) {
+        return node.validateItem(itemValue).map(ignore -> {
+            var serialized = node.getItemSerializer() != null
+                    ? node.getItemSerializer().serialize(itemValue, node.getItemType())
+                    : itemValue;
+            List valueList = config.getList(node.getPath());
+            if (valueList == null) {
+                throw new IllegalArgumentException("Cannot add item to non-list node");
+            }
+            valueList.add(serialized);
+            config.set(node.getPath(), valueList);
+            node.onSetItemValue(null, itemValue);
+            return null;
+        });
+    }
+
+    /**
+     * Removes an item from a list node.
+     *
+     * @param node      The list node to remove the item from.
+     * @param itemValue The value of the item to remove.
+     * @param <I>       The type of the list item.
+     * @return Empty try if the item was removed, try containing an error otherwise.
+     */
+    public <I> Try<Void> remove(@NotNull ListValueNode<I> node, I itemValue) {
+        return node.validateItem(itemValue).map(ignore -> {
+            var serialized = node.getItemSerializer() != null
+                    ? node.getItemSerializer().serialize(itemValue, node.getItemType())
+                    : itemValue;
+            List valueList = config.getList(node.getPath());
+            if (valueList == null) {
+                throw new IllegalArgumentException("Cannot remove item from non-list node");
+            }
+            if (!valueList.remove(serialized)) {
+                throw new IllegalArgumentException("Cannot remove item from list node");
+            }
+            config.set(node.getPath(), valueList);
+            node.onSetItemValue(itemValue, null);
+            return null;
+        });
     }
 
     /**
@@ -118,9 +161,19 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      *
      * @param node  The node to set the default value of.
      * @param <T>   The type of the node value.
+     * @return Empty try if the value was set, try containing an error otherwise.
      */
-    public <T> void setDefault(@NotNull ValueNode<T> node) {
-        config.set(node.getPath(), node.getDefaultValue());
+    public <T> Try<Void> reset(@NotNull ValueNode<T> node) {
+        return Try.run(() -> config.set(node.getPath(), node.getDefaultValue()));
+    }
+
+    /**
+     * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
+     *
+     * @return The configuration.
+     */
+    @NotNull NodeGroup getNodes() {
+        return nodes;
     }
 
     /**
