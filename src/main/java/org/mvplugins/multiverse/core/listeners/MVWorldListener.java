@@ -40,7 +40,7 @@ public class MVWorldListener implements InjectableListener {
      * @param event The Event that was fired.
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void unloadWorld(WorldUnloadEvent event) {
+    public void worldUnload(WorldUnloadEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -58,7 +58,7 @@ public class MVWorldListener implements InjectableListener {
      * @param event The Event that was fired.
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void loadWorld(WorldLoadEvent event) {
+    public void worldLoad(WorldLoadEvent event) {
         worldManager.getUnloadedWorld(event.getWorld().getName())
                 .peek(world -> {
                     Logging.fine("Loading world: " + world.getName());

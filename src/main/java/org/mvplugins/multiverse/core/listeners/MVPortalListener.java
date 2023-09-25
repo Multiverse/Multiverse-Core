@@ -22,8 +22,9 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.inject.InjectableListener;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+
+import static org.bukkit.PortalType.CUSTOM;
 
 /**
  * A custom listener for portal related events.
@@ -42,49 +43,51 @@ public class MVPortalListener implements InjectableListener {
 
     /**
      * This is called when a portal is formed.
+     *
      * @param event The event where a portal was created or formed due to a world link
      */
     @EventHandler(ignoreCancelled = true)
-    public void portalForm(PortalCreateEvent event) {
-        Logging.fine("Attempting to create portal at '%s' with reason: %s", event.getWorld().getName(), event.getReason());
+    public void portalCreate(PortalCreateEvent event) {
+        Logging.fine("Attempting to create portal at '%s' with reason: %s",
+                event.getWorld().getName(), event.getReason());
 
-        LoadedMultiverseWorld world = this.worldManager.getLoadedWorld(event.getWorld()).getOrNull();
-        if (world == null) {
-            Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.", event.getWorld().getName());
-            return;
-        }
+        this.worldManager.getLoadedWorld(event.getWorld()).peek(world -> {
+            PortalType targetType = getPortalType(event);
+            if (targetType == PortalType.CUSTOM) {
+                return;
+            }
+            if (!world.getPortalForm().isPortalAllowed(targetType)) {
+                Logging.fine("Cancelling creation of %s portal because portalForm disallows.", targetType);
+                event.setCancelled(true);
+            }
+        }).onEmpty(() -> {
+            Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.",
+                    event.getWorld().getName());
+        });
+    }
 
-        PortalType targetType;
-        switch (event.getReason()) {
-            case FIRE:
+    private PortalType getPortalType(PortalCreateEvent event) {
+        return switch (event.getReason()) {
+            case FIRE -> {
                 // Ensure portal by flint and steel actually creates nether
-                boolean isNether = false;
                 for (BlockState block : event.getBlocks()) {
                     if (block.getType() == Material.NETHER_PORTAL) {
-                        isNether = true;
-                        break;
+                        yield PortalType.NETHER;
                     }
                 }
-                if (!isNether) {
-                    return;
-                }
-                targetType = PortalType.NETHER;
-                break;
-            case NETHER_PAIR:
-                targetType = PortalType.NETHER;
-                break;
-            case END_PLATFORM:
-                targetType = PortalType.ENDER;
-                break;
-            default:
+                yield CUSTOM;
+            }
+            case NETHER_PAIR -> {
+                yield PortalType.NETHER;
+            }
+            case END_PLATFORM -> {
+                yield PortalType.ENDER;
+            }
+            default -> {
                 Logging.fine("Portal created is not NETHER or ENDER type. Ignoring...");
-                return;
-        }
-
-        if (!world.getPortalForm().isPortalAllowed(targetType)) {
-            Logging.fine("Cancelling creation of %s portal because portalForm disallows.", targetType);
-            event.setCancelled(true);
-        }
+                yield CUSTOM;
+            }
+        };
     }
 
     /**
@@ -93,28 +96,28 @@ public class MVPortalListener implements InjectableListener {
      * @param event The player interact event.
      */
     @EventHandler(ignoreCancelled = true)
-    public void portalForm(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.END_PORTAL_FRAME) {
-            return;
-        }
-        if (event.getItem() == null || event.getItem().getType() != Material.ENDER_EYE) {
+    public void playerInteract(PlayerInteractEvent event) {
+        if (isCreateEndPortalInteraction(event)) {
             return;
         }
 
-        LoadedMultiverseWorld world = this.worldManager.getLoadedWorld(event.getPlayer().getWorld()).getOrNull();
-        if (world == null) {
+        this.worldManager.getLoadedWorld(event.getPlayer().getWorld()).peek(world -> {
+            if (!world.getPortalForm().isPortalAllowed(PortalType.ENDER)) {
+                Logging.fine("Cancelling creation of ENDER portal because portalForm disallows.");
+                event.setCancelled(true);
+            }
+        }).onEmpty(() -> {
             Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
                     event.getPlayer().getWorld().getName());
-            return;
-        }
+        });
+    }
 
-        if (!world.getPortalForm().isPortalAllowed(PortalType.ENDER)) {
-            Logging.fine("Cancelling creation of ENDER portal because portalForm disallows.");
-            event.setCancelled(true);
-        }
+    private boolean isCreateEndPortalInteraction(PlayerInteractEvent event) {
+        return event.getAction() != Action.RIGHT_CLICK_BLOCK
+                || event.getClickedBlock() == null
+                || event.getClickedBlock().getType() != Material.END_PORTAL_FRAME
+                || event.getItem() == null
+                || event.getItem().getType() != Material.ENDER_EYE;
     }
 
     /**
@@ -127,7 +130,7 @@ public class MVPortalListener implements InjectableListener {
         if (event.isCancelled() || event.getTo() == null) {
             return;
         }
-        if (!config.isUsingCustomPortalSearch()) {
+        if (config.isUsingCustomPortalSearch()) {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
     }

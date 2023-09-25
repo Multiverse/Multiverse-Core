@@ -42,6 +42,7 @@ public class MVEntityListener implements InjectableListener {
 
     /**
      * This method is called when an entity's food level goes higher or lower.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler
@@ -52,6 +53,7 @@ public class MVEntityListener implements InjectableListener {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
+
         worldManager.getLoadedWorld(player.getWorld())
                 .peek(world -> {
                     if (!world.getHunger() && event.getFoodLevel() < player.getFoodLevel()) {
@@ -62,6 +64,7 @@ public class MVEntityListener implements InjectableListener {
 
     /**
      * This method is called when an entity's health goes up or down.
+     *
      * @param event The Event that was fired.
      */
     @EventHandler
@@ -69,6 +72,7 @@ public class MVEntityListener implements InjectableListener {
         if (event.isCancelled() || event.getRegainReason() != RegainReason.REGEN) {
             return;
         }
+
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
                     if (!world.getAutoHeal()) {
@@ -79,6 +83,7 @@ public class MVEntityListener implements InjectableListener {
 
     /**
      * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
+     *
      * @param event The event.
      */
     @EventHandler

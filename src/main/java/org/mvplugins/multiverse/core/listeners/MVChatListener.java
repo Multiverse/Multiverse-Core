@@ -31,10 +31,11 @@ public class MVChatListener implements InjectableListener {
 
     /**
      * This handles a {@link AsyncPlayerChatEvent}.
+     *
      * @param event The {@link AsyncPlayerChatEvent}.
      */
     @EventHandler
-    public void playerChat(AsyncPlayerChatEvent event) {
+    public void asyncPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
         }
