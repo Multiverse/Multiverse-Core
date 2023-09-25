@@ -49,12 +49,17 @@ public enum MVCorei18n implements MessageKeyProvider {
     DUMPS_DESCRIPTION,
     DUMPS_URL_LIST,
 
-    // gamerule command
+    // gamerule set command
     GAMERULE_SET_FAILED,
     GAMERULE_SET_SUCCESS_SINGLE,
     GAMERULE_SET_SUCCESS_MULTIPLE,
 
-    // Gamerules command
+    // gamerule reset command
+    GAMERULE_RESET_FAILED,
+    GAMERULE_RESET_SUCCESS_SINGLE,
+    GAMERULE_RESET_SUCCESS_MULTIPLE,
+
+    // gamerule list command
     GAMERULE_LIST_DESCRIPTION,
     GAMERULE_LIST_DESCRIPTION_PAGE,
     GAMERULE_LIST_DESCRIPTION_WORLD,

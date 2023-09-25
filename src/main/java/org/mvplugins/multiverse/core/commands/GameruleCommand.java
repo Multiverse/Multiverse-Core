@@ -1,6 +1,10 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageType;
@@ -33,9 +37,6 @@ import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @CommandAlias("mv")
@@ -76,8 +77,8 @@ class GameruleCommand extends MultiverseCommand {
     @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
     @Description("{@@mv-core.gamerule.set.description}")
-    void onGameruleCommand(
-            BukkitCommandIssuer issuer,
+    void onGameruleSetCommand(
+            MVCommandIssuer issuer,
 
             @Syntax("<Gamerule>")
             @Description("{@@mv-core.gamerule.set.gamerule.description}")
@@ -90,8 +91,7 @@ class GameruleCommand extends MultiverseCommand {
             @Flags("resolve=issuerAware")
             @Syntax("[World or *]")
             @Description("{@@mv-core.gamerule.set.world.description}")
-            LoadedMultiverseWorld[] worlds)
-    {
+            LoadedMultiverseWorld[] worlds) {
         Object value = gameRuleValue.getValue();
         boolean success = true;
         for (LoadedMultiverseWorld world : worlds) {
@@ -122,13 +122,53 @@ class GameruleCommand extends MultiverseCommand {
         }
     }
 
+    @Subcommand("reset")
+    @CommandPermission("multiverse.core.gamerule.set")
+    @CommandCompletion("@gamerules @mvworlds:multiple|*")
+    @Syntax("<Gamerule> [World or *]")
+    @Description("{@@mv-core.gamerule.reset.description}")
+    void onGameruleSetCommand(
+            MVCommandIssuer issuer,
+
+            @Syntax("<Gamerule>")
+            @Description("{@@mv-core.gamerule.reset.gamerule.description}")
+            GameRule gamerule,
+
+            @Flags("resolve=issuerAware")
+            @Syntax("[World or *]")
+            @Description("{@@mv-core.gamerule.reset.world.description}")
+            LoadedMultiverseWorld[] worlds) {
+        AtomicBoolean success = new AtomicBoolean(true);
+        Arrays.stream(worlds).forEach(world -> world.getBukkitWorld().peek(bukkitWorld -> {
+            bukkitWorld.setGameRule(gamerule, bukkitWorld.getGameRuleDefault(gamerule));
+        }).onEmpty(() -> {
+            success.set(false);
+            issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
+                    "{gamerule}", gamerule.getName(),
+                    "{world}", world.getName());
+        }));
+
+        // Tell user if it was successful
+        if (success.get()) {
+            if (worlds.length == 1) {
+                issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_SINGLE,
+                        "{gamerule}", gamerule.getName(),
+                        "{world}", worlds[0].getName());
+            } else if (worlds.length > 1) {
+                issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_MULTIPLE,
+                        "{gamerule}", gamerule.getName(),
+                        "{count}", String.valueOf(worlds.length));
+            }
+        }
+    }
+
     @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
-    @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulescommand @flags:groupName=mvgamerulescommand")
+    @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=mvgamerulecommand")
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.gamerule.list.description}")
-    void onGamerulesCommand(
-            @NotNull MVCommandIssuer issuer,
+    void onGameruleListCommand(
+            MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("<world>")
