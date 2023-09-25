@@ -10,6 +10,7 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
@@ -90,7 +91,8 @@ public interface DataStore<T> {
         @Override
         public WorldConfigStore copyFrom(LoadedMultiverseWorld world) {
             this.configMap = new HashMap<>();
-            world.getConfigurablePropertyNames().forEach(name -> world.getProperty(name)
+            StringPropertyHandle worldPropertyHandler = world.getStringPropertyHandle();
+            worldPropertyHandler.getAllPropertyNames().forEach(name -> worldPropertyHandler.getProperty(name)
                     .peek(value -> configMap.put(name, value)).onFailure(e -> {
                         Logging.warning("Failed to get property " + name + " from world "
                                 + world.getName() + ": " + e.getMessage());
@@ -106,12 +108,11 @@ public interface DataStore<T> {
             if (configMap == null) {
                 return this;
             }
-            configMap.forEach((name, value) -> {
-                world.setProperty(name, value).onFailure(e -> {
-                    Logging.warning("Failed to set property %s to %s for world %s: %s",
-                            name, value, world.getName(), e.getMessage());
-                });
-            });
+            StringPropertyHandle worldPropertyHandler = world.getStringPropertyHandle();
+            configMap.forEach((name, value) -> worldPropertyHandler.setProperty(name, value).onFailure(e -> {
+                Logging.warning("Failed to set property %s to %s for world %s: %s",
+                        name, value, world.getName(), e.getMessage());
+            }));
             return this;
         }
     }

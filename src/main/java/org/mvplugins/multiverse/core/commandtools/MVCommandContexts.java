@@ -252,7 +252,7 @@ class MVCommandContexts extends PaperCommandContexts {
                 return world;
             }
             if (context.getIssuer().isPlayer()) {
-                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
+                return worldManager.getWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
             }
             if (context.isOptional()) {
                 return null;

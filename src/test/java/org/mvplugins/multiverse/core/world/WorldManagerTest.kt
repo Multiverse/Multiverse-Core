@@ -34,9 +34,9 @@ class WorldManagerTest : TestWithMockBukkit() {
         val world = worldManager.getLoadedWorld("world_nether").get()
         assertNotNull(world)
         assertEquals("world_nether", world.name)
-        assertEquals(World.Environment.NETHER, world.getProperty("environment").get())
-        assertEquals("", world.getProperty("generator").get())
-        assertEquals(1234L, world.getProperty("seed").get())
+        assertEquals(World.Environment.NETHER, world.environment)
+        assertEquals("", world.generator)
+        assertEquals(1234L, world.seed)
     }
 
     @Test

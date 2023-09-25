@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -60,9 +61,12 @@ class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
-        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getPropertyNames());
+        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
+        registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
+        registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
+        registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
 
         setDefaultCompletion("destinations", ParsedDestination.class);
         setDefaultCompletion("difficulties", Difficulty.class);
@@ -124,7 +128,7 @@ class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestMVConfigValues(BukkitCommandCompletionContext context) {
         return Try.of(() -> context.getContextValue(String.class))
                 .map(propertyName -> config.getStringPropertyHandle()
-                        .getPropertySuggestedValues(propertyName, context.getInput()))
+                        .getSuggestedPropertyValue(propertyName, context.getInput(), PropertyModifyAction.SET))
                 .getOrElse(Collections.emptyList());
     }
 
@@ -170,6 +174,23 @@ class MVCommandCompletions extends PaperCommandCompletions {
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
         return Collections.emptyList();
+    }
+
+    private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
+            return world.getStringPropertyHandle().getModifiablePropertyNames(action);
+        }).getOrElse(Collections.emptyList());
+    }
+
+    private Collection<String> suggestMVWorldPropsValue(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
+            String propertyName = context.getContextValue(String.class);
+            return world.getStringPropertyHandle().getSuggestedPropertyValue(propertyName, context.getInput(), action);
+        }).getOrElse(Collections.emptyList());
     }
 
     private <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
