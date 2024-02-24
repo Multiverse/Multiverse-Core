@@ -94,6 +94,13 @@ public enum MVCorei18n implements MessageKeyProvider {
     ROOT_TITLE,
     ROOT_HELP,
 
+    // spawn command
+    SPAWN_DESCRIPTION,
+    SPAWN_PLAYER_DESCRIPTION,
+    SPAWN_MESSAGE,
+    SPAWN_CONSOLENAME,
+    SPAWN_YOU,
+
     // teleport command
     TELEPORT_SUCCESS,
 

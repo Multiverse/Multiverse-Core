@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.commands;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -22,11 +25,15 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 class SpawnCommand extends MultiverseCommand {
 
     private final WorldManager worldManager;
+    private final AsyncSafetyTeleporter safetyTeleporter;
 
     @Inject
-    SpawnCommand(@NotNull MVCommandManager commandManager, WorldManager worldManager) {
+    SpawnCommand(@NotNull MVCommandManager commandManager,
+                 WorldManager worldManager,
+                 @NotNull AsyncSafetyTeleporter safetyTeleporter) {
         super(commandManager);
         this.worldManager = worldManager;
+        this.safetyTeleporter = safetyTeleporter;
     }
 
     @Subcommand("spawn")
@@ -45,19 +52,27 @@ class SpawnCommand extends MultiverseCommand {
         // The player is in the world, so it must be loaded
         LoadedMultiverseWorld world = worldManager.getLoadedWorld(player.getWorld().getName()).getOrNull();
 
-        player.teleport(world.getSpawnLocation()); // TODO: use safety teleporter
+        // Teleport the player
+        safetyTeleporter.teleportSafely(issuer.getIssuer(), player, world.getSpawnLocation());
 
-        // Make the message make sense
+        // Make the conformation message make sense
         String teleporterName;
         if (issuer.getIssuer().getName().equals("CONSOLE")) {
-            teleporterName = "The console";
+            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_CONSOLENAME);
         } else if (issuer.getIssuer().getName().equals(player.getName())) {
-            teleporterName = "You";
+            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_YOU);
         } else {
             teleporterName = issuer.getIssuer().getName();
         }
 
-        player.sendMessage(teleporterName + " just sent you to spawn!"); // TODO: i18n
+        // Send the conformation message
+        player.sendMessage(commandManager.formatMessage(
+                issuer,
+                MessageType.INFO,
+                MVCorei18n.SPAWN_MESSAGE,
+                "{teleporter}",
+                teleporterName
+        ));
 
 
     }
