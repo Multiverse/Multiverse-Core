@@ -36,17 +36,17 @@ class SpawnCommand extends MultiverseCommand {
         this.safetyTeleporter = safetyTeleporter;
     }
 
-    @Subcommand("spawn")
+    @Subcommand("spawn tp")
     @CommandPermission("multiverse.core.spawn")
     @CommandCompletion("@players")
     @Syntax("[player]")
-    @Description("{@@mv-core.spawn.description}")
-    void onSpawnCommand(
+    @Description("{@@mv-core.spawn.tp.description}")
+    void onSpawnTpCommand(
             BukkitCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
-            @Description("{@@mv-core.spawn.player.description}")
+            @Description("{@@mv-core.spawn.tp.player.description}")
             Player player
            ) {
         // The player is in the world, so it must be loaded
@@ -58,9 +58,9 @@ class SpawnCommand extends MultiverseCommand {
         // Make the conformation message make sense
         String teleporterName;
         if (issuer.getIssuer().getName().equals("CONSOLE")) {
-            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_CONSOLENAME);
+            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_TP_CONSOLENAME);
         } else if (issuer.getIssuer().getName().equals(player.getName())) {
-            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_YOU);
+            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_TP_YOU);
         } else {
             teleporterName = issuer.getIssuer().getName();
         }
@@ -69,13 +69,9 @@ class SpawnCommand extends MultiverseCommand {
         player.sendMessage(commandManager.formatMessage(
                 issuer,
                 MessageType.INFO,
-                MVCorei18n.SPAWN_MESSAGE,
+                MVCorei18n.SPAWN_TP_MESSAGE,
                 "{teleporter}",
                 teleporterName
         ));
-
-
     }
-
-
 }
