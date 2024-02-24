@@ -8,10 +8,12 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
@@ -79,12 +81,17 @@ public class WhoCommand extends MultiverseCommand {
 
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
-            @Description("{@@mv-core.who.flags}")
+            @Description("{@@mv-core.who.flags.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Send the display
-        getListDisplay(worldManager.getLoadedWorlds(), parsedFlags.flagValue(PAGE_FLAG, 1), parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())).send(issuer);
+        getListDisplay(
+                worldManager.getLoadedWorlds(),
+                parsedFlags.flagValue(PAGE_FLAG, 1),
+                parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get()),
+                true
+        ).send(issuer);
 
     }
 
@@ -102,35 +109,45 @@ public class WhoCommand extends MultiverseCommand {
 
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
-            @Description("{@@mv-core.who.flags}")
+            @Description("{@@mv-core.who.flags.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Send the display
-        getListDisplay(inputtedWorld, parsedFlags.flagValue(PAGE_FLAG, 1), parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())).send(issuer);
+        getListDisplay(
+                inputtedWorld,
+                parsedFlags.flagValue(PAGE_FLAG, 1),
+                parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get()),
+                false
+        ).send(issuer);
     }
 
     private String phrasePlayerList(List<Player> players) {
         return players.stream().map(Player::getName).collect(Collectors.joining(", "));
     }
 
-    private ContentDisplay getListDisplay(LoadedMultiverseWorld world, int page, ContentFilter filter) {
+    private ContentDisplay getListDisplay(LoadedMultiverseWorld world, int page, ContentFilter filter, boolean ignoreEmptyWorlds) {
         Collection<LoadedMultiverseWorld> listingWorlds = new ArrayList<>();
         listingWorlds.add(world);
-        return getListDisplay(listingWorlds, page, filter);
+        return getListDisplay(listingWorlds, page, filter, ignoreEmptyWorlds);
     }
 
-    private ContentDisplay getListDisplay(Collection<LoadedMultiverseWorld> worlds, int page, ContentFilter filter) {
+    private ContentDisplay getListDisplay(Collection<LoadedMultiverseWorld> worlds, int page, ContentFilter filter, boolean ignoreEmptyWorlds) {
         HashMap<String, String> outMap = new HashMap<>();
 
         // Add all the worlds to our hashmap
         for (LoadedMultiverseWorld world : worlds) {
-            List<Player> players = world.getPlayers().getOrNull();
+            @Nullable List<Player> players = world.getPlayers().getOrNull();
 
-            // If the world has 0 players in it, ignore it
-            if (players.isEmpty()) {
+            // If the world has 0 players in it, say that it is empty
+            if ((players == null || players.isEmpty()) && !ignoreEmptyWorlds) {
+                outMap.put(world.getAlias(), ChatColor.RED + "Empty");
                 continue;
             }
+            if (players == null || players.isEmpty()) {
+                continue;
+            }
+
             outMap.put(world.getAlias(), phrasePlayerList(players));
         }
 

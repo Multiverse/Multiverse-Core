@@ -101,6 +101,14 @@ public enum MVCorei18n implements MessageKeyProvider {
     UNLOAD_UNLOADING,
     UNLOAD_SUCCESS,
 
+    // who command
+    WHO_DESCRIPTION,
+    WHO_ALL_DESCRIPTION,
+    WHO_WORLD_DESCRIPTION,
+    WHO_FLAGS_DESCRIPTION,
+    WHO_EMPTY,
+
+
     // debug command
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON,
