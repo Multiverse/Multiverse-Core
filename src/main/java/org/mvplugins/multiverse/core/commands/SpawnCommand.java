@@ -51,6 +51,9 @@ class SpawnCommand extends MultiverseCommand {
            ) {
         // The player is in the world, so it must be loaded
         LoadedMultiverseWorld world = worldManager.getLoadedWorld(player.getWorld().getName()).getOrNull();
+        if (world == null) {
+            issuer.sendMessage("The world the player you are trying to teleport is in, is not a multiverse world");
+        }
 
         // TODO: Log when the player cannot be teleported there. No clue how to detect that
         // Teleport the player
