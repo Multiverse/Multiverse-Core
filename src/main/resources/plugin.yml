@@ -1,6 +1,6 @@
 name: Multiverse-Core
 main: org.mvplugins.multiverse.core.MultiverseCore
-authors: ['dumptruckman', 'Rigby', 'fernferret', 'lithium3141', 'main--', 'Benergy10', 'Zax71']
+authors: ['dumptruckman', 'Rigby', 'fernferret', 'lithium3141', 'main--', 'benwoo1110', 'Zax71']
 website: 'https://dev.bukkit.org/projects/multiverse-core'
 softdepend: ['Vault', 'PlaceholderAPI']
 api-version: 1.13
