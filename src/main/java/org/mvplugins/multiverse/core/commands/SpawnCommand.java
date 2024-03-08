@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,55 +24,56 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @Service
 @CommandAlias("mv")
 class SpawnCommand extends MultiverseCommand {
-
     private final WorldManager worldManager;
     private final AsyncSafetyTeleporter safetyTeleporter;
 
     @Inject
     SpawnCommand(@NotNull MVCommandManager commandManager,
-                 WorldManager worldManager,
+                 @NotNull WorldManager worldManager,
                  @NotNull AsyncSafetyTeleporter safetyTeleporter) {
         super(commandManager);
         this.worldManager = worldManager;
         this.safetyTeleporter = safetyTeleporter;
     }
 
-    @Subcommand("spawn tp")
+    @Subcommand("spawn")
     @CommandPermission("multiverse.core.spawn")
     @CommandCompletion("@players")
     @Syntax("[player]")
-    @Description("{@@mv-core.spawn.tp.description}")
+    @Description("{@@mv-core.spawn.description}")
     void onSpawnTpCommand(
             BukkitCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
-            @Description("{@@mv-core.spawn.tp.player.description}")
+            @Description("{@@mv-core.spawn.player.description}")
             Player player
            ) {
         // The player is in the world, so it must be loaded
         LoadedMultiverseWorld world = worldManager.getLoadedWorld(player.getWorld().getName()).getOrNull();
 
+        // TODO: Log when the player cannot be teleported there. No clue how to detect that
         // Teleport the player
         safetyTeleporter.teleportSafely(issuer.getIssuer(), player, world.getSpawnLocation());
 
-        // Make the conformation message make sense
-        String teleporterName;
-        if (issuer.getIssuer().getName().equals("CONSOLE")) {
-            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_TP_CONSOLENAME);
-        } else if (issuer.getIssuer().getName().equals(player.getName())) {
-            teleporterName = commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_TP_YOU);
-        } else {
-            teleporterName = issuer.getIssuer().getName();
-        }
-
-        // Send the conformation message
         player.sendMessage(commandManager.formatMessage(
                 issuer,
                 MessageType.INFO,
-                MVCorei18n.SPAWN_TP_MESSAGE,
+                MVCorei18n.SPAWN_MESSAGE,
                 "{teleporter}",
-                teleporterName
+                getTeleporterName(issuer, player)
         ));
+
+        Logging.fine("Teleported " + player.getName() + " to " + world.getSpawnLocation().getX() + ", " + world.getSpawnLocation().getY() + ", " + world.getSpawnLocation().getZ());
+    }
+
+    private String getTeleporterName(BukkitCommandIssuer issuer, Player teleportTo) {
+        if (issuer.getIssuer().getName().equals("CONSOLE")) {
+            return commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_CONSOLENAME);
+        }
+        if (issuer.getIssuer().getName().equals(teleportTo.getName())) {
+            return commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_YOU);
+        }
+        return issuer.getIssuer().getName();
     }
 }
