@@ -108,6 +108,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     WHO_FLAGS_DESCRIPTION,
     WHO_EMPTY,
 
+    // version command
+    VERSION_MV,
+    VERSION_AUTHORS,
+    VERSION_SECRETCODE,
 
     // debug command
     DEBUG_INFO_OFF,
