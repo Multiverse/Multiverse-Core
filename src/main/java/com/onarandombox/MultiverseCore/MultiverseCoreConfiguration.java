@@ -77,6 +77,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     private volatile boolean autopurge;
     @Property
     private volatile boolean idonotwanttodonate;
+    @Property
+    private volatile boolean clone_saving;
 
     public MultiverseCoreConfiguration() {
         super();
@@ -111,6 +113,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         portalsearchradius = 128;
         autopurge = true;
         idonotwanttodonate = false;
+        clone_saving=false;
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -376,6 +379,16 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public boolean isShowingDonateMessage() {
         return !idonotwanttodonate;
+    }
+
+    @Override
+    public boolean doCloneSaving(){
+        return clone_saving;
+    }
+
+    @Override
+    public void setCloneSaving(boolean doSaving){
+        this.clone_saving=doSaving;
     }
 
     @Override

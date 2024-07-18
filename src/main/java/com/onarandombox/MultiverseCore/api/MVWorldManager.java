@@ -25,7 +25,9 @@ import java.util.List;
  * This API contains all of the world managing
  * functions that your heart desires!
  */
-public interface MVWorldManager {
+public interface
+
+MVWorldManager {
     /**
      * Add a new World to the Multiverse Setup.
      *
