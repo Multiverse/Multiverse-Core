@@ -480,6 +480,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.getMVConfig().setTeleportIntercept(this.multiverseConfig.getBoolean("teleportintercept"));
             this.multiverseConfig.set("teleportintercept", null);
         }
+        if (this.multiverseConfig.isSet("portalintercept")) {
+            Logging.config("Migrating 'portalintercept'...");
+            this.getMVConfig().setPortalIntercept(this.multiverseConfig.getBoolean("portalintercept"));
+            this.multiverseConfig.set("portalintercept", null);
+        }
         if (this.multiverseConfig.isSet("firstspawnoverride")) {
             Logging.config("Migrating 'firstspawnoverride'...");
             this.getMVConfig().setFirstSpawnOverride(this.multiverseConfig.getBoolean("firstspawnoverride"));
