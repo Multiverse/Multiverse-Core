@@ -169,6 +169,10 @@ public class MVPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
+        if (event.getTo() == null) {
+            Logging.fine("Player '" + event.getPlayer().getName() + "' is teleporting to a null location!");
+            return;
+        }
         Player teleportee = event.getPlayer();
         CommandSender teleporter = teleportee;
         String teleporterName = MultiverseCore.getPlayerTeleporter(teleportee.getName());
@@ -284,6 +288,7 @@ public class MVPlayerListener implements Listener {
         }
         // The adjust should have happened much earlier.
         if (event.getTo() == null) {
+            Logging.fine("Player '" + event.getPlayer().getName() + "' is portaling to NULL location.");
             return;
         }
         MultiverseWorld fromWorld = this.worldManager.getMVWorld(event.getFrom().getWorld().getName());
