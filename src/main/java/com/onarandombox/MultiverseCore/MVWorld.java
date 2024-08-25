@@ -337,7 +337,8 @@ public class MVWorld implements MultiverseWorld {
 
     private Permission permission;
     private Permission exempt;
-    private Permission ignoreperm;
+    private Permission ignoregamemodeperm;
+    private Permission ignoreflyperm;
     private Permission limitbypassperm;
 
     /**
@@ -390,8 +391,10 @@ public class MVWorld implements MultiverseWorld {
     private void initPerms() {
         this.permission = new Permission("multiverse.access." + this.getName(), "Allows access to " + this.getName(), PermissionDefault.OP);
         // This guy is special. He shouldn't be added to any parent perms.
-        this.ignoreperm = new Permission("mv.bypass.gamemode." + this.getName(),
+        this.ignoregamemodeperm = new Permission("mv.bypass.gamemode." + this.getName(),
                 "Allows players with this permission to ignore gamemode changes.", PermissionDefault.FALSE);
+        this.ignoreflyperm = new Permission("mv.bypass.fly." + this.getName(),
+                "Allows players with this permission to ignore fly changes.", PermissionDefault.FALSE);
 
         this.exempt = new Permission("multiverse.exempt." + this.getName(),
                 "A player who has this does not pay to enter this world, or use any MV portals in it " + this.getName(), PermissionDefault.OP);
@@ -401,13 +404,15 @@ public class MVWorld implements MultiverseWorld {
         try {
             this.plugin.getServer().getPluginManager().addPermission(this.permission);
             this.plugin.getServer().getPluginManager().addPermission(this.exempt);
-            this.plugin.getServer().getPluginManager().addPermission(this.ignoreperm);
+            this.plugin.getServer().getPluginManager().addPermission(this.ignoregamemodeperm);
+            this.plugin.getServer().getPluginManager().addPermission(this.ignoreflyperm);
             this.plugin.getServer().getPluginManager().addPermission(this.limitbypassperm);
             // Add the permission and exempt to parents.
             this.addToUpperLists(this.permission);
 
             // Add ignore to it's parent:
-            this.ignoreperm.addParent("mv.bypass.gamemode.*", true);
+            this.ignoregamemodeperm.addParent("mv.bypass.gamemode.*", true);
+            this.ignoreflyperm.addParent("mv.bypass.fly.*", true);
             // Add limit bypass to it's parent
             this.limitbypassperm.addParent("mv.bypass.playerlimit.*", true);
         } catch (IllegalArgumentException e) {
