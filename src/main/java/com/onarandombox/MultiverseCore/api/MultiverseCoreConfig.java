@@ -233,6 +233,10 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
      */
     boolean isShowingDonateMessage();
 
+    boolean doCloneSaving();
+
+    void setCloneSaving(boolean doSaving);
+
     /**
      * Sets whether or not the donation/patreon messages are shown.
      *
