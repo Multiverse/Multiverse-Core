@@ -31,6 +31,7 @@ class LoadCommand extends MultiverseCommand {
         this.worldManager = worldManager;
     }
 
+    @CommandAlias("mvload")
     @Subcommand("load")
     @CommandPermission("multiverse.core.load")
     @CommandCompletion("@mvworlds:scope=unloaded")

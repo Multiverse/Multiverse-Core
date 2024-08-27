@@ -48,6 +48,7 @@ class RemoveCommand extends MultiverseCommand {
         this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
+    @CommandAlias("mvremove")
     @Subcommand("remove")
     @CommandPermission("multiverse.core.remove")
     @CommandCompletion("@mvworlds:scope=both")

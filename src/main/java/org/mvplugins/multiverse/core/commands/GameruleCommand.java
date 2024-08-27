@@ -72,6 +72,7 @@ class GameruleCommand extends MultiverseCommand {
         super(commandManager);
     }
 
+
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")

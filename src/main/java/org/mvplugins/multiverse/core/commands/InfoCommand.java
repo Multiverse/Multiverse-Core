@@ -75,6 +75,7 @@ class InfoCommand extends MultiverseCommand {
     }
 
     // TODO: support info for unloaded worlds
+    @CommandAlias("mvinfo|mvi")
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
     @CommandCompletion("@mvworlds:scope=both|@flags:groupName=mvinfocommand @flags:groupName=mvinfocommand")

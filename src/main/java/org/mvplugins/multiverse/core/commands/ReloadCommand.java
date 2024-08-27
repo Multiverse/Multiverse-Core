@@ -44,6 +44,7 @@ class ReloadCommand extends MultiverseCommand {
         this.pluginManager = pluginManager;
     }
 
+    @CommandAlias("mvreload|mvr")
     @Subcommand("reload")
     @CommandPermission("multiverse.core.reload")
     @Description("{@@mv-core.reload.description}")

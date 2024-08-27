@@ -73,6 +73,7 @@ class ListCommand extends MultiverseCommand {
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
     }
 
+    @CommandAlias("mvlist|mvl")
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
     @CommandCompletion("@flags:groupName=mvlistcommand")

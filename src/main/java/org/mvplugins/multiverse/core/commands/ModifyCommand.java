@@ -33,6 +33,7 @@ class ModifyCommand extends MultiverseCommand {
         this.worldManager = worldManager;
     }
 
+    @CommandAlias("mvmodify|mvm")
     @Subcommand("modify")
     @CommandPermission("multiverse.core.modify")
     @CommandCompletion("@mvworlds:scope=both @propsmodifyaction @mvworldpropsname @mvworldpropsvalue")

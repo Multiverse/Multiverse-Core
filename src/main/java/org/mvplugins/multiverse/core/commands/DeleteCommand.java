@@ -50,6 +50,7 @@ class DeleteCommand extends MultiverseCommand {
         this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
+    @CommandAlias("mvdelete")
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvdeletecommand")

@@ -26,6 +26,7 @@ class VersionCommand extends MultiverseCommand {
         this.plugin = plugin;
     }
 
+    @CommandAlias("mvversion")
     @Subcommand("version")
     @CommandPermission("multiverse.core.version")
     @Description("{@@mv-core.version.description}")
