@@ -123,6 +123,18 @@ public interface MultiverseCoreConfig extends ConfigurationSerializable {
     boolean getTeleportIntercept();
 
     /**
+     * Sets portalIntercept.
+     * @param portalIntercept The new value.
+     */
+    void setPortalIntercept(boolean portalIntercept);
+
+    /**
+     * Gets portalIntercept.
+     * @return portalIntercept.
+     */
+    boolean getPortalIntercept();
+
+    /**
      * Sets prefixChat.
      * @param prefixChat The new value.
      */
