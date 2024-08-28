@@ -355,4 +355,13 @@ public interface MVWorldManager {
      * @return A collection of world names that are deemed importable.
      */
     Collection<String> getPotentialWorlds();
+
+    /**
+     * Performs the given operation that creates and/or unloads a world. If this operation cannot run because the worlds are being ticked, the operation is delayed until the next tick.
+     *
+     * @param worldName The world being modified.
+     * @param operationName The name of the operation being done.
+     * @param worldModification The operation to perform
+     */
+    void addOrRemoveWorldSafely(String worldName, String operationName, Runnable worldModification);
 }
