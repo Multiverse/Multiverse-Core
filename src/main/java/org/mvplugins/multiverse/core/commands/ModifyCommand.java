@@ -10,6 +10,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -60,17 +61,27 @@ class ModifyCommand extends MultiverseCommand {
             String propertyValue) {
         StringPropertyHandle worldPropertyHandle = world.getStringPropertyHandle();
         worldPropertyHandle.modifyProperty(propertyName, propertyValue, action).onSuccess(ignore -> {
-            issuer.sendMessage("Property %s set to %s for world %s.".formatted(
+            issuer.sendMessage("Property %s%s set to %s%s for world %s%s%s.".formatted(
                     propertyName,
+                    ChatColor.BLUE,
                     worldPropertyHandle.getProperty(propertyName).getOrNull(),
-                    world.getName()));
+                    ChatColor.BLUE,
+                    ChatColor.GRAY,
+                    world.getName(),
+                    ChatColor.BLUE
+            ));
             worldManager.saveWorldsConfig();
         }).onFailure(exception -> {
-            issuer.sendMessage("Failed to %s property %s to %s for world %s.".formatted(
+            issuer.sendMessage("Failed to %s%s property %s%s to %s%s for world %s%s.".formatted(
                     action.name().toLowerCase(),
+                    ChatColor.BLUE,
                     propertyName,
+                    ChatColor.BLUE,
                     propertyValue,
-                    world.getName()));
+                    ChatColor.BLUE,
+                    world.getName(),
+                    ChatColor.BLUE
+            ));
             issuer.sendMessage(exception.getMessage());
         });
     }
