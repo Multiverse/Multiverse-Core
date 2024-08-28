@@ -734,7 +734,7 @@ public class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getWorld(@Nullable World world) {
-        return Option.of(world).flatMap(this::getWorld);
+        return Option.of(world).map(World::getName).flatMap(this::getWorld);
     }
 
     /**
