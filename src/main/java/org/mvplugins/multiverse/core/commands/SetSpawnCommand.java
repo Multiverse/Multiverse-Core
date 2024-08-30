@@ -2,64 +2,60 @@ package org.mvplugins.multiverse.core.commands;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
 public class SetSpawnCommand extends MultiverseCommand {
 
+    private final WorldManager worldManager;
+
     @Inject
-    SetSpawnCommand(@NotNull MVCommandManager commandManager) {
+    SetSpawnCommand(
+            @NotNull MVCommandManager commandManager,
+            @NotNull WorldManager worldManager) {
         super(commandManager);
+        this.worldManager = worldManager;
     }
 
     @CommandAlias("mvsetspawn")
     @Subcommand("setspawn")
-    @CommandPermission("multiverse.core.setspawn")
-    @CommandCompletion("@nothing @mvworlds:scope=loaded ") // TODO: Use Brigadier to show <position> above in chat like the vanilla TP command
-    @Syntax("[location] [world]")
+    @CommandPermission("multiverse.core.spawn.set")
+    // @CommandCompletion("@location") // TODO: Use Brigadier to show <position> above in chat like the vanilla TP command
+    @Syntax("[location]")
     @Description("{@@mv-core.setspawn.description}")
     void onSetSpawnCommand(
             BukkitCommandIssuer issuer,
 
             @Optional
-            @Flags("resolve=issuerAware")
             @Syntax("<location>")
             @Description("{@@mv-core.setspawn.location.description}")
-            Location location,
-
-            @Optional
-            @Flags("resolve=issuerAware")
-            @Syntax("<world>")
-            @Description("{@@mv-core.setspawn.world.description}")
-            LoadedMultiverseWorld world) {
-        // TODO: Use a flag to do this, no clue how to edit an inbuilt ACF flag though
-        // Get the Location
-        if (location == null) {
+            Location location) {
+        Option.of(location).orElse(() -> {
             if (issuer.isPlayer()) {
-                location = issuer.getPlayer().getLocation();
-            } else {
-                issuer.sendMessage("The console must specify a location");
-                return;
+                return Option.of(issuer.getPlayer().getLocation());
             }
-        }
-
-        issuer.sendMessage("Setting spawn in " + world.getName() + " to " + prettyLocation(location));
-
-        world.setSpawnLocation(location);
+            return Option.none();
+        }).peek(finalLocation ->
+            worldManager.getLoadedWorld(finalLocation.getWorld())
+                    .peek(mvWorld -> mvWorld.setSpawnLocation(finalLocation)
+                            .onSuccess(ignore -> issuer.sendMessage(
+                                    "Successfully set spawn in " + mvWorld.getName() + " to " + prettyLocation(mvWorld.getSpawnLocation())))
+                            .onFailure(e -> issuer.sendMessage(e.getLocalizedMessage())))
+                    .onEmpty(() -> issuer.sendMessage("That world is not loaded or does not exist!"))
+        ).onEmpty(() -> issuer.sendMessage("You must specify a location in the format: worldname:x,y,z"));
     }
 
     private String prettyLocation(Location location) {
