@@ -13,11 +13,9 @@ import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
@@ -28,6 +26,7 @@ public class SetSpawnCommand extends MultiverseCommand {
         super(commandManager);
     }
 
+    @CommandAlias("mvsetspawn")
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.setspawn")
     @CommandCompletion("@nothing @mvworlds:scope=loaded ") // TODO: Use Brigadier to show <position> above in chat like the vanilla TP command
@@ -46,9 +45,7 @@ public class SetSpawnCommand extends MultiverseCommand {
             @Flags("resolve=issuerAware")
             @Syntax("<world>")
             @Description("{@@mv-core.setspawn.world.description}")
-            LoadedMultiverseWorld world
-    ) {
-
+            LoadedMultiverseWorld world) {
         // TODO: Use a flag to do this, no clue how to edit an inbuilt ACF flag though
         // Get the Location
         if (location == null) {

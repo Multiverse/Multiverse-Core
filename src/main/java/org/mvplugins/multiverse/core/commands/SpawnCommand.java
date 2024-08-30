@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
@@ -36,36 +37,45 @@ class SpawnCommand extends MultiverseCommand {
         this.safetyTeleporter = safetyTeleporter;
     }
 
+    @CommandAlias("mvspawn")
     @Subcommand("spawn")
     @CommandPermission("multiverse.core.spawn")
     @CommandCompletion("@players")
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")
     void onSpawnTpCommand(
-            BukkitCommandIssuer issuer,
+            MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
             @Description("{@@mv-core.spawn.player.description}")
-            Player player
-           ) {
+            Player player) {
+        // TODO: Check for relevant self/others teleport permissions
+
         // The player is in the world, so it must be loaded
         LoadedMultiverseWorld world = worldManager.getLoadedWorld(player.getWorld().getName()).getOrNull();
         if (world == null) {
             issuer.sendMessage("The world the player you are trying to teleport is in, is not a multiverse world");
         }
 
-        // TODO: Log when the player cannot be teleported there. No clue how to detect that
         // Teleport the player
-        safetyTeleporter.teleportSafely(issuer.getIssuer(), player, world.getSpawnLocation());
-
-        player.sendMessage(commandManager.formatMessage(
-                issuer,
-                MessageType.INFO,
-                MVCorei18n.SPAWN_MESSAGE,
-                "{teleporter}",
-                getTeleporterName(issuer, player)
-        ));
+        // TODO: Different message for teleporting self vs others
+        safetyTeleporter.teleportSafely(issuer.getIssuer(), player, world.getSpawnLocation())
+                .onSuccess(() -> player.sendMessage(commandManager.formatMessage(
+                        issuer,
+                        MessageType.INFO,
+                        MVCorei18n.SPAWN_SUCCESS,
+                        "{teleporter}",
+                        getTeleporterName(issuer, player)
+                )))
+                .onFailure(failure -> {
+                    issuer.sendError(
+                            MVCorei18n.SPAWN_FAILED,
+                            "{teleporter}",
+                            getTeleporterName(issuer, player)
+                    );
+                    issuer.sendError(failure.getFailureMessage());
+                });
 
         Logging.fine("Teleported " + player.getName() + " to " + world.getSpawnLocation().getX() + ", " + world.getSpawnLocation().getY() + ", " + world.getSpawnLocation().getZ());
     }
