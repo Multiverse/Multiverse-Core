@@ -30,6 +30,7 @@ class CheckCommand extends MultiverseCommand {
         this.destinationsProvider = destinationsProvider;
     }
 
+    @CommandAlias("mvcheck")
     @Subcommand("check")
     @CommandPermission("multiverse.core.check")
     @CommandCompletion("@players @destinations|@mvworlds")

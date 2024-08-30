@@ -70,6 +70,7 @@ class RegenCommand extends MultiverseCommand {
         this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
+    @CommandAlias("mvregen")
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregencommand")

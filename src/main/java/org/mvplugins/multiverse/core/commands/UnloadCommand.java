@@ -51,6 +51,7 @@ class UnloadCommand extends MultiverseCommand {
         this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
+    @CommandAlias("mvunload")
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
     @CommandCompletion("@mvworlds @flags:groupName=mvunloadcommand")

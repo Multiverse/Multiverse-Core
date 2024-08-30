@@ -52,6 +52,7 @@ class ImportCommand extends MultiverseCommand {
         this.generatorProvider = generatorProvider;
     }
 
+    @CommandAlias("mvimport|mvim")
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @CommandCompletion("@mvworlds:scope=potential @environments @flags:groupName=mvimportcommand")

@@ -46,6 +46,7 @@ class CloneCommand extends MultiverseCommand {
         this.worldManager = worldManager;
     }
 
+    @CommandAlias("mvcl|mvclone")
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
     @CommandCompletion("@mvworlds:scope=loaded @empty @flags:groupName=mvclonecommand")
