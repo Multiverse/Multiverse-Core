@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils.result;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
@@ -65,6 +66,19 @@ public final class AsyncAttempt<T, F extends FailureReason> {
 
     public AsyncAttempt<T, F> onSuccess(Runnable runnable) {
         return new AsyncAttempt<>(future.thenApply(attempt -> attempt.onSuccess(runnable)));
+    }
+
+    public AsyncAttempt<T, F> onFailure(Runnable runnable) {
+        // TODO Not sure why we creating a new instance instead of using `this`
+        return new AsyncAttempt<>(future.thenApply(attempt -> attempt.onFailure(runnable)));
+    }
+
+    public AsyncAttempt<T, F> onFailure(Consumer<Attempt.Failure<T, F>> consumer) {
+        return new AsyncAttempt<>(future.thenApply(attempt -> attempt.onFailure(consumer)));
+    }
+
+    public AsyncAttempt<T, F> onFailureReason(Consumer<F> consumer) {
+        return new AsyncAttempt<>(future.thenApply(attempt -> attempt.onFailureReason(consumer)));
     }
 
     public Attempt<T, F> toAttempt() {

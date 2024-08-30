@@ -69,6 +69,7 @@ class CreateCommand extends MultiverseCommand {
         this.generatorProvider = generatorProvider;
     }
 
+    @CommandAlias("mvcreate|mvc")
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
     @CommandCompletion("@empty @environments @flags:groupName=mvcreatecommand")

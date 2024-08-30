@@ -30,6 +30,7 @@ class ConfigCommand extends MultiverseCommand {
         this.config = config;
     }
 
+    @CommandAlias("mvconfig|mvconf")
     @Subcommand("config")
     @CommandPermission("multiverse.core.config")
     @CommandCompletion("@mvconfigs @mvconfigvalues")

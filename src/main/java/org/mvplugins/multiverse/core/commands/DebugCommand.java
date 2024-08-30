@@ -36,6 +36,7 @@ class DebugCommand extends MultiverseCommand {
         this.displayDebugMode(issuer);
     }
 
+    @CommandAlias("mvdebug")
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @CommandCompletion("@range:3")

@@ -30,7 +30,7 @@ class CoordinatesCommand extends MultiverseCommand {
         super(commandManager);
         this.locationManipulation = locationManipulation;
     }
-
+    @CommandAlias("mvcoord|mvco")
     @Subcommand("coordinates|coords|coord|co")
     @CommandPermission("multiverse.core.coord")
     @Description("{@@mv-core.coordinates.description}")

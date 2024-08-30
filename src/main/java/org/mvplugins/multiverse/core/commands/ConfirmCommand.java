@@ -21,6 +21,7 @@ class ConfirmCommand extends MultiverseCommand {
         super(commandManager);
     }
 
+    @CommandAlias("mvconfirm")
     @Subcommand("confirm")
     @CommandPermission("multiverse.core.confirm")
     @Description("{@@mv-core.confirm.description}")

@@ -69,6 +69,7 @@ class GeneratorsCommand extends MultiverseCommand {
         this.generatorProvider = generatorProvider;
     }
 
+    @CommandAlias("mvgenerators|mvgens")
     @Subcommand("generators|gens")
     @CommandPermission("multiverse.core.generator")
     @CommandCompletion("@flags:groupName=mvgeneratorscommand @flags:groupName=mvgeneratorscommand")
