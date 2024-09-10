@@ -19,6 +19,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
+import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
@@ -28,6 +29,7 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
@@ -63,6 +65,10 @@ class ListCommand extends MultiverseCommand {
             })
             .build());
 
+    private final CommandFlag RAW_FLAG = flag(CommandFlag.builder("--raw")
+            .addAlias("-r")
+            .build());
+
     @Inject
     ListCommand(
             @NotNull MVCommandManager commandManager,
@@ -77,7 +83,7 @@ class ListCommand extends MultiverseCommand {
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
     @CommandCompletion("@flags:groupName=mvlistcommand")
-    @Syntax("--filter [filter] --page [page]")
+    @Syntax("--filter [filter] --page [page] --raw")
     @Description("Displays a listing of all worlds that you can enter.")
     public void onListCommand(
             MVCommandIssuer issuer,
@@ -87,7 +93,7 @@ class ListCommand extends MultiverseCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
         ContentDisplay.create()
-                .addContent(ListContentProvider.forContent(getListContents(issuer)))
+                .addContent(ListContentProvider.forContent(getListContents(issuer, parsedFlags.hasFlag(RAW_FLAG))))
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse World List ]====", ChatColor.GOLD)
                         .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
@@ -95,24 +101,38 @@ class ListCommand extends MultiverseCommand {
                 .send(issuer);
     }
 
-    private List<String> getListContents(MVCommandIssuer issuer) {
+    private List<String> getListContents(MVCommandIssuer issuer, boolean useRawNames) {
         List<String> worldList = new ArrayList<>();
         WorldEntryChecker worldEntryChecker = worldEntryCheckerProvider.forSender(issuer.getIssuer());
 
         worldManager.getLoadedWorlds().stream()
                 .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
                 .filter(world -> canSeeWorld(issuer, world))
-                .map(world -> hiddenText(world) + world.getAlias() + " - " + parseColouredEnvironment(world.getEnvironment()))
+                .map(world -> hiddenText(world) + getWorldName(world, useRawNames) + " - " + parseColouredEnvironment(world.getEnvironment()))
                 .sorted()
                 .forEach(worldList::add);
 
         worldManager.getUnloadedWorlds().stream()
                 .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
-                .map(world -> ChatColor.GRAY + world.getAlias() + " - UNLOADED")
+                .map(world -> ChatColor.GRAY + getWorldName(world, useRawNames) + " - UNLOADED")
                 .sorted()
                 .forEach(worldList::add);
 
         return worldList;
+    }
+
+    /**
+     * Gets a world's name or alias
+     * @param world The world to retrieve the name of
+     * @param useRawNames True to return the name, false to return the alias
+     * @return The name
+     */
+    private String getWorldName(MultiverseWorld world, boolean useRawNames) {
+        if (useRawNames) {
+            return world.getName();
+        }
+
+        return world.getAlias();
     }
 
     private boolean canSeeWorld(MVCommandIssuer issuer, LoadedMultiverseWorld world) {
