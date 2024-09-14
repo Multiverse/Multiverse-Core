@@ -8,10 +8,8 @@
 package org.mvplugins.multiverse.core;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
@@ -20,13 +18,10 @@ import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.glassfish.hk2.api.MultiException;
-import org.glassfish.hk2.api.ServiceHandle;
-import org.glassfish.hk2.api.ServiceLocator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
@@ -39,7 +34,8 @@ import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.inject.InjectableListener;
-import org.mvplugins.multiverse.core.inject.PluginInjection;
+import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
+import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 import org.mvplugins.multiverse.core.utils.TestingMode;
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
@@ -54,7 +50,9 @@ import org.mvplugins.multiverse.core.world.config.SpawnLocation;
 public class MultiverseCore extends JavaPlugin implements MVCore {
     private static final int PROTOCOL = 50;
 
-    private ServiceLocator serviceLocator;
+    private PluginServiceLocatorFactory serviceLocatorFactory;
+    private PluginServiceLocator serviceLocator;
+
     @Inject
     private Provider<MVCoreConfig> configProvider;
     @Inject
@@ -150,12 +148,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private void initializeDependencyInjection() {
-        serviceLocator = PluginInjection.createServiceLocator(new MultiverseCorePluginBinder(this))
-                .andThenTry(locator -> {
-                    PluginInjection.enable(this, locator);
-                })
+        serviceLocatorFactory = new PluginServiceLocatorFactory();
+        serviceLocator = serviceLocatorFactory.init()
+                .flatMap(ignore -> serviceLocatorFactory.registerPlugin(new MultiverseCorePluginBinder(this)))
+                .flatMap(PluginServiceLocator::enable)
                 .getOrElseThrow(exception -> {
-                    Logging.severe("Failed to initialize dependency injection");
+                    Logging.severe("Failed to initialize dependency injection!");
                     getServer().getPluginManager().disablePlugin(this);
                     return new RuntimeException(exception);
                 });
@@ -163,8 +161,12 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
     private void shutdownDependencyInjection() {
         if (serviceLocator != null) {
-            PluginInjection.disable(this, serviceLocator);
+            serviceLocator.disable();
             serviceLocator = null;
+        }
+        if (serviceLocatorFactory != null) {
+            serviceLocatorFactory.shutdown();
+            serviceLocatorFactory = null;
         }
     }
 
@@ -207,10 +209,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerCommands() {
         Try.of(() -> commandManagerProvider.get())
-                .andThenTry(commandManager -> {
-                    serviceLocator.getAllServices(MultiverseCommand.class)
-                            .forEach(commandManager::registerCommand);
-                })
+                .andThenTry(commandManager -> serviceLocator.getAllServices(MultiverseCommand.class)
+                        .forEach(commandManager::registerCommand))
                 .onFailure(e -> {
                     Logging.severe("Failed to register commands");
                     e.printStackTrace();
@@ -222,9 +222,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void setUpLocales() {
         Try.of(() -> commandManagerProvider.get())
-                .andThen(commandManager -> {
-                    commandManager.usePerIssuerLocale(true, true);
-                })
+                .andThen(commandManager -> commandManager.usePerIssuerLocale(true, true))
                 .mapTry(commandManager -> pluginLocalesProvider.get())
                 .andThen(pluginLocales -> {
                     pluginLocales.addFileResClassLoader(this);
@@ -282,7 +280,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void loadPlaceholderApiIntegration() {
         if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Try.run(() -> serviceLocator.createAndInitialize(MultiverseCorePlaceholders.class))
+            Try.run(() -> serviceLocator.getService(MultiverseCorePlaceholders.class))
                     .onFailure(e -> {
                         Logging.severe("Failed to load PlaceholderAPI integration.");
                         e.printStackTrace();
@@ -334,6 +332,22 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      * {@inheritDoc}
      */
     @Override
+    public PluginServiceLocatorFactory getServiceLocatorFactory() {
+        return serviceLocatorFactory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PluginServiceLocator getServiceLocator() {
+        return serviceLocator;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int getPluginCount() {
         return this.pluginCount;
     }
@@ -369,46 +383,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         return configProvider.get().save().isSuccess()
                 && worldManagerProvider.get().saveWorldsConfig()
                 && anchorManagerProvider.get().saveAnchors();
-    }
-
-    /**
-     * Gets the best service from this plugin that implements the given contract or has the given implementation.
-     *
-     * @param contractOrImpl The contract or concrete implementation to get the best instance of
-     * @param qualifiers     The set of qualifiers that must match this service definition
-     * @param <T>            The type of the contract to get
-     * @return An instance of the contract or impl if it is a service and is already instantiated, null otherwise
-     * @throws MultiException if there was an error during service lookup
-     */
-    @Nullable
-    public <T> T getService(@NotNull Class<T> contractOrImpl, Annotation... qualifiers) throws MultiException {
-        var handle = serviceLocator.getServiceHandle(contractOrImpl, qualifiers);
-        if (handle != null && handle.isActive()) {
-            return handle.getService();
-        }
-        return null;
-    }
-
-    /**
-     * Gets all services from this plugin that implement the given contract or have the given implementation and have
-     * the provided qualifiers.
-     *
-     * @param contractOrImpl The contract or concrete implementation to get the best instance of
-     * @param qualifiers     The set of qualifiers that must match this service definition
-     * @param <T>            The type of the contract to get
-     * @return A list of services implementing this contract or concrete implementation. May not return null, but may
-     *         return an empty list.
-     * @throws MultiException if there was an error during service lookup
-     */
-    @NotNull
-    public <T> List<T> getAllServices(
-            @NotNull Class<T> contractOrImpl,
-            Annotation... qualifiers) throws MultiException {
-        var handles = serviceLocator.getAllServiceHandles(contractOrImpl, qualifiers);
-        return handles.stream()
-                .filter(ServiceHandle::isActive)
-                .map(ServiceHandle::getService)
-                .collect(Collectors.toList());
     }
 
     /**

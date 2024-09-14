@@ -13,7 +13,7 @@ class WorldManagerTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUp() {
-        worldManager = multiverseCore.getService(WorldManager::class.java).takeIf { it != null } ?: run {
+        worldManager = serviceLocator.getActiveService(WorldManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldManager is not available as a service") }
 
         worldManager.createWorld(CreateWorldOptions.worldName("world"))

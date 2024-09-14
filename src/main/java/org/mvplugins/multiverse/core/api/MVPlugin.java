@@ -7,6 +7,8 @@
 
 package org.mvplugins.multiverse.core.api;
 
+import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
+
 /**
  * This interface is implemented by every official Multiverse-plugin.
  */
@@ -33,4 +35,11 @@ public interface MVPlugin {
      * @return The readable authors-{@link String}
      */
     String getAuthors();
+
+    /**
+     * Gets the {@link PluginServiceLocator} for this plugin.
+     *
+     * @return The {@link PluginServiceLocator}
+     */
+    PluginServiceLocator getServiceLocator();
 }

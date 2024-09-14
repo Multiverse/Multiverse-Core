@@ -111,6 +111,9 @@ dependencies {
     // Utils
     shadowed 'io.vavr:vavr:0.10.4'
     shadowed 'org.glassfish.hk2:hk2-locator:3.0.3'
+    shadowed('org.glassfish.hk2:hk2-inhabitant-generator:3.0.3') {
+        exclude group: 'org.apache.maven', module: 'maven-core'
+    }
     shadowed('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }

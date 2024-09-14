@@ -23,8 +23,8 @@ class LocalizationTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUpLocale() {
-        locales = assertNotNull(multiverseCore.getService(PluginLocales::class.java))
-        commandManager = assertNotNull(multiverseCore.getService(MVCommandManager::class.java))
+        locales = assertNotNull(serviceLocator.getActiveService(PluginLocales::class.java))
+        commandManager = assertNotNull(serviceLocator.getActiveService(MVCommandManager::class.java))
     }
 
     @Nested
