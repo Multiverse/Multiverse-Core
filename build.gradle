@@ -8,7 +8,7 @@ plugins {
 }
 
 version = System.getenv('GITHUB_VERSION') ?: 'local'
-group = 'com.onarandombox.multiversecore'
+group = 'org.mvplugins.multiverse.core'
 description = 'Multiverse-Core'
 
 java {
