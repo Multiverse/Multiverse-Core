@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world;
 import java.util.List;
 
 import com.google.common.base.Strings;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -441,8 +442,8 @@ public class MultiverseWorld {
      *
      * @return A world that exists on the server.
      */
-    public @Nullable World getRespawnWorld() {
-        return Bukkit.getWorld(worldConfig.getRespawnWorld());
+    public @Nullable Option<World> getRespawnWorld() {
+        return Option.of(Bukkit.getWorld(worldConfig.getRespawnWorld()));
     }
 
     /**
