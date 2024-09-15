@@ -17,7 +17,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -95,7 +94,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
 
         // Register our config classes
-        SerializationConfig.initLogging(Logging.getLogger());
         ConfigurationSerialization.registerClass(NullLocation.class);
         ConfigurationSerialization.registerClass(SpawnLocation.class);
     }

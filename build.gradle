@@ -101,9 +101,6 @@ dependencies {
     shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
 
     // Config
-    shadowed('me.main__.util:SerializationConfig:1.7') {
-        exclude group: 'org.bukkit', module: 'bukkit'
-    }
     shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
