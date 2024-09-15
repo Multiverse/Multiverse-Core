@@ -20,7 +20,7 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-class CheckCommand extends MultiverseCommand {
+class CheckCommand extends CoreCommand {
 
     private final DestinationsProvider destinationsProvider;
 

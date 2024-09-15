@@ -25,7 +25,7 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-class TeleportCommand extends MultiverseCommand {
+class TeleportCommand extends CoreCommand {
 
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;

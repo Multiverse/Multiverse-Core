@@ -18,7 +18,6 @@ import jakarta.inject.Provider;
 import me.main__.util.SerializationConfig.SerializationConfig;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
@@ -27,13 +26,13 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.api.Destination;
 import org.mvplugins.multiverse.core.api.MVCore;
+import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.PluginLocales;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.inject.InjectableListener;
+import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
@@ -197,7 +196,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void registerEvents() {
         var pluginManager = getServer().getPluginManager();
 
-        Try.run(() -> serviceLocator.getAllServices(InjectableListener.class).forEach(
+        Try.run(() -> serviceLocator.getAllServices(CoreListener.class).forEach(
                 listener -> pluginManager.registerEvents(listener, this)))
                 .onFailure(e -> {
                     throw new RuntimeException("Failed to register listeners. Terminating...", e);
@@ -209,7 +208,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void registerCommands() {
         Try.of(() -> commandManagerProvider.get())
-                .andThenTry(commandManager -> serviceLocator.getAllServices(MultiverseCommand.class)
+                .andThenTry(commandManager -> serviceLocator.getAllServices(CoreCommand.class)
                         .forEach(commandManager::registerCommand))
                 .onFailure(e -> {
                     Logging.severe("Failed to register commands");

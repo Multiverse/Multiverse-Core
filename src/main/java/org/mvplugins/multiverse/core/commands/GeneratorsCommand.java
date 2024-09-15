@@ -35,7 +35,7 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
  */
 @Service
 @CommandAlias("mv")
-class GeneratorsCommand extends MultiverseCommand {
+class GeneratorsCommand extends CoreCommand {
 
     private final GeneratorProvider generatorProvider;
 
