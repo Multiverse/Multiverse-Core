@@ -56,8 +56,8 @@ repositories {
     }
 
     maven {
-        name = 'PlaceholderAPI'
-        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+        name = "helpchatRepoReleases"
+        url = uri("https://repo.helpch.at/releases/")
     }
 
     maven {
@@ -95,7 +95,7 @@ dependencies {
     }
 
     // PlaceholderAPI
-    externalPlugin 'me.clip:placeholderapi:2.11.3'
+    externalPlugin 'me.clip:placeholderapi:2.11.6'
 
     // Command Framework
     shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
