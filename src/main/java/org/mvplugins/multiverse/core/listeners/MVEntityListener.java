@@ -20,7 +20,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.inject.InjectableListener;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.WorldPurger;
 
@@ -28,7 +27,7 @@ import org.mvplugins.multiverse.core.world.WorldPurger;
  * Multiverse's Entity {@link Listener}.
  */
 @Service
-public class MVEntityListener implements InjectableListener {
+public class MVEntityListener implements CoreListener {
     private final WorldManager worldManager;
     private final WorldPurger worldPurger;
 

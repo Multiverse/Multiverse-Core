@@ -7,12 +7,22 @@
 
 package org.mvplugins.multiverse.core.api;
 
+import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
+import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
+
 /**
  * Multiverse 2 Core API
  * <p>
  * This API contains a bunch of useful things you can get out of Multiverse in general!
  */
 public interface MVCore extends MVPlugin {
+
+    /**
+     * Gets the {@link PluginServiceLocatorFactory} used to create {@link PluginServiceLocator}s.
+     *
+     * @return The {@link PluginServiceLocatorFactory}
+     */
+    PluginServiceLocatorFactory getServiceLocatorFactory();
 
     /**
      * Saves all configs.

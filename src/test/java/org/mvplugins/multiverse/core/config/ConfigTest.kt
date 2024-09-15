@@ -12,7 +12,7 @@ class ConfigTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUp() {
-        config = multiverseCore.getService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
+        config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
 
         val defaultConfig = getResourceAsText("/default_config.yml")

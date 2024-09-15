@@ -28,7 +28,7 @@ public class WorldConfigNodes {
     private LoadedMultiverseWorld world = null;
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
-        this.enforcementHandler = multiverseCore.getService(EnforcementHandler.class);
+        this.enforcementHandler = multiverseCore.getServiceLocator().getActiveService(EnforcementHandler.class);
     }
 
     LoadedMultiverseWorld getWorld() {

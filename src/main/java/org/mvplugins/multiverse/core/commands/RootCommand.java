@@ -14,7 +14,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
-class RootCommand extends MultiverseCommand {
+class RootCommand extends CoreCommand {
 
     private final Plugin plugin;
 

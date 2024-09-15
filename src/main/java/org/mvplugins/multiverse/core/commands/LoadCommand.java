@@ -21,7 +21,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-class LoadCommand extends MultiverseCommand {
+class LoadCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

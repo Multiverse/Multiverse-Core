@@ -16,7 +16,7 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-class VersionCommand extends MultiverseCommand {
+class VersionCommand extends CoreCommand {
 
     private final MultiverseCore plugin;
 

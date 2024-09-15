@@ -35,7 +35,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 @Service
 @CommandAlias("mv")
-class InfoCommand extends MultiverseCommand {
+class InfoCommand extends CoreCommand {
 
     private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
             .builder("--page", Integer.class)

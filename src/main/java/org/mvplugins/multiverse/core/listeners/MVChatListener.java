@@ -7,14 +7,13 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.inject.InjectableListener;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
  * Multiverse's Listener for players.
  */
 @Service
-public class MVChatListener implements InjectableListener {
+public class MVChatListener implements CoreListener {
     private final MVCoreConfig config;
     private final WorldManager worldManager;
     private final MVPlayerListener playerListener;

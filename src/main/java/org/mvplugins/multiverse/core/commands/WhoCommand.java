@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 @Service
 @CommandAlias("mv")
-public class WhoCommand extends MultiverseCommand {
+public class WhoCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

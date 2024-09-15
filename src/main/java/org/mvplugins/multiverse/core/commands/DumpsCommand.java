@@ -42,7 +42,7 @@ import static org.mvplugins.multiverse.core.utils.file.FileUtils.getServerProper
 
 @Service
 @CommandAlias("mv")
-class DumpsCommand extends MultiverseCommand {
+class DumpsCommand extends CoreCommand {
 
     private final MultiverseCore plugin;
     private final WorldManager worldManager;

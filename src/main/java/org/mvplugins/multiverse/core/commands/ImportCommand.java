@@ -27,7 +27,7 @@ import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 
 @Service
 @CommandAlias("mv")
-class ImportCommand extends MultiverseCommand {
+class ImportCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

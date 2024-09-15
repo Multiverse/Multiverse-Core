@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 @Service
 @CommandAlias("mv")
-class CoordinatesCommand extends MultiverseCommand {
+class CoordinatesCommand extends CoreCommand {
 
     private final LocationManipulation locationManipulation;
 

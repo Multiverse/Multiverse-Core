@@ -40,7 +40,6 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
-import org.mvplugins.multiverse.core.inject.InjectableListener;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
@@ -54,7 +53,7 @@ import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
  * Multiverse's Listener for players.
  */
 @Service
-public class MVPlayerListener implements InjectableListener {
+public class MVPlayerListener implements CoreListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;

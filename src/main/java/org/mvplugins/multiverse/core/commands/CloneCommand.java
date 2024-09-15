@@ -24,7 +24,7 @@ import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 
 @Service
 @CommandAlias("mv")
-class CloneCommand extends MultiverseCommand {
+class CloneCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
