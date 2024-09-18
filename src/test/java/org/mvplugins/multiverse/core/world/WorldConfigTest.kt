@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.world
 
+import org.bukkit.Material
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.world.config.WorldConfig
 import org.mvplugins.multiverse.core.world.config.WorldsConfigManager
@@ -60,6 +61,9 @@ class WorldConfigTest : TestWithMockBukkit() {
         val blacklists = listOf("a", "b", "c")
         assertTrue(worldConfig.stringPropertyHandle.setProperty("world-blacklist", blacklists).isSuccess)
         assertEquals(blacklists, worldConfig.stringPropertyHandle.getProperty("world-blacklist").get())
+
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("entryfee-currency", Material.JUNGLE_WOOD).isSuccess)
+        assertEquals(Material.JUNGLE_WOOD, worldConfig.stringPropertyHandle.getProperty("entryfee-currency").get())
     }
 
     @Test

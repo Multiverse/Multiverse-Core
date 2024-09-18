@@ -17,13 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigurationSectionHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
-import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.configuration.migration.IntegerMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.LongMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.MoveMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.NullStringMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
+import org.mvplugins.multiverse.core.configuration.migration.*;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
@@ -68,6 +62,7 @@ public final class WorldConfig {
                 .addAction(BooleanMigratorAction.of("bed-respawn"))
                 //.addAction(MoveMigratorAction.of("difficulty", "difficulty"))
                 .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
+                .addAction(DoubleMigrationAction.of("entry-fee.amount"))
                 .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
                 //.addAction(MoveMigratorAction.of("environment", "environment"))
                 .addAction(MoveMigratorAction.of("gameMode", "gamemode"))
@@ -100,6 +95,7 @@ public final class WorldConfig {
                 .addAction(IntegerMigratorAction.of("spawning.monsters.tick-rate"))
                 //.addAction(MoveMigratorAction.of("spawning.monsters.exceptions", "spawning.monsters.exceptions"))
                 .addAction(MoveMigratorAction.of("worldBlacklist", "world-blacklist"))
+                .addAction(new EntryFeeMigrator())
                 .addAction(new LegacyAliasMigrator())
                 .build();
     }
@@ -182,6 +178,14 @@ public final class WorldConfig {
 
     public Try<Void> setDifficulty(Difficulty difficulty) {
         return configHandle.set(configNodes.DIFFICULTY, difficulty);
+    }
+
+    public boolean isEntryFeeEnabled() {
+        return configHandle.get(configNodes.ENTRY_FEE_ENABLED);
+    }
+
+    public Try<Void> setEntryFeeEnabled(boolean entryFeeEnabled) {
+        return configHandle.set(configNodes.ENTRY_FEE_ENABLED, entryFeeEnabled);
     }
 
     public double getEntryFeeAmount() {

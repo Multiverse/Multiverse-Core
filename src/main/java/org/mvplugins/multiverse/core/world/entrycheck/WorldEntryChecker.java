@@ -136,7 +136,7 @@ public class WorldEntryChecker {
     public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(LoadedMultiverseWorld world) {
         double price = world.getPrice();
         Material currency = world.getCurrency();
-        if (price == 0D && (currency == null || currency == MVEconomist.DISABLED_MATERIAL)) {
+        if (!world.isEntryFeeEnabled() || price == 0D) {
             return Result.success(EntryFeeResult.Success.FREE_ENTRY);
         }
         if (sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender) {

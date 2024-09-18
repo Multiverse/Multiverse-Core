@@ -1,17 +1,15 @@
 package org.mvplugins.multiverse.core.world
 
+import org.bukkit.Material
 import org.bukkit.World.Environment
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.world.config.SpawnLocation
 import org.mvplugins.multiverse.core.world.config.WorldsConfigManager
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 class WorldConfigMangerTest : TestWithMockBukkit() {
 
@@ -46,12 +44,18 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
         assertEquals("&aworld the end", endWorldConfig.alias)
         assertEquals(Environment.THE_END, endWorldConfig.environment)
+        assertFalse(endWorldConfig.isEntryFeeEnabled)
+        assertEquals(MVEconomist.VAULT_ECONOMY_MATERIAL, endWorldConfig.entryFeeCurrency)
+        assertEquals(0.0, endWorldConfig.entryFeeAmount)
 
         val worldConfig = worldConfigManager.getWorldConfig("world").orNull
         assertNotNull(worldConfig)
 
         assertEquals(-5176596003035866649, worldConfig.seed)
         assertEquals(listOf("test"), worldConfig.worldBlacklist)
+        assertTrue(worldConfig.isEntryFeeEnabled)
+        assertEquals(Material.DIRT, worldConfig.entryFeeCurrency)
+        assertEquals(5.0, worldConfig.entryFeeAmount)
     }
 
     @Test

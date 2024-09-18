@@ -14,6 +14,7 @@ import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.ListConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
+import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
@@ -102,15 +103,20 @@ public class WorldConfigNodes {
             })
             .build());
 
+    final ConfigNode<Boolean> ENTRY_FEE_ENABLED = node(ConfigNode.builder("entry-fee.enabled", Boolean.class)
+            .defaultValue(false)
+            .name("entryfee-enabled")
+            .build());
+
     final ConfigNode<Double> ENTRY_FEE_AMOUNT = node(ConfigNode.builder("entry-fee.amount", Double.class)
             .defaultValue(0.0)
             .name("entryfee-amount")
             .build());
 
     final ConfigNode<Material> ENTRY_FEE_CURRENCY = node(ConfigNode.builder("entry-fee.currency", Material.class)
-            // TODO: Convert from material ID
-            .defaultValue(Material.AIR)
+            .defaultValue(MVEconomist.VAULT_ECONOMY_MATERIAL)
             .name("entryfee-currency")
+            .serializer(new CurrencySerializer())
             .build());
 
     final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode
