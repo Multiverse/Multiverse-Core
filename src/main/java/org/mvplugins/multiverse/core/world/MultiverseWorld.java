@@ -388,6 +388,25 @@ public class MultiverseWorld {
     }
 
     /**
+     * Gets if entry fee is needed when entering this world
+     *
+     * @return True if entry fee is needed
+     */
+    public boolean isEntryFeeEnabled() {
+        return worldConfig.isEntryFeeEnabled();
+    }
+
+    /**
+     * Sets if entry fee is needed when entering this world
+     *
+     * @param entryFeeEnabled   True to enable use of entry fee
+     * @return Result of setting property.
+     */
+    public Try<Void> setEntryFeeEnabled(boolean entryFeeEnabled) {
+        return worldConfig.setEntryFeeEnabled(entryFeeEnabled);
+    }
+
+    /**
      * Gets the amount of currency it requires to enter this world.
      *
      * @return The amount it costs to enter this world.

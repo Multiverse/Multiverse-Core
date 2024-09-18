@@ -8,8 +8,9 @@ world_the_end:
   bed-respawn: true
   difficulty: NORMAL
   entry-fee:
+    enabled: false
     amount: 0.0
-    currency: AIR
+    currency: '@vault-economy'
   environment: THE_END
   gamemode: SURVIVAL
   generator: ''
@@ -50,8 +51,9 @@ world:
   bed-respawn: true
   difficulty: NORMAL
   entry-fee:
+    enabled: false
     amount: 0.0
-    currency: AIR
+    currency: '@vault-economy'
   environment: NORMAL
   gamemode: SURVIVAL
   generator: ''
