@@ -17,6 +17,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.api.WorldPurger;
 import com.onarandombox.MultiverseCore.event.MVWorldDeleteEvent;
+import com.onarandombox.MultiverseCore.generators.InternalChunkGeneratorManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -257,7 +258,12 @@ public class WorldManager implements MVWorldManager {
 
         // TODO: Use the fancy kind with the commandSender
         if (generator != null && generator.length() != 0) {
-            c.generator(generator);
+            //CustomGenerators start
+            if(generator.startsWith("multiverse:"))
+                c.generator(InternalChunkGeneratorManager.get().getGenerator(generator.split(":")[1]));
+            else
+                c.generator(generator);
+            //CustomGenerators end
         }
         c.environment(env);
         if (type != null) {
@@ -305,7 +311,11 @@ public class WorldManager implements MVWorldManager {
         if (generator == null) {
             return null;
         }
-
+        //CustomGenerators start
+        if(generator.equalsIgnoreCase("multiverse")){
+            return InternalChunkGeneratorManager.get().getGenerator(generatorID);
+        }
+        //CustomGenerators end
         final Plugin myPlugin = this.plugin.getServer().getPluginManager().getPlugin(generator);
         if (myPlugin == null) {
             return null;
