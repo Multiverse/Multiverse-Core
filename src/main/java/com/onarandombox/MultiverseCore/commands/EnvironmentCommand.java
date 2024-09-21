@@ -45,6 +45,9 @@ public class EnvironmentCommand extends MultiverseCommand {
         sender.sendMessage(ChatColor.GREEN + "NORMAL");
         sender.sendMessage(ChatColor.RED + "NETHER");
         sender.sendMessage(ChatColor.AQUA + "END");
+        //VoidGen start
+        sender.sendMessage(ChatColor.WHITE + "VOID");
+        //VoidGen end
     }
     /**
      * Shows all valid known world types to a {@link CommandSender}.
