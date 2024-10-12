@@ -61,7 +61,7 @@ class ModifyCommand extends CoreCommand {
             @Description("")
             String propertyValue) {
         StringPropertyHandle worldPropertyHandle = world.getStringPropertyHandle();
-        worldPropertyHandle.modifyProperty(propertyName, propertyValue, action).onSuccess(ignore -> {
+        worldPropertyHandle.modifyPropertyString(propertyName, propertyValue, action).onSuccess(ignore -> {
             issuer.sendMessage("Property %s%s set to %s%s for world %s%s%s.".formatted(
                     propertyName,
                     ChatColor.BLUE,

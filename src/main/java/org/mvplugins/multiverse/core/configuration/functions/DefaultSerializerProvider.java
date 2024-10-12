@@ -43,6 +43,9 @@ public final class DefaultSerializerProvider {
     private static final NodeSerializer<Enum> ENUM_SERIALIZER = new NodeSerializer<>() {
         @Override
         public Enum<?> deserialize(Object object, Class<Enum> type) {
+            if (type.isInstance(object)) {
+                return (Enum<?>) object;
+            }
             return Enum.valueOf(type, String.valueOf(object).toUpperCase());
         }
 
