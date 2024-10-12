@@ -28,7 +28,7 @@ import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
 
 @Service
 @CommandAlias("mv")
-class UnloadCommand extends MultiverseCommand {
+class UnloadCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;

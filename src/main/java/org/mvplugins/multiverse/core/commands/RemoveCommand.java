@@ -29,7 +29,7 @@ import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
 @Service
 @CommandAlias("mv")
-class RemoveCommand extends MultiverseCommand {
+class RemoveCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;

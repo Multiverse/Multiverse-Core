@@ -18,7 +18,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-public class SetSpawnCommand extends MultiverseCommand {
+public class SetSpawnCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

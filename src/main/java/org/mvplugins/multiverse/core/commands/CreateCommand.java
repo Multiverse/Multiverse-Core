@@ -30,7 +30,7 @@ import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
 
 @Service
 @CommandAlias("mv")
-class CreateCommand extends MultiverseCommand {
+class CreateCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private GeneratorProvider generatorProvider;

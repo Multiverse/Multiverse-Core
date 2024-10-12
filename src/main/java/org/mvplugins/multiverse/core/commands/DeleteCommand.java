@@ -31,7 +31,7 @@ import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
 @Service
 @CommandAlias("mv")
-class DeleteCommand extends MultiverseCommand {
+class DeleteCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;

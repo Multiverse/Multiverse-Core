@@ -34,7 +34,7 @@ import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
 
 @Service
 @CommandAlias("mv")
-class RegenCommand extends MultiverseCommand {
+class RegenCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;

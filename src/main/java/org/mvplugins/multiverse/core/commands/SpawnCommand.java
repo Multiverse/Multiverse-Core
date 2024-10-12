@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-class SpawnCommand extends MultiverseCommand {
+class SpawnCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final AsyncSafetyTeleporter safetyTeleporter;
 

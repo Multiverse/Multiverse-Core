@@ -23,7 +23,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-class ReloadCommand extends MultiverseCommand {
+class ReloadCommand extends CoreCommand {
 
     private final MVCoreConfig config;
     private final AnchorManager anchorManager;

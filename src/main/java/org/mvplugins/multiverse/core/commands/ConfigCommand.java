@@ -20,7 +20,7 @@ import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
 @Service
 @CommandAlias("mv")
-class ConfigCommand extends MultiverseCommand {
+class ConfigCommand extends CoreCommand {
 
     private final MVCoreConfig config;
 

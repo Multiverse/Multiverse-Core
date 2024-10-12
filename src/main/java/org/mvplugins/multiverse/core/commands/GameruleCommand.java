@@ -41,7 +41,7 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 @Service
 @CommandAlias("mv")
 @Subcommand("gamerule|rule|gamerules|rules")
-class GameruleCommand extends MultiverseCommand {
+class GameruleCommand extends CoreCommand {
 
     private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
             .builder("--page", Integer.class)

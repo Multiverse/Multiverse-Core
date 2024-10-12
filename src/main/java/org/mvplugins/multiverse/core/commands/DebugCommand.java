@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-class DebugCommand extends MultiverseCommand {
+class DebugCommand extends CoreCommand {
 
     private final MVCoreConfig config;
 

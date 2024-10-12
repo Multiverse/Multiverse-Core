@@ -23,7 +23,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(defaultConfig)
 
-        worldConfigManager = multiverseCore.getService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
+        worldConfigManager = serviceLocator.getActiveService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
     }
 

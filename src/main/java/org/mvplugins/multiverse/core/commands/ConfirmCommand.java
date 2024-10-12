@@ -14,7 +14,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")
-class ConfirmCommand extends MultiverseCommand {
+class ConfirmCommand extends CoreCommand {
 
     @Inject
     ConfirmCommand(@NotNull MVCommandManager commandManager) {

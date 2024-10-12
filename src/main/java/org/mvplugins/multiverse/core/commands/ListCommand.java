@@ -36,7 +36,7 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 @Service
 @CommandAlias("mv")
-class ListCommand extends MultiverseCommand {
+class ListCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
