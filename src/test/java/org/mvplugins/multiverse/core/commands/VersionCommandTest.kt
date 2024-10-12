@@ -24,7 +24,7 @@ class VersionCommandTest : TestWithMockBukkit() {
         val console = server.consoleSender;
         assertTrue(Bukkit.dispatchCommand(console, "mv version"))
         val output = ChatColor.stripColor(console.nextMessage())
-        assertEquals("Multiverse Core Version vlocal", output)
+        assertEquals("Multiverse Core Version v" + multiverseCore.getDescription().getVersion(), output)
     }
 
     @Test
