@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Artifact output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.plugin_name }}-pr${{ github.event.pull_request.number }}
           path: build/libs/${{ inputs.plugin_name }}-pr${{ github.event.pull_request.number }}.jar
