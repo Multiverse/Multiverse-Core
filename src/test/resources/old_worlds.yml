@@ -71,7 +71,8 @@ worlds:
         exceptions: []
     entryfee:
       ==: MVEntryFee
-      amount: '0.0'
+      amount: '5.0'
+      currency: 'DIRT'
     hunger: 'true'
     autoHeal: 'true'
     adjustSpawn: 'true'

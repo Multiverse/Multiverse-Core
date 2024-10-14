@@ -15,7 +15,7 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
  */
 @Service
 public class MVEconomist {
-    public static final Material DISABLED_MATERIAL = Material.AIR;
+    public static final Material VAULT_ECONOMY_MATERIAL = Material.AIR;
 
     private final VaultHandler vaultHandler;
 
@@ -238,7 +238,7 @@ public class MVEconomist {
      * @return true if currency string matches a valid material.
      */
     public static boolean isItemCurrency(Material currency) {
-        return currency != null;
+        return currency != VAULT_ECONOMY_MATERIAL;
     }
 
 }
