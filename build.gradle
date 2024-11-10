@@ -1,19 +1,31 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id "org.jetbrains.kotlin.jvm" version "1.8.10"
+    id "org.jetbrains.kotlin.jvm" version "2.0.21"
 }
 
 version = System.getenv('GITHUB_VERSION') ?: 'local'
 group = 'org.mvplugins.multiverse.core'
 description = 'Multiverse-Core'
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileTestJava {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+compileTestKotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+        javaParameters.set(true)
     }
 }
 
@@ -121,8 +133,8 @@ dependencies {
     shadowed 'io.papermc:paperlib:1.0.8'
 
     // Tests
-    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
-    testImplementation 'com.github.seeseemelk:MockBukkit-v1.20:3.20.2'
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.21:3.133.0'
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
@@ -299,7 +311,7 @@ shadowJar {
 
     configurations = [project.configurations.shadowed]
 
-    archiveFileName = "$baseName-$version.$extension"
+    archiveFileName = "$archiveBaseName-$archiveVersion.$archiveExtension"
 
     dependencies {
         exclude(dependency {
