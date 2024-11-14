@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.gradleup.shadow' version '8.3.5'
     id "org.jetbrains.kotlin.jvm" version "2.0.21"
 }
 
@@ -127,7 +127,9 @@ dependencies {
         exclude group: 'junit', module: 'junit'
     }
     shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    shadowed 'org.bstats:bstats-bukkit:2.2.1'
+    shadowed('org.bstats:bstats-bukkit:3.1.0') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
     shadowed 'net.minidev:json-smart:2.4.9'
     shadowed 'org.jetbrains:annotations:22.0.0'
     shadowed 'io.papermc:paperlib:1.0.8'
@@ -162,11 +164,11 @@ java {
     withJavadocJar()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-tasks.withType(Javadoc) {
+tasks.withType(Javadoc).configureEach {
     options.encoding = 'UTF-8'
 }
 
@@ -311,7 +313,7 @@ shadowJar {
 
     configurations = [project.configurations.shadowed]
 
-    archiveFileName = "$archiveBaseName-$archiveVersion.$archiveExtension"
+    archiveClassifier.set('')
 
     dependencies {
         exclude(dependency {
