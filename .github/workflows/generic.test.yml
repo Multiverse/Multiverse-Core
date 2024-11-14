@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  test:
+  test-and-artifact:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,7 +34,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Artifact output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.plugin_name }}-pr${{ github.event.pull_request.number }}
           path: build/libs/${{ inputs.plugin_name }}-pr${{ github.event.pull_request.number }}.jar
+
+  comment-artifact:
+    needs: test-and-artifact
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: benwoo1110/artifact-comment-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
