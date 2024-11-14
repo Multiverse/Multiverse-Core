@@ -89,3 +89,23 @@ jobs:
           file: build/libs/${{ inputs.plugin_name }}-${{ steps.release.outputs.publish_version }}.jar
           asset_name: ${{ inputs.plugin_name }}-${{ steps.release.outputs.tag_name }}.jar
           tag: ${{ steps.release.outputs.tag_name }}
+
+      - name: Generate javadoc
+        id: javadoc
+        if: steps.release.outputs.release_created == 'true' && steps.release.outputs.release_type == 'release'
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: javadoc
+        env:
+          GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy javadoc to gh pages
+        if: steps.javadoc.outcome == 'success'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: build/docs/javadoc
+          branch: javadoc
+          target-folder: javadoc/${{ steps.release.outputs.tag_name }}
+          commit-message: Deploy javadoc for ${{ steps.release.outputs.tag_name }}
