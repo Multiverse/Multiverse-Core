@@ -1,0 +1,39 @@
+name: 'Dispatch: Deploy Javadoc'
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Version to generate javadoc'
+        required: true
+
+jobs:
+  javadocs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.target_tag }}
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+      
+      - name: build javadoc
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: javadoc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_VERSION: ${{ inputs.target_tag }}
+      
+      - name: Deploy javadoc to gh pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: build/docs/javadoc
+          branch: javadoc
+          target-folder: javadoc/${{ inputs.target_tag }}
+          commit-message: Deploy javadoc for ${{ inputs.target_tag }}
