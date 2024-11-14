@@ -28,12 +28,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_VERSION: ${{ inputs.target_tag }}
-      
+
+      - name: Copy javadoc to version and latest folder
+        run: |
+          mkdir -p build/docs/javadoc-deploy/latest
+          mkdir -p build/docs/javadoc-deploy/${{ inputs.target_tag }}
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/latest
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/${{ inputs.target_tag }}
+
       - name: Deploy javadoc to gh pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          folder: build/docs/javadoc
+          folder: build/docs/javadoc-deploy
           branch: javadoc
-          target-folder: javadoc/${{ inputs.target_tag }}
+          target-folder: javadoc
+          clean: false
           commit-message: Deploy javadoc for ${{ inputs.target_tag }}

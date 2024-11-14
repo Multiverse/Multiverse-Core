@@ -100,12 +100,21 @@ jobs:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Copy javadoc to version and latest folder
+        if: steps.javadoc.outcome == 'success'
+        run: |
+          mkdir -p build/docs/javadoc-deploy/latest
+          mkdir -p build/docs/javadoc-deploy/${{ steps.release.outputs.tag_name }}
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/latest
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy${{ steps.release.outputs.tag_name }}
+
       - name: Deploy javadoc to gh pages
         if: steps.javadoc.outcome == 'success'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          folder: build/docs/javadoc
+          folder: build/docs/javadoc-deploy
           branch: javadoc
-          target-folder: javadoc/${{ steps.release.outputs.tag_name }}
+          target-folder: javadoc
+          clean: false
           commit-message: Deploy javadoc for ${{ steps.release.outputs.tag_name }}
