@@ -6,6 +6,9 @@ on:
       target_tag:
         description: 'Version to generate javadoc'
         required: true
+      replace_latest:
+        description: 'Should this release replace the latest folder'
+        type: boolean
 
 jobs:
   javadocs:
@@ -29,12 +32,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_VERSION: ${{ inputs.target_tag }}
 
-      - name: Copy javadoc to version and latest folder
+      - name: Copy javadoc to deploy folder
+        run: |
+          mkdir -p build/docs/javadoc-deploy/${{ inputs.target_tag }}
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/${{ inputs.target_tag }}
+
+      - name: Copy javadoc to latest folder
+        if: inputs.replace_latest
         run: |
           mkdir -p build/docs/javadoc-deploy/latest
-          mkdir -p build/docs/javadoc-deploy/${{ inputs.target_tag }}
           cp -r build/docs/javadoc/* build/docs/javadoc-deploy/latest
-          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/${{ inputs.target_tag }}
 
       - name: Deploy javadoc to gh pages
         uses: JamesIves/github-pages-deploy-action@v4
