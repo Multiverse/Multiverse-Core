@@ -7,7 +7,7 @@ on:
         description: 'Version to generate javadoc'
         required: true
       replace_latest:
-        description: 'Should this release replace the latest folder'
+        description: 'Replace the latest folder'
         type: boolean
 
 jobs:
