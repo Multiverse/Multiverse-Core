@@ -52,6 +52,8 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Property
     private volatile boolean teleportintercept;
     @Property
+    private volatile boolean portalintercept;
+    @Property
     private volatile boolean firstspawnoverride;
     @Property
     private volatile boolean displaypermerrors;
@@ -99,6 +101,7 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
         prefixchat = false;
         prefixchatformat = "[%world%]%chat%";
         teleportintercept = true;
+        portalintercept = true;
         firstspawnoverride = true;
         displaypermerrors = true;
         enablebuscript = true;
@@ -190,6 +193,22 @@ public class MultiverseCoreConfiguration extends SerializationConfig implements 
     @Override
     public void setTeleportIntercept(boolean teleportIntercept) {
         this.teleportintercept = teleportIntercept;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getPortalIntercept() {
+        return this.portalintercept;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setPortalIntercept(boolean portalIntercept) {
+        this.portalintercept = portalIntercept;
     }
 
     /**
