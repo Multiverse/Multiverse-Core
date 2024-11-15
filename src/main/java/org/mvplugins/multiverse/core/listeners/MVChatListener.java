@@ -16,7 +16,6 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 public class MVChatListener implements CoreListener {
     private final MVCoreConfig config;
     private final WorldManager worldManager;
-    private final MVPlayerListener playerListener;
 
     @Inject
     MVChatListener(
@@ -25,7 +24,6 @@ public class MVChatListener implements CoreListener {
             MVPlayerListener playerListener) {
         this.config = config;
         this.worldManager = worldManager;
-        this.playerListener = playerListener;
     }
 
     /**
@@ -45,13 +43,7 @@ public class MVChatListener implements CoreListener {
             return;
         }
 
-        String world = playerListener.getPlayerWorld().get(event.getPlayer().getName());
-        if (world == null) {
-            world = event.getPlayer().getWorld().getName();
-            playerListener.getPlayerWorld().put(event.getPlayer().getName(), world);
-        }
-
-        String prefix = this.worldManager.getLoadedWorld(world)
+        String prefix = this.worldManager.getLoadedWorld(event.getPlayer().getWorld())
                 .map(mvworld -> mvworld.isHidden() ? "" : mvworld.getAlias())
                 .getOrElse("");
         String chat = event.getFormat();
