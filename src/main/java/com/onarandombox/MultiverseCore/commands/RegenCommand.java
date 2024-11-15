@@ -61,12 +61,12 @@ public class RegenCommand extends MultiverseCommand {
                                   @NotNull String seed,
                                   boolean keepGamerules) {
 
-        return () -> {
+        return () -> plugin.getMVWorldManager().addOrRemoveWorldSafely(worldName, "regenerate", () -> {
             if (this.plugin.getMVWorldManager().regenWorld(worldName, useSeed, randomSeed, seed, keepGamerules)) {
                 sender.sendMessage(ChatColor.GREEN + "World Regenerated!");
                 return;
             }
             sender.sendMessage(ChatColor.RED + "World could NOT be regenerated!");
-        };
+        });
     }
 }
