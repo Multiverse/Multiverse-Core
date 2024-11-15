@@ -90,6 +90,12 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
 
+        //CustomGenerators start
+        if(env.equalsIgnoreCase("VOID")) {
+            env = "NORMAL";
+            generator = "multiverse:void";
+        }
+        //CustomGenerators end
         Environment environment = EnvironmentCommand.getEnvFromString(env);
         if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
@@ -100,7 +106,12 @@ public class CreateCommand extends MultiverseCommand {
         // If they didn't specify a type, default to NORMAL
         if (typeString == null) {
             typeString = "NORMAL";
+        //CustomGenerators start
+        } else if(typeString.equalsIgnoreCase("VOID")) {
+            typeString = "NORMAL";
+            generator = "multiverse:void";
         }
+        //CustomGenerators end
         WorldType type = EnvironmentCommand.getWorldTypeFromString(typeString);
         if (type == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid World Type.");
@@ -108,6 +119,7 @@ public class CreateCommand extends MultiverseCommand {
             return;
         }
         // Determine if the generator is valid. #918
+
         if (generator != null) {
             List<String> genarray = new ArrayList<String>(Arrays.asList(generator.split(":")));
             if (genarray.size() < 2) {
