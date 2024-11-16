@@ -1,11 +1,11 @@
 package org.mvplugins.multiverse.core.mock;
 
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.command.MockCommandMap;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.jetbrains.annotations.NotNull;
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.command.CommandMapMock;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class MVServerMock extends ServerMock {
 
     // This is required for acf reflection to work
     @Override
-    public @NotNull MockCommandMap getCommandMap() {
+    public @NotNull CommandMapMock getCommandMap() {
         return super.getCommandMap();
     }
 

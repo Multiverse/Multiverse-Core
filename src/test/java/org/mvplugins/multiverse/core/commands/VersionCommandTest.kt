@@ -1,8 +1,8 @@
 package org.mvplugins.multiverse.core.commands
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.BeforeTest
 import kotlin.test.Test

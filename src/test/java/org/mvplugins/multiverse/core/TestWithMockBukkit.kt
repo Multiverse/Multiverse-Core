@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core
 
-import be.seeseemelk.mockbukkit.MockBukkit
 import com.dumptruckman.minecraft.util.Logging
+import org.mockbukkit.mockbukkit.MockBukkit
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator
 import org.mvplugins.multiverse.core.mock.MVServerMock
 import org.mvplugins.multiverse.core.utils.TestingMode

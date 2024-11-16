@@ -1,9 +1,9 @@
 package org.mvplugins.multiverse.core.mock;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.WorldMock;
 import org.bukkit.WorldCreator;
 import org.jetbrains.annotations.NotNull;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 
 import java.io.File;
 
