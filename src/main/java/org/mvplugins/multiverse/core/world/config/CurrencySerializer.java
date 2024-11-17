@@ -1,11 +1,10 @@
 package org.mvplugins.multiverse.core.world.config;
 
-import de.themoep.idconverter.IdMappings;
 import io.vavr.control.Option;
 import org.bukkit.Material;
-import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.utils.MaterialConverter;
 
 /**
  * Converts the material name to/from a {@link Material} enum, with the special case of "vault-economy"
@@ -26,25 +25,9 @@ public class CurrencySerializer implements NodeSerializer<Material> {
                     if (materialStr.equalsIgnoreCase(VAULT_ECONOMY_CODE)) {
                         return MVEconomist.VAULT_ECONOMY_MATERIAL;
                     }
-                    return stringToMaterial(materialStr);
+                    return MaterialConverter.stringToMaterial(materialStr);
                 })
                 .getOrElse(MVEconomist.VAULT_ECONOMY_MATERIAL);
-    }
-
-    /**
-     * Converts a string representing a numeric id or flattened material name to a Material.
-     *
-     * @param value The value to convert.
-     * @return The converted Material type or null if no matching type.
-     */
-    @Nullable
-    private Material stringToMaterial(@Nullable String value) {
-        IdMappings.Mapping mapping = IdMappings.getById(value != null ? value : "");
-        if (mapping != null) {
-            return Material.matchMaterial(mapping.getFlatteningType());
-        } else {
-            return Material.matchMaterial(value != null ? value : "");
-        }
     }
 
     /**
