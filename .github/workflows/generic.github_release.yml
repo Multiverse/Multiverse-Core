@@ -78,10 +78,8 @@ jobs:
         with:
           arguments: >
             publish -x test
-              -PmultiverseReleasesUsername=${{ secrets.REPOSILITE_REPO_USERNAME }}
-              -PmultiverseReleasesPassword=${{ secrets.REPOSILITE_REPO_PASSWORD }}
-              -PmultiverseSnapshotsUsername=${{ secrets.REPOSILITE_REPO_USERNAME }}
-              -PmultiverseSnapshotsPassword=${{ secrets.REPOSILITE_REPO_PASSWORD }}
+              -PmultiverseUsername=${{ secrets.REPOSILITE_REPO_USERNAME }}
+              -PmultiversePassword=${{ secrets.REPOSILITE_REPO_PASSWORD }}
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
