@@ -127,13 +127,10 @@ publishing {
             }
         }
         maven {
-            name = "multiverseReleases"
-            url = "https://repo.dumptruckman.com/multiverse-releases"
-            credentials(PasswordCredentials)
-        }
-        maven {
-            name = "multiverseSnapshots"
-            url = "https://repo.dumptruckman.com/multiverse-snapshots"
+            name = "multiverse"
+            def releasesRepoUrl = "https://repo.dumptruckman.com/multiverse-releases"
+            def snapshotsRepoUrl = "https://repo.dumptruckman.com/multiverse-snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials(PasswordCredentials)
         }
     }
