@@ -185,15 +185,10 @@ public class WorldManager {
             return worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, options.worldName());
         } else if (getWorld(options.worldName()).isDefined()) {
             return worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, options.worldName());
-        } else if (hasWorldFolder(options.worldName())) {
+        } else if (worldNameChecker.hasWorldFolder(options.worldName())) {
             return worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, options.worldName());
         }
         return worldActionResult(options);
-    }
-
-    private boolean hasWorldFolder(String worldName) {
-        File worldFolder = new File(Bukkit.getWorldContainer(), worldName);
-        return worldFolder.exists();
     }
 
     private Attempt<LoadedMultiverseWorld, CreateFailureReason> createValidatedWorld(
@@ -530,9 +525,6 @@ public class WorldManager {
             Logging.severe("Invalid world name: " + newWorldName);
             return worldActionResult(CloneFailureReason.INVALID_WORLDNAME, newWorldName);
         }
-        if (worldNameChecker.isValidWorldFolder(newWorldName)) {
-            return worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, newWorldName);
-        }
         if (isLoadedWorld(newWorldName)) {
             Logging.severe("World already loaded when attempting to clone: " + newWorldName);
             return worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, newWorldName);
@@ -540,6 +532,9 @@ public class WorldManager {
         if (isWorld(newWorldName)) {
             Logging.severe("World already exist unloaded: " + newWorldName);
             return worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, newWorldName);
+        }
+        if (worldNameChecker.hasWorldFolder(newWorldName)) {
+            return worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, newWorldName);
         }
         return worldActionResult(options);
     }

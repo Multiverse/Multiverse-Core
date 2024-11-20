@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import io.vavr.control.Option;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,17 +46,32 @@ public class WorldNameChecker {
      */
     @NotNull
     public NameStatus checkName(@Nullable String worldName) {
-        if (BLACKLIST_NAMES.contains(worldName)) {
-            return NameStatus.BLACKLISTED;
-        }
-        if (worldName == null || !WORLD_NAME_PATTERN.matcher(worldName).matches()) {
-            return NameStatus.INVALID_CHARS;
-        }
-        return NameStatus.VALID;
+        return Option.of(worldName).map(name -> {
+            if (name.isEmpty()) {
+                return NameStatus.EMPTY;
+            }
+            if (BLACKLIST_NAMES.contains(name)) {
+                return NameStatus.BLACKLISTED;
+            }
+            if (!WORLD_NAME_PATTERN.matcher(name).matches()) {
+                return NameStatus.INVALID_CHARS;
+            }
+            return NameStatus.VALID;
+        }).getOrElse(NameStatus.EMPTY);
     }
 
     /**
-     * Checks if a world name has a valid world folder.
+     * Check if a world name has a world folder directory. It may not contain valid world data.
+     *
+     * @param worldName The world name to check on.
+     * @return True if the folder exists, else false.
+     */
+    public boolean hasWorldFolder(@Nullable String worldName) {
+        return checkFolder(worldName) != FolderStatus.DOES_NOT_EXIST;
+    }
+
+    /**
+     * Checks if a world name has a valid world folder with basic world data.
      *
      * @param worldName The world name to check on.
      * @return True if check result is valid, else false.
@@ -65,7 +81,7 @@ public class WorldNameChecker {
     }
 
     /**
-     * Checks if a world folder is valid.
+     * Checks if a world folder is valid with basic world data.
      *
      * @param worldFolder   The world folder to check on.
      * @return True if check result is valid, else false.
@@ -131,6 +147,11 @@ public class WorldNameChecker {
          * Name not valid as it contains invalid characters.
          */
         INVALID_CHARS,
+
+        /**
+         * Name string that is null or length 0.
+         */
+        EMPTY,
 
         /**
          * Name not valid as it is deemed blacklisted.
