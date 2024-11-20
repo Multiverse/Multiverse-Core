@@ -36,8 +36,8 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
@@ -173,7 +173,8 @@ public class MVPlayerListener implements CoreListener {
             return;
         }
 
-        Option.of(destinationsProvider.parseDestination(config.getFirstSpawnLocation()))
+        // todo: Config should auto serialise to and from DestinationInstance
+        destinationsProvider.parseDestination(config.getFirstSpawnLocation())
                 .peek(parsedDestination -> {
                     if (!player.hasPlayedBefore()) {
                         Logging.finer("Player joined for the FIRST time!");
@@ -207,15 +208,9 @@ public class MVPlayerListener implements CoreListener {
         }
 
         Logging.finer("JoinDestination is " + config.getJoinDestination());
-        ParsedDestination<?> joinDestination = destinationsProvider.parseDestination(config.getJoinDestination());
-
-        if (joinDestination == null) {
-            Logging.warning("The destination in JoinDestination in config is invalid");
-            return;
-        }
-
-        // Finally, teleport the player
-        safetyTeleporter.teleportSafely(player, player, joinDestination);
+        destinationsProvider.parseDestination(config.getJoinDestination())
+                .peek(destination -> safetyTeleporter.teleportSafely(player, player, destination))
+                .onEmpty(() -> Logging.warning("The destination in JoinDestination in config is invalid"));
     }
 
     /**
@@ -350,7 +345,7 @@ public class MVPlayerListener implements CoreListener {
         Logging.fine("Teleport result: %s", entryResult);
     }
 
-    private void sendPlayerToDefaultWorld(final Player player, ParsedDestination parsedDestination) {
+    private void sendPlayerToDefaultWorld(final Player player, DestinationInstance<?, ?> parsedDestination) {
         // Remove the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
         this.server.getScheduler().scheduleSyncDelayedTask(this.plugin,
             new Runnable() {

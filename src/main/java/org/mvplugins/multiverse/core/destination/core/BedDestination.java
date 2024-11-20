@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 
 /**
  * {@link Destination} implementation for beds.
  */
 @Service
-public class BedDestination implements Destination<BedDestinationInstance> {
+public class BedDestination implements Destination<BedDestination, BedDestinationInstance> {
     static final String OWN_BED_STRING = "playerbed";
 
     BedDestination() {
@@ -41,7 +41,7 @@ public class BedDestination implements Destination<BedDestinationInstance> {
         if (player == null && !destinationParams.equals(OWN_BED_STRING)) {
             return null;
         }
-        return new BedDestinationInstance(player);
+        return new BedDestinationInstance(this, player);
     }
 
     /**
@@ -52,13 +52,5 @@ public class BedDestination implements Destination<BedDestinationInstance> {
         List<String> collect = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         collect.add(OWN_BED_STRING);
         return collect;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean checkTeleportSafety() {
-        return false;
     }
 }

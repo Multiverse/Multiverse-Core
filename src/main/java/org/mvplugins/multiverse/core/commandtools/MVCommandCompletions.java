@@ -28,8 +28,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -68,7 +68,7 @@ class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
 
-        setDefaultCompletion("destinations", ParsedDestination.class);
+        setDefaultCompletion("destinations", DestinationInstance.class);
         setDefaultCompletion("difficulties", Difficulty.class);
         setDefaultCompletion("environments", World.Environment.class);
         setDefaultCompletion("flags", String[].class);

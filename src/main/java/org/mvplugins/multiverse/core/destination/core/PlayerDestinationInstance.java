@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.destination.core;
 
+import io.vavr.control.Option;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -7,12 +8,12 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.api.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 
 /**
  * Destination instance implementation for the {@link PlayerDestination}.
  */
-public class PlayerDestinationInstance implements DestinationInstance {
+public class PlayerDestinationInstance extends DestinationInstance<PlayerDestinationInstance, PlayerDestination> {
     private final Player player;
 
     /**
@@ -20,7 +21,8 @@ public class PlayerDestinationInstance implements DestinationInstance {
      *
      * @param player The player whose location to go to.
      */
-    PlayerDestinationInstance(Player player) {
+    PlayerDestinationInstance(@NotNull PlayerDestination destination, @NotNull Player player) {
+        super(destination);
         this.player = player;
     }
 
@@ -28,24 +30,32 @@ public class PlayerDestinationInstance implements DestinationInstance {
      * {@inheritDoc}
      */
     @Override
-    public @Nullable Location getLocation(@NotNull Entity teleportee) {
-        return player.getLocation();
+    public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
+        return Option.of(player.getLocation());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public @Nullable Vector getVelocity(@NotNull Entity teleportee) {
-        return null;
+    public @NotNull Option<Vector> getVelocity(@NotNull Entity teleportee) {
+        return Option.none();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public @Nullable String getFinerPermissionSuffix() {
-        return player.getName();
+    public boolean checkTeleportSafety() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Option<String> getFinerPermissionSuffix() {
+        return Option.of(player.getName());
     }
 
     /**

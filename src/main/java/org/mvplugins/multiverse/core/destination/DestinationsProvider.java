@@ -6,15 +6,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-
-import org.mvplugins.multiverse.core.api.Destination;
-import org.mvplugins.multiverse.core.api.DestinationInstance;
 
 /**
  * Provides destinations for teleportation.
@@ -25,7 +23,7 @@ public class DestinationsProvider {
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
 
     private final PluginManager pluginManager;
-    private final Map<String, Destination<?>> destinationMap;
+    private final Map<String, Destination<?, ?>> destinationMap;
 
     @Inject
     DestinationsProvider(@NotNull PluginManager pluginManager) {
@@ -38,12 +36,12 @@ public class DestinationsProvider {
      *
      * @param destination The destination.
      */
-    public void registerDestination(@NotNull Destination<?> destination) {
+    public void registerDestination(@NotNull Destination<?, ?> destination) {
         this.destinationMap.put(destination.getIdentifier(), destination);
         this.registerDestinationPerms(destination);
     }
 
-    private void registerDestinationPerms(@NotNull Destination<?> destination) {
+    private void registerDestinationPerms(@NotNull Destination<?, ?> destination) {
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "self." + destination.getIdentifier()));
         pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "other." + destination.getIdentifier()));
     }
@@ -74,13 +72,13 @@ public class DestinationsProvider {
      * @param destinationString The destination string.
      * @return The destination object, or null if invalid format.
      */
-    @Nullable
-    public ParsedDestination<?> parseDestination(@NotNull String destinationString) {
+    @NotNull
+    public Option<DestinationInstance<?, ?>> parseDestination(@NotNull String destinationString) {
         String[] items = destinationString.split(SEPARATOR, 2);
 
         String idString = items[0];
         String destinationParams;
-        Destination<?> destination;
+        Destination<?, ?> destination;
 
         if (items.length < 2) {
             // Assume world destination
@@ -92,15 +90,10 @@ public class DestinationsProvider {
         }
 
         if (destination == null) {
-            return null;
+            return Option.none();
         }
 
-        DestinationInstance destinationInstance = destination.getDestinationInstance(destinationParams);
-        if (destinationInstance == null) {
-            return null;
-        }
-
-        return new ParsedDestination<>(destination, destinationInstance);
+        return Option.of(destination.getDestinationInstance(destinationParams));
     }
 
     /**
@@ -109,7 +102,7 @@ public class DestinationsProvider {
      * @param identifier The identifier.
      * @return The destination, or null if not found.
      */
-    public @Nullable Destination<?> getDestinationById(@Nullable String identifier) {
+    public @Nullable Destination<?, ?> getDestinationById(@Nullable String identifier) {
         return this.destinationMap.get(identifier);
     }
 
@@ -118,7 +111,7 @@ public class DestinationsProvider {
      *
      * @return A collection of destinations.
      */
-    public @NotNull Collection<Destination<?>> getDestinations() {
+    public @NotNull Collection<Destination<?, ?>> getDestinations() {
         return this.destinationMap.values();
     }
 }

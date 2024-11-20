@@ -10,13 +10,13 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 
 /**
  * {@link Destination} implementation for anchors.
  */
 @Service
-public class AnchorDestination implements Destination<AnchorDestinationInstance> {
+public class AnchorDestination implements Destination<AnchorDestination, AnchorDestinationInstance> {
 
     private final AnchorManager anchorManager;
 
@@ -38,11 +38,14 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
      */
     @Override
     public @Nullable AnchorDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
+        if (destinationParams == null) {
+            return null;
+        }
         Location anchorLocation = this.anchorManager.getAnchorLocation(destinationParams);
         if (anchorLocation == null) {
             return null;
         }
-        return new AnchorDestinationInstance(destinationParams, anchorLocation);
+        return new AnchorDestinationInstance(this, destinationParams, anchorLocation);
     }
 
     /**
@@ -51,13 +54,5 @@ public class AnchorDestination implements Destination<AnchorDestinationInstance>
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return this.anchorManager.getAnchors(issuer.getPlayer());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean checkTeleportSafety() {
-        return true;
     }
 }

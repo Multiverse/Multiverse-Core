@@ -16,8 +16,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
@@ -49,7 +49,7 @@ class MVCommandContexts extends PaperCommandContexts {
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerIssuerOnlyContext(MVCommandIssuer.class, this::parseMVCommandIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
-        registerContext(ParsedDestination.class, this::parseDestination);
+        registerContext(DestinationInstance.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
         registerContext(GameRuleValue.class, this::parseGameRuleValue);
         registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedMultiverseWorld);
@@ -74,18 +74,14 @@ class MVCommandContexts extends PaperCommandContexts {
         return RegexContentFilter.fromString(filterString);
     }
 
-    private ParsedDestination<?> parseDestination(BukkitCommandExecutionContext context) {
+    private DestinationInstance<?, ?> parseDestination(BukkitCommandExecutionContext context) {
         String destination = context.popFirstArg();
         if (Strings.isNullOrEmpty(destination)) {
             throw new InvalidCommandArgument("No destination specified.");
         }
 
-        ParsedDestination<?> parsedDestination = destinationsProvider.parseDestination(destination);
-        if (parsedDestination == null) {
-            throw new InvalidCommandArgument("The destination " + destination + " is not valid.");
-        }
-
-        return parsedDestination;
+        return destinationsProvider.parseDestination(destination)
+                .getOrElseThrow(() -> new InvalidCommandArgument("The destination " + destination + " is not valid."));
     }
 
     private GameRule<?> parseGameRule(BukkitCommandExecutionContext context) {

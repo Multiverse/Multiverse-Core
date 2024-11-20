@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
  * {@link Destination} implementation for exact locations.
  */
 @Service
-public class ExactDestination implements Destination<ExactDestinationInstance> {
+public class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance> {
 
     private final WorldManager worldManager;
 
@@ -53,7 +53,7 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
             return null;
         }
 
-        World world = this.worldManager.getLoadedWorld(worldName).map(LoadedMultiverseWorld::getBukkitWorld).getOrNull().getOrNull();
+        World world = this.worldManager.getLoadedWorld(worldName).flatMap(LoadedMultiverseWorld::getBukkitWorld).getOrNull();
         if (world == null) {
             return null;
         }
@@ -81,7 +81,7 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
             }
         }
 
-        return new ExactDestinationInstance(location);
+        return new ExactDestinationInstance(this, location);
     }
 
     /**
@@ -90,13 +90,5 @@ public class ExactDestination implements Destination<ExactDestinationInstance> {
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Collections.singleton("");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean checkTeleportSafety() {
-        return false;
     }
 }

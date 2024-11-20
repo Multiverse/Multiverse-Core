@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
  * {@link Destination} implementation for cannons.
  */
 @Service
-public class CannonDestination implements Destination<CannonDestinationInstance> {
+public class CannonDestination implements Destination<CannonDestination, CannonDestinationInstance> {
 
     private final WorldManager worldManager;
 
@@ -78,7 +78,7 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
             return null;
         }
 
-        return new CannonDestinationInstance(location, dSpeed);
+        return new CannonDestinationInstance(this, location, dSpeed);
     }
 
     /**
@@ -87,13 +87,5 @@ public class CannonDestination implements Destination<CannonDestinationInstance>
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return Collections.singleton("");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean checkTeleportSafety() {
-        return false;
     }
 }
