@@ -119,8 +119,8 @@ public class WorldManager {
      */
     private Try<Void> updateWorldsFromConfig() {
         return worldsConfigManager.load().mapTry(result -> {
-            loadNewWorldConfigs(result._1());
-            removeWorldsNotInConfigs(result._2());
+            loadNewWorldConfigs(result.newWorlds());
+            removeWorldsNotInConfigs(result.removedWorlds());
             return null;
         });
     }
