@@ -25,6 +25,15 @@ public abstract class DestinationInstance<I extends  DestinationInstance<I, T>, 
     }
 
     /**
+     * Gets the {@link Destination#getIdentifier()} for this instance.
+     *
+     * @return The identifier.
+     */
+    public @NotNull String getIdentifier() {
+        return this.destination.getIdentifier();
+    }
+
+    /**
      * Gets the exact location to teleport an entity to.
      *
      * @param teleportee The entity to teleport.
