@@ -91,11 +91,11 @@ public class MVCommandManager extends PaperCommandManager {
      * @return A not-null {@link CommandContexts}.
      */
     @Override
-    public synchronized @NotNull CommandContexts<BukkitCommandExecutionContext> getCommandContexts() {
+    public synchronized @NotNull MVCommandContexts getCommandContexts() {
         if (this.contexts == null) {
             this.contexts = commandContextsProvider.get();
         }
-        return this.contexts;
+        return (MVCommandContexts) this.contexts;
     }
 
     /**
@@ -104,11 +104,11 @@ public class MVCommandManager extends PaperCommandManager {
      * @return A not-null {@link CommandCompletions}.
      */
     @Override
-    public synchronized @NotNull CommandCompletions<BukkitCommandCompletionContext> getCommandCompletions() {
+    public synchronized @NotNull MVCommandCompletions getCommandCompletions() {
         if (this.completions == null) {
             this.completions = commandCompletionsProvider.get();
         }
-        return this.completions;
+        return (MVCommandCompletions) this.completions;
     }
 
     /**

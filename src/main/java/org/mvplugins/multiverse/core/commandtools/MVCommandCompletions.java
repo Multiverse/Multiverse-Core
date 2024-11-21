@@ -35,7 +35,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-class MVCommandCompletions extends PaperCommandCompletions {
+public class MVCommandCompletions extends PaperCommandCompletions {
 
     private final MVCommandManager commandManager;
     private final WorldManager worldManager;
@@ -75,6 +75,20 @@ class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("gamemodes", GameMode.class);
         setDefaultCompletion("gamerules", GameRule.class);
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
+    }
+
+    /**
+     * Shortcut to suggest enums values
+     *
+     * @param enumClass The enum class with values
+     * @return A collection of possible string values
+     * @param <T> The enum type
+     */
+    public <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
+        return EnumSet.allOf(enumClass).stream()
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .toList();
     }
 
     private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {
@@ -191,12 +205,5 @@ class MVCommandCompletions extends PaperCommandCompletions {
             String propertyName = context.getContextValue(String.class);
             return world.getStringPropertyHandle().getSuggestedPropertyValue(propertyName, context.getInput(), action);
         }).getOrElse(Collections.emptyList());
-    }
-
-    private <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
-        return EnumSet.allOf(enumClass).stream()
-                .map(Enum::name)
-                .map(String::toLowerCase)
-                .toList();
     }
 }

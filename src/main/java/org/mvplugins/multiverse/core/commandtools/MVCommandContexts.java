@@ -27,7 +27,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-class MVCommandContexts extends PaperCommandContexts {
+public class MVCommandContexts extends PaperCommandContexts {
 
     private final MVCommandManager mvCommandManager;
     private final DestinationsProvider destinationsProvider;
