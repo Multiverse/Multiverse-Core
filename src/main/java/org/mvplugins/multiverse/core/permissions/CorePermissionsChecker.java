@@ -62,7 +62,7 @@ public class CorePermissionsChecker {
 
         // TODO: Config whether to use finer permission
         return destination.getFinerPermissionSuffix()
-                .filter(String::isBlank)
+                .filter(finerPermissionSuffix -> !finerPermissionSuffix.isEmpty())
                 .map(finerPermissionSuffix -> hasPermission(
                         teleporter,
                         concatPermission(permission, finerPermissionSuffix)
