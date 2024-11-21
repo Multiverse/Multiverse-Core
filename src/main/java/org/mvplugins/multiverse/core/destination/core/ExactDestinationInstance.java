@@ -1,17 +1,19 @@
 package org.mvplugins.multiverse.core.destination.core;
 
+import io.vavr.control.Option;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.api.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 
 /**
  * Destination instance implementation for the {@link ExactDestination}.
  */
-public class ExactDestinationInstance implements DestinationInstance {
+public class ExactDestinationInstance extends DestinationInstance<ExactDestinationInstance, ExactDestination> {
     private final Location location;
 
     /**
@@ -19,7 +21,8 @@ public class ExactDestinationInstance implements DestinationInstance {
      *
      * @param location The location to teleport to.
      */
-    ExactDestinationInstance(Location location) {
+    ExactDestinationInstance(@NotNull ExactDestination destination, @NotNull Location location) {
+        super(destination);
         this.location = location;
     }
 
@@ -27,24 +30,33 @@ public class ExactDestinationInstance implements DestinationInstance {
      * {@inheritDoc}
      */
     @Override
-    public @Nullable Location getLocation(@NotNull Entity teleportee) {
-        return location;
+    public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
+        // todo: maybe check if the world is null?
+        return Option.of(location);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public @Nullable Vector getVelocity(@NotNull Entity teleportee) {
-        return null;
+    public @NotNull Option<Vector> getVelocity(@NotNull Entity teleportee) {
+        return Option.none();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public @Nullable String getFinerPermissionSuffix() {
-        return location.getWorld().getName();
+    public boolean checkTeleportSafety() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Option<String> getFinerPermissionSuffix() {
+        return Option.of(location.getWorld()).map(World::getName);
     }
 
     /**

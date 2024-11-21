@@ -13,9 +13,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 
 @Service
@@ -45,7 +44,7 @@ class CheckCommand extends CoreCommand {
 
             @Syntax("<destination>")
             @Description("{@@mv-core.check.destination.description}")
-            ParsedDestination<?> destination) {
+            DestinationInstance<?, ?> destination) {
         issuer.sendInfo(MVCorei18n.CHECK_CHECKING,
                 "{player}", player.getName(),
                 "{destination}", destination.toString());

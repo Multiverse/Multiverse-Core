@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.api;
+package org.mvplugins.multiverse.core.destination;
 
 import java.util.Collection;
 
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
 
 @Contract
-public interface Destination<T extends DestinationInstance> {
+public interface Destination<D extends Destination<D, T>, T extends DestinationInstance<T, D>> {
     /**
      * Returns the identifier or prefix that is required for this destination.
      *
@@ -36,13 +36,4 @@ public interface Destination<T extends DestinationInstance> {
      * @return A list of possible destinations.
      */
     @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams);
-
-    /**
-     * Should the Multiverse SafeTeleporter be used?
-     *
-     * <p>If not, MV will blindly take people to the location specified.</p>
-     *
-     * @return True if the SafeTeleporter will be used, false if not.
-     */
-    boolean checkTeleportSafety();
 }

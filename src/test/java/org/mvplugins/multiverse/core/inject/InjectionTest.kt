@@ -3,7 +3,7 @@ package org.mvplugins.multiverse.core.inject
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.anchor.AnchorManager
 import org.mvplugins.multiverse.core.api.BlockSafety
-import org.mvplugins.multiverse.core.api.Destination
+import org.mvplugins.multiverse.core.destination.Destination
 import org.mvplugins.multiverse.core.api.LocationManipulation
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand
@@ -17,7 +17,6 @@ import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
 import org.mvplugins.multiverse.core.world.WorldManager
-import org.mvplugins.multiverse.core.world.config.WorldsConfigManager
 import kotlin.test.*
 
 class InjectionTest : TestWithMockBukkit() {
@@ -110,7 +109,6 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `Destinations are available as services`() {
         val destinations = serviceLocator.getAllActiveServices(Destination::class.java)
-        // TODO: come up with a better way to test this like via actually testing the effect of using each destination
         assertEquals(6, destinations.size)
     }
 

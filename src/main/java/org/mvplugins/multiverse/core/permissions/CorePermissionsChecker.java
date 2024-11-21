@@ -7,16 +7,16 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 @Service
 public class CorePermissionsChecker {
 
-    private DestinationsProvider destinationsProvider;
+    private final DestinationsProvider destinationsProvider;
 
     @Inject
     CorePermissionsChecker(@NotNull DestinationsProvider destinationsProvider) {
@@ -50,7 +50,7 @@ public class CorePermissionsChecker {
     public boolean checkTeleportPermissions(
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
-            @NotNull ParsedDestination<?> destination) {
+            @NotNull DestinationInstance<?, ?> destination) {
 
         String permission = concatPermission(
                 CorePermissions.TELEPORT,
@@ -61,13 +61,13 @@ public class CorePermissionsChecker {
         }
 
         // TODO: Config whether to use finer permission
-        String finerPermissionSuffix = destination.getDestinationInstance().getFinerPermissionSuffix();
-        if (finerPermissionSuffix == null || finerPermissionSuffix.isEmpty()) {
-            return true;
-        }
-
-        String finerPermission = concatPermission(permission, finerPermissionSuffix);
-        return hasPermission(teleporter, finerPermission);
+        return destination.getFinerPermissionSuffix()
+                .filter(String::isBlank)
+                .map(finerPermissionSuffix -> hasPermission(
+                        teleporter,
+                        concatPermission(permission, finerPermissionSuffix)
+                ))
+                .getOrElse(true);
     }
 
     /**
@@ -77,7 +77,7 @@ public class CorePermissionsChecker {
      * @return True if the issuer has permission, false otherwise.
      */
     public boolean hasAnyTeleportPermission(CommandSender sender) {
-        for (Destination<?> destination : destinationsProvider.getDestinations()) {
+        for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {
             String permission = concatPermission(CorePermissions.TELEPORT, "self", destination.getIdentifier());
             if (hasPermission(sender, permission)) {
                 return true;

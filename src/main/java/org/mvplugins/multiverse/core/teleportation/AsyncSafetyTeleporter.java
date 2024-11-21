@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -37,14 +37,14 @@ public class AsyncSafetyTeleporter {
 
     public AsyncAttempt<Void, TeleportResult.Failure> teleportSafely(
             @NotNull Entity teleportee,
-            @Nullable ParsedDestination<?> destination) {
+            @Nullable DestinationInstance<?, ?> destination) {
         return teleportSafely(null, teleportee, destination);
     }
 
     public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleportSafely(
             @Nullable CommandSender teleporter,
             @NotNull List<T> teleportees,
-            @Nullable ParsedDestination<?> destination) {
+            @Nullable DestinationInstance<?, ?> destination) {
         return AsyncAttempt.allOf(teleportees.stream()
                 .map(teleportee -> teleportSafely(teleporter, teleportee, destination))
                 .toList());
@@ -53,13 +53,15 @@ public class AsyncSafetyTeleporter {
     public AsyncAttempt<Void, TeleportResult.Failure> teleportSafely(
             @Nullable CommandSender teleporter,
             @NotNull Entity teleportee,
-            @Nullable ParsedDestination<?> destination) {
+            @Nullable DestinationInstance<?, ?> destination) {
         if (destination == null) {
             return AsyncAttempt.failure(TeleportResult.Failure.NULL_DESTINATION);
         }
-        return destination.getDestination().checkTeleportSafety()
-                ? teleportSafely(teleporter, teleportee, destination.getLocation(teleportee))
-                : teleport(teleporter, teleportee, destination.getLocation(teleportee));
+        return destination.getLocation(teleportee)
+                .map(location -> destination.checkTeleportSafety()
+                        ? teleportSafely(teleporter, teleportee, location)
+                        : teleport(teleporter, teleportee, location))
+                .getOrElse(AsyncAttempt.failure(TeleportResult.Failure.NULL_LOCATION));
     }
 
     public AsyncAttempt<Void, TeleportResult.Failure> teleportSafely(
@@ -84,7 +86,7 @@ public class AsyncSafetyTeleporter {
 
     public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleport(
             @NotNull List<T> teleportees,
-            @Nullable ParsedDestination<?> destination) {
+            @Nullable DestinationInstance<?, ?> destination) {
         return AsyncAttempt.allOf(teleportees.stream()
                 .map(teleportee -> teleport(teleportee, destination))
                 .toList());
@@ -92,18 +94,20 @@ public class AsyncSafetyTeleporter {
 
     public AsyncAttempt<Void, TeleportResult.Failure> teleport(
             @NotNull Entity teleportee,
-            @Nullable ParsedDestination<?> destination) {
+            @Nullable DestinationInstance<?, ?> destination) {
         return teleport(null, teleportee, destination);
     }
 
     public AsyncAttempt<Void, TeleportResult.Failure> teleport(
             @Nullable CommandSender teleporter,
             @NotNull Entity teleportee,
-            @Nullable ParsedDestination<?> destination) {
-        if (destination == null) {
-            return AsyncAttempt.failure(TeleportResult.Failure.NULL_DESTINATION);
-        }
-        return teleport(teleporter, teleportee, destination.getLocation(teleportee));
+            @Nullable DestinationInstance<?, ?> destination) {
+       if (destination == null) {
+           return AsyncAttempt.failure(TeleportResult.Failure.NULL_DESTINATION);
+       }
+       return destination.getLocation(teleportee)
+               .map(location -> teleport(teleporter, teleportee, location))
+               .getOrElse(AsyncAttempt.failure(TeleportResult.Failure.NULL_LOCATION));
     }
 
     public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleport(
@@ -139,15 +143,15 @@ public class AsyncSafetyTeleporter {
     private AsyncAttempt<Void, TeleportResult.Failure> doAsyncTeleport(
             @NotNull Entity teleportee,
             @NotNull Location location,
-            boolean shouldAddToQueue) {
+            boolean shouldRemoveFromQueue) {
         return AsyncAttempt.of(PaperLib.teleportAsync(teleportee, location), exception -> {
             Logging.warning("Failed to teleport %s to %s: %s",
                     teleportee.getName(), location, exception.getMessage());
             return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED_EXCEPTION);
-        }).mapAttempt(result -> {
+        }).mapAttempt(success -> {
             Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
-            if (result) {
-                if (shouldAddToQueue) {
+            if (success) {
+                if (shouldRemoveFromQueue) {
                     teleportQueue.popFromQueue(teleportee.getName());
                 }
                 return Attempt.success(null);

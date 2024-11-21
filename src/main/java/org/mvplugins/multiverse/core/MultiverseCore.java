@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.api.MVCore;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;

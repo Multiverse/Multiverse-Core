@@ -17,8 +17,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
@@ -55,7 +54,7 @@ class TeleportCommand extends CoreCommand {
 
             @Syntax("<destination>")
             @Description("{@@mv-core.teleport.destination.description}")
-            ParsedDestination<?> destination) {
+            DestinationInstance<?, ?> destination) {
         // TODO: Add warning if teleporting too many players at once.
 
         String playerName = players.length == 1

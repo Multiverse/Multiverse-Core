@@ -14,7 +14,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import org.mvplugins.multiverse.core.destination.ParsedDestination;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 
 /**
@@ -23,11 +23,11 @@ import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 public class MVTeleportEvent extends Event implements Cancellable {
     private Player teleportee;
     private CommandSender teleporter;
-    private ParsedDestination<?> dest;
+    private DestinationInstance<?, ?> dest;
     private boolean useSafeTeleport;
     private boolean isCancelled;
 
-    public MVTeleportEvent(ParsedDestination<?> dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
+    public MVTeleportEvent(DestinationInstance<?, ?> dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
         this.teleportee = teleportee;
         this.teleporter = teleporter;
         this.dest = dest;
@@ -84,7 +84,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
      *
      * @return The destination the player will spawn at.
      */
-    public ParsedDestination<?> getDestination() {
+    public DestinationInstance<?, ?> getDestination() {
         return this.dest;
     }
 

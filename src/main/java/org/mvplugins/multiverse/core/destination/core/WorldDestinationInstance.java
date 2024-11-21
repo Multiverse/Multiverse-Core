@@ -1,18 +1,19 @@
 package org.mvplugins.multiverse.core.destination.core;
 
+import io.vavr.control.Option;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.api.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
  * Destination instance implementation for the {@link WorldDestination}.
  */
-public class WorldDestinationInstance implements DestinationInstance {
+public class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
     private final LoadedMultiverseWorld world;
     private final String direction;
     private final float yaw;
@@ -20,11 +21,18 @@ public class WorldDestinationInstance implements DestinationInstance {
     /**
      * Constructor.
      *
-     * @param world     The world to teleport to.
-     * @param direction The direction to face.
-     * @param yaw       The yaw to face.
+     * @param destination   The destination.
+     * @param world         The world to teleport to.
+     * @param direction     The direction to face.
+     * @param yaw           The yaw to face.
      */
-    WorldDestinationInstance(@NotNull LoadedMultiverseWorld world, @Nullable String direction, float yaw) {
+    WorldDestinationInstance(
+            @NotNull WorldDestination destination,
+            @NotNull LoadedMultiverseWorld world,
+            @Nullable String direction,
+            float yaw
+    ) {
+        super(destination);
         this.world = world;
         this.direction = direction;
         this.yaw = yaw;
@@ -34,29 +42,37 @@ public class WorldDestinationInstance implements DestinationInstance {
      * {@inheritDoc}
      */
     @Override
-    public @Nullable Location getLocation(@NotNull Entity teleportee) {
+    public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
         Location worldLoc = world.getSpawnLocation();
         if (this.yaw >= 0) {
             // Only modify the yaw if its set.
             worldLoc.setYaw(this.yaw);
         }
-        return worldLoc;
+        return Option.of(worldLoc);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public @Nullable Vector getVelocity(@NotNull Entity teleportee) {
-        return null;
+    public @NotNull Option<Vector> getVelocity(@NotNull Entity teleportee) {
+        return Option.none();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public @Nullable String getFinerPermissionSuffix() {
-        return world.getName();
+    public boolean checkTeleportSafety() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Option<String> getFinerPermissionSuffix() {
+        return Option.of(world.getName());
     }
 
     /**

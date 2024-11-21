@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -18,7 +18,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
  * {@link Destination} implementation for exact locations.
  */
 @Service
-public class WorldDestination implements Destination<WorldDestinationInstance> {
+public class WorldDestination implements Destination<WorldDestination, WorldDestinationInstance> {
 
     private final WorldManager worldManager;
     private final LocationManipulation locationManipulation;
@@ -56,7 +56,7 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
         String direction = (items.length == 2) ? items[1] : null;
         float yaw = direction != null ? this.locationManipulation.getYaw(direction) : -1;
 
-        return new WorldDestinationInstance(world, direction, yaw);
+        return new WorldDestinationInstance(this, world, direction, yaw);
     }
 
     /**
@@ -66,13 +66,5 @@ public class WorldDestination implements Destination<WorldDestinationInstance> {
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         // Autocomplete of worlds is done by MVCommandCompletion without prefix
         return Collections.emptyList();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean checkTeleportSafety() {
-        return true;
     }
 }

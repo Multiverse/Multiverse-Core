@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.Destination;
+import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 
 /**
  * {@link Destination} implementation for players.s
  */
 @Service
-public class PlayerDestination implements Destination<PlayerDestinationInstance> {
+public class PlayerDestination implements Destination<PlayerDestination, PlayerDestinationInstance> {
     /**
      * Creates a new instance of the PlayerDestination.
      */
@@ -41,7 +41,7 @@ public class PlayerDestination implements Destination<PlayerDestinationInstance>
         if (player == null) {
             return null;
         }
-        return new PlayerDestinationInstance(player);
+        return new PlayerDestinationInstance(this, player);
     }
 
     /**
@@ -49,14 +49,6 @@ public class PlayerDestination implements Destination<PlayerDestinationInstance>
      */
     @Override
     public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean checkTeleportSafety() {
-        return true;
+        return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
     }
 }
