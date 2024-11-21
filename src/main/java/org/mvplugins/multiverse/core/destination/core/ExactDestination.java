@@ -37,6 +37,16 @@ public class ExactDestination implements Destination<ExactDestination, ExactDest
     }
 
     /**
+     * Make a new {@link ExactDestinationInstance} from a {@link Location}.
+     *
+     * @param location  The target location
+     * @return A new {@link ExactDestinationInstance}
+     */
+    public @NotNull ExactDestinationInstance fromLocation(@NotNull Location location) {
+        return new ExactDestinationInstance(this, location);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

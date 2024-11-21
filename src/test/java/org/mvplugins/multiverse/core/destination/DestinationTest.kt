@@ -70,6 +70,17 @@ class DestinationTest : TestWithMockBukkit() {
     }
 
     @Test
+    fun `Exact destination instance from location`() {
+        val exactDestination = serviceLocator.getActiveService(ExactDestination::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("ExactDestination is not available as a service") }
+
+        val location = Location(world.bukkitWorld.orNull, 1.2, 2.0, 3.0, 9.5F, 10.5F)
+        val destination = exactDestination.fromLocation(location)
+        assertEquals(location, destination.getLocation(player).orNull)
+        assertEquals("e:world:1.2,2.0,3.0:10.5:9.5", destination.toString())
+    }
+
+    @Test
     fun `Player destination instance`() {
         assertTrue(destinationsProvider.getDestinationById("pl") is PlayerDestination)
         val destination = destinationsProvider.parseDestination("pl:benji_0224").orNull
