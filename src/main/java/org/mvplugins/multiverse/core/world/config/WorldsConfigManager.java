@@ -47,9 +47,9 @@ public final class WorldsConfigManager {
     /**
      * Loads the worlds.yml file and creates a WorldConfig for each world in the file if it doesn't already exist.
      *
-     * @return A tuple containing a list of the new WorldConfigs added and a list of the worlds removed from the config.
+     * @return A {@link NewAndRemovedWorlds} record.
      */
-    public Try<Tuple2<List<WorldConfig>, List<String>>> load() {
+    public Try<NewAndRemovedWorlds> load() {
         return Try.of(() -> {
             loadWorldYmlFile();
             return parseNewAndRemovedWorlds();
@@ -116,7 +116,7 @@ public final class WorldsConfigManager {
      *
      * @return A tuple containing a list of the new WorldConfigs added and a list of the worlds removed from the config.
      */
-    private Tuple2<List<WorldConfig>, List<String>> parseNewAndRemovedWorlds() {
+    private NewAndRemovedWorlds parseNewAndRemovedWorlds() {
         Set<String> allWorldsInConfig = worldsConfig.getKeys(false);
         List<WorldConfig> newWorldsAdded = new ArrayList<>();
 
@@ -141,7 +141,7 @@ public final class WorldsConfigManager {
             worldConfigMap.remove(s);
         }
 
-        return new Tuple2<>(newWorldsAdded, worldsRemoved);
+        return new NewAndRemovedWorlds(newWorldsAdded, worldsRemoved);
     }
 
     /**
