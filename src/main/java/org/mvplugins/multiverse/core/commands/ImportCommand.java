@@ -57,7 +57,7 @@ class ImportCommand extends CoreCommand {
     @CommandPermission("multiverse.core.import")
     @CommandCompletion("@mvworlds:scope=potential @environments @flags:groupName=mvimportcommand")
     @Syntax("<name> <env> --generator [generator[:id]] --adjust-spawn")
-    @Description("{@@mv-core.import.description")
+    @Description("{@@mv-core.import.description}")
     void onImportCommand(
             MVCommandIssuer issuer,
 
