@@ -236,6 +236,13 @@ publishing {
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
+        maven {
+            name = "multiverse"
+            def releasesRepoUrl = "https://repo.dumptruckman.com/multiverse-releases"
+            def snapshotsRepoUrl = "https://repo.dumptruckman.com/multiverse-snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
+        }
     }
 }
 

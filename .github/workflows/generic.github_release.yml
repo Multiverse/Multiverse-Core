@@ -76,7 +76,10 @@ jobs:
         if: steps.release.outputs.release_created == 'true'
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publish -x test
+          arguments: >
+            publish -x test
+              -PmultiverseUsername=${{ secrets.REPOSILITE_REPO_USERNAME }}
+              -PmultiversePassword=${{ secrets.REPOSILITE_REPO_PASSWORD }}
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,3 +92,32 @@ jobs:
           file: build/libs/${{ inputs.plugin_name }}-${{ steps.release.outputs.publish_version }}.jar
           asset_name: ${{ inputs.plugin_name }}-${{ steps.release.outputs.tag_name }}.jar
           tag: ${{ steps.release.outputs.tag_name }}
+
+      - name: Generate javadoc
+        id: javadoc
+        if: steps.release.outputs.release_created == 'true' && steps.release.outputs.release_type == 'release'
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: javadoc
+        env:
+          GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy javadoc to version and latest folder
+        if: steps.javadoc.outcome == 'success'
+        run: |
+          mkdir -p build/docs/javadoc-deploy/latest
+          mkdir -p build/docs/javadoc-deploy/${{ steps.release.outputs.tag_name }}
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/latest
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy${{ steps.release.outputs.tag_name }}
+
+      - name: Deploy javadoc to gh pages
+        if: steps.javadoc.outcome == 'success'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: build/docs/javadoc-deploy
+          branch: javadoc
+          target-folder: javadoc
+          clean: false
+          commit-message: Deploy javadoc for ${{ steps.release.outputs.tag_name }}

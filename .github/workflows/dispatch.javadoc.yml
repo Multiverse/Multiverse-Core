@@ -1,0 +1,54 @@
+name: 'Dispatch: Deploy Javadoc'
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Version to generate javadoc'
+        required: true
+      replace_latest:
+        description: 'Replace the latest folder'
+        type: boolean
+
+jobs:
+  javadocs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.target_tag }}
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+      
+      - name: build javadoc
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: javadoc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_VERSION: ${{ inputs.target_tag }}
+
+      - name: Copy javadoc to deploy folder
+        run: |
+          mkdir -p build/docs/javadoc-deploy/${{ inputs.target_tag }}
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/${{ inputs.target_tag }}
+
+      - name: Copy javadoc to latest folder
+        if: inputs.replace_latest
+        run: |
+          mkdir -p build/docs/javadoc-deploy/latest
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/latest
+
+      - name: Deploy javadoc to gh pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: build/docs/javadoc-deploy
+          branch: javadoc
+          target-folder: javadoc
+          clean: false
+          commit-message: Deploy javadoc for ${{ inputs.target_tag }}
