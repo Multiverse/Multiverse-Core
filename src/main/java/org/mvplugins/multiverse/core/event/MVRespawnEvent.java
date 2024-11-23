@@ -15,11 +15,12 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when a player is respawning.
  */
+// todo: remove or update its usage. The respawnMethod is always "compatibility" for some reason
+@Deprecated
 public class MVRespawnEvent extends Event {
-    private Player player;
+    private final Player player;
+    private final String respawnMethod;
     private Location location;
-    private String respawnMethod;
-
 
     public MVRespawnEvent(Location spawningAt, Player p, String respawnMethod) {
         this.player = p;
