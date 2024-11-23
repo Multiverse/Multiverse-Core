@@ -25,11 +25,10 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.event.MVVersionEvent;
+import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteFailedException;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteService;
@@ -100,7 +99,7 @@ class DumpsCommand extends CoreCommand {
         final ServiceTypeOption servicesType = parsedFlags.flagValue(UPLOAD_FLAG, ServiceTypeOption.PASTEGG);
 
         // Initialise and add info to the debug event
-        MVVersionEvent versionEvent = new MVVersionEvent();
+        MVDumpsDebugInfoEvent versionEvent = new MVDumpsDebugInfoEvent();
         this.addDebugInfoToEvent(versionEvent);
         plugin.getServer().getPluginManager().callEvent(versionEvent);
 
@@ -188,7 +187,7 @@ class DumpsCommand extends CoreCommand {
                 + " - Multiverse Plugins Loaded: " + this.plugin.getPluginCount() + '\n';
     }
 
-    private void addDebugInfoToEvent(MVVersionEvent event) {
+    private void addDebugInfoToEvent(MVDumpsDebugInfoEvent event) {
         // Add the legacy file, but as markdown, so it's readable
         event.putDetailedVersionInfo("version.md", this.getVersionString());
 

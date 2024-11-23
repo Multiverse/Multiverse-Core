@@ -16,12 +16,12 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when somebody requests version information about Multiverse.
  */
-public class MVVersionEvent extends Event {
+public class MVDumpsDebugInfoEvent extends Event {
 
     private final StringBuilder versionInfoBuilder;
     private final Map<String, String> detailedVersionInfo;
 
-    public MVVersionEvent() {
+    public MVDumpsDebugInfoEvent() {
         versionInfoBuilder = new StringBuilder();
         detailedVersionInfo = new HashMap<>();
     }
