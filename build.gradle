@@ -243,6 +243,13 @@ publishing {
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials(PasswordCredentials)
         }
+
+        maven {
+            // todo: remove before mv5 release
+            name = "multiverseBeta"
+            url = "https://repo.c0ding.party/multiverse-beta"
+            credentials(PasswordCredentials)
+        }
     }
 }
 
