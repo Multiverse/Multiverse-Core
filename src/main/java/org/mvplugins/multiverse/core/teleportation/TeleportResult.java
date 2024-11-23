@@ -15,5 +15,6 @@ public class TeleportResult {
         TELEPORT_FAILED,
         TELEPORT_FAILED_EXCEPTION,
         PLAYER_OFFLINE,
+        EVENT_CANCELLED,
     }
 }
