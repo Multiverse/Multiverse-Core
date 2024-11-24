@@ -9,12 +9,14 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -26,13 +28,16 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 public class AsyncSafetyTeleporter {
     private final BlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
+    private final PluginManager pluginManager;
 
     @Inject
     AsyncSafetyTeleporter(
-            BlockSafety blockSafety,
-            TeleportQueue teleportQueue) {
+            @NotNull BlockSafety blockSafety,
+            @NotNull TeleportQueue teleportQueue,
+            @NotNull PluginManager pluginManager) {
         this.blockSafety = blockSafety;
         this.teleportQueue = teleportQueue;
+        this.pluginManager = pluginManager;
     }
 
     public AsyncAttempt<Void, TeleportResult.Failure> teleportSafely(
@@ -56,6 +61,11 @@ public class AsyncSafetyTeleporter {
             @Nullable DestinationInstance<?, ?> destination) {
         if (destination == null) {
             return AsyncAttempt.failure(TeleportResult.Failure.NULL_DESTINATION);
+        }
+        MVTeleportDestinationEvent event = new MVTeleportDestinationEvent(destination, teleportee, teleporter);
+        this.pluginManager.callEvent(event);
+        if (event.isCancelled()) {
+            return AsyncAttempt.failure(TeleportResult.Failure.EVENT_CANCELLED);
         }
         return destination.getLocation(teleportee)
                 .map(location -> destination.checkTeleportSafety()
@@ -105,6 +115,11 @@ public class AsyncSafetyTeleporter {
        if (destination == null) {
            return AsyncAttempt.failure(TeleportResult.Failure.NULL_DESTINATION);
        }
+        MVTeleportDestinationEvent event = new MVTeleportDestinationEvent(destination, teleportee, teleporter);
+        this.pluginManager.callEvent(event);
+        if (event.isCancelled()) {
+            return AsyncAttempt.failure(TeleportResult.Failure.EVENT_CANCELLED);
+        }
        return destination.getLocation(teleportee)
                .map(location -> teleport(teleporter, teleportee, location))
                .getOrElse(AsyncAttempt.failure(TeleportResult.Failure.NULL_LOCATION));

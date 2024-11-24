@@ -25,6 +25,8 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
  * To get the new value, use {@link #getTheNewValue()}. To change it, use {@link #setTheNewValue(Object)}.
  * @param <T> The type of the property that was set.
  */
+// todo: Implement or remove this
+@Deprecated
 public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable {
     private MultiverseWorld world;
     private CommandSender changer;

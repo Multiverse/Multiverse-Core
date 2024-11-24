@@ -9,6 +9,7 @@ package org.mvplugins.multiverse.core.event;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -18,20 +19,18 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 
 /**
- * Event that gets called when a player use the /mvtp command.
+ * Event that gets called when a player teleports to a {@link DestinationInstance} with {@link AsyncSafetyTeleporter}.
  */
-public class MVTeleportEvent extends Event implements Cancellable {
-    private Player teleportee;
-    private CommandSender teleporter;
-    private DestinationInstance<?, ?> dest;
-    private boolean useSafeTeleport;
+public class MVTeleportDestinationEvent extends Event implements Cancellable {
+    private final Entity teleportee;
+    private final CommandSender teleporter;
+    private final DestinationInstance<?, ?> dest;
     private boolean isCancelled;
 
-    public MVTeleportEvent(DestinationInstance<?, ?> dest, Player teleportee, CommandSender teleporter, boolean safeTeleport) {
+    public MVTeleportDestinationEvent(DestinationInstance<?, ?> dest, Entity teleportee, CommandSender teleporter) {
         this.teleportee = teleportee;
         this.teleporter = teleporter;
         this.dest = dest;
-        this.useSafeTeleport = safeTeleport;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -57,7 +56,7 @@ public class MVTeleportEvent extends Event implements Cancellable {
      *
      * @return The player who will be teleported by this event.
      */
-    public Player getTeleportee() {
+    public Entity getTeleportee() {
         return this.teleportee;
     }
 
@@ -86,14 +85,6 @@ public class MVTeleportEvent extends Event implements Cancellable {
      */
     public DestinationInstance<?, ?> getDestination() {
         return this.dest;
-    }
-
-    /**
-     * Looks if this {@link MVTeleportEvent} is using the {@link AsyncSafetyTeleporter}.
-     * @return True if this {@link MVTeleportEvent} is using the {@link AsyncSafetyTeleporter}.
-     */
-    public boolean isUsingSafeTTeleporter() {
-        return useSafeTeleport;
     }
 
     @Override

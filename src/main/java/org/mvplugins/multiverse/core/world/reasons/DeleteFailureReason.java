@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world.reasons;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
+import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
@@ -33,7 +34,12 @@ public enum DeleteFailureReason implements FailureReason {
     /**
      * The world folder could not be deleted.
      */
-    FAILED_TO_DELETE_FOLDER(MVCorei18n.DELETEWORLD_FAILEDTODELETEFOLDER);
+    FAILED_TO_DELETE_FOLDER(MVCorei18n.DELETEWORLD_FAILEDTODELETEFOLDER),
+
+    /**
+     * The {@link MVWorldDeleteEvent} was cancelled.
+     */
+    EVENT_CANCELLED(MVCorei18n.GENERIC_FAILURE); // todo: messaging
 
     private final MessageKeyProvider message;
 
