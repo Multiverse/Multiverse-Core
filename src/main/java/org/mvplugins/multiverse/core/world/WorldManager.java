@@ -20,13 +20,14 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
@@ -75,6 +76,7 @@ public class WorldManager {
     private final FilesManipulator filesManipulator;
     private final BlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
+    private final PluginManager pluginManager;
 
     @Inject
     WorldManager(
@@ -84,7 +86,9 @@ public class WorldManager {
             @NotNull PlayerWorldTeleporter playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
             @NotNull BlockSafety blockSafety,
-            @NotNull LocationManipulation locationManipulation) {
+            @NotNull LocationManipulation locationManipulation,
+            @NotNull PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
         this.unloadTracker = new ArrayList<>();
@@ -476,6 +480,13 @@ public class WorldManager {
         AtomicReference<File> worldFolder = new AtomicReference<>();
         return validateWorldToDelete(world)
                 .peek(worldFolder::set)
+                .mapAttempt(() -> {
+                    MVWorldDeleteEvent event = new MVWorldDeleteEvent(world);
+                    pluginManager.callEvent(event);
+                    return event.isCancelled()
+                            ? Attempt.failure(DeleteFailureReason.EVENT_CANCELLED)
+                            : Attempt.success(null);
+                })
                 .mapAttempt(() -> removeWorld(world).transform(DeleteFailureReason.REMOVE_FAILED))
                 .mapAttempt(() -> filesManipulator.deleteFolder(worldFolder.get()).fold(
                         exception -> worldActionResult(DeleteFailureReason.FAILED_TO_DELETE_FOLDER,
