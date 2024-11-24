@@ -105,7 +105,7 @@ class DumpsCommand extends CoreCommand {
 
         // Add plugin list if user isn't paranoid
         if (!paranoid) {
-            versionEvent.putDetailedVersionInfo("plugins.md", "# Plugins\n\n" + getPluginList());
+            versionEvent.putDetailedDebugInfo("plugins.md", "# Plugins\n\n" + getPluginList());
         }
 
         BukkitRunnable logPoster = new BukkitRunnable() {
@@ -121,12 +121,12 @@ class DumpsCommand extends CoreCommand {
                         case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
                                 "{service}", "Logs",
                                 "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null));
-                        case APPEND -> versionEvent.putDetailedVersionInfo("latest.log", getLogs());
+                        case APPEND -> versionEvent.putDetailedDebugInfo("latest.log", getLogs());
                     }
                 }
 
                 // Get the files from the event
-                final Map<String, String> files = versionEvent.getDetailedVersionInfo();
+                final Map<String, String> files = versionEvent.getDetailedDebugInfo();
 
                 // Deal with uploading debug info
                 switch (servicesType) {
@@ -179,7 +179,7 @@ class DumpsCommand extends CoreCommand {
         return "Could not read log";
     }
 
-    private String getVersionString() {
+    private String getDebugInfoString() {
         return "# Multiverse-Core Version info" + "\n\n"
                 + " - Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + '\n'
                 + " - Bukkit Version: " + this.plugin.getServer().getVersion() + '\n'
@@ -189,26 +189,26 @@ class DumpsCommand extends CoreCommand {
 
     private void addDebugInfoToEvent(MVDumpsDebugInfoEvent event) {
         // Add the legacy file, but as markdown, so it's readable
-        event.putDetailedVersionInfo("version.md", this.getVersionString());
+        event.putDetailedDebugInfo("version.md", this.getDebugInfoString());
 
         // add config.yml
         File configFile = new File(plugin.getDataFolder(), "config.yml");
-        event.putDetailedVersionInfo("multiverse-core/config.yml", configFile);
+        event.putDetailedDebugInfo("multiverse-core/config.yml", configFile);
 
         // add worlds.yml
         File worldsFile = new File(plugin.getDataFolder(), "worlds.yml");
-        event.putDetailedVersionInfo("multiverse-core/worlds.yml", worldsFile);
+        event.putDetailedDebugInfo("multiverse-core/worlds.yml", worldsFile);
 
         // Add bukkit.yml if we found it
         if (getBukkitConfig() != null) {
-            event.putDetailedVersionInfo(getBukkitConfig().getPath(), getBukkitConfig());
+            event.putDetailedDebugInfo(getBukkitConfig().getPath(), getBukkitConfig());
         } else {
             Logging.warning("/mv version could not find bukkit.yml. Not including file");
         }
 
         // Add server.properties if we found it
         if (getServerProperties() != null) {
-            event.putDetailedVersionInfo(getServerProperties().getPath(), getServerProperties());
+            event.putDetailedDebugInfo(getServerProperties().getPath(), getServerProperties());
         } else {
             Logging.warning("/mv version could not find server.properties. Not including file");
         }

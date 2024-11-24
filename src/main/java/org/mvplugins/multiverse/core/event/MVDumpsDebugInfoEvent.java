@@ -18,12 +18,12 @@ import org.bukkit.event.HandlerList;
  */
 public class MVDumpsDebugInfoEvent extends Event {
 
-    private final StringBuilder versionInfoBuilder;
-    private final Map<String, String> detailedVersionInfo;
+    private final StringBuilder debugInfoBuilder;
+    private final Map<String, String> detailedDebugInfo;
 
     public MVDumpsDebugInfoEvent() {
-        versionInfoBuilder = new StringBuilder();
-        detailedVersionInfo = new HashMap<>();
+        debugInfoBuilder = new StringBuilder();
+        detailedDebugInfo = new HashMap<>();
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -48,8 +48,8 @@ public class MVDumpsDebugInfoEvent extends Event {
      * Gets the version-info currently saved in this event.
      * @return The version-info.
      */
-    public String getVersionInfo() {
-        return this.versionInfoBuilder.toString();
+    public String getDebugInfo() {
+        return this.debugInfoBuilder.toString();
     }
 
     /**
@@ -63,16 +63,16 @@ public class MVDumpsDebugInfoEvent extends Event {
      *
      * @return The immutable key value mapping of files and the contents of those files.
      */
-    public Map<String, String> getDetailedVersionInfo() {
-        return Collections.unmodifiableMap(this.detailedVersionInfo);
+    public Map<String, String> getDetailedDebugInfo() {
+        return Collections.unmodifiableMap(this.detailedDebugInfo);
     }
 
     /**
      * Appends more version-info to the version-info currently saved in this event.
      * @param moreVersionInfo The version-info to add. Should end with '\n'.
      */
-    public void appendVersionInfo(String moreVersionInfo) {
-        this.versionInfoBuilder.append(moreVersionInfo);
+    public void appendDebugInfo(String moreVersionInfo) {
+        this.debugInfoBuilder.append(moreVersionInfo);
     }
 
     private String readFile(final String filename) {
@@ -104,8 +104,8 @@ public class MVDumpsDebugInfoEvent extends Event {
      * @param fileName The name of the file.
      * @param contents The contents of the file.
      */
-    public void putDetailedVersionInfo(String fileName, String contents) {
-        this.detailedVersionInfo.put(fileName, contents);
+    public void putDetailedDebugInfo(String fileName, String contents) {
+        this.detailedDebugInfo.put(fileName, contents);
     }
 
     /**
@@ -113,7 +113,7 @@ public class MVDumpsDebugInfoEvent extends Event {
      * @param filename The name of the file.
      * @param file     The file.
      */
-    public void putDetailedVersionInfo(String filename, File file) {
-        this.putDetailedVersionInfo(filename, readFile(file.getAbsolutePath()));
+    public void putDetailedDebugInfo(String filename, File file) {
+        this.putDetailedDebugInfo(filename, readFile(file.getAbsolutePath()));
     }
 }
