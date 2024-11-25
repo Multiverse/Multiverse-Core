@@ -204,6 +204,6 @@ class WorldManagerTest : TestWithMockBukkit() {
         File(Bukkit.getWorldContainer(), "newworld1/level.dat").createNewFile()
         File(Bukkit.getWorldContainer(), "newworld2").mkdir()
         File(Bukkit.getWorldContainer(), "newworld2/level.dat").createNewFile()
-        assertEquals(listOf("newworld1", "newworld2"), worldManager.getPotentialWorlds())
+        assertEquals(setOf("newworld1", "newworld2"), worldManager.getPotentialWorlds().toSet())
     }
 }
