@@ -8,6 +8,7 @@ import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
+import co.aikar.commands.contexts.IssuerAwareContextResolver;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
@@ -54,7 +55,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(GameRuleValue.class, this::parseGameRuleValue);
         registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedMultiverseWorld);
         registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedMultiverseWorldArray);
-        registerIssuerAwareContext(MultiverseWorld.class, this::parseMultiverseWorld);
+        registerIssuerAwareContext(MultiverseWorld.class, this.parseMultiverseWorld());
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
@@ -224,48 +225,16 @@ public class MVCommandContexts extends PaperCommandContexts {
         throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
     }
 
-    private MultiverseWorld parseMultiverseWorld(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
-
-        // Get world based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                return worldManager.getWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
-        }
-
-        String worldName = context.getFirstArg();
-        MultiverseWorld world = worldManager.getWorld(worldName).getOrNull();
-
-        // Get world based on input, fallback to sender if input is not a world
-        if (resolve.equals("issuerAware")) {
-            if (world != null) {
-                context.popFirstArg();
-                return world;
-            }
-            if (context.getIssuer().isPlayer()) {
-                return worldManager.getWorld(context.getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("World '" + worldName + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
-        }
-
-        // Get world based on input only
-        if (world != null) {
-            context.popFirstArg();
-            return world;
-        }
-        if (context.isOptional()) {
-            return null;
-        }
-        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+    private IssuerAwareContextResolver<MultiverseWorld, BukkitCommandExecutionContext> parseMultiverseWorld() {
+        return IssuerAwarenessContextBuilder.<MultiverseWorld>create()
+                .canGetFromIssuer(BukkitCommandIssuer::isPlayer)
+                .getFromIssuer(issuer -> worldManager.getWorld(issuer.getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You must be in a multiverse world to use this command.")))
+                .getFromContext(input -> worldManager.getWorld(input).getOrNull())
+                .issuerOnlyError(() -> new InvalidCommandArgument("This command can only be used by a player in a Multiverse World."))
+                .issuerAwareError(input -> new InvalidCommandArgument("World '" + input + "' is not a multiverse world. Remember to specify the world name when using this command in console."))
+                .inputOnlyError(input -> new InvalidCommandArgument("World '" + input + "' is not a multiverse world."))
+                .build();
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {
