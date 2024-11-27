@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.configuration.functions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import co.aikar.commands.ACFUtil;
 import io.vavr.control.Try;
@@ -48,16 +49,20 @@ public final class DefaultStringParserProvider {
             () -> ACFUtil.isTruthy(String.valueOf(input).toLowerCase()));
 
     private static final NodeStringParser<Integer> INTEGER_STRING_PARSER = (input, type) -> Try.of(
-            () -> ACFUtil.parseInt(input));
+            () -> ACFUtil.parseInt(input))
+            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (integer)"));
 
     private static final NodeStringParser<Double> DOUBLE_STRING_PARSER = (input, type) -> Try.of(
-            () -> ACFUtil.parseDouble(input));
+            () -> ACFUtil.parseDouble(input))
+            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (double)"));
 
     private static final NodeStringParser<Float> FLOAT_STRING_PARSER = (input, type) -> Try.of(
-            () -> ACFUtil.parseFloat(input));
+            () -> ACFUtil.parseFloat(input))
+            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (float)"));
 
     private static final NodeStringParser<Long> LONG_STRING_PARSER = (input, type) -> Try.of(
-            () -> ACFUtil.parseLong(input));
+            () -> ACFUtil.parseLong(input))
+            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (long)"));
 
     static {
         addDefaultStringParser(String.class, STRING_STRING_PARSER);
