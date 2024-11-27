@@ -74,7 +74,7 @@ class GameruleCommand extends CoreCommand {
 
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
-    @CommandCompletion("@gamerules true|false|@range:1-10 @mvworlds:multiple|*")
+    @CommandCompletion("@gamerules @gamerulesvalues @mvworlds:multiple|*")
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
     @Description("{@@mv-core.gamerule.set.description}")
     void onGameruleSetCommand(
