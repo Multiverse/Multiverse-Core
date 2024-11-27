@@ -19,7 +19,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
     fun setUp() {
         val defaultConfig = getResourceAsText("/default_worlds.yml")
         assertNotNull(defaultConfig)
-        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(defaultConfig)
+        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(defaultConfig)
 
         worldConfigManager = serviceLocator.getActiveService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
@@ -34,7 +34,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
     fun `Old world config is migrated`() {
         val oldConfig = getResourceAsText("/old_worlds.yml")
         assertNotNull(oldConfig)
-        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(oldConfig)
+        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(oldConfig)
 
         assertTrue(worldConfigManager.load().isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
@@ -63,7 +63,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.addWorldConfig("newworld")
         assertTrue(worldConfigManager.save().isSuccess)
-        compareConfigFile("worlds2.yml", "/newworld_worlds.yml")
+        compareConfigFile("worlds.yml", "/newworld_worlds.yml")
     }
 
     @Test
@@ -83,7 +83,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         worldConfigManager.deleteWorldConfig("world")
         assertTrue(worldConfigManager.save().isSuccess)
-        compareConfigFile("worlds2.yml", "/delete_worlds.yml")
+        compareConfigFile("worlds.yml", "/delete_worlds.yml")
     }
 
     private fun compareConfigFile(configPath: String, comparePath: String) {

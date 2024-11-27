@@ -27,8 +27,7 @@ import org.mvplugins.multiverse.core.MultiverseCore;
  */
 @Service
 public final class WorldsConfigManager {
-    // TODO: Rename to worlds.yml
-    private static final String CONFIG_FILENAME = "worlds2.yml";
+    private static final String CONFIG_FILENAME = "worlds.yml";
 
     private final Map<String, WorldConfig> worldConfigMap;
     private final File worldConfigFile;

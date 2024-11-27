@@ -18,7 +18,7 @@ class WorldConfigTest : TestWithMockBukkit() {
     fun setUp() {
         val defaultConfig = getResourceAsText("/default_worlds.yml")
         assertNotNull(defaultConfig)
-        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds2.yml").absolutePathString()).writeText(defaultConfig)
+        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(defaultConfig)
 
         worldConfigManager = serviceLocator.getActiveService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }

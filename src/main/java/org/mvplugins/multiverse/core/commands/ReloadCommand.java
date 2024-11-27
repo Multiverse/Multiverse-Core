@@ -61,7 +61,7 @@ class ReloadCommand extends CoreCommand {
 
         List<String> configsLoaded = new ArrayList<>();
         configsLoaded.add("Multiverse-Core - config.yml");
-        configsLoaded.add("Multiverse-Core - worlds2.yml");
+        configsLoaded.add("Multiverse-Core - worlds.yml");
         configsLoaded.add("Multiverse-Core - anchors.yml");
 
         MVConfigReloadEvent configReload = new MVConfigReloadEvent(configsLoaded);
