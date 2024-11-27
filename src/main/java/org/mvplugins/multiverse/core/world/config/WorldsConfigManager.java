@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world.config;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.dumptruckman.minecraft.util.Logging;
-import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
 /**
  * Manages the worlds.yml file.
@@ -79,6 +81,11 @@ public final class WorldsConfigManager {
                     if (!configData.contains("==: MVWorld")) {
                         throw new ConfigMigratedException();
                     }
+
+                    // Copy old config file to `worlds.yml.old`
+                    Path oldWorldConfig = worldConfigFile.toPath().getParent().resolve(CONFIG_FILENAME + ".old");
+                    Files.copy(worldConfigFile.toPath(), oldWorldConfig, COPY_ATTRIBUTES);
+
                     return configData.replace("    ==: MVWorld\n", "")
                             .replace("      ==: MVSpawnSettings\n", "")
                             .replace("        ==: MVSpawnSubSettings\n", "")
