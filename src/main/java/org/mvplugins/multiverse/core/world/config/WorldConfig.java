@@ -64,6 +64,7 @@ public final class WorldConfig {
                 .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
                 .addAction(DoubleMigrationAction.of("entry-fee.amount"))
                 .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
+                .addAction(DeleteMigratorAction.of("entryfee"))
                 //.addAction(MoveMigratorAction.of("environment", "environment"))
                 .addAction(MoveMigratorAction.of("gameMode", "gamemode"))
                 //.addAction(MoveMigratorAction.of("generator", "generator"))
