@@ -145,12 +145,13 @@ public class MVCommandContexts extends PaperCommandContexts {
                 return world;
             }
             if (context.getIssuer().isPlayer()) {
-                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
+                return worldManager.getLoadedWorld(context.getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
             }
             if (context.isOptional()) {
                 return null;
             }
-            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+            throw new InvalidCommandArgument("World '" + worldName + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
         }
 
         // Get world based on input only
@@ -167,14 +168,11 @@ public class MVCommandContexts extends PaperCommandContexts {
     private LoadedMultiverseWorld[] parseLoadedMultiverseWorldArray(BukkitCommandExecutionContext context) {
         String resolve = context.getFlagValue("resolve", "");
 
-        LoadedMultiverseWorld playerWorld = null;
-        if (context.getIssuer().isPlayer()) {
-            playerWorld = worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
-        }
-
         // Get world based on sender only
         if (resolve.equals("issuerOnly")) {
-            if (playerWorld != null) {
+            if (context.getIssuer().isPlayer()) {
+                LoadedMultiverseWorld playerWorld = worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
                 return new LoadedMultiverseWorld[]{playerWorld};
             }
             if (context.isOptional()) {
@@ -204,13 +202,15 @@ public class MVCommandContexts extends PaperCommandContexts {
                 context.popFirstArg();
                 return worlds.toArray(new LoadedMultiverseWorld[0]);
             }
-            if (playerWorld != null) {
+            if (context.getIssuer().isPlayer()) {
+                LoadedMultiverseWorld playerWorld = worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
                 return new LoadedMultiverseWorld[]{playerWorld};
             }
             if (context.isOptional()) {
                 return null;
             }
-            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+            throw new InvalidCommandArgument("Worlds '" + worldStrings + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
         }
 
         // Get world based on input only
@@ -248,12 +248,13 @@ public class MVCommandContexts extends PaperCommandContexts {
                 return world;
             }
             if (context.getIssuer().isPlayer()) {
-                return worldManager.getWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
+                return worldManager.getWorld(context.getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
             }
             if (context.isOptional()) {
                 return null;
             }
-            throw new InvalidCommandArgument("Player is not in a Multiverse World.");
+            throw new InvalidCommandArgument("World '" + worldName + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
         }
 
         // Get world based on input only
