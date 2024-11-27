@@ -218,6 +218,9 @@ public class StringPropertyHandle {
      */
     public Try<Void> modifyPropertyString(
             @Nullable String name, @Nullable String value, @NotNull PropertyModifyAction action) {
+        if (action.isRequireValue() && (value == null)) {
+            return Try.failure(new IllegalArgumentException("Value is required for PropertyModifyAction: " + action));
+        }
         return switch (action) {
             case SET -> setPropertyString(name, value);
             case ADD -> addPropertyString(name, value);
