@@ -5,6 +5,7 @@ import java.util.List;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
@@ -41,6 +42,7 @@ class TeleportCommand extends CoreCommand {
 
     @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
+    @CommandPermission("@teleport")
     @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
     @Description("{@@mv-core.teleport.description}")
