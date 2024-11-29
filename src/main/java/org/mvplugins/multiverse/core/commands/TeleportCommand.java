@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.List;
 
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -78,10 +77,5 @@ class TeleportCommand extends CoreCommand {
                     Logging.severe("Error while teleporting %s to %s: %s",
                             playerName, destination, throwable.getMessage());
                 });
-    }
-
-    @Override
-    public boolean hasPermission(CommandIssuer issuer) {
-        return permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer());
     }
 }
