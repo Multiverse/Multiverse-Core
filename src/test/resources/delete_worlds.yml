@@ -1,0 +1,38 @@
+world_nether:
+  adjust-spawn: false
+  alias: ''
+  allow-flight: false
+  allow-weather: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: true
+  difficulty: NORMAL
+  entry-fee:
+    enabled: false
+    amount: 0.0
+    currency: '@vault-economy'
+  environment: NETHER
+  gamemode: SURVIVAL
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: ALL
+  pvp: true
+  respawn-world: ''
+  scale: 1.0
+  seed: -9223372036854775808
+  spawn-location:
+    ==: MVNullLocation (It's a bug if you see this in your config file)
+  spawning:
+    animals:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+  world-blacklist: []
+  version: 1.0

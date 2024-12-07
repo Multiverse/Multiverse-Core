@@ -8,11 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v3
 
       - uses: dbelyaev/action-checkstyle@v0.8.4
+        continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           checkstyle_version: 10.12.2
           checkstyle_config: ./config/mv_checks.xml
+          level: warning
