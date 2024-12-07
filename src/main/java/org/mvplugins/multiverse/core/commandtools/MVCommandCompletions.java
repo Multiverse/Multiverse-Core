@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -61,6 +62,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
+        registerAsyncCompletion("gamerulesvalues", this::suggestGamerulesValues);
         registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
@@ -137,6 +139,13 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestGamerules() {
         return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
+    }
+
+    private Collection<String> suggestGamerulesValues(BukkitCommandCompletionContext context) {
+       return Try.of(() -> context.getContextValue(GameRule.class))
+               // Just use our suggester from configuration lib since gamerules are only boolean or int
+               .mapTry(gamerule -> DefaultSuggesterProvider.getDefaultSuggester(gamerule.getType()).suggest(context.getInput()))
+               .getOrElse(Collections.emptyList());
     }
 
     private Collection<String> suggestMVConfigValues(BukkitCommandCompletionContext context) {
