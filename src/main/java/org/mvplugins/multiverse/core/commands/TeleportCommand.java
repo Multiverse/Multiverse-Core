@@ -41,7 +41,7 @@ class TeleportCommand extends CoreCommand {
 
     @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
-    @CommandPermission("@teleport")
+    @CommandPermission("@mvteleport")
     @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
     @Description("{@@mv-core.teleport.description}")

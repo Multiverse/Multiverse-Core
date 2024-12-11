@@ -12,6 +12,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
+import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -22,18 +23,22 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 class SpawnCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final AsyncSafetyTeleporter safetyTeleporter;
+    private final CorePermissionsChecker permissionsChecker;
 
     @Inject
     SpawnCommand(@NotNull MVCommandManager commandManager,
                  @NotNull WorldManager worldManager,
-                 @NotNull AsyncSafetyTeleporter safetyTeleporter) {
+                 @NotNull AsyncSafetyTeleporter safetyTeleporter,
+                 @NotNull CorePermissionsChecker permissionsChecker) {
         super(commandManager);
         this.worldManager = worldManager;
         this.safetyTeleporter = safetyTeleporter;
+        this.permissionsChecker = permissionsChecker;
     }
 
     @CommandAlias("mvspawn")
     @Subcommand("spawn")
+    @CommandPermission("@mvspawn")
     @CommandCompletion("@players")
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")
@@ -44,20 +49,18 @@ class SpawnCommand extends CoreCommand {
             @Syntax("[player]")
             @Description("{@@mv-core.spawn.player.description}")
             Player player) {
-        // TODO: Better handling of permission checking with CorePermissionsChecker
-        String permission = player.equals(issuer.getPlayer()) ? "multiverse.core.spawn.self" : "multiverse.core.spawn.other";
-        if (!issuer.hasPermission(permission)) {
-            issuer.sendMessage("You do not have permission to use this command!");
-            return;
-        }
-
         LoadedMultiverseWorld world = worldManager.getLoadedWorld(player.getWorld()).getOrNull();
         if (world == null) {
             issuer.sendMessage("The world the player you are trying to teleport is in, is not a multiverse world");
             return;
         }
 
-        // Teleport the player
+        if (!permissionsChecker.hasSpawnPermission(issuer.getIssuer(), player, world)) {
+            issuer.sendMessage("You do not have permission to use this command in this world!");
+            return;
+        }
+
+        // Teleport the player to spawn
         // TODO: Different message for teleporting self vs others
         safetyTeleporter.teleportSafely(issuer.getIssuer(), player, world.getSpawnLocation())
                 .onSuccess(() -> player.sendMessage(commandManager.formatMessage(
@@ -87,11 +90,5 @@ class SpawnCommand extends CoreCommand {
             return commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.SPAWN_YOU);
         }
         return issuer.getIssuer().getName();
-    }
-
-    @Override
-    public boolean hasPermission(CommandIssuer issuer) {
-        // TODO: Fix autocomplete showing even if the player doesn't have permission
-        return issuer.hasPermission("multiverse.core.spawn.self") || issuer.hasPermission("multiverse.core.spawn.other");
     }
 }
