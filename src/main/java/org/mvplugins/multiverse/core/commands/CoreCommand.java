@@ -8,6 +8,6 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 @Contract
 public abstract class CoreCommand extends MultiverseCommand {
     protected CoreCommand(@NotNull MVCommandManager commandManager) {
-        super(commandManager);
+        super(commandManager, "mv");
     }
 }
