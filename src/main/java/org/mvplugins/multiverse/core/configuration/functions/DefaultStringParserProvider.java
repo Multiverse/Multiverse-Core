@@ -2,10 +2,11 @@ package org.mvplugins.multiverse.core.configuration.functions;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import co.aikar.commands.ACFUtil;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
 /**
  * Provides default string parsers for common types.
@@ -50,19 +51,19 @@ public final class DefaultStringParserProvider {
 
     private static final NodeStringParser<Integer> INTEGER_STRING_PARSER = (input, type) -> Try.of(
             () -> ACFUtil.parseInt(input))
-            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (integer)"));
+            .flatMap(number -> Option.of(number).toTry(() -> new MultiverseException("Unable to convert '" + input + "' to number. (integer)")));
 
     private static final NodeStringParser<Double> DOUBLE_STRING_PARSER = (input, type) -> Try.of(
             () -> ACFUtil.parseDouble(input))
-            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (double)"));
+            .flatMap(number -> Option.of(number).toTry(() -> new MultiverseException("Unable to convert '" + input + "' to number. (double)")));
 
     private static final NodeStringParser<Float> FLOAT_STRING_PARSER = (input, type) -> Try.of(
             () -> ACFUtil.parseFloat(input))
-            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (float)"));
+            .flatMap(number -> Option.of(number).toTry(() -> new MultiverseException("Unable to convert '" + input + "' to number. (float)")));
 
     private static final NodeStringParser<Long> LONG_STRING_PARSER = (input, type) -> Try.of(
             () -> ACFUtil.parseLong(input))
-            .andThenTry(number -> Objects.requireNonNull(number, "Unable to convert '" + input + "' to number. (long)"));
+            .flatMap(number -> Option.of(number).toTry(() -> new MultiverseException("Unable to convert '" + input + "' to number. (long)")));
 
     static {
         addDefaultStringParser(String.class, STRING_STRING_PARSER);
