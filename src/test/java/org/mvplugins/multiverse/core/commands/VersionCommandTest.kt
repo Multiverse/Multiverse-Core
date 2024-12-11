@@ -1,23 +1,16 @@
 package org.mvplugins.multiverse.core.commands
 
+import co.aikar.commands.MessageKeys
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.mockbukkit.mockbukkit.entity.PlayerMock
-import org.mvplugins.multiverse.core.TestWithMockBukkit
-import kotlin.test.BeforeTest
+import org.mvplugins.multiverse.core.utils.MVCorei18n
+import org.mvplugins.multiverse.core.utils.message.Message
+import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class VersionCommandTest : TestWithMockBukkit() {
-
-    private lateinit var player: PlayerMock
-
-    @BeforeTest
-    fun setUp() {
-        player = server.addPlayer("benwoo1110");
-        assertEquals(player, server.getPlayer("benwoo1110"))
-    }
+class VersionCommandTest : BaseCommandTest() {
 
     @Test
     fun `Run version command as console`() {
@@ -29,8 +22,17 @@ class VersionCommandTest : TestWithMockBukkit() {
 
     @Test
     fun `Run version command as player`() {
+        addPermission("multiverse.core.version")
         assertTrue(player.performCommand("mv version"))
-        val output = ChatColor.stripColor(player.nextMessage())
-        assertEquals("I'm sorry, but you do not have permission to perform this command.", output)
+        assertCommandOutput(Message.of(
+            MVCorei18n.VERSION_MV,
+            "",
+            replace("{version}").with(multiverseCore.getDescription().getVersion())))
+    }
+
+    @Test
+    fun `Run version command as player - no permission`() {
+        assertTrue(player.performCommand("mv version"))
+        assertCommandOutput(Message.of(MessageKeys.PERMISSION_DENIED, ""))
     }
 }
