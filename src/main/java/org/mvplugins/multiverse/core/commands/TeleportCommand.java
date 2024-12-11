@@ -2,9 +2,9 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.List;
 
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Subcommand;
@@ -41,6 +41,7 @@ class TeleportCommand extends CoreCommand {
 
     @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
+    @CommandPermission("@mvteleport")
     @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
     @Syntax("[player] <destination>")
     @Description("{@@mv-core.teleport.description}")
@@ -76,10 +77,5 @@ class TeleportCommand extends CoreCommand {
                     Logging.severe("Error while teleporting %s to %s: %s",
                             playerName, destination, throwable.getMessage());
                 });
-    }
-
-    @Override
-    public boolean hasPermission(CommandIssuer issuer) {
-        return permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer());
     }
 }
