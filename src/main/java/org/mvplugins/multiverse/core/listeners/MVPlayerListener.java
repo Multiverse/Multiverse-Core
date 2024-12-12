@@ -236,20 +236,31 @@ public class MVPlayerListener implements CoreListener {
             return;
         }
         Player teleportee = event.getPlayer();
-        CommandSender teleporter;
-        Optional<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
-        if (teleporterName.isPresent()) {
+        CommandSender teleporter = null;
+        Option<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
+        if (teleporterName.isDefined()) {
             if (teleporterName.equals("CONSOLE")) {
                 Logging.finer("We know the teleporter is the console! Magical!");
                 teleporter = this.server.getConsoleSender();
             } else {
                 teleporter = this.server.getPlayerExact(teleporterName.get());
             }
-        } else {
-            teleporter = teleportee;
+            if (teleporter != null) {
+                Logging.finer("Inferred sender '" + teleporter + "' from name '"
+                        + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
+            }
         }
-        Logging.finer("Inferred sender '" + teleporter + "' from name '"
-                + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
+
+        if (teleporter == null) {
+            if (config.getTeleportIntercept()) {
+                teleporter = teleportee;
+            } else {
+                Logging.finer("Teleport for %s was not initiated by multiverse and " +
+                        "teleport intercept is disabled. Ignoring...", teleportee.getName());
+                return;
+            }
+        }
+
         LoadedMultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
         LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
         if (toWorld == null) {
@@ -265,16 +276,17 @@ public class MVPlayerListener implements CoreListener {
             return;
         }
 
-        ResultChain entryResult = worldEntryCheckerProvider.forSender(teleporter).canEnterWorld(fromWorld, toWorld)
+        CommandSender finalTeleporter = teleporter;
+        ResultChain entryResult = worldEntryCheckerProvider.forSender(finalTeleporter).canEnterWorld(fromWorld, toWorld)
                 .onSuccessReason(EntryFeeResult.Success.class, reason -> {
                     if (reason == EntryFeeResult.Success.ENOUGH_MONEY) {
-                        economist.payEntryFee((Player) teleporter, toWorld);
+                        economist.payEntryFee((Player) finalTeleporter, toWorld);
                         // Send payment receipt
                     }
                 })
                 .onFailure(results -> {
                     event.setCancelled(true);
-                    getCommandManager().getCommandIssuer(teleporter).sendError(results.getLastResultMessage());
+                    getCommandManager().getCommandIssuer(finalTeleporter).sendError(results.getLastResultMessage());
                 });
 
         Logging.fine("Teleport result: %s", entryResult);

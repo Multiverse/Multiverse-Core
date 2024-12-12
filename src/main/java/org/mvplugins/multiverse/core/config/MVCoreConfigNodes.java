@@ -94,7 +94,8 @@ class MVCoreConfigNodes {
     final ConfigNode<Boolean> TELEPORT_INTERCEPT = node(ConfigNode.builder("world.teleport-intercept", Boolean.class)
             .comment("")
             .comment("If this is set to true, Multiverse will enforce access permissions for all teleportation,")
-            .comment("including teleportation from other plugins.")
+            .comment("including teleportation from other plugins. You should not disable this unless you are facing")
+            .comment("conflict with another plugin handling teleportation.")
             .defaultValue(true)
             .name("teleport-intercept")
             .build());
