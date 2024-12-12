@@ -147,8 +147,11 @@ public class AsyncSafetyTeleporter {
             return AsyncAttempt.failure(TeleportResult.Failure.NULL_LOCATION);
         }
 
-        boolean shouldAddToQueue = teleporter != null && teleportee instanceof Player;
+        boolean shouldAddToQueue = teleportee instanceof Player;
         if (shouldAddToQueue) {
+            if (teleporter == null) {
+                teleporter = teleportee;
+            }
             teleportQueue.addToQueue(teleporter.getName(), teleportee.getName());
         }
 
@@ -164,11 +167,11 @@ public class AsyncSafetyTeleporter {
                     teleportee.getName(), location, exception.getMessage());
             return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED_EXCEPTION);
         }).mapAttempt(success -> {
-            Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
+            if (shouldRemoveFromQueue) {
+                teleportQueue.popFromQueue(teleportee.getName());
+            }
             if (success) {
-                if (shouldRemoveFromQueue) {
-                    teleportQueue.popFromQueue(teleportee.getName());
-                }
+                Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
                 return Attempt.success(null);
             }
             return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED);

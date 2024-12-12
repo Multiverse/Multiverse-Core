@@ -2,9 +2,9 @@ package org.mvplugins.multiverse.core.teleportation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Option;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
@@ -32,12 +32,12 @@ public class TeleportQueue {
      * @param playerName The teleported player (the teleportee).
      * @return The player that teleported the other one (the teleporter).
      */
-    public Optional<String> popFromQueue(String playerName) {
+    public Option<String> popFromQueue(String playerName) {
         if (teleportQueue.containsKey(playerName)) {
             String teleportee = teleportQueue.get(playerName);
             teleportQueue.remove(playerName);
-            return Optional.of(teleportee);
+            return Option.of(teleportee);
         }
-        return Optional.empty();
+        return Option.none();
     }
 }
