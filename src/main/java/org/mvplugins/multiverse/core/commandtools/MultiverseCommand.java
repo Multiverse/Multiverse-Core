@@ -25,12 +25,20 @@ public abstract class MultiverseCommand extends BaseCommand {
      * The flags manager for the above command manager.
      */
     protected final CommandFlagsManager flagsManager;
+    private final String flagGroupPrefix;
     private String flagGroupName;
     private CommandFlagGroup.Builder flagGroupBuilder;
 
+    // todo: Remove after sub-modules are updated
+    @Deprecated
     protected MultiverseCommand(@NotNull MVCommandManager commandManager) {
+        this(commandManager, "mv");
+    }
+
+    protected MultiverseCommand(@NotNull MVCommandManager commandManager, @NotNull String flagGroupPrefix) {
         this.commandManager = commandManager;
         this.flagsManager = commandManager.getFlagsManager();
+        this.flagGroupPrefix = flagGroupPrefix;
     }
 
     @PostConstruct
@@ -59,7 +67,7 @@ public abstract class MultiverseCommand extends BaseCommand {
      */
     protected <T extends CommandFlag> T flag(T flag) {
         if (flagGroupBuilder == null) {
-            flagGroupBuilder = CommandFlagGroup.builder("mv" + getClass().getSimpleName().toLowerCase());
+            flagGroupBuilder = CommandFlagGroup.builder(flagGroupPrefix + getClass().getSimpleName().toLowerCase());
         }
         flagGroupBuilder.add(flag);
         Logging.finest("Registered flag: " + flag);
