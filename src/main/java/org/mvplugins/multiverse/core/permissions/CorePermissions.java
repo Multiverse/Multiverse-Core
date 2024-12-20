@@ -26,6 +26,11 @@ final class CorePermissions {
      */
     static final String TELEPORT = "multiverse.teleport";
 
+    /**
+     * Permission to teleport to spawn in a world.
+     */
+    static final String SPAWN = "multiverse.core.spawn";
+
     private CorePermissions() {
         // Prevent instantiation as this is a static utility class
     }

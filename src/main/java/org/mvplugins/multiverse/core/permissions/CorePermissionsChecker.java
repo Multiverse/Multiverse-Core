@@ -40,6 +40,39 @@ public class CorePermissionsChecker {
     }
 
     /**
+     * Checks if the teleporter has permission to teleport the teleportee to the world's spawnpoint.
+     *
+     * @param teleporter    The teleporter.
+     * @param teleportee    The teleportee.
+     * @param world         The world.
+     * @return True if the teleporter has permission, false otherwise.
+     */
+    public boolean hasSpawnPermission(
+            @NotNull CommandSender teleporter,
+            @NotNull Entity teleportee,
+            @NotNull LoadedMultiverseWorld world) {
+        String permission = concatPermission(CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other");
+        if (!hasPermission(teleporter, permission)) {
+            return false;
+        }
+        // TODO: Config whether to use finer permission
+        return hasPermission(teleporter, concatPermission(permission, world.getName()));
+    }
+
+    /**
+     * Check if the issuer has any base spawn permission of `multiverse.core.spawn.self` or `multiverse.core.spawn.other`
+     *
+     * @param sender    The sender that ran the command
+     * @return True if the sender has any base spawn permission.
+     */
+    public boolean hasAnySpawnPermission(@NotNull CommandSender sender) {
+        if (hasPermission(sender, concatPermission(CorePermissions.SPAWN, "self"))) {
+            return true;
+        }
+        return hasPermission(sender, concatPermission(CorePermissions.SPAWN, "other"));
+    }
+
+    /**
      * Checks if the teleporter has permission to teleport the teleportee to the destination.
      *
      * @param teleporter    The teleporter.
