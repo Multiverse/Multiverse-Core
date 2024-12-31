@@ -15,7 +15,9 @@ public enum MVCorei18n implements MessageKeyProvider {
     CONFIG_NODE_NOTFOUND,
 
     // check command
-    CHECK_CHECKING,
+    CHECK_HASPERMISSION,
+    CHECK_NOPERMISSION,
+    CHECK_LOCATION,
 
     // clone command
     CLONE_CLONING,
@@ -175,7 +177,10 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // generic
     GENERIC_SUCCESS,
-    GENERIC_FAILURE;
+    GENERIC_FAILURE,
+    GENERIC_ERROR,
+    GENERIC_NULL,
+    ;
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 
