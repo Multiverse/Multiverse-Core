@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -245,6 +246,26 @@ public class MVCoreConfig implements MVConfig {
     @Override
     public boolean isRegisterPapiHook() {
         return configHandle.get(configNodes.REGISTER_PAPI_HOOK);
+    }
+
+    @Override
+    public void setDefaultLocale(Locale defaultLocale) {
+        configHandle.set(configNodes.DEFAULT_LOCALE, defaultLocale);
+    }
+
+    @Override
+    public Locale getDefaultLocale() {
+        return configHandle.get(configNodes.DEFAULT_LOCALE);
+    }
+
+    @Override
+    public void setPerPlayerLocale(boolean perPlayerLocale) {
+        configHandle.set(configNodes.PER_PLAYER_LOCALE, perPlayerLocale);
+    }
+
+    @Override
+    public boolean getPerPlayerLocale() {
+        return configHandle.get(configNodes.PER_PLAYER_LOCALE);
     }
 
     @Override
