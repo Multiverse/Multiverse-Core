@@ -4,6 +4,8 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.plugin.PluginManager;
 
+import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
@@ -11,13 +13,17 @@ import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
+import java.util.Locale;
+
 class MVCoreConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
     private PluginManager pluginManager;
+    private MVCommandManager commandManager;
 
-    MVCoreConfigNodes(PluginManager pluginManager) {
+    MVCoreConfigNodes(@NotNull PluginManager pluginManager, @NotNull MVCommandManager commandManager) {
         this.pluginManager = pluginManager;
+        this.commandManager = commandManager;
     }
 
     public NodeGroup getNodes() {
@@ -185,6 +191,28 @@ class MVCoreConfigNodes {
             .comment("This only applies if PlaceholderAPI is installed.")
             .defaultValue(true)
             .name("register-papi-hook")
+            .build());
+
+    final ConfigNode<Locale> DEFAULT_LOCALE = node(ConfigNode.builder("messaging.default-locale", Locale.class)
+            .comment("")
+            .comment("This config option defines the default language Multiverse should use.")
+            .defaultValue(Locale.ENGLISH)
+            .name("default-locale")
+            .onSetValue((oldValue, newValue) -> {
+                commandManager.getLocales().setDefaultLocale(newValue);
+            })
+            .build());
+
+    final ConfigNode<Boolean> PER_PLAYER_LOCALE = node(ConfigNode.builder("messaging.per-player-locale", Boolean.class)
+            .comment("")
+            .comment("This config option defines if Multiverse should use the player's language based on their client's language.")
+            .comment("If the player's language does not have a translation, it will use the default language set above instead.")
+            .defaultValue(true)
+            .name("per-player-locale")
+            .onSetValue((oldValue, newValue) -> {
+                // autoDetectFromClient will be done by MVLocalesListener instead
+                commandManager.usePerIssuerLocale(newValue, false);
+            })
             .build());
 
     private final ConfigHeaderNode MISC_HEADER = node(ConfigHeaderNode.builder("misc")

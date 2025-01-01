@@ -7,6 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
@@ -14,6 +15,7 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.utils.MVCorei18n
 import org.mvplugins.multiverse.core.utils.message.Message
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
+import java.util.Locale
 import kotlin.test.*
 
 class LocalizationTest : TestWithMockBukkit() {
@@ -23,8 +25,8 @@ class LocalizationTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUpLocale() {
-        locales = assertNotNull(serviceLocator.getActiveService(PluginLocales::class.java))
         commandManager = assertNotNull(serviceLocator.getActiveService(MVCommandManager::class.java))
+        locales = commandManager.locales
     }
 
     @Nested
@@ -305,6 +307,27 @@ class LocalizationTest : TestWithMockBukkit() {
                 assertThat(sentMessage, !containsSubstring(replacementKey))
                 assertThat(sentMessage, containsSubstring(replacedMessageStringLocale))
             }
+        }
+    }
+
+    @Nested
+    inner class PerPlayerLocale {
+        //todo: Waiting for mockbukkit to support PlayerLocaleChangeEvent before adding more related tests
+
+        private lateinit var player: PlayerMock
+        private lateinit var issuer: MVCommandIssuer
+
+        @BeforeTest
+        fun setUp() {
+            player = server.addPlayer("benji_0224")
+            issuer = commandManager.getCommandIssuer(player)
+            commandManager.usePerIssuerLocale(true)
+        }
+
+        @Test
+        fun `Player with chinese locale should get chinese message`() {
+            commandManager.setPlayerLocale(player, Locale.CHINESE)
+            assertEquals("ab!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
     }
 }

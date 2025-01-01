@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.configuration.functions;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import co.aikar.commands.ACFUtil;
@@ -70,8 +71,25 @@ public final class DefaultSerializerProvider {
         }
     };
 
+    private static final NodeSerializer<Locale> LOCALE_SERIALIZER = new NodeSerializer<>() {
+        @Override
+        public Locale deserialize(Object object, Class<Locale> type) {
+            if (object instanceof Locale) {
+                return (Locale) object;
+            }
+            String[] split = String.valueOf(object).split("_", 2);
+            return split.length > 1 ? new Locale(split[0], split[1]) : new Locale(split[0]);
+        }
+
+        @Override
+        public Object serialize(Locale object, Class<Locale> type) {
+            return object.toLanguageTag();
+        }
+    };
+
     static {
         addDefaultSerializer(Boolean.class, BOOLEAN_SERIALIZER);
+        addDefaultSerializer(Locale.class, LOCALE_SERIALIZER);
     }
 
     private DefaultSerializerProvider() {

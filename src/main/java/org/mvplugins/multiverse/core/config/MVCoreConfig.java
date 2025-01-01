@@ -15,6 +15,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.MVConfig;
+import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.configuration.handle.CommentedYamlConfigHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
@@ -35,9 +36,9 @@ public class MVCoreConfig implements MVConfig {
     private final StringPropertyHandle stringPropertyHandle;
 
     @Inject
-    MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager) {
+    MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager, @NotNull MVCommandManager commandManager) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
-        this.configNodes = new MVCoreConfigNodes(pluginManager);
+        this.configNodes = new MVCoreConfigNodes(pluginManager, commandManager);
         this.configHandle = CommentedYamlConfigHandle.builder(configPath, configNodes.getNodes())
                 .logger(Logging.getLogger())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
