@@ -136,7 +136,7 @@ dependencies {
 
     // Tests
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.21.0'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.22.2'
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }

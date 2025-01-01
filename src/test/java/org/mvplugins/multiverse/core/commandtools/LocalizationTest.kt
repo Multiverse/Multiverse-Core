@@ -12,6 +12,7 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.config.MVCoreConfig
 import org.mvplugins.multiverse.core.utils.MVCorei18n
 import org.mvplugins.multiverse.core.utils.message.Message
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
@@ -311,23 +312,44 @@ class LocalizationTest : TestWithMockBukkit() {
     }
 
     @Nested
-    inner class PerPlayerLocale {
-        //todo: Waiting for mockbukkit to support PlayerLocaleChangeEvent before adding more related tests
-
+    inner class LocaleConfiguration {
+        private lateinit var config: MVCoreConfig
         private lateinit var player: PlayerMock
         private lateinit var issuer: MVCommandIssuer
 
         @BeforeTest
         fun setUp() {
+            config = assertNotNull(serviceLocator.getActiveService(MVCoreConfig::class.java))
             player = server.addPlayer("benji_0224")
             issuer = commandManager.getCommandIssuer(player)
-            commandManager.usePerIssuerLocale(true)
         }
 
         @Test
-        fun `Player with chinese locale should get chinese message`() {
-            commandManager.setPlayerLocale(player, Locale.CHINESE)
+        fun `Change default locale to chinese without per player locale should get chinese message`() {
+            config.perPlayerLocale = false
+            config.defaultLocale = Locale.CHINESE
             assertEquals("ab!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+        }
+
+        @Test
+        fun `Change default locale to chinese with per player locale should get default english message`() {
+            config.perPlayerLocale = true
+            config.defaultLocale = Locale.CHINESE
+            assertEquals("Success!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+        }
+
+        @Test
+        fun `PerPlayerLocale enabled - Player with chinese locale should get chinese message`() {
+            config.perPlayerLocale = true
+            player.setLocale(Locale.CHINESE)
+            assertEquals("ab!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+        }
+
+        @Test
+        fun `PerPlayerLocale disabled - Player with chinese locale should get default english message`() {
+            config.perPlayerLocale = false
+            player.setLocale(Locale.CHINESE)
+            assertEquals("Success!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
     }
 }
