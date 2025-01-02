@@ -32,7 +32,7 @@ public class MVCommandManager extends PaperCommandManager {
     private final Provider<MVCommandContexts> commandContextsProvider;
     private final Provider<MVCommandCompletions> commandCompletionsProvider;
     private final MVCommandPermissions commandPermissions;
-    private final PluginLocales locales;
+    private final PluginLocales pluginLocales;
 
     @Inject
     MVCommandManager(
@@ -50,8 +50,9 @@ public class MVCommandManager extends PaperCommandManager {
         this.commandContextsProvider = commandContextsProvider;
         this.commandCompletionsProvider = commandCompletionsProvider;
         this.commandPermissions = commandPermissions;
-        this.locales = new PluginLocales(this);
-        this.locales.loadLanguages();
+        this.pluginLocales = new PluginLocales(this);
+        this.locales = this.pluginLocales;
+        this.pluginLocales.loadLanguages();
 
         MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
@@ -62,7 +63,7 @@ public class MVCommandManager extends PaperCommandManager {
      */
     @Override
     public PluginLocales getLocales() {
-        return this.locales;
+        return this.pluginLocales;
     }
 
     /**
