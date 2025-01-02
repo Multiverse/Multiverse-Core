@@ -6,6 +6,8 @@ import org.jvnet.hk2.annotations.Contract;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 
+import java.util.Locale;
+
 @Contract
 public interface MVConfig {
 
@@ -194,6 +196,30 @@ public interface MVConfig {
      * @return registerPapiHook.
      */
     boolean isRegisterPapiHook();
+
+    /**
+     * Sets default locale used for messages
+     * @param defaultLocale The new value
+     */
+    void setDefaultLocale(Locale defaultLocale);
+
+    /**
+     * Gets default locale used for messages
+     * @return default locale
+     */
+    Locale getDefaultLocale();
+
+    /**
+     * Sets whether to use each player's client locale.
+     * @param perPlayerLocale   the new value
+     */
+    void setPerPlayerLocale(boolean perPlayerLocale);
+
+    /**
+     * Gets whether to use each player's client locale.
+     * @return  True if per player locale should be used.
+     */
+    boolean getPerPlayerLocale();
 
     /**
      * Sets globalDebug.

@@ -11,7 +11,6 @@ import org.mvplugins.multiverse.core.utils.file.FileResClassLoader;
 /**
  * Locale manager with additional methods for loading locales from plugin's locales folder.
  */
-@Service
 public class PluginLocales extends BukkitLocales {
 
     private static final String DEFAULT_LOCALE_FOLDER_PATH = "locales";
@@ -21,10 +20,8 @@ public class PluginLocales extends BukkitLocales {
      *
      * @param manager   The command manager.
      */
-    @Inject
     public PluginLocales(MVCommandManager manager) {
         super(manager);
-        manager.loadLanguages(this);
     }
 
     /**

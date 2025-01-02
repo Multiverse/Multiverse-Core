@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -15,6 +16,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.MVConfig;
+import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.configuration.handle.CommentedYamlConfigHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
@@ -35,9 +37,9 @@ public class MVCoreConfig implements MVConfig {
     private final StringPropertyHandle stringPropertyHandle;
 
     @Inject
-    MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager) {
+    MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager, @NotNull MVCommandManager commandManager) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
-        this.configNodes = new MVCoreConfigNodes(pluginManager);
+        this.configNodes = new MVCoreConfigNodes(pluginManager, commandManager);
         this.configHandle = CommentedYamlConfigHandle.builder(configPath, configNodes.getNodes())
                 .logger(Logging.getLogger())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
@@ -244,6 +246,26 @@ public class MVCoreConfig implements MVConfig {
     @Override
     public boolean isRegisterPapiHook() {
         return configHandle.get(configNodes.REGISTER_PAPI_HOOK);
+    }
+
+    @Override
+    public void setDefaultLocale(Locale defaultLocale) {
+        configHandle.set(configNodes.DEFAULT_LOCALE, defaultLocale);
+    }
+
+    @Override
+    public Locale getDefaultLocale() {
+        return configHandle.get(configNodes.DEFAULT_LOCALE);
+    }
+
+    @Override
+    public void setPerPlayerLocale(boolean perPlayerLocale) {
+        configHandle.set(configNodes.PER_PLAYER_LOCALE, perPlayerLocale);
+    }
+
+    @Override
+    public boolean getPerPlayerLocale() {
+        return configHandle.get(configNodes.PER_PLAYER_LOCALE);
     }
 
     @Override

@@ -27,7 +27,6 @@ import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.api.MVCore;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.PluginLocales;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
@@ -65,8 +64,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<MetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MVEconomist> economistProvider;
-    @Inject
-    private Provider<PluginLocales> pluginLocalesProvider;
 
     // Counter for the number of plugins that have registered with us
     private int pluginCount;
@@ -219,8 +216,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     private void setUpLocales() {
         Try.of(() -> commandManagerProvider.get())
-                .andThen(commandManager -> commandManager.usePerIssuerLocale(true, true))
-                .mapTry(commandManager -> pluginLocalesProvider.get())
+                .mapTry(MVCommandManager::getLocales)
                 .andThen(pluginLocales -> {
                     pluginLocales.addFileResClassLoader(this);
                     pluginLocales.addMessageBundles("multiverse-core");

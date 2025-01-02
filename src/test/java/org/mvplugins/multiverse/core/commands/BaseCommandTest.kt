@@ -5,6 +5,7 @@ import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.permissions.PermissionAttachment
 import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.commandtools.MVCommandManager
 import org.mvplugins.multiverse.core.commandtools.PluginLocales
 import org.mvplugins.multiverse.core.utils.message.Message
 import kotlin.test.BeforeTest
@@ -21,8 +22,9 @@ abstract class BaseCommandTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUpCommand() {
-        locales = serviceLocator.getActiveService(PluginLocales::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("PluginLocales is not available as a service") }
+        val commandManager = serviceLocator.getActiveService(MVCommandManager::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("MVCommandManager is not available as a service") }
+        locales = commandManager.locales
 
         console = server.consoleSender
         player = server.addPlayer("benwoo1110");

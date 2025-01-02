@@ -117,9 +117,4 @@ class InjectionTest : TestWithMockBukkit() {
         // Also making sure this is not loaded automatically since it's supposed to be disabled during tests
         assertNull(serviceLocator.getActiveService(MetricsConfigurator::class.java))
     }
-
-    @Test
-    fun `PluginLocales is available as a service`() {
-        assertNotNull(serviceLocator.getActiveService(PluginLocales::class.java))
-    }
 }
