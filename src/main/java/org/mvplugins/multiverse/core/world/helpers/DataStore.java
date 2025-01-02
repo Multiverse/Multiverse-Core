@@ -49,10 +49,13 @@ public interface DataStore<T> {
         public GameRulesStore copyFrom(LoadedMultiverseWorld world) {
             this.gameRuleMap = new HashMap<>();
             world.getBukkitWorld().peek(bukkitWorld -> {
-                Arrays.stream(GameRule.values()).forEach(gameRule -> {
-                    Object value = bukkitWorld.getGameRuleValue(gameRule);
-                    gameRuleMap.put(gameRule, value);
-                });
+                for (String gameRule : bukkitWorld.getGameRules()) {
+                    GameRule<?> gameRuleEnum = GameRule.getByName(gameRule);
+                    if (gameRuleEnum == null) {
+                        continue;
+                    }
+                    gameRuleMap.put(gameRuleEnum, bukkitWorld.getGameRuleValue(gameRuleEnum));
+                }
             });
             return this;
         }
@@ -65,12 +68,18 @@ public interface DataStore<T> {
             if (gameRuleMap == null) {
                 return this;
             }
-            world.getBukkitWorld().peek(bukkitWorld -> gameRuleMap.forEach((gameRule, value) -> {
-                setGameRuleValue(bukkitWorld, gameRule, value).onFailure(e -> {
-                    Logging.warning("Failed to set game rule " + gameRule.getName() + " to " + value);
-                    e.printStackTrace();
-                });
-            }));
+            world.getBukkitWorld().peek(bukkitWorld -> {
+                for (String gameRule : bukkitWorld.getGameRules()) {
+                    GameRule<?> gameRuleEnum = GameRule.getByName(gameRule);
+                    if (gameRuleEnum == null) {
+                        continue;
+                    }
+                    setGameRuleValue(bukkitWorld, gameRuleEnum, gameRuleMap.get(gameRuleEnum)).onFailure(e -> {
+                        Logging.warning("Failed to set game rule " + gameRuleEnum.getName() + " to " + gameRuleMap.get(gameRuleEnum));
+                        e.printStackTrace();
+                    });
+                }
+            });
             return this;
         }
 

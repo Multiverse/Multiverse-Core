@@ -202,13 +202,17 @@ class GameruleCommand extends CoreCommand {
     private Map<String, String> getGameRuleMap(World world) {
         Map<String, String> gameRuleMap = new HashMap<>();
 
-        for (GameRule<?> gamerule : GameRule.values()) {
-            Object gameruleValue = world.getGameRuleValue(gamerule);
-            if (gameruleValue == null) {
-                gameRuleMap.put(gamerule.getName(), "null");
+        for (String gamerule : world.getGameRules()) {
+            GameRule<?> gameruleEnum = GameRule.getByName(gamerule);
+            if (gameruleEnum == null) {
                 continue;
             }
-            gameRuleMap.put(gamerule.getName(), gameruleValue.toString());
+            Object gameruleValue = world.getGameRuleValue(gameruleEnum);
+            if (gameruleValue == null) {
+                gameRuleMap.put(gameruleEnum.getName(), "null");
+                continue;
+            }
+            gameRuleMap.put(gameruleEnum.getName(), gameruleValue.toString());
         }
         return gameRuleMap;
     }
