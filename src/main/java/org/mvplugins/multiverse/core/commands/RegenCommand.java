@@ -74,7 +74,7 @@ class RegenCommand extends CoreCommand {
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregencommand")
-    @Syntax("<world> --seed [seed] --keep-gamerules")
+    @Syntax("<world> [--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
     @Description("{@@mv-core.regen.description}")
     void onRegenCommand(
             MVCommandIssuer issuer,
@@ -84,7 +84,7 @@ class RegenCommand extends CoreCommand {
             LoadedMultiverseWorld world,
 
             @Optional
-            @Syntax("--seed [seed] --reset-gamerules")
+            @Syntax("[--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
             @Description("{@@mv-core.regen.other.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
@@ -104,6 +104,7 @@ class RegenCommand extends CoreCommand {
                 ? playerWorldTeleporter.removeFromWorld(world)
                 : Async.completedFuture(Collections.emptyList());
 
+        // todo: using future will hide stacktrace
         future.thenRun(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers));
     }
 
@@ -126,7 +127,7 @@ class RegenCommand extends CoreCommand {
                 playerWorldTeleporter.teleportPlayersToWorld(worldPlayers, newWorld);
             }
         }).onFailure(failure -> {
-            Logging.fine("World regen failure: " + failure);
+            Logging.warning("World regen failure: " + failure);
             issuer.sendError(failure.getFailureMessage());
         });
     }
