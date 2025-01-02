@@ -7,26 +7,35 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.message.Message;
+
+import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
 class CheckCommand extends CoreCommand {
 
-    private final DestinationsProvider destinationsProvider;
+    private final CorePermissionsChecker corePermissionsChecker;
+    private final LocationManipulation locationManipulation;
 
     @Inject
-    CheckCommand(@NotNull MVCommandManager commandManager, @NotNull DestinationsProvider destinationsProvider) {
+    CheckCommand(@NotNull MVCommandManager commandManager,
+                 @NotNull CorePermissionsChecker corePermissionsChecker,
+                 @NotNull LocationManipulation locationManipulation) {
         super(commandManager);
-        this.destinationsProvider = destinationsProvider;
+        this.corePermissionsChecker = corePermissionsChecker;
+        this.locationManipulation = locationManipulation;
     }
 
     @CommandAlias("mvcheck")
@@ -45,10 +54,17 @@ class CheckCommand extends CoreCommand {
             @Syntax("<destination>")
             @Description("{@@mv-core.check.destination.description}")
             DestinationInstance<?, ?> destination) {
-        issuer.sendInfo(MVCorei18n.CHECK_CHECKING,
-                "{player}", player.getName(),
-                "{destination}", destination.toString());
-        // TODO: More detailed output on permissions required.
-        // this.destinationsProvider.checkTeleportPermissions(issuer, player, destination);
+        issuer.sendInfo(this.corePermissionsChecker.checkTeleportPermissions(player, player, destination)
+                        ? MVCorei18n.CHECK_HASPERMISSION
+                        : MVCorei18n.CHECK_NOPERMISSION,
+                replace("{player}").with(player.getName()),
+                replace("{destination}").with(destination));
+        issuer.sendInfo(MVCorei18n.CHECK_LOCATION,
+                replace("{location}").with(destination.getLocation(player)
+                        .map(locationManipulation::locationToString)
+                        .map(Message::of)
+                        .getOrElse(() -> Message.of(MVCorei18n.GENERIC_NULL, "Null!"))));
+
+        // TODO: Show permission required for this particular destination
     }
 }
