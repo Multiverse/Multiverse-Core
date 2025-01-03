@@ -32,7 +32,7 @@ import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
 
 @Service
 @CommandAlias("mv")
-class AnchorListCommand extends MultiverseCommand {
+class AnchorListCommand extends CoreCommand {
 
     private final AnchorManager anchorManager;
     private final LocationManipulation locationManipulation;

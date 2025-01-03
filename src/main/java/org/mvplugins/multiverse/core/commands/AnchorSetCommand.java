@@ -22,7 +22,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")
-class AnchorSetCommand extends MultiverseCommand {
+class AnchorSetCommand extends CoreCommand {
 
     private final AnchorManager anchorManager;
     private final LocationManipulation locationManipulation;

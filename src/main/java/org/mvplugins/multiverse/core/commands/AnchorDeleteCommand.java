@@ -17,7 +17,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")
-class AnchorDeleteCommand extends MultiverseCommand {
+class AnchorDeleteCommand extends CoreCommand {
 
     private final AnchorManager anchorManager;
 
