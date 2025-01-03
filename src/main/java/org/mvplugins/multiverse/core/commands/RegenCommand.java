@@ -42,6 +42,7 @@ class RegenCommand extends CoreCommand {
     private final CommandValueFlag<String> SEED_FLAG = flag(CommandValueFlag.builder("--seed", String.class)
             .addAlias("-s")
             .completion(input -> Collections.singleton(String.valueOf(new Random().nextLong())))
+            .optional()
             .build());
 
     private final CommandFlag RESET_WORLD_CONFIG_FLAG = flag(CommandFlag.builder("--reset-world-config")
