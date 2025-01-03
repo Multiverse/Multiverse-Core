@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.config;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
+import jakarta.inject.Provider;
 import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +20,9 @@ class MVCoreConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
     private PluginManager pluginManager;
-    private MVCommandManager commandManager;
+    private Provider<MVCommandManager> commandManager;
 
-    MVCoreConfigNodes(@NotNull PluginManager pluginManager, @NotNull MVCommandManager commandManager) {
+    MVCoreConfigNodes(@NotNull PluginManager pluginManager, @NotNull Provider<MVCommandManager> commandManager) {
         this.pluginManager = pluginManager;
         this.commandManager = commandManager;
     }
@@ -199,7 +200,7 @@ class MVCoreConfigNodes {
             .defaultValue(Locale.ENGLISH)
             .name("default-locale")
             .onSetValue((oldValue, newValue) -> {
-                commandManager.getLocales().setDefaultLocale(newValue);
+                commandManager.get().getLocales().setDefaultLocale(newValue);
             })
             .build());
 
@@ -211,7 +212,7 @@ class MVCoreConfigNodes {
             .name("per-player-locale")
             .onSetValue((oldValue, newValue) -> {
                 // autoDetectFromClient will be done by MVLocalesListener instead
-                commandManager.usePerIssuerLocale(newValue, false);
+                commandManager.get().usePerIssuerLocale(newValue, false);
             })
             .build());
 

@@ -9,6 +9,8 @@ import java.util.Objects;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +39,11 @@ public class MVCoreConfig implements MVConfig {
     private final StringPropertyHandle stringPropertyHandle;
 
     @Inject
-    MVCoreConfig(@NotNull MultiverseCore core, @NotNull PluginManager pluginManager, @NotNull MVCommandManager commandManager) {
+    MVCoreConfig(
+            @NotNull MultiverseCore core,
+            @NotNull PluginManager pluginManager,
+            @NotNull Provider<MVCommandManager> commandManager // config needs to be instantiated before the command manager
+    ) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
         this.configNodes = new MVCoreConfigNodes(pluginManager, commandManager);
         this.configHandle = CommentedYamlConfigHandle.builder(configPath, configNodes.getNodes())
@@ -73,8 +79,6 @@ public class MVCoreConfig implements MVConfig {
                         .build())
                 .build();
         this.stringPropertyHandle = new StringPropertyHandle(configHandle);
-        load();
-        save();
     }
 
     private void migrateFromOldConfigFile() {
@@ -95,8 +99,12 @@ public class MVCoreConfig implements MVConfig {
 
     @Override
     public Try<Void> load() {
-        migrateFromOldConfigFile();
-        return configHandle.load();
+        return Try.run(this::migrateFromOldConfigFile)
+                .flatMap(ignore -> configHandle.load())
+                .onFailure(e -> {
+                    Logging.severe("Failed to load Multiverse-Core config.yml!");
+                    e.printStackTrace();
+                });
     }
 
     @Override
@@ -296,5 +304,13 @@ public class MVCoreConfig implements MVConfig {
     @Override
     public boolean isShowingDonateMessage() {
         return configHandle.get(configNodes.SHOW_DONATION_MESSAGE);
+    }
+
+    /**
+     * Gets the underlying config file object
+     * @return The config file
+     */
+    public FileConfiguration getConfig() {
+        return configHandle.getConfig();
     }
 }

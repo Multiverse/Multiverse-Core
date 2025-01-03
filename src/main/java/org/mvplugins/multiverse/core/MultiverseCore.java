@@ -15,6 +15,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -101,7 +102,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         // Load our configs first as we need them for everything else.
         var config = configProvider.get();
-        if (!config.isLoaded()) {
+        var loadSuccess = config.load().andThenTry(config::save).isSuccess();
+        if (!loadSuccess || !config.isLoaded()) {
             Logging.severe("Your configs were not loaded.");
             Logging.severe("Please check your configs and restart the server.");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -365,6 +367,40 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void decrementPluginCount() {
         this.pluginCount -= 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull FileConfiguration getConfig() {
+        MVCoreConfig mvCoreConfig = this.configProvider.get();
+        var config = mvCoreConfig.getConfig();
+        if (config != null && mvCoreConfig.isLoaded()) {
+            return config;
+        }
+
+        var loadSuccess = mvCoreConfig.load().isSuccess();
+        if (!loadSuccess || !mvCoreConfig.isLoaded()) {
+            throw new RuntimeException("Failed to load configs");
+        }
+        return mvCoreConfig.getConfig();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reloadConfig() {
+        this.configProvider.get().load();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveConfig() {
+        this.configProvider.get().save();
     }
 
     /**
