@@ -3,12 +3,11 @@ package org.mvplugins.multiverse.core.inject
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.anchor.AnchorManager
 import org.mvplugins.multiverse.core.api.BlockSafety
-import org.mvplugins.multiverse.core.destination.Destination
 import org.mvplugins.multiverse.core.api.LocationManipulation
+import org.mvplugins.multiverse.core.commands.CoreCommand
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand
-import org.mvplugins.multiverse.core.commandtools.PluginLocales
 import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.destination.Destination
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.listeners.*
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
@@ -17,7 +16,10 @@ import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
 import org.mvplugins.multiverse.core.world.WorldManager
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class InjectionTest : TestWithMockBukkit() {
 
@@ -100,10 +102,8 @@ class InjectionTest : TestWithMockBukkit() {
 
     @Test
     fun `Commands are available as services`() {
-        val commands = serviceLocator.getAllActiveServices(MultiverseCommand::class.java)
-        // TODO: come up with a better way to test this like via actually testing the effect of calling each command
-        // TODO: comment this until all commands are done
-        // assertEquals(18, commands.size)
+        val commands = serviceLocator.getAllActiveServices(CoreCommand::class.java)
+        assertEquals(30, commands.size)
     }
 
     @Test
