@@ -19,13 +19,13 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
@@ -60,10 +60,10 @@ class DeleteCommand extends CoreCommand {
             MVCommandIssuer issuer,
 
             @Single
-            @Conditions("worldname:scope=loaded")
+            @Conditions("worldname:scope=both")
             @Syntax("<world>")
             @Description("The world you want to delete.")
-            LoadedMultiverseWorld world,
+            MultiverseWorld world,
 
             @Optional
             @Syntax("[--remove-players]")
@@ -79,17 +79,17 @@ class DeleteCommand extends CoreCommand {
                 "{world}", world.getName())));
     }
 
-    private void runDeleteCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
+    private void runDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
         issuer.sendInfo(MVCorei18n.DELETE_DELETING, "{world}", world.getName());
 
-        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
-                ? playerWorldTeleporter.removeFromWorld(world)
+        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG) && world.isLoaded() && world instanceof LoadedMultiverseWorld loadedWorld
+                ? playerWorldTeleporter.removeFromWorld(loadedWorld)
                 : Async.completedFuture(Collections.emptyList());
 
         future.thenRun(() -> doWorldDeleting(issuer, world));
     }
 
-    private void doWorldDeleting(MVCommandIssuer issuer, LoadedMultiverseWorld world) {
+    private void doWorldDeleting(MVCommandIssuer issuer, MultiverseWorld world) {
         worldManager.deleteWorld(world)
                 .onSuccess(deletedWorldName -> {
                     Logging.fine("World delete success: " + deletedWorldName);
