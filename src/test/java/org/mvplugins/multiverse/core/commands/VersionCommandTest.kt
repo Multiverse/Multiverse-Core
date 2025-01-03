@@ -10,11 +10,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class VersionCommandTest : BaseCommandTest() {
+class VersionCommandTest : AbstractCommandTest() {
 
     @Test
     fun `Run version command as console`() {
-        val console = server.consoleSender;
         assertTrue(Bukkit.dispatchCommand(console, "mv version"))
         val output = ChatColor.stripColor(console.nextMessage())
         assertEquals("Multiverse Core Version v" + multiverseCore.getDescription().getVersion(), output)

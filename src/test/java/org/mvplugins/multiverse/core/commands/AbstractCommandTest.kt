@@ -1,8 +1,8 @@
 package org.mvplugins.multiverse.core.commands
 
 import org.bukkit.ChatColor
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.permissions.PermissionAttachment
+import org.mockbukkit.mockbukkit.command.ConsoleCommandSenderMock
 import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
@@ -12,10 +12,10 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-abstract class BaseCommandTest : TestWithMockBukkit() {
+abstract class AbstractCommandTest : TestWithMockBukkit() {
 
     protected lateinit var player: PlayerMock
-    protected lateinit var console: ConsoleCommandSender
+    protected lateinit var console: ConsoleCommandSenderMock
 
     private lateinit var locales : PluginLocales
     private lateinit var attachment : PermissionAttachment

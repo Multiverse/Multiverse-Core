@@ -10,7 +10,7 @@ import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ConfigCommandTest : BaseCommandTest() {
+class ConfigCommandTest : AbstractCommandTest() {
 
     @Test
     fun `Modify config global-debug`() {
