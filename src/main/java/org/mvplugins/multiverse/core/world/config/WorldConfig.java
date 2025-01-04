@@ -301,11 +301,11 @@ public final class WorldConfig {
         return configHandle.set(configNodes.SEED, seed);
     }
 
-    public Location getSpawnLocation() {
+    public SpawnLocation getSpawnLocation() {
         return configHandle.get(configNodes.SPAWN_LOCATION);
     }
 
-    public Try<Void> setSpawnLocation(Location spawnLocation) {
+    public Try<Void> setSpawnLocation(SpawnLocation spawnLocation) {
         return configHandle.set(configNodes.SPAWN_LOCATION, spawnLocation);
     }
 

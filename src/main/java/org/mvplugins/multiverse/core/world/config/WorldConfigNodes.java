@@ -186,7 +186,7 @@ public class WorldConfigNodes {
             .name(null)
             .build());
 
-    final ConfigNode<Location> SPAWN_LOCATION = node(ConfigNode.builder("spawn-location", Location.class)
+    final ConfigNode<SpawnLocation> SPAWN_LOCATION = node(ConfigNode.builder("spawn-location", SpawnLocation.class)
             .defaultValue(NullLocation.get())
             .name(null)
             .onSetValue((oldValue, newValue) -> {

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.config.AllowedPortalType;
+import org.mvplugins.multiverse.core.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
 
 /**
@@ -533,7 +534,7 @@ public class MultiverseWorld {
      *
      * @return The spawn location of this world.
      */
-    public Location getSpawnLocation() {
+    public SpawnLocation getSpawnLocation() {
         return worldConfig.getSpawnLocation();
     }
 
@@ -544,6 +545,17 @@ public class MultiverseWorld {
      * @return Result of setting property.
      */
     public Try<Void> setSpawnLocation(Location spawnLocation) {
+        return setSpawnLocation(new SpawnLocation(spawnLocation));
+    }
+
+    /**
+     * Sets the spawn location for a world.
+     *
+     * @param spawnLocation The spawn location for a world.
+     * @return Result of setting property.
+     */
+    public Try<Void> setSpawnLocation(SpawnLocation spawnLocation) {
+        //todo: Maybe check of safe location if adjust spawn is enabled
         return worldConfig.setSpawnLocation(spawnLocation);
     }
 
