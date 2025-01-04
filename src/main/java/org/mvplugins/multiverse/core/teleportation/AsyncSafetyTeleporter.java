@@ -95,6 +95,15 @@ public class AsyncSafetyTeleporter {
     }
 
     public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleport(
+            @Nullable CommandSender teleporter,
+            @NotNull List<T> teleportees,
+            @Nullable DestinationInstance<?, ?> destination) {
+        return AsyncAttempt.allOf(teleportees.stream()
+                .map(teleportee -> teleport(teleporter, teleportee, destination))
+                .toList());
+    }
+
+    public <T extends Entity> Async<List<Attempt<Void, TeleportResult.Failure>>> teleport(
             @NotNull List<T> teleportees,
             @Nullable DestinationInstance<?, ?> destination) {
         return AsyncAttempt.allOf(teleportees.stream()

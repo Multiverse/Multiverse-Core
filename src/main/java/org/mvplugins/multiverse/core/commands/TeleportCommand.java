@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
@@ -17,6 +18,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
+import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
+import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
@@ -28,6 +31,10 @@ class TeleportCommand extends CoreCommand {
 
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
+
+    private final CommandFlag UNSAFE_FLAG = flag(CommandFlag.builder("--unsafe")
+            .addAlias("-u")
+            .build());
 
     @Inject
     TeleportCommand(
@@ -42,8 +49,8 @@ class TeleportCommand extends CoreCommand {
     @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
     @CommandPermission("@mvteleport")
-    @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations")
-    @Syntax("[player] <destination>")
+    @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations|@flags:groupName=mvteleportcommand @flags:groupName=mvteleportcommand")
+    @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
             MVCommandIssuer issuer,
@@ -55,9 +62,15 @@ class TeleportCommand extends CoreCommand {
 
             @Syntax("<destination>")
             @Description("{@@mv-core.teleport.destination.description}")
-            DestinationInstance<?, ?> destination) {
-        // TODO: Add warning if teleporting too many players at once.
+            DestinationInstance<?, ?> destination,
 
+            @Optional
+            @Syntax("[--unsafe]")
+            @Description("")
+            String[] flags) {
+        ParsedCommandFlags parsedFlags = parseFlags(flags);
+
+        // TODO: Add warning if teleporting too many players at once.
         String playerName = players.length == 1
                 ? issuer.getPlayer() == players[0] ? "you" : players[0].getName()
                 : players.length + " players";
@@ -68,11 +81,14 @@ class TeleportCommand extends CoreCommand {
             return;
         }
 
-        issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                "{player}", playerName, "{destination}", destination.toString());
-
-        safetyTeleporter.teleportSafely(issuer.getIssuer(), List.of(players), destination)
-                .thenAccept(attempts -> Logging.fine("Async teleport completed: %s", attempts))
+        (parsedFlags.hasFlag(UNSAFE_FLAG)
+                ? safetyTeleporter.teleport(issuer.getIssuer(), List.of(players), destination)
+                : safetyTeleporter.teleportSafely(issuer.getIssuer(), List.of(players), destination))
+                .thenAccept(attempts -> {
+                    Logging.fine("Async teleport completed: %s", attempts);
+                    issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                            "{player}", playerName, "{destination}", destination.toString());
+                })
                 .exceptionally(throwable -> {
                     Logging.severe("Error while teleporting %s to %s: %s",
                             playerName, destination, throwable.getMessage());
