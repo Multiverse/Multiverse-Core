@@ -13,6 +13,7 @@ world_nether:
     currency: '@vault-economy'
   environment: NETHER
   gamemode: SURVIVAL
+  biome: '@vanilla'
   generator: ''
   hidden: false
   hunger: true

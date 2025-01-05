@@ -13,6 +13,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -68,7 +69,7 @@ class CreateCommand extends CoreCommand {
                     .filter(biome -> biome !=Biome.CUSTOM)
                     .map(biome -> biome.getKey().getKey())
                     .toList())
-            .context(Biome::valueOf)
+            .context(biomeStr -> Registry.BIOME.get(NamespacedKey.minecraft(biomeStr)))
             .build());
 
     @Inject

@@ -13,6 +13,7 @@ world:
     currency: '@vault-economy'
   environment: NORMAL
   gamemode: SURVIVAL
+  biome: '@vanilla'
   generator: ''
   hidden: false
   hunger: true
@@ -51,6 +52,7 @@ world_nether:
     currency: '@vault-economy'
   environment: NETHER
   gamemode: SURVIVAL
+  biome: '@vanilla'
   generator: ''
   hidden: false
   hunger: true
@@ -82,6 +84,7 @@ newworld:
   auto-heal: true
   auto-load: true
   bed-respawn: true
+  biome: '@vanilla'
   difficulty: NORMAL
   entry-fee:
     enabled: false
