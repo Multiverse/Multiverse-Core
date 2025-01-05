@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world.options;
 
 import java.util.Random;
 
+import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,9 +24,9 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     }
 
     private final LoadedMultiverseWorld world;
+    private Biome biome;
     private boolean keepGameRule = true;
     private boolean keepWorldConfig = true;
-
     private boolean keepWorldBorder = true;
     private boolean randomSeed = false;
     private long seed = Long.MIN_VALUE;
@@ -41,6 +42,28 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      */
     public @NotNull LoadedMultiverseWorld world() {
         return world;
+    }
+
+    /**
+     * Sets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
+     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     *
+     * @param biome The biome used for this world
+     * @return This {@link RegenWorldOptions} instance.
+     */
+    public @NotNull RegenWorldOptions biome(@Nullable Biome biome) {
+        this.biome = biome;
+        return this;
+    }
+
+    /**
+     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
+     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     *
+     * @return The biome used for this world
+     */
+    public @NotNull Biome biome() {
+        return biome;
     }
 
     /**

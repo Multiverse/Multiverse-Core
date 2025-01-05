@@ -13,7 +13,10 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
+import org.bukkit.Registry;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -114,6 +117,7 @@ class RegenCommand extends CoreCommand {
             LoadedMultiverseWorld world,
             ParsedCommandFlags parsedFlags,
             List<Player> worldPlayers) {
+        //todo: Change biome on regen
         RegenWorldOptions regenWorldOptions = RegenWorldOptions.world(world)
                 .randomSeed(parsedFlags.hasFlag(SEED_FLAG))
                 .seed(parsedFlags.flagValue(SEED_FLAG))

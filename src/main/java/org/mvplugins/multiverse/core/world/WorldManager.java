@@ -20,6 +20,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.block.Biome;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -199,6 +201,7 @@ public class WorldManager {
             CreateWorldOptions options) {
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
+                .biomeProvider(createSingleBiomeProvider(options.biome()))
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
                 .generator(parsedGenerator)
@@ -246,6 +249,7 @@ public class WorldManager {
             ImportWorldOptions options) {
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
+                .biomeProvider(createSingleBiomeProvider(options.biome()))
                 .environment(options.environment())
                 .generator(parsedGenerator);
         return createBukkitWorld(worldCreator).fold(
@@ -337,6 +341,7 @@ public class WorldManager {
 
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
         return createBukkitWorld(WorldCreator.name(mvWorld.getName())
+                .biomeProvider(createSingleBiomeProvider(mvWorld.getBiome()))
                 .environment(mvWorld.getEnvironment())
                 .generator(Strings.isNullOrEmpty(mvWorld.getGenerator()) ? null : mvWorld.getGenerator())
                 .seed(mvWorld.getSeed())).fold(
@@ -353,6 +358,18 @@ public class WorldManager {
                             saveWorldsConfig();
                             return worldActionResult(loadedWorld);
                         });
+    }
+
+    /**
+     * Creates a single biome provider for the specified biome.
+     * @param biome The biome
+     * @return The single biome provider or null if biome is null or custom
+     */
+    private @Nullable BiomeProvider createSingleBiomeProvider(@Nullable Biome biome) {
+        if (biome == null || biome == Biome.CUSTOM) {
+            return null;
+        }
+        return new SingleBiomeProvider(biome);
     }
 
     /**
@@ -516,6 +533,7 @@ public class WorldManager {
                 .mapAttempt(validatedOptions -> {
                     ImportWorldOptions importWorldOptions = ImportWorldOptions
                             .worldName(validatedOptions.newWorldName())
+                            .biome(validatedOptions.world().getBiome())
                             .environment(validatedOptions.world().getEnvironment())
                             .generator(validatedOptions.world().getGenerator());
                     return importWorld(importWorldOptions).transform(CloneFailureReason.IMPORT_FAILED);

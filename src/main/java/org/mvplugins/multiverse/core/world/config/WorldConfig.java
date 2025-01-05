@@ -10,6 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -163,6 +164,14 @@ public final class WorldConfig {
 
     public Try<Void> setAutoLoad(boolean autoLoad) {
         return configHandle.set(configNodes.AUTO_LOAD, autoLoad);
+    }
+
+    public Biome getBiome() {
+        return configHandle.get(configNodes.BIOME);
+    }
+
+    public Try<Void> setBiome(Biome biome) {
+        return configHandle.set(configNodes.BIOME, biome);
     }
 
     public boolean getBedRespawn() {

@@ -27,4 +27,6 @@ class CreateCommandTest : AbstractWorldCommandTest() {
         assertEquals(WorldType.FLAT, world.get().worldType.get())
         assertFalse(world.get().canGenerateStructures().get())
     }
+
+    //todo: Fix mockbukkit getBiomeProvider then added test on single biome world creation
 }

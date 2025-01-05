@@ -11,9 +11,12 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -59,6 +62,15 @@ class CreateCommand extends CoreCommand {
             .addAlias("-a")
             .build());
 
+    private final CommandValueFlag<Biome> BIOME_FLAG = flag(CommandValueFlag.builder("--biome", Biome.class)
+            .addAlias("-b")
+            .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
+                    .filter(biome -> biome !=Biome.CUSTOM)
+                    .map(biome -> biome.getKey().getKey())
+                    .toList())
+            .context(Biome::valueOf)
+            .build());
+
     @Inject
     CreateCommand(
             @NotNull MVCommandManager commandManager,
@@ -73,7 +85,7 @@ class CreateCommand extends CoreCommand {
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
     @CommandCompletion("@empty @environments @flags:groupName=mvcreatecommand")
-    @Syntax("<name> <environment> --seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+    @Syntax("<name> <environment> [--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn --no-structures --biome <biome>]")
     @Description("{@@mv-core.create.description}")
     void onCreateCommand(
             MVCommandIssuer issuer,
@@ -87,7 +99,7 @@ class CreateCommand extends CoreCommand {
             World.Environment environment,
 
             @Optional
-            @Syntax("--seed [seed] --generator [generator[:id]] --world-type [worldtype] --adjust-spawn --no-structures")
+            @Syntax("[--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn --no-structures --biome <biome>]")
             @Description("{@@mv-core.create.flags.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
@@ -102,14 +114,21 @@ class CreateCommand extends CoreCommand {
                 "{worldType}", parsedFlags.flagValue(WORLD_TYPE_FLAG, WorldType.NORMAL).name());
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ADJUSTSPAWN,
                 "{adjustSpawn}", String.valueOf(!parsedFlags.hasFlag(NO_ADJUST_SPAWN_FLAG)));
-        issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR,
-                "{generator}", parsedFlags.flagValue(GENERATOR_FLAG, ""));
+        if (parsedFlags.hasFlag(BIOME_FLAG)) {
+            issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_BIOME,
+                    "{biome}", parsedFlags.flagValue(BIOME_FLAG, Biome.CUSTOM).name());
+        }
+        if (parsedFlags.hasFlag(GENERATOR_FLAG)) {
+            issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR,
+                    "{generator}", parsedFlags.flagValue(GENERATOR_FLAG));
+        }
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES,
                 "{structures}", String.valueOf(!parsedFlags.hasFlag(NO_STRUCTURES_FLAG)));
 
         issuer.sendInfo(MVCorei18n.CREATE_LOADING);
 
         worldManager.createWorld(CreateWorldOptions.worldName(worldName)
+                .biome(parsedFlags.flagValue(BIOME_FLAG, Biome.CUSTOM))
                 .environment(environment)
                 .seed(parsedFlags.flagValue(SEED_FLAG))
                 .worldType(parsedFlags.flagValue(WORLD_TYPE_FLAG, WorldType.NORMAL))
