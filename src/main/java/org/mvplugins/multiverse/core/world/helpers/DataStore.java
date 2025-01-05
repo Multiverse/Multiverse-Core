@@ -57,6 +57,7 @@ public interface DataStore<T> {
                     gameRuleMap.put(gameRuleEnum, bukkitWorld.getGameRuleValue(gameRuleEnum));
                 }
             });
+            Logging.finer("Copied " + gameRuleMap.size() + " game rules from world " + world.getName());
             return this;
         }
 
