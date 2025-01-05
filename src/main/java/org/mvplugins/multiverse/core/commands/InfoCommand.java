@@ -117,13 +117,14 @@ class InfoCommand extends CoreCommand {
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
         outMap.put("World UID", world.getUID().toString());
-        outMap.put("Game Mode: ", world.getGameMode().toString());
+        outMap.put("Game Mode", world.getGameMode().toString());
         outMap.put("Difficulty", world.getDifficulty().toString());
         outMap.put("Spawn Location", locationManipulation.strCoords(world.getSpawnLocation()));
         outMap.put("Seed", String.valueOf(world.getSeed()));
         getEntryFeeInfo(outMap, world); // Entry fee/reward
         outMap.put("Respawn World", world.getRespawnWorldName());
         outMap.put("World Type", world.getWorldType().get().toString());
+        outMap.put("Biome", world.getBiome() == null ? "@vanilla" : world.getBiome().getKey().getKey());
         outMap.put("Generator", world.getGenerator());
         outMap.put("Generate Structures", world.canGenerateStructures().get().toString());
         outMap.put("World Scale", String.valueOf(world.getScale()));

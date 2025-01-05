@@ -10,6 +10,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
@@ -193,6 +195,16 @@ public class MultiverseWorld {
      */
     public boolean getBedRespawn() {
         return worldConfig.getBedRespawn();
+    }
+
+    /**
+     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
+     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     *
+     * @return The biome used for this world
+     */
+    public @Nullable Biome getBiome() {
+        return worldConfig.getBiome();
     }
 
     /**

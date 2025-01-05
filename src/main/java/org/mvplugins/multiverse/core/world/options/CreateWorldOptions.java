@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,7 @@ public class CreateWorldOptions {
     }
 
     private final String worldName;
+    private Biome biome;
     private World.Environment environment = World.Environment.NORMAL;
     private boolean generateStructures = true;
     private String generator = null;
@@ -47,6 +49,28 @@ public class CreateWorldOptions {
      */
     public @NotNull String worldName() {
         return worldName;
+    }
+
+    /**
+     * Sets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
+     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     *
+     * @param biome The biome used for this world
+     * @return This {@link CreateWorldOptions} instance.
+     */
+    public @NotNull CreateWorldOptions biome(@Nullable Biome biome) {
+        this.biome = biome;
+        return this;
+    }
+
+    /**
+     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
+     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     *
+     * @return The biome used for this world
+     */
+    public @NotNull Biome biome() {
+        return biome;
     }
 
     /**

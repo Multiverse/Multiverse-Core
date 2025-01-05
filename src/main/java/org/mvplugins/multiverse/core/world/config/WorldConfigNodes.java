@@ -7,6 +7,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
@@ -93,6 +94,12 @@ public class WorldConfigNodes {
 
     final ConfigNode<Boolean> BED_RESPAWN = node(ConfigNode.builder("bed-respawn", Boolean.class)
             .defaultValue(true)
+            .build());
+
+    final ConfigNode<Biome> BIOME = node(ConfigNode.builder("biome", Biome.class)
+            .defaultValue(Biome.CUSTOM)
+            .name(null)
+            .serializer(new BiomeSerializer())
             .build());
 
     final ConfigNode<Difficulty> DIFFICULTY = node(ConfigNode.builder("difficulty", Difficulty.class)

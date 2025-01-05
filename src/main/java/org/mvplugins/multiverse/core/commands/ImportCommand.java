@@ -9,8 +9,12 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -42,6 +46,16 @@ class ImportCommand extends CoreCommand {
             .addAlias("-n")
             .build());
 
+    private final CommandValueFlag<Biome> BIOME_FLAG = flag(CommandValueFlag.builder("--biome", Biome.class)
+            .addAlias("-b")
+            //todo: Implement some default completions or smt to reduce duplication
+            .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
+                    .filter(biome -> biome !=Biome.CUSTOM)
+                    .map(biome -> biome.getKey().getKey())
+                    .toList())
+            .context(biomeStr -> Registry.BIOME.get(NamespacedKey.minecraft(biomeStr)))
+            .build());
+
     @Inject
     ImportCommand(
             @NotNull MVCommandManager commandManager,
@@ -56,7 +70,7 @@ class ImportCommand extends CoreCommand {
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @CommandCompletion("@mvworlds:scope=potential @environments @flags:groupName=mvimportcommand")
-    @Syntax("<name> <env> --generator [generator[:id]] --adjust-spawn")
+    @Syntax("<name> <env> [--generator <generator[:id]> --adjust-spawn --biome <biome>]")
     @Description("{@@mv-core.import.description}")
     void onImportCommand(
             MVCommandIssuer issuer,
@@ -71,13 +85,14 @@ class ImportCommand extends CoreCommand {
             World.Environment environment,
 
             @Optional
-            @Syntax("--generator [generator[:id]] --adjust-spawn")
+            @Syntax("[--generator <generator[:id]> --adjust-spawn --biome <biome>]")
             @Description("{@@mv-core.import.other.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING, "{world}", worldName);
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
+                .biome(parsedFlags.flagValue(BIOME_FLAG, Biome.CUSTOM))
                 .environment(environment)
                 .generator(parsedFlags.flagValue(GENERATOR_FLAG, String.class))
                 .useSpawnAdjust(!parsedFlags.hasFlag(NO_ADJUST_SPAWN_FLAG)))
