@@ -30,14 +30,12 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.file.FileUtils;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteFailedException;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteService;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceFactory;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
 import org.mvplugins.multiverse.core.world.WorldManager;
-
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getServerProperties;
 
 @Service
 @CommandAlias("mv")
@@ -45,6 +43,7 @@ class DumpsCommand extends CoreCommand {
 
     private final MultiverseCore plugin;
     private final WorldManager worldManager;
+    private final FileUtils fileUtils;
 
     private final CommandValueFlag<LogsTypeOption> LOGS_FLAG = flag(CommandValueFlag
             .enumBuilder("--logs", LogsTypeOption.class)
@@ -64,10 +63,12 @@ class DumpsCommand extends CoreCommand {
     @Inject
     DumpsCommand(@NotNull MVCommandManager commandManager,
                         @NotNull MultiverseCore plugin,
-                        @NotNull WorldManager worldManager) {
+                        @NotNull WorldManager worldManager,
+                        @NotNull FileUtils fileUtils) {
         super(commandManager);
         this.plugin = plugin;
         this.worldManager = worldManager;
+        this.fileUtils = fileUtils;
     }
 
     private enum ServiceTypeOption {
@@ -200,15 +201,15 @@ class DumpsCommand extends CoreCommand {
         event.putDetailedDebugInfo("multiverse-core/worlds.yml", worldsFile);
 
         // Add bukkit.yml if we found it
-        if (getBukkitConfig() != null) {
-            event.putDetailedDebugInfo(getBukkitConfig().getPath(), getBukkitConfig());
+        if (fileUtils.getBukkitConfig() != null) {
+            event.putDetailedDebugInfo(fileUtils.getBukkitConfig().getPath(), fileUtils.getBukkitConfig());
         } else {
             Logging.warning("/mv version could not find bukkit.yml. Not including file");
         }
 
         // Add server.properties if we found it
-        if (getServerProperties() != null) {
-            event.putDetailedDebugInfo(getServerProperties().getPath(), getServerProperties());
+        if (fileUtils.getServerProperties() != null) {
+            event.putDetailedDebugInfo(fileUtils.getServerProperties().getPath(), fileUtils.getServerProperties());
         } else {
             Logging.warning("/mv version could not find server.properties. Not including file");
         }

@@ -9,28 +9,64 @@ package org.mvplugins.multiverse.core.utils.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import com.dumptruckman.minecraft.util.Logging;
+import jakarta.inject.Inject;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.MultiverseCore;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import static org.bukkit.Bukkit.getServer;
 
 /**
  * File-utilities.
  */
+@Service
+//todo: Review duplicated methods in FileManipulator
 public class FileUtils {
-    protected FileUtils() {
-        throw new UnsupportedOperationException();
+
+    private final File serverFolder;
+    private final File bukkitYml;
+    private final File serverProperties;
+
+    @Inject
+    protected FileUtils(@NotNull MultiverseCore plugin) {
+        this.serverFolder = getServerFolder(plugin);
+        Logging.fine("Server folder: " + this.serverFolder);
+        this.bukkitYml = findFileFromServerDirectory("bukkit.yml");
+        this.serverProperties = findFileFromServerDirectory("server.properties");
     }
+
+    private File getServerFolder(@NotNull Plugin plugin) {
+        return new File(System.getProperty("user.dir"));
+    }
+
+    @Nullable
+    private File findFileFromServerDirectory(String fileName) {
+        File[] files;
+        try {
+            files = this.serverFolder.listFiles((file, s) -> s.equalsIgnoreCase(fileName));
+        } catch (Exception e) {
+            Logging.severe("Could not read from server directory. Unable to locate file: %s", fileName);
+            Logging.severe(e.getMessage());
+            return null;
+        }
+
+        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
+        if (files != null && files.length == 1) {
+            return files[0];
+        }
+        Logging.warning("Unable to locate file from server directory: %s", fileName);
+        return null;
+    }
+
 
     /**
      * Used to delete a folder.
@@ -38,7 +74,7 @@ public class FileUtils {
      * @param file The folder to delete.
      * @return true if the folder was successfully deleted.
      */
-    public static boolean deleteFolder(File file) {
+    public boolean deleteFolder(File file) {
         try (Stream<Path> files = Files.walk(file.toPath())) {
             files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
             return true;
@@ -54,7 +90,7 @@ public class FileUtils {
      * @param file The folder whose contents to delete.
      * @return true if the contents were successfully deleted
      */
-    public static boolean deleteFolderContents(File file) {
+    public boolean deleteFolderContents(File file) {
         try (Stream<Path> files = Files.walk(file.toPath())){
             files.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
@@ -74,7 +110,7 @@ public class FileUtils {
      *
      * @return true if it had success
      */
-    public static boolean copyFolder(File source, File target) {
+    public boolean copyFolder(File source, File target) {
         return copyFolder(source, target, null);
     }
 
@@ -86,7 +122,7 @@ public class FileUtils {
      *
      * @return true if it had success
      */
-    public static boolean copyFolder(File source, File target, List<String> excludeFiles) {
+    public boolean copyFolder(File source, File target, List<String> excludeFiles) {
         Path sourceDir = source.toPath();
         Path targetDir = target.toPath();
 
@@ -100,33 +136,13 @@ public class FileUtils {
     }
 
     @Nullable
-    public static File getBukkitConfig() {
-        return findFileFromServerDirectory("bukkit.yml");
+    public File getBukkitConfig() {
+        return this.bukkitYml;
     }
 
     @Nullable
-    public static File getServerProperties() {
-        return findFileFromServerDirectory("server.properties");
-    }
-
-    @Nullable
-    private static File findFileFromServerDirectory(String fileName) {
-        File[] files;
-        try {
-            // TODO: getWorldContainer may throw error for MockBukkit during test
-            files = getServer().getWorldContainer().listFiles((file, s) -> s.equalsIgnoreCase(fileName));
-        } catch (Exception e) {
-            Logging.severe("Could not read from server directory. Unable to locate file: %s", fileName);
-            Logging.severe(e.getMessage());
-            return null;
-        }
-
-        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
-        if (files != null && files.length == 1) {
-            return files[0];
-        }
-        Logging.warning("Unable to locate file from server directory: %s", fileName);
-        return null;
+    public File getServerProperties() {
+        return this.serverProperties;
     }
 
     private static class CopyDirFileVisitor extends SimpleFileVisitor<Path> {

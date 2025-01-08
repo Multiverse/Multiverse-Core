@@ -27,8 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-
-import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig;
+import org.mvplugins.multiverse.core.utils.file.FileUtils;
 
 /**
  * Parse the default world generators from the bukkit config and load any generator plugins.
@@ -38,9 +37,11 @@ import static org.mvplugins.multiverse.core.utils.file.FileUtils.getBukkitConfig
 public class GeneratorProvider implements Listener {
     private final Map<String, String> defaultGenerators;
     private final Map<String, GeneratorPlugin> generatorPlugins;
+    private final FileUtils fileUtils;
 
     @Inject
-    GeneratorProvider(@NotNull MultiverseCore multiverseCore) {
+    GeneratorProvider(@NotNull MultiverseCore multiverseCore, @NotNull FileUtils fileUtils) {
+        this.fileUtils = fileUtils;
         defaultGenerators = new HashMap<>();
         generatorPlugins = new HashMap<>();
 
@@ -53,7 +54,7 @@ public class GeneratorProvider implements Listener {
      * Load the default world generators string from the bukkit config.
      */
     private void loadDefaultWorldGenerators() {
-        File bukkitConfigFile = getBukkitConfig();
+        File bukkitConfigFile = fileUtils.getBukkitConfig();
         if (bukkitConfigFile == null) {
             Logging.warning("Any default world generators will not be loaded!");
             return;
