@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import io.vavr.control.Either;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 
 public final class AsyncAttempt<T, F extends FailureReason> {
@@ -34,6 +35,10 @@ public final class AsyncAttempt<T, F extends FailureReason> {
         return of(future, completionHandler);
     }
 
+    public static <T, F extends FailureReason> AsyncAttempt<T, F> fromAttempt(Attempt<T, F> attempt) {
+        return new AsyncAttempt<>(CompletableFuture.completedFuture(attempt));
+    }
+
     public static <F extends FailureReason> AsyncAttempt<Void, F> success() {
         return new AsyncAttempt<>(CompletableFuture.completedFuture(null));
     }
@@ -49,6 +54,14 @@ public final class AsyncAttempt<T, F extends FailureReason> {
 
     private AsyncAttempt(CompletableFuture<Attempt<T, F>> future) {
         this.future = future;
+    }
+
+    public AsyncAttempt<T, F> thenRun(Runnable runnable) {
+        return new AsyncAttempt<>(future.thenApply(attempt -> attempt.thenRun(runnable)));
+    }
+
+    public AsyncAttempt<T, F> thenAccept(Consumer<Either<T, F>> consumer) {
+        return new AsyncAttempt<>(future.thenApply(attempt -> attempt.thenAccept(consumer)));
     }
 
     public <U> AsyncAttempt<U, F> map(Function<? super T, ? extends U> mapper) {
@@ -69,7 +82,6 @@ public final class AsyncAttempt<T, F extends FailureReason> {
     }
 
     public AsyncAttempt<T, F> onFailure(Runnable runnable) {
-        // TODO Not sure why we creating a new instance instead of using `this`
         return new AsyncAttempt<>(future.thenApply(attempt -> attempt.onFailure(runnable)));
     }
 

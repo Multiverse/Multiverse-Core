@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import io.vavr.control.Either;
 import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 
@@ -91,6 +92,20 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      */
     default boolean isFailure() {
         return this instanceof Failure;
+    }
+
+    default Attempt<T, F> thenRun(Runnable runnable) {
+        runnable.run();
+        return this;
+    }
+
+    default Attempt<T, F> thenAccept(Consumer<Either<T, F>> consumer) {
+        if (this instanceof Success) {
+            consumer.accept(Either.left(get()));
+        } else {
+            consumer.accept(Either.right(getFailureReason()));
+        }
+        return this;
     }
 
     /**
