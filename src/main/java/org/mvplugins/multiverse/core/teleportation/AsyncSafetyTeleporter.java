@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.papermc.lib.PaperLib;
+import io.vavr.control.Either;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -185,5 +186,23 @@ public class AsyncSafetyTeleporter {
             }
             return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED);
         });
+    }
+
+    public AsyncSafetyTeleporterAction to(@Nullable Location location) {
+        return new AsyncSafetyTeleporterAction(
+                blockSafety,
+                teleportQueue,
+                pluginManager,
+                Either.left(location)
+        );
+    }
+
+    public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
+        return new AsyncSafetyTeleporterAction(
+                blockSafety,
+                teleportQueue,
+                pluginManager,
+                Either.right(destination)
+        );
     }
 }

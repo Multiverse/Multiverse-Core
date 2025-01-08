@@ -81,10 +81,12 @@ class TeleportCommand extends CoreCommand {
             return;
         }
 
-        (parsedFlags.hasFlag(UNSAFE_FLAG)
-                ? safetyTeleporter.teleport(issuer.getIssuer(), List.of(players), destination)
-                : safetyTeleporter.teleportSafely(issuer.getIssuer(), List.of(players), destination))
+        safetyTeleporter.to(destination)
+                .by(issuer)
+                .checkSafety(parsedFlags.hasFlag(UNSAFE_FLAG) || destination.checkTeleportSafety())
+                .teleport(List.of(players))
                 .thenAccept(attempts -> {
+                    //todo: Check for attempt results
                     Logging.fine("Async teleport completed: %s", attempts);
                     issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                             "{player}", playerName, "{destination}", destination.toString());

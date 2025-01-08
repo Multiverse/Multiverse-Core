@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
@@ -19,8 +21,18 @@ public class TeleportQueue {
     /**
      * This method is used to add a teleportation to the teleportQueue.
      *
-     * @param teleporter The name of the player that initiated the teleportation.
-     * @param teleportee The name of the player that was teleported.
+     * @param teleporter The sender that initiated the teleportation.
+     * @param teleportee The player that will be teleported.
+     */
+    public void addToQueue(CommandSender teleporter, Player teleportee) {
+        addToQueue(teleporter.getName(), teleportee.getName());
+    }
+
+    /**
+     * This method is used to add a teleportation to the teleportQueue.
+     *
+     * @param teleporter The name of the sender that initiated the teleportation.
+     * @param teleportee The name of the player that will be teleported.
      */
     public void addToQueue(String teleporter, String teleportee) {
         Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
