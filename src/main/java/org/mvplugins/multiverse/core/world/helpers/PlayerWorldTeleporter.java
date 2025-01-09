@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
-import org.mvplugins.multiverse.core.teleportation.TeleportResult;
+import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -34,7 +34,7 @@ public class PlayerWorldTeleporter {
      * @param world The world to remove all players from.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportResult.Failure>>> removeFromWorld(@NotNull LoadedMultiverseWorld world) {
+    public Async<List<Attempt<Void, TeleportFailureReason>>> removeFromWorld(@NotNull LoadedMultiverseWorld world) {
         // TODO: Better handling of fallback world
         World toWorld = Bukkit.getWorlds().get(0);
         return transferFromWorldTo(world, toWorld);
@@ -47,7 +47,7 @@ public class PlayerWorldTeleporter {
      * @param to    The location to transfer players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportResult.Failure>>> transferFromWorldTo(
+    public Async<List<Attempt<Void, TeleportFailureReason>>> transferFromWorldTo(
             @NotNull LoadedMultiverseWorld from,
             @NotNull LoadedMultiverseWorld to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
@@ -60,7 +60,7 @@ public class PlayerWorldTeleporter {
      * @param to    The world to transfer players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportResult.Failure>>> transferFromWorldTo(
+    public Async<List<Attempt<Void, TeleportFailureReason>>> transferFromWorldTo(
             @NotNull LoadedMultiverseWorld from,
             @NotNull World to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
@@ -73,7 +73,7 @@ public class PlayerWorldTeleporter {
      * @param location The location to transfer players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportResult.Failure>>> transferAllFromWorldToLocation(
+    public Async<List<Attempt<Void, TeleportFailureReason>>> transferAllFromWorldToLocation(
             @NotNull LoadedMultiverseWorld world,
             @NotNull Location location) {
         return world.getPlayers()
@@ -89,7 +89,7 @@ public class PlayerWorldTeleporter {
      * @param world     The world to teleport players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportResult.Failure>>> teleportPlayersToWorld(
+    public Async<List<Attempt<Void, TeleportFailureReason>>> teleportPlayersToWorld(
             @NotNull List<Player> players,
             @NotNull LoadedMultiverseWorld world) {
         Location spawnLocation = world.getSpawnLocation();
