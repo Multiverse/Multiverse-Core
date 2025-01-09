@@ -47,7 +47,11 @@ public final class DefaultStringParserProvider {
             () -> input);
 
     private static final NodeStringParser<Boolean> BOOLEAN_STRING_PARSER = (input, type) -> Try.of(
-            () -> ACFUtil.isTruthy(String.valueOf(input).toLowerCase()));
+            () -> switch (String.valueOf(input).toLowerCase()) {
+                case "t", "true", "on", "y", "yes", "1", "allow" -> true;
+                case "f", "false", "off", "n", "no", "0", "deny" -> false;
+                default -> throw new MultiverseException("Unable to convert '" + input + "' to boolean. Please use 'true' or 'false'");
+            });
 
     private static final NodeStringParser<Integer> INTEGER_STRING_PARSER = (input, type) -> Try.of(
             () -> ACFUtil.parseInt(input))
