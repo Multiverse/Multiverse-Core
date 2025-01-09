@@ -20,4 +20,9 @@ public class MVWorldMock extends WorldMock {
     public @NotNull File getWorldFolder() {
         return this.worldFolder;
     }
+
+    @Override
+    public String toString() {
+        return "MVWorldMock{'name': '" + this.getName() + "'}";
+    }
 }

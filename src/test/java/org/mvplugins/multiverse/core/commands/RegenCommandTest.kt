@@ -6,7 +6,7 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.*
 
-class RegenCommandTest : AbstractWorldCommandTest() {
+class RegenCommandTest : AbstractCommandTest() {
 
     private lateinit var testWorld : LoadedMultiverseWorld
 
