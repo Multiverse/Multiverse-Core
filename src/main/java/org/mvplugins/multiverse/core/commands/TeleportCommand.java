@@ -83,7 +83,7 @@ class TeleportCommand extends CoreCommand {
 
         safetyTeleporter.to(destination)
                 .by(issuer)
-                .checkSafety(parsedFlags.hasFlag(UNSAFE_FLAG) || destination.checkTeleportSafety())
+                .checkSafety(!parsedFlags.hasFlag(UNSAFE_FLAG) && destination.checkTeleportSafety())
                 .teleport(List.of(players))
                 .thenAccept(attempts -> {
                     //todo: Check for attempt results

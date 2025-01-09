@@ -77,7 +77,7 @@ public class PlayerWorldTeleporter {
             @NotNull LoadedMultiverseWorld world,
             @NotNull Location location) {
         return world.getPlayers()
-                .map(players -> safetyTeleporter.teleport(players, location))
+                .map(players -> safetyTeleporter.to(location).teleport(players))
                 .getOrElse(() -> Async.failedFuture(
                         new IllegalStateException("Unable to get players from world" + world.getName())));
     }
@@ -93,6 +93,6 @@ public class PlayerWorldTeleporter {
             @NotNull List<Player> players,
             @NotNull LoadedMultiverseWorld world) {
         Location spawnLocation = world.getSpawnLocation();
-        return safetyTeleporter.teleport(players, spawnLocation);
+        return safetyTeleporter.to(spawnLocation).teleport(players);
     }
 }

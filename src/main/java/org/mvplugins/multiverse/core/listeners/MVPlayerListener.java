@@ -195,6 +195,7 @@ public class MVPlayerListener implements CoreListener {
      * Will teleport the player to the destination specified in config
      * @param player The {@link Player} to teleport
      */
+    //todo: Explore the use of PlayerSpawnLocationEvent
     private void handleJoinDestination(@NotNull Player player) {
         if (!config.getEnableJoinDestination()) {
             Logging.finer("JoinDestination is disabled");
@@ -209,7 +210,7 @@ public class MVPlayerListener implements CoreListener {
 
         Logging.finer("JoinDestination is " + config.getJoinDestination());
         destinationsProvider.parseDestination(config.getJoinDestination())
-                .peek(destination -> safetyTeleporter.teleportSafely(player, player, destination))
+                .peek(destination -> safetyTeleporter.to(destination).teleport(player))
                 .onEmpty(() -> Logging.warning("The destination in JoinDestination in config is invalid"));
     }
 
@@ -363,7 +364,7 @@ public class MVPlayerListener implements CoreListener {
             new Runnable() {
                 @Override
                 public void run() {
-                    safetyTeleporter.teleportSafely(player, player, parsedDestination);
+                    safetyTeleporter.to(parsedDestination).teleport(player);
                 }
             }, 1L);
     }

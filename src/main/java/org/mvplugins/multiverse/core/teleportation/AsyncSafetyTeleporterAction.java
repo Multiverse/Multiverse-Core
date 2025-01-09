@@ -132,6 +132,7 @@ public class AsyncSafetyTeleporterAction {
                 Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
                 return Attempt.success(null);
             }
+            Logging.warning("Failed to async teleport %s to %s", teleportee.getName(), location);
             return Attempt.failure(TeleportResult.Failure.TELEPORT_FAILED);
         });
     }

@@ -62,7 +62,9 @@ class SpawnCommand extends CoreCommand {
 
         // Teleport the player to spawn
         // TODO: Different message for teleporting self vs others
-        safetyTeleporter.teleportSafely(issuer.getIssuer(), player, world.getSpawnLocation())
+        safetyTeleporter.to(world.getSpawnLocation())
+                .by(issuer)
+                .teleport(player)
                 .onSuccess(() -> player.sendMessage(commandManager.formatMessage(
                         issuer,
                         MessageType.INFO,
