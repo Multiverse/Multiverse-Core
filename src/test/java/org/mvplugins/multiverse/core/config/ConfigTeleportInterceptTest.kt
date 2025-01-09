@@ -50,7 +50,7 @@ class ConfigTeleportInterceptTest : TestWithMockBukkit() {
     @Test
     fun `Multiverse API teleport with teleport intercept disabled`() {
         config.teleportIntercept = false
-        safetyTeleporter.teleport(player, location).toAttempt()
+        safetyTeleporter.to(location).teleport(player).toAttempt()
             .onSuccess (Runnable { throw AssertionError("Teleport should have failed") })
             .onFailure(Runnable { assertEquals("world", player.world.name) })
     }
