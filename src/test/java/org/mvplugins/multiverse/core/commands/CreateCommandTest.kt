@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CreateCommandTest : AbstractWorldCommandTest() {
+class CreateCommandTest : AbstractCommandTest() {
 
     @Test
     fun `Create nether world with default options`() {

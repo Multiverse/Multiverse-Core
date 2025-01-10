@@ -8,12 +8,16 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
 import org.mvplugins.multiverse.core.commandtools.PluginLocales
 import org.mvplugins.multiverse.core.utils.message.Message
+import org.mvplugins.multiverse.core.world.WorldManager
+import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 abstract class AbstractCommandTest : TestWithMockBukkit() {
 
+    protected lateinit var worldManager: WorldManager
     protected lateinit var player: PlayerMock
     protected lateinit var console: ConsoleCommandSenderMock
 
@@ -22,6 +26,10 @@ abstract class AbstractCommandTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUpCommand() {
+        worldManager = serviceLocator.getActiveService(WorldManager::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("WorldManager is not available as a service") }
+        assertTrue(worldManager.createWorld(CreateWorldOptions.worldName("world")).isSuccess)
+
         val commandManager = serviceLocator.getActiveService(MVCommandManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCommandManager is not available as a service") }
         locales = commandManager.locales

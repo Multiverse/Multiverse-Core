@@ -29,7 +29,7 @@ class ConfigTeleportInterceptTest : TestWithMockBukkit() {
 
         player = server.addPlayer()
         worldManager.createWorld(CreateWorldOptions.worldName("world2")).get()
-        location = Location(server.getWorld("world2"), 0.0, 0.0, 0.0)
+        location = Location(server.getWorld("world2"), 0.0, 5.0, 0.0)
         config.enforceAccess = true
     }
 
@@ -50,7 +50,7 @@ class ConfigTeleportInterceptTest : TestWithMockBukkit() {
     @Test
     fun `Multiverse API teleport with teleport intercept disabled`() {
         config.teleportIntercept = false
-        safetyTeleporter.teleport(player, location).toAttempt()
+        safetyTeleporter.to(location).teleport(player).toAttempt()
             .onSuccess (Runnable { throw AssertionError("Teleport should have failed") })
             .onFailure(Runnable { assertEquals("world", player.world.name) })
     }

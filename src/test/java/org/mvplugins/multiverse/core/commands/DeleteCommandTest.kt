@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class DeleteCommandTest : AbstractWorldCommandTest() {
+class DeleteCommandTest : AbstractCommandTest() {
 
     private lateinit var testWorld : LoadedMultiverseWorld
 
