@@ -61,7 +61,7 @@ world_nether:
   portal-form: ALL
   pvp: true
   respawn-world: ''
-  scale: 1.0
+  scale: 8.0
   seed: -9223372036854775808
   spawn-location:
     ==: MVNullLocation (It's a bug if you see this in your config file)

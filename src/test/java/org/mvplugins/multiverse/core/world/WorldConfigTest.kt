@@ -61,7 +61,7 @@ class WorldConfigTest : TestWithMockBukkit() {
         assertTrue(worldConfig.stringPropertyHandle.setProperty("alias", "abc").isSuccess)
         assertEquals("abc", worldConfig.stringPropertyHandle.getProperty("alias").get())
 
-        assertTrue(worldConfig.stringPropertyHandle.setProperty("scale", "2.0").isSuccess)
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("scale", 2.0).isSuccess)
         assertEquals(2.0, worldConfig.stringPropertyHandle.getProperty("scale").get())
 
         val blacklists = listOf("a", "b", "c")
@@ -71,6 +71,25 @@ class WorldConfigTest : TestWithMockBukkit() {
         assertTrue(worldConfig.stringPropertyHandle.setProperty("entryfee-currency", Material.JUNGLE_WOOD).isSuccess)
         assertEquals(Material.JUNGLE_WOOD, worldConfig.stringPropertyHandle.getProperty("entryfee-currency").get())
     }
+
+    @Test
+    fun `Updating an existing world property with setPropertyString reflects the changes in getProperty`() {
+        assertTrue(worldConfig.stringPropertyHandle.setPropertyString("adjust-spawn", "true").isSuccess)
+        assertEquals(true, worldConfig.stringPropertyHandle.getProperty("adjust-spawn").get())
+
+        assertTrue(worldConfig.stringPropertyHandle.setPropertyString("alias", "abc").isSuccess)
+        assertEquals("abc", worldConfig.stringPropertyHandle.getProperty("alias").get())
+
+        assertTrue(worldConfig.stringPropertyHandle.setPropertyString("scale", "2.0").isSuccess)
+        assertEquals(2.0, worldConfig.stringPropertyHandle.getProperty("scale").get())
+
+        assertTrue(worldConfig.stringPropertyHandle.setPropertyString("world-blacklist", "a,b,c").isSuccess)
+        assertEquals(listOf("a", "b", "c"), worldConfig.stringPropertyHandle.getProperty("world-blacklist").get())
+
+        assertTrue(worldConfig.stringPropertyHandle.setPropertyString("entryfee-currency", "jungle_wood").isSuccess)
+        assertEquals(Material.JUNGLE_WOOD, worldConfig.stringPropertyHandle.getProperty("entryfee-currency").get())
+    }
+
 
     @Test
     fun `Updating a non-existing property with setProperty returns false`() {
