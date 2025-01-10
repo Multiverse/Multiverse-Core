@@ -29,7 +29,7 @@ class ConfigTeleportInterceptTest : TestWithMockBukkit() {
 
         player = server.addPlayer()
         worldManager.createWorld(CreateWorldOptions.worldName("world2")).get()
-        location = Location(server.getWorld("world2"), 0.0, 0.0, 0.0)
+        location = Location(server.getWorld("world2"), 0.0, 5.0, 0.0)
         config.enforceAccess = true
     }
 
