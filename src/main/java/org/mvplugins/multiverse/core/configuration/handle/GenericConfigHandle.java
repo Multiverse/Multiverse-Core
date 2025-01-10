@@ -3,6 +3,8 @@ package org.mvplugins.multiverse.core.configuration.handle;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -79,9 +81,12 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      */
     public <T> T get(@NotNull ValueNode<T> node) {
         if (node.getSerializer() == null) {
-            return config.getObject(node.getPath(), node.getType(), node.getDefaultValue());
+            return Option.of(config.getObject(node.getPath(), node.getType())).getOrElse(node::getDefaultValue);
         }
-        return node.getSerializer().deserialize(config.get(node.getPath(), node.getDefaultValue()), node.getType());
+        return Try.of(() -> node.getSerializer()
+                        .deserialize(config.get(node.getPath(), node.getDefaultValue()), node.getType()))
+                .onFailure(e -> Logging.warning("Failed to deserialize node %s: %s", node.getPath(), e.getMessage()))
+                .getOrElse(node::getDefaultValue);
     }
 
     /**
