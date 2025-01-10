@@ -4,15 +4,15 @@ import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class DoubleMigrationAction implements MigratorAction {
+public class DoubleMigratorAction implements MigratorAction {
 
-    public static DoubleMigrationAction of(String path) {
-        return new DoubleMigrationAction(path);
+    public static DoubleMigratorAction of(String path) {
+        return new DoubleMigratorAction(path);
     }
 
     private final String path;
 
-    public DoubleMigrationAction(String path) {
+    public DoubleMigratorAction(String path) {
         this.path = path;
     }
 

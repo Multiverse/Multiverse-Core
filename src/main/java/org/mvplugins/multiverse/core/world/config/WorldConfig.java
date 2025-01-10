@@ -1,13 +1,11 @@
 package org.mvplugins.multiverse.core.world.config;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -63,7 +61,7 @@ public final class WorldConfig {
                 .addAction(BooleanMigratorAction.of("bed-respawn"))
                 //.addAction(MoveMigratorAction.of("difficulty", "difficulty"))
                 .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
-                .addAction(DoubleMigrationAction.of("entry-fee.amount"))
+                .addAction(DoubleMigratorAction.of("entry-fee.amount"))
                 .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
                 .addAction(DeleteMigratorAction.of("entryfee"))
                 //.addAction(MoveMigratorAction.of("environment", "environment"))
