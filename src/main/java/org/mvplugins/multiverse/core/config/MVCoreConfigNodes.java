@@ -107,6 +107,15 @@ class MVCoreConfigNodes {
             .name("teleport-intercept")
             .build());
 
+    final ConfigNode<Boolean> RESOLVE_ALIAS_NAME = node(ConfigNode.builder("world.resolve-alias-name", Boolean.class)
+            .comment("")
+            .comment("If this is set to true, Multiverse will resolve world based on their alias names for commands and destinations.")
+            .comment("Normal world names will still be accepted.")
+            .comment("In the event you have multiple worlds with the same alias name, the first world found will be used.")
+            .defaultValue(true)
+            .name("resolve-alias-name")
+            .build());
+
     private final ConfigHeaderNode SPAWN_HEADER = node(ConfigHeaderNode.builder("spawn")
             .comment("")
             .comment("")

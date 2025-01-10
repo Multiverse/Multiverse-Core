@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
@@ -136,7 +137,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldName = context.getFirstArg();
-        LoadedMultiverseWorld world = worldManager.getLoadedWorld(worldName).getOrNull();
+        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
 
         // Get world based on input, fallback to sender if input is not a world
         if (resolve.equals("issuerAware")) {
@@ -189,7 +190,7 @@ public class MVCommandContexts extends PaperCommandContexts {
                 worlds.addAll(worldManager.getLoadedWorlds());
                 break;
             }
-            LoadedMultiverseWorld world = worldManager.getLoadedWorld(worldName).getOrNull();
+            LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
             if (world == null) {
                 throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
             }
@@ -224,6 +225,13 @@ public class MVCommandContexts extends PaperCommandContexts {
         throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
     }
 
+    @Nullable
+    private LoadedMultiverseWorld getLoadedMultiverseWorld(String worldName) {
+        return config.getResolveAliasName()
+                ? worldManager.getLoadedWorldByNameOrAlias(worldName).getOrNull()
+                : worldManager.getLoadedWorld(worldName).getOrNull();
+    }
+
     private MultiverseWorld parseMultiverseWorld(BukkitCommandExecutionContext context) {
         String resolve = context.getFlagValue("resolve", "");
 
@@ -239,7 +247,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldName = context.getFirstArg();
-        MultiverseWorld world = worldManager.getWorld(worldName).getOrNull();
+        MultiverseWorld world = getMultiverseWorld(worldName);
 
         // Get world based on input, fallback to sender if input is not a world
         if (resolve.equals("issuerAware")) {
@@ -266,6 +274,13 @@ public class MVCommandContexts extends PaperCommandContexts {
             return null;
         }
         throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+    }
+
+    @Nullable
+    private MultiverseWorld getMultiverseWorld(String worldName) {
+        return config.getResolveAliasName()
+                ? worldManager.getWorldByNameOrAlias(worldName).getOrNull()
+                : worldManager.getWorld(worldName).getOrNull();
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {

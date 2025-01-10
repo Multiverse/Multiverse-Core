@@ -178,17 +178,17 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         String scope = context.getConfig("scope", "loaded");
         switch (scope) {
             case "both" -> {
-                return worldManager.getWorlds().stream().map(MultiverseWorld::getName).toList();
+                return worldManager.getWorlds().stream().map(this::getWorldNameOrAlias).toList();
             }
             case "loaded" -> {
                 return worldManager.getLoadedWorlds()
                         .stream()
-                        .map(LoadedMultiverseWorld::getName)
+                        .map(this::getWorldNameOrAlias)
                         .toList();
             }
             case "unloaded" -> {
                 return worldManager.getUnloadedWorlds().stream()
-                        .map(MultiverseWorld::getName)
+                        .map(this::getWorldNameOrAlias)
                         .toList();
             }
             case "potential" -> {
@@ -197,6 +197,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
         return Collections.emptyList();
+    }
+
+    private String getWorldNameOrAlias(MultiverseWorld world) {
+        return config.getResolveAliasName() ? world.getAlias() : world.getName();
     }
 
     private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {

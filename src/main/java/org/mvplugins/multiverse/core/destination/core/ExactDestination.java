@@ -2,8 +2,10 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -21,10 +24,12 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @Service
 public class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance> {
 
+    private final MVCoreConfig config;
     private final WorldManager worldManager;
 
     @Inject
-    public ExactDestination(WorldManager worldManager) {
+    public ExactDestination(MVCoreConfig config, WorldManager worldManager) {
+        this.config = config;
         this.worldManager = worldManager;
     }
 
@@ -63,7 +68,7 @@ public class ExactDestination implements Destination<ExactDestination, ExactDest
             return null;
         }
 
-        World world = this.worldManager.getLoadedWorld(worldName).flatMap(LoadedMultiverseWorld::getBukkitWorld).getOrNull();
+        World world = getLoadedMultiverseWorld(worldName).flatMap(LoadedMultiverseWorld::getBukkitWorld).getOrNull();
         if (world == null) {
             return null;
         }
@@ -92,6 +97,12 @@ public class ExactDestination implements Destination<ExactDestination, ExactDest
         }
 
         return new ExactDestinationInstance(this, location);
+    }
+
+    private Option<LoadedMultiverseWorld> getLoadedMultiverseWorld(String worldName) {
+        return config.getResolveAliasName()
+                ? worldManager.getLoadedWorldByNameOrAlias(worldName)
+                : worldManager.getLoadedWorld(worldName);
     }
 
     /**

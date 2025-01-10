@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -20,11 +21,13 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @Service
 public class WorldDestination implements Destination<WorldDestination, WorldDestinationInstance> {
 
+    private final MVCoreConfig config;
     private final WorldManager worldManager;
     private final LocationManipulation locationManipulation;
 
     @Inject
-    WorldDestination(WorldManager worldManager, LocationManipulation locationManipulation) {
+    WorldDestination(MVCoreConfig config, WorldManager worldManager, LocationManipulation locationManipulation) {
+        this.config = config;
         this.worldManager = worldManager;
         this.locationManipulation = locationManipulation;
     }
@@ -48,7 +51,7 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
         }
 
         String worldName = items[0];
-        LoadedMultiverseWorld world = this.worldManager.getLoadedWorld(worldName).getOrNull();
+        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
         if (world == null) {
             return null;
         }
@@ -57,6 +60,13 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
         float yaw = direction != null ? this.locationManipulation.getYaw(direction) : -1;
 
         return new WorldDestinationInstance(this, world, direction, yaw);
+    }
+
+    @Nullable
+    private LoadedMultiverseWorld getLoadedMultiverseWorld(String worldName) {
+        return config.getResolveAliasName()
+                ? worldManager.getLoadedWorldByNameOrAlias(worldName).getOrNull()
+                : worldManager.getLoadedWorld(worldName).getOrNull();
     }
 
     /**

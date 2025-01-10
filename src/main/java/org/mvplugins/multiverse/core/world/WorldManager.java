@@ -732,35 +732,6 @@ public class WorldManager {
     }
 
     /**
-     * Get a world that is not loaded.
-     *
-     * @param worldName The name of the world to get.
-     * @return The world if it exists.
-     */
-    public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
-        return isLoadedWorld(worldName) ? Option.none() : Option.of(worldsMap.get(worldName));
-    }
-
-    /**
-     * Get a list of all worlds that are not loaded.
-     *
-     * @return A list of all worlds that are not loaded.
-     */
-    public Collection<MultiverseWorld> getUnloadedWorlds() {
-        return worldsMap.values().stream().filter(world -> !world.isLoaded()).toList();
-    }
-
-    /**
-     * Check if a world is a world that is not loaded.
-     *
-     * @param worldName The name of the world to check.
-     * @return True if the world is a world that is not loaded.
-     */
-    public boolean isUnloadedWorld(@Nullable String worldName) {
-        return !isLoadedWorld(worldName) && isWorld(worldName);
-    }
-
-    /**
      * Get a world that may or may not be loaded. It will an {@link LoadedMultiverseWorld} if the world is loaded,
      * otherwise returns an {@link MultiverseWorld} instance.
      *
@@ -780,6 +751,18 @@ public class WorldManager {
      */
     public Option<MultiverseWorld> getWorld(@Nullable String worldName) {
         return getLoadedWorld(worldName).fold(() -> getUnloadedWorld(worldName), Option::of);
+    }
+
+    /**
+     * Get a world that may or may not be loaded by name or alias. It will an {@link LoadedMultiverseWorld} if the world is loaded,
+     * otherwise returns an {@link MultiverseWorld} instance. World name will still be prioritized over alias.
+     *
+     * @param worldNameOrAlias  The name or alias of the world to get.
+     * @return The world if it exists.
+     */
+    public Option<MultiverseWorld> getWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
+        return getLoadedWorldByNameOrAlias(worldNameOrAlias)
+                .fold(() -> getUnloadedWorldByNameOrAlias(worldNameOrAlias), Option::of);
     }
 
     /**
@@ -805,6 +788,49 @@ public class WorldManager {
      */
     public boolean isWorld(@Nullable String worldName) {
         return worldsMap.containsKey(worldName);
+    }
+
+    /**
+     * Get a world that is not loaded.
+     *
+     * @param worldName The name of the world to get.
+     * @return The world if it exists.
+     */
+    public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
+        return isLoadedWorld(worldName) ? Option.none() : Option.of(worldsMap.get(worldName));
+    }
+
+    /**
+     * Get a world that is not loaded by name or alias. World name will still be prioritized over alias.
+     *
+     * @param worldNameOrAlias  The name or alias of the world to get.
+     * @return The world if it exists.
+     */
+    public Option<MultiverseWorld> getUnloadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
+        return getUnloadedWorld(worldNameOrAlias)
+                .orElse(() -> Option.ofOptional(worldsMap.values().stream()
+                        .filter(world -> !world.isLoaded())
+                        .filter(world -> world.getAlias().equalsIgnoreCase(worldNameOrAlias))
+                        .findFirst()));
+    }
+
+    /**
+     * Get a list of all worlds that are not loaded.
+     *
+     * @return A list of all worlds that are not loaded.
+     */
+    public Collection<MultiverseWorld> getUnloadedWorlds() {
+        return worldsMap.values().stream().filter(world -> !world.isLoaded()).toList();
+    }
+
+    /**
+     * Check if a world is a world that is not loaded.
+     *
+     * @param worldName The name of the world to check.
+     * @return True if the world is a world that is not loaded.
+     */
+    public boolean isUnloadedWorld(@Nullable String worldName) {
+        return !isLoadedWorld(worldName) && isWorld(worldName);
     }
 
     /**
@@ -835,6 +861,19 @@ public class WorldManager {
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
         return Option.of(loadedWorldsMap.get(worldName));
+    }
+
+    /**
+     * Get a multiverse world that is loaded by name or alias. World name will still be prioritized over alias.
+     *
+     * @param worldNameOrAlias  The name or alias of the world to get.
+     * @return The multiverse world if it exists.
+     */
+    public Option<LoadedMultiverseWorld> getLoadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
+        return getLoadedWorld(worldNameOrAlias)
+                .orElse(() -> Option.ofOptional(loadedWorldsMap.values().stream()
+                        .filter(world -> world.getAlias().equalsIgnoreCase(worldNameOrAlias))
+                        .findFirst()));
     }
 
     /**

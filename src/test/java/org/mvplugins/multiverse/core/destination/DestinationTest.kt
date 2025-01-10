@@ -107,6 +107,15 @@ class DestinationTest : TestWithMockBukkit() {
     }
 
     @Test
+    fun `World destination instance from alias name`() {
+        world.setAlias("testalias")
+        val destination = destinationsProvider.parseDestination("testalias").orNull
+        assertTrue(destination is WorldDestinationInstance)
+        assertEquals(world.spawnLocation, destination.getLocation(player).orNull)
+        assertEquals("w:world", destination.toString())
+    }
+
+    @Test
     fun `Invalid destination instance`() {
         assertTrue(destinationsProvider.parseDestination("").isEmpty)
         assertTrue(destinationsProvider.parseDestination("idk:world").isEmpty)

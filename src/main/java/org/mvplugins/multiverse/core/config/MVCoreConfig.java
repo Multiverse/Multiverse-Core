@@ -163,6 +163,16 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
+    public void setResolveAliasName(boolean resolveAliasInCommands) {
+        configHandle.set(configNodes.RESOLVE_ALIAS_NAME, resolveAliasInCommands);
+    }
+
+    @Override
+    public boolean getResolveAliasName() {
+        return configHandle.get(configNodes.RESOLVE_ALIAS_NAME);
+    }
+
+    @Override
     public void setFirstSpawnOverride(boolean firstSpawnOverride) {
         configHandle.set(configNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
     }

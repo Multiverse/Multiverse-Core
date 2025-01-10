@@ -86,6 +86,18 @@ public interface MVConfig {
     boolean getTeleportIntercept();
 
     /**
+     * Sets resolveAliasInCommands.
+     * @param resolveAliasInCommands The new value.
+     */
+    void setResolveAliasName(boolean resolveAliasInCommands);
+
+    /**
+     * Gets resolveAliasInCommands.
+     * @return resolveAliasInCommands.
+     */
+    boolean getResolveAliasName();
+
+    /**
      * Sets firstSpawnOverride.
      * @param firstSpawnOverride The new value.
      */
