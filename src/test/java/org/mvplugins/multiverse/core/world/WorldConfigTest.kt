@@ -13,6 +13,7 @@ class WorldConfigTest : TestWithMockBukkit() {
 
     private lateinit var worldConfigManager : WorldsConfigManager
     private lateinit var worldConfig : WorldConfig
+    private lateinit var worldNetherConfig : WorldConfig
 
     @BeforeTest
     fun setUp() {
@@ -26,13 +27,18 @@ class WorldConfigTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         worldConfig = worldConfigManager.getWorldConfig("world").orNull.takeIf { it != null } ?: run {
             throw IllegalStateException("WorldConfig for world is not available") }
-        assertNotNull(worldConfig);
+        assertNotNull(worldConfig)
+        worldNetherConfig = worldConfigManager.getWorldConfig("world_nether").orNull.takeIf { it != null } ?: run {
+            throw IllegalStateException("WorldConfig for world is not available") }
+        assertNotNull(worldNetherConfig);
     }
 
     @Test
     fun `Getting existing world property with getProperty returns expected value`() {
         assertEquals("my world", worldConfig.stringPropertyHandle.getProperty("alias").get())
         assertEquals(false, worldConfig.stringPropertyHandle.getProperty("hidden").get())
+        assertEquals(1.0, worldConfig.stringPropertyHandle.getProperty("scale").get())
+        assertEquals(8.0, worldNetherConfig.stringPropertyHandle.getProperty("scale").get())
     }
 
     @Test
@@ -55,7 +61,7 @@ class WorldConfigTest : TestWithMockBukkit() {
         assertTrue(worldConfig.stringPropertyHandle.setProperty("alias", "abc").isSuccess)
         assertEquals("abc", worldConfig.stringPropertyHandle.getProperty("alias").get())
 
-        assertTrue(worldConfig.stringPropertyHandle.setProperty("scale", 2.0).isSuccess)
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("scale", "2.0").isSuccess)
         assertEquals(2.0, worldConfig.stringPropertyHandle.getProperty("scale").get())
 
         val blacklists = listOf("a", "b", "c")

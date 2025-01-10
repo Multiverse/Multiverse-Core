@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import co.aikar.commands.ACFUtil;
+import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,6 +72,22 @@ public final class DefaultSerializerProvider {
         }
     };
 
+    private static final NodeSerializer<Double> DOUBLE_SERIALIZER = new NodeSerializer<>() {
+        @Override
+        public Double deserialize(Object object, Class<Double> type) {
+            if (object instanceof Double number) {
+                return number;
+            }
+            Logging.finer("Converting %s to double", object);
+            return Double.parseDouble(String.valueOf(object));
+        }
+
+        @Override
+        public Object serialize(Double object, Class<Double> type) {
+            return object;
+        }
+    };
+
     private static final NodeSerializer<Locale> LOCALE_SERIALIZER = new NodeSerializer<>() {
         @Override
         public Locale deserialize(Object object, Class<Locale> type) {
@@ -89,6 +106,7 @@ public final class DefaultSerializerProvider {
 
     static {
         addDefaultSerializer(Boolean.class, BOOLEAN_SERIALIZER);
+        addDefaultSerializer(Double.class, DOUBLE_SERIALIZER);
         addDefaultSerializer(Locale.class, LOCALE_SERIALIZER);
     }
 
