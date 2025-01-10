@@ -12,7 +12,7 @@ import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 
 /**
- * Teleports entities safely and asynchronously.
+ * Teleports entities safely and asynchronously. Provider for the {@link AsyncSafetyTeleporterAction}.
  */
 @Service
 public class AsyncSafetyTeleporter {
@@ -30,6 +30,12 @@ public class AsyncSafetyTeleporter {
         this.pluginManager = pluginManager;
     }
 
+    /**
+     * Sets the location to teleport to.
+     *
+     * @param location  The location
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction to(@Nullable Location location) {
         return new AsyncSafetyTeleporterAction(
                 blockSafety,
@@ -39,6 +45,12 @@ public class AsyncSafetyTeleporter {
         );
     }
 
+    /**
+     * Sets the destination to teleport to.
+     *
+     * @param destination    The destination
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
         return new AsyncSafetyTeleporterAction(
                 blockSafety,

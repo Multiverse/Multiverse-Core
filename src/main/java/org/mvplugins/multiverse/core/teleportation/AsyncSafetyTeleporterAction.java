@@ -20,6 +20,9 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import java.util.List;
 
+/**
+ * Teleports one or more entity safely to a location.
+ */
 public class AsyncSafetyTeleporterAction {
 
     private final BlockSafety blockSafety;
@@ -30,7 +33,7 @@ public class AsyncSafetyTeleporterAction {
     private boolean checkSafety;
     private @Nullable CommandSender teleporter = null;
 
-    public AsyncSafetyTeleporterAction(
+    AsyncSafetyTeleporterAction(
             @NotNull BlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager,
@@ -45,24 +48,54 @@ public class AsyncSafetyTeleporterAction {
         );
     }
 
+    /**
+     * Sets whether to check for safe location before teleport.
+     *
+     * @param checkSafety   Whether to check for safe location
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction checkSafety(boolean checkSafety) {
         this.checkSafety = checkSafety;
         return this;
     }
 
+    /**
+     * Sets the teleporter.
+     *
+     * @param issuer    The issuer
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction by(@NotNull BukkitCommandIssuer issuer) {
         return by(issuer.getIssuer());
     }
 
+    /**
+     * Sets the teleporter.
+     *
+     * @param teleporter    The teleporter
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction by(@NotNull CommandSender teleporter) {
         this.teleporter = teleporter;
         return this;
     }
 
+    /**
+     * Teleport multiple entities
+     *
+     * @param teleportees   The entities to teleport
+     * @return A list of async futures that represent the teleportation result of each entity
+     * @param <T>
+     */
     public  <T extends Entity> Async<List<Attempt<Void, TeleportFailureReason>>> teleport(@NotNull List<T> teleportees) {
         return AsyncAttempt.allOf(teleportees.stream().map(this::teleport).toList());
     }
 
+    /**
+     * Teleports one entity
+     * @param teleportee    The entity to teleport
+     * @return An async future that represents the teleportation result
+     */
     public AsyncAttempt<Void, TeleportFailureReason> teleport(@NotNull Entity teleportee) {
         var localTeleporter = this.teleporter == null ? teleportee : this.teleporter;
         return AsyncAttempt.fromAttempt(getLocation(teleportee).mapAttempt(this::doSafetyCheck))
