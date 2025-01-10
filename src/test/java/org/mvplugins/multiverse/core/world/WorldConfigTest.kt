@@ -90,7 +90,6 @@ class WorldConfigTest : TestWithMockBukkit() {
         assertEquals(Material.JUNGLE_WOOD, worldConfig.stringPropertyHandle.getProperty("entryfee-currency").get())
     }
 
-
     @Test
     fun `Updating a non-existing property with setProperty returns false`() {
         assertTrue(worldConfig.stringPropertyHandle.setProperty("invalid-property", false).isFailure)

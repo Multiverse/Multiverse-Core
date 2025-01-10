@@ -81,6 +81,7 @@ public final class WorldConfig {
                 .addAction(BooleanMigratorAction.of("pvp"))
                 .addAction(MoveMigratorAction.of("respawnWorld", "respawn-world"))
                 //.addAction(MoveMigratorAction.of("scale", "scale"))
+                .addAction(DoubleMigratorAction.of("scale"))
                 //.addAction(MoveMigratorAction.of("seed", "seed"))
                 .addAction(LongMigratorAction.of("seed"))
                 .addAction(MoveMigratorAction.of("spawnLocation", "spawn-location"))
