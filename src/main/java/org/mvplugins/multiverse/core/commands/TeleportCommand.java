@@ -1,6 +1,9 @@
 package org.mvplugins.multiverse.core.commands;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -23,7 +26,11 @@ import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.message.Message;
+
+import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -70,30 +77,78 @@ class TeleportCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        // TODO: Add warning if teleporting too many players at once.
-        String playerName = players.length == 1
-                ? issuer.getPlayer() == players[0] ? "you" : players[0].getName()
-                : players.length + " players";
+        if (players.length == 1) {
+            teleportSinglePlayer(issuer, players[0], destination, parsedFlags);
+        } else {
+            teleportMultiplePlayers(issuer, players, destination, parsedFlags);
+        }
+    }
 
-        // TODO: Multi player permission checking
-        if (!permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), players[0], destination)) {
-            issuer.sendMessage("You do not have teleport permissions");
+    private void teleportSinglePlayer(MVCommandIssuer issuer, Player player, DestinationInstance<?, ?> destination, ParsedCommandFlags parsedFlags) {
+        if (!permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), player, destination)) {
+            issuer.sendMessage(player == issuer.getPlayer()
+                    ? "You do not have permission to teleport yourself!"
+                    : "You do not have permission to teleport other players!");
             return;
         }
 
         safetyTeleporter.to(destination)
                 .by(issuer)
                 .checkSafety(!parsedFlags.hasFlag(UNSAFE_FLAG) && destination.checkTeleportSafety())
+                .teleport(player)
+                .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                        replace("{player}").with(getYouOrName(issuer, player)),
+                        replace("{destination}").with(destination.toString())))
+                .onFailure(failure -> issuer.sendError(MVCorei18n.TELEPORT_FAILED,
+                        replace("{player}").with(getYouOrName(issuer, player)),
+                        replace("{destination}").with(destination.toString()),
+                        replace("{reason}").with(failure.getFailureMessage())));
+    }
+
+    private String getYouOrName(MVCommandIssuer issuer, Player player) {
+        return player == issuer.getPlayer() ? "you" : player.getName();
+    }
+
+    private void teleportMultiplePlayers(MVCommandIssuer issuer, Player[] players, DestinationInstance<?, ?> destination, ParsedCommandFlags parsedFlags) {
+        var selfPlayer = Arrays.stream(players).filter(p -> p == issuer.getPlayer()).findFirst();
+        var otherPlayer = Arrays.stream(players).filter(p -> p != issuer.getPlayer()).findFirst();
+        if (selfPlayer.isPresent() && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), selfPlayer.get(), destination)) {
+            issuer.sendMessage("You do not have permission to teleport yourself!");
+            return;
+        }
+        if (otherPlayer.isPresent() && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), otherPlayer.get(), destination)) {
+            issuer.sendMessage("You do not have permission to teleport other players!");
+            return;
+        }
+        safetyTeleporter.to(destination)
+                .by(issuer)
+                .checkSafety(!parsedFlags.hasFlag(UNSAFE_FLAG) && destination.checkTeleportSafety())
                 .teleport(List.of(players))
                 .thenAccept(attempts -> {
-                    //todo: Check for attempt results
-                    Logging.fine("Async teleport completed: %s", attempts);
-                    issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                            "{player}", playerName, "{destination}", destination.toString());
-                })
-                .exceptionally(throwable -> {
-                    Logging.severe("Error while teleporting %s to %s: %s",
-                            playerName, destination, throwable.getMessage());
+                    int successCount = 0;
+                    Map<TeleportFailureReason, Integer> failures = new HashMap<>();
+                    for (var attempt : attempts) {
+                        if (attempt.isSuccess()) {
+                            successCount++;
+                        } else {
+                            failures.compute(attempt.getFailureReason(), (reason, count) -> count == null ? 1 : count + 1);
+                        }
+                    }
+                    if (successCount > 0) {
+                        Logging.finer("Teleported %s players to %s", successCount, destination);
+                        issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                                replace("{player}").with(successCount + " players"),
+                                replace("{destination}").with(destination.toString()));
+                    }
+                    if (!failures.isEmpty()) {
+                        for (var entry : failures.entrySet()) {
+                            Logging.finer("Failed to teleport %s players to %s: %s", entry.getValue(), destination, entry.getKey());
+                            issuer.sendError(MVCorei18n.TELEPORT_FAILED,
+                                    replace("{player}").with(entry.getValue() + " players"),
+                                    replace("{destination}").with(destination.toString()),
+                                    replace("{reason}").with(Message.of(entry.getKey(), "")));
+                        }
+                    }
                 });
     }
 }

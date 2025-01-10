@@ -31,6 +31,14 @@ class TeleportCommandTest : AbstractCommandTest() {
     }
 
     @Test
+    fun `Teleport multiple players to invalid world`() {
+        assertTrue(Bukkit.dispatchCommand(console, "mv tp Player1,Player2 invalidworld"))
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocation(server.getWorld("world")?.spawnLocation, server.getPlayer("Player1")?.location)
+        assertLocation(server.getWorld("world")?.spawnLocation, server.getPlayer("Player2")?.location)
+    }
+
+    @Test
     fun `Player no permission to teleport`() {
         player.performCommand("mv tp otherworld")
         Thread.sleep(100) // wait for the player to teleport asynchronously
