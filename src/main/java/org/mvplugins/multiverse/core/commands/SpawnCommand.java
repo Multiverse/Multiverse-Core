@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
 import co.aikar.commands.BukkitCommandIssuer;
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.*;
 import com.dumptruckman.minecraft.util.Logging;
@@ -11,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
+import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
+import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
@@ -21,9 +21,14 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @Service
 @CommandAlias("mv")
 class SpawnCommand extends CoreCommand {
+
     private final WorldManager worldManager;
     private final AsyncSafetyTeleporter safetyTeleporter;
     private final CorePermissionsChecker permissionsChecker;
+
+    private final CommandFlag UNSAFE_FLAG = flag(CommandFlag.builder("--unsafe")
+            .addAlias("-u")
+            .build());
 
     @Inject
     SpawnCommand(@NotNull MVCommandManager commandManager,
@@ -39,7 +44,7 @@ class SpawnCommand extends CoreCommand {
     @CommandAlias("mvspawn")
     @Subcommand("spawn")
     @CommandPermission("@mvspawn")
-    @CommandCompletion("@players")
+    @CommandCompletion("@players|@flags:groupName=mvteleportcommand @flags:groupName=mvteleportcommand")
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")
     void onSpawnTpCommand(
@@ -48,10 +53,17 @@ class SpawnCommand extends CoreCommand {
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
             @Description("{@@mv-core.spawn.player.description}")
-            Player player) {
+            Player player,
+
+            @Optional
+            @Syntax("[--unsafe]")
+            @Description("")
+            String[] flags) {
+        ParsedCommandFlags parsedFlags = parseFlags(flags);
+
         LoadedMultiverseWorld world = worldManager.getLoadedWorld(player.getWorld()).getOrNull();
         if (world == null) {
-            issuer.sendMessage("The world the player you are trying to teleport is in, is not a multiverse world");
+            issuer.sendMessage("The world the player you are trying to teleport in is not a multiverse world!");
             return;
         }
 
@@ -64,6 +76,7 @@ class SpawnCommand extends CoreCommand {
         // TODO: Different message for teleporting self vs others
         safetyTeleporter.to(world.getSpawnLocation())
                 .by(issuer)
+                .checkSafety(!parsedFlags.hasFlag(UNSAFE_FLAG))
                 .teleport(player)
                 .onSuccess(() -> player.sendMessage(commandManager.formatMessage(
                         issuer,
