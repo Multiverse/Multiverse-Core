@@ -72,6 +72,21 @@ public final class DefaultSerializerProvider {
         }
     };
 
+    private static final NodeSerializer<Integer> INTEGER_SERIALIZER = new NodeSerializer<>() {
+        @Override
+        public Integer deserialize(Object object, Class<Integer> type) {
+            if (object instanceof Integer) {
+                return (Integer) object;
+            }
+            return Integer.parseInt(String.valueOf(object));
+        }
+
+        @Override
+        public Object serialize(Integer object, Class<Integer> type) {
+            return object;
+        }
+    };
+
     private static final NodeSerializer<Double> DOUBLE_SERIALIZER = new NodeSerializer<>() {
         @Override
         public Double deserialize(Object object, Class<Double> type) {
@@ -84,6 +99,38 @@ public final class DefaultSerializerProvider {
 
         @Override
         public Object serialize(Double object, Class<Double> type) {
+            return object;
+        }
+    };
+
+    private static final NodeSerializer<Float> FLOAT_SERIALIZER = new NodeSerializer<>() {
+        @Override
+        public Float deserialize(Object object, Class<Float> type) {
+            if (object instanceof Float number) {
+                return number;
+            }
+            Logging.finer("Converting %s to float", object);
+            return Float.parseFloat(String.valueOf(object));
+        }
+
+        @Override
+        public Object serialize(Float object, Class<Float> type) {
+            return object;
+        }
+    };
+
+    private static final NodeSerializer<Long> LONG_SERIALIZER = new NodeSerializer<>() {
+        @Override
+        public Long deserialize(Object object, Class<Long> type) {
+            if (object instanceof Long number) {
+                return number;
+            }
+            Logging.finer("Converting %s to long", object);
+            return Long.parseLong(String.valueOf(object));
+        }
+
+        @Override
+        public Object serialize(Long object, Class<Long> type) {
             return object;
         }
     };
@@ -106,7 +153,10 @@ public final class DefaultSerializerProvider {
 
     static {
         addDefaultSerializer(Boolean.class, BOOLEAN_SERIALIZER);
+        addDefaultSerializer(Integer.class, INTEGER_SERIALIZER);
         addDefaultSerializer(Double.class, DOUBLE_SERIALIZER);
+        addDefaultSerializer(Float.class, FLOAT_SERIALIZER);
+        addDefaultSerializer(Long.class, LONG_SERIALIZER);
         addDefaultSerializer(Locale.class, LOCALE_SERIALIZER);
     }
 
