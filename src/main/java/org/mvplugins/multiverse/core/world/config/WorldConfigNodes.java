@@ -185,7 +185,14 @@ public class WorldConfigNodes {
             .build());
 
     final ConfigNode<Double> SCALE = node(ConfigNode.builder("scale", Double.class)
-            .defaultValue(1.0)
+            .defaultValue(() -> {
+                if (world == null) return 1.0;
+                return switch (world.getEnvironment()) {
+                    case NETHER -> 8.0;
+                    case THE_END -> 16.0;
+                    default -> 1.0;
+                };
+            })
             .build());
 
     final ConfigNode<Long> SEED = node(ConfigNode.builder("seed", Long.class)

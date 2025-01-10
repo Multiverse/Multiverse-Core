@@ -55,6 +55,7 @@ class WorldManagerTest : TestWithMockBukkit() {
         assertFalse(world.adjustSpawn)
         assertEquals(WorldType.FLAT, world.worldType.get())
         assertEquals("", world.generator)
+        assertEquals(8.0, world.scale)
     }
 
     @Test

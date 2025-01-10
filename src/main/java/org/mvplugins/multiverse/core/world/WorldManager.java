@@ -297,9 +297,19 @@ public class WorldManager {
                 worldConfig,
                 blockSafety,
                 locationManipulation);
+        setDefaultEnvironmentScale(mvWorld);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
         return loadedWorld;
+    }
+
+    private void setDefaultEnvironmentScale(MultiverseWorld world) {
+        double scale = switch (world.getEnvironment()) {
+            case NETHER -> 8.0;
+            case THE_END -> 16.0;
+            default -> 1.0;
+        };
+        world.setScale(scale);
     }
 
     /**
