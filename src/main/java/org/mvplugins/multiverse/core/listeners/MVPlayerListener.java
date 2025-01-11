@@ -48,6 +48,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 /**
  * Multiverse's Listener for players.
@@ -160,57 +161,49 @@ public class MVPlayerListener implements CoreListener {
         return w.getSpawnLocation();
     }
 
-    /**
-     * This method is called when a player joins the server.
-     * @param event The Event that was fired.
-     */
     @EventHandler
-    public void playerJoin(PlayerJoinEvent event) {
+    void playerSpawnLocation(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
         LoadedMultiverseWorld world = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
         if (world == null) {
             Logging.finer("Player joined in a world that is not managed by Multiverse.");
             return;
         }
-
-        // todo: Config should auto serialise to and from DestinationInstance
-        destinationsProvider.parseDestination(config.getFirstSpawnLocation())
-                .peek(parsedDestination -> {
-                    if (!player.hasPlayedBefore()) {
-                        Logging.finer("Player joined for the FIRST time!");
-                        if (config.getFirstSpawnOverride()) {
-                            Logging.fine("Moving NEW player to(firstspawnoverride): %s", config.getFirstSpawnLocation());
-                            this.sendPlayerToDefaultWorld(player, parsedDestination);
-                        }
-                    }
-                    handleJoinDestination(player);
-                });
-
-        // Handle the Players GameMode setting for the new world.
-        this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
-        playerWorld.put(player.getName(), player.getWorld().getName());
+        if (!player.hasPlayedBefore()) {
+            handleFirstSpawn(event);
+        } else {
+            handleJoinLocation(event);
+        }
+        this.handleGameModeAndFlight(player, event.getSpawnLocation().getWorld());
     }
 
-    /**
-     * Will teleport the player to the destination specified in config
-     * @param player The {@link Player} to teleport
-     */
-    //todo: Explore the use of PlayerSpawnLocationEvent
-    private void handleJoinDestination(@NotNull Player player) {
+    private void handleFirstSpawn(PlayerSpawnLocationEvent event) {
+        if (!config.getFirstSpawnOverride()) {
+            Logging.finer("FirstSpawnOverride is disabled");
+            // User has disabled the feature in config
+            return;
+        }
+        Logging.fine("Moving NEW player to(firstspawnoverride): %s", config.getFirstSpawnLocation());
+        destinationsProvider.parseDestination(config.getFirstSpawnLocation())
+                .flatMap(destination -> destination.getLocation(event.getPlayer()))
+                .peek(event::setSpawnLocation)
+                .onEmpty(() -> Logging.warning("The destination in FirstSpawnLocation in config is invalid"));
+    }
+
+    private void handleJoinLocation(PlayerSpawnLocationEvent event) {
         if (!config.getEnableJoinDestination()) {
             Logging.finer("JoinDestination is disabled");
             // User has disabled the feature in config
             return;
         }
-
-        if (config.getJoinDestination() == null) {
+        if (config.getJoinDestination().isBlank()) {
             Logging.warning("Joindestination is enabled but no destination has been specified in config!");
             return;
         }
-
         Logging.finer("JoinDestination is " + config.getJoinDestination());
         destinationsProvider.parseDestination(config.getJoinDestination())
-                .peek(destination -> safetyTeleporter.to(destination).teleport(player))
+                .flatMap(destination -> destination.getLocation(event.getPlayer()))
+                .peek(event::setSpawnLocation)
                 .onEmpty(() -> Logging.warning("The destination in JoinDestination in config is invalid"));
     }
 
@@ -273,7 +266,7 @@ public class MVPlayerListener implements CoreListener {
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Teleporting to the same world.
             Logging.finer("Player '" + teleportee.getName() + "' is teleporting to the same world.");
-            this.stateSuccess(teleportee.getName(), toWorld.getAlias());
+            this.stateSuccess(teleportee.getName(), toWorld.getName());
             return;
         }
 
@@ -382,6 +375,7 @@ public class MVPlayerListener implements CoreListener {
             if (!player.isOnline() || !player.getWorld().equals(world)) {
                 return;
             }
+            Logging.finer("Handling gamemode and flight for player %s in world '%s'", player.getName(), world.getName());
             enforcementHandler.handleFlightEnforcement(player);
             enforcementHandler.handleGameModeEnforcement(player);
         }, 1L);

@@ -208,11 +208,7 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    @Nullable
     public String getJoinDestination() {
-        if (Objects.equals(configHandle.get(configNodes.JOIN_DESTINATION), "")) {
-            return null;
-        }
         return  configHandle.get(configNodes.JOIN_DESTINATION);
     }
 
