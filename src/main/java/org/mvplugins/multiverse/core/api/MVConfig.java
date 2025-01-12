@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.api;
 import io.vavr.control.Try;
 import org.jvnet.hk2.annotations.Contract;
 
+import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 
@@ -72,6 +73,14 @@ public interface MVConfig {
      * @return True if automatic purge is enabled.
      */
     boolean isAutoPurgeEntities();
+
+    void setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions);
+
+    boolean getUseFinerTeleportPermissions();
+
+    void setConcurrentTeleportLimit(int concurrentTeleportLimit);
+
+    int getConcurrentTeleportLimit();
 
     /**
      * Sets teleportIntercept.
@@ -232,6 +241,14 @@ public interface MVConfig {
      * @return  True if per player locale should be used.
      */
     boolean getPerPlayerLocale();
+
+    void setConfirmMode(ConfirmMode confirmMode);
+
+    ConfirmMode getConfirmMode();
+
+    void setUseConfirmOtp(boolean useConfirmOtp);
+
+    boolean getUseConfirmOtp();
 
     /**
      * Sets globalDebug.

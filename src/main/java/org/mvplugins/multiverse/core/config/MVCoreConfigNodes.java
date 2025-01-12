@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
+import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
@@ -98,22 +99,35 @@ class MVCoreConfigNodes {
             .name("auto-purge-entities")
             .build());
 
-    final ConfigNode<Boolean> TELEPORT_INTERCEPT = node(ConfigNode.builder("world.teleport-intercept", Boolean.class)
+    private final ConfigHeaderNode TELEPORT_HEADER = node(ConfigHeaderNode.builder("teleport")
+            .comment("")
+            .comment("")
+            .build());
+
+    final ConfigNode<Boolean> USE_FINER_TELEPORT_PERMISSIONS = node(ConfigNode.builder("teleport.use-finer-teleport-permissions", Boolean.class)
+            .comment("Sets whether Multiverse will use more fine-grained teleport permissions.")
+            .comment("If enabled, Multiverse will use the `multiverse.teleport.<self|other>.<type>.<target>` permission to determine whether")
+            .comment("a player can teleport to a world. If disabled, Multiverse will use the `mulitverse.teleport.<self|other>.<type>`")
+            .comment("permission to determine whether a player can teleport to a world.")
+            .comment("For example, if `multiverse.teleport.self.w.world2` is set, Multiverse will only allow the player to teleport to the world2")
+            .defaultValue(true)
+            .name("use-finer-teleport-permissions")
+            .build());
+
+    final ConfigNode<Integer> CONCURRENT_TELEPORT_LIMIT = node(ConfigNode.builder("teleport.concurrent-teleport-limit", Integer.class)
+            .comment("")
+            .comment("Sets the maximum number of players allowed to be teleported at once with `/mv teleport` command")
+            .defaultValue(50)
+            .name("concurrent-teleport-limit")
+            .build());
+
+    final ConfigNode<Boolean> TELEPORT_INTERCEPT = node(ConfigNode.builder("teleport.teleport-intercept", Boolean.class)
             .comment("")
             .comment("If this is set to true, Multiverse will enforce access permissions for all teleportation,")
             .comment("including teleportation from other plugins. You should not disable this unless you are facing")
             .comment("conflict with another plugin handling teleportation.")
             .defaultValue(true)
             .name("teleport-intercept")
-            .build());
-
-    final ConfigNode<Boolean> RESOLVE_ALIAS_NAME = node(ConfigNode.builder("world.resolve-alias-name", Boolean.class)
-            .comment("")
-            .comment("If this is set to true, Multiverse will resolve world based on their alias names for commands and destinations.")
-            .comment("Normal world names will still be accepted.")
-            .comment("In the event you have multiple worlds with the same alias name, the first world found will be used.")
-            .defaultValue(true)
-            .name("resolve-alias-name")
             .build());
 
     private final ConfigHeaderNode SPAWN_HEADER = node(ConfigHeaderNode.builder("spawn")
@@ -225,6 +239,39 @@ class MVCoreConfigNodes {
             })
             .build());
 
+    private final ConfigHeaderNode COMMAND_HEADER = node(ConfigHeaderNode.builder("command")
+            .comment("")
+            .comment("")
+            .build());
+
+    final ConfigNode<Boolean> RESOLVE_ALIAS_NAME = node(ConfigNode.builder("command.resolve-alias-name", Boolean.class)
+            .comment("If this is set to true, Multiverse will resolve world based on their alias names for commands and destinations.")
+            .comment("Normal world names will still be accepted.")
+            .comment("In the event you have multiple worlds with the same alias name, the first world found will be used.")
+            .defaultValue(true)
+            .name("resolve-alias-name")
+            .build());
+
+    final ConfigNode<ConfirmMode> CONFIRM_MODE = node(ConfigNode.builder("command.confirm-mode", ConfirmMode.class)
+            .comment("")
+            .comment("This config option defines whether `/mv confirm` is needed before running a DANGEROUS action.")
+            .comment("  enable: `/mv confirm` is required.")
+            .comment("  player_only: `/mv confirm` only required when running command as a player.")
+            .comment("  disable_command_blocks: `/mv confirm` not required for command blocks.")
+            .comment("  disable_console: `/mv confirm` not required for the console.")
+            .comment("  disable: `/mv confirm` is not required.")
+            .defaultValue(ConfirmMode.ENABLE)
+            .name("confirm-mode")
+            .build());
+
+    final ConfigNode<Boolean> USE_CONFIRM_OTP = node(ConfigNode.builder("command.use-confirm-otp", Boolean.class)
+            .comment("")
+            .comment("If this is set to true, `/mv confirm` will include a 3 digit random number that must be entered to confirm the command.")
+            .comment("For example: `/mv confirm 726`")
+            .defaultValue(true)
+            .name("use-confirm-otp")
+            .build());
+
     private final ConfigHeaderNode MISC_HEADER = node(ConfigHeaderNode.builder("misc")
             .comment("")
             .comment("")
@@ -272,7 +319,7 @@ class MVCoreConfigNodes {
             .comment("")
             .comment("This just signifies the version number so we can see what version of config you have.")
             .comment("NEVER TOUCH THIS VALUE")
-            .defaultValue(MVCoreConfig.CONFIG_VERSION)
+            .defaultValue(0.0)
             .name(null)
             .build());
 

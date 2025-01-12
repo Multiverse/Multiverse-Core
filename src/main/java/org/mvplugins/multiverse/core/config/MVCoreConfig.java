@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
-import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
@@ -13,12 +12,12 @@ import jakarta.inject.Provider;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.MVConfig;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
+import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.handle.CommentedYamlConfigHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
@@ -31,7 +30,6 @@ import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
 @Service
 public class MVCoreConfig implements MVConfig {
     public static final String CONFIG_FILENAME = "config.yml";
-    public static final double CONFIG_VERSION = 5.0;
 
     private final Path configPath;
     private final MVCoreConfigNodes configNodes;
@@ -75,6 +73,10 @@ public class MVCoreConfig implements MVConfig {
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.idonotwanttodonate", "misc.show-donation-message"))
                                 .addAction(BooleanMigratorAction.of("misc.show-donation-message"))
                                 .addAction(InvertBoolMigratorAction.of("misc.show-donation-message"))
+                                .build())
+                        .addVersionMigrator(VersionMigrator.builder(5.1)
+                                .addAction(MoveMigratorAction.of("world.teleport-intercept", "teleport.teleport-intercept"))
+                                .addAction(MoveMigratorAction.of("world.resolve-alias-name", "command.resolve-alias-name"))
                                 .build())
                         .build())
                 .build();
@@ -153,6 +155,26 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
+    public void setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions) {
+        configHandle.set(configNodes.USE_FINER_TELEPORT_PERMISSIONS, useFinerTeleportPermissions);
+    }
+
+    @Override
+    public boolean getUseFinerTeleportPermissions() {
+        return configHandle.get(configNodes.USE_FINER_TELEPORT_PERMISSIONS);
+    }
+
+    @Override
+    public void setConcurrentTeleportLimit(int concurrentTeleportLimit) {
+        configHandle.set(configNodes.CONCURRENT_TELEPORT_LIMIT, concurrentTeleportLimit);
+    }
+
+    @Override
+    public int getConcurrentTeleportLimit() {
+        return configHandle.get(configNodes.CONCURRENT_TELEPORT_LIMIT);
+    }
+
+    @Override
     public void setTeleportIntercept(boolean teleportIntercept) {
         configHandle.set(configNodes.TELEPORT_INTERCEPT, teleportIntercept);
     }
@@ -160,16 +182,6 @@ public class MVCoreConfig implements MVConfig {
     @Override
     public boolean getTeleportIntercept() {
         return configHandle.get(configNodes.TELEPORT_INTERCEPT);
-    }
-
-    @Override
-    public void setResolveAliasName(boolean resolveAliasInCommands) {
-        configHandle.set(configNodes.RESOLVE_ALIAS_NAME, resolveAliasInCommands);
-    }
-
-    @Override
-    public boolean getResolveAliasName() {
-        return configHandle.get(configNodes.RESOLVE_ALIAS_NAME);
     }
 
     @Override
@@ -280,6 +292,36 @@ public class MVCoreConfig implements MVConfig {
     @Override
     public boolean getPerPlayerLocale() {
         return configHandle.get(configNodes.PER_PLAYER_LOCALE);
+    }
+
+    @Override
+    public void setResolveAliasName(boolean resolveAliasInCommands) {
+        configHandle.set(configNodes.RESOLVE_ALIAS_NAME, resolveAliasInCommands);
+    }
+
+    @Override
+    public boolean getResolveAliasName() {
+        return configHandle.get(configNodes.RESOLVE_ALIAS_NAME);
+    }
+
+    @Override
+    public void setConfirmMode(ConfirmMode confirmMode) {
+        configHandle.set(configNodes.CONFIRM_MODE, confirmMode);
+    }
+
+    @Override
+    public ConfirmMode getConfirmMode() {
+        return configHandle.get(configNodes.CONFIRM_MODE);
+    }
+
+    @Override
+    public void setUseConfirmOtp(boolean useConfirmOtp) {
+        configHandle.set(configNodes.USE_CONFIRM_OTP, useConfirmOtp);
+    }
+
+    @Override
+    public boolean getUseConfirmOtp() {
+        return configHandle.get(configNodes.USE_CONFIRM_OTP);
     }
 
     @Override

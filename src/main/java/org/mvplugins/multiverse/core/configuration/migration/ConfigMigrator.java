@@ -43,10 +43,10 @@ public class ConfigMigrator {
             if (versionNumber < versionMigrator.getVersion()) {
                 Logging.info("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
                 versionMigrator.migrate(config);
+                // Set the version number to the latest version number
+                config.set(versionNode.getPath(), versionMigrator.getVersion());
             }
         }
-        // Set the version number to the latest version number
-        config.set(versionNode.getPath(), versionNode.getDefaultValue());
     }
 
     /**
