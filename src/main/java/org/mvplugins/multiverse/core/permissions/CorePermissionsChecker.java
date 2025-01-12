@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -16,10 +17,12 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 @Service
 public class CorePermissionsChecker {
 
+    private final MVCoreConfig config;
     private final DestinationsProvider destinationsProvider;
 
     @Inject
-    CorePermissionsChecker(@NotNull DestinationsProvider destinationsProvider) {
+    CorePermissionsChecker(@NotNull MVCoreConfig config, @NotNull DestinationsProvider destinationsProvider) {
+        this.config = config;
         this.destinationsProvider = destinationsProvider;
     }
 
@@ -92,8 +95,9 @@ public class CorePermissionsChecker {
         if (!hasPermission(teleporter, permission)) {
             return false;
         }
-
-        // TODO: Config whether to use finer permission
+        if (!config.getUseFinerTeleportPermissions()) {
+            return true;
+        }
         return destination.getFinerPermissionSuffix()
                 .filter(finerPermissionSuffix -> !finerPermissionSuffix.isEmpty())
                 .map(finerPermissionSuffix -> hasPermission(
