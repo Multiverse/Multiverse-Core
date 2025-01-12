@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import com.dumptruckman.minecraft.util.Logging;
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,14 +71,9 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
             }
             if (node instanceof ValueNode valueNode) {
                 //noinspection unchecked
-                set(valueNode, oldConfig.getObject(
-                        valueNode.getPath(),
-                        valueNode.getType(),
-                        valueNode.getDefaultValue())).onFailure(e -> {
-                            Logging.warning("Failed to set node " + valueNode.getPath()
-                                    + " to " + valueNode.getDefaultValue());
-                            reset(valueNode);
-                        });
+                Option.of(oldConfig.get(valueNode.getPath()))
+                        .peek(oldValue -> this.config.set(valueNode.getPath(), oldValue))
+                        .onEmpty(() -> reset(valueNode));
             }
         });
     }
