@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.Collections;
 
-import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -21,13 +20,16 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
+import org.mvplugins.multiverse.core.commandtools.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
+
+import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -71,12 +73,11 @@ class DeleteCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
-                issuer.getIssuer(),
-                () -> {
-                    runDeleteCommand(issuer, world, parsedFlags);
-                }, this.commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.DELETE_PROMPT,
-                "{world}", world.getName())));
+        this.commandManager.getCommandQueueManager().addToQueue(CommandQueuePayload
+                .issuer(issuer)
+                .action(() -> runDeleteCommand(issuer, world, parsedFlags))
+                .prompt(Message.of(MVCorei18n.DELETE_PROMPT, "",
+                        replace("{world}").with(world.getName()))));
     }
 
     private void runDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {

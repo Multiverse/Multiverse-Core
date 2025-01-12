@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -13,27 +12,26 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
-import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
-import org.bukkit.Registry;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.commandtools.queue.QueuedCommand;
+import org.mvplugins.multiverse.core.commandtools.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
+
+import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -93,11 +91,11 @@ class RegenCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        this.commandManager.getCommandQueueManager().addToQueue(new QueuedCommand(
-                issuer.getIssuer(),
-                () -> runRegenCommand(issuer, world, parsedFlags),
-                this.commandManager.formatMessage(
-                        issuer, MessageType.INFO, MVCorei18n.REGEN_PROMPT, "{world}", world.getName())));
+        this.commandManager.getCommandQueueManager().addToQueue(CommandQueuePayload
+                .issuer(issuer)
+                .action(() -> runRegenCommand(issuer, world, parsedFlags))
+                .prompt(Message.of(MVCorei18n.REGEN_PROMPT, "",
+                        replace("{world}").with(world.getName()))));
     }
 
     private void runRegenCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {

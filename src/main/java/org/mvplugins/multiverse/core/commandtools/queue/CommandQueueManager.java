@@ -11,18 +11,22 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.data.type.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 
 /**
  * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>
@@ -33,125 +37,143 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 @Service
 public class CommandQueueManager {
 
+    private static final String CONSOLE_NAME = "@console";
+    private static final String COMMAND_BLOCK_NAME = "@commandblock";
     private static final long TICKS_PER_SECOND = 20;
-    private static final DummyCommandBlockSender COMMAND_BLOCK = new DummyCommandBlockSender();
 
     private final Plugin plugin;
-    private final Map<CommandSender, QueuedCommand> queuedCommandMap;
+    private final MVCoreConfig config;
+    private final Map<String, CommandQueuePayload> queuedCommandMap;
 
     @Inject
-    public CommandQueueManager(@NotNull MultiverseCore plugin) {
+    CommandQueueManager(@NotNull MultiverseCore plugin, @NotNull MVCoreConfig config) {
         this.plugin = plugin;
+        this.config = config;
         this.queuedCommandMap = new WeakHashMap<>();
     }
 
     /**
-     * Adds a {@link QueuedCommand} into queue.
+     * Adds a {@link CommandQueuePayload} into queue.
      *
-     * @param queuedCommand The queued command to add.
+     * @param payload The command queue payload to add.
      */
-    public void addToQueue(QueuedCommand queuedCommand) {
-        CommandSender targetSender = parseSender(queuedCommand.getSender());
+    public void addToQueue(CommandQueuePayload payload) {
+        String senderName = parseSenderName(payload.issuer());
+        if (canRunImmediately(senderName)) {
+            payload.action().run();
+            return;
+        }
 
-        // Since only one command is stored in queue per sender, we remove the old one.
-        this.removeFromQueue(targetSender);
+        this.removeFromQueue(senderName);
 
-        Logging.finer("Add new command to queue for sender %s.", targetSender.getName());
-        this.queuedCommandMap.put(targetSender, queuedCommand);
-        queuedCommand.setExpireTask(runExpireLater(queuedCommand));
+        Logging.finer("Add new command to queue for sender %s.", senderName);
+        this.queuedCommandMap.put(senderName, payload);
+        payload.expireTask(runExpireLater(senderName, payload.validDuration()));
 
-        queuedCommand.getSender().sendMessage(queuedCommand.getPrompt());
-        queuedCommand.getSender().sendMessage(String.format("Run %s/mv confirm %sto continue. This will expire in %s seconds.",
-                ChatColor.GREEN, ChatColor.WHITE, queuedCommand.getValidDuration()));
+        payload.issuer().sendInfo(payload.prompt());
+        var confirmCommand = "/mv confirm";
+        if (config.getUseConfirmOtp()) {
+            confirmCommand += " " + payload.otp();
+        }
+        payload.issuer().sendMessage(String.format("Run %s%s %sto continue. This will expire in %s seconds.",
+                ChatColor.GREEN, confirmCommand, ChatColor.WHITE, payload.validDuration()));
     }
 
     /**
-     * Expire task that removes a {@link QueuedCommand} from queue after valid duration defined.
+     * Check if sender does not need to queue before running.
      *
-     * @param queuedCommand Command to run the expire task on.
+     * @param senderName    The name of sender.
+     * @return True if sender does not need to queue before running.
+     */
+    private boolean canRunImmediately(@NotNull String senderName) {
+        return switch (config.getConfirmMode()) {
+            case ENABLE -> false;
+            case PLAYER_ONLY -> senderName.equals(CONSOLE_NAME) || senderName.equals(COMMAND_BLOCK_NAME);
+            case DISABLE_COMMAND_BLOCKS -> senderName.equals(COMMAND_BLOCK_NAME);
+            case DISABLE_CONSOLE -> senderName.equals(CONSOLE_NAME);
+            case DISABLE -> true;
+        };
+    }
+
+    /**
+     * Expire task that removes a {@link CommandQueuePayload} from queue after valid duration defined.
+     *
+     * @param senderName    The name of the sender.
      * @return The expire {@link BukkitTask}.
      */
     @NotNull
-    private BukkitTask runExpireLater(@NotNull QueuedCommand queuedCommand) {
+    private BukkitTask runExpireLater(@NotNull String senderName, int validDuration) {
         return Bukkit.getScheduler().runTaskLater(
                 this.plugin,
-                expireRunnable(queuedCommand),
-                queuedCommand.getValidDuration() * TICKS_PER_SECOND
-        );
+                expireRunnable(senderName),
+                validDuration * TICKS_PER_SECOND);
     }
 
     /**
      * Runnable responsible for expiring the queued command.
      *
-     * @param queuedCommand Command to create the expire task on.
+     * @param senderName    The name of the sender.
      * @return The expire runnable.
      */
     @NotNull
-    private Runnable expireRunnable(@NotNull QueuedCommand queuedCommand) {
+    private Runnable expireRunnable(@NotNull String senderName) {
         return () -> {
-            CommandSender targetSender = parseSender(queuedCommand.getSender());
-            QueuedCommand matchingQueuedCommand = this.queuedCommandMap.get(targetSender);
-            if (!queuedCommand.equals(matchingQueuedCommand) || queuedCommand.getExpireTask().isCancelled()) {
-                // To be safe, but this shouldn't happen since we cancel old commands before add new once.
-                Logging.finer("This is an old queue command already.");
+            CommandQueuePayload payload = this.queuedCommandMap.remove(senderName);
+            if (payload == null) {
+                // Payload already removed
                 return;
             }
-            queuedCommand.getSender().sendMessage("Your queued command has expired.");
-            this.queuedCommandMap.remove(queuedCommand.getSender());
+            payload.issuer().sendMessage("Your queued command has expired.");
         };
     }
 
     /**
      * Runs the command in queue for the given sender, if any.
      *
-     * @param sender    {@link CommandSender} that confirmed the command.
+     * @param issuer    Sender that confirmed the command.
      * @return True if queued command ran successfully, else false.
      */
-    public boolean runQueuedCommand(@NotNull CommandSender sender) {
-        CommandSender targetSender = parseSender(sender);
-        QueuedCommand queuedCommand = this.queuedCommandMap.get(targetSender);
-        if (queuedCommand == null) {
-            sender.sendMessage(ChatColor.RED + "You do not have any commands in queue.");
+    public boolean runQueuedCommand(@NotNull MVCommandIssuer issuer, int otp) {
+        String senderName = parseSenderName(issuer);
+        CommandQueuePayload payload = this.queuedCommandMap.get(senderName);
+        if (payload == null) {
+            issuer.sendMessage(ChatColor.RED + "You do not have any commands in queue.");
+            return false;
+        }
+        if (config.getUseConfirmOtp() && payload.otp() != otp) {
+            issuer.sendMessage(ChatColor.RED + "Invalid OTP number. Please try again...");
             return false;
         }
         Logging.finer("Running queued command...");
-        queuedCommand.getAction().run();
-        return removeFromQueue(targetSender);
+        payload.action().run();
+        return removeFromQueue(senderName);
     }
 
     /**
      * Since only one command is stored in queue per sender, we remove the old one.
      *
-     * @param sender    The {@link CommandSender} that executed the command.
+     * @param senderName    The sender that executed the command.
      * @return True if queue command is removed from sender successfully, else false.
      */
-    public boolean removeFromQueue(@NotNull CommandSender sender) {
-        CommandSender targetSender = parseSender(sender);
-        QueuedCommand previousCommand = this.queuedCommandMap.remove(targetSender);
-        if (previousCommand == null) {
-            Logging.finer("No queue command to remove for sender %s.", targetSender.getName());
+    public boolean removeFromQueue(@NotNull String senderName) {
+        CommandQueuePayload payload = this.queuedCommandMap.remove(senderName);
+        if (payload == null) {
+            Logging.finer("No queue command to remove for sender %s.", senderName);
             return false;
         }
-        previousCommand.getExpireTask().cancel();
-        Logging.finer("Removed queue command for sender %s.", targetSender.getName());
+        Option.of(payload.expireTask()).peek(BukkitTask::cancel);
+        Logging.finer("Removed queue command for sender %s.", senderName);
         return true;
     }
 
-    /**
-     * To allow all CommandBlocks to be a common sender with use of {@link DummyCommandBlockSender}.
-     * So confirm command can be used for a queued command on another command block.
-     *
-     * @param sender    The sender to parse.
-     * @return The sender, or if its a command block, a {@link DummyCommandBlockSender}.
-     */
-    @NotNull
-    private CommandSender parseSender(@NotNull CommandSender sender) {
-        Logging.finer("Sender is of class %s.", sender.getClass().getName());
+    private String parseSenderName(MVCommandIssuer issuer) {
+        CommandSender sender = issuer.getIssuer();
         if (isCommandBlock(sender)) {
-            Logging.finer("Is command block.");
-            return COMMAND_BLOCK;
+            return COMMAND_BLOCK_NAME;
+        } else if (sender instanceof ConsoleCommandSender) {
+            return CONSOLE_NAME;
         }
-        return sender;
+        return sender.getName();
     }
 
     /**
