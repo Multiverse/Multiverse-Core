@@ -169,7 +169,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      * @return Empty try if the value was set, try containing an error otherwise.
      */
     public <T> Try<Void> reset(@NotNull ValueNode<T> node) {
-        return Try.run(() -> config.set(node.getPath(), node.getDefaultValue()));
+        return Try.run(() -> set(node, node.getDefaultValue()));
     }
 
     /**
