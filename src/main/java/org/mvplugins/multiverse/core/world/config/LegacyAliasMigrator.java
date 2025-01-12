@@ -12,10 +12,12 @@ class LegacyAliasMigrator implements MigratorAction {
     @Override
     public void migrate(ConfigurationSection config) {
         AtomicReference<String> alias = new AtomicReference<>(config.getString("alias", ""));
-        if (alias.get().isEmpty()) return;
-
         String color = config.getString("color", "");
         String style = config.getString("style", "");
+        config.set("color", null);
+        config.set("style", null);
+
+        if (alias.get().isEmpty()) return;
 
         Try.of(() -> Enum.valueOf(EnglishChatColor.class, color.toUpperCase()))
                 .map(c -> c.color)
@@ -34,8 +36,6 @@ class LegacyAliasMigrator implements MigratorAction {
                 });
 
         config.set("alias", alias.get());
-        config.set("color", null);
-        config.set("style", null);
     }
 
     private enum EnglishChatColor {
