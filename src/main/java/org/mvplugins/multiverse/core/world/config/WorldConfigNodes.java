@@ -1,6 +1,8 @@
 package org.mvplugins.multiverse.core.world.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -17,6 +19,8 @@ import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
@@ -26,10 +30,12 @@ public class WorldConfigNodes {
     private static final double CONFIG_VERSION = 1.0;
 
     private final NodeGroup nodes = new NodeGroup();
+    private WorldManager worldManager;
     private EnforcementHandler enforcementHandler;
     private LoadedMultiverseWorld world = null;
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
+        this.worldManager = multiverseCore.getServiceLocator().getService(WorldManager.class);
         this.enforcementHandler = multiverseCore.getServiceLocator().getService(EnforcementHandler.class);
     }
 
@@ -182,6 +188,11 @@ public class WorldConfigNodes {
 
     final ConfigNode<String> RESPAWN_WORLD = node(ConfigNode.builder("respawn-world", String.class)
             .defaultValue("")
+            .suggester(input -> {
+                if (worldManager == null) return Collections.emptyList();
+                //todo: maybe suggest alias? based on resolve-alias-name config
+                return worldManager.getWorlds().stream().map(MultiverseWorld::getName).toList();
+            })
             .build());
 
     final ConfigNode<Double> SCALE = node(ConfigNode.builder("scale", Double.class)
