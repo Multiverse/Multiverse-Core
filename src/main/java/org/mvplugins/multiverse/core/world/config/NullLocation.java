@@ -60,7 +60,7 @@ public final class NullLocation extends SpawnLocation {
 
     @Override
     public boolean equals(Object obj) {
-        return false;
+        return obj instanceof NullLocation;
     }
 
     @Override

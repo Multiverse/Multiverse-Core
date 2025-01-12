@@ -2,6 +2,8 @@ package org.mvplugins.multiverse.core.world
 
 import org.bukkit.Material
 import org.bukkit.World.Environment
+import org.bukkit.configuration.MemorySection
+import org.bukkit.configuration.file.YamlConfiguration
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.world.config.SpawnLocation
@@ -56,6 +58,8 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfig.isEntryFeeEnabled)
         assertEquals(Material.DIRT, worldConfig.entryFeeCurrency)
         assertEquals(5.0, worldConfig.entryFeeAmount)
+
+        compareConfigFile("worlds.yml", "/migrated_worlds.yml")
     }
 
     @Test
@@ -86,11 +90,32 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         compareConfigFile("worlds.yml", "/delete_worlds.yml")
     }
 
-    private fun compareConfigFile(configPath: String, comparePath: String) {
-        // TODO: Map keys may not guaranteed order. Potentially look at Hamkrest and assertThat.
-        val config = multiverseCore.dataFolder.toPath().resolve(configPath).toFile().readText()
-        val configCompare = getResourceAsText(comparePath)
-        assertNotNull(configCompare)
-        assertEquals(configCompare, config)
+    private fun compareConfigFile(actualPath: String, expectedPath: String) {
+        val actualString = multiverseCore.dataFolder.toPath().resolve(actualPath).toFile().readText()
+        val expectedString = getResourceAsText(expectedPath)
+        assertNotNull(expectedString)
+
+        val actualYaml = YamlConfiguration()
+        actualYaml.loadFromString(actualString)
+        val actualYamlKeys = HashSet(actualYaml.getKeys(true))
+
+        val expectedYaml = YamlConfiguration()
+        expectedYaml.loadFromString(expectedString)
+        val expectedYamlKeys = HashSet(expectedYaml.getKeys(true))
+
+        for (key in expectedYamlKeys) {
+            assertNotNull(actualYamlKeys.remove(key), "Key $key is missing in actual config")
+            val actualValue = actualYaml.get(key)
+            if (actualValue is MemorySection) {
+                continue
+            }
+            assertEquals(expectedYaml.get(key), actualYaml.get(key), "Value for $key is different.")
+        }
+        for (key in actualYamlKeys) {
+            assertNull(actualYaml.get(key), "Key $key is present in actual config when it should be empty.")
+        }
+
+        assertEquals(0, actualYamlKeys.size,
+            "Actual config has more keys than expected config. The following keys are missing: $actualYamlKeys")
     }
 }
