@@ -72,7 +72,10 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
             if (node instanceof ValueNode valueNode) {
                 //noinspection unchecked
                 Option.of(oldConfig.get(valueNode.getPath()))
-                        .peek(oldValue -> this.config.set(valueNode.getPath(), oldValue))
+                        .peek(oldValue -> {
+                            this.config.set(valueNode.getPath(), oldValue);
+                            set(valueNode, get(valueNode));
+                        })
                         .onEmpty(() -> reset(valueNode));
             }
         });
