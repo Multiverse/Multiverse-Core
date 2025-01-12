@@ -53,7 +53,7 @@ public final class DefaultSerializerProvider {
 
         @Override
         public Object serialize(Enum object, Class<Enum> type) {
-            return object.name();
+            return object.name().toLowerCase();
         }
     };
 
