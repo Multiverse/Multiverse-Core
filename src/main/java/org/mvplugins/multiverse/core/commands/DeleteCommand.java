@@ -22,6 +22,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -37,6 +38,7 @@ class DeleteCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
+    private final WorldTickDeferrer worldTickDeferrer;
 
     private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
             .addAlias("-r")
@@ -46,10 +48,12 @@ class DeleteCommand extends CoreCommand {
     DeleteCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
+            @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+            @NotNull WorldTickDeferrer worldTickDeferrer) {
         super(commandManager);
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
+        this.worldTickDeferrer = worldTickDeferrer;
     }
 
     @CommandAlias("mvdelete")
@@ -87,7 +91,7 @@ class DeleteCommand extends CoreCommand {
                 ? playerWorldTeleporter.removeFromWorld(loadedWorld)
                 : Async.completedFuture(Collections.emptyList());
 
-        future.thenRun(() -> doWorldDeleting(issuer, world));
+        future.thenRun(() -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)));
     }
 
     private void doWorldDeleting(MVCommandIssuer issuer, MultiverseWorld world) {

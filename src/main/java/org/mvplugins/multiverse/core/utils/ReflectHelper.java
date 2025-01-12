@@ -130,9 +130,10 @@ public class ReflectHelper {
      * @return The field value if any, else null.
      */
     @Nullable
-    public static <C, V> V getFieldValue(C classInstance, Field field)  {
+    public static <C, V> V getFieldValue(C classInstance, Field field, Class<V> fieldType) {
         try {
-            return (V) field.get(classInstance);
+            Object value = field.get(classInstance);
+            return fieldType.isInstance(value) ? fieldType.cast(value) : null;
         } catch (IllegalAccessException e) {
             return null;
         }

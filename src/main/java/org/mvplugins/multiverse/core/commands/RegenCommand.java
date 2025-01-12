@@ -24,6 +24,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.utils.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.message.Message;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -39,6 +40,7 @@ class RegenCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
+    private final WorldTickDeferrer worldTickDeferrer;
 
     private final CommandValueFlag<String> SEED_FLAG = flag(CommandValueFlag.builder("--seed", String.class)
             .addAlias("-s")
@@ -66,10 +68,12 @@ class RegenCommand extends CoreCommand {
     RegenCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
+            @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+            @NotNull WorldTickDeferrer worldTickDeferrer) {
         super(commandManager);
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
+        this.worldTickDeferrer = worldTickDeferrer;
     }
 
     @CommandAlias("mvregen")
@@ -107,7 +111,8 @@ class RegenCommand extends CoreCommand {
                 : Async.completedFuture(Collections.emptyList());
 
         // todo: using future will hide stacktrace
-        future.thenRun(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers));
+        future.thenRun(() -> worldTickDeferrer.deferWorldTick(() ->
+                doWorldRegening(issuer, world, parsedFlags, worldPlayers)));
     }
 
     private void doWorldRegening(
