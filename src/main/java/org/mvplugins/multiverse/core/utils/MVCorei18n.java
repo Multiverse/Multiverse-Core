@@ -106,6 +106,7 @@ public enum MVCorei18n implements MessageKeyProvider {
     SPAWN_YOU,
 
     // teleport command
+    TELEPORT_TOOMANYPLAYERS,
     TELEPORT_SUCCESS,
     TELEPORT_FAILED,
 

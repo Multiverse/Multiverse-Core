@@ -23,6 +23,7 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
@@ -36,6 +37,7 @@ import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.rep
 @CommandAlias("mv")
 class TeleportCommand extends CoreCommand {
 
+    private final MVCoreConfig config;
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
 
@@ -46,9 +48,11 @@ class TeleportCommand extends CoreCommand {
     @Inject
     TeleportCommand(
             @NotNull MVCommandManager commandManager,
+            @NotNull MVCoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
             @NotNull AsyncSafetyTeleporter safetyTeleporter) {
         super(commandManager);
+        this.config = config;
         this.permissionsChecker = permissionsChecker;
         this.safetyTeleporter = safetyTeleporter;
     }
@@ -79,6 +83,10 @@ class TeleportCommand extends CoreCommand {
 
         if (players.length == 1) {
             teleportSinglePlayer(issuer, players[0], destination, parsedFlags);
+        }
+        else if (players.length > config.getConcurrentTeleportLimit()) {
+            issuer.sendError(MVCorei18n.TELEPORT_TOOMANYPLAYERS,
+                    replace("{count}").with(config.getConcurrentTeleportLimit()));
         } else {
             teleportMultiplePlayers(issuer, players, destination, parsedFlags);
         }
