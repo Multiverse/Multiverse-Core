@@ -66,7 +66,6 @@ class DeleteCommand extends CoreCommand {
             MVCommandIssuer issuer,
 
             @Single
-            @Conditions("worldname:scope=both")
             @Syntax("<world>")
             @Description("The world you want to delete.")
             MultiverseWorld world,
