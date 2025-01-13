@@ -19,16 +19,15 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUp() {
-        val defaultConfig = getResourceAsText("/default_worlds.yml")
-        assertNotNull(defaultConfig)
-        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(defaultConfig)
+        val defaultWorldsData = getResourceAsText("/default_worlds.yml")
+        assertNotNull(defaultWorldsData)
+        val worldsFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString())
+        if (worldsFile.exists()) worldsFile.delete()
+        worldsFile.writeText(defaultWorldsData)
 
         worldConfigManager = serviceLocator.getActiveService(WorldsConfigManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
-    }
-
-    @Test
-    fun `World config is loaded`() {
+        assertTrue(worldConfigManager.load().isSuccess)
         assertTrue(worldConfigManager.isLoaded)
     }
 
@@ -64,27 +63,27 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Add a new world to config`() {
-        assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.addWorldConfig("newworld")
+        assertNotNull(worldConfig)
+        assertEquals("newworld", worldConfig.worldName)
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/newworld_worlds.yml", "worlds.yml")
     }
 
     @Test
     fun `Updating existing world properties`() {
-        assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.getWorldConfig("world").orNull
         assertNotNull(worldConfig)
 
-        worldConfig.stringPropertyHandle.setProperty("adjust-spawn", true)
-        worldConfig.stringPropertyHandle.setProperty("alias", "newalias")
-        worldConfig.stringPropertyHandle.setProperty("spawn-location", SpawnLocation(-64.0, 64.0, 48.0))
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("adjust-spawn", true).isSuccess)
+        assertTrue(worldConfig.stringPropertyHandle.setProperty("alias", "newalias").isSuccess)
+        assertTrue(worldConfig.setSpawnLocation(SpawnLocation(-50.0, 50.0, 50.0)).isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
+        assertConfigEquals("/updated_worlds.yml", "worlds.yml")
     }
 
     @Test
     fun `Delete world section from config`() {
-        assertTrue(worldConfigManager.load().isSuccess)
         worldConfigManager.deleteWorldConfig("world")
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/delete_worlds.yml", "worlds.yml")
