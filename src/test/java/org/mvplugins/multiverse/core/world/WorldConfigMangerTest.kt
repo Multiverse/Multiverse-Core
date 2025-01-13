@@ -1,9 +1,8 @@
 package org.mvplugins.multiverse.core.world
 
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.World.Environment
-import org.bukkit.configuration.MemorySection
-import org.bukkit.configuration.file.YamlConfiguration
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.world.config.SpawnLocation
@@ -87,5 +86,23 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         worldConfigManager.deleteWorldConfig("world")
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/delete_worlds.yml", "worlds.yml")
+    }
+
+    @Test
+    fun `Edge case parsing tests for world config`() {
+        val edgecaseConfig = getResourceAsText("/edgecase_worlds.yml")
+        assertNotNull(edgecaseConfig)
+        File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(edgecaseConfig)
+
+        assertTrue(worldConfigManager.load().isSuccess)
+        assertTrue(worldConfigManager.save().isSuccess)
+
+        val worldConfig = assertNotNull(worldConfigManager.getWorldConfig("world").orNull)
+
+        assertEquals("1234", worldConfig.alias)
+        assertTrue(worldConfig.bedRespawn)
+        assertEquals(GameMode.SURVIVAL, worldConfig.gameMode)
+        assertEquals(4.0, worldConfig.scale)
+        assertEquals(listOf("a", "1", "2"), worldConfig.worldBlacklist)
     }
 }
