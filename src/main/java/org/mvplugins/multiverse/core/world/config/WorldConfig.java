@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.configuration.handle.ConfigurationSectionHandle;
+import org.mvplugins.multiverse.core.configuration.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.*;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -26,7 +27,7 @@ public final class WorldConfig {
 
     private final String worldName;
     private final WorldConfigNodes configNodes;
-    private final ConfigurationSectionHandle configHandle;
+    private final MemoryConfigurationHandle configHandle;
     private final StringPropertyHandle stringPropertyHandle;
 
     WorldConfig(
@@ -35,7 +36,7 @@ public final class WorldConfig {
             @NotNull MultiverseCore multiverseCore) {
         this.worldName = worldName;
         this.configNodes = new WorldConfigNodes(multiverseCore);
-        this.configHandle = ConfigurationSectionHandle.builder(configSection, configNodes.getNodes())
+        this.configHandle = MemoryConfigurationHandle.builder(configSection, configNodes.getNodes())
                 .logger(Logging.getLogger())
                 .migrator(ConfigMigrator.builder(configNodes.VERSION)
                         .addVersionMigrator(initialVersionMigrator())
@@ -383,5 +384,9 @@ public final class WorldConfig {
 
     public void deferenceMVWorld() {
         configNodes.setWorld(null);
+    }
+
+    ConfigurationSection getConfigurationSection() {
+        return configHandle.getConfig();
     }
 }

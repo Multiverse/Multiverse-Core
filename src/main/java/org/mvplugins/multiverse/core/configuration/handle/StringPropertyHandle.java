@@ -17,14 +17,14 @@ import org.mvplugins.multiverse.core.configuration.node.ValueNode;
  * Handles setting of config with string names and values.
  */
 public class StringPropertyHandle {
-    private final @NotNull GenericConfigHandle<?> handle;
+    private final @NotNull BaseConfigurationHandle<?> handle;
 
     /**
      * Creates a new string property handle.
      *
      * @param handle    The handle to wrap.
      */
-    public StringPropertyHandle(@NotNull GenericConfigHandle<?> handle) {
+    public StringPropertyHandle(@NotNull BaseConfigurationHandle<?> handle) {
         this.handle = handle;
     }
 

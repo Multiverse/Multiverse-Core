@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
@@ -31,7 +27,7 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 public final class WorldsConfigManager {
     private static final String CONFIG_FILENAME = "worlds.yml";
 
-    private final Map<String, WorldConfig> worldConfigMap;
+    private final SortedMap<String, WorldConfig> worldConfigMap;
     private final File worldConfigFile;
     private YamlConfiguration worldsConfig;
 
@@ -39,7 +35,7 @@ public final class WorldsConfigManager {
 
     @Inject
     WorldsConfigManager(@NotNull MultiverseCore core, @NotNull MultiverseCore multiverseCore) {
-        worldConfigMap = new HashMap<>();
+        worldConfigMap = new TreeMap<>();
         worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
 
         this.multiverseCore = multiverseCore;
@@ -165,7 +161,15 @@ public final class WorldsConfigManager {
      * @return Whether the save was successful or the error that occurred.
      */
     public Try<Void> save() {
-        return Try.run(() -> worldsConfig.save(worldConfigFile));
+        return Try.run(() -> {
+            if (!isLoaded()) {
+                throw new IllegalStateException("WorldsConfigManager is not loaded!");
+            }
+            worldsConfig = new YamlConfiguration();
+            worldConfigMap.forEach((worldName, worldConfig) ->
+                    worldsConfig.set(worldName, worldConfig.getConfigurationSection()));
+            worldsConfig.save(worldConfigFile);
+        });
     }
 
     /**
@@ -212,7 +216,8 @@ public final class WorldsConfigManager {
      */
     private ConfigurationSection getWorldConfigSection(String worldName) {
         return worldsConfig.isConfigurationSection(worldName)
-                ? worldsConfig.getConfigurationSection(worldName) : worldsConfig.createSection(worldName);
+                ? worldsConfig.getConfigurationSection(worldName)
+                : worldsConfig.createSection(worldName);
     }
 
     private static final class ConfigMigratedException extends RuntimeException {

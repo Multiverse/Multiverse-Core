@@ -16,10 +16,10 @@ import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 /**
  * Configuration handle for YAML files.
  */
-public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
+public class YamlConfigurationHandle extends FileConfigurationHandle<YamlConfiguration> {
 
     /**
-     * Creates a new builder for {@link YamlConfigHandle}.
+     * Creates a new builder for {@link YamlConfigurationHandle}.
      *
      * @param configPath    The path to the config file.
      * @param nodes         The nodes.
@@ -29,7 +29,7 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
         return new Builder<>(configPath, nodes);
     }
 
-    protected YamlConfigHandle(
+    protected YamlConfigurationHandle(
             @NotNull Path configPath,
             @Nullable Logger logger,
             @NotNull NodeGroup nodes,
@@ -55,11 +55,11 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
     }
 
     /**
-     * Builder for {@link YamlConfigHandle}.
+     * Builder for {@link YamlConfigurationHandle}.
      *
      * @param <B>   The type of the builder.
      */
-    public static class Builder<B extends Builder<B>> extends FileConfigHandle.Builder<YamlConfiguration, B> {
+    public static class Builder<B extends Builder<B>> extends FileConfigurationHandle.Builder<YamlConfiguration, B> {
 
         protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
             super(configPath, nodes);
@@ -69,8 +69,8 @@ public class YamlConfigHandle extends FileConfigHandle<YamlConfiguration> {
          * {@inheritDoc}
          */
         @Override
-        public @NotNull YamlConfigHandle build() {
-            return new YamlConfigHandle(configPath, logger, nodes, migrator);
+        public @NotNull YamlConfigurationHandle build() {
+            return new YamlConfigurationHandle(configPath, logger, nodes, migrator);
         }
     }
 }

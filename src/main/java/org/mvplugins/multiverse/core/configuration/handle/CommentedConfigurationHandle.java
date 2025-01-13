@@ -18,10 +18,10 @@ import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 /**
  * Configuration handle for commented YAML files.
  */
-public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfiguration> {
+public class CommentedConfigurationHandle extends FileConfigurationHandle<CommentedConfiguration> {
 
     /**
-     * Creates a new builder for a {@link CommentedYamlConfigHandle}.
+     * Creates a new builder for a {@link CommentedConfigurationHandle}.
      *
      * @param configPath    The path to the config file.
      * @param nodes         The nodes.
@@ -31,7 +31,7 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
         return new Builder(configPath, nodes);
     }
 
-    protected CommentedYamlConfigHandle(
+    protected CommentedConfigurationHandle(
             @NotNull Path configPath,
             @Nullable Logger logger,
             @NotNull NodeGroup nodes,
@@ -91,9 +91,9 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
     }
 
     /**
-     * Builder for {@link CommentedYamlConfigHandle}.
+     * Builder for {@link CommentedConfigurationHandle}.
      */
-    public static class Builder extends FileConfigHandle.Builder<CommentedConfiguration, Builder> {
+    public static class Builder extends FileConfigurationHandle.Builder<CommentedConfiguration, Builder> {
 
         protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
             super(configPath, nodes);
@@ -103,8 +103,8 @@ public class CommentedYamlConfigHandle extends FileConfigHandle<CommentedConfigu
          * {@inheritDoc}
          */
         @Override
-        public @NotNull CommentedYamlConfigHandle build() {
-            return new CommentedYamlConfigHandle(configPath, logger, nodes, migrator);
+        public @NotNull CommentedConfigurationHandle build() {
+            return new CommentedConfigurationHandle(configPath, logger, nodes, migrator);
         }
     }
 }

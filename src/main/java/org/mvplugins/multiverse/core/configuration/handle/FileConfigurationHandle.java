@@ -19,12 +19,12 @@ import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
  *
  * @param <C>   The configuration type.
  */
-public abstract class FileConfigHandle<C extends FileConfiguration> extends GenericConfigHandle<C> {
+public abstract class FileConfigurationHandle<C extends FileConfiguration> extends BaseConfigurationHandle<C> {
 
     protected final @NotNull Path configPath;
     protected final @NotNull File configFile;
 
-    protected FileConfigHandle(
+    protected FileConfigurationHandle(
             @NotNull Path configPath,
             @Nullable Logger logger,
             @NotNull NodeGroup nodes,
@@ -83,22 +83,13 @@ public abstract class FileConfigHandle<C extends FileConfiguration> extends Gene
     }
 
     /**
-     * Gets the configuration.
-     *
-     * @return The configuration.
-     */
-    public C getConfig() {
-        return config;
-    }
-
-    /**
-     * Abstract builder for {@link FileConfigHandle}.
+     * Abstract builder for {@link FileConfigurationHandle}.
      *
      * @param <C>   The configuration type.
      * @param <B>   The builder type.
      */
     public abstract static class Builder<C extends FileConfiguration, B extends Builder<C, B>>
-            extends GenericConfigHandle.Builder<C, B> {
+            extends BaseConfigurationHandle.Builder<C, B> {
 
         protected @NotNull Path configPath;
 
@@ -112,7 +103,7 @@ public abstract class FileConfigHandle<C extends FileConfiguration> extends Gene
          *
          * @return The configuration handle.
          */
-        public abstract @NotNull FileConfigHandle<C> build();
+        public abstract @NotNull FileConfigurationHandle<C> build();
 
         @SuppressWarnings("unchecked")
         protected B self() {

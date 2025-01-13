@@ -21,7 +21,7 @@ import org.mvplugins.multiverse.core.configuration.node.ValueNode;
  *
  * @param <C>   The configuration type.
  */
-public abstract class GenericConfigHandle<C extends ConfigurationSection> {
+public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
 
     protected final @Nullable Logger logger;
     protected final @NotNull NodeGroup nodes;
@@ -29,7 +29,10 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
 
     protected C config;
 
-    protected GenericConfigHandle(@Nullable Logger logger, @NotNull NodeGroup nodes, @Nullable ConfigMigrator migrator) {
+    protected BaseConfigurationHandle(
+            @Nullable Logger logger,
+            @NotNull NodeGroup nodes,
+            @Nullable ConfigMigrator migrator) {
         this.logger = logger;
         this.nodes = nodes;
         this.migrator = migrator;
@@ -171,6 +174,15 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     }
 
     /**
+     * Gets the configuration.
+     *
+     * @return The configuration.
+     */
+    public C getConfig() {
+        return config;
+    }
+
+    /**
      * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
      *
      * @return The configuration.
@@ -180,12 +192,12 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
     }
 
     /**
-     * Abstract builder for {@link GenericConfigHandle}.
+     * Abstract builder for {@link BaseConfigurationHandle}.
      *
      * @param <C>   The configuration type.
      * @param <B>   The builder type.
      */
-    public abstract static class Builder<C extends ConfigurationSection, B extends GenericConfigHandle.Builder<C, B>> {
+    public abstract static class Builder<C extends ConfigurationSection, B extends BaseConfigurationHandle.Builder<C, B>> {
 
         protected final @NotNull NodeGroup nodes;
         protected @Nullable Logger logger;
@@ -233,7 +245,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
          *
          * @return The configuration handle.
          */
-        public abstract @NotNull GenericConfigHandle<C> build();
+        public abstract @NotNull BaseConfigurationHandle<C> build();
 
         @SuppressWarnings("unchecked")
         protected B self() {

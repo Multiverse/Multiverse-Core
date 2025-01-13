@@ -13,7 +13,7 @@ import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 /**
  * Configuration handle for a single configuration section.
  */
-public class ConfigurationSectionHandle extends GenericConfigHandle<ConfigurationSection> {
+public class ConfigurationSectionHandle<C extends ConfigurationSection> extends BaseConfigurationHandle<C> {
     /**
      * Creates a new builder for a {@link ConfigurationSectionHandle}.
      *
@@ -21,13 +21,13 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
      * @param nodes                 The nodes.
      * @return The builder.
      */
-    public static Builder<? extends Builder> builder(
-            @NotNull ConfigurationSection configurationSection, @NotNull NodeGroup nodes) {
+    public static <C extends ConfigurationSection> Builder<C, ? extends Builder<C, ?>> builder(
+            @NotNull C configurationSection, @NotNull NodeGroup nodes) {
         return new Builder<>(configurationSection, nodes);
     }
 
     protected ConfigurationSectionHandle(
-            @NotNull ConfigurationSection configurationSection,
+            @NotNull C configurationSection,
             @Nullable Logger logger,
             @NotNull NodeGroup nodes,
             @Nullable ConfigMigrator migrator) {
@@ -41,7 +41,7 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
      * @param section  The configuration section.
      * @return Whether the configuration was loaded or its given error.
      */
-    public Try<Void> load(@NotNull ConfigurationSection section) {
+    public Try<Void> load(@NotNull C section) {
         this.config = section;
         return load();
     }
@@ -51,10 +51,10 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
      *
      * @param <B>   The builder type.
      */
-    public static class Builder<B extends Builder<B>> extends GenericConfigHandle.Builder<ConfigurationSection, B> {
-        private final ConfigurationSection configurationSection;
+    public static class Builder<C extends ConfigurationSection, B extends Builder<C, B>> extends BaseConfigurationHandle.Builder<C, B> {
+        protected final C configurationSection;
 
-        protected Builder(@NotNull ConfigurationSection configurationSection, @NotNull NodeGroup nodes) {
+        protected Builder(@NotNull C configurationSection, @NotNull NodeGroup nodes) {
             super(nodes);
             this.configurationSection = configurationSection;
         }
@@ -63,8 +63,8 @@ public class ConfigurationSectionHandle extends GenericConfigHandle<Configuratio
          * {@inheritDoc}
          */
         @Override
-        public @NotNull ConfigurationSectionHandle build() {
-            return new ConfigurationSectionHandle(configurationSection, logger, nodes, migrator);
+        public @NotNull ConfigurationSectionHandle<C> build() {
+            return new ConfigurationSectionHandle<>(configurationSection, logger, nodes, migrator);
         }
     }
 }
