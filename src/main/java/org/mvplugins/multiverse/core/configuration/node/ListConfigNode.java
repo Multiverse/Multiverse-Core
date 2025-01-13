@@ -15,11 +15,7 @@ import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.configuration.functions.DefaultStringParserProvider;
-import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterProvider;
-import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
-import org.mvplugins.multiverse.core.configuration.functions.NodeStringParser;
-import org.mvplugins.multiverse.core.configuration.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.configuration.functions.*;
 
 /**
  * A config node that contains a list of values.
@@ -75,7 +71,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         this.itemStringParser = itemStringParser != null
                 ? itemStringParser
                 : DefaultStringParserProvider.getDefaultStringParser(itemType);
-        this.itemSerializer = itemSerializer;
+        this.itemSerializer = itemSerializer != null
+                ? itemSerializer
+                : DefaultSerializerProvider.getDefaultSerializer(itemType);
         this.itemValidator = itemValidator;
         this.onSetItemValue = onSetItemValue;
 
@@ -142,17 +140,23 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Override
             public List<I> deserialize(Object object, Class<List<I>> type) {
                 if (object instanceof List list) {
-                    return list.stream().map(item -> itemSerializer.deserialize(item, itemType)).toList();
+                    //noinspection unchecked
+                    return list.stream()
+                            .map(item -> itemSerializer != null ? itemSerializer.deserialize(item, itemType) : item)
+                            .toList();
                 }
+                //todo: Maybe assume object is the first element of the list
                 return new ArrayList<>();
             }
 
             @Override
             public Object serialize(List<I> object, Class<List<I>> type) {
-                if (object != null) {
-                    return object.stream().map(item -> itemSerializer.serialize(item, itemType)).toList();
+                if (object == null) {
+                    return new ArrayList<>();
                 }
-                return new ArrayList<>();
+                return object.stream()
+                        .map(item -> itemSerializer != null ? itemSerializer.serialize(item, itemType) : item)
+                        .toList();
             }
         };
     }
@@ -321,7 +325,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
                     validator,
                     onSetValue,
                     itemType,
-                    itemSuggester, itemStringParser, itemSerializer,
+                    itemSuggester,
+                    itemStringParser,
+                    itemSerializer,
                     itemValidator,
                     onSetItemValue);
         }

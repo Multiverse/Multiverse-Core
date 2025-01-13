@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,13 +56,34 @@ public final class DefaultSerializerProvider {
         }
     };
 
+    private static final NodeSerializer<String> STRING_SERIALIZER = new NodeSerializer<>() {
+        @Override
+        public String deserialize(Object object, Class<String> type) {
+            if (object instanceof String) {
+                return (String) object;
+            }
+            return String.valueOf(object);
+        }
+
+        @Override
+        public Object serialize(String object, Class<String> type) {
+            return object;
+        }
+    };
+
     private static final NodeSerializer<Boolean> BOOLEAN_SERIALIZER = new NodeSerializer<>() {
         @Override
         public Boolean deserialize(Object object, Class<Boolean> type) {
             if (object instanceof Boolean) {
                 return (Boolean) object;
             }
-            return ACFUtil.isTruthy(String.valueOf(object));
+            String input = String.valueOf(object);
+            //todo: this is a copy from string parser
+            return switch (input.toLowerCase()) {
+                case "t", "true", "on", "y", "yes", "1", "allow" -> true;
+                case "f", "false", "off", "n", "no", "0", "deny" -> false;
+                default -> throw new RuntimeException("Unable to convert '" + input + "' to boolean.");
+            };
         }
 
         @Override
@@ -152,6 +172,7 @@ public final class DefaultSerializerProvider {
     };
 
     static {
+        addDefaultSerializer(String.class, STRING_SERIALIZER);
         addDefaultSerializer(Boolean.class, BOOLEAN_SERIALIZER);
         addDefaultSerializer(Integer.class, INTEGER_SERIALIZER);
         addDefaultSerializer(Double.class, DOUBLE_SERIALIZER);
