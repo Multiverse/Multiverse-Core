@@ -39,13 +39,10 @@ public abstract class FileConfigHandle<C extends FileConfiguration> extends Gene
      */
     @Override
     public Try<Void> load() {
-        boolean isNewFile = !configFile.exists();
         return createConfigFile()
                 .andThenTry(this::loadConfigObject)
                 .andThenTry(() -> {
-                    if (!isNewFile) {
-                        migrateConfig();
-                    }
+                    migrateConfig();
                     setUpNodes();
                 });
     }

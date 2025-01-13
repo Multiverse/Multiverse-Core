@@ -38,6 +38,11 @@ public class ConfigMigrator {
      * @param config The target settings instance to migrate.
      */
     public void migrate(ConfigurationSection config) {
+        if (config.getKeys(false).isEmpty()) {
+            config.set(versionNode.getPath(), getLatestVersion());
+            return;
+        }
+
         double versionNumber = config.getDouble(versionNode.getPath());
         for (VersionMigrator versionMigrator : versionMigrators) {
             if (versionNumber < versionMigrator.getVersion()) {
@@ -47,6 +52,18 @@ public class ConfigMigrator {
                 config.set(versionNode.getPath(), versionMigrator.getVersion());
             }
         }
+    }
+
+    /**
+     * Gets the latest version number of the config.
+     *
+     * @return The latest version number.
+     */
+    private double getLatestVersion() {
+        if (versionMigrators.isEmpty()) {
+            return 0.0;
+        }
+        return versionMigrators.get(versionMigrators.size() - 1).getVersion();
     }
 
     /**

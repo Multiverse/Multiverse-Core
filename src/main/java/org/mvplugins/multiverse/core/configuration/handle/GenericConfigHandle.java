@@ -42,9 +42,7 @@ public abstract class GenericConfigHandle<C extends ConfigurationSection> {
      */
     public Try<Void> load() {
         return Try.run(() -> {
-            if (!config.getKeys(false).isEmpty()) {
-                migrateConfig();
-            }
+            migrateConfig();
             setUpNodes();
         });
     }
