@@ -33,7 +33,6 @@ import org.mvplugins.multiverse.core.api.LocationManipulation;
  */
 @Service
 public class SimpleBlockSafety implements BlockSafety {
-    private static final Vector DEFAULT_VECTOR = new Vector();
     private static final int DEFAULT_TOLERANCE = 6;
     private static final int DEFAULT_RADIUS = 9;
     private static final Set<BlockFace> AROUND_BLOCK = EnumSet.noneOf(BlockFace.class);
@@ -191,6 +190,10 @@ public class SimpleBlockSafety implements BlockSafety {
     }
 
     private Location checkAboveAndBelowLocation(Location l, int tolerance, int radius) {
+        if (playerCanSpawnHereSafely(l)) {
+            // Location already safe, don't need to change
+            return l;
+        }
         // Tolerance must be an even number:
         if (tolerance % 2 != 0) {
             tolerance += 1;
