@@ -86,10 +86,10 @@ public final class WorldsConfigManager {
                     Path oldWorldConfig = worldConfigFile.toPath().getParent().resolve(CONFIG_FILENAME + ".old");
                     Files.copy(worldConfigFile.toPath(), oldWorldConfig, COPY_ATTRIBUTES);
 
-                    return configData.replace("    ==: MVWorld\n", "")
-                            .replace("      ==: MVSpawnSettings\n", "")
-                            .replace("        ==: MVSpawnSubSettings\n", "")
-                            .replace("      ==: MVEntryFee\n", "");
+                    return configData.replace("==: MVWorld", "")
+                            .replace("==: MVSpawnSettings", "")
+                            .replace("==: MVSpawnSubSettings", "")
+                            .replace("==: MVEntryFee", "");
                 })
                 .andThenTry(configData -> Files.writeString(worldConfigFile.toPath(), configData))
                 .andThenTry(() -> {
