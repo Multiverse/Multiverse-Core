@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.config
 
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
@@ -12,12 +13,11 @@ class ConfigTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUp() {
+        val configFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString())
+        if (configFile.exists()) configFile.delete()
+
         config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
-
-        val defaultConfig = getResourceAsText("/default_config.yml")
-        assertNotNull(defaultConfig)
-        File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString()).writeText(defaultConfig)
 
         assertTrue(config.load().isSuccess)
         assertTrue(config.save().isSuccess)
@@ -26,6 +26,11 @@ class ConfigTest : TestWithMockBukkit() {
     @Test
     fun `Config is loaded`() {
         assertTrue(config.isLoaded)
+    }
+
+    @Test
+    fun `Config is fresh`() {
+        assertConfigEquals("/fresh_config.yml", "config.yml")
     }
 
     @Test
@@ -53,7 +58,8 @@ class ConfigTest : TestWithMockBukkit() {
     @Test
     fun `Getting existing config property with getProperty returns expected value`() {
         assertEquals(false, config.stringPropertyHandle.getProperty("enforce-access").get())
-        assertEquals("world", config.stringPropertyHandle.getProperty("first-spawn-location").get())
+        assertEquals("", config.stringPropertyHandle.getProperty("first-spawn-location").get())
+        assertEquals(ConfirmMode.ENABLE, config.stringPropertyHandle.getProperty("confirm-mode").get())
     }
 
     @Test
@@ -65,7 +71,8 @@ class ConfigTest : TestWithMockBukkit() {
     @Test
     fun `Getting existing config property by getter returns expected value`() {
         assertEquals(false, config.enforceAccess)
-        assertEquals("world", config.firstSpawnLocation)
+        assertEquals("", config.firstSpawnLocation)
+        assertEquals(ConfirmMode.ENABLE, config.confirmMode)
     }
 
     @Test

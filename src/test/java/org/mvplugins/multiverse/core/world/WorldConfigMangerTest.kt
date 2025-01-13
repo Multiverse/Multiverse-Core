@@ -59,7 +59,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(Material.DIRT, worldConfig.entryFeeCurrency)
         assertEquals(5.0, worldConfig.entryFeeAmount)
 
-        compareConfigFile("worlds.yml", "/migrated_worlds.yml")
+        assertConfigEquals("/migrated_worlds.yml", "worlds.yml")
     }
 
     @Test
@@ -67,7 +67,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         val worldConfig = worldConfigManager.addWorldConfig("newworld")
         assertTrue(worldConfigManager.save().isSuccess)
-        compareConfigFile("worlds.yml", "/newworld_worlds.yml")
+        assertConfigEquals("/newworld_worlds.yml", "worlds.yml")
     }
 
     @Test
@@ -87,35 +87,6 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         worldConfigManager.deleteWorldConfig("world")
         assertTrue(worldConfigManager.save().isSuccess)
-        compareConfigFile("worlds.yml", "/delete_worlds.yml")
-    }
-
-    private fun compareConfigFile(actualPath: String, expectedPath: String) {
-        val actualString = multiverseCore.dataFolder.toPath().resolve(actualPath).toFile().readText()
-        val expectedString = getResourceAsText(expectedPath)
-        assertNotNull(expectedString)
-
-        val actualYaml = YamlConfiguration()
-        actualYaml.loadFromString(actualString)
-        val actualYamlKeys = HashSet(actualYaml.getKeys(true))
-
-        val expectedYaml = YamlConfiguration()
-        expectedYaml.loadFromString(expectedString)
-        val expectedYamlKeys = HashSet(expectedYaml.getKeys(true))
-
-        for (key in expectedYamlKeys) {
-            assertNotNull(actualYamlKeys.remove(key), "Key $key is missing in actual config")
-            val actualValue = actualYaml.get(key)
-            if (actualValue is MemorySection) {
-                continue
-            }
-            assertEquals(expectedYaml.get(key), actualYaml.get(key), "Value for $key is different.")
-        }
-        for (key in actualYamlKeys) {
-            assertNull(actualYaml.get(key), "Key $key is present in actual config when it should be empty.")
-        }
-
-        assertEquals(0, actualYamlKeys.size,
-            "Actual config has more keys than expected config. The following keys are missing: $actualYamlKeys")
+        assertConfigEquals("/delete_worlds.yml", "worlds.yml")
     }
 }
