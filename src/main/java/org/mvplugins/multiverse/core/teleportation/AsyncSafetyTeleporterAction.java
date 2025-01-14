@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class AsyncSafetyTeleporterAction {
 
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
 
@@ -34,7 +34,7 @@ public class AsyncSafetyTeleporterAction {
     private @Nullable CommandSender teleporter = null;
 
     AsyncSafetyTeleporterAction(
-            @NotNull BlockSafety blockSafety,
+            @NotNull AdvancedBlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager,
             @NotNull Either<Location, DestinationInstance<?, ?>> locationOrDestination) {
@@ -146,7 +146,7 @@ public class AsyncSafetyTeleporterAction {
         if (!this.checkSafety) {
             return Attempt.success(location);
         }
-        Location safeLocation = blockSafety.getSafeLocation(location);
+        Location safeLocation = blockSafety.adjustSafeSpawnLocation(location);
         if (safeLocation == null) {
             return Attempt.failure(TeleportFailureReason.UNSAFE_LOCATION);
         }

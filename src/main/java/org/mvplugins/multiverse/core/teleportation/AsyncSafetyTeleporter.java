@@ -16,13 +16,13 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
  */
 @Service
 public class AsyncSafetyTeleporter {
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
 
     @Inject
     AsyncSafetyTeleporter(
-            @NotNull BlockSafety blockSafety,
+            @NotNull AdvancedBlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager) {
         this.blockSafety = blockSafety;
