@@ -2,9 +2,11 @@ package org.mvplugins.multiverse.core.configuration.handle;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,12 +41,32 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
      */
     @Override
     public Try<Void> load() {
-        return createConfigFile()
-                .andThenTry(this::loadConfigObject)
-                .andThenTry(() -> {
-                    migrateConfig();
-                    setUpNodes();
-                });
+        return tryLoadConfigFile().andThenTry(() -> {
+            migrateConfig();
+            setUpNodes();
+        });
+    }
+
+    private Try<Void> tryLoadConfigFile() {
+        return Try.run(() -> {
+            createConfigFile();
+            loadConfigObject();
+        }).fold(this::handleLoadConfigFailure, Try::success);
+    }
+
+    private @NotNull Try<Void> handleLoadConfigFailure(Throwable throwable) {
+            Logging.severe("Failed to load config file: " + configFile.getName(), throwable);
+            throwable.printStackTrace();
+            return Try.run(() -> {
+                Path brokenConfigPath = configPath.resolveSibling(configFile.getName() + ".broken." + System.currentTimeMillis());
+                Logging.severe("Moving broken config file to: " + brokenConfigPath.getFileName());
+                Files.copy(configPath, brokenConfigPath);
+                Files.delete(configPath);
+            }).andThenTry(() -> {
+                Logging.severe("Multiverse-Core will now regenerate a fresh config file with all default options!");
+                createConfigFile();
+                loadConfigObject();
+            });
     }
 
     /**

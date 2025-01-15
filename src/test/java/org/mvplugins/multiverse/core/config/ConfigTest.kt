@@ -10,10 +10,11 @@ import kotlin.test.*
 class ConfigTest : TestWithMockBukkit() {
 
     private lateinit var config : MVCoreConfig
+    private lateinit var configFile : File
 
     @BeforeTest
     fun setUp() {
-        val configFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString())
+        configFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString())
         if (configFile.exists()) configFile.delete()
 
         config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
@@ -103,5 +104,18 @@ class ConfigTest : TestWithMockBukkit() {
     fun `Updating a non-existing property with setProperty returns false`() {
         assertTrue(config.stringPropertyHandle.setProperty("invalid-property", false).isFailure)
         assertTrue(config.stringPropertyHandle.setProperty("version", 1.1).isFailure)
+    }
+
+    @Test
+    fun `Broken config should regen fresh config`() {
+        val brokenConfigData = getResourceAsText("/broken_config.yml")
+        assertNotNull(brokenConfigData)
+        configFile.writeText(brokenConfigData)
+        assertTrue(config.load().isSuccess)
+        assertTrue(config.save().isSuccess)
+        val brokenConfigFile = configFile.parentFile.listFiles({ _, fileName -> fileName.startsWith("config.yml.broken") })
+        assertNotNull(brokenConfigFile)
+        assertEquals(1, brokenConfigFile.size)
+        assertConfigEquals("/fresh_config.yml", "config.yml")
     }
 }
