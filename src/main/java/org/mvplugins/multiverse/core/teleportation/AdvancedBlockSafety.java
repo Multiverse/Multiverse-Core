@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -11,23 +12,31 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class AdvancedBlockSafety {
 
+    // This will search a maximum of 7 * 6 * 7 = 294 blocks
+    public static final int DEFAULT_HORIZONTAL_RANGE = 3;
+    public static final int DEFAULT_VERTICAL_RANGE = 2;
+
     @Inject
     private AdvancedBlockSafety() {
     }
 
-    private boolean playerCanSpawnHereSafely(@NotNull Location location) {
-        if (isUnsafeSpawnBody(location)) {
+    public boolean playerCanSpawnSafelyAt(@NotNull Location location) {
+        return playerCanSpawnSafelyAt(location.getBlock());
+    }
+
+    public boolean playerCanSpawnSafelyAt(@NotNull Block block) {
+        if (isUnsafeSpawnBody(block)) {
             // Player body will be stuck in solid
             Logging.finest("Unsafe location for player's body.");
             return false;
         }
-        Location airBlockForHead = offsetLocation(location, 0, 1, 0);
+        Block airBlockForHead = block.getRelative(0, 1, 0);
         if (isUnsafeSpawnBody(airBlockForHead)) {
             // Player's head will be stuck in solid
             Logging.finest("Unsafe location for player's head.");
             return false;
         }
-        Location standingOnBlock = offsetLocation(location, 0, -1, 0);
+        Block standingOnBlock = block.getRelative(0, -1, 0);
         if (isUnsafeSpawnPlatform(standingOnBlock)) {
             // Player will drop down
             Logging.finest("Unsafe location due to invalid platform.");
@@ -39,94 +48,127 @@ public class AdvancedBlockSafety {
     /**
      * Player's body must be in non-solid block that is non-harming.
      *
-     * @param location
+     * @param block
      * @return
      */
-    private boolean isUnsafeSpawnBody(@NotNull Location location) {
-        Material blockMaterial = location.getBlock().getType();
+    private boolean isUnsafeSpawnBody(@NotNull Block block) {
+        Material blockMaterial = block.getType();
         return blockMaterial.isSolid() || blockMaterial == Material.FIRE;
     }
 
     /**
      * Player must stand on solid ground, or water that is only 1 block deep to prevent drowning.
      *
-     * @param location
+     * @param block
      * @return
      */
-    private boolean isUnsafeSpawnPlatform(@NotNull Location location) {
-        return !location.getBlock().getType().isSolid() || isDeepWater(location);
+    private boolean isUnsafeSpawnPlatform(@NotNull Block block) {
+        return !block.getType().isSolid() || isDeepWater(block);
     }
 
     /**
      * Water that is 2 or more block deep
      *
-     * @param location
+     * @param block
      * @return
      */
-    private boolean isDeepWater(@NotNull Location location) {
-        if (location.getBlock().getType() != Material.WATER) {
+    private boolean isDeepWater(@NotNull Block block) {
+        if (block.getType() != Material.WATER) {
             return false;
         }
-        return offsetLocation(location, 0, -1, 0).getBlock().getType() == Material.WATER;
+        return block.getRelative(0, -1, 0).getType() == Material.WATER;
     }
 
     @Nullable
     public Location adjustSafeSpawnLocation(@NotNull Location location) {
-        return adjustSafeSpawnLocation(location, 3, 2);
+        return adjustSafeSpawnLocation(location, DEFAULT_HORIZONTAL_RANGE, DEFAULT_VERTICAL_RANGE);
     }
 
     @Nullable
-    public Location adjustSafeSpawnLocation(@NotNull Location location, int horizontal, int vertical) {
-        int[] horizontalSpan = rangeSpan(horizontal);
-        int[] verticalSpan = rangeSpan(vertical);
+    public Location adjustSafeSpawnLocation(@NotNull Location location, int horizontalRange, int verticalRange) {
+        Block safeBlock = adjustSafeSpawnBlock(location.getBlock(), horizontalRange, verticalRange);
+        if (safeBlock == null) {
+            return null;
+        }
+        Location safeLocation = safeBlock.getLocation();
+        // Adjust to center of block
+        safeLocation.add(0.5, 0, 0.5);
+        return safeLocation;
+    }
 
-        for(int y : verticalSpan) {
-            for (int x : horizontalSpan) {
-                for (int z : horizontalSpan) {
-                    Logging.finest("Checking offset: %s, %s, %s", x, y, z);
-                    Location offsetLocation = offsetLocation(location, x, y, z);
-                    if (playerCanSpawnHereSafely(offsetLocation)) {
-                        // Set location to the center of the block
-                        offsetLocation.setX(offsetLocation.getBlockX() + 0.5);
-                        offsetLocation.setZ(offsetLocation.getBlockZ() + 0.5);
-                        return offsetLocation;
-                    }
-                }
+    @Nullable
+    public Block adjustSafeSpawnBlock(@NotNull Block block) {
+        return adjustSafeSpawnBlock(block, DEFAULT_HORIZONTAL_RANGE, DEFAULT_VERTICAL_RANGE);
+    }
+
+    @Nullable
+    public Block adjustSafeSpawnBlock(@NotNull Block block, int horizontalRange, int verticalRange) {
+        Block searchResult = searchAroundXZ(block, horizontalRange);
+        if (searchResult != null) {
+            return searchResult;
+        }
+        for (int i = 1; i <= verticalRange; i++) {
+            searchResult = searchAroundXZ(block.getRelative(0, i, 0), horizontalRange);
+            if (searchResult != null) {
+                return searchResult;
+            }
+            searchResult = searchAroundXZ(block.getRelative(0, -i, 0), horizontalRange);
+            if (searchResult != null) {
+                return searchResult;
             }
         }
         return null;
     }
 
-    /**
-     * Plus minus range from 0, starting with the closer offset.
-     * E.g. 0, 1, -1, 2, -2...
-     *
-     * @param number
-     * @return
-     */
-    private int[] rangeSpan(int number) {
-        int[] numArray = new int[number * 2 + 1];
-        numArray[0] = 0;
-        for (int i = 1; i <= number; i++) {
-            numArray[i * 2 - 1] = i;
-            numArray[i * 2] = -i;
+    @Nullable
+    private Block searchAroundXZ(Block block, int radius) {
+        if (playerCanSpawnSafelyAt(block)) {
+            return block;
         }
-        return numArray;
+        for (int r = 1; r <= radius; r++) {
+            boolean radiusX = true;
+            boolean incrementOffset = false;
+            int offset = 0;
+            int noOfIterations = r * 2 + 1;
+            for (int i = 0; i < noOfIterations; i++) {
+                Block searchResult = radiusX
+                        ? searchPlusMinusPermutation(block, r, offset)
+                        : searchPlusMinusPermutation(block, offset, r);
+                if (searchResult != null) {
+                    return searchResult;
+                }
+                if (incrementOffset) {
+                    offset++;
+                }
+                radiusX = !radiusX;
+                incrementOffset = !incrementOffset;
+            }
+        }
+        return null;
     }
 
-    /**
-     * Clones and creates a new location with the given offset.
-     *
-     * @param location
-     * @param x
-     * @param y
-     * @param z
-     * @return
-     */
-    @NotNull
-    private Location offsetLocation(@NotNull Location location, double x, double y, double z) {
-        Location newLocation = location.clone();
-        newLocation.add(x, y, z);
-        return newLocation;
+    @Nullable
+    private Block searchPlusMinusPermutation(Block block, int x, int z) {
+        Block relative = block.getRelative(-x, 0, z);
+        if (playerCanSpawnSafelyAt(relative)) {
+            return relative;
+        }
+        if (x != 0) {
+            relative = block.getRelative(-x, 0, -z);
+            if (playerCanSpawnSafelyAt(relative)) {
+                return relative;
+            }
+        }
+        relative = block.getRelative(x, 0, z);
+        if (playerCanSpawnSafelyAt(relative)) {
+            return relative;
+        }
+        if (z != 0) {
+            relative = block.getRelative(x, 0, -z);
+            if (playerCanSpawnSafelyAt(relative)) {
+                return relative;
+            }
+        }
+        return null;
     }
 }
