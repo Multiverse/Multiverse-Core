@@ -126,8 +126,13 @@ public class MVPlayerListener implements CoreListener {
             return;
         }
 
-        if (mvWorld.getBedRespawn() && (event.isBedSpawn() || event.isAnchorSpawn())) {
-            Logging.fine("Spawning %s at their %s.", event.getPlayer().getName(), event.isBedSpawn() ? "BED" : "ANCHOR");
+        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
+            Logging.fine("Spawning %s at their bed.", event.getPlayer().getName());
+            return;
+        }
+
+        if (mvWorld.getAnchorSpawn() && event.isAnchorSpawn()) {
+            Logging.fine("Spawning %s at their anchor.", event.getPlayer().getName());
             return;
         }
 

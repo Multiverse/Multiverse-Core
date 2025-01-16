@@ -149,6 +149,13 @@ public final class WorldConfig {
     public Try<Void> setAllowWeather(boolean allowWeather) {
         return configHandle.set(configNodes.ALLOW_WEATHER, allowWeather);
     }
+    public boolean getAnchorSpawn() {
+        return configHandle.get(configNodes.ANCHOR_RESPAWN);
+    }
+
+    public Try<Void> setAnchorSpawn(boolean anchorSpawn) {
+        return configHandle.set(configNodes.ANCHOR_RESPAWN, anchorSpawn);
+    }
 
     public boolean getAutoHeal() {
         return configHandle.get(configNodes.AUTO_HEAL);

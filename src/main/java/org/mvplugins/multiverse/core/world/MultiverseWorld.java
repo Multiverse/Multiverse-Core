@@ -148,6 +148,29 @@ public class MultiverseWorld {
     }
 
     /**
+     * Gets whether or not a player who dies in this world will respawn in their
+     * anchor or follow the normal respawn pattern.
+     *
+     * @return True if players dying in this world should respawn at their anchor.
+     */
+    public boolean getAnchorSpawn() {
+        return worldConfig.getAnchorSpawn();
+    }
+
+    /**
+     * Sets whether or not a player who dies in this world will respawn in their
+     * anchor or follow the normal respawn pattern.
+     * <br/>
+     * True is default.
+     *
+     * @param anchorSpawn    True if players dying in this world respawn at their anchor.
+     * @return Result of setting property.
+     */
+    public Try<Void> setAnchorSpawn(boolean anchorSpawn) {
+        return worldConfig.setAnchorSpawn(anchorSpawn);
+    }
+
+    /**
      * Gets whether or not a world will auto-heal players if the difficulty is on peaceful.
      *
      * @return True if the world should heal (default), false if not.
@@ -198,16 +221,6 @@ public class MultiverseWorld {
     }
 
     /**
-     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
-     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
-     *
-     * @return The biome used for this world
-     */
-    public @Nullable Biome getBiome() {
-        return worldConfig.getBiome();
-    }
-
-    /**
      * Sets whether or not a player who dies in this world will respawn in their
      * bed or follow the normal respawn pattern.
      * <br/>
@@ -218,6 +231,16 @@ public class MultiverseWorld {
      */
     public Try<Void> setBedRespawn(boolean bedRespawn) {
         return worldConfig.setBedRespawn(bedRespawn);
+    }
+
+    /**
+     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
+     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     *
+     * @return The biome used for this world
+     */
+    public @Nullable Biome getBiome() {
+        return worldConfig.getBiome();
     }
 
     /**

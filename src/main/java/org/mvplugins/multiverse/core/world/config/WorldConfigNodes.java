@@ -90,6 +90,10 @@ public class WorldConfigNodes {
             })
             .build());
 
+    final ConfigNode<Boolean> ANCHOR_RESPAWN = node(ConfigNode.builder("anchor-respawn", Boolean.class)
+            .defaultValue(true)
+            .build());
+
     final ConfigNode<Boolean> AUTO_HEAL = node(ConfigNode.builder("auto-heal", Boolean.class)
             .defaultValue(true)
             .build());
