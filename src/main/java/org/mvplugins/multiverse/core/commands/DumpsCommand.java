@@ -153,7 +153,7 @@ class DumpsCommand extends CoreCommand {
      */
     private String getLogs() {
         // Get the Path of latest.log
-        Path logsPath = plugin.getServer().getWorldContainer().toPath().resolve("logs").resolve("latest.log");
+        Path logsPath = fileUtils.getServerFolder().toPath().resolve("logs/latest.log");
         File logsFile = logsPath.toFile();
 
         if (!logsFile.exists()) {
@@ -194,24 +194,24 @@ class DumpsCommand extends CoreCommand {
 
         // add config.yml
         File configFile = new File(plugin.getDataFolder(), "config.yml");
-        event.putDetailedDebugInfo("multiverse-core/config.yml", configFile);
+        event.putDetailedDebugInfo("Multiverse-Core/config.yml", configFile);
 
         // add worlds.yml
         File worldsFile = new File(plugin.getDataFolder(), "worlds.yml");
-        event.putDetailedDebugInfo("multiverse-core/worlds.yml", worldsFile);
+        event.putDetailedDebugInfo("Multiverse-Core/worlds.yml", worldsFile);
 
         // Add bukkit.yml if we found it
         if (fileUtils.getBukkitConfig() != null) {
             event.putDetailedDebugInfo(fileUtils.getBukkitConfig().getPath(), fileUtils.getBukkitConfig());
         } else {
-            Logging.warning("/mv version could not find bukkit.yml. Not including file");
+            Logging.warning("/mv dumps could not find bukkit.yml. Not including file");
         }
 
         // Add server.properties if we found it
         if (fileUtils.getServerProperties() != null) {
             event.putDetailedDebugInfo(fileUtils.getServerProperties().getPath(), fileUtils.getServerProperties());
         } else {
-            Logging.warning("/mv version could not find server.properties. Not including file");
+            Logging.warning("/mv dumps could not find server.properties. Not including file");
         }
 
     }

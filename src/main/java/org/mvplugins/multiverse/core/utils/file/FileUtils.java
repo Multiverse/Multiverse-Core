@@ -38,13 +38,13 @@ public class FileUtils {
 
     @Inject
     protected FileUtils(@NotNull MultiverseCore plugin) {
-        this.serverFolder = getServerFolder(plugin);
+        this.serverFolder = getServerFolder();
         Logging.fine("Server folder: " + this.serverFolder);
         this.bukkitYml = findFileFromServerDirectory("bukkit.yml");
         this.serverProperties = findFileFromServerDirectory("server.properties");
     }
 
-    private File getServerFolder(@NotNull Plugin plugin) {
+    public File getServerFolder() {
         return new File(System.getProperty("user.dir"));
     }
 
