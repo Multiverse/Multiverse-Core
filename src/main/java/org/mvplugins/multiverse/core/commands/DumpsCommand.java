@@ -97,7 +97,7 @@ class DumpsCommand extends CoreCommand {
         // Grab all our flags
         final boolean paranoid = parsedFlags.hasFlag(PARANOID_FLAG);
         final LogsTypeOption logsType = parsedFlags.flagValue(LOGS_FLAG, LogsTypeOption.MCLOGS);
-        final ServiceTypeOption servicesType = parsedFlags.flagValue(UPLOAD_FLAG, ServiceTypeOption.PASTEGG);
+        final ServiceTypeOption servicesType = parsedFlags.flagValue(UPLOAD_FLAG, ServiceTypeOption.PASTESDEV);
 
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = new MVDumpsDebugInfoEvent();
