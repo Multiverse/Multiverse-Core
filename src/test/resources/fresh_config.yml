@@ -7,6 +7,8 @@ teleport:
   use-finer-teleport-permissions: true
   concurrent-teleport-limit: 50
   teleport-intercept: true
+  safe-location-horizontal-search-radius: 3
+  safe-location-vertical-search-radius: 3
 
 spawn:
   first-spawn-override: true
