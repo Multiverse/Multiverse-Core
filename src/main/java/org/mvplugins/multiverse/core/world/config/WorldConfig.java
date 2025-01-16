@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.configuration.handle.ConfigurationSectionHandle;
 import org.mvplugins.multiverse.core.configuration.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.*;
@@ -149,7 +148,7 @@ public final class WorldConfig {
     public Try<Void> setAllowWeather(boolean allowWeather) {
         return configHandle.set(configNodes.ALLOW_WEATHER, allowWeather);
     }
-    public boolean getAnchorSpawn() {
+    public boolean getAnchorRespawn() {
         return configHandle.get(configNodes.ANCHOR_RESPAWN);
     }
 

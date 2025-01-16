@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
@@ -153,8 +152,8 @@ public class MultiverseWorld {
      *
      * @return True if players dying in this world should respawn at their anchor.
      */
-    public boolean getAnchorSpawn() {
-        return worldConfig.getAnchorSpawn();
+    public boolean getAnchorRespawn() {
+        return worldConfig.getAnchorRespawn();
     }
 
     /**
