@@ -10,6 +10,7 @@ import org.jvnet.hk2.annotations.Contract;
 /**
  * Used to get block/location-related information.
  */
+@Deprecated
 @Contract
 public interface BlockSafety {
     /**

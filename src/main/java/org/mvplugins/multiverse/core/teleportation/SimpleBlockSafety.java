@@ -21,7 +21,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
@@ -31,6 +30,7 @@ import org.mvplugins.multiverse.core.api.LocationManipulation;
 /**
  * The default-implementation of {@link BlockSafety}.
  */
+@Deprecated
 @Service
 public class SimpleBlockSafety implements BlockSafety {
     private static final int DEFAULT_TOLERANCE = 6;

@@ -130,6 +130,20 @@ class MVCoreConfigNodes {
             .name("teleport-intercept")
             .build());
 
+    final ConfigNode<Integer> SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS = node(ConfigNode.builder("teleport.safe-location-horizontal-search-radius", Integer.class)
+            .comment("")
+            .comment("Sets the horizontal search radius for finding a safe location to teleport to.")
+            .defaultValue(3)
+            .name("safe-location-horizontal-search-radius")
+            .build());
+
+    final ConfigNode<Integer> SAFE_LOCATION_VERTICAL_SEARCH_RADIUS = node(ConfigNode.builder("teleport.safe-location-vertical-search-radius", Integer.class)
+            .comment("")
+            .comment("Sets the vertical search radius for finding a safe location to teleport to.")
+            .defaultValue(3)
+            .name("safe-location-vertical-search-radius")
+            .build());
+
     private final ConfigHeaderNode SPAWN_HEADER = node(ConfigHeaderNode.builder("spawn")
             .comment("")
             .comment("")

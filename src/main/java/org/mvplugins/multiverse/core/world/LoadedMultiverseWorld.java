@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety;
 import org.mvplugins.multiverse.core.world.config.NullLocation;
 import org.mvplugins.multiverse.core.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
@@ -23,18 +23,16 @@ import org.mvplugins.multiverse.core.world.config.WorldConfig;
  * Extension of {@link MultiverseWorld} that represents a world that is currently loaded with bukkit world object.
  */
 public class LoadedMultiverseWorld extends MultiverseWorld {
-    private static final int SPAWN_LOCATION_SEARCH_TOLERANCE = 16;
-    private static final int SPAWN_LOCATION_SEARCH_RADIUS = 16;
 
     private final UUID worldUid;
 
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
 
     LoadedMultiverseWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
-            @NotNull BlockSafety blockSafety,
+            @NotNull AdvancedBlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation) {
         super(world.getName(), worldConfig);
         this.worldUid = world.getUID();
@@ -68,7 +66,7 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         Location location = world.getSpawnLocation();
 
         // Verify that location was safe
-        if (blockSafety.playerCanSpawnHereSafely(location)) {
+        if (blockSafety.canSpawnAtLocationSafely(location)) {
             return location;
         }
 
@@ -83,8 +81,7 @@ public class LoadedMultiverseWorld extends MultiverseWorld {
         // The location is not safe, so we need to find a better one.
         Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
         Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
-        Location newSpawn = blockSafety.getSafeLocation(location,
-                SPAWN_LOCATION_SEARCH_TOLERANCE, SPAWN_LOCATION_SEARCH_RADIUS);
+        Location newSpawn = blockSafety.findSafeSpawnLocation(location);
         // I think we could also do this, as I think this is what Notch does.
         // Not sure how it will work in the nether...
         //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();

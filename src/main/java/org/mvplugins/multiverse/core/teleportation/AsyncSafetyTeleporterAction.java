@@ -145,7 +145,7 @@ public class AsyncSafetyTeleporterAction {
         if (!this.checkSafety) {
             return Attempt.success(location);
         }
-        Location safeLocation = blockSafety.adjustSafeSpawnLocation(location);
+        Location safeLocation = blockSafety.findSafeSpawnLocation(location);
         if (safeLocation == null) {
             return Attempt.failure(TeleportFailureReason.UNSAFE_LOCATION);
         }
