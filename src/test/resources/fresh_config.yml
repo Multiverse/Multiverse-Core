@@ -34,6 +34,7 @@ command:
 
 misc:
   global-debug: 0
+  debug-permissions: false
   silent-start: false
   show-donation-message: true
 
