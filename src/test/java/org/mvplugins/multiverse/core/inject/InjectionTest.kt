@@ -10,6 +10,7 @@ import org.mvplugins.multiverse.core.config.MVCoreConfig
 import org.mvplugins.multiverse.core.destination.Destination
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.listeners.*
+import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
 import org.mvplugins.multiverse.core.teleportation.SimpleBlockSafety
 import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
@@ -34,9 +35,8 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `BlockSafety is available as a service`() {
-        assertNotNull(serviceLocator.getActiveService(BlockSafety::class.java))
-        assertNotNull(serviceLocator.getActiveService(SimpleBlockSafety::class.java))
+    fun `AdvancedBlockSafety is available as a service`() {
+        assertNotNull(serviceLocator.getActiveService(AdvancedBlockSafety::class.java))
     }
 
     @Test

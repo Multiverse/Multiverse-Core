@@ -112,6 +112,14 @@ public interface MVConfig {
      */
     void setFirstSpawnOverride(boolean firstSpawnOverride);
 
+    void setSafeLocationHorizontalSearchRadius(int searchRadius);
+
+    int getSafeLocationHorizontalSearchRadius();
+
+    void setSafeLocationVerticalSearchRadius(int searchRadius);
+
+    int getSafeLocationVerticalSearchRadius();
+
     /**
      * Gets firstSpawnOverride.
      * @return firstSpawnOverride.

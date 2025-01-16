@@ -190,6 +190,26 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
+    public void setSafeLocationHorizontalSearchRadius(int searchRadius) {
+        configHandle.set(configNodes.SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS, searchRadius);
+    }
+
+    @Override
+    public int getSafeLocationHorizontalSearchRadius() {
+        return configHandle.get(configNodes.SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS);
+    }
+
+    @Override
+    public void setSafeLocationVerticalSearchRadius(int searchRadius) {
+        configHandle.set(configNodes.SAFE_LOCATION_VERTICAL_SEARCH_RADIUS, searchRadius);
+    }
+
+    @Override
+    public int getSafeLocationVerticalSearchRadius() {
+        return configHandle.get(configNodes.SAFE_LOCATION_VERTICAL_SEARCH_RADIUS);
+    }
+
+    @Override
     public boolean getFirstSpawnOverride() {
         return configHandle.get(configNodes.FIRST_SPAWN_OVERRIDE);
     }

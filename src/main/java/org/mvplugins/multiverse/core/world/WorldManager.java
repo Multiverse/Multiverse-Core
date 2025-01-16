@@ -27,9 +27,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
@@ -76,7 +76,7 @@ public class WorldManager {
     private final GeneratorProvider generatorProvider;
     private final PlayerWorldTeleporter playerWorldActions;
     private final FilesManipulator filesManipulator;
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
     private final PluginManager pluginManager;
 
@@ -87,7 +87,7 @@ public class WorldManager {
             @NotNull GeneratorProvider generatorProvider,
             @NotNull PlayerWorldTeleporter playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
-            @NotNull BlockSafety blockSafety,
+            @NotNull AdvancedBlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation,
             @NotNull PluginManager pluginManager) {
         this.pluginManager = pluginManager;

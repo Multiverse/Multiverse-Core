@@ -8,7 +8,6 @@
 package org.mvplugins.multiverse.core.listeners;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -24,22 +23,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
+import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
@@ -58,7 +55,7 @@ public class MVPlayerListener implements CoreListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final AsyncSafetyTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
@@ -75,7 +72,7 @@ public class MVPlayerListener implements CoreListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
-            BlockSafety blockSafety,
+            AdvancedBlockSafety blockSafety,
             AsyncSafetyTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
@@ -317,6 +314,7 @@ public class MVPlayerListener implements CoreListener {
             return;
         }
     }
+
     /**
      * This method is called when a player actually portals via a vanilla style portal.
      * @param event The Event that was fired.

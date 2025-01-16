@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 
 /**
@@ -16,13 +15,13 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
  */
 @Service
 public class AsyncSafetyTeleporter {
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
 
     @Inject
     AsyncSafetyTeleporter(
-            @NotNull BlockSafety blockSafety,
+            @NotNull AdvancedBlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager) {
         this.blockSafety = blockSafety;

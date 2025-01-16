@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mvplugins.multiverse.core.api.BlockSafety;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
 import org.mvplugins.multiverse.core.utils.result.Async;
@@ -25,7 +24,7 @@ import java.util.List;
  */
 public class AsyncSafetyTeleporterAction {
 
-    private final BlockSafety blockSafety;
+    private final AdvancedBlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
 
@@ -34,7 +33,7 @@ public class AsyncSafetyTeleporterAction {
     private @Nullable CommandSender teleporter = null;
 
     AsyncSafetyTeleporterAction(
-            @NotNull BlockSafety blockSafety,
+            @NotNull AdvancedBlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager,
             @NotNull Either<Location, DestinationInstance<?, ?>> locationOrDestination) {
@@ -146,7 +145,7 @@ public class AsyncSafetyTeleporterAction {
         if (!this.checkSafety) {
             return Attempt.success(location);
         }
-        Location safeLocation = blockSafety.getSafeLocation(location);
+        Location safeLocation = blockSafety.findSafeSpawnLocation(location);
         if (safeLocation == null) {
             return Attempt.failure(TeleportFailureReason.UNSAFE_LOCATION);
         }
