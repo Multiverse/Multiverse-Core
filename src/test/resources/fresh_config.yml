@@ -15,6 +15,7 @@ spawn:
   first-spawn-location: ''
   enable-join-destination: false
   join-destination: ''
+  default-respawn-to-world-spawn: true
 
 portal:
   use-custom-portal-search: false

@@ -14,6 +14,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -119,48 +120,43 @@ public class MVPlayerListener implements CoreListener {
      */
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
-        World world = event.getPlayer().getWorld();
-        LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(world.getName()).getOrNull();
-        // If it's not a World MV manages we stop.
-        if (mvWorld == null) {
-            return;
-        }
-
-        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-            Logging.fine("Spawning %s at their bed.", event.getPlayer().getName());
-            return;
-        }
-
-        if (mvWorld.getAnchorRespawn() && event.isAnchorSpawn()) {
-            Logging.fine("Spawning %s at their anchor.", event.getPlayer().getName());
-            return;
-        }
-
-        // Get the instance of the World the player should respawn at.
-        LoadedMultiverseWorld respawnWorld = null;
-        if (getWorldManager().isLoadedWorld(mvWorld.getRespawnWorld())) {
-            respawnWorld = getWorldManager().getLoadedWorld(mvWorld.getRespawnWorld()).getOrNull();
-        }
-
-        // If it's null then it either means the World doesn't exist or the value is blank, so we don't handle it.
-        // NOW: We'll always handle it to get more accurate spawns
-        if (respawnWorld != null) {
-            world = respawnWorld.getBukkitWorld().getOrNull();
-        }
-        // World has been set to the appropriate world
-        Location respawnLocation = getMostAccurateRespawnLocation(world);
-
-        MVRespawnEvent respawnEvent = new MVRespawnEvent(respawnLocation, event.getPlayer(), "compatability");
-        this.server.getPluginManager().callEvent(respawnEvent);
-        event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+        Player player = event.getPlayer();
+        getWorldManager().getLoadedWorld(player.getWorld())
+                .onEmpty(() -> Logging.fine("Player '%s' is in a world that is not managed by Multiverse.", player.getName()))
+                .filter(mvWorld -> {
+                    if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
+                        Logging.fine("Spawning %s at their bed.", player.getName());
+                        return false;
+                    }
+                    if (mvWorld.getAnchorRespawn() && event.isAnchorSpawn()) {
+                        Logging.fine("Spawning %s at their anchor.", player.getName());
+                        return false;
+                    }
+                    if (!config.getDefaultRespawnToWorldSpawn() && mvWorld.getRespawnWorldName().isBlank()) {
+                        Logging.fine("Not overriding respawn location for player '%s' as " +
+                                "default-respawn-to-world-spawn is disabled and no respawn-world is set.", player.getName());
+                        return false;
+                    }
+                    return true;
+                })
+                .flatMap(mvWorld -> getMostAccurateRespawnLocation (player, mvWorld))
+                .peek(newRespawnLocation -> {
+                    MVRespawnEvent respawnEvent = new MVRespawnEvent(newRespawnLocation, event.getPlayer(), "compatability");
+                    this.server.getPluginManager().callEvent(respawnEvent);
+                    event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+                });
     }
 
-    private Location getMostAccurateRespawnLocation(World w) {
-        LoadedMultiverseWorld mvw = getWorldManager().getLoadedWorld(w.getName()).getOrNull();
-        if (mvw != null) {
-            return mvw.getSpawnLocation();
-        }
-        return w.getSpawnLocation();
+    private Option<Location> getMostAccurateRespawnLocation(Player player, LoadedMultiverseWorld mvWorld) {
+        return Option.of(mvWorld.getRespawnWorldName().isBlank()
+                        ? player.getWorld()
+                        : server.getWorld(mvWorld.getRespawnWorldName()))
+                .onEmpty(() -> Logging.warning("World '%s' has respawn-world property of '%s' that does not exist!",
+                        player.getWorld().getName(), mvWorld.getRespawnWorldName()))
+                .map(newRespawnWorld -> getWorldManager()
+                        .getLoadedWorld(newRespawnWorld)
+                        .map(newMVRespawnWorld -> (Location) newMVRespawnWorld.getSpawnLocation())
+                        .getOrElse(newRespawnWorld::getSpawnLocation));
     }
 
     @EventHandler

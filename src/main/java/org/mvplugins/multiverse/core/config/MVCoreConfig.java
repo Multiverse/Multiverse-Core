@@ -245,6 +245,16 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
+    public void setDefaultRespawnToWorldSpawn(boolean defaultRespawnToWorldSpawn) {
+        configHandle.set(configNodes.DEFAULT_RESPAWN_TO_WORLD_SPAWN, defaultRespawnToWorldSpawn);
+    }
+
+    @Override
+    public boolean getDefaultRespawnToWorldSpawn() {
+        return configHandle.get(configNodes.DEFAULT_RESPAWN_TO_WORLD_SPAWN);
+    }
+
+    @Override
     public void setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
         configHandle.set(configNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
     }

@@ -184,6 +184,16 @@ class MVCoreConfigNodes {
             .name("join-destination")
             .build());
 
+    final ConfigNode<Boolean> DEFAULT_RESPAWN_TO_WORLD_SPAWN = node(ConfigNode.builder("spawn.default-respawn-to-world-spawn", Boolean.class)
+            .comment("")
+            .comment("By default when `respawn-world` is not set, players will respawn at the world's spawn location that they died in.")
+            .comment("If you want another plugin to handle respawn, or use vanilla /spawnpoint, set this to false.")
+            .comment("This only applies if the `respawn-world` property is not set for the world that the player died in.")
+            .comment("You can set `respawn-world` property by running the command: `/mv modify <worldname> set respawn-world <worldname>`")
+            .defaultValue(true)
+            .name("default-respawn-to-world-spawn")
+            .build());
+
     private final ConfigHeaderNode PORTAL_HEADER = node(ConfigHeaderNode.builder("portal")
             .comment("")
             .comment("")
