@@ -636,6 +636,12 @@ public interface MultiverseWorld {
     void allowPortalMaking(AllowedPortalType type);
 
     /**
+     * Forces the regeneration of the world spawn.
+     *
+     */
+    void forceSpawnLocationRegen();
+
+    /**
      * Gets which type(s) of portals are allowed to be constructed in this world.
      *
      * @return The type of portals that are allowed.

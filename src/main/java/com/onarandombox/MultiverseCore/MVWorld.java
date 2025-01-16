@@ -196,6 +196,15 @@ public class MVWorld implements MultiverseWorld {
         setAllowMonsterSpawn(canMonstersSpawn());
     }
 
+    public void forceSpawnLocationRegen() {
+        final World world = getCBWorld();
+        final SpawnLocation newLoc = new SpawnLocation(readSpawnFromWorld(world));
+        this.props.spawnLocation = newLoc;
+        Logging.fine("Setting spawn location to " + newLoc);
+        world.setSpawnLocation(newLoc.getBlockX(), newLoc.getBlockY(), newLoc.getBlockZ());
+    }
+
+
     private void validateProperties() {
         setPVPMode(isPVPEnabled());
         setDifficulty(getDifficulty());

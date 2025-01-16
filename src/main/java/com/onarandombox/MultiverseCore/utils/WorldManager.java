@@ -959,6 +959,9 @@ public class WorldManager implements MVWorldManager {
         // Get new MultiverseWorld reference.
         world = this.getMVWorld(name);
 
+        if (useNewSeed) {
+            world.forceSpawnLocationRegen();
+        }
         // Load back GameRules if needed.
         if (keepGameRules) {
             Logging.fine("Restoring previous world's GameRules...");
