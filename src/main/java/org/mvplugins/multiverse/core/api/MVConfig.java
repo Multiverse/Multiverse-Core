@@ -271,6 +271,18 @@ public interface MVConfig {
     int getGlobalDebug();
 
     /**
+     * Sets debugPermissions
+     * @param debugPermissions  The new value
+     */
+    void setDebugPermissions(boolean debugPermissions);
+
+    /**
+     * gets debugPermissions.
+     * @return debugPermissions.
+     */
+    boolean getDebugPermissions();
+
+    /**
      * Sets whether to suppress startup messages.
      *
      * @param silentStart true to suppress messages.

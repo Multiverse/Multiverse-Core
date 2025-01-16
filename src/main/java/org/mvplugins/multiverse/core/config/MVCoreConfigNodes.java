@@ -306,7 +306,7 @@ class MVCoreConfigNodes {
             .defaultValue(0)
             .name("global-debug")
             .validator(value -> (value < 0 || value > 3)
-                    ? Try.failure(new MultiverseException("Debug level must be between 0 and 3.", null))
+                    ? Try.failure(new MultiverseException("Debug level must be between 0 and 3."))
                     : Try.success(null))
             .onSetValue((oldValue, newValue) -> {
                 int level = Logging.getDebugLevel();
@@ -315,6 +315,13 @@ class MVCoreConfigNodes {
                     pluginManager.callEvent(new MVDebugModeEvent(level));
                 }
             })
+            .build());
+
+    final ConfigNode<Boolean> DEBUG_PERMISSIONS = node(ConfigNode.builder("misc.debug-permissions", Boolean.class)
+            .comment("Sets whether console will log every permission check done by all multiverse plugins.")
+            .comment("This will only work if the above 'global-debug' is set to 1 or more.")
+            .defaultValue(false)
+            .name("debug-permissions")
             .build());
 
     final ConfigNode<Boolean> SILENT_START = node(ConfigNode.builder("misc.silent-start", Boolean.class)

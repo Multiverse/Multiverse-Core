@@ -127,16 +127,34 @@ public class CorePermissionsChecker {
         return false;
     }
 
-    private String concatPermission(String permission, String... child) {
+    /**
+     * Joins permissions with a dot.
+     *
+     * @param permission    The permission
+     * @param child         The string(s) to join
+     * @return The newly joined permission node.
+     */
+    public String concatPermission(String permission, String... child) {
         return permission + "." + String.join(".", child);
     }
 
-    private boolean hasPermission(CommandSender sender, String permission) {
+    /**
+     * Check and log if the sender has the permission.
+     *
+     * @param sender        The sender
+     * @param permission    The permission
+     * @return True if the sender has the permission, else false.
+     */
+    public boolean hasPermission(CommandSender sender, String permission) {
         if (sender.hasPermission(permission)) {
-            Logging.finer("Checking to see if sender [%s] has permission [%s]... YES", sender.getName(), permission);
+            if (config.getDebugPermissions()) {
+                Logging.finer("Checking sender [%s] has permission [%s] : YES", sender.getName(), permission);
+            }
             return true;
         }
-        Logging.finer("Checking to see if sender [%s] has permission [%s]... NO", sender.getName(), permission);
+        if (config.getDebugPermissions()) {
+            Logging.finer("Checking sender [%s] has permission [%s] : NO", sender.getName(), permission);
+        }
         return false;
     }
 }

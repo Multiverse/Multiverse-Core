@@ -19,10 +19,12 @@ import java.util.function.Predicate;
 @Service
 public class MVCommandPermissions {
     private final Map<String, Predicate<CommandIssuer>> permissionsCheckMap;
+    private final CorePermissionsChecker permissionsChecker;
 
     @Inject
     MVCommandPermissions(@NotNull CorePermissionsChecker permissionsChecker) {
-        permissionsCheckMap = new HashMap<>();
+        this.permissionsCheckMap = new HashMap<>();
+        this.permissionsChecker = permissionsChecker;
 
         registerPermissionChecker("mvteleport", issuer -> permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer()));
         registerPermissionChecker("mvspawn", issuer -> permissionsChecker.hasAnySpawnPermission(issuer.getIssuer()));
@@ -52,6 +54,6 @@ public class MVCommandPermissions {
     boolean hasPermission(CommandIssuer issuer, String permission) {
         return Option.of(permissionsCheckMap.get(permission))
                 .map(checker -> checker.test(issuer))
-                .getOrElse(() -> issuer.hasPermission(permission));
+                .getOrElse(() -> permissionsChecker.hasPermission(issuer.getIssuer(), permission));
     }
 }

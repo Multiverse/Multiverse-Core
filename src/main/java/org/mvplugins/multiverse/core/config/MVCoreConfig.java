@@ -355,6 +355,16 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
+    public void setDebugPermissions(boolean debugPermissions) {
+        configHandle.set(configNodes.DEBUG_PERMISSIONS, debugPermissions);
+    }
+
+    @Override
+    public boolean getDebugPermissions() {
+        return configHandle.get(configNodes.DEBUG_PERMISSIONS);
+    }
+
+    @Override
     public void setSilentStart(boolean silentStart) {
         configHandle.set(configNodes.SILENT_START, silentStart);
     }
