@@ -3,6 +3,7 @@ world:
   alias: 1234 # should be parsed as string and not integer
   allow-flight: false
   allow-weather: true
+  anchor-respawn: true
   auto-heal: true
   auto-load: true
   bed-respawn: allow # should parse to true as boolean

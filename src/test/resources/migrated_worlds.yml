@@ -3,6 +3,7 @@ world_the_end:
   alias: '&aworld the end'
   allow-flight: true
   allow-weather: true
+  anchor-respawn: true
   auto-heal: true
   auto-load: true
   bed-respawn: true
@@ -47,6 +48,7 @@ world:
   alias: ''
   allow-flight: false
   allow-weather: true
+  anchor-respawn: true
   auto-heal: true
   auto-load: true
   bed-respawn: true

@@ -3,6 +3,7 @@ world:
   alias: my world
   allow-flight: false
   allow-weather: true
+  anchor-respawn: true
   auto-heal: true
   auto-load: true
   bed-respawn: true
@@ -47,6 +48,7 @@ world_nether:
   alias: ''
   allow-flight: false
   allow-weather: true
+  anchor-respawn: true
   auto-heal: true
   auto-load: true
   bed-respawn: true
