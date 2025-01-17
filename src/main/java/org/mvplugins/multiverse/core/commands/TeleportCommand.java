@@ -117,8 +117,8 @@ class TeleportCommand extends CoreCommand {
                         replace("{reason}").with(failure.getFailureMessage())));
     }
 
-    private String getYouOrName(MVCommandIssuer issuer, Player player) {
-        return player == issuer.getPlayer() ? "you" : player.getName();
+    private Message getYouOrName(MVCommandIssuer issuer, Player player) {
+        return player == issuer.getPlayer() ? Message.of(MVCorei18n.GENERIC_YOU) : Message.of(player.getName());
     }
 
     private void teleportMultiplePlayers(MVCommandIssuer issuer, Player[] players, DestinationInstance<?, ?> destination, ParsedCommandFlags parsedFlags) {
