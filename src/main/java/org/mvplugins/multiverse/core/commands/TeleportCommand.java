@@ -61,7 +61,7 @@ class TeleportCommand extends CoreCommand {
     @Subcommand("teleport|tp")
     @CommandPermission("@mvteleport")
     @CommandCompletion(
-            "@destinations:playerOnly|@playersarray:excludeSelf,checkPermissions=@mvteleportother " +
+            "@destinations:playerOnly|@playersarray:checkPermissions=@mvteleportother " +
             "@destinations:othersOnly|@flags:groupName=mvteleportcommand,resolveUntil=arg2 " +
             "@flags:groupName=mvteleportcommand"
     )
