@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.aikar.commands.InvalidCommandArgument;
+import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -54,6 +55,7 @@ public class CommandFlagsManager {
     public @NotNull Collection<String> suggest(@Nullable String groupName, @NotNull String[] flags) {
         CommandFlagGroup flagGroup = this.getFlagGroup(groupName);
         if (flagGroup == null) {
+            Logging.warning("Unknown flag group: " + groupName);
             return Collections.emptyList();
         }
 
