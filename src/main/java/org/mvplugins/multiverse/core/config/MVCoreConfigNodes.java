@@ -14,6 +14,7 @@ import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.permissions.PermissionUtils;
 
 import java.util.Locale;
 
@@ -332,6 +333,7 @@ class MVCoreConfigNodes {
             .comment("This will only work if the above 'global-debug' is set to 1 or more.")
             .defaultValue(false)
             .name("debug-permissions")
+            .onSetValue((oldValue, newValue) -> PermissionUtils.setDebugPermissions(newValue))
             .build());
 
     final ConfigNode<Boolean> SILENT_START = node(ConfigNode.builder("misc.silent-start", Boolean.class)
