@@ -34,6 +34,20 @@ public sealed class Message permits LocalizedMessage {
     }
 
     /**
+     * Creates a localized Message with the given message key provider and replacements.
+     * <br/>
+     * This message will extend {@link MessageKeyProvider} and delegate to the given message key provider.
+     *
+     * @param messageKeyProvider The message key provider
+     * @param replacements The replacements
+     * @return A new localizable Message
+     */
+    @Contract(value = "_, _ -> new", pure = true)
+    public static Message of(@NotNull MessageKeyProvider messageKeyProvider, @NotNull MessageReplacement... replacements) {
+        return of(messageKeyProvider, "{error_key: %s}".formatted(messageKeyProvider.getMessageKey().getKey()), replacements);
+    }
+
+    /**
      * Creates a localized Message with the given message key provider, non-localized message and replacements.
      * <br/>
      * The non-localized message is required for conditions where it is not practical to provide a localized message.

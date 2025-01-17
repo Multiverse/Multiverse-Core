@@ -191,6 +191,7 @@ public enum MVCorei18n implements MessageKeyProvider {
     GENERIC_FAILURE,
     GENERIC_ERROR,
     GENERIC_NULL,
+    GENERIC_YOU,
     ;
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc

@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.permissions;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -12,6 +13,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPermission;
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.hasPermission;
@@ -21,11 +23,13 @@ public class CorePermissionsChecker {
 
     private final MVCoreConfig config;
     private final DestinationsProvider destinationsProvider;
+    private final WorldManager worldManager;
 
     @Inject
-    CorePermissionsChecker(@NotNull MVCoreConfig config, @NotNull DestinationsProvider destinationsProvider) {
+    CorePermissionsChecker(@NotNull MVCoreConfig config, @NotNull DestinationsProvider destinationsProvider, @NotNull WorldManager worldManager) {
         this.config = config;
         this.destinationsProvider = destinationsProvider;
+        this.worldManager = worldManager;
     }
 
     public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
@@ -52,16 +56,13 @@ public class CorePermissionsChecker {
      * @param world         The world.
      * @return True if the teleporter has permission, false otherwise.
      */
-    public boolean hasSpawnPermission(
+    public boolean checkSpawnPermission(
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
             @NotNull LoadedMultiverseWorld world) {
-        String permission = concatPermission(CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other");
-        if (!hasPermission(teleporter, permission)) {
-            return false;
-        }
         // TODO: Config whether to use finer permission
-        return hasPermission(teleporter, concatPermission(permission, world.getName()));
+        return hasPermission(teleporter, concatPermission(
+                CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other", world.getName()));
     }
 
     /**
@@ -70,11 +71,18 @@ public class CorePermissionsChecker {
      * @param sender    The sender that ran the command
      * @return True if the sender has any base spawn permission.
      */
-    public boolean hasAnySpawnPermission(@NotNull CommandSender sender) {
-        if (hasPermission(sender, concatPermission(CorePermissions.SPAWN, "self"))) {
-            return true;
+    public boolean hasMinimumSpawnPermission(@NotNull CommandSender sender) {
+        if (sender instanceof Player player) {
+            return hasPermission(sender, concatPermission(CorePermissions.SPAWN, "self", player.getWorld().getName()))
+                    || hasPermission(sender, concatPermission(CorePermissions.SPAWN, "other", player.getWorld().getName()));
         }
-        return hasPermission(sender, concatPermission(CorePermissions.SPAWN, "other"));
+        return hasSpawnOtherPermission(sender);
+    }
+
+    public boolean hasSpawnOtherPermission(@NotNull CommandSender sender) {
+        return worldManager.getLoadedWorlds().stream()
+                .anyMatch(world -> hasPermission(sender,
+                        concatPermission(CorePermissions.SPAWN, "other", world.getName())));
     }
 
     public boolean hasDestinationPermission(
