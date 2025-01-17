@@ -67,11 +67,11 @@ abstract class TestWithMockBukkit {
     }
 
     fun assertLocationEquals(expected: Location?, actual: Location?) {
-        assertEquals(expected?.world, actual?.world)
-        assertEquals(expected?.x, actual?.x)
-        assertEquals(expected?.y, actual?.y)
-        assertEquals(expected?.z, actual?.z)
-        assertEquals(expected?.yaw, actual?.yaw)
-        assertEquals(expected?.pitch, actual?.pitch)
+        assertEquals(expected?.world, actual?.world, "Worlds don't match for location comparison ($expected, $actual)")
+        assertEquals(expected?.x, actual?.x, "X values don't match for location comparison ($expected, $actual)")
+        assertEquals(expected?.y, actual?.y, "Y values don't match for location comparison ($expected, $actual)")
+        assertEquals(expected?.z, actual?.z, "Z values don't match for location comparison ($expected, $actual)")
+        assertEquals(expected?.yaw, actual?.yaw, "Yaw values don't match for location comparison ($expected, $actual)")
+        assertEquals(expected?.pitch, actual?.pitch, "Pitch values don't match for location comparison ($expected, $actual)")
     }
 }

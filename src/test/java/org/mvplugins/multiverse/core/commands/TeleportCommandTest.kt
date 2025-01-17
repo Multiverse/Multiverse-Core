@@ -4,14 +4,13 @@ import org.bukkit.Bukkit
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class TeleportCommandTest : AbstractCommandTest() {
 
     @BeforeTest
     fun setUp() {
-        server.setPlayers(3)
+        server.setPlayers(4)
         assertTrue(worldManager.createWorld(CreateWorldOptions.worldName("otherworld")).isSuccess)
     }
 
@@ -43,5 +42,43 @@ class TeleportCommandTest : AbstractCommandTest() {
         player.performCommand("mv tp otherworld")
         Thread.sleep(100) // wait for the player to teleport asynchronously
         assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player1")?.location)
+    }
+
+    @Test
+    fun `Player permission to teleport self`() {
+        addPermission("multiverse.teleport.self.w")
+        addPermission("multiverse.teleport.self.w.otherworld")
+
+        player.performCommand("mv tp otherworld --unsafe")
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, player.location)
+
+        player.performCommand("mv tp Player1 world --unsafe")
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player1")?.location)
+
+        player.performCommand("mv tp Player2,Player3 world --unsafe")
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player2")?.location)
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player3")?.location)
+    }
+
+    @Test
+    fun `Player permission to teleport others`() {
+        addPermission("multiverse.teleport.other.w")
+        addPermission("multiverse.teleport.other.w.otherworld")
+
+        player.performCommand("mv tp Player1 otherworld --unsafe")
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player1")?.location)
+
+        player.performCommand("mv tp Player2,Player3 otherworld --unsafe")
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player2")?.location)
+        assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player3")?.location)
+
+        player.performCommand("mv tp otherworld --unsafe")
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, player.location)
     }
 }

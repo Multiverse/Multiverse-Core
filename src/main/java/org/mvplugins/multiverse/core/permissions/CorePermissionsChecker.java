@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.permissions;
 
-import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -138,6 +137,16 @@ public class CorePermissionsChecker {
                 return true;
             }
             permission = concatPermission(CorePermissions.TELEPORT, "other", destination.getIdentifier());
+            if (hasPermission(sender, permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasTeleportOtherPermission(CommandSender sender) {
+        for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {
+            String permission = concatPermission(CorePermissions.TELEPORT, "other", destination.getIdentifier());
             if (hasPermission(sender, permission)) {
                 return true;
             }

@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commandtools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,10 +21,13 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.collect.Sets;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -75,6 +79,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
         registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
+        registerAsyncCompletion("playersarray", this::suggestPlayersArray);
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
 
         setDefaultCompletion("destinations", DestinationInstance.class);
@@ -84,6 +89,39 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("gamemodes", GameMode.class);
         setDefaultCompletion("gamerules", GameRule.class);
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
+    }
+
+    @Override
+    public CommandCompletionHandler registerCompletion(String id, CommandCompletionHandler<BukkitCommandCompletionContext> handler) {
+        return super.registerCompletion(id, context ->
+                completeWithPreconditions(context, handler));
+    }
+
+    @Override
+    public CommandCompletionHandler registerAsyncCompletion(String id, AsyncCommandCompletionHandler<BukkitCommandCompletionContext> handler) {
+        return super.registerAsyncCompletion(id, context ->
+                completeWithPreconditions(context, handler));
+    }
+
+    private Collection<String> completeWithPreconditions(
+            BukkitCommandCompletionContext context,
+            CommandCompletionHandler<BukkitCommandCompletionContext> handler) {
+        if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
+            return Collections.emptyList();
+        }
+        if (context.hasConfig("resolveUntil")) {
+            if (!Try.run(() -> context.getContextValueByName(Object.class, context.getConfig("resolveUntil"))).isSuccess()) {
+                return Collections.emptyList();
+            }
+        }
+        if (context.hasConfig("checkPermissions")) {
+            for (String permission : context.getConfig("checkPermissions").split(";")) {
+                if (!commandManager.getCommandPermissions().hasPermission(context.getIssuer(), permission)) {
+                    return Collections.emptyList();
+                }
+            }
+        }
+        return handler.getCompletions(context);
     }
 
     /**
@@ -128,9 +166,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
-        if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
-            return Collections.emptyList();
-        }
         return Try.of(() -> context.getContextValue(Player[].class))
                 .map(players -> {
                     Player player = Arrays.stream(players)
@@ -139,6 +174,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                             .orElse(context.getPlayer());
                     if (player == null) {
                         // Most likely console did not specify a player
+                        return Collections.<String>emptyList();
+                    }
+                    if (context.hasConfig("othersOnly") && player.equals(context.getPlayer())) {
                         return Collections.<String>emptyList();
                     }
                     return suggestDestinationsWithPerms((BukkitCommandIssuer) context.getIssuer(), player, context.getInput());
@@ -185,22 +223,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestMVWorlds(BukkitCommandCompletionContext context) {
-        if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
-            return Collections.emptyList();
-        }
-
         if (!context.hasConfig("multiple")) {
             return getMVWorldNames(context);
         }
-
-        String input = context.getInput();
-        int lastComma = input.lastIndexOf(',');
-        String currentWorldsString = input.substring(0, lastComma + 1);
-        Set<String> currentWorlds = Sets.newHashSet(input.split(","));
-        return getMVWorldNames(context).stream()
-                .filter(world -> !currentWorlds.contains(world))
-                .map(world -> currentWorldsString + world)
-                .collect(Collectors.toList());
+        return addonToCommaSeperated(context.getInput(), getMVWorldNames(context));
     }
 
     private List<String> getMVWorldNames(BukkitCommandCompletionContext context) {
@@ -247,5 +273,32 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             String propertyName = context.getContextValue(String.class);
             return world.getStringPropertyHandle().getSuggestedPropertyValue(propertyName, context.getInput(), action);
         }).getOrElse(Collections.emptyList());
+    }
+
+
+    private Collection<String> suggestPlayersArray(BukkitCommandCompletionContext context) {
+        CommandSender sender = context.getSender();
+        Validate.notNull(sender, "Sender cannot be null");
+        Player senderPlayer = sender instanceof Player ? (Player)sender : null;
+        List<String> matchedPlayers = new ArrayList<>();
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            String name = player.getName();
+            if ((senderPlayer == null || senderPlayer.canSee(player))
+                    && (!context.hasConfig("excludeSelf") || !player.equals(senderPlayer))) {
+                matchedPlayers.add(name);
+            }
+        }
+        return addonToCommaSeperated(context.getInput(), matchedPlayers);
+    }
+
+    private Collection<String> addonToCommaSeperated(String input, Collection<String> addons) {
+        int lastComma = input.lastIndexOf(',');
+        String previousInputs = input.substring(0, lastComma + 1);
+        Set<String> inputSet = Sets.newHashSet(input.split(","));
+        return addons.stream()
+                .filter(suggestion -> !inputSet.contains(suggestion))
+                .map(suggestion -> previousInputs + suggestion)
+                .toList();
     }
 }
