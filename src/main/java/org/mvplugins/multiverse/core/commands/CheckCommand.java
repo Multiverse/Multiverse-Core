@@ -41,7 +41,7 @@ class CheckCommand extends CoreCommand {
     @CommandAlias("mvcheck")
     @Subcommand("check")
     @CommandPermission("multiverse.core.check")
-    @CommandCompletion("@players @destinations|@mvworlds")
+    @CommandCompletion("@players @destinations")
     @Syntax("<player> <destination>")
     @Description("{@@mv-core.check.description}")
     void onCheckCommand(

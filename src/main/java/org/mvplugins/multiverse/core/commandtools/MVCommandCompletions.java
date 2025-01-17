@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -31,6 +33,8 @@ import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterPro
 import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
+import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -42,18 +46,21 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final WorldManager worldManager;
     private final DestinationsProvider destinationsProvider;
     private final MVCoreConfig config;
+    private final CorePermissionsChecker corePermissionsChecker;
 
     @Inject
     MVCommandCompletions(
             @NotNull MVCommandManager mvCommandManager,
             @NotNull WorldManager worldManager,
             @NotNull DestinationsProvider destinationsProvider,
-            @NotNull MVCoreConfig config) {
+            @NotNull MVCoreConfig config,
+            @NotNull CorePermissionsChecker corePermissionsChecker) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
         this.destinationsProvider = destinationsProvider;
         this.config = config;
+        this.corePermissionsChecker = corePermissionsChecker;
 
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
@@ -124,9 +131,31 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
             return Collections.emptyList();
         }
+        return Try.of(() -> context.getContextValue(Player[].class))
+                .map(players -> {
+                    Player player = Arrays.stream(players)
+                            .filter(p -> !Objects.equals(p, context.getPlayer()))
+                            .findFirst()
+                            .orElse(context.getPlayer());
+                    if (player == null) {
+                        // Most likely console did not specify a player
+                        return Collections.<String>emptyList();
+                    }
+                    return suggestDestinationsWithPerms((BukkitCommandIssuer) context.getIssuer(), player, context.getInput());
+                })
+                .getOrElse(Collections.emptyList());
+    }
 
-        return this.destinationsProvider
-                .suggestDestinations((BukkitCommandIssuer) context.getIssuer(), context.getInput());
+    private Collection<String> suggestDestinationsWithPerms(BukkitCommandIssuer teleporter, Player teleportee, String deststring) {
+        return destinationsProvider.getDestinations().stream()
+                .filter(destination -> corePermissionsChecker.hasDestinationPermission(teleporter.getIssuer(), teleportee, destination))
+                .flatMap(destination -> destination.suggestDestinationPackets(teleporter, deststring).stream()
+                        .filter(packet -> corePermissionsChecker.hasFinerDestinationPermission(
+                                teleporter.getIssuer(), teleportee, destination, packet.finerPermissionSuffix()))
+                        .map(packet -> destination instanceof WorldDestination
+                                ? packet.destinationString()
+                                : destination.getIdentifier() + ":" + packet.destinationString()))
+                .toList();
     }
 
     private Collection<String> suggestFlags(@NotNull BukkitCommandCompletionContext context) {

@@ -11,6 +11,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 
 /**
  * {@link Destination} implementation for anchors.
@@ -52,7 +53,9 @@ public class AnchorDestination implements Destination<AnchorDestination, AnchorD
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return this.anchorManager.getAnchors(issuer.getPlayer());
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        return this.anchorManager.getAllAnchors().stream()
+                .map(anchorName -> new DestinationSuggestionPacket(anchorName, anchorName))
+                .toList();
     }
 }

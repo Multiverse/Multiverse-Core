@@ -1,8 +1,6 @@
 package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import io.vavr.control.Option;
@@ -15,6 +13,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -109,7 +108,9 @@ public class ExactDestination implements Destination<ExactDestination, ExactDest
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return Collections.singleton("");
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        return worldManager.getLoadedWorlds().stream()
+                .map(world -> new DestinationSuggestionPacket(world.getName() + ":", world.getName()))
+                .toList();
     }
 }

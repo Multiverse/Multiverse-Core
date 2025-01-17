@@ -60,7 +60,7 @@ class TeleportCommand extends CoreCommand {
     @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
     @CommandPermission("@mvteleport")
-    @CommandCompletion("@players|@mvworlds:playerOnly|@destinations:playerOnly @mvworlds|@destinations|@flags:groupName=mvteleportcommand @flags:groupName=mvteleportcommand")
+    @CommandCompletion("@players|@destinations:playerOnly @destinations:othersOnly|@flags:groupName=mvteleportcommand @flags:groupName=mvteleportcommand")
     @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(

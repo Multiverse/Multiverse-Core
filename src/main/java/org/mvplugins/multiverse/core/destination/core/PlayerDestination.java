@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.Bukkit;
@@ -11,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 
 /**
@@ -48,7 +48,9 @@ public class PlayerDestination implements Destination<PlayerDestination, PlayerD
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        return Bukkit.getOnlinePlayers().stream()
+                .map(p -> new DestinationSuggestionPacket(p.getName(), p.getName()))
+                .toList();
     }
 }

@@ -78,6 +78,34 @@ public class CorePermissionsChecker {
         return hasPermission(sender, concatPermission(CorePermissions.SPAWN, "other"));
     }
 
+    public boolean hasDestinationPermission(
+            @NotNull CommandSender teleporter,
+            @NotNull CommandSender teleportee,
+            @NotNull Destination<?, ?> destination) {
+        if (teleportee.equals(teleporter)) {
+            return hasPermission(teleporter, concatPermission(CorePermissions.TELEPORT,
+                    "self", destination.getIdentifier()));
+        }
+        return hasPermission(teleporter, concatPermission(CorePermissions.TELEPORT,
+                "other", destination.getIdentifier()));
+    }
+
+    public boolean hasFinerDestinationPermission(
+            @NotNull CommandSender teleporter,
+            @NotNull CommandSender teleportee,
+            @NotNull Destination<?, ?> destination,
+            @NotNull String finerPermissionSuffix) {
+        if (!config.getUseFinerTeleportPermissions() || finerPermissionSuffix.isEmpty()) {
+            return true;
+        }
+        if (teleportee.equals(teleporter)) {
+            return hasPermission(teleporter, concatPermission(CorePermissions.TELEPORT,
+                    "self", destination.getIdentifier(), finerPermissionSuffix));
+        }
+        return hasPermission(teleporter, concatPermission(CorePermissions.TELEPORT,
+                "other", destination.getIdentifier(), finerPermissionSuffix));
+    }
+
     /**
      * Checks if the teleporter has permission to teleport the teleportee to the destination.
      *
@@ -90,24 +118,11 @@ public class CorePermissionsChecker {
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
             @NotNull DestinationInstance<?, ?> destination) {
-
-        String permission = concatPermission(
-                CorePermissions.TELEPORT,
-                teleportee.equals(teleporter) ? "self" : "other",
-                destination.getDestination().getIdentifier());
-        if (!hasPermission(teleporter, permission)) {
+        if (!hasDestinationPermission(teleporter, teleportee, destination.getDestination())) {
             return false;
         }
-        if (!config.getUseFinerTeleportPermissions()) {
-            return true;
-        }
-        return destination.getFinerPermissionSuffix()
-                .filter(finerPermissionSuffix -> !finerPermissionSuffix.isEmpty())
-                .map(finerPermissionSuffix -> hasPermission(
-                        teleporter,
-                        concatPermission(permission, finerPermissionSuffix)
-                ))
-                .getOrElse(true);
+        return hasFinerDestinationPermission(
+                teleporter, teleportee, destination.getDestination(), destination.getFinerPermissionSuffix().getOrElse(""));
     }
 
     /**

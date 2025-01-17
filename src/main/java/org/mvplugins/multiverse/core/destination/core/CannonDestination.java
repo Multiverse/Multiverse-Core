@@ -80,12 +80,4 @@ public class CannonDestination implements Destination<CannonDestination, CannonD
 
         return new CannonDestinationInstance(this, location, dSpeed);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return Collections.singleton("");
-    }
 }

@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
@@ -12,6 +11,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -73,8 +73,9 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        // Autocomplete of worlds is done by MVCommandCompletion without prefix
-        return Collections.emptyList();
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        return worldManager.getLoadedWorlds().stream()
+                .map(world -> new DestinationSuggestionPacket(world.getName(), world.getName()))
+                .toList();
     }
 }

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 
 /**
@@ -48,9 +49,11 @@ public class BedDestination implements Destination<BedDestination, BedDestinatio
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        List<String> collect = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
-        collect.add(OWN_BED_STRING);
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        List<DestinationSuggestionPacket> collect = Bukkit.getOnlinePlayers().stream()
+                .map(player -> new DestinationSuggestionPacket(player.getName(), player.getName()))
+                .collect(Collectors.toList());
+        collect.add(new DestinationSuggestionPacket(OWN_BED_STRING, OWN_BED_STRING));
         return collect;
     }
 }

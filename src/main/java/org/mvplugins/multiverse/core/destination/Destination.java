@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.destination;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,25 @@ public interface Destination<D extends Destination<D, T>, T extends DestinationI
      * @param issuer            The command issuer.
      * @param destinationParams The destination parameters. ex: p:MyPortal:nw
      * @return A list of possible destinations.
+     * @deprecated Use {@link #suggestDestinationPackets(BukkitCommandIssuer, String)}
      */
-    @NotNull Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams);
+    @Deprecated
+    @NotNull
+    default Collection<String> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Returns a list of possible destinations for the given destination parameters.
+     *
+     * @param issuer            The command issuer.
+     * @param destinationParams The destination parameters. ex: p:MyPortal:nw
+     * @return A list of possible destinations
+     */
+    @NotNull
+    default Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+        return suggestDestinations(issuer, destinationParams).stream()
+                .map(s -> new DestinationSuggestionPacket(s, ""))
+                .toList();
+    }
 }
