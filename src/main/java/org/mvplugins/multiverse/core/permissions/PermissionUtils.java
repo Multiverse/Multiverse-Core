@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.permissions;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 public final class PermissionUtils {
 
@@ -39,12 +40,12 @@ public final class PermissionUtils {
      */
     public static boolean hasPermission(CommandSender sender, String permission) {
         if (sender.hasPermission(permission)) {
-            if (debugPermissions) {
+            if (debugPermissions && !(sender instanceof ConsoleCommandSender)) {
                 Logging.finer("Checking sender [%s] has permission [%s] : YES", sender.getName(), permission);
             }
             return true;
         }
-        if (debugPermissions) {
+        if (debugPermissions && !(sender instanceof ConsoleCommandSender)) {
             Logging.finer("Checking sender [%s] has permission [%s] : NO", sender.getName(), permission);
         }
         return false;
