@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.permissions.CorePermissions;
 
 /**
  * Provides destinations for teleportation.
@@ -22,13 +23,13 @@ public class DestinationsProvider {
     private static final String SEPARATOR = ":";
     private static final String PERMISSION_PREFIX = "multiverse.teleport.";
 
-    private final PluginManager pluginManager;
     private final Map<String, Destination<?, ?>> destinationMap;
+    private final CorePermissions corePermissions;
 
     @Inject
-    DestinationsProvider(@NotNull PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
+    DestinationsProvider(@NotNull CorePermissions corePermissions) {
         this.destinationMap = new HashMap<>();
+        this.corePermissions = corePermissions;
     }
 
     /**
@@ -38,12 +39,7 @@ public class DestinationsProvider {
      */
     public void registerDestination(@NotNull Destination<?, ?> destination) {
         this.destinationMap.put(destination.getIdentifier(), destination);
-        this.registerDestinationPerms(destination);
-    }
-
-    private void registerDestinationPerms(@NotNull Destination<?, ?> destination) {
-        pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "self." + destination.getIdentifier()));
-        pluginManager.addPermission(new Permission(PERMISSION_PREFIX + "other." + destination.getIdentifier()));
+        this.corePermissions.addDestinationPermissions(destination);
     }
 
     /**

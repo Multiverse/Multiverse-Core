@@ -29,6 +29,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.api.LocationManipulation;
 import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety;
 import org.mvplugins.multiverse.core.utils.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -74,23 +75,22 @@ public class WorldManager {
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
     private final GeneratorProvider generatorProvider;
-    private final PlayerWorldTeleporter playerWorldActions;
     private final FilesManipulator filesManipulator;
     private final AdvancedBlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
     private final PluginManager pluginManager;
+    private final CorePermissions corePermissions;
 
     @Inject
     WorldManager(
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull GeneratorProvider generatorProvider,
-            @NotNull PlayerWorldTeleporter playerWorldActions,
             @NotNull FilesManipulator filesManipulator,
             @NotNull AdvancedBlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation,
-            @NotNull PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
+            @NotNull PluginManager pluginManager,
+            @NotNull CorePermissions corePermissions) {
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
         this.unloadTracker = new ArrayList<>();
@@ -99,10 +99,11 @@ public class WorldManager {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.generatorProvider = generatorProvider;
-        this.playerWorldActions = playerWorldActions;
         this.filesManipulator = filesManipulator;
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
+        this.pluginManager = pluginManager;
+        this.corePermissions = corePermissions;
     }
 
     /**
@@ -134,10 +135,7 @@ public class WorldManager {
     private void loadNewWorldConfigs(Collection<WorldConfig> newWorldConfigs) {
         newWorldConfigs.forEach(worldConfig -> getWorld(worldConfig.getWorldName())
                 .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
-                .onEmpty(() -> {
-                    MultiverseWorld mvWorld = new MultiverseWorld(worldConfig.getWorldName(), worldConfig);
-                    worldsMap.put(mvWorld.getName(), mvWorld);
-                }));
+                .onEmpty(() -> newMultiverseWorld(worldConfig.getWorldName(), worldConfig)));
     }
 
     private void removeWorldsNotInConfigs(Collection<String> removedWorlds) {
@@ -276,6 +274,13 @@ public class WorldManager {
                 : generator;
     }
 
+    private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
+        MultiverseWorld mvWorld = new MultiverseWorld(worldName, worldConfig);
+        worldsMap.put(mvWorld.getName(), mvWorld);
+        corePermissions.addWorldPermissions(mvWorld);
+        return mvWorld;
+    }
+
     /**
      * Creates a new loaded multiverseWorld from a bukkit world.
      *
@@ -289,9 +294,7 @@ public class WorldManager {
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
 
-        MultiverseWorld mvWorld = new MultiverseWorld(world.getName(), worldConfig);
-        worldsMap.put(mvWorld.getName(), mvWorld);
-
+        MultiverseWorld mvWorld = newMultiverseWorld(world.getName(), worldConfig);
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 world,
                 worldConfig,
@@ -464,7 +467,7 @@ public class WorldManager {
         worldsMap.remove(world.getName());
         worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
-
+        corePermissions.removeWorldPermissions(world);
         return worldActionResult(world.getName());
     }
 

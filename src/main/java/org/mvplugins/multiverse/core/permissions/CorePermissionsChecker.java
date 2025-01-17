@@ -14,6 +14,9 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
+import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPermission;
+import static org.mvplugins.multiverse.core.permissions.PermissionUtils.hasPermission;
+
 @Service
 public class CorePermissionsChecker {
 
@@ -123,37 +126,6 @@ public class CorePermissionsChecker {
             if (hasPermission(sender, permission)) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    /**
-     * Joins permissions with a dot.
-     *
-     * @param permission    The permission
-     * @param child         The string(s) to join
-     * @return The newly joined permission node.
-     */
-    public String concatPermission(String permission, String... child) {
-        return permission + "." + String.join(".", child);
-    }
-
-    /**
-     * Check and log if the sender has the permission.
-     *
-     * @param sender        The sender
-     * @param permission    The permission
-     * @return True if the sender has the permission, else false.
-     */
-    public boolean hasPermission(CommandSender sender, String permission) {
-        if (sender.hasPermission(permission)) {
-            if (config.getDebugPermissions()) {
-                Logging.finer("Checking sender [%s] has permission [%s] : YES", sender.getName(), permission);
-            }
-            return true;
-        }
-        if (config.getDebugPermissions()) {
-            Logging.finer("Checking sender [%s] has permission [%s] : NO", sender.getName(), permission);
         }
         return false;
     }

@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
+import org.mvplugins.multiverse.core.permissions.PermissionUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -54,6 +55,6 @@ public class MVCommandPermissions {
     boolean hasPermission(CommandIssuer issuer, String permission) {
         return Option.of(permissionsCheckMap.get(permission))
                 .map(checker -> checker.test(issuer))
-                .getOrElse(() -> permissionsChecker.hasPermission(issuer.getIssuer(), permission));
+                .getOrElse(() -> PermissionUtils.hasPermission(issuer.getIssuer(), permission));
     }
 }
