@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.generators;
+package org.mvplugins.multiverse.core.api.world.generators;
 
 import java.util.Collection;
 
@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
  * <p>Any generator plugin can register themselves to Multiverse. This will provide Multiverse with addition
  * information about your generator plugin such as generator id suggestions, example usages and link to more
  * info on your generator plugin.</p>
+ *
+ * @since 5.0
  */
 public interface GeneratorPlugin {
     /**
@@ -22,6 +24,7 @@ public interface GeneratorPlugin {
      * @param currentIdInput    The current state user input. This may be null or empty if user has not started
      *                          any input for generator id.
      * @return Collection of suggested generator ids.
+     * @since 5.0
      */
     @NotNull Collection<String> suggestIds(@Nullable String currentIdInput);
 
@@ -41,6 +44,7 @@ public interface GeneratorPlugin {
      * </ul>
      *
      * @return A collection of command usage examples.
+     * @since 5.0
      */
     @Nullable Collection<String> getExampleUsages();
 
@@ -53,6 +57,7 @@ public interface GeneratorPlugin {
      * <p>Some suggested places you can link to are: spigot resource page, github repo or your own plugin site.</p>
      *
      * @return Link to more info on your generator plugin.
+     * @since 5.0
      */
     @Nullable String getInfoLink();
 
@@ -60,6 +65,7 @@ public interface GeneratorPlugin {
      * Gets the java plugin for this generator. In short, return your own generator plugin instance.
      *
      * @return The associated plugin for this generator.
+     * @since 5.0
      */
     @NotNull String getPluginName();
 }

@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.api.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
@@ -27,7 +28,6 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
 import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 /**
  * List all gamerules in your current or specified world.

@@ -39,7 +39,7 @@ import org.mvplugins.multiverse.core.api.result.Attempt;
 import org.mvplugins.multiverse.core.api.result.FailureReason;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
 import org.mvplugins.multiverse.core.world.config.WorldsConfigManager;
-import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
+import org.mvplugins.multiverse.core.api.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
 import org.mvplugins.multiverse.core.world.helpers.FilesManipulator;

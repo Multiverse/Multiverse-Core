@@ -27,20 +27,18 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.world.generators.GeneratorPlugin;
+import org.mvplugins.multiverse.core.api.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.utils.file.FileUtils;
 
-/**
- * Parse the default world generators from the bukkit config and load any generator plugins.
- * Helps in suggesting and validating generator strings.
- */
 @Service
-public class GeneratorProvider implements Listener {
+public class SimpleGeneratorProvider implements GeneratorProvider, Listener {
     private final Map<String, String> defaultGenerators;
     private final Map<String, GeneratorPlugin> generatorPlugins;
     private final FileUtils fileUtils;
 
     @Inject
-    GeneratorProvider(@NotNull MultiverseCore multiverseCore, @NotNull FileUtils fileUtils) {
+    SimpleGeneratorProvider(@NotNull MultiverseCore multiverseCore, @NotNull FileUtils fileUtils) {
         this.fileUtils = fileUtils;
         defaultGenerators = new HashMap<>();
         generatorPlugins = new HashMap<>();
@@ -98,21 +96,17 @@ public class GeneratorProvider implements Listener {
     }
 
     /**
-     * Gets the default generator for a world from the bukkit.yml config.
-     *
-     * @param worldName The name of the world.
-     * @return The default generator string for the world, or null if none.
+     * {@inheritDoc}
      */
+    @Override
     public @Nullable String getDefaultGeneratorForWorld(String worldName) {
         return defaultGenerators.getOrDefault(worldName, null);
     }
 
     /**
-     * Attempts to register a plugin as {@link SimpleGeneratorPlugin}.
-     *
-     * @param generatorPlugin   The plugin to register.
-     * @return True if registered successfully, else false.
+     * {@inheritDoc}
      */
+    @Override
     public boolean registerGeneratorPlugin(@NotNull GeneratorPlugin generatorPlugin) {
         var registeredGenerator = generatorPlugins.get(generatorPlugin.getPluginName());
         if (registeredGenerator == null || registeredGenerator instanceof SimpleGeneratorPlugin) {
@@ -124,11 +118,9 @@ public class GeneratorProvider implements Listener {
     }
 
     /**
-     * Unregisters a plugin.
-     *
-     * @param pluginName    The plugin to unregister.
-     * @return True if the plugin was present and now unregistered, else false.
+     * {@inheritDoc}
      */
+    @Override
     public boolean unregisterGeneratorPlugin(@NotNull String pluginName) {
         if (generatorPlugins.containsKey(pluginName)) {
             generatorPlugins.remove(pluginName);
@@ -139,31 +131,25 @@ public class GeneratorProvider implements Listener {
     }
 
     /**
-     * Whether a plugin is registered as a generator plugin.
-     *
-     * @param pluginName    The name of the plugin.
-     * @return True if the plugin is registered, else false.
+     * {@inheritDoc}
      */
+    @Override
     public boolean isGeneratorPluginRegistered(@NotNull String pluginName) {
         return generatorPlugins.containsKey(pluginName);
     }
 
     /**
-     * Gets a generator plugin by name.
-     *
-     * @param pluginName    The name of the plugin.
-     * @return The generator plugin, or null if not registered.
+     * {@inheritDoc}
      */
+    @Override
     public @Nullable GeneratorPlugin getGeneratorPlugin(@NotNull String pluginName) {
         return generatorPlugins.get(pluginName);
     }
 
     /**
-     * Auto complete generator strings, used in command tab completion.
-     *
-     * @param currentInput  The current input from the user.
-     * @return A collection of suggestions.
+     * {@inheritDoc}
      */
+    @Override
     public Collection<String> suggestGeneratorString(@Nullable String currentInput) {
         String[] genSpilt = currentInput == null ? new String[0] : currentInput.split(":", 2);
         List<String> suggestions = new ArrayList<>(generatorPlugins.keySet());

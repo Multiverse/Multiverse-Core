@@ -18,6 +18,7 @@ import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.api.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
@@ -25,7 +26,6 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.api.world.WorldManager;
-import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.api.world.options.ImportWorldOptions;
 
 @Service
