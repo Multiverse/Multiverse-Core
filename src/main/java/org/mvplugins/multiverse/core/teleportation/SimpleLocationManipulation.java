@@ -21,7 +21,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 
 /**
  * The default-implementation of {@link LocationManipulation}.

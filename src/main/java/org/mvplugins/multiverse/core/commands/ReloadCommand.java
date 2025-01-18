@@ -14,12 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.event.MVConfigReloadEvent;
-import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.event.MVConfigReloadEvent;
+import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.world.SimpleWorldManager;
 
 @Service
 @CommandAlias("mv")
@@ -27,7 +26,7 @@ class ReloadCommand extends CoreCommand {
 
     private final MVCoreConfig config;
     private final AnchorManager anchorManager;
-    private final WorldManager worldManager;
+    private final SimpleWorldManager worldManager;
     private final PluginManager pluginManager;
 
     @Inject
@@ -35,7 +34,7 @@ class ReloadCommand extends CoreCommand {
             @NotNull MVCommandManager commandManager,
             @NotNull MVCoreConfig config,
             @NotNull AnchorManager anchorManager,
-            @NotNull WorldManager worldManager,
+            @NotNull SimpleWorldManager worldManager,
             @NotNull PluginManager pluginManager) {
         super(commandManager);
         this.config = config;

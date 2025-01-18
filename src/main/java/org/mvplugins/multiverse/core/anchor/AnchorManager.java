@@ -26,8 +26,8 @@ import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.LocationManipulation;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 
 /**
  * Manages anchors.

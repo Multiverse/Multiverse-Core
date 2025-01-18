@@ -24,12 +24,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.destination.Destination;
-import org.mvplugins.multiverse.core.api.MVCore;
+import org.mvplugins.multiverse.core.api.destination.Destination;
+import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.submodules.MVCore;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
@@ -37,7 +37,7 @@ import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
 import org.mvplugins.multiverse.core.utils.TestingMode;
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.SimpleWorldManager;
 import org.mvplugins.multiverse.core.world.config.NullLocation;
 import org.mvplugins.multiverse.core.world.config.SpawnLocation;
 
@@ -52,9 +52,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private PluginServiceLocator serviceLocator;
 
     @Inject
-    private Provider<MVCoreConfig> configProvider;
+    private Provider<SimpleMVCoreConfig> configProvider;
     @Inject
-    private Provider<WorldManager> worldManagerProvider;
+    private Provider<SimpleWorldManager> worldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
     @Inject
@@ -374,7 +374,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public @NotNull FileConfiguration getConfig() {
-        MVCoreConfig mvCoreConfig = this.configProvider.get();
+        SimpleMVCoreConfig mvCoreConfig = this.configProvider.get();
         var config = mvCoreConfig.getConfig();
         if (config != null && mvCoreConfig.isLoaded()) {
             return config;

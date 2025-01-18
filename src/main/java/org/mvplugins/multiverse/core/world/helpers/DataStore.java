@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.world.helpers;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +9,8 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 
 /**
  * A data store for storing and restoring data from an object.

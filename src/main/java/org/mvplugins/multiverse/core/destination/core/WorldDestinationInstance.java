@@ -7,14 +7,14 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
 
 /**
  * Destination instance implementation for the {@link WorldDestination}.
  */
 public class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
-    private final LoadedMultiverseWorld world;
+    private final MultiverseWorld world;
     private final String direction;
     private final float yaw;
 
@@ -28,7 +28,7 @@ public class WorldDestinationInstance extends DestinationInstance<WorldDestinati
      */
     WorldDestinationInstance(
             @NotNull WorldDestination destination,
-            @NotNull LoadedMultiverseWorld world,
+            @NotNull MultiverseWorld world,
             @Nullable String direction,
             float yaw
     ) {

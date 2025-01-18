@@ -2,21 +2,22 @@ package org.mvplugins.multiverse.core.inject
 
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.anchor.AnchorManager
-import org.mvplugins.multiverse.core.api.BlockSafety
-import org.mvplugins.multiverse.core.api.LocationManipulation
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig
+import org.mvplugins.multiverse.core.api.teleportation.BlockSafety
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation
+import org.mvplugins.multiverse.core.api.world.WorldManager
 import org.mvplugins.multiverse.core.commands.CoreCommand
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
-import org.mvplugins.multiverse.core.config.MVCoreConfig
-import org.mvplugins.multiverse.core.destination.Destination
+import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig
+import org.mvplugins.multiverse.core.api.destination.Destination
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.listeners.*
-import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
 import org.mvplugins.multiverse.core.teleportation.SimpleBlockSafety
 import org.mvplugins.multiverse.core.teleportation.SimpleLocationManipulation
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
-import org.mvplugins.multiverse.core.world.WorldManager
+import org.mvplugins.multiverse.core.world.SimpleWorldManager
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -35,8 +36,9 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `AdvancedBlockSafety is available as a service`() {
-        assertNotNull(serviceLocator.getActiveService(AdvancedBlockSafety::class.java))
+    fun `BlockSafety is available as a service`() {
+        assertNotNull(serviceLocator.getActiveService(BlockSafety::class.java))
+        assertNotNull(serviceLocator.getActiveService(SimpleBlockSafety::class.java))
     }
 
     @Test
@@ -63,6 +65,7 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `MVWorldManager is available as a service`() {
         assertNotNull(serviceLocator.getActiveService(WorldManager::class.java))
+        assertNotNull(serviceLocator.getActiveService(SimpleWorldManager::class.java))
     }
 
     @Test
@@ -98,6 +101,7 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `MVCoreConfig is available as a service`() {
         assertNotNull(serviceLocator.getActiveService(MVCoreConfig::class.java))
+        assertNotNull(serviceLocator.getActiveService(SimpleMVCoreConfig::class.java))
     }
 
     @Test

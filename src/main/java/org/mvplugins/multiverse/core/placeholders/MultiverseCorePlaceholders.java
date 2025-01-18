@@ -12,9 +12,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 @Service
 public class MultiverseCorePlaceholders extends PlaceholderExpansion {

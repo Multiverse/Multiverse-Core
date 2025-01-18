@@ -15,7 +15,8 @@ spawn:
   first-spawn-location: ''
   enable-join-destination: false
   join-destination: ''
-  default-respawn-to-world-spawn: true
+  default-respawn-within-same-world: true
+  enforce-respawn-at-world-spawn: true
 
 portal:
   use-custom-portal-search: false
@@ -39,4 +40,4 @@ misc:
   silent-start: false
   show-donation-message: true
 
-version: 5.1
+version: 5.2

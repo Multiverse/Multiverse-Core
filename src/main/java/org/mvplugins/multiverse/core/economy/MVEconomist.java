@@ -8,7 +8,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 /**
  * Multiverse's Friendly Economist. This is used to deal with external economies and also item costs for stuff in MV.
@@ -100,7 +100,7 @@ public class MVEconomist {
      * @param player    the player to deposit currency into.
      * @param world     the world to take entry fee from.
      */
-    public void payEntryFee(Player player, LoadedMultiverseWorld world) {
+    public void payEntryFee(Player player, MultiverseWorld world) {
         payEntryFee(player, world.getPrice(), world.getCurrency());
     }
 

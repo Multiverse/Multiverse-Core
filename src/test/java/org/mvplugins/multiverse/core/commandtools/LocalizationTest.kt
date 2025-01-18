@@ -12,10 +12,10 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.config.MVCoreConfig
-import org.mvplugins.multiverse.core.utils.MVCorei18n
-import org.mvplugins.multiverse.core.utils.message.Message
-import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
+import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig
+import org.mvplugins.multiverse.core.api.locale.MVCorei18n
+import org.mvplugins.multiverse.core.api.locale.message.Message
+import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace
 import java.util.Locale
 import kotlin.test.*
 
@@ -254,7 +254,8 @@ class LocalizationTest : TestWithMockBukkit() {
     @Nested
     inner class WithMessagesAsReplacement {
         private val replacementKey = "{world}"
-        private val replacementValue = Message.of(MVCorei18n.GENERIC_SUCCESS, "success")
+        private val replacementValue = Message.of(
+            MVCorei18n.GENERIC_SUCCESS, "success")
         private val messageString = "Hello $replacementKey!"
         private val replacedMessageString = "Hello success!"
         private val replacedMessageStringLocale = "World cloned to 'Success!'!"
@@ -313,13 +314,13 @@ class LocalizationTest : TestWithMockBukkit() {
 
     @Nested
     inner class LocaleConfiguration {
-        private lateinit var config: MVCoreConfig
+        private lateinit var config: SimpleMVCoreConfig
         private lateinit var player: PlayerMock
         private lateinit var issuer: MVCommandIssuer
 
         @BeforeTest
         fun setUp() {
-            config = assertNotNull(serviceLocator.getActiveService(MVCoreConfig::class.java))
+            config = assertNotNull(serviceLocator.getActiveService(SimpleMVCoreConfig::class.java))
             player = server.addPlayer("benji_0224")
             issuer = commandManager.getCommandIssuer(player)
         }
@@ -328,28 +329,32 @@ class LocalizationTest : TestWithMockBukkit() {
         fun `Change default locale to chinese without per player locale should get chinese message`() {
             config.perPlayerLocale = false
             config.defaultLocale = Locale.CHINESE
-            assertEquals("ab!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+            assertEquals("ab!", Message.of(
+                MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
 
         @Test
         fun `Change default locale to chinese with per player locale should get default english message`() {
             config.perPlayerLocale = true
             config.defaultLocale = Locale.CHINESE
-            assertEquals("Success!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+            assertEquals("Success!", Message.of(
+                MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
 
         @Test
         fun `PerPlayerLocale enabled - Player with chinese locale should get chinese message`() {
             config.perPlayerLocale = true
             player.setLocale(Locale.CHINESE)
-            assertEquals("ab!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+            assertEquals("ab!", Message.of(
+                MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
 
         @Test
         fun `PerPlayerLocale disabled - Player with chinese locale should get default english message`() {
             config.perPlayerLocale = false
             player.setLocale(Locale.CHINESE)
-            assertEquals("Success!", Message.of(MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
+            assertEquals("Success!", Message.of(
+                MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
     }
 }

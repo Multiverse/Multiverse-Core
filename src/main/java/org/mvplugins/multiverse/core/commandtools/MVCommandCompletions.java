@@ -32,16 +32,16 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterProvider;
-import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.api.configuration.PropertyModifyAction;
+import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -187,7 +187,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestDestinationsWithPerms(BukkitCommandIssuer teleporter, Player teleportee, String deststring) {
         return destinationsProvider.getDestinations().stream()
                 .filter(destination -> corePermissionsChecker.hasDestinationPermission(teleporter.getIssuer(), teleportee, destination))
-                .flatMap(destination -> destination.suggestDestinationPackets(teleporter, deststring).stream()
+                .flatMap(destination -> destination.suggestDestinations(teleporter, deststring).stream()
                         .filter(packet -> corePermissionsChecker.hasFinerDestinationPermission(
                                 teleporter.getIssuer(), teleportee, destination, packet.finerPermissionSuffix()))
                         .map(packet -> destination instanceof WorldDestination

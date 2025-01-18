@@ -11,15 +11,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.result.Result;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
-import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
+import static org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace;
 
 /**
  * Checks if a player can enter a world.
@@ -63,7 +63,7 @@ public class WorldEntryChecker {
      * @return The result of the check.
      */
     public ResultChain canEnterWorld(
-            @Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
+            @Nullable MultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         return ResultChain.builder()
                 .then(() -> canAccessWorld(toWorld))
                 .then(() -> isWithinPlayerLimit(toWorld))
@@ -118,7 +118,7 @@ public class WorldEntryChecker {
      * @return The result of the check.
      */
     public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(
-            @Nullable LoadedMultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
+            @Nullable MultiverseWorld fromWorld, @NotNull MultiverseWorld toWorld) {
         if (fromWorld == null) {
             return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
         }
@@ -133,7 +133,7 @@ public class WorldEntryChecker {
      * @param world The world to check.
      * @return The result of the check.
      */
-    public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(LoadedMultiverseWorld world) {
+    public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(MultiverseWorld world) {
         double price = world.getPrice();
         Material currency = world.getCurrency();
         if (!world.isEntryFeeEnabled() || price == 0D) {

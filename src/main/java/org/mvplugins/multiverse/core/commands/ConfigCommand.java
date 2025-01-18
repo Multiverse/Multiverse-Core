@@ -12,11 +12,10 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.api.exceptions.MultiverseException;
 
 @Service
 @CommandAlias("mv")

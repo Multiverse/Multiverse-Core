@@ -15,10 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")

@@ -12,8 +12,8 @@ import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 @Service
 public class MetricsConfigurator {
@@ -46,20 +46,20 @@ public class MetricsConfigurator {
 
     private void addCustomGeneratorsMetric() {
         addAdvancedPieMetric("custom_generators", map -> {
-            for (LoadedMultiverseWorld w : worldManager.getLoadedWorlds()) {
+            for (MultiverseWorld w : worldManager.getLoadedWorlds()) {
                 MetricsHelper.incrementCount(map, getGeneratorName(w));
             }
         });
     }
 
-    private String getGeneratorName(LoadedMultiverseWorld world) {
+    private String getGeneratorName(MultiverseWorld world) {
         String gen = world.getGenerator();
         return (gen != null && !gen.equalsIgnoreCase("null")) ? gen.split(":")[0] : NO_GENERATOR_NAME;
     }
 
     private void addEnvironmentsMetric() {
         addAdvancedPieMetric("environments", map -> {
-            for (LoadedMultiverseWorld w : worldManager.getLoadedWorlds()) {
+            for (MultiverseWorld w : worldManager.getLoadedWorlds()) {
                 MetricsHelper.incrementCount(map, titleCaseEnv(w.getEnvironment()));
             }
         });

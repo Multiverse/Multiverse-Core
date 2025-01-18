@@ -25,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
 
 /**
  * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>

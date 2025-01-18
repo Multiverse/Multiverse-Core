@@ -3,10 +3,10 @@ package org.mvplugins.multiverse.core.commands
 import co.aikar.commands.MessageKeys
 import org.bukkit.Bukkit
 import org.junit.jupiter.api.Test
-import org.mvplugins.multiverse.core.config.MVCoreConfig
-import org.mvplugins.multiverse.core.utils.MVCorei18n
-import org.mvplugins.multiverse.core.utils.message.Message
-import org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace
+import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig
+import org.mvplugins.multiverse.core.api.locale.MVCorei18n
+import org.mvplugins.multiverse.core.api.locale.message.Message
+import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -15,7 +15,7 @@ class ConfigCommandTest : AbstractCommandTest() {
     @Test
     fun `Modify config global-debug`() {
         assertTrue(Bukkit.dispatchCommand(console, "mv config global-debug 2"))
-        val coreConfig = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
+        val coreConfig = serviceLocator.getActiveService(SimpleMVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
         assertEquals(2, coreConfig.globalDebug)
     }
@@ -25,7 +25,7 @@ class ConfigCommandTest : AbstractCommandTest() {
         assertTrue(Bukkit.dispatchCommand(player, "mv config global-debug 2"))
         assertCommandOutput(Message.of(MessageKeys.PERMISSION_DENIED, ""))
 
-        val coreConfig = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
+        val coreConfig = serviceLocator.getActiveService(SimpleMVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
         assertEquals(0, coreConfig.globalDebug)
     }
@@ -35,7 +35,8 @@ class ConfigCommandTest : AbstractCommandTest() {
         addPermission("multiverse.core.config")
         assertTrue(Bukkit.dispatchCommand(player, "mv config invalid-property test"))
         player.nextMessage() // ignore the first line
-        assertCommandOutput(Message.of(
+        assertCommandOutput(
+            Message.of(
             MVCorei18n.CONFIG_NODE_NOTFOUND,
             "",
             replace("{node}").with("invalid-property")))

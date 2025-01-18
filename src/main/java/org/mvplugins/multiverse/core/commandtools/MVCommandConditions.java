@@ -8,8 +8,8 @@ import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
 import org.jetbrains.annotations.NotNull;
 
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 import org.mvplugins.multiverse.core.world.WorldNameChecker;
-import org.mvplugins.multiverse.core.world.WorldManager;
 
 public class MVCommandConditions {
     static void load(MVCommandManager commandManager, WorldManager worldManager, WorldNameChecker worldNameChecker) {

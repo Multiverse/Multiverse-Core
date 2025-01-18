@@ -3,10 +3,11 @@ package org.mvplugins.multiverse.core.destination
 import org.bukkit.Location
 import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.api.destination.DestinationsProvider
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld
 import org.mvplugins.multiverse.core.destination.core.*
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld
-import org.mvplugins.multiverse.core.world.WorldManager
-import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
+import org.mvplugins.multiverse.core.world.SimpleWorldManager
+import org.mvplugins.multiverse.core.api.world.options.CreateWorldOptions
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,14 +15,14 @@ import kotlin.test.assertTrue
 
 class DestinationTest : TestWithMockBukkit() {
 
-    private lateinit var worldManager: WorldManager
+    private lateinit var worldManager: SimpleWorldManager
     private lateinit var destinationsProvider: DestinationsProvider
     private lateinit var world: LoadedMultiverseWorld
     private lateinit var player: PlayerMock
 
     @BeforeTest
     fun setUp() {
-        worldManager = serviceLocator.getActiveService(WorldManager::class.java).takeIf { it != null } ?: run {
+        worldManager = serviceLocator.getActiveService(SimpleWorldManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldManager is not available as a service") }
         destinationsProvider = serviceLocator.getActiveService(DestinationsProvider::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("DestinationsProvider is not available as a service") }

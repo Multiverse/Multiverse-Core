@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mvplugins.multiverse.core.api.MVCore;
+import org.mvplugins.multiverse.core.submodules.MVCore;
 import org.mvplugins.multiverse.core.utils.TestInstanceCreator;
 
 import static org.junit.Assert.assertNotNull;

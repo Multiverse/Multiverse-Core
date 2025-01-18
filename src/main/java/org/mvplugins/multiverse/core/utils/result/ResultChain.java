@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Iterables;
 import io.vavr.control.Option;
 
-import org.mvplugins.multiverse.core.utils.message.Message;
+import org.mvplugins.multiverse.core.api.locale.message.Message;
+import org.mvplugins.multiverse.core.api.result.FailureReason;
 
 public class ResultChain {
     public static Builder builder() {

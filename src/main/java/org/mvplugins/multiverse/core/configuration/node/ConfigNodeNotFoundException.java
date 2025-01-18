@@ -2,10 +2,10 @@ package org.mvplugins.multiverse.core.configuration.node;
 
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.api.exceptions.MultiverseException;
 
-import static org.mvplugins.multiverse.core.utils.MVCorei18n.CONFIG_NODE_NOTFOUND;
-import static org.mvplugins.multiverse.core.utils.message.MessageReplacement.replace;
+import static org.mvplugins.multiverse.core.api.locale.MVCorei18n.CONFIG_NODE_NOTFOUND;
+import static org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace;
 
 public class ConfigNodeNotFoundException extends MultiverseException {
 
