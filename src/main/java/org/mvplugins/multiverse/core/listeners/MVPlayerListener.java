@@ -30,18 +30,19 @@ import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.api.teleportation.BlockSafety;
+import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.event.MVRespawnEvent;
-import org.mvplugins.multiverse.core.teleportation.AdvancedBlockSafety;
-import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.api.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
@@ -55,8 +56,8 @@ public class MVPlayerListener implements CoreListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
-    private final AdvancedBlockSafety blockSafety;
-    private final AsyncSafetyTeleporter safetyTeleporter;
+    private final BlockSafety blockSafety;
+    private final SafetyTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
@@ -72,8 +73,8 @@ public class MVPlayerListener implements CoreListener {
             MultiverseCore plugin,
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
-            AdvancedBlockSafety blockSafety,
-            AsyncSafetyTeleporter safetyTeleporter,
+            BlockSafety blockSafety,
+            SafetyTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
@@ -146,7 +147,7 @@ public class MVPlayerListener implements CoreListener {
                 });
     }
 
-    private Option<Location> getMostAccurateRespawnLocation(Player player, LoadedMultiverseWorld mvWorld, Location defaultRespawnLocation) {
+    private Option<Location> getMostAccurateRespawnLocation(Player player, MultiverseWorld mvWorld, Location defaultRespawnLocation) {
         return Option.of(mvWorld.getRespawnWorldName().isEmpty()
                         ? player.getWorld()
                         : server.getWorld(mvWorld.getRespawnWorldName()))
@@ -167,7 +168,7 @@ public class MVPlayerListener implements CoreListener {
     @EventHandler
     void playerSpawnLocation(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
-        LoadedMultiverseWorld world = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
+        MultiverseWorld world = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
         if (world == null) {
             Logging.finer("Player joined in a world that is not managed by Multiverse.");
             return;
@@ -258,7 +259,7 @@ public class MVPlayerListener implements CoreListener {
             }
         }
 
-        LoadedMultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
+        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
         LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
@@ -309,8 +310,6 @@ public class MVPlayerListener implements CoreListener {
         // If the player was actually outside of the portal, adjust the from location
         if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.NETHER_PORTAL) {
             Location newloc = blockSafety.findPortalBlockNextTo(event.getFrom());
-            // TODO: Fix this. Currently, we only check for PORTAL blocks. I'll have to figure out what
-            // TODO: we want to do here.
             if (newloc != null) {
                 event.setFrom(newloc);
             }
@@ -338,7 +337,7 @@ public class MVPlayerListener implements CoreListener {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
 
-        LoadedMultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
+        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
         LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Portaling to the same world.

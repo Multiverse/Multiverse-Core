@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.destination.Destination;
-import org.mvplugins.multiverse.core.api.LocationManipulation;
-import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.destination.Destination;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.api.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 /**
  * {@link Destination} implementation for exact locations.
@@ -51,7 +51,7 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
         }
 
         String worldName = items[0];
-        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
+        MultiverseWorld world = getLoadedMultiverseWorld(worldName);
         if (world == null) {
             return null;
         }
@@ -63,7 +63,7 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
     }
 
     @Nullable
-    private LoadedMultiverseWorld getLoadedMultiverseWorld(String worldName) {
+    private MultiverseWorld getLoadedMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
                 ? worldManager.getLoadedWorldByNameOrAlias(worldName).getOrNull()
                 : worldManager.getLoadedWorld(worldName).getOrNull();
@@ -73,7 +73,7 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinationPackets(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
         return worldManager.getLoadedWorlds().stream()
                 .map(world -> new DestinationSuggestionPacket(world.getName(), world.getName()))
                 .toList();

@@ -7,13 +7,13 @@ import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
+import org.mvplugins.multiverse.core.api.commandtools.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
-import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
-import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.api.event.MVDebugModeEvent;
+import org.mvplugins.multiverse.core.api.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
 
 import java.util.Locale;
@@ -45,7 +45,6 @@ class MVCoreConfigNodes {
     // BEGIN CHECKSTYLE-SUPPRESSION: MultipleStringLiterals
     // BEGIN CHECKSTYLE-SUPPRESSION: LineLength
 
-    // TODO: hacky way to get the header to the top of the file
     private final ConfigHeaderNode HEADER = node(ConfigHeaderNode.builder("world")
             .comment("####################################################################################################")
             .comment("#                                                                                                  #")

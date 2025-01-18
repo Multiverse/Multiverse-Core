@@ -29,12 +29,6 @@ public abstract class MultiverseCommand extends BaseCommand {
     private String flagGroupName;
     private CommandFlagGroup.Builder flagGroupBuilder;
 
-    // todo: Remove after sub-modules are updated
-    @Deprecated
-    protected MultiverseCommand(@NotNull MVCommandManager commandManager) {
-        this(commandManager, "mv");
-    }
-
     protected MultiverseCommand(@NotNull MVCommandManager commandManager, @NotNull String flagGroupPrefix) {
         this.commandManager = commandManager;
         this.flagsManager = commandManager.getFlagsManager();

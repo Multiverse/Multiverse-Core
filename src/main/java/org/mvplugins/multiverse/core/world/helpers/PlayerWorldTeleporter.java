@@ -10,21 +10,22 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
-import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.utils.result.Async;
-import org.mvplugins.multiverse.core.utils.result.Attempt;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
+import org.mvplugins.multiverse.core.api.teleportation.TeleportFailureReason;
+import org.mvplugins.multiverse.core.api.result.Async;
+import org.mvplugins.multiverse.core.api.result.Attempt;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 /**
  * Handles all player actions that need to be done when a change in world related activity occurs.
  */
 @Service
 public class PlayerWorldTeleporter {
-    private final AsyncSafetyTeleporter safetyTeleporter;
+    private final SafetyTeleporter safetyTeleporter;
 
     @Inject
-    PlayerWorldTeleporter(@NotNull AsyncSafetyTeleporter safetyTeleporter) {
+    PlayerWorldTeleporter(@NotNull SafetyTeleporter safetyTeleporter) {
         this.safetyTeleporter = safetyTeleporter;
     }
 
@@ -49,7 +50,7 @@ public class PlayerWorldTeleporter {
      */
     public Async<List<Attempt<Void, TeleportFailureReason>>> transferFromWorldTo(
             @NotNull LoadedMultiverseWorld from,
-            @NotNull LoadedMultiverseWorld to) {
+            @NotNull MultiverseWorld to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
     }
 
@@ -91,7 +92,7 @@ public class PlayerWorldTeleporter {
      */
     public Async<List<Attempt<Void, TeleportFailureReason>>> teleportPlayersToWorld(
             @NotNull List<Player> players,
-            @NotNull LoadedMultiverseWorld world) {
+            @NotNull MultiverseWorld world) {
         Location spawnLocation = world.getSpawnLocation();
         return safetyTeleporter.to(spawnLocation).teleport(players);
     }

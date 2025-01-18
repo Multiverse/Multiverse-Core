@@ -5,7 +5,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
-import org.mvplugins.multiverse.core.utils.message.Message;
+import org.mvplugins.multiverse.core.api.locale.message.Message;
 
 /**
  * Represents a single command used in {@link CommandQueueManager} for confirming before running potentially

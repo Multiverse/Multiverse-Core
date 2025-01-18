@@ -14,7 +14,7 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 /**
  * Multiverse's Weather Listener.

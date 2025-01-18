@@ -6,9 +6,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
 
 /**
  * Destination instance implementation for the {@link ExactDestination}.
@@ -31,7 +30,9 @@ public class ExactDestinationInstance extends DestinationInstance<ExactDestinati
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
-        // todo: maybe check if the world is null?
+        if (location.getWorld() == null) {
+            return Option.none();
+        }
         return Option.of(location);
     }
 

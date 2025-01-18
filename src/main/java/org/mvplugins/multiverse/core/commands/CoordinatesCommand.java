@@ -11,11 +11,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
@@ -41,7 +40,7 @@ class CoordinatesCommand extends CoreCommand {
             Player player,
 
             @Flags("resolve=issuerOnly")
-            LoadedMultiverseWorld world) {
+            MultiverseWorld world) {
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_TITLE);
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLD, "{world}", world.getName());
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, "{alias}", world.getAlias());

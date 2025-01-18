@@ -23,9 +23,9 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
@@ -35,8 +35,7 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
-import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
@@ -182,7 +181,7 @@ class GameruleCommand extends CoreCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         ContentDisplay.create()
-                .addContent(MapContentProvider.forContent(getGameRuleMap(world.getBukkitWorld().getOrNull())) // TODO: Handle null
+                .addContent(MapContentProvider.forContent(getGameRuleMap(world.getBukkitWorld().getOrNull()))
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
                 .withSendHandler(PagedSendHandler.create()
@@ -201,6 +200,9 @@ class GameruleCommand extends CoreCommand {
      */
     private Map<String, String> getGameRuleMap(World world) {
         Map<String, String> gameRuleMap = new HashMap<>();
+        if (world == null) {
+            return gameRuleMap;
+        }
 
         for (String gamerule : world.getGameRules()) {
             GameRule<?> gameruleEnum = GameRule.getByName(gamerule);

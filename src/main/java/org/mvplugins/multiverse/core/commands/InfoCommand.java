@@ -17,10 +17,10 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
@@ -30,8 +30,7 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 @Service
 @CommandAlias("mv")
@@ -138,7 +137,7 @@ class InfoCommand extends CoreCommand {
         return outMap;
     }
 
-    private void getEntryFeeInfo(Map<String, String> outMap, LoadedMultiverseWorld world) {
+    private void getEntryFeeInfo(Map<String, String> outMap, MultiverseWorld world) {
         double price = world.getPrice();
         if (price == 0) {
             outMap.put("Entry Fee", "FREE!");
@@ -149,7 +148,7 @@ class InfoCommand extends CoreCommand {
         }
     }
 
-    private void getAnimalSpawningInfo(Map<String, String> outMap, LoadedMultiverseWorld world) {
+    private void getAnimalSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
         if (world.getSpawningAnimals()) {
             outMap.put("Spawning Animals", "ALL");
         } else {
@@ -161,7 +160,7 @@ class InfoCommand extends CoreCommand {
         }
     }
 
-    private void getMonsterSpawningInfo(Map<String, String> outMap, LoadedMultiverseWorld world) {
+    private void getMonsterSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
         if (world.getSpawningMonsters()) {
             outMap.put("Spawning Monsters", "ALL");
         } else {

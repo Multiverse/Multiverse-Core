@@ -20,14 +20,13 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.utils.MVCorei18n;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
-import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
+import org.mvplugins.multiverse.core.api.world.options.ImportWorldOptions;
 
 @Service
 @CommandAlias("mv")
@@ -48,7 +47,6 @@ class ImportCommand extends CoreCommand {
 
     private final CommandValueFlag<Biome> BIOME_FLAG = flag(CommandValueFlag.builder("--biome", Biome.class)
             .addAlias("-b")
-            //todo: Implement some default completions or smt to reduce duplication
             .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
                     .filter(biome -> biome !=Biome.CUSTOM)
                     .map(biome -> biome.getKey().getKey())

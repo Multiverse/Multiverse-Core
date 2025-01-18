@@ -18,7 +18,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
@@ -28,9 +27,8 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
@@ -135,12 +133,12 @@ class ListCommand extends CoreCommand {
         return world.getAlias();
     }
 
-    private boolean canSeeWorld(MVCommandIssuer issuer, LoadedMultiverseWorld world) {
+    private boolean canSeeWorld(MVCommandIssuer issuer, MultiverseWorld world) {
         return !world.isHidden()
                 || issuer.hasPermission("multiverse.core.modify"); // TODO: Refactor stray permission check
     }
 
-    private String hiddenText(LoadedMultiverseWorld world) {
+    private String hiddenText(MultiverseWorld world) {
         return (world.isHidden()) ? String.format("%s[H] ", ChatColor.GRAY) : "";
     }
 

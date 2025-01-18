@@ -23,11 +23,15 @@ import org.bukkit.entity.Squid;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
-// TODO: This entire class is a mess.
 /**
  * Used to remove animals from worlds that don't belong there.
+ *
+ * @deprecated this class needs a refactor
  */
+@Deprecated
 @Service
 public class WorldPurger {
 
@@ -143,7 +147,7 @@ public class WorldPurger {
      * @param entity    The creature.
      * @return {@code true} if the creature should be killed, otherwise {@code false}.
      */
-    public boolean shouldWeKillThisCreature(@NotNull LoadedMultiverseWorld world, @NotNull Entity entity) {
+    public boolean shouldWeKillThisCreature(@NotNull MultiverseWorld world, @NotNull Entity entity) {
         ArrayList<String> allMobs = new ArrayList<>(world.getSpawningAnimalsExceptions());
         allMobs.addAll(world.getSpawningMonstersExceptions());
         return this.shouldWeKillThisCreature(entity, allMobs, !world.getSpawningAnimals(), !world.getSpawningMonsters());

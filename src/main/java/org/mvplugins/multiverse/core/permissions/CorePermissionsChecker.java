@@ -7,13 +7,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.destination.Destination;
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.api.destination.Destination;
+import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPermission;
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.hasPermission;
@@ -36,15 +35,15 @@ public class CorePermissionsChecker {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
     }
 
-    public boolean hasWorldExemptPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
+    public boolean hasWorldExemptPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_EXEMPT, world.getName()));
     }
 
-    public boolean hasPlayerLimitBypassPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
+    public boolean hasPlayerLimitBypassPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.PLAYERLIMIT_BYPASS, world.getName()));
     }
 
-    public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull LoadedMultiverseWorld world) {
+    public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.GAMEMODE_BYPASS, world.getName()));
     }
 
@@ -59,7 +58,7 @@ public class CorePermissionsChecker {
     public boolean checkSpawnPermission(
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
-            @NotNull LoadedMultiverseWorld world) {
+            @NotNull MultiverseWorld world) {
         // TODO: Config whether to use finer permission
         return hasPermission(teleporter, concatPermission(
                 CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other", world.getName()));

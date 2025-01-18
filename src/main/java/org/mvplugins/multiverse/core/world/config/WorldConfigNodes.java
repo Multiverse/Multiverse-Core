@@ -2,25 +2,24 @@ package org.mvplugins.multiverse.core.world.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.ListConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.SimpleWorldManager;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
@@ -35,11 +34,11 @@ public class WorldConfigNodes {
     private LoadedMultiverseWorld world = null;
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
-        this.worldManager = multiverseCore.getServiceLocator().getService(WorldManager.class);
+        this.worldManager = multiverseCore.getServiceLocator().getService(SimpleWorldManager.class);
         this.enforcementHandler = multiverseCore.getServiceLocator().getService(EnforcementHandler.class);
     }
 
-    LoadedMultiverseWorld getWorld() {
+    MultiverseWorld getWorld() {
         return world;
     }
 
@@ -194,7 +193,6 @@ public class WorldConfigNodes {
             .defaultValue("")
             .suggester(input -> {
                 if (worldManager == null) return Collections.emptyList();
-                //todo: maybe suggest alias? based on resolve-alias-name config
                 return worldManager.getWorlds().stream().map(MultiverseWorld::getName).toList();
             })
             .build());

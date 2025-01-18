@@ -13,8 +13,7 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
@@ -33,7 +32,6 @@ public class SetSpawnCommand extends CoreCommand {
     @CommandAlias("mvsetspawn")
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.spawn.set")
-    // @CommandCompletion("@location") // TODO: Use Brigadier to show <position> above in chat like the vanilla TP command
     @Syntax("[location]")
     @Description("{@@mv-core.setspawn.description}")
     void onSetSpawnCommand(

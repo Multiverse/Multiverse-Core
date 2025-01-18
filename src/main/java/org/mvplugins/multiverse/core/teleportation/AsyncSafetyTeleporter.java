@@ -8,20 +8,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.api.teleportation.BlockSafety;
+import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
+import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporterAction;
+import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
 
-/**
- * Teleports entities safely and asynchronously. Provider for the {@link AsyncSafetyTeleporterAction}.
- */
 @Service
-public class AsyncSafetyTeleporter {
-    private final AdvancedBlockSafety blockSafety;
+public class AsyncSafetyTeleporter implements SafetyTeleporter {
+    private final BlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
 
     @Inject
     AsyncSafetyTeleporter(
-            @NotNull AdvancedBlockSafety blockSafety,
+            @NotNull BlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager) {
         this.blockSafety = blockSafety;
@@ -30,12 +30,10 @@ public class AsyncSafetyTeleporter {
     }
 
     /**
-     * Sets the location to teleport to.
-     *
-     * @param location  The location
-     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     * {@inheritDoc}
      */
-    public AsyncSafetyTeleporterAction to(@Nullable Location location) {
+    @Override
+    public SafetyTeleporterAction to(@Nullable Location location) {
         return new AsyncSafetyTeleporterAction(
                 blockSafety,
                 teleportQueue,
@@ -45,12 +43,10 @@ public class AsyncSafetyTeleporter {
     }
 
     /**
-     * Sets the destination to teleport to.
-     *
-     * @param destination    The destination
-     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     * {@inheritDoc}
      */
-    public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
+    @Override
+    public SafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
         return new AsyncSafetyTeleporterAction(
                 blockSafety,
                 teleportQueue,

@@ -75,7 +75,7 @@ class WorldConfigTest : TestWithMockBukkit() {
     @Test
     fun `Updating an existing world property with setPropertyString reflects the changes in getProperty`() {
         assertTrue(worldConfig.stringPropertyHandle.setPropertyString("adjust-spawn", "true").isSuccess)
-        assertEquals(true, worldConfig.stringPropertyHandle.getProperty("adjust-spawn").get())
+        assertEquals(true, worldConfig.getStringPropertyHandle().getProperty("adjust-spawn").get())
 
         assertTrue(worldConfig.stringPropertyHandle.setPropertyString("alias", "abc").isSuccess)
         assertEquals("abc", worldConfig.stringPropertyHandle.getProperty("alias").get())

@@ -6,7 +6,7 @@ import java.util.Map;
 import co.aikar.commands.ACFUtil;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
-import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.api.exceptions.MultiverseException;
 
 /**
  * Provides default string parsers for common types.

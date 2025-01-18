@@ -183,7 +183,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     }
 
     /**
-     * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
+     * Gets the configuration. Mainly used for {@link SimpleStringPropertyHandle}.
      *
      * @return The configuration.
      */

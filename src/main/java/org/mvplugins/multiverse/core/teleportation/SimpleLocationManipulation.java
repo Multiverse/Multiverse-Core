@@ -21,7 +21,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.LocationManipulation;
+import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 
 /**
  * The default-implementation of {@link LocationManipulation}.
@@ -228,7 +228,6 @@ public class SimpleLocationManipulation implements LocationManipulation {
         }
         float speed = getSpeed(v);
         float halfSpeed = (float) (speed / 2.0);
-        // TODO: Mathmatacize this:
         if (direction.equalsIgnoreCase("n")) {
             return new Vector(0, 0, -1 * speed);
         } else if (direction.equalsIgnoreCase("ne")) {

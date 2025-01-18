@@ -20,7 +20,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.api.world.WorldManager;
 import org.mvplugins.multiverse.core.world.WorldPurger;
 
 /**
@@ -92,7 +92,6 @@ public class MVEntityListener implements CoreListener {
         }
 
         // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
-        // TODO: Allow the egg thing to be a config param. Doubt this will be per world; seems silly.
         if (event.getSpawnReason() == SpawnReason.CUSTOM
                 || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
                 || event.getSpawnReason() == SpawnReason.BREEDING) {
