@@ -17,7 +17,7 @@ import org.mvplugins.multiverse.core.api.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.config.NullLocation;
-import org.mvplugins.multiverse.core.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
 
 public class SimpleLoadedMultiverseWorld extends SimpleMultiverseWorld implements LoadedMultiverseWorld {

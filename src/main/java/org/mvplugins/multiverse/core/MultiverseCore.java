@@ -39,7 +39,7 @@ import org.mvplugins.multiverse.core.utils.TestingMode;
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
 import org.mvplugins.multiverse.core.world.SimpleWorldManager;
 import org.mvplugins.multiverse.core.world.config.NullLocation;
-import org.mvplugins.multiverse.core.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.

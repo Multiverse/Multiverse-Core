@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.api.world.config;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Just like a regular {@link Location}, however {@code world} is usually {@code null}
  * or just a weak reference and it implements {@link ConfigurationSerializable}.
+ *
+ * @since 5.0
  */
 @SerializableAs("MVSpawnLocation")
 public class SpawnLocation extends Location implements ConfigurationSerializable {
@@ -27,6 +29,7 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      * @param x The x-coordinate of this new location
      * @param y The y-coordinate of this new location
      * @param z The z-coordinate of this new location
+     * @since 5.0
      */
     public SpawnLocation(double x, double y, double z) {
         super(null, x, y, z);
@@ -40,6 +43,7 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      * @param z The z-coordinate of this new location
      * @param yaw The absolute rotation on the x-plane, in degrees
      * @param pitch The absolute rotation on the y-plane, in degrees
+     * @since 5.0
      */
     public SpawnLocation(double x, double y, double z, float yaw, float pitch) {
         super(null, x, y, z, yaw, pitch);
@@ -49,6 +53,7 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      * Constructs a new Location from an existing Location.
      *
      * @param loc   The location to clone.
+     * @since 5.0
      */
     public SpawnLocation(Location loc) {
         this(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());

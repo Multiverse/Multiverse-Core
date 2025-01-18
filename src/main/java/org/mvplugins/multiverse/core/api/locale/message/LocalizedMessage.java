@@ -4,12 +4,11 @@ import java.util.Objects;
 
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.Locales;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.mvplugins.multiverse.core.commandtools.PluginLocales;
 
 final class LocalizedMessage extends Message implements MessageKeyProvider {
 
@@ -29,12 +28,12 @@ final class LocalizedMessage extends Message implements MessageKeyProvider {
     }
 
     @Override
-    public @NotNull String[] getReplacements(@NotNull PluginLocales locales, @Nullable CommandIssuer commandIssuer) {
+    public @NotNull String[] getReplacements(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
         return toReplacementsArray(locales, commandIssuer, replacements);
     }
 
     @Override
-    public @NotNull String formatted(@NotNull PluginLocales locales, @Nullable CommandIssuer commandIssuer) {
+    public @NotNull String formatted(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
         Objects.requireNonNull(locales, "locales must not be null");
 
         String[] parsedReplacements = getReplacements(locales, commandIssuer);
@@ -45,7 +44,7 @@ final class LocalizedMessage extends Message implements MessageKeyProvider {
     }
 
     private static String[] toReplacementsArray(
-            @NotNull PluginLocales locales,
+            @NotNull Locales locales,
             @Nullable CommandIssuer commandIssuer,
             @NotNull MessageReplacement... replacements) {
         String[] replacementsArray = new String[replacements.length * 2];

@@ -4,12 +4,11 @@ import java.util.Objects;
 
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.Locales;
 import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.mvplugins.multiverse.core.commandtools.PluginLocales;
 
 /**
  * A message that can be formatted with replacements and localized.
@@ -110,7 +109,7 @@ public sealed class Message permits LocalizedMessage {
      * @return The replacements
      * @since 5.0
      */
-    public @NotNull String[] getReplacements(@NotNull PluginLocales locales, @Nullable CommandIssuer commandIssuer) {
+    public @NotNull String[] getReplacements(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
         return getReplacements();
     }
 
@@ -149,7 +148,7 @@ public sealed class Message permits LocalizedMessage {
      * @return The formatted, localized message
      * @since 5.0
      */
-    public @NotNull String formatted(@NotNull PluginLocales locales) {
+    public @NotNull String formatted(@NotNull Locales locales) {
         return formatted(locales, null);
     }
 
@@ -164,7 +163,7 @@ public sealed class Message permits LocalizedMessage {
      * @return The formatted, localized message
      * @since 5.0
      */
-    public @NotNull String formatted(@NotNull PluginLocales locales, @Nullable CommandIssuer commandIssuer) {
+    public @NotNull String formatted(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
         return formatted();
     }
 

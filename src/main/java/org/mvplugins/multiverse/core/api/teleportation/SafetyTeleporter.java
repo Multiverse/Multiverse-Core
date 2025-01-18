@@ -4,10 +4,9 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
 import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporterAction;
 
 /**
- * Teleports entities safely and asynchronously. Provider for the {@link AsyncSafetyTeleporterAction}.
+ * Teleports entities safely and asynchronously. Provider for the {@link SafetyTeleporterAction}.
  *
  * @since 5.0
  */
@@ -17,7 +16,7 @@ public interface SafetyTeleporter {
      * Sets the location to teleport to.
      *
      * @param location The location
-     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     * @return A new {@link SafetyTeleporterAction} to be chained
      * @since 5.0
      */
     SafetyTeleporterAction to(@Nullable Location location);
@@ -26,7 +25,7 @@ public interface SafetyTeleporter {
      * Sets the destination to teleport to.
      *
      * @param destination The destination
-     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     * @return A new {@link SafetyTeleporterAction} to be chained
      * @since 5.0
      */
     SafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination);

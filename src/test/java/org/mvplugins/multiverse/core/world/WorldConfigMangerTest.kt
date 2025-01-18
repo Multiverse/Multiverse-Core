@@ -5,7 +5,7 @@ import org.bukkit.Material
 import org.bukkit.World.Environment
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.economy.MVEconomist
-import org.mvplugins.multiverse.core.world.config.SpawnLocation
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation
 import org.mvplugins.multiverse.core.world.config.WorldsConfigManager
 import java.io.File
 import java.nio.file.Path
@@ -76,7 +76,13 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
         assertTrue(worldConfig.stringPropertyHandle.setProperty("adjust-spawn", true).isSuccess)
         assertTrue(worldConfig.stringPropertyHandle.setProperty("alias", "newalias").isSuccess)
-        assertTrue(worldConfig.setSpawnLocation(SpawnLocation(-50.0, 50.0, 50.0)).isSuccess)
+        assertTrue(worldConfig.setSpawnLocation(
+            SpawnLocation(
+                -50.0,
+                50.0,
+                50.0
+            )
+        ).isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/updated_worlds.yml", "worlds.yml")
     }

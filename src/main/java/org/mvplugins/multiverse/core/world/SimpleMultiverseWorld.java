@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
 import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.config.AllowedPortalType;
-import org.mvplugins.multiverse.core.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.api.world.config.AllowedPortalType;
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
 
 public class SimpleMultiverseWorld implements MultiverseWorld {

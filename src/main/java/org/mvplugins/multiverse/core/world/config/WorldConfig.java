@@ -15,7 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
+import org.mvplugins.multiverse.core.api.world.config.AllowedPortalType;
 import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.configuration.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.configuration.handle.SimpleStringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;

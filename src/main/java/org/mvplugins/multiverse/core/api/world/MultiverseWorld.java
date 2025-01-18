@@ -9,8 +9,8 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
-import org.mvplugins.multiverse.core.world.config.AllowedPortalType;
-import org.mvplugins.multiverse.core.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.api.world.config.AllowedPortalType;
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
 
 import java.util.List;
 

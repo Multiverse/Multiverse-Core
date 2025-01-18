@@ -11,7 +11,9 @@ import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.world.config.AllowedPortalType;
 import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.ListConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
