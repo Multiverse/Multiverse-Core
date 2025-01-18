@@ -90,12 +90,6 @@ configurations {
     compileClasspath.extendsFrom shadowed
     testCompileClasspath.extendsFrom shadowed
     testRuntimeClasspath.extendsFrom shadowed
-    oldTestCompileClasspath.extendsFrom shadowed
-    oldTestRuntimeClasspath.extendsFrom shadowed
-
-    // Add configuration for old tests
-    oldTestImplementation.extendsFrom implementation
-    oldTestRuntime.extendsFrom runtime
 }
 
 dependencies {
@@ -144,15 +138,6 @@ dependencies {
     testImplementation 'com.natpryce:hamkrest:1.8.0.1'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
 
-    // Old Tests
-    oldTestImplementation 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
-    oldTestImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
-        exclude group: 'junit', module: 'junit'
-    }
-    oldTestImplementation 'junit:junit:4.13.1'
-    oldTestImplementation 'org.mockito:mockito-core:3.11.2'
-    oldTestImplementation 'commons-io:commons-io:2.7'
-
     // Annotation Processors
     annotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
     testAnnotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
@@ -177,18 +162,6 @@ configurations {
     [apiElements, runtimeElements].each {
         it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
         it.outgoing.artifact(shadowJar)
-    }
-}
-
-
-sourceSets {
-    oldTest {
-        java {
-            compileClasspath += main.output
-            runtimeClasspath += main.output
-            srcDir file('src/old-test/java')
-        }
-        resources.srcDir file('src/old-test/resources')
     }
 }
 
