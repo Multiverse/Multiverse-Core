@@ -92,7 +92,6 @@ public class MVEntityListener implements CoreListener {
         }
 
         // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
-        // TODO: Allow the egg thing to be a config param. Doubt this will be per world; seems silly.
         if (event.getSpawnReason() == SpawnReason.CUSTOM
                 || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
                 || event.getSpawnReason() == SpawnReason.BREEDING) {

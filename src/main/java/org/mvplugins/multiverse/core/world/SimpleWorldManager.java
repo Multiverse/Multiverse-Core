@@ -406,7 +406,6 @@ public class SimpleWorldManager implements WorldManager {
 
     @Override
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
-        // TODO: Config option on removePlayers
         return unloadWorld(UnloadWorldOptions.world(loadedWorld))
                 .transform(RemoveFailureReason.UNLOAD_FAILED)
                 .mapAttempt(this::removeWorldFromConfig);
@@ -445,7 +444,6 @@ public class SimpleWorldManager implements WorldManager {
 
     @Override
     public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull LoadedMultiverseWorld world) {
-        // TODO: Possible config options to keep certain files
         AtomicReference<File> worldFolder = new AtomicReference<>();
         return validateWorldToDelete(world)
                 .peek(worldFolder::set)

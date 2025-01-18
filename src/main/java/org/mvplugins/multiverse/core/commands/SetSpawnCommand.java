@@ -32,7 +32,6 @@ public class SetSpawnCommand extends CoreCommand {
     @CommandAlias("mvsetspawn")
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.spawn.set")
-    // @CommandCompletion("@location") // TODO: Use Brigadier to show <position> above in chat like the vanilla TP command
     @Syntax("[location]")
     @Description("{@@mv-core.setspawn.description}")
     void onSetSpawnCommand(

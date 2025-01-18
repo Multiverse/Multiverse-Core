@@ -285,7 +285,6 @@ public class SimpleMultiverseWorld implements MultiverseWorld {
         return worldConfig.getScale();
     }
 
-    //TODO: we are removing mvnp
     @Override
     public Try<Void> setScale(double scale) {
         return worldConfig.setScale(scale);

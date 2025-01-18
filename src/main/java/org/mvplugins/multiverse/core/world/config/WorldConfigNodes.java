@@ -193,7 +193,6 @@ public class WorldConfigNodes {
             .defaultValue("")
             .suggester(input -> {
                 if (worldManager == null) return Collections.emptyList();
-                //todo: maybe suggest alias? based on resolve-alias-name config
                 return worldManager.getWorlds().stream().map(MultiverseWorld::getName).toList();
             })
             .build());

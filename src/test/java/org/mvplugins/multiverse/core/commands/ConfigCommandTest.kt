@@ -47,6 +47,6 @@ class ConfigCommandTest : AbstractCommandTest() {
         addPermission("multiverse.core.config")
         assertTrue(Bukkit.dispatchCommand(player, "mv config global-debug what"))
         player.nextMessage() // ignore the first line
-        assertCommandOutput(Message.of("Unable to convert 'what' to number. (integer)")) // todo: localize
+        assertCommandOutput(Message.of("Unable to convert 'what' to number. (integer)"))
     }
 }

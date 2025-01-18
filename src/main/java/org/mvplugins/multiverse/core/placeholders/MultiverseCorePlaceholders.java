@@ -148,10 +148,6 @@ public class MultiverseCorePlaceholders extends PlaceholderExpansion {
             case "seed" -> {
                 return String.valueOf(world.getSeed());
             }
-            // TODO: Time is removed, not sure if it's worth adding back
-            // case "time" -> {
-            //    return world.getTime();
-            // }
             case "type" -> {
                 return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
             }

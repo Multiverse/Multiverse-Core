@@ -26,10 +26,12 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
-// TODO: This entire class is a mess.
 /**
  * Used to remove animals from worlds that don't belong there.
+ *
+ * @deprecated this class needs a refactor
  */
+@Deprecated
 @Service
 public class WorldPurger {
 

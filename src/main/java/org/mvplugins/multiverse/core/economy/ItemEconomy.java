@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-// TODO: Make thsi no static
+// TODO: Make this no static
 class ItemEconomy {
 
     private static final String ECONOMY_NAME = "Simple Item Economy";

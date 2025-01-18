@@ -58,8 +58,6 @@ public class FileUtils {
             Logging.severe(e.getMessage());
             return null;
         }
-
-        // TODO: Implement binary search to find file, config option or use reflections to get it from configuration on CraftServer
         if (files != null && files.length == 1) {
             return files[0];
         }

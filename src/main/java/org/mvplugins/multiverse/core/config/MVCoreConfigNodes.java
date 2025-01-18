@@ -45,7 +45,6 @@ class MVCoreConfigNodes {
     // BEGIN CHECKSTYLE-SUPPRESSION: MultipleStringLiterals
     // BEGIN CHECKSTYLE-SUPPRESSION: LineLength
 
-    // TODO: hacky way to get the header to the top of the file
     private final ConfigHeaderNode HEADER = node(ConfigHeaderNode.builder("world")
             .comment("####################################################################################################")
             .comment("#                                                                                                  #")

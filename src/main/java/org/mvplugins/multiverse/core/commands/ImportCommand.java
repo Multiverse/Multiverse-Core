@@ -47,7 +47,6 @@ class ImportCommand extends CoreCommand {
 
     private final CommandValueFlag<Biome> BIOME_FLAG = flag(CommandValueFlag.builder("--biome", Biome.class)
             .addAlias("-b")
-            //todo: Implement some default completions or smt to reduce duplication
             .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
                     .filter(biome -> biome !=Biome.CUSTOM)
                     .map(biome -> biome.getKey().getKey())

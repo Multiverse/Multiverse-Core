@@ -223,11 +223,8 @@ public class MVEconomist {
      * This method is public for backwards compatibility.
      *
      * @return the old VaultHandler.
-     * @deprecated just use the other methods in this class for economy stuff.
      */
-    // TODO: make private
-    @Deprecated
-    public VaultHandler getVaultHandler() {
+    private VaultHandler getVaultHandler() {
         return vaultHandler;
     }
 

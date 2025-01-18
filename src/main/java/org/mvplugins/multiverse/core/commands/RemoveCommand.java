@@ -65,7 +65,7 @@ class RemoveCommand extends CoreCommand {
 
             @Optional
             @Syntax("[--remove-players]")
-            @Description(/* TODO */"")
+            @Description("")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 

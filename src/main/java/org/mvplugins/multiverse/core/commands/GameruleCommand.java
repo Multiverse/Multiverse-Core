@@ -181,7 +181,7 @@ class GameruleCommand extends CoreCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         ContentDisplay.create()
-                .addContent(MapContentProvider.forContent(getGameRuleMap(world.getBukkitWorld().getOrNull())) // TODO: Handle null
+                .addContent(MapContentProvider.forContent(getGameRuleMap(world.getBukkitWorld().getOrNull()))
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
                 .withSendHandler(PagedSendHandler.create()
@@ -200,6 +200,9 @@ class GameruleCommand extends CoreCommand {
      */
     private Map<String, String> getGameRuleMap(World world) {
         Map<String, String> gameRuleMap = new HashMap<>();
+        if (world == null) {
+            return gameRuleMap;
+        }
 
         for (String gamerule : world.getGameRules()) {
             GameRule<?> gameruleEnum = GameRule.getByName(gamerule);

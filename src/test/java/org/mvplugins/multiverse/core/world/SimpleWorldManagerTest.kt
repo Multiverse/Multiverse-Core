@@ -119,8 +119,7 @@ class SimpleWorldManagerTest : TestWithMockBukkit() {
 
         assertTrue(worldManager.loadWorld("world2").isSuccess)
         assertTrue(world2.isLoaded)
-        // todo: think what to do when a world is re-loaded with a different uid
-        // assertTrue(world2.bukkitWorld.isDefined)
+        assertTrue(worldManager.getLoadedWorld("world2").flatMap{ w -> w.bukkitWorld }.isDefined)
         assertTrue(worldManager.getLoadedWorld("world2").isDefined)
         assertFalse(worldManager.getUnloadedWorld("world2").isDefined)
     }
