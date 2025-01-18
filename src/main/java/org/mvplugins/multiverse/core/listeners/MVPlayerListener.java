@@ -14,7 +14,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -132,14 +131,14 @@ public class MVPlayerListener implements CoreListener {
                         Logging.fine("Spawning %s at their anchor.", player.getName());
                         return false;
                     }
-                    if (!config.getDefaultRespawnToWorldSpawn() && mvWorld.getRespawnWorldName().isBlank()) {
+                    if (!config.getDefaultRespawnWithinSameWorld() && mvWorld.getRespawnWorldName().isEmpty()) {
                         Logging.fine("Not overriding respawn location for player '%s' as " +
-                                "default-respawn-to-world-spawn is disabled and no respawn-world is set.", player.getName());
+                                "default-respawn-within-same-world is disabled and no respawn-world is set.", player.getName());
                         return false;
                     }
                     return true;
                 })
-                .flatMap(mvWorld -> getMostAccurateRespawnLocation (player, mvWorld))
+                .flatMap(mvWorld -> getMostAccurateRespawnLocation(player, mvWorld, event.getRespawnLocation()))
                 .peek(newRespawnLocation -> {
                     MVRespawnEvent respawnEvent = new MVRespawnEvent(newRespawnLocation, event.getPlayer(), "compatability");
                     this.server.getPluginManager().callEvent(respawnEvent);
@@ -147,16 +146,22 @@ public class MVPlayerListener implements CoreListener {
                 });
     }
 
-    private Option<Location> getMostAccurateRespawnLocation(Player player, LoadedMultiverseWorld mvWorld) {
-        return Option.of(mvWorld.getRespawnWorldName().isBlank()
+    private Option<Location> getMostAccurateRespawnLocation(Player player, LoadedMultiverseWorld mvWorld, Location defaultRespawnLocation) {
+        return Option.of(mvWorld.getRespawnWorldName().isEmpty()
                         ? player.getWorld()
                         : server.getWorld(mvWorld.getRespawnWorldName()))
                 .onEmpty(() -> Logging.warning("World '%s' has respawn-world property of '%s' that does not exist!",
                         player.getWorld().getName(), mvWorld.getRespawnWorldName()))
-                .map(newRespawnWorld -> getWorldManager()
-                        .getLoadedWorld(newRespawnWorld)
-                        .map(newMVRespawnWorld -> (Location) newMVRespawnWorld.getSpawnLocation())
-                        .getOrElse(newRespawnWorld::getSpawnLocation));
+                .map(newRespawnWorld -> {
+                    if (!config.getEnforceRespawnAtWorldSpawn() && newRespawnWorld.equals(defaultRespawnLocation.getWorld())) {
+                        Logging.fine("Respawn location is within same world as respawn-world, not overriding.");
+                        return defaultRespawnLocation;
+                    }
+                    return getWorldManager()
+                            .getLoadedWorld(newRespawnWorld)
+                            .map(newMVRespawnWorld -> (Location) newMVRespawnWorld.getSpawnLocation())
+                            .getOrElse(newRespawnWorld::getSpawnLocation);
+                });
     }
 
     @EventHandler

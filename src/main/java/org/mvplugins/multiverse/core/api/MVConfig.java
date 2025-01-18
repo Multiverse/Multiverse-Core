@@ -166,13 +166,17 @@ public interface MVConfig {
      * Sets defaultRespawnToWorldSpawn.
      * @param defaultRespawnToWorldSpawn The new value
      */
-    void setDefaultRespawnToWorldSpawn(boolean defaultRespawnToWorldSpawn);
+    void setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn);
 
     /**
      * Gets defaultRespawnToWorldSpawn
      * @return defaultRespawnToWorldSpawn
      */
-    boolean getDefaultRespawnToWorldSpawn();
+    boolean getDefaultRespawnWithinSameWorld();
+
+    void setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn);
+
+    boolean getEnforceRespawnAtWorldSpawn();
 
     /**
      * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.

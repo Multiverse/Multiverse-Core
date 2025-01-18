@@ -78,6 +78,9 @@ public class MVCoreConfig implements MVConfig {
                                 .addAction(MoveMigratorAction.of("world.teleport-intercept", "teleport.teleport-intercept"))
                                 .addAction(MoveMigratorAction.of("world.resolve-alias-name", "command.resolve-alias-name"))
                                 .build())
+                        .addVersionMigrator(VersionMigrator.builder(5.2)
+                                .addAction(MoveMigratorAction.of("spawn.default-respawn-to-world-spawn", "world.enforce-respawn-at-world-spawn"))
+                                .build())
                         .build())
                 .build();
         this.stringPropertyHandle = new StringPropertyHandle(configHandle);
@@ -245,13 +248,23 @@ public class MVCoreConfig implements MVConfig {
     }
 
     @Override
-    public void setDefaultRespawnToWorldSpawn(boolean defaultRespawnToWorldSpawn) {
-        configHandle.set(configNodes.DEFAULT_RESPAWN_TO_WORLD_SPAWN, defaultRespawnToWorldSpawn);
+    public void setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn) {
+        configHandle.set(configNodes.DEFAULT_RESPAWN_WITHIN_SAME_WORLD, defaultRespawnToWorldSpawn);
     }
 
     @Override
-    public boolean getDefaultRespawnToWorldSpawn() {
-        return configHandle.get(configNodes.DEFAULT_RESPAWN_TO_WORLD_SPAWN);
+    public boolean getDefaultRespawnWithinSameWorld() {
+        return configHandle.get(configNodes.DEFAULT_RESPAWN_WITHIN_SAME_WORLD);
+    }
+
+    @Override
+    public void setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn) {
+        configHandle.set(configNodes.ENFORCE_RESPAWN_AT_WORLD_SPAWN, enforceRespawnAtWorldSpawn);
+    }
+
+    @Override
+    public boolean getEnforceRespawnAtWorldSpawn() {
+        return configHandle.get(configNodes.ENFORCE_RESPAWN_AT_WORLD_SPAWN);
     }
 
     @Override
