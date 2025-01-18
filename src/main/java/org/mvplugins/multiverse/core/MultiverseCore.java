@@ -15,15 +15,19 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
+import org.mvplugins.multiverse.core.api.MultiverseCoreApi;
 import org.mvplugins.multiverse.core.api.destination.Destination;
 import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.submodules.MVCore;
@@ -35,6 +39,7 @@ import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
 import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
+import org.mvplugins.multiverse.core.utils.ApiRegistrationUtil;
 import org.mvplugins.multiverse.core.utils.TestingMode;
 import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
 import org.mvplugins.multiverse.core.world.SimpleWorldManager;
@@ -125,6 +130,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             setupMetrics();
             loadPlaceholderApiIntegration();
             saveAllConfigs();
+            loadApiService();
             logEnableMessage();
         }).onFailure(e -> {
             Logging.severe("Failed to multiverse core! Disabling...");
@@ -138,6 +144,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onDisable() {
+        ApiRegistrationUtil.shutdown();
         saveAllConfigs();
         shutdownDependencyInjection();
         Logging.shutdown();
@@ -258,6 +265,13 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         } else {
             Logging.info("Metrics are disabled in testing mode.");
         }
+    }
+
+    private void loadApiService() {
+        ApiRegistrationUtil.init(this);
+        Bukkit.getServicesManager().register(
+                MultiverseCoreApi.class, MultiverseCoreApi.get(), this, ServicePriority.Normal);
+        Logging.fine("api service loaded");
     }
 
     /**
