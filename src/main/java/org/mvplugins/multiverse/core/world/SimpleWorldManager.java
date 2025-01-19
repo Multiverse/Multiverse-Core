@@ -38,12 +38,12 @@ import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.api.result.Attempt;
 import org.mvplugins.multiverse.core.api.result.FailureReason;
+import org.mvplugins.multiverse.core.utils.file.FileUtils;
 import org.mvplugins.multiverse.core.world.config.WorldConfig;
 import org.mvplugins.multiverse.core.world.config.WorldsConfigManager;
 import org.mvplugins.multiverse.core.api.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
-import org.mvplugins.multiverse.core.world.helpers.FilesManipulator;
 import org.mvplugins.multiverse.core.api.world.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.api.world.options.CreateWorldOptions;
 import org.mvplugins.multiverse.core.api.world.options.ImportWorldOptions;
@@ -75,7 +75,7 @@ public class SimpleWorldManager implements WorldManager {
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
     private final GeneratorProvider generatorProvider;
-    private final FilesManipulator filesManipulator;
+    private final FileUtils fileUtils;
     private final BlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
     private final PluginManager pluginManager;
@@ -86,7 +86,7 @@ public class SimpleWorldManager implements WorldManager {
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull GeneratorProvider generatorProvider,
-            @NotNull FilesManipulator filesManipulator,
+            @NotNull FileUtils fileUtils,
             @NotNull BlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation,
             @NotNull PluginManager pluginManager,
@@ -99,7 +99,7 @@ public class SimpleWorldManager implements WorldManager {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.generatorProvider = generatorProvider;
-        this.filesManipulator = filesManipulator;
+        this.fileUtils = fileUtils;
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
         this.pluginManager = pluginManager;
@@ -459,7 +459,7 @@ public class SimpleWorldManager implements WorldManager {
                             : Attempt.success(null);
                 })
                 .mapAttempt(() -> removeWorld(world).transform(DeleteFailureReason.REMOVE_FAILED))
-                .mapAttempt(() -> filesManipulator.deleteFolder(worldFolder.get()).fold(
+                .mapAttempt(() -> fileUtils.deleteFolder(worldFolder.get()).fold(
                         exception -> worldActionResult(DeleteFailureReason.FAILED_TO_DELETE_FOLDER,
                                 world.getName(), exception),
                         success -> worldActionResult(world.getName())));
@@ -521,7 +521,7 @@ public class SimpleWorldManager implements WorldManager {
             @NotNull CloneWorldOptions options) {
         File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).get();
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
-        return filesManipulator.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
+        return fileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
                         options.world().getName(), exception),
                 success -> worldActionResult(options));
