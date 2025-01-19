@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -384,8 +385,10 @@ public class SimpleWorldManager implements WorldManager {
                         },
                         mvWorld -> {
                             Logging.fine("Removed MultiverseWorld from map: " + world.getName());
-                            mvWorld.getWorldConfig().deferenceMVWorld();
-                            return worldActionResult(getWorld(mvWorld.getName()).get());
+                            var unloadedWorld = Objects.requireNonNull(worldsMap.get(world.getName()),
+                                    "For some reason, the unloaded world isn't in the map... BUGGG");
+                            mvWorld.getWorldConfig().setMVWorld(unloadedWorld);
+                            return worldActionResult(unloadedWorld);
                         }));
     }
 
@@ -420,6 +423,7 @@ public class SimpleWorldManager implements WorldManager {
     private Attempt<String, RemoveFailureReason> removeWorldFromConfig(@NotNull MultiverseWorld world) {
         // Remove world from config
         worldsMap.remove(world.getName());
+        ((SimpleMultiverseWorld) world).getWorldConfig().deferenceMVWorld();
         worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
         corePermissions.removeWorldPermissions(world);

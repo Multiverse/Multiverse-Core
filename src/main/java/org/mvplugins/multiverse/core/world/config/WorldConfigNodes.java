@@ -38,7 +38,7 @@ public class WorldConfigNodes {
     private final NodeGroup nodes = new NodeGroup();
     private WorldManager worldManager;
     private EnforcementHandler enforcementHandler;
-    private LoadedMultiverseWorld world = null;
+    private MultiverseWorld world = null;
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
         this.worldManager = multiverseCore.getServiceLocator().getService(SimpleWorldManager.class);
@@ -49,7 +49,7 @@ public class WorldConfigNodes {
         return world;
     }
 
-    void setWorld(LoadedMultiverseWorld world) {
+    void setWorld(MultiverseWorld world) {
         this.world = world;
     }
 
@@ -60,6 +60,7 @@ public class WorldConfigNodes {
     private <T> ConfigNode<T> node(ConfigNode.Builder<T, ?> nodeBuilder) {
         nodeBuilder.onSetValue((oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) return;
+            if (world == null) return;
             MVWorldPropertyChangeEvent<?> mvWorldPropertyChangeEvent = new MVWorldPropertyChangeEvent<>(
                     world, Option.of(nodeBuilder.name()).getOrElse(nodeBuilder.path()), oldValue, newValue);
             Bukkit.getPluginManager().callEvent(mvWorldPropertyChangeEvent);
@@ -86,15 +87,15 @@ public class WorldConfigNodes {
     final ConfigNode<Boolean> ALLOW_FLIGHT = node(ConfigNode.builder("allow-flight", Boolean.class)
             .defaultValue(false)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                enforcementHandler.handleAllFlightEnforcement(world);
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                enforcementHandler.handleAllFlightEnforcement(loadedWorld);
             }));
 
     final ConfigNode<Boolean> ALLOW_WEATHER = node(ConfigNode.builder("allow-weather", Boolean.class)
             .defaultValue(true)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> {
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> {
                     if (!world.isClearWeather() && !newValue) {
                         world.setThundering(false);
                         world.setStorm(false);
@@ -122,8 +123,8 @@ public class WorldConfigNodes {
     final ConfigNode<Difficulty> DIFFICULTY = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setDifficulty(newValue));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setDifficulty(newValue));
             }));
 
     final ConfigNode<Boolean> ENTRY_FEE_ENABLED = node(ConfigNode.builder("entry-fee.enabled", Boolean.class)
@@ -147,8 +148,8 @@ public class WorldConfigNodes {
     final ConfigNode<GameMode> GAMEMODE = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                enforcementHandler.handleAllGameModeEnforcement(world);
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                enforcementHandler.handleAllGameModeEnforcement(loadedWorld);
             }));
 
     final ConfigNode<String> GENERATOR = node(ConfigNode.builder("generator", String.class)
@@ -166,8 +167,8 @@ public class WorldConfigNodes {
             .builder("keep-spawn-in-memory", Boolean.class)
             .defaultValue(true)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setKeepSpawnInMemory(newValue));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setKeepSpawnInMemory(newValue));
             }));
 
     final ConfigNode<Integer> PLAYER_LIMIT = node(ConfigNode.builder("player-limit", Integer.class)
@@ -180,8 +181,8 @@ public class WorldConfigNodes {
     final ConfigNode<Boolean> PVP = node(ConfigNode.builder("pvp", Boolean.class)
             .defaultValue(true)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setPVP(newValue));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setPVP(newValue));
             }));
 
     final ConfigNode<String> RESPAWN_WORLD = node(ConfigNode.builder("respawn-world", String.class)
@@ -209,9 +210,9 @@ public class WorldConfigNodes {
             .defaultValue(NullLocation.get())
             .name(null)
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
                 if (newValue == null || newValue instanceof NullLocation) return;
-                world.getBukkitWorld().peek(bukkitWorld -> {
+                loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
                     bukkitWorld.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
                     newValue.setWorld(bukkitWorld);
                 });
@@ -221,8 +222,8 @@ public class WorldConfigNodes {
             .defaultValue(true)
             .name("spawning-animals")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setSpawnFlags(world.getAllowMonsters(), newValue));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setSpawnFlags(world.getAllowMonsters(), newValue));
             }));
 
     final ConfigNode<Integer> SPAWNING_ANIMALS_TICKS = node(ConfigNode
@@ -230,8 +231,8 @@ public class WorldConfigNodes {
             .defaultValue(-1)
             .name("spawning-animals-ticks")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setTicksPerAnimalSpawns(newValue));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setTicksPerAnimalSpawns(newValue));
             }));
 
     final ConfigNode<List<String>> SPAWNING_ANIMALS_EXCEPTIONS = node(ListConfigNode
@@ -244,8 +245,8 @@ public class WorldConfigNodes {
             .defaultValue(true)
             .name("spawning-monsters")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setSpawnFlags(newValue, world.getAllowAnimals()));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setSpawnFlags(newValue, world.getAllowAnimals()));
             }));
 
     final ConfigNode<Integer> SPAWNING_MONSTERS_TICKS = node(ConfigNode
@@ -253,8 +254,8 @@ public class WorldConfigNodes {
             .defaultValue(-1)
             .name("spawning-monsters-ticks")
             .onSetValue((oldValue, newValue) -> {
-                if (world == null) return;
-                world.getBukkitWorld().peek(world -> world.setTicksPerMonsterSpawns(newValue));
+                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                loadedWorld.getBukkitWorld().peek(world -> world.setTicksPerMonsterSpawns(newValue));
             }));
 
     final ConfigNode<List<String>> SPAWNING_MONSTERS_EXCEPTIONS = node(ListConfigNode

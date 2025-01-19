@@ -10,6 +10,7 @@ package org.mvplugins.multiverse.core.api.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 /**
@@ -28,7 +29,7 @@ public class MVWorldPropertyChangeEvent<T> extends Event {
     private final T oldValue;
     private final T newValue;
 
-    public MVWorldPropertyChangeEvent(MultiverseWorld world, String name, T oldValue, T value) {
+    public MVWorldPropertyChangeEvent(@NotNull MultiverseWorld world, @NotNull String name, T oldValue, T value) {
         this.world = world;
         this.name = name;
         this.oldValue = oldValue;
@@ -60,7 +61,7 @@ public class MVWorldPropertyChangeEvent<T> extends Event {
      * @return The changed world property's name.
      * @since 5.0
      */
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 
@@ -90,7 +91,7 @@ public class MVWorldPropertyChangeEvent<T> extends Event {
      * @return A valid MultiverseWorld.
      * @since 5.0
      */
-    public MultiverseWorld getWorld() {
+    public @NotNull MultiverseWorld getWorld() {
         return this.world;
     }
 }

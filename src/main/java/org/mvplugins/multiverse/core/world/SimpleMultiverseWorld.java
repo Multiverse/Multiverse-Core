@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
@@ -33,6 +34,7 @@ public class SimpleMultiverseWorld implements MultiverseWorld {
     SimpleMultiverseWorld(String worldName, WorldConfig worldConfig) {
         this.worldName = worldName;
         this.worldConfig = worldConfig;
+        this.worldConfig.setMVWorld(this);
     }
 
     @Override
