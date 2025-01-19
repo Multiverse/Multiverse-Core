@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 /**
@@ -18,10 +19,12 @@ public class MVEconomist {
     public static final Material VAULT_ECONOMY_MATERIAL = Material.AIR;
 
     private final VaultHandler vaultHandler;
+    private final ItemEconomy itemEconomy;
 
     @Inject
-    public MVEconomist(Plugin plugin) {
+    public MVEconomist(MultiverseCore plugin, ItemEconomy itemEconomy) {
         vaultHandler = new VaultHandler(plugin);
+        this.itemEconomy = itemEconomy;
     }
 
     private boolean isUsingVault(Material currency) {
@@ -48,7 +51,7 @@ public class MVEconomist {
         if (isUsingVault(currency)) {
             return getVaultHandler().getEconomy().format(amount);
         } else {
-            return ItemEconomy.getFormattedPrice(amount, currency);
+            return itemEconomy.getFormattedPrice(amount, currency);
         }
     }
 
@@ -61,7 +64,7 @@ public class MVEconomist {
         if (getVaultHandler().hasEconomy()) {
             return getVaultHandler().getEconomy().getName();
         } else {
-            return ItemEconomy.getName();
+            return itemEconomy.getName();
         }
     }
 
@@ -79,7 +82,7 @@ public class MVEconomist {
         } else if (isUsingVault(currency)) {
             return getVaultHandler().getEconomy().has(player, amount);
         } else {
-            return ItemEconomy.hasEnough(player, amount, currency);
+            return itemEconomy.hasEnough(player, amount, currency);
         }
     }
 
@@ -135,7 +138,7 @@ public class MVEconomist {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().depositPlayer(player, amount);
         } else {
-            ItemEconomy.deposit(player, amount, currency);
+            itemEconomy.deposit(player, amount, currency);
         }
     }
 
@@ -151,7 +154,7 @@ public class MVEconomist {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().withdrawPlayer(player, amount);
         } else {
-            ItemEconomy.withdraw(player, amount, currency);
+            itemEconomy.withdraw(player, amount, currency);
         }
     }
 

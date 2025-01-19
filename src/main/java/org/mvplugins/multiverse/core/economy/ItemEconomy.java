@@ -2,17 +2,24 @@ package org.mvplugins.multiverse.core.economy;
 
 import java.util.HashMap;
 
+import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jvnet.hk2.annotations.Service;
 
-// TODO: Make this no static
+@Service
 class ItemEconomy {
 
     private static final String ECONOMY_NAME = "Simple Item Economy";
 
-    static String getFormattedPrice(double amount, Material currency) {
+    @Inject
+    private ItemEconomy() {
+        // Can't instantiate
+    }
+
+    String getFormattedPrice(double amount, Material currency) {
         if (MVEconomist.isItemCurrency(currency)) {
             return amount + " " + currency.toString();
         } else {
@@ -20,11 +27,11 @@ class ItemEconomy {
         }
     }
 
-    static String getName() {
+    String getName() {
         return ECONOMY_NAME;
     }
 
-    static boolean hasEnough(Player player, double amount, Material currency) {
+    boolean hasEnough(Player player, double amount, Material currency) {
         if (currency != null) {
             return player.getInventory().contains(currency, (int) amount);
         } else {
@@ -32,25 +39,25 @@ class ItemEconomy {
         }
     }
 
-    static void deposit(Player player, double amount, Material currency) {
+    void deposit(Player player, double amount, Material currency) {
         if (MVEconomist.isItemCurrency(currency)) {
             giveItem(player, amount, currency);
         }
     }
 
-    static void withdraw(Player player, double amount, Material currency) {
+    void withdraw(Player player, double amount, Material currency) {
         if (MVEconomist.isItemCurrency(currency)) {
             takeItem(player, amount, currency);
         }
     }
 
-    static void giveItem(Player player, double amount, Material type) {
+    void giveItem(Player player, double amount, Material type) {
         ItemStack item = new ItemStack(type, (int) amount);
         player.getInventory().addItem(item);
         showReceipt(player, (amount * -1), type);
     }
 
-    static void takeItem(Player player, double amount, Material type) {
+    void takeItem(Player player, double amount, Material type) {
         int removed = 0;
         HashMap<Integer, ItemStack> items = (HashMap<Integer, ItemStack>) player.getInventory().all(type);
         for (int i : items.keySet()) {
@@ -70,7 +77,7 @@ class ItemEconomy {
         showReceipt(player, amount, type);
     }
 
-    static void showReceipt(Player player, double price, Material item) {
+    void showReceipt(Player player, double price, Material item) {
         if (price > 0D) {
             player.sendMessage(String.format("%s%s%s %s",
                     ChatColor.WHITE, "You have been charged", ChatColor.GREEN, getFormattedPrice(price, item)));
