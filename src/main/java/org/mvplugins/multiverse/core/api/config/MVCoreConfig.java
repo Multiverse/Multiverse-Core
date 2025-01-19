@@ -51,9 +51,10 @@ public interface MVCoreConfig {
      * Sets world access permissions should be enforced.
      *
      * @param enforceAccess The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setEnforceAccess(boolean enforceAccess);
+    Try<Void> setEnforceAccess(boolean enforceAccess);
 
     /**
      * Gets enforceAccess.
@@ -67,9 +68,10 @@ public interface MVCoreConfig {
      * Sets whether the game mode should be enforced.
      *
      * @param enforceGameMode The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setEnforceGameMode(boolean enforceGameMode);
+    Try<Void> setEnforceGameMode(boolean enforceGameMode);
 
     /**
      * Gets enforceGameMode value.
@@ -83,9 +85,10 @@ public interface MVCoreConfig {
      * Sets whether or not the automatic purge of entities is enabled.
      *
      * @param autopurge True if automatic purge should be enabled.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setAutoPurgeEntities(boolean autopurge);
+    Try<Void> setAutoPurgeEntities(boolean autopurge);
 
     /**
      * Gets whether or not the automatic purge of entities is enabled.
@@ -98,9 +101,10 @@ public interface MVCoreConfig {
      * Sets whether to use finer teleport permissions.
      *
      * @param useFinerTeleportPermissions   The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions);
+    Try<Void> setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions);
 
     /**
      * Gets whether to use finer teleport permissions.
@@ -113,9 +117,10 @@ public interface MVCoreConfig {
      * Sets the number of players allowed to teleport at once.
      *
      * @param concurrentTeleportLimit   The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setConcurrentTeleportLimit(int concurrentTeleportLimit);
+    Try<Void> setConcurrentTeleportLimit(int concurrentTeleportLimit);
 
     /**
      * Gets the number of players allowed to teleport at once.
@@ -129,9 +134,10 @@ public interface MVCoreConfig {
      * Sets teleportIntercept.
      *
      * @param teleportIntercept The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setTeleportIntercept(boolean teleportIntercept);
+    Try<Void> setTeleportIntercept(boolean teleportIntercept);
 
     /**
      * Gets teleportIntercept.
@@ -142,35 +148,12 @@ public interface MVCoreConfig {
     boolean getTeleportIntercept();
 
     /**
-     * Sets resolveAliasInCommands.
-     *
-     * @param resolveAliasInCommands The new value.
-     * @since 5.0
-     */
-    void setResolveAliasName(boolean resolveAliasInCommands);
-
-    /**
-     * Gets resolveAliasInCommands.
-     *
-     * @return resolveAliasInCommands.
-     * @since 5.0
-     */
-    boolean getResolveAliasName();
-
-    /**
-     * Sets firstSpawnOverride.
-     *
-     * @param firstSpawnOverride The new value.
-     * @since 5.0
-     */
-    void setFirstSpawnOverride(boolean firstSpawnOverride);
-
-    /**
      * Sets safeLocationHorizontalSearchRadius
      * @param searchRadius  The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setSafeLocationHorizontalSearchRadius(int searchRadius);
+    Try<Void> setSafeLocationHorizontalSearchRadius(int searchRadius);
 
     /**
      * Gets safeLocationHorizontalSearchRadius
@@ -181,14 +164,29 @@ public interface MVCoreConfig {
     int getSafeLocationHorizontalSearchRadius();
 
     /**
-     * Gets safeLocationVerticalSearchRadius
+     * Sets safeLocationVerticalSearchRadius
      *
      * @param searchRadius  The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setSafeLocationVerticalSearchRadius(int searchRadius);
+    Try<Void> setSafeLocationVerticalSearchRadius(int searchRadius);
 
+    /**
+     * Gets safeLocationVerticalSearchRadius
+     *
+     * @return safeLocationVerticalSearchRadius
+     * @since 5.0
+     */
     int getSafeLocationVerticalSearchRadius();
+
+    /**
+     * Sets firstSpawnOverride.
+     *
+     * @param firstSpawnOverride The new value.
+     * @since 5.0
+     */
+    Try<Void> setFirstSpawnOverride(boolean firstSpawnOverride);
 
     /**
      * Gets firstSpawnOverride.
@@ -202,9 +200,10 @@ public interface MVCoreConfig {
      * Sets firstSpawnWorld.
      *
      * @param firstSpawnWorld The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setFirstSpawnLocation(String firstSpawnWorld);
+    Try<Void> setFirstSpawnLocation(String firstSpawnWorld);
 
     /**
      * Gets firstSpawnWorld.
@@ -218,9 +217,10 @@ public interface MVCoreConfig {
      * Sets whether join destination should be enabled.
      *
      * @param enableJoinDestination The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setEnableJoinDestination(boolean enableJoinDestination);
+    Try<Void> setEnableJoinDestination(boolean enableJoinDestination);
 
     /**
      * Gets enableJoinDestination.
@@ -234,9 +234,10 @@ public interface MVCoreConfig {
      * Sets alwaysSpawnDestination.
      *
      * @param alwaysSpawnDestination The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setJoinDestination(String alwaysSpawnDestination);
+    Try<Void> setJoinDestination(String alwaysSpawnDestination);
 
     /**
      * Gets alwaysSpawnDestination.
@@ -250,9 +251,10 @@ public interface MVCoreConfig {
      * Sets defaultRespawnToWorldSpawn.
      *
      * @param defaultRespawnToWorldSpawn The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn);
+    Try<Void> setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn);
 
     /**
      * Gets defaultRespawnToWorldSpawn
@@ -266,9 +268,10 @@ public interface MVCoreConfig {
      * Sets enforceRespawnAtWorldSpawn
      *
      * @param enforceRespawnAtWorldSpawn    The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn);
+    Try<Void> setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn);
 
     /**
      * Gets enforceRespawnAtWorldSpawn
@@ -281,9 +284,10 @@ public interface MVCoreConfig {
      * Sets whether or not to let Bukkit determine portal search radius on its own or if Multiverse should give input.
      *
      * @param useDefaultPortalSearch True to let Bukkit determine portal search radius on its own.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setUseCustomPortalSearch(boolean useDefaultPortalSearch);
+    Try<Void> setUseCustomPortalSearch(boolean useDefaultPortalSearch);
 
     /**
      * Gets whether or not Bukkit will be determining portal search radius on its own or if Multiverse should help.
@@ -297,9 +301,10 @@ public interface MVCoreConfig {
      * Sets the radius at which vanilla style portals will be searched for to connect to worlds together.
      *
      * @param searchRadius The portal search radius.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setCustomPortalSearchRadius(int searchRadius);
+    Try<Void> setCustomPortalSearchRadius(int searchRadius);
 
     /**
      * Gets the radius at which vanilla style portals will be searched for to connect to worlds together.
@@ -313,9 +318,10 @@ public interface MVCoreConfig {
      * Sets prefixChat.
      *
      * @param prefixChat The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setEnablePrefixChat(boolean prefixChat);
+    Try<Void> setEnablePrefixChat(boolean prefixChat);
 
     /**
      * Gets prefixChat.
@@ -329,9 +335,10 @@ public interface MVCoreConfig {
      * Sets prefixChatFormat.
      *
      * @param prefixChatFormat The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setPrefixChatFormat(String prefixChatFormat);
+    Try<Void> setPrefixChatFormat(String prefixChatFormat);
 
     /**
      * Gets prefixChatFormat.
@@ -345,9 +352,10 @@ public interface MVCoreConfig {
      * Sets whether to register with PlaceholderAPI plugin.
      *
      * @param registerPapiHook The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setRegisterPapiHook(boolean registerPapiHook);
+    Try<Void> setRegisterPapiHook(boolean registerPapiHook);
 
     /**
      * Gets whether to register with PlaceholderAPI plugin.
@@ -361,9 +369,10 @@ public interface MVCoreConfig {
      * Sets default locale used for messages
      *
      * @param defaultLocale The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setDefaultLocale(Locale defaultLocale);
+    Try<Void> setDefaultLocale(Locale defaultLocale);
 
     /**
      * Gets default locale used for messages
@@ -377,9 +386,10 @@ public interface MVCoreConfig {
      * Sets whether to use each player's client locale.
      *
      * @param perPlayerLocale   the new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setPerPlayerLocale(boolean perPlayerLocale);
+    Try<Void> setPerPlayerLocale(boolean perPlayerLocale);
 
     /**
      * Gets whether to use each player's client locale.
@@ -389,12 +399,29 @@ public interface MVCoreConfig {
     boolean getPerPlayerLocale();
 
     /**
+     * Sets resolveAliasInCommands.
+     *
+     * @param resolveAliasInCommands The new value.
+     * @since 5.0
+     */
+    Try<Void> setResolveAliasName(boolean resolveAliasInCommands);
+
+    /**
+     * Gets resolveAliasInCommands.
+     *
+     * @return resolveAliasInCommands.
+     * @since 5.0
+     */
+    boolean getResolveAliasName();
+
+    /**
      * Sets the mode to use for confirming dangerous commands
      *
      * @param confirmMode   The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setConfirmMode(ConfirmMode confirmMode);
+    Try<Void> setConfirmMode(ConfirmMode confirmMode);
 
     /**
      * Gets the mode to use for confirming dangerous commands
@@ -408,19 +435,27 @@ public interface MVCoreConfig {
      * Sets whether to use confirm otp
      *
      * @param useConfirmOtp   The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setUseConfirmOtp(boolean useConfirmOtp);
+    Try<Void> setUseConfirmOtp(boolean useConfirmOtp);
 
+    /**
+     * Gets whether to use confirm otp
+     *
+     * @return useConfirmOtp
+     * @since 5.0
+     */
     boolean getUseConfirmOtp();
 
     /**
      * Sets globalDebug.
      *
      * @param globalDebug The new value.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setGlobalDebug(int globalDebug);
+    Try<Void> setGlobalDebug(int globalDebug);
 
     /**
      * Gets globalDebug.
@@ -434,9 +469,10 @@ public interface MVCoreConfig {
      * Sets debugPermissions
      *
      * @param debugPermissions  The new value
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setDebugPermissions(boolean debugPermissions);
+    Try<Void> setDebugPermissions(boolean debugPermissions);
 
     /**
      * gets debugPermissions.
@@ -450,9 +486,10 @@ public interface MVCoreConfig {
      * Sets whether to suppress startup messages.
      *
      * @param silentStart true to suppress messages.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setSilentStart(boolean silentStart);
+    Try<Void> setSilentStart(boolean silentStart);
 
     /**
      * Whether we are suppressing startup messages.
@@ -466,9 +503,10 @@ public interface MVCoreConfig {
      * Sets whether or not the donation/patreon messages are shown.
      *
      * @param showDonateMessage True if donation/patreon messages should be shown.
+     * @return Result of setting property.
      * @since 5.0
      */
-    void setShowDonateMessage(boolean showDonateMessage);
+    Try<Void> setShowDonateMessage(boolean showDonateMessage);
 
     /**
      * Gets whether or not the donation/patreon messages are shown.

@@ -17,7 +17,7 @@ class RegenCommandTest : AbstractCommandTest() {
         // Disable confirmation to make tests easier
         val config = serviceLocator.getActiveService(SimpleMVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
-        config.confirmMode = ConfirmMode.DISABLE
+        assertTrue(config.setConfirmMode(ConfirmMode.DISABLE).isSuccess)
 
         testWorld = worldManager.createWorld(CreateWorldOptions.worldName("test")).get()
     }

@@ -141,8 +141,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setEnforceAccess(boolean enforceAccess) {
-        configHandle.set(configNodes.ENFORCE_ACCESS, enforceAccess);
+    public Try<Void> setEnforceAccess(boolean enforceAccess) {
+        return configHandle.set(configNodes.ENFORCE_ACCESS, enforceAccess);
     }
 
     /**
@@ -157,8 +157,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setEnforceGameMode(boolean enforceGameMode) {
-        configHandle.set(configNodes.ENFORCE_GAMEMODE, enforceGameMode);
+    public Try<Void> setEnforceGameMode(boolean enforceGameMode) {
+        return configHandle.set(configNodes.ENFORCE_GAMEMODE, enforceGameMode);
     }
 
     /**
@@ -173,8 +173,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setAutoPurgeEntities(boolean autopurge) {
-        configHandle.set(configNodes.AUTO_PURGE_ENTITIES, autopurge);
+    public Try<Void> setAutoPurgeEntities(boolean autopurge) {
+        return configHandle.set(configNodes.AUTO_PURGE_ENTITIES, autopurge);
     }
 
     /**
@@ -189,8 +189,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions) {
-        configHandle.set(configNodes.USE_FINER_TELEPORT_PERMISSIONS, useFinerTeleportPermissions);
+    public Try<Void> setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions) {
+        return configHandle.set(configNodes.USE_FINER_TELEPORT_PERMISSIONS, useFinerTeleportPermissions);
     }
 
     /**
@@ -205,8 +205,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setConcurrentTeleportLimit(int concurrentTeleportLimit) {
-        configHandle.set(configNodes.CONCURRENT_TELEPORT_LIMIT, concurrentTeleportLimit);
+    public Try<Void> setConcurrentTeleportLimit(int concurrentTeleportLimit) {
+        return configHandle.set(configNodes.CONCURRENT_TELEPORT_LIMIT, concurrentTeleportLimit);
     }
 
     /**
@@ -221,8 +221,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setTeleportIntercept(boolean teleportIntercept) {
-        configHandle.set(configNodes.TELEPORT_INTERCEPT, teleportIntercept);
+    public Try<Void> setTeleportIntercept(boolean teleportIntercept) {
+        return configHandle.set(configNodes.TELEPORT_INTERCEPT, teleportIntercept);
     }
 
     /**
@@ -237,16 +237,16 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setFirstSpawnOverride(boolean firstSpawnOverride) {
-        configHandle.set(configNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
+    public Try<Void> setFirstSpawnOverride(boolean firstSpawnOverride) {
+        return configHandle.set(configNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setSafeLocationHorizontalSearchRadius(int searchRadius) {
-        configHandle.set(configNodes.SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS, searchRadius);
+    public Try<Void> setSafeLocationHorizontalSearchRadius(int searchRadius) {
+        return configHandle.set(configNodes.SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS, searchRadius);
     }
 
     /**
@@ -261,8 +261,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setSafeLocationVerticalSearchRadius(int searchRadius) {
-        configHandle.set(configNodes.SAFE_LOCATION_VERTICAL_SEARCH_RADIUS, searchRadius);
+    public Try<Void> setSafeLocationVerticalSearchRadius(int searchRadius) {
+        return configHandle.set(configNodes.SAFE_LOCATION_VERTICAL_SEARCH_RADIUS, searchRadius);
     }
 
     /**
@@ -285,8 +285,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setFirstSpawnLocation(String firstSpawnWorld) {
-        configHandle.set(configNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
+    public Try<Void> setFirstSpawnLocation(String firstSpawnWorld) {
+        return configHandle.set(configNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
     }
 
     /**
@@ -301,8 +301,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setEnableJoinDestination(boolean enableJoinDestination) {
-        configHandle.set(configNodes.ENABLE_JOIN_DESTINATION, enableJoinDestination);
+    public Try<Void> setEnableJoinDestination(boolean enableJoinDestination) {
+        return configHandle.set(configNodes.ENABLE_JOIN_DESTINATION, enableJoinDestination);
     }
 
     /**
@@ -317,8 +317,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setJoinDestination(String alwaysSpawnDestination) {
-        configHandle.set(configNodes.JOIN_DESTINATION, alwaysSpawnDestination);
+    public Try<Void> setJoinDestination(String alwaysSpawnDestination) {
+        return configHandle.set(configNodes.JOIN_DESTINATION, alwaysSpawnDestination);
     }
 
     /**
@@ -333,8 +333,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn) {
-        configHandle.set(configNodes.DEFAULT_RESPAWN_WITHIN_SAME_WORLD, defaultRespawnToWorldSpawn);
+    public Try<Void> setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn) {
+        return configHandle.set(configNodes.DEFAULT_RESPAWN_WITHIN_SAME_WORLD, defaultRespawnToWorldSpawn);
     }
 
     /**
@@ -349,8 +349,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn) {
-        configHandle.set(configNodes.ENFORCE_RESPAWN_AT_WORLD_SPAWN, enforceRespawnAtWorldSpawn);
+    public Try<Void> setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn) {
+        return configHandle.set(configNodes.ENFORCE_RESPAWN_AT_WORLD_SPAWN, enforceRespawnAtWorldSpawn);
     }
 
     /**
@@ -365,8 +365,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
-        configHandle.set(configNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
+    public Try<Void> setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
+        return configHandle.set(configNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
     }
 
     /**
@@ -381,8 +381,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setCustomPortalSearchRadius(int searchRadius) {
-        configHandle.set(configNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
+    public Try<Void> setCustomPortalSearchRadius(int searchRadius) {
+        return configHandle.set(configNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
     }
 
     /**
@@ -397,8 +397,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setEnablePrefixChat(boolean prefixChat) {
-        configHandle.set(configNodes.ENABLE_CHAT_PREFIX, prefixChat);
+    public Try<Void> setEnablePrefixChat(boolean prefixChat) {
+        return configHandle.set(configNodes.ENABLE_CHAT_PREFIX, prefixChat);
     }
 
     /**
@@ -413,8 +413,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setPrefixChatFormat(String prefixChatFormat) {
-        configHandle.set(configNodes.CHAT_PREFIX_FORMAT, prefixChatFormat);
+    public Try<Void> setPrefixChatFormat(String prefixChatFormat) {
+        return configHandle.set(configNodes.CHAT_PREFIX_FORMAT, prefixChatFormat);
     }
 
     /**
@@ -429,8 +429,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setRegisterPapiHook(boolean registerPapiHook) {
-        configHandle.set(configNodes.REGISTER_PAPI_HOOK, registerPapiHook);
+    public Try<Void> setRegisterPapiHook(boolean registerPapiHook) {
+        return configHandle.set(configNodes.REGISTER_PAPI_HOOK, registerPapiHook);
     }
 
     /**
@@ -445,8 +445,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setDefaultLocale(Locale defaultLocale) {
-        configHandle.set(configNodes.DEFAULT_LOCALE, defaultLocale);
+    public Try<Void> setDefaultLocale(Locale defaultLocale) {
+        return configHandle.set(configNodes.DEFAULT_LOCALE, defaultLocale);
     }
 
     /**
@@ -461,8 +461,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setPerPlayerLocale(boolean perPlayerLocale) {
-        configHandle.set(configNodes.PER_PLAYER_LOCALE, perPlayerLocale);
+    public Try<Void> setPerPlayerLocale(boolean perPlayerLocale) {
+        return configHandle.set(configNodes.PER_PLAYER_LOCALE, perPlayerLocale);
     }
 
     /**
@@ -477,8 +477,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setResolveAliasName(boolean resolveAliasInCommands) {
-        configHandle.set(configNodes.RESOLVE_ALIAS_NAME, resolveAliasInCommands);
+    public Try<Void> setResolveAliasName(boolean resolveAliasInCommands) {
+        return configHandle.set(configNodes.RESOLVE_ALIAS_NAME, resolveAliasInCommands);
     }
 
     /**
@@ -493,8 +493,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setConfirmMode(ConfirmMode confirmMode) {
-        configHandle.set(configNodes.CONFIRM_MODE, confirmMode);
+    public Try<Void> setConfirmMode(ConfirmMode confirmMode) {
+        return configHandle.set(configNodes.CONFIRM_MODE, confirmMode);
     }
 
     /**
@@ -509,8 +509,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setUseConfirmOtp(boolean useConfirmOtp) {
-        configHandle.set(configNodes.USE_CONFIRM_OTP, useConfirmOtp);
+    public Try<Void> setUseConfirmOtp(boolean useConfirmOtp) {
+        return configHandle.set(configNodes.USE_CONFIRM_OTP, useConfirmOtp);
     }
 
     /**
@@ -525,8 +525,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setGlobalDebug(int globalDebug) {
-        configHandle.set(configNodes.GLOBAL_DEBUG, globalDebug);
+    public Try<Void> setGlobalDebug(int globalDebug) {
+        return configHandle.set(configNodes.GLOBAL_DEBUG, globalDebug);
     }
 
     /**
@@ -541,8 +541,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setDebugPermissions(boolean debugPermissions) {
-        configHandle.set(configNodes.DEBUG_PERMISSIONS, debugPermissions);
+    public Try<Void> setDebugPermissions(boolean debugPermissions) {
+        return configHandle.set(configNodes.DEBUG_PERMISSIONS, debugPermissions);
     }
 
     /**
@@ -557,8 +557,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setSilentStart(boolean silentStart) {
-        configHandle.set(configNodes.SILENT_START, silentStart);
+    public Try<Void> setSilentStart(boolean silentStart) {
+        return configHandle.set(configNodes.SILENT_START, silentStart);
     }
 
     /**
@@ -573,8 +573,8 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
      * {@inheritDoc}
      */
     @Override
-    public void setShowDonateMessage(boolean showDonateMessage) {
-        configHandle.set(configNodes.SHOW_DONATION_MESSAGE, showDonateMessage);
+    public Try<Void> setShowDonateMessage(boolean showDonateMessage) {
+        return configHandle.set(configNodes.SHOW_DONATION_MESSAGE, showDonateMessage);
     }
 
     /**
@@ -587,6 +587,7 @@ public class SimpleMVCoreConfig implements MVCoreConfig {
 
     /**
      * Gets the underlying config file object
+     *
      * @return The config file
      */
     public FileConfiguration getConfig() {
