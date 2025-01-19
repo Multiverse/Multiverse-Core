@@ -94,7 +94,7 @@ public class WhoCommand extends CoreCommand {
 
     }
 
-    @CommandAlias("mvwho")
+    @CommandAlias("mvwho|mvw")
     @Subcommand("who")
     @CommandPermission("multiverse.core.list.who")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvwhocommand")
