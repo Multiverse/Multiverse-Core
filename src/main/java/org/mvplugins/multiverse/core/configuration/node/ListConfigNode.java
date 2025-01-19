@@ -32,7 +32,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
      * @param <I>   The type of the value.
      * @return The new builder.
      */
-    public static @NotNull <I> Builder<I, ? extends Builder<I, ?>> listBuilder(
+    public static @NotNull <I, B  extends Builder<I, B>> Builder<I, B> listBuilder(
             @NotNull String path,
             @NotNull Class<I> type) {
         return new Builder<>(path, type);

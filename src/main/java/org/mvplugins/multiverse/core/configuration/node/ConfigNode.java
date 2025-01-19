@@ -183,6 +183,15 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
 
         /**
+         * Gets the path of this node.
+         *
+         * @return The path of this node.
+         */
+        public @NotNull String path() {
+            return path;
+        }
+
+        /**
          * Sets the default value for this node.
          *
          * @param defaultValue The default value.
@@ -213,6 +222,15 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         public @NotNull B name(@Nullable String name) {
             this.name = name;
             return self();
+        }
+
+        /**
+         * Gets the name of this node. Used for identifying the node from user input.
+         *
+         * @return The name of this node, or {@code null} if the node has no name.
+         */
+        public @Nullable String name() {
+            return name;
         }
 
         /**
@@ -266,7 +284,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @return This builder.
          */
         public @NotNull B onSetValue(@NotNull BiConsumer<T, T> onSetValue) {
-            this.onSetValue = onSetValue;
+            this.onSetValue = this.onSetValue == null ? onSetValue : this.onSetValue.andThen(onSetValue);
             return self();
         }
 
@@ -277,11 +295,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         public @NotNull ConfigNode<T> build() {
             return new ConfigNode<>(path, comments.toArray(new String[0]),
                     name, type, defaultValue, suggester, stringParser, serializer, validator, onSetValue);
-        }
-
-        protected @NotNull B self() {
-            //noinspection unchecked
-            return (B) this;
         }
     }
 }

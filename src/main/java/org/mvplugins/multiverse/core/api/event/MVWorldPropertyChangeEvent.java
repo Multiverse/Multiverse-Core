@@ -7,39 +7,32 @@
 
 package org.mvplugins.multiverse.core.api.event;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 /**
- * This event is fired *before* the property is actually changed.
+ * This event is fired after the property is changed.
  * <p>
- * If it is cancelled, no change will happen.
- * <p>
- * If you want to get the values of the world before the change, query the world.
- * To get the name of the property that was changed, use {@link #getPropertyName()}.
- * To get the new value, use {@link #getTheNewValue()}. To change it, use {@link #setTheNewValue(Object)}.
+ * To get the name of the property that was changed, use {@link #getName()}.
+ * To get the old value, use {@link #getOldValue()}.
+ * To get the new value, use {@link #getNewValue()}.
  *
  * @param <T> The type of the property that was set.
  * @since 5.0
  */
-// todo: Implement or remove this
-@Deprecated
-public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable {
-    private MultiverseWorld world;
-    private CommandSender changer;
-    private boolean isCancelled = false;
-    private String name;
-    private T value;
+public class MVWorldPropertyChangeEvent<T> extends Event {
+    private final MultiverseWorld world;
+    private final String name;
+    private final T oldValue;
+    private final T newValue;
 
-    public MVWorldPropertyChangeEvent(MultiverseWorld world, CommandSender changer, String name, T value) {
+    public MVWorldPropertyChangeEvent(MultiverseWorld world, String name, T oldValue, T value) {
         this.world = world;
-        this.changer = changer;
         this.name = name;
-        this.value = value;
+        this.oldValue = oldValue;
+        this.newValue = value;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -67,8 +60,18 @@ public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable 
      * @return The changed world property's name.
      * @since 5.0
      */
-    public String getPropertyName() {
+    public String getName() {
         return this.name;
+    }
+
+    /**
+     * Gets the old value.
+     *
+     * @return The old value.
+     * @since 5.0
+     */
+    public T getOldValue() {
+        return oldValue;
     }
 
     /**
@@ -77,54 +80,17 @@ public class MVWorldPropertyChangeEvent<T> extends Event implements Cancellable 
      * @return The new value.
      * @since 5.0
      */
-    public T getTheNewValue() {
-        return this.value;
-    }
-
-    /**
-     * Sets the new value.
-     *
-     * @param value The new value.
-     * @since 5.0
-     */
-    public void setTheNewValue(T value) {
-        this.value = value;
+    public T getNewValue() {
+        return this.newValue;
     }
 
     /**
      * Get the world targeted because of this change.
      *
      * @return A valid MultiverseWorld.
+     * @since 5.0
      */
     public MultiverseWorld getWorld() {
         return this.world;
-    }
-
-    /**
-     * Gets the person (or console) who was responsible for the change.
-     * <p>
-     * This may be null!
-     *
-     * @return The person (or console) who was responsible for the change.
-     * @since 5.0
-     */
-    public CommandSender getCommandSender() {
-        return this.changer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isCancelled() {
-        return this.isCancelled;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.isCancelled = cancelled;
     }
 }
