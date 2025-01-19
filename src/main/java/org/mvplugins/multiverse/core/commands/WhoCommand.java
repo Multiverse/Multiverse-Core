@@ -69,6 +69,7 @@ public class WhoCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
+    @CommandAlias("mvwhoall")
     @Subcommand("whoall")
     @CommandPermission("multiverse.core.list.who.all")
     @CommandCompletion("@flags:groupName=mvwhocommand")
@@ -93,6 +94,7 @@ public class WhoCommand extends CoreCommand {
 
     }
 
+    @CommandAlias("mvwho")
     @Subcommand("who")
     @CommandPermission("multiverse.core.list.who")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvwhocommand")
@@ -101,6 +103,7 @@ public class WhoCommand extends CoreCommand {
     void onWhoCommand(
             MVCommandIssuer issuer,
 
+            @Optional
             @Syntax("<world>")
             @Description("{@@mv-core.who.world.description}")
             LoadedMultiverseWorld inputtedWorld,
@@ -110,6 +113,10 @@ public class WhoCommand extends CoreCommand {
             @Description("{@@mv-core.who.flags.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
+
+        if (inputtedWorld == null) {
+            inputtedWorld = worldManager.getLoadedWorld(issuer.getPlayer().getWorld()).getOrNull(); // TODO: Deal with it not being a MV world
+        }
 
         // Send the display
         getListDisplay(
