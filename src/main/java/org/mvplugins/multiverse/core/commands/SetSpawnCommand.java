@@ -32,7 +32,7 @@ public class SetSpawnCommand extends CoreCommand {
     @CommandAlias("mvsetspawn|mvss")
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.spawn.set")
-    @Syntax("[location]")
+    @Syntax("[x],[y],[z],[pitch],[yaw]")
     @Description("{@@mv-core.setspawn.description}")
     void onSetSpawnCommand(
             BukkitCommandIssuer issuer,
