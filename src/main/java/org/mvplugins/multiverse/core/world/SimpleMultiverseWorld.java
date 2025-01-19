@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
@@ -44,7 +43,7 @@ public class SimpleMultiverseWorld implements MultiverseWorld {
 
     @Override
     public boolean isLoaded() {
-        return worldConfig.hasMVWorld();
+        return worldConfig.isLoadedWorld();
     }
 
     @Override

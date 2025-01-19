@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
+import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.api.world.config.AllowedPortalType;
 import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
@@ -395,8 +396,8 @@ public final class WorldConfig {
         configNodes.setWorld(world);
     }
 
-    public boolean hasMVWorld() {
-        return configNodes.getWorld() != null;
+    public boolean isLoadedWorld() {
+        return configNodes.getWorld() instanceof LoadedMultiverseWorld;
     }
 
     public void deferenceMVWorld() {
