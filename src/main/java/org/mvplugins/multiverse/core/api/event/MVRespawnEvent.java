@@ -9,25 +9,22 @@ package org.mvplugins.multiverse.core.api.event;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 
 /**
  * Called when a player is respawning.
  *
  * @since 5.0
  */
-// todo: remove or update its usage. The respawnMethod is always "compatibility" for some reason
-@Deprecated
-public class MVRespawnEvent extends Event {
-    private final Player player;
-    private final String respawnMethod;
+public class MVRespawnEvent extends PlayerEvent implements Cancellable {
     private Location location;
+    private boolean cancelled = false;
 
-    public MVRespawnEvent(Location spawningAt, Player p, String respawnMethod) {
-        this.player = p;
+    public MVRespawnEvent(Location spawningAt, Player player) {
+        super(player);
         this.location = spawningAt;
-        this.respawnMethod = respawnMethod;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -50,42 +47,38 @@ public class MVRespawnEvent extends Event {
     }
 
     /**
-     * Gets the {@link Player} that's respawning.
-     *
-     * @return The {@link Player} that's respawning.
-     * @since 5.0
-     */
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    /**
-     * Gets the respawn-method.
-     *
-     * @return The respawn-method.
-     * @since 5.0
-     */
-    public String getRespawnMethod() {
-        return this.respawnMethod;
-    }
-
-    /**
      * Gets the player's respawn-{@link Location}.
      *
      * @return The player's respawn-{@link Location}.
      * @since 5.0
      */
-    public Location getPlayersRespawnLocation() {
+    public Location getRespawnLocation() {
         return this.location;
     }
 
     /**
      * Sets the player's respawn-{@link Location}.
      *
-     * @param l The new respawn-{@link Location}.
+     * @param location The new respawn-{@link Location}.
      * @since 5.0
      */
-    public void setRespawnLocation(Location l) {
-        this.location = l;
+    public void setRespawnLocation(Location location) {
+        this.location = location;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
     }
 }

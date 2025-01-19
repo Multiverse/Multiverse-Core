@@ -141,9 +141,14 @@ public class MVPlayerListener implements CoreListener {
                 })
                 .flatMap(mvWorld -> getMostAccurateRespawnLocation(player, mvWorld, event.getRespawnLocation()))
                 .peek(newRespawnLocation -> {
-                    MVRespawnEvent respawnEvent = new MVRespawnEvent(newRespawnLocation, event.getPlayer(), "compatability");
+                    MVRespawnEvent respawnEvent = new MVRespawnEvent(newRespawnLocation, event.getPlayer());
                     this.server.getPluginManager().callEvent(respawnEvent);
-                    event.setRespawnLocation(respawnEvent.getPlayersRespawnLocation());
+                    if (respawnEvent.isCancelled()) {
+                        Logging.fine("Player '%s' cancelled their respawn event.", player.getName());
+                        return;
+                    }
+                    Logging.fine("Overriding respawn location for player '%s' to '%s'.", player.getName(), respawnEvent.getRespawnLocation());
+                    event.setRespawnLocation(respawnEvent.getRespawnLocation());
                 });
     }
 
@@ -153,15 +158,15 @@ public class MVPlayerListener implements CoreListener {
                         : server.getWorld(mvWorld.getRespawnWorldName()))
                 .onEmpty(() -> Logging.warning("World '%s' has respawn-world property of '%s' that does not exist!",
                         player.getWorld().getName(), mvWorld.getRespawnWorldName()))
-                .map(newRespawnWorld -> {
+                .flatMap(newRespawnWorld -> {
                     if (!config.getEnforceRespawnAtWorldSpawn() && newRespawnWorld.equals(defaultRespawnLocation.getWorld())) {
                         Logging.fine("Respawn location is within same world as respawn-world, not overriding.");
-                        return defaultRespawnLocation;
+                        return Option.none();
                     }
                     return getWorldManager()
                             .getLoadedWorld(newRespawnWorld)
                             .map(newMVRespawnWorld -> (Location) newMVRespawnWorld.getSpawnLocation())
-                            .getOrElse(newRespawnWorld::getSpawnLocation);
+                            .orElse(() -> Option.of(newRespawnWorld.getSpawnLocation()));
                 });
     }
 
