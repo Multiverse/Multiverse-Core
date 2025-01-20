@@ -29,10 +29,10 @@ public class SetSpawnCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
-    @CommandAlias("mvsetspawn")
+    @CommandAlias("mvsetspawn|mvss")
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.spawn.set")
-    @Syntax("[location]")
+    @Syntax("[x],[y],[z],[pitch],[yaw]")
     @Description("{@@mv-core.setspawn.description}")
     void onSetSpawnCommand(
             BukkitCommandIssuer issuer,
@@ -57,6 +57,6 @@ public class SetSpawnCommand extends CoreCommand {
     }
 
     private String prettyLocation(Location location) {
-        return location.getX() + ", " + location.getY() + ", " + location.getZ();
+        return location.getX() + ", " + location.getY() + ", " + location.getZ() + ". pitch:" + location.getPitch() + ", yaw:" + location.getYaw();
     }
 }
