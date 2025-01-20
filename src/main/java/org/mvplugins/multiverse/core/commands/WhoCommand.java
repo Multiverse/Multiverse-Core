@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -102,7 +103,7 @@ public class WhoCommand extends CoreCommand {
     @Description("{@@mv-core.who.description}")
     void onWhoCommand(
             MVCommandIssuer issuer,
-
+            @Flags("resolve=issuerAware")
             @Optional
             @Syntax("<world>")
             @Description("{@@mv-core.who.world.description}")
@@ -113,10 +114,6 @@ public class WhoCommand extends CoreCommand {
             @Description("{@@mv-core.who.flags.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
-
-        if (inputtedWorld == null) {
-            inputtedWorld = worldManager.getLoadedWorld(issuer.getPlayer().getWorld()).getOrNull(); // TODO: Deal with it not being a MV world
-        }
 
         // Send the display
         getListDisplay(
