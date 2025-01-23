@@ -16,7 +16,8 @@ public class MVCommandConditions {
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
             @NotNull WorldNameChecker worldNameChecker) {
-        new MVCommandConditions(commandManager, worldManager, worldNameChecker);
+        MVCommandConditions mvCommandConditions = new MVCommandConditions(commandManager, worldManager, worldNameChecker);
+        mvCommandConditions.registerConditions();
     }
 
     private final WorldManager worldManager;
@@ -30,7 +31,6 @@ public class MVCommandConditions {
         this.worldManager = worldManager;
         this.commandManager = commandManager;
         this.worldNameChecker = worldNameChecker;
-        registerConditions();
     }
 
     private void registerConditions() {
